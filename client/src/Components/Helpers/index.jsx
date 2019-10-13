@@ -8,7 +8,7 @@ export const PrivateRoute = ({component: Component, firebase, ...routeProps }) =
         {...routeProps}
         render = {props =>
             firebase.getCurrentUser() ?
-            <Component {...props} />
+            <Component {...props} firebase = {firebase} />
             : <Redirect to = {{pathname: '/', state: { from: props.location }}} />
         }
     />

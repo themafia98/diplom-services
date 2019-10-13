@@ -15,6 +15,13 @@ class UserPanel extends React.Component {
     onCollapse = collapsed => {
         this.setState({ collapsed });
       };
+    
+    logout = event => {
+      
+      const { firebase } = this.props;
+      if (firebase) firebase.signOut()
+      .then(() => this.props.history.push('/'));
+    };
 
     render(){
       
@@ -63,7 +70,9 @@ class UserPanel extends React.Component {
                 </Menu>
               </Sider>
               <Layout>
-                <Header style={{ background: '#fff', padding: 0 }} />
+                <Header style={{ background: '#fff', padding: 0 }} >
+                    <div onClick = {this.logout} className = 'logout'>Logout</div>
+                </Header>
                 <Content style={{ margin: '0 16px' }}>
                   <Breadcrumb style={{ margin: '16px 0' }}>
                     <Breadcrumb.Item>User</Breadcrumb.Item>

@@ -1,0 +1,15 @@
+
+
+header {
+    .logout {
+        cursor: pointer;
+        font-weight: bold;
+        position: absolute;
+        left: 95%;
+        transform: translate(-50%);
+
+        &:hover {
+            color: red;
+        }
+    }
+}

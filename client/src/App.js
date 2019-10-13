@@ -17,8 +17,8 @@ class App extends React.Component {
         /** Listening firebase answer after first load app */
         this.props.firebase.auth.onAuthStateChanged((user) => {
             if (!this.state.firebaseLoadState){
-                if (user) this.setState({ isUser: true, firebaseLoadState: true});
-                else  this.setState({firebaseLoadState: true});
+                if (user) setTimeout(() => this.setState({ isUser: true, firebaseLoadState: true}), 500);
+                else setTimeout(() => this.setState({firebaseLoadState: true}), 500);
 			};
 		});
 	}
@@ -40,7 +40,7 @@ class App extends React.Component {
 					/>
 					<PrivateRoute exact path = '/panel' 
 						component = {UserPanel} 
-						firebase = {firebase} 
+		                firebase = {firebase} 
 					/>
 				</Switch>
 			);

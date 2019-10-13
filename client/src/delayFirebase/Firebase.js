@@ -40,9 +40,9 @@ class Firebase {
         return this.auth.createUserWithEmailAndPassword(email, password)
     }
 
-    signOut(){
+    async signOut(){
         /** @destroy session */
-        return this.auth.signOut()
+        return await this.auth.signOut()
     }
 
     getCurrentUser() {

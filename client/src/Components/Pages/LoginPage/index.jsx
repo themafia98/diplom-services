@@ -9,7 +9,6 @@ class LoginPage extends React.Component {
 
     state = {
         loading: false,
-        iconLoading: false,
         redirect: false,
     };
 
@@ -35,10 +34,10 @@ class LoginPage extends React.Component {
 
     render(){
         const { refLogin, refPassword, enterLoading } = this;
-        const { isUser } = this.props;
+        const { isUser, firebase } = this.props;
         const { loading } = this.state;
-
-        if (isUser) return <Redirect to = '/panel' />
+        
+        if (isUser && firebase.getCurrentUser()) return <Redirect to = '/panel' />
 
         return (
             <div className = 'loginPage'>
