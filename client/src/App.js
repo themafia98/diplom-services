@@ -29,10 +29,20 @@ class App extends React.Component {
 		const { firebaseLoadState, isUser } = this.state;
 		if (firebaseLoadState)
 			return (
-					<Switch>
-						<Route exact path = '/' render = {props => <LoginPage {...props} isUser = {isUser} firebase = {firebase} />} />
-						<PrivateRoute exact path = '/panel' component = {UserPanel} firebase = {firebase} />
-					</Switch>
+				<Switch>
+					<Route exact path = '/' 
+						render = {props => (
+							<LoginPage {...props} 
+									isUser = {isUser} 
+									firebase = {firebase} 
+							/> 
+						)} 
+					/>
+					<PrivateRoute exact path = '/panel' 
+						component = {UserPanel} 
+						firebase = {firebase} 
+					/>
+				</Switch>
 			);
 		else return <Loader />
 	};
