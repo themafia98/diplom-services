@@ -1,23 +1,16 @@
 import React from 'react';
-import './App.css';
+import { Switch, Route } from 'react-router-dom';
+import { PrivateRoute } from './Components/Helpers';
+  
+import LoginPage from './Components/Pages/LoginPage';
+import UserPanel from './Components/Pages/UserPanel';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Switch>
+      <Route exact path = '/' component = {LoginPage} />
+      <PrivateRoute exact path = '/panel' component = {UserPanel} />
+    </Switch>
   );
 }
 
