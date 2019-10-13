@@ -27,6 +27,8 @@ class Firebase {
 
     login(email, password){
         /** @login firebase */
+        
+        console.log(this);
         try {
             return this.auth.signInWithEmailAndPassword(email, password);
         } catch (error) {

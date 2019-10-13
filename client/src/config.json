@@ -1,12 +1,11 @@
 {
-    "title": "diplom",
-    "CabinetIcon": "/img/logo.svg",
+    "title": "Controll system",
+    "Icon": "/img/logo.svg",
     "firebase": {
         "session": "SESSION",
         "lowConnection": "false"
     },
     "about": {
-        "developer": "Pavel Petrovich",
-        "year": "2019"
+        "developer": "Pavel Petrovich"
     }
 }

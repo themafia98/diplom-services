@@ -2,11 +2,12 @@ import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 
 
-export const PrivateRoute = ({component: Component, ...routeProps }) => (
+export const PrivateRoute = ({component: Component, firebase, ...routeProps }) => (
     <Route
+        exact
         {...routeProps}
         render = {props =>
-            localStorage.getItem('AuthToken') ?
+            firebase.getCurrentUser() ?
             <Component {...props} />
             : <Redirect to = {{pathname: '/', state: { from: props.location }}} />
         }

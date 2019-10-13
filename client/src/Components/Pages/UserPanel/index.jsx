@@ -17,6 +17,7 @@ class UserPanel extends React.Component {
       };
 
     render(){
+      
         return (
             <Layout style={{ minHeight: '100vh' }}>
               <Sider collapsible collapsed={this.state.collapsed} onCollapse = {this.onCollapse} >
