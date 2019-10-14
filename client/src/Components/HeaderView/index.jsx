@@ -4,7 +4,7 @@ import { Layout } from 'antd';
 const { Header } = Layout;
 
 
-class HeaderTabs extends React.Component {
+class HeaderView extends React.Component {
     render(){
         const { logout } = this.props;
         return (
@@ -15,4 +15,4 @@ class HeaderTabs extends React.Component {
     }
 };
 
-export default HeaderTabs;
+export default HeaderView;

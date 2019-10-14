@@ -4,7 +4,7 @@ import { Menu, Layout, Icon } from 'antd';
 const { Sider } = Layout;
 const { SubMenu } = Menu;
 
-const MenuSide = ({collapsed, cbOnCollapse}) => {
+const MenuView = ({collapsed, cbOnCollapse}) => {
     return (
         <Sider collapsible collapsed={collapsed} onCollapse = {cbOnCollapse} >
         <div className="logo" />
@@ -51,4 +51,4 @@ const MenuSide = ({collapsed, cbOnCollapse}) => {
     );
 };
 
-export default MenuSide;
+export default MenuView;

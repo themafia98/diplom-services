@@ -3,7 +3,7 @@ import { Layout } from 'antd';
 
 const { Content } = Layout;
 
-class ContentZone extends React.Component {
+class ContentView extends React.Component {
     render(){
         return (
             <Content style={{ margin: '16px 16px' }}>
@@ -12,4 +12,4 @@ class ContentZone extends React.Component {
         );
     }
 };
-export default ContentZone;
+export default ContentView;

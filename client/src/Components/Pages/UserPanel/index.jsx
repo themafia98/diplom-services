@@ -2,9 +2,9 @@ import React from 'react';
 import { Layout, Breadcrumb } from 'antd';
 import { connect } from 'react-redux';
 
-import HeaderTabs from '../../HeaderTabs';
-import ContentZone from '../../ContentZone';
-import MenuSide from '../../Menu';
+import HeaderView from '../../HeaderView';
+import ContentView from '../../ContentView';
+import MenuView from '../../Menu';
 
 const { Footer } = Layout;
 
@@ -29,10 +29,10 @@ class UserPanel extends React.Component {
       
         return (
             <Layout className = 'layout_menu'>
-              <MenuSide collapsed = {this.state.collapsed} cbOnCollapse = {this.onCollapse} />
+              <MenuView collapsed = {this.state.collapsed} cbOnCollapse = {this.onCollapse} />
               <Layout>
-                <HeaderTabs logout = {this.logout} />
-                <ContentZone />
+                <HeaderView logout = {this.logout} />
+                  <ContentView />
                 <Footer>Test layout</Footer>
               </Layout>
             </Layout>
