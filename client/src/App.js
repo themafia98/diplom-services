@@ -13,12 +13,19 @@ class App extends React.Component {
 		isUser: false,
 	}
 
+	loadAppSession = () => {
+		return this.setState({ isUser: true, firebaseLoadState: true});
+	};
+
+	loadApp = () => {
+		return this.setState({firebaseLoadState: true});
+	};
+
 	componentDidMount(){
-        /** Listening firebase answer after first load app */
+        /** load app */
         this.props.firebase.auth.onAuthStateChanged((user) => {
             if (!this.state.firebaseLoadState){
-                if (user) setTimeout(() => this.setState({ isUser: true, firebaseLoadState: true}), 500);
-                else setTimeout(() => this.setState({firebaseLoadState: true}), 500);
+               setTimeout(user ? this.loadAppSession.bind(this) : this.loadApp.bind(this), 500);
 			};
 		});
 	}

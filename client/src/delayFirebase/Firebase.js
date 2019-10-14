@@ -13,11 +13,9 @@ class Firebase {
         this.auth = firebase.auth();
         this.db = firebase.firestore();
 
-        if (config.firebase.lowConnection === 'true'
-        && (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'production'))
-        this.db.enablePersistence() /** if user use low internet @connection */
-            .then(res => console.warn(res))
-            .catch(er => console.error(er));
+        if (config.firebase.lowConnection === 'true' && process.env.NODE_ENV !== 'test')
+        this.db.enablePersistence().then(res => console.warn(res))
+        .catch(er => console.error(er)); /** if user use low internet @connection */
     }
 
     saveSession(rules){
@@ -40,9 +38,9 @@ class Firebase {
         return this.auth.createUserWithEmailAndPassword(email, password)
     }
 
-    async signOut(){
+    signOut(){
         /** @destroy session */
-        return await this.auth.signOut()
+        return this.auth.signOut()
     }
 
     getCurrentUser() {
@@ -50,9 +48,10 @@ class Firebase {
         return this.auth.currentUser;
     }
 }
+
 let firebaseInterface = new Firebase(firebaseConfig);
 
-if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'production')
+if (process.env.NODE_ENV !== 'test')
 firebaseInterface.saveSession(config.firebase.session);
 
 export default firebaseInterface;
