@@ -6,8 +6,24 @@
         "lowConnection": "false"
     },
     "menu": [
-        {  "EUID": "mainModule", "value": "Главное меню", "children": null, "icon": "pie-chart", "selected": true},
-        { "EUID": "taskModule", "value": "Задачи", "children": null, "icon": "pie-chart", "selected": false}
+        {   "EUID": "mainModule",
+             "value": "Главное меню", 
+             "children": null, 
+             "icon": "pie-chart",
+            "selected": true},
+            
+        {   "EUID": "taskModule",
+            "value": "Задачи", 
+            "icon": "pie-chart", 
+            "selected": false,
+            "children": [
+                {   "EUID": "taskModule", 
+                    "value": "Задачи2", 
+                    "children": null, 
+                    "icon": "pie-chart", 
+                    "selected": false}
+            ]
+        }
     ],
     "about": {
         "developer": "Pavel Petrovich"
