@@ -10,6 +10,7 @@
              "value": "Главное меню", 
              "children": null, 
              "icon": "pie-chart",
+             "sign": "default",
             "selected": true},
             
         {   "EUID": "taskModule",

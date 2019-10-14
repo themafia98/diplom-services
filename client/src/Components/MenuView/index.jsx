@@ -4,7 +4,7 @@ import { Menu, Layout, Icon } from 'antd';
 const { Sider } = Layout;
 const { SubMenu } = Menu;
 
-const MenuView = ({collapsed, cbOnCollapse, items}) => {
+const MenuView = ({collapsed, cbOnCollapse, items, cbMenuHandler}) => {
 
     const renderMenu = items => {
       if (items.length)
@@ -21,11 +21,11 @@ const MenuView = ({collapsed, cbOnCollapse, items}) => {
                   </span>
                 }
               >
-              {item.children.map(child => <Menu.Item key = {child.EUID}>{child.value}</Menu.Item>)}
+              {item.children.map(child => <Menu.Item onClick = {cbMenuHandler} key = {child.EUID}>{child.value}</Menu.Item>)}
               </SubMenu>
             );
           } else return (
-                <Menu.Item selected = {item.selected} key={item.value}>
+                <Menu.Item onClick = {cbMenuHandler} selected = {item.selected} key={item.value}>
                     {item.icon ? <Icon type={item.icon} /> : null}
                     <span>{item.value}</span>
                 </Menu.Item>

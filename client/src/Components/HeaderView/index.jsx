@@ -21,10 +21,10 @@ class HeaderView extends React.Component {
     }
 
     render(){
-        const { logout, items } = this.props;
+        const { logout, actionTabs } = this.props;
         return (
             <Header  >
-                {items ? this.renderTabs(items) : null}
+                {actionTabs ? this.renderTabs(actionTabs) : null}
                 <div onClick = {logout} className = 'logout'>Logout</div>
             </Header>
         );

@@ -11,6 +11,7 @@ header {
     ul {
         &.tabsMenu {
             display: flex;
+            align-items: center;
             width: 85%;
             height: 100%;
             padding: 0;
@@ -19,6 +20,7 @@ header {
                 display: flex;
                 justify-content: center;
                 align-items: center;
+                height: 65%;
                 cursor: pointer;
                 background-color: $tab;
                 padding: 0;
@@ -26,8 +28,11 @@ header {
                 list-style-type: none;
                 margin: 0 16px;
                 span {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
                     padding: 0;
-                    height: 100%;
+                    width: 100%;
                     text-align: center;
                     font-weight: bold;
                     &.selected {
