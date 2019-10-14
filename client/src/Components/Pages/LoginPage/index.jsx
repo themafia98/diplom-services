@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect } from 'react-router-dom';
+import { Redirect, NavLink } from 'react-router-dom';
 import { Button, Input } from 'antd';
 import { connect } from 'react-redux';
 
@@ -49,9 +49,8 @@ class LoginPage extends React.Component {
                     <form name = 'loginForm' className = 'loginContainer__loginForm'>
                         <Input size="large" placeholder="login" ref = {refLogin} />
                         <Input type = 'password' size="large" placeholder="password"  ref = {refPassword} />
-                        <Button type="primary" loading={loading} onClick={enterLoading} >
-                            Enter
-                        </Button>
+                        <Button type="primary" loading={loading} onClick={enterLoading}>Enter</Button>
+                        <NavLink to = '/recovory'>Recovery password</NavLink>
                     </form>
                 </div>
             </div>

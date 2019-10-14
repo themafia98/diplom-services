@@ -9,7 +9,15 @@ header {
         transform: translate(-50%);
 
         &:hover {
-            color: red;
+            color: $important_default;
         }
     }
+}
+
+footer {
+    text-align: center;
+}
+
+.layout_menu {
+    min-height: 100vh;
 }
