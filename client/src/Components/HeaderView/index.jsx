@@ -8,11 +8,18 @@ const { Header } = Layout;
 class HeaderView extends React.Component {
 
     renderTabs = items => {
+        const { activeTabEUID, cbMenuTabHandler } = this.props;
         return (
             <ul  className = 'tabsMenu'>
             {items.map(item => {
                 return (
-                    <Tab key = {item.value} value = {item.value} selected = {item.selected} />
+                    <Tab
+                        onClick = {cbMenuTabHandler}
+                        active = {activeTabEUID === item.EUID} 
+                        key = {`tab_${item.EUID}`} 
+                        EUID = {item.EUID}
+                        value = {item.value} 
+                    />
                 )
                 })
             }

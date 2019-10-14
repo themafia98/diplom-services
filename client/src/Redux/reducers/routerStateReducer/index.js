@@ -15,6 +15,7 @@ export default (state = initialState, action) => {
         case ADD_TAB: return {
             ...state,
             actionTabs: [...state.actionTabs, {...action.payload}],
+            currentActionTab: action.payload.EUID
         }
         case SET_ACTIVE_TAB: return {
             ...state,

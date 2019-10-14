@@ -22,7 +22,6 @@ class UserPanel extends React.Component {
       };
     
     logout = event => {
-      
       const { firebase } = this.props;
       if (firebase) firebase.signOut()
       .then(() => this.props.history.push('/'));
@@ -32,21 +31,25 @@ class UserPanel extends React.Component {
       const tabsArray = [];
       for (let i = 0; i < menu.length; i ++){
         const tabItemIndex = tabs.findIndex(tab => tab.EUID === menu[i].EUID);
-        if (tabItemIndex !== -1) tabsArray.push({... menu[i]});
+        if (tabItemIndex !== -1) tabsArray.push({...menu[i]});
       }
       return tabsArray;
     }
 
-    menuHandler = event => {
-      const { router:{ actionTabs = [] } = {}, addTab, setCurrentTab } = this.props;
-      const isFind = actionTabs.findIndex(tab => tab.EUID === event.key) !== -1;
-      if (!isFind) addTab({EUID: event.key}).then(() => setCurrentTab(event.key));
+    menuHandler = (event, key) => {
+      const path = event['key'] ? event['key'] : key;
+      const { router:{ currentActionTab, actionTabs = [] } = {}, addTab, setCurrentTab } = this.props;
+      const isFind = actionTabs.findIndex(tab => tab.EUID === path) !== -1;
+      if (!isFind) addTab({EUID: path});
+      else if (currentActionTab !== path){
+        setCurrentTab(path);
+      }
     };
 
     render(){
 
       const { menuItems = null } = this.state;
-      const { router:{ actionTabs = [] } = {} } = this.props;
+      const { router:{ actionTabs = [], currentActionTab } = {} } = this.props;
 
       const actionTabsData= this.getActionTabs(actionTabs, menuItems);
 
@@ -59,7 +62,12 @@ class UserPanel extends React.Component {
                 cbOnCollapse = {this.onCollapse} 
               />
               <Layout>
-                <HeaderView actionTabs = {actionTabsData} logout = {this.logout} />
+                <HeaderView  
+                    cbMenuTabHandler = {this.menuHandler}  
+                    activeTabEUID = {currentActionTab} 
+                    actionTabs = {actionTabsData} 
+                    logout = {this.logout} 
+                />
                   <ContentView />
                 <Footer>{config['title']}</Footer>
               </Layout>
@@ -77,8 +85,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
 	return {
 		moveTo: async (path) => await dispatch (updatePathAction(path)),
-    addTab: async (tab) => await dispatch (addTabAction(tab)),
-    setCurrentTab: async (tab) => await dispatch (setActiveTabAction(tab)),
+    addTab: (tab) =>  dispatch (addTabAction(tab)),
+    setCurrentTab: (tab) => dispatch (setActiveTabAction(tab)),
 	}
 
 }

@@ -1,11 +1,15 @@
 import React from 'react';
-import Item from 'antd/lib/list/Item';
 
-
-const Tab = ({value, selected}) => {
+const Tab = ({value, active, onClick: callbackOnClick, EUID}) => {
+    const onClick = event => {
+        callbackOnClick(event, EUID);
+    };
     return (
-            <li className = {selected ? 'selected' : null} key = {value}>
-                <span className = {selected ? 'selected' : null}>{value}</span>
+            <li onClick = {callbackOnClick ? onClick : null} 
+                className = {[active ? 'active' : null].join(" ")} 
+                key = {value}
+            >
+                <span className = {[active ? 'selected' : null].join(" ")}>{value}</span>
             </li>
     );
 };
