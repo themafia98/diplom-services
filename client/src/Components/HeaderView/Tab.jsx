@@ -1,8 +1,12 @@
 import React from 'react';
+import Item from 'antd/lib/list/Item';
 
-const Tab = (props) => {
+
+const Tab = ({value, selected}) => {
     return (
-        <div className = 'header_tab'></div>
+            <li className = {selected ? 'selected' : null} key = {value}>
+                <span className = {selected ? 'selected' : null}>{value}</span>
+            </li>
     );
 };
 

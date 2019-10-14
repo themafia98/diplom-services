@@ -1,10 +1,11 @@
 import React from 'react';
-import { Layout, Breadcrumb } from 'antd';
+import config from '../../../config.json';
+import { Layout } from 'antd';
 import { connect } from 'react-redux';
 
 import HeaderView from '../../HeaderView';
 import ContentView from '../../ContentView';
-import MenuView from '../../Menu';
+import MenuView from '../../MenuView';
 
 const { Footer } = Layout;
 
@@ -12,6 +13,7 @@ class UserPanel extends React.Component {
 
     state = {
         collapsed: false,
+        menuItems: config.menu
     };
 
     onCollapse = collapsed => {
@@ -26,14 +28,20 @@ class UserPanel extends React.Component {
     };
 
     render(){
-      
+
+      const { menuItems = null } = this.state;
+
         return (
             <Layout className = 'layout_menu'>
-              <MenuView collapsed = {this.state.collapsed} cbOnCollapse = {this.onCollapse} />
+              <MenuView
+                items = {menuItems} 
+                collapsed = {this.state.collapsed} 
+                cbOnCollapse = {this.onCollapse} 
+              />
               <Layout>
-                <HeaderView logout = {this.logout} />
+                <HeaderView items = {menuItems} logout = {this.logout} />
                   <ContentView />
-                <Footer>Test layout</Footer>
+                <Footer>{config['title']}</Footer>
               </Layout>
             </Layout>
           );
