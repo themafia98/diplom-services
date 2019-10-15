@@ -29,9 +29,18 @@ header {
                 cursor: pointer;
                 background-color: $unactiveTab;
                 padding: 0;
-                flex: 0 0 12%;
+                flex: 0 0 15%;
                 list-style-type: none;
                 margin: 0 16px;
+
+                @media screen and (max-width: 984px) {
+                    flex: 0 0 20%;
+                }
+
+                @media screen and (max-width: 788px) {
+                    flex: 0 0 35%;
+                }
+
                 span {
                     display: flex;
                     align-items: center;

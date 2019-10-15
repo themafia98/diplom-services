@@ -1,0 +1,11 @@
+ul {
+    &.ant-menu{
+        &.ant-menu-sub, &.ant-menu-dark {
+            li {
+                &.ant-menu-item-selected {
+                    background-color: unset;
+                }
+            }
+        }
+    }
+}

@@ -57,6 +57,7 @@ class UserPanel extends React.Component {
             <Layout className = 'layout_menu'>
               <MenuView
                 items = {menuItems}
+                activeTabEUID = {currentActionTab} 
                 cbMenuHandler = {this.menuHandler}
                 collapsed = {this.state.collapsed} 
                 cbOnCollapse = {this.onCollapse} 

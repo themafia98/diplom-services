@@ -21,11 +21,16 @@ const MenuView = ({collapsed, cbOnCollapse, items, cbMenuHandler, activeTabEUID}
                   </span>
                 }
               >
-              {children.map(child => <Menu.Item onClick = {cbMenuHandler} key = {child.EUID}>{child.value}</Menu.Item>)}
+              {children.map(child => (
+                <Menu.Item 
+                    onClick = {cbMenuHandler} 
+                    key = {child.EUID}>{child.value}
+                </Menu.Item>
+                ))}
               </SubMenu>
             );
           } else return (
-                <Menu.Item onClick = {cbMenuHandler} selected = {item.selected} key={item.EUID}>
+                <Menu.Item onClick = {cbMenuHandler} key={item.EUID}>
                     {item.icon ? <Icon type={item.icon} /> : null}
                     <span>{item.value}</span>
                 </Menu.Item>
@@ -33,10 +38,14 @@ const MenuView = ({collapsed, cbOnCollapse, items, cbMenuHandler, activeTabEUID}
         });
     };
 
+
         return (
             <Sider collapsible collapsed={collapsed} onCollapse = {cbOnCollapse} >
             <div className="logo" />
-            {items ? <Menu theme="dark" defaultSelectedKeys={[items[0].value]} mode="inline">
+            {items ? <Menu selectedKeys={[activeTabEUID]} 
+                            theme="dark" 
+                            defaultSelectedKeys={[items[0].value]}
+                             mode="inline">
                 {renderMenu(items)}
             </Menu>
              : null}
