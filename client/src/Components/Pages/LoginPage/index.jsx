@@ -1,8 +1,9 @@
 import React from 'react';
+import _ from 'lodash';
 import { Redirect, NavLink } from 'react-router-dom';
 import { Button, Input } from 'antd';
 import { connect } from 'react-redux';
-
+import { updatePathAction, addTabAction } from '../../../Redux/actions/routerActions';
 import config from '../../../config.json';
 
 class LoginPage extends React.Component {
@@ -15,12 +16,16 @@ class LoginPage extends React.Component {
     enterLoading = event => {
         const {state: { value: login }} = this.login;
         const {state: {value: password }} = this.password;
-
+        const { router:{ actionTabs = [], currentActionTab } = {}, addTab, moveTo } = this.props;
+        
         if (login && password){
             this.setState({ loading: true });
             this.props.firebase.login(login, password)
             .then (res => {
-                    if (res) this.props.history.push('/panel');
+                    if (res) {
+                     moveTo('/panel').then(() => { if (_.isEmpty(actionTabs)) addTab(currentActionTab) })
+                     .then(() => this.props.history.push('/panel'));
+                    }
                     else throw new Error('Error enter');
             }).catch(error => this.setState({ loading: false }));
         }
@@ -59,11 +64,17 @@ class LoginPage extends React.Component {
 };
 
 const mapStateToProps = state => {
-    return {};
+	return {
+		router: {...state.router}
+	}
 };
 
-const mapDispatchToProps = (dispatch, props) => {
-    return {};
-};
+const mapDispatchToProps = dispatch => {
+	return {
+		moveTo: async (path) => await dispatch (updatePathAction(path)),
+        addTab: (tab) =>  dispatch (addTabAction(tab)),
+	}
+
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);

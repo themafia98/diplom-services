@@ -19,13 +19,12 @@ class App extends React.Component {
 
 	loadAppSession = () => {
 		const { moveTo, addTab } = this.props;
-		return this.setState({ isUser: true, firebaseLoadState: true}, () => ( 
-			moveTo('/panel').then(() => {
-				let EUID = 'mainModule';
-				const defaultModule = config.menu.find(item => item['sign'] === 'default');
-				if (defaultModule) EUID = defaultModule.EUID;
-				return addTab({EUID: EUID, ORDER: 1});
-			})));
+		return this.setState({ isUser: true, firebaseLoadState: true}, () => {
+				let path = 'mainModule';
+				const defaultModule = config.menu.find(item => item['SIGN'] === 'default');
+				if (defaultModule) path = defaultModule.EUID;
+				addTab(path).then(() => moveTo('/panel'));
+		});
 	};
 
 	loadApp = () => {

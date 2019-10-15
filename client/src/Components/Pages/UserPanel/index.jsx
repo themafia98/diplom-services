@@ -2,7 +2,7 @@ import React from 'react';
 import config from '../../../config.json';
 import { Layout } from 'antd';
 import { connect } from 'react-redux';
-import { updatePathAction, addTabAction, setActiveTabAction } from '../../../Redux/actions/routerActions';
+import { updatePathAction, addTabAction, setActiveTabAction, removeTabAction } from '../../../Redux/actions/routerActions';
 
 import HeaderView from '../../HeaderView';
 import ContentView from '../../ContentView';
@@ -30,28 +30,29 @@ class UserPanel extends React.Component {
     getActionTabs = (tabs = [], menu) => {
       const tabsCopy = [...tabs];
       const tabsArray = [];
-      tabsCopy.sort((a,b) => a.ORDER - b.ORDER);
-
-      for (let i = 0; i < menu.length; i ++){
-        const tabItemIndex = tabsCopy.findIndex(tab => tab.EUID === menu[i].EUID);
-        if (tabItemIndex !== -1) tabsArray.push({...menu[i], ORDER: tabsCopy[tabItemIndex].ORDER});
+        
+      for (let i = 0; i < tabsCopy.length; i ++){
+        const tabItem= menu.find(tab => tab.EUID === tabsCopy[i]);
+        if (tabItem) tabsArray.push({...tabItem});
       }
-      return tabsArray.sort((a,b) => a.ORDER - b.ORDER);
+      return tabsArray;
     }
 
-    menuHandler = (event, key) => {
-      
+    menuHandler = (event, key, mode = 'open') => {
       const path = event['key'] ? event['key'] : key;
-      const { router:{ currentActionTab, actionTabs = [] } = {}, addTab, setCurrentTab } = this.props;
+      const { router:{ currentActionTab, actionTabs = [] } = {}, addTab, setCurrentTab, removeTab } = this.props;
       const actionTabsCopy = [...actionTabs];
-      const isFind = actionTabsCopy.findIndex(tab => tab.EUID === path) !== -1;
-      const lastOrder = actionTabsCopy.sort((a,b) => a.ORDER - b.ORDER)[actionTabsCopy.length-1].ORDER;
-      if (!isFind) addTab({EUID: path, ORDER: lastOrder + 1});
-      else if (currentActionTab !== path){
-        setCurrentTab(path);
+      const isFind = actionTabsCopy.findIndex(tab => tab === path) !== -1;
+      if (mode === 'open'){
+        if (!isFind) addTab(path);
+        else if (currentActionTab !== path){
+          setCurrentTab(path);
+        }
+      } else if (mode === 'close'){
+        if (isFind) removeTab(path);
       }
     };
-
+    
     render(){
 
       const { menuItems = null } = this.state;
@@ -93,6 +94,7 @@ const mapDispatchToProps = dispatch => {
 	return {
 		moveTo: async (path) => await dispatch (updatePathAction(path)),
     addTab: (tab) =>  dispatch (addTabAction(tab)),
+    removeTab: (tab) =>  dispatch (removeTabAction(tab)),
     setCurrentTab: (tab) => dispatch (setActiveTabAction(tab)),
 	}
 
