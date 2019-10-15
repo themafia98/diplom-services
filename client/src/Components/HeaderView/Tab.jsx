@@ -1,13 +1,18 @@
-import React from 'react';
+import React,{ useState } from 'react';
 
-const Tab = ({value, active, onClick: callbackOnClick, EUID}) => {
+const Tab = ({value, active, onClick: callbackOnClick, itemKey}) => {
+
+    const [saveKey] = useState(itemKey);
+
     const onClick = event => {
-        callbackOnClick(event, EUID);
+        
+        callbackOnClick(event, saveKey);
     };
+    
     return (
             <li onClick = {callbackOnClick ? onClick : null} 
                 className = {[active ? 'active' : null].join(" ")} 
-                key = {value}
+                key = {saveKey}
             >
                 <span className = {[active ? 'selected' : null].join(" ")}>{value}</span>
             </li>

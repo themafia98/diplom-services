@@ -7,24 +7,74 @@
     },
     "menu": [
         {   "EUID": "mainModule",
-             "value": "Главное меню", 
-             "children": null, 
-             "icon": "pie-chart",
-             "sign": "default",
-            "selected": true},
-            
+             "VALUE": "Главное меню", 
+             "ICON": "home",
+             "SIGN": "default",
+             "PARENT_CODE": null
+            },
+        {   "EUID": "cabinetModule",
+            "VALUE": "Личный кабинет", 
+            "ICON": "user",
+            "PARENT_CODE": null
+        },
         {   "EUID": "taskModule",
-            "value": "Задачи", 
-            "icon": "pie-chart", 
-            "selected": false,
-            "children": [
-                {   "EUID": "taskModule", 
-                    "value": "Задачи2", 
-                    "children": null, 
-                    "icon": "pie-chart", 
-                    "selected": false}
-            ]
+            "VALUE": "Задачи", 
+            "ICON": "file-done", 
+            "PARENT_CODE": null
+        },
+        {   "EUID": "taskModule_all", 
+            "VALUE": "Все задачи",
+            "ICON": null,
+            "PARENT_CODE": "taskModule"
+        },
+        {   "EUID": "taskModule_myTasks", 
+            "VALUE": "Мои задачи", 
+            "ICON": null,
+            "PARENT_CODE": "taskModule"
+        },
+        {   "EUID": "taskModule_сalendar", 
+            "VALUE": "Календарь задач",
+            "ICON": null,
+            "PARENT_CODE": "taskModule"
+        },
+        {   "EUID": "customersModule",
+            "VALUE": "Работа с клиентами", 
+            "ICON": "global",
+            "PARENT_CODE": null
+        },
+        {   "EUID": "customersModule_contacts", 
+            "VALUE": "Контакты", 
+            "ICON": null,
+            "PARENT_CODE": "customersModule"
+        },
+        {   "EUID": "customersModule_reception", 
+            "VALUE": "Приемы / встречи",
+            "ICON": null,
+            "PARENT_CODE": "customersModule"
+        },
+        {   
+            "EUID": "contactModule",
+            "VALUE": "Связь",  
+            "ICON": "global",
+            "PARENT_CODE": null
+        },
+        {   
+            "EUID": "contactModule_chat", 
+            "VALUE": "Чат", 
+            "ICON": null,
+            "PARENT_CODE": "contactModule"
+        },
+        {   "EUID": "contactModule_feedback", 
+            "VALUE": "Обратная связь", 
+            "ICON": null,
+            "PARENT_CODE": "contactModule"
+        },
+        {   "EUID": "statisticModule",
+            "VALUE": "Статистика", 
+            "ICON": "line-chart",
+            "PARENT_CODE": null
         }
+
     ],
     "about": {
         "developer": "Pavel Petrovich"

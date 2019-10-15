@@ -29,6 +29,7 @@ class UserPanel extends React.Component {
 
     getActionTabs = (tabs = [], menu) => {
       const tabsArray = [];
+      
       for (let i = 0; i < menu.length; i ++){
         const tabItemIndex = tabs.findIndex(tab => tab.EUID === menu[i].EUID);
         if (tabItemIndex !== -1) tabsArray.push({...menu[i]});
@@ -37,6 +38,7 @@ class UserPanel extends React.Component {
     }
 
     menuHandler = (event, key) => {
+      
       const path = event['key'] ? event['key'] : key;
       const { router:{ currentActionTab, actionTabs = [] } = {}, addTab, setCurrentTab } = this.props;
       const isFind = actionTabs.findIndex(tab => tab.EUID === path) !== -1;
@@ -69,7 +71,7 @@ class UserPanel extends React.Component {
                     actionTabs = {actionTabsData} 
                     logout = {this.logout} 
                 />
-                  <ContentView />
+                  <ContentView key = {currentActionTab} mode = {currentActionTab} />
                 <Footer>{config['title']}</Footer>
               </Layout>
             </Layout>

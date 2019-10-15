@@ -12,13 +12,14 @@ class HeaderView extends React.Component {
         return (
             <ul  className = 'tabsMenu'>
             {items.map(item => {
+                
                 return (
                     <Tab
                         onClick = {cbMenuTabHandler}
                         active = {activeTabEUID === item.EUID} 
-                        key = {`tab_${item.EUID}`} 
-                        EUID = {item.EUID}
-                        value = {item.value} 
+                        key = {item.EUID} 
+                        itemKey = {item.EUID}
+                        value = {item.VALUE} 
                     />
                 )
                 })
