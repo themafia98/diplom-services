@@ -28,21 +28,25 @@ class UserPanel extends React.Component {
     };
 
     getActionTabs = (tabs = [], menu) => {
+      const tabsCopy = [...tabs];
       const tabsArray = [];
-      
+      tabsCopy.sort((a,b) => a.ORDER - b.ORDER);
+
       for (let i = 0; i < menu.length; i ++){
-        const tabItemIndex = tabs.findIndex(tab => tab.EUID === menu[i].EUID);
-        if (tabItemIndex !== -1) tabsArray.push({...menu[i]});
+        const tabItemIndex = tabsCopy.findIndex(tab => tab.EUID === menu[i].EUID);
+        if (tabItemIndex !== -1) tabsArray.push({...menu[i], ORDER: tabsCopy[tabItemIndex].ORDER});
       }
-      return tabsArray;
+      return tabsArray.sort((a,b) => a.ORDER - b.ORDER);
     }
 
     menuHandler = (event, key) => {
       
       const path = event['key'] ? event['key'] : key;
       const { router:{ currentActionTab, actionTabs = [] } = {}, addTab, setCurrentTab } = this.props;
-      const isFind = actionTabs.findIndex(tab => tab.EUID === path) !== -1;
-      if (!isFind) addTab({EUID: path});
+      const actionTabsCopy = [...actionTabs];
+      const isFind = actionTabsCopy.findIndex(tab => tab.EUID === path) !== -1;
+      const lastOrder = actionTabsCopy.sort((a,b) => a.ORDER - b.ORDER)[actionTabsCopy.length-1].ORDER;
+      if (!isFind) addTab({EUID: path, ORDER: lastOrder + 1});
       else if (currentActionTab !== path){
         setCurrentTab(path);
       }
@@ -53,7 +57,7 @@ class UserPanel extends React.Component {
       const { menuItems = null } = this.state;
       const { router:{ actionTabs = [], currentActionTab } = {} } = this.props;
 
-      const actionTabsData= this.getActionTabs(actionTabs, menuItems);
+      const actionTabsData = this.getActionTabs(actionTabs, menuItems);
 
         return (
             <Layout className = 'layout_menu'>

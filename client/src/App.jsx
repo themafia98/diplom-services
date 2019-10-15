@@ -24,7 +24,7 @@ class App extends React.Component {
 				let EUID = 'mainModule';
 				const defaultModule = config.menu.find(item => item['sign'] === 'default');
 				if (defaultModule) EUID = defaultModule.EUID;
-				return addTab({EUID: EUID});
+				return addTab({EUID: EUID, ORDER: 1});
 			})));
 	};
 
