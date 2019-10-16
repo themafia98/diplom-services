@@ -13,6 +13,7 @@ const Tab = ({value, active, hendlerTab: callbackHendlerTab, itemKey, wrapperRig
 
     const eventCloseHandler = event => {
         event.stopPropagation();
+        if (saveKey === 'mainModule') return;
         callbackHendlerTab(event, saveKey, 'close');
     }
 

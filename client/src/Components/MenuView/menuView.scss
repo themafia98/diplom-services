@@ -10,9 +10,36 @@ ul {
     }
 }
 
+// .ant-menu-dark, .ant-layout-sider-children {
+//     background: #224c73;
+// }
+
+// .ant-menu-dark {
+//     .ant-menu-inlie{
+//         .ant-menu-sub {
+//             background: #1f3d58;
+//         }
+//     }
+// }
+
+
+
+
 .aside_menu {
     flex: 0 0 210px;
     max-width: 210px;
     min-width: 209px;
     width: 210px;
+}
+
+.ant-layout-sider {
+    .logo {
+        margin-top: 10px;
+        height: 10%;
+        width: 100%;
+        [alt='logo'] {
+            width: 100%;
+            height: 100%;
+        }
+    }
 }

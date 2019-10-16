@@ -1,6 +1,6 @@
 {
     "title": "Controll system",
-    "Icon": "/img/logo.svg",
+    "icon": "/img/logo.svg",
     "firebase": {
         "session": "SESSION",
         "lowConnection": "false"

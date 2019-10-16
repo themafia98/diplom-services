@@ -1,6 +1,6 @@
 header {
     $boxTab: 85%;
-    
+
      &.ant-layout-header {
         padding: 0;
         background-color: $headerColor;
@@ -48,7 +48,7 @@ header {
                 cursor: pointer;
                 background-color: $unactiveTab;
                 padding: 0;
-                flex: 0 0 15%;
+                flex: 0 0 10%;
                 list-style-type: none;
                 margin: 0 16px;
 

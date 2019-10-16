@@ -1,4 +1,5 @@
 import React from 'react';
+import confing from '../../config.json';
 import _ from 'lodash';
 import { Menu, Layout, Icon } from 'antd';
 
@@ -45,7 +46,7 @@ const MenuView = ({collapsed, cbOnCollapse, items, cbMenuHandler, activeTabEUID}
 
         return (
                 <Sider width = '210px' collapsible collapsed={collapsed} onCollapse = {cbOnCollapse} >
-                <div className="logo" />
+                <div className = 'logo'><img src = {confing.icon} alt ='logo'></img></div>
                 {items ? <Menu selectedKeys={[activeTabEUID]} 
                                 theme="dark" 
                                 defaultSelectedKeys={[items[0].VALUE]}
