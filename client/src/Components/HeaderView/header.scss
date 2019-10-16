@@ -1,6 +1,6 @@
-
-
 header {
+    $boxTab: 85%;
+    
      &.ant-layout-header {
         padding: 0;
         background-color: $headerColor;
@@ -8,11 +8,17 @@ header {
     display: flex;
     flex-direction: row;
     align-items: center;
+
+
+    .wrapperTabs {
+        width: $boxTab;
+    }
+
     ul {
         &.tabsMenu {
             display: flex;
             align-items: center;
-            width: 85%;
+            width: $boxTab;
             height: 100%;
             padding: 0;
             margin: 0;

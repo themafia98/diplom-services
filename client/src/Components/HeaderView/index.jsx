@@ -7,24 +7,29 @@ const { Header } = Layout;
 
 class HeaderView extends React.Component {
 
+
+    wrapper = null;
+    refWrapper = node => this.wrapper = node;
+
     renderTabs = items => {
         const { activeTabEUID, cbMenuTabHandler } = this.props;
         return (
-            <ul  className = 'tabsMenu'>
-                    {items.map(item => {
-                        
-                        return (
-                            <Tab
-                                hendlerTab = {cbMenuTabHandler}
-                                active = {activeTabEUID === item.EUID} 
-                                key = {item.EUID} 
-                                itemKey = {item.EUID}
-                                value = {item.VALUE} 
-                            />
-                        )
-                        })
-                    }
-            </ul>
+                <ul ref = {this.refWrapper} className = 'tabsMenu'>
+                        {items.map(item => {
+                            
+                            return (
+                                <Tab
+                                    hendlerTab = {cbMenuTabHandler}
+                                    active = {activeTabEUID === item.EUID} 
+                                    key = {item.EUID} 
+                                    itemKey = {item.EUID}
+                                    value = {item.VALUE}
+                                    wrapperRight= {this.wrapper ? this.wrapper.getBoundingClientRect().right : null}
+                                />
+                            )
+                            })
+                        }
+                </ul>
         );
     }
 
