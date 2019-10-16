@@ -1,0 +1,31 @@
+.mainModule {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    .titleModule {
+        flex: 0 0 10%;
+        span {
+            font-weight: bold;
+            font-size: 22px;
+        }
+        margin-bottom: 10px;
+    }
+
+    .mainModuleTitle {
+        font-size: 30px;
+        font-weight: bold;
+        margin: 0;
+    }
+    .mainModule_main {
+        display: flex;
+        flex: 0 0 88%;
+        .columnModuleRight {
+            display: flex;
+            justify-content: flex-end;
+        }
+        .mainModule_calendar {
+            height: 270px;
+            justify-content: flex-end;
+        }
+    }
+}

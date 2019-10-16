@@ -1,0 +1,41 @@
+$cardCount: 6;
+
+.streamBox {
+    display: flex;
+    flex-direction: column;
+    height: 73%;
+    align-items: center;
+    width: 100%;
+    .cardStream {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 85%;
+        font-weight: bold;
+        background-color: $cardColorBg;
+        max-height: 250px;
+        min-height: 220px;
+        margin-top: 10px;
+        box-shadow: $cardBorderShadow;
+        margin: 10px;
+
+        span {
+            &.ant-avatar {
+                width: 75px;
+                height: 60px;
+                font-size: 50px;
+                margin-bottom: 5px;
+            }
+        }
+
+        .card_message {
+            width: 85%;
+            text-align: center;
+            display: -webkit-box;
+            -webkit-line-clamp: $cardCount;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.2;
+        }
+    }
+}

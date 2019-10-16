@@ -1,0 +1,19 @@
+.weatherWidjet {
+    display: flex;
+    flex-direction: row;
+    width: 79%;
+    height: 260px;
+    margin: 10px;
+    .weather {
+        flex: 0 0 14%;
+    }
+}
+.wrapperLoader {
+    width: 80%;
+    display: flex;
+    justify-content: center;
+    .weatherLoader {
+            width: 100px;
+            height: 100px;
+    }
+}

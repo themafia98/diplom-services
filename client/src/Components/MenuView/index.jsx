@@ -2,11 +2,12 @@ import React from 'react';
 import confing from '../../config.json';
 import _ from 'lodash';
 import { Menu, Layout, Icon } from 'antd';
+import { configConsumerProps } from 'antd/lib/config-provider';
 
 const { Sider } = Layout;
 const { SubMenu } = Menu;
 
-const MenuView = ({collapsed, cbOnCollapse, items, cbMenuHandler, activeTabEUID}) => {
+const MenuView = ({collapsed, cbOnCollapse, items, cbMenuHandler, activeTabEUID, cbGoMain}) => {
 
     const renderMenu = items => {
         const parent = items.filter(parentItem => {
@@ -46,7 +47,10 @@ const MenuView = ({collapsed, cbOnCollapse, items, cbMenuHandler, activeTabEUID}
 
         return (
                 <Sider width = '210px' collapsible collapsed={collapsed} onCollapse = {cbOnCollapse} >
-                <div className = 'logo'><img src = {confing.icon} alt ='logo'></img></div>
+                <div className = 'logo' onClick = {cbGoMain}>
+                    {/*<span>{confing.title}</span>*/}
+                    <img src = {confing.icon} alt ='logo' />
+                </div>
                 {items ? <Menu selectedKeys={[activeTabEUID]} 
                                 theme="dark" 
                                 defaultSelectedKeys={[items[0].VALUE]}

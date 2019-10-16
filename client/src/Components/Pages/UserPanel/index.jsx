@@ -36,7 +36,12 @@ class UserPanel extends React.Component {
         if (tabItem) tabsArray.push({...tabItem});
       }
       return tabsArray;
-    }
+    };
+
+    goHome = event => {
+      const { setCurrentTab } = this.props;
+      setCurrentTab('mainModule');
+    };
 
     menuHandler = (event, key, mode = 'open') => {
       const path = event['key'] ? event['key'] : key;
@@ -67,7 +72,8 @@ class UserPanel extends React.Component {
                 activeTabEUID = {currentActionTab} 
                 cbMenuHandler = {this.menuHandler}
                 collapsed = {this.state.collapsed} 
-                cbOnCollapse = {this.onCollapse} 
+                cbOnCollapse = {this.onCollapse}
+                cbGoMain = {this.goHome}
               />
               <Layout>
                 <HeaderView  
@@ -77,7 +83,6 @@ class UserPanel extends React.Component {
                     logout = {this.logout} 
                 />
                   <ContentView key = {currentActionTab} mode = {currentActionTab} />
-                <Footer>{config['title']}</Footer>
               </Layout>
             </Layout>
           );

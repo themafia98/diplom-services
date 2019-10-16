@@ -11,6 +11,8 @@
     "lodash": "^4.17.15",
     "normalize.css": "^8.0.1",
     "react": "^16.10.1",
+    "react-calendar": "^2.19.2",
+    "react-custom-scrollbars": "^4.2.1",
     "react-dom": "^16.10.1",
     "react-onclickoutside": "^6.9.0",
     "react-redux": "^7.1.1",

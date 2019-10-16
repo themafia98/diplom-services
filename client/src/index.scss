@@ -5,3 +5,22 @@
 @import './Components/Loader/loader.scss';
 @import './Components/Pages/LoginPage/loginPage.scss';
 @import './Components/Pages/UserPanel/userPanel.scss';
+@import './Components/Modules/MainModuleComponent/mainModule.scss';
+@import './Components/TitleModule/titleModule.scss';
+@import './Components//StreamBox/streamBox.scss';
+@import './Components/WeatherWidget/weatherWidjet.scss';
+
+
+/* Columns */
+
+.col-8 {
+    flex: 0 0 66.777%;
+}
+
+.col-6 {
+    flex: 0 0 50%;
+}
+
+.col-4 {
+    flex: 0 0 33.333%;
+}
