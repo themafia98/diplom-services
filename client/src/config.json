@@ -5,6 +5,7 @@
         "session": "SESSION",
         "lowConnection": "false"
     },
+    "forceUpdate": false,
     "menu": [
         {   "EUID": "mainModule",
              "VALUE": "Главное меню", 

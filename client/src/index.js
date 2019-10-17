@@ -2,7 +2,6 @@ import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import {Provider} from 'react-redux';
 import ReactDOM from 'react-dom';
-
 import 'normalize.css';
 import 'antd/dist/antd.css';
 import './index.scss';
@@ -15,7 +14,6 @@ import firebaseContext from './delayFirebase/firebaseContext';
 
 import store from './Redux/store';
 
-
 ReactDOM.render(
 <BrowserRouter basename = {'/'}>
     <firebaseContext.Provider value = {firebase}>
@@ -27,5 +25,4 @@ ReactDOM.render(
     </firebaseContext.Provider>
 </BrowserRouter>, 
 document.getElementById('root'));
-
 serviceWorker.unregister();

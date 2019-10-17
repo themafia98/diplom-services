@@ -24,8 +24,14 @@
             justify-content: flex-end;
         }
         .mainModule_calendar {
+            width: 327px;
+            max-width: 100%;
+            min-width: 35%;
             height: 340px;
             justify-content: flex-end;
+            .react-calendar__navigation{
+                height: 40px;
+            }
         }
     }
 }

@@ -49,7 +49,7 @@ class LoginPage extends React.Component {
                 <div className = 'loginPage__loginContainer'>
                     <h1 className = 'loginContainer__title'>{config['title']}</h1>
                     <div className = 'loginContainer__logo'>
-                        <img src = {config['Icon']} alt = 'icon' />
+                        <img src = {config['icon']} alt = 'icon' />
                     </div>
                     <form name = 'loginForm' className = 'loginContainer__loginForm'>
                         <Input size="large" placeholder="login" ref = {refLogin} />

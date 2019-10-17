@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Switch, Route } from 'react-router-dom';
 import { PrivateRoute } from './Components/Helpers';
 import config from './config.json';
-
+import { forceUpdateDetectedInit } from './Utils';
 import { updatePathAction, addTabAction } from './Redux/actions/routerActions';
 
 import Loader from './Components/Loader';
@@ -38,6 +38,8 @@ class App extends React.Component {
                setTimeout(user ? this.loadAppSession.bind(this) : this.loadApp.bind(this), 500);
 			};
 		});
+
+		if (config.forceUpdate === true) forceUpdateDetectedInit();
 	}
 
 	render(){

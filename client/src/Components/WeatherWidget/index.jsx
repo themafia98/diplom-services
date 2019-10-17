@@ -49,7 +49,7 @@ class WeatherWidjet extends React.Component {
                     <p>{data}</p>
                     <img alt = 'icon_weather' className = 'weather_icon' 
                         src = {`http://openweathermap.org/img/w/${icon}`} />
-                        <p className = 'templo'>{temp.toFixed(1)}</p>
+                        <p className = 'templo'>{temp.toFixed(1) }C&deg;</p>
                 </div>
             )
         }

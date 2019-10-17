@@ -24,3 +24,7 @@
 .col-4 {
     flex: 0 0 33.333%;
 }
+
+p, span {
+    cursor: context-menu;
+}

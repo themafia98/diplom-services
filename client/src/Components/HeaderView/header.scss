@@ -22,6 +22,13 @@ header {
             height: 100%;
             padding: 0;
             margin: 0;
+           li { 
+            margin: 0 5px;
+               cursor: pointer; 
+               span { 
+                   cursor: pointer; 
+                } 
+            }
 
             .closeTab {
                 position: absolute;
@@ -50,7 +57,7 @@ header {
                 padding: 0;
                 flex: 0 0 10%;
                 list-style-type: none;
-                margin: 0 16px;
+                margin: 0 5px;
 
                 span {
                     height: 100%;

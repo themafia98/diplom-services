@@ -3,14 +3,30 @@
     flex-direction: row;
     justify-content: center;
     width: 65%;
-    height: 260px;
+    height: 321px;
     margin: 10px;
+    background-color: #808080;
+    img {
+        pointer-events: none;
+    }
+    p {
+        pointer-events: none;
+    
+        color: white;
+        &.templo {
+            margin-top: 0;
+        }
+    }
     .weather {
         display: flex;
         align-items: center;
         flex-direction: column;
         flex: 0 0 14%;
         font-weight: bold;
+        border-right: 1px solid;
+        &:first-child {
+            border-left: 1px solid;
+        }
         .weather_icon {
             width: 50px;
             height: 65px;

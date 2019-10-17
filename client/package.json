@@ -8,6 +8,7 @@
     "es6-promise": "^4.2.8",
     "firebase": "^7.2.0",
     "isomorphic-fetch": "^2.2.1",
+    "jquery": "^3.4.1",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "normalize.css": "^8.0.1",
