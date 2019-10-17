@@ -1,5 +1,4 @@
 import React from 'react';
-import moment from 'moment';
 import _ from 'lodash';
 import axios from 'axios';
 
@@ -14,37 +13,43 @@ class WeatherWidjet extends React.Component {
 
     componentDidMount = () => {
 
-        const findCountry = 'Minsk,blr';
-
+        const apiIP = 'https://api.ipgeolocation.io/ipgeo?apiKey=';
         const api = 'http://api.openweathermap.org/data/2.5/forecast';
-        axios.get(`${api}?q=${findCountry}&APPID=${process.env.REACT_APP_WEATHER_API_TOKEN}`)
+        axios.get(`${apiIP}${process.env.REACT_APP_IP_API_TOKEN}`)
         .then(res => {
-           if (res.status === 200){
-               const { data: { list, city } } = res;
-               return this.setState({
-                   list : [...list],
-                   info: {...city}
-               });
-           } else throw Error(res.statusText);
-        })
-        .catch(error => {
-            console.error(error);
-        })
+            if (res.status === 200){
+                const findCountry = `${res.data.city},${res.data.country_code3}`;
+                return axios.get(`${api}?q=${findCountry}&APPID=${process.env.REACT_APP_WEATHER_API_TOKEN}`)
+                .then(res => {
+                if (res.status === 200){
+                    const { data: { list, city } } = res;
+                    return this.setState({
+                        list : list.filter(item => /21:00:00/gi.test(item.dt_txt)),
+                        info: {...city}
+                    });
+                } else throw Error(res.statusText);
+                })
+                .catch(error => {
+                    console.error(error);
+                })
+            } else throw new Error(res.statusText);
+            }).catch(error => {
+                console.error(error);
+            })
     }
 
     getWeatherParseDataComponent = (list, info) => {
         const components = [];
-        debugger;
-        for (let i = 0; i < 7; i++){
+        for (let i = 0; i < list.length; i++){
             const temp = list[i].main.temp - 273.15;
             const icon = `${list[i].weather[0].icon}.png`;
-            const today = moment().isoWeekday();
+            const data = list[i].dt_txt.split(" ")[0].split("-").reverse().join(".");
             components.push(
                 <div key = {i + temp} className = 'weather'>
-                    <p>{today}</p>
+                    <p>{data}</p>
                     <img alt = 'icon_weather' className = 'weather_icon' 
                         src = {`http://openweathermap.org/img/w/${icon}`} />
-                        <spam className = 'templo'>{temp.toFixed(1)}</spam>
+                        <p className = 'templo'>{temp.toFixed(1)}</p>
                 </div>
             )
         }

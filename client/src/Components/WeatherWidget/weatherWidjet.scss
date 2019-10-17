@@ -1,12 +1,20 @@
 .weatherWidjet {
     display: flex;
     flex-direction: row;
-    width: 79%;
+    justify-content: center;
+    width: 65%;
     height: 260px;
     margin: 10px;
     .weather {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
         flex: 0 0 14%;
         font-weight: bold;
+        .weather_icon {
+            width: 50px;
+            height: 65px;
+        }
     }
 }
 .wrapperLoader {
