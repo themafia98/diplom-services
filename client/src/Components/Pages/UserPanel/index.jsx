@@ -8,8 +8,6 @@ import HeaderView from '../../HeaderView';
 import ContentView from '../../ContentView';
 import MenuView from '../../MenuView';
 
-const { Footer } = Layout;
-
 class UserPanel extends React.Component {
 
     state = {

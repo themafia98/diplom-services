@@ -2,7 +2,6 @@ import React from 'react';
 import confing from '../../config.json';
 import _ from 'lodash';
 import { Menu, Layout, Icon } from 'antd';
-import { configConsumerProps } from 'antd/lib/config-provider';
 
 const { Sider } = Layout;
 const { SubMenu } = Menu;

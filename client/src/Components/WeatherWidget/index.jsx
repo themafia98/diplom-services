@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment';
 import _ from 'lodash';
 import axios from 'axios';
 
@@ -35,10 +36,15 @@ class WeatherWidjet extends React.Component {
         const components = [];
         debugger;
         for (let i = 0; i < 7; i++){
+            const temp = list[i].main.temp - 273.15;
+            const icon = `${list[i].weather[0].icon}.png`;
+            const today = moment().isoWeekday();
             components.push(
-                <div key = {i} className = 'weather'>
+                <div key = {i + temp} className = 'weather'>
+                    <p>{today}</p>
                     <img alt = 'icon_weather' className = 'weather_icon' 
-                        src = {`http://openweathermap.org/img/w/${list[i].weather[0].icon}.png`} />
+                        src = {`http://openweathermap.org/img/w/${icon}`} />
+                        <spam className = 'templo'>{temp.toFixed(1)}</spam>
                 </div>
             )
         }
