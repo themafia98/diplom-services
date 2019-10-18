@@ -55,7 +55,7 @@ class LoginPage extends React.Component {
                         <Input size="large" placeholder="login" ref = {refLogin} />
                         <Input type = 'password' size="large" placeholder="password"  ref = {refPassword} />
                         <Button type="primary" loading={loading} onClick={enterLoading}>Enter</Button>
-                        <NavLink to = '/recovory'>Recovery password</NavLink>
+                        <NavLink to = '/recovory'>Recovory password</NavLink>
                     </form>
                 </div>
             </div>

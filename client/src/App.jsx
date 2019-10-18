@@ -7,6 +7,7 @@ import { forceUpdateDetectedInit } from './Utils';
 import { updatePathAction, addTabAction } from './Redux/actions/routerActions';
 
 import Loader from './Components/Loader';
+import Recovery from './Components/Pages/Recovery';
 import LoginPage from './Components/Pages/LoginPage';
 import UserPanel from './Components/Pages/UserPanel';
 
@@ -50,6 +51,10 @@ class App extends React.Component {
 				<Switch>
 					<Route exact path = '/' render = {props => (
 						<LoginPage {...props} isUser = {isUser} firebase = {firebase} />
+						)}
+					/>
+					<Route exact path = '/recovory' render = {props => (
+						<Recovery {...props} firebase = {firebase} />
 						)}
 					/>
 					<PrivateRoute exact path = '/panel' component = {UserPanel} firebase = {firebase} />
