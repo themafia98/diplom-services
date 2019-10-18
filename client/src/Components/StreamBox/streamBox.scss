@@ -30,6 +30,7 @@ $cardCount: 6;
 
         .card_message {
             width: 85%;
+            cursor: pointer;
             text-align: center;
             display: -webkit-box;
             -webkit-line-clamp: $cardCount;
@@ -38,4 +39,9 @@ $cardCount: 6;
             line-height: 1.2;
         }
     }
+}
+
+
+.ant-tooltip {
+    max-width: 475px;
 }

@@ -36,7 +36,9 @@ class WeatherWidjet extends React.Component {
             }).catch(error => {
                 console.error(error);
             })
-    }
+    };
+
+
 
     getWeatherParseDataComponent = (list, info) => {
         const components = [];
@@ -64,7 +66,11 @@ class WeatherWidjet extends React.Component {
                 {this.getWeatherParseDataComponent(list,info)}
             </div>
         );
-        else return <Loader classNameSpiner = 'weatherLoader' className = 'wrapperLoader' />;
+        else return (
+            <div className = 'weatherWidjet'>
+                <Loader classNameSpiner = 'weatherLoader' className = 'wrapperLoader' />
+            </div>
+        );
     }
 };
 

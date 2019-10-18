@@ -1,8 +1,21 @@
 import React from 'react';
-import { Avatar} from 'antd';
+import { Avatar, Tooltip } from 'antd';
 import { Scrollbars } from 'react-custom-scrollbars';
 class StreamBox extends React.Component {
     render(){
+
+        let value = `
+        Hello world!!! 
+        My name Pavel Petrovich and I'm Frontend developer. I looking for job.
+        Hello world!!! 
+        My name Pavel Petrovich and I'm Frontend developer. I looking for job.
+        Hello world!!! 
+        My name Pavel Petrovich and I'm Frontend developer. I looking for job.
+        Hello world!!! 
+        My name Pavel Petrovich and I'm Frontend developer. I looking for job.
+        My name Pavel Petrovich and I'm Frontend developer. I looking for job.
+        My name Pavel Petrovich and I'm Frontend developer. I looking for job.
+        My name Pavel Petrovich and I'm Frontend developer. I looking for job.`;
         return (
             <Scrollbars
                     autoHeight
@@ -13,52 +26,38 @@ class StreamBox extends React.Component {
                     <div className = 'cardStream'>
                         <p className = 'name'>Pavel Petrovich</p>
                         <Avatar shape="square" size="large" icon="user" />
-                        <p className = 'card_message'>
-                        Hello world!!! 
-                        My name Pavel Petrovich and I'm Frontend developer. I looking for job.
-                        </p>
+                        <Tooltip placement="topLeft" title={value}>
+                            <p className = 'card_message'>
+                            {value}
+                            </p>
+                        </Tooltip>
                     </div>
                     <div className = 'cardStream'>
                         <p className = 'name'>Pavel Petrovich</p>
                         <Avatar shape="square" size="large" icon="user" />
-                        <p className = 'card_message'>
-                        Hello world!!! 
-                        My name Pavel Petrovich and I'm Frontend developer. I looking for job.
-                        Hello world!!! 
-                        My name Pavel Petrovich and I'm Frontend developer. I looking for job.
-                        Hello world!!! 
-                        My name Pavel Petrovich and I'm Frontend developer. I looking for job.
-                        Hello world!!! 
-                        My name Pavel Petrovich and I'm Frontend developer. I looking for job.
-                        </p>
+                        <Tooltip placement="topLeft" title={value}>
+                            <p className = 'card_message'>
+                            {value}
+                            </p>
+                        </Tooltip>
                     </div>
                     <div className = 'cardStream'>
                     <p className = 'name'>Pavel Petrovich</p>
                     <Avatar shape="square" size="large" icon="user" />
-                    <p className = 'card_message'>
-                    Hello world!!! 
-                    My name Pavel Petrovich and I'm Frontend developer. I looking for job.
-                    Hello world!!! 
-                    My name Pavel Petrovich and I'm Frontend developer. I looking for job.
-                    Hello world!!! 
-                    My name Pavel Petrovich and I'm Frontend developer. I looking for job.
-                    Hello world!!! 
-                    My name Pavel Petrovich and I'm Frontend developer. I looking for job.
-                    </p>
+                    <Tooltip placement="topLeft" title={value}>
+                        <p className = 'card_message'>
+                        {value}
+                        </p>
+                </Tooltip>
                 </div>
                 <div className = 'cardStream'>
                 <p className = 'name'>Pavel Petrovich</p>
                 <Avatar shape="square" size="large" icon="user" />
-                <p className = 'card_message'>
-                Hello world!!! 
-                My name Pavel Petrovich and I'm Frontend developer. I looking for job.
-                Hello world!!! 
-                My name Pavel Petrovich and I'm Frontend developer. I looking for job.
-                Hello world!!! 
-                My name Pavel Petrovich and I'm Frontend developer. I looking for job.
-                Hello world!!! 
-                My name Pavel Petrovich and I'm Frontend developer. I looking for job.
-                </p>
+                <Tooltip placement="topLeft" title={value}>
+                    <p className = 'card_message'>
+                    {value}
+                    </p>
+            </Tooltip>
             </div>
                 </div>
             </Scrollbars>

@@ -1,9 +1,10 @@
 import React from 'react';
-
+import TableView from '../../TableView';
 import WeatherWidjet from '../../WeatherWidget';
 import StreamBox from '../../StreamBox';
 import TitleModule from '../../TitleModule';
 import Calendar from 'react-calendar';
+
 
 class MainModuleComponent extends React.Component {
 
@@ -22,6 +23,9 @@ class MainModuleComponent extends React.Component {
                     <div className = 'col-8 columnModuleRight'>
                         <WeatherWidjet ket = 'weatherWidjet' />
                         <Calendar className = 'mainModule_calendar' value = {this.state.date} />
+                        <div className = 'tableViw__wrapper'>
+                            <TableView />
+                        </div>
                     </div>
                 </div>
             </div>

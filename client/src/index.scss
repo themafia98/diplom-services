@@ -9,9 +9,13 @@
 @import './Components/TitleModule/titleModule.scss';
 @import './Components//StreamBox/streamBox.scss';
 @import './Components/WeatherWidget/weatherWidjet.scss';
+@import './Components/TableView/tableView.scss';
 
 
 /* Columns */
+body {
+    font-family: Roboto,Arial,sans-serif;
+}
 
 .col-8 {
     flex: 0 0 66.777%;
