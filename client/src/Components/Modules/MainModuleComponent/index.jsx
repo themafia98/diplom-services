@@ -13,6 +13,7 @@ class MainModuleComponent extends React.Component {
     };
 
     render(){
+        const { firebase } = this.props;
         return (
             <div className = 'mainModule'>
                 <TitleModule additional = 'Общая информация' classNameTitle = 'mainModuleTitle' title = 'Главная страница' />
@@ -24,7 +25,7 @@ class MainModuleComponent extends React.Component {
                         <WeatherWidjet ket = 'weatherWidjet' />
                         <Calendar className = 'mainModule_calendar' value = {this.state.date} />
                         <div className = 'tableViw__wrapper'>
-                            <TableView />
+                            <TableView firebase = {firebase} />
                         </div>
                     </div>
                 </div>

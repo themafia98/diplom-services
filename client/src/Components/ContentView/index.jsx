@@ -13,7 +13,8 @@ class ContentView extends React.Component {
     }
 
     getComponentByMode = mode => {
-        if (mode === 'mainModule') return <MainModuleComponent />;
+        const { firebase } = this.props;
+        if (mode === 'mainModule') return <MainModuleComponent firebase = {firebase}  />;
         else return <div>Not found module: ${mode}</div>
     }
 
@@ -36,7 +37,7 @@ class ContentView extends React.Component {
         const { mode } = this.props;
         const { key } = this.state;
         return (
-            <Content key = {key}>
+            <Content  key = {key}>
                 {this.getComponentByMode(mode)}
             </Content>
         );

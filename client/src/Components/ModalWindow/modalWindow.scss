@@ -1,0 +1,19 @@
+.modalWindow {
+    input {
+        margin: 5px;
+    }   
+
+    .ant-modal-body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    button {
+        margin-top: 5px;
+    }
+
+    .selectDepartament {
+        width: 100%;
+    }
+}

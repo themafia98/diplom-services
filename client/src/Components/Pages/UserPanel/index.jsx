@@ -59,7 +59,7 @@ class UserPanel extends React.Component {
     render(){
 
       const { menuItems = null } = this.state;
-      const { router:{ actionTabs = [], currentActionTab } = {} } = this.props;
+      const { router:{ actionTabs = [], currentActionTab } = {}, firebase } = this.props;
 
       const actionTabsData = this.getActionTabs(actionTabs, menuItems);
 
@@ -80,7 +80,7 @@ class UserPanel extends React.Component {
                     actionTabs = {actionTabsData} 
                     logout = {this.logout} 
                 />
-                  <ContentView key = {currentActionTab} mode = {currentActionTab} />
+                  <ContentView  firebase = {firebase} key = {currentActionTab} mode = {currentActionTab} />
               </Layout>
             </Layout>
           );

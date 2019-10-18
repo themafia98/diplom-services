@@ -3,7 +3,6 @@ import firebaseConfig from './firebaseConfig';
 import config from '../config.json';
 const auth = require('firebase/auth');
 const firestore = require('firebase/firestore');
-
 class Firebase {
 
     constructor(firebaseConfig){
