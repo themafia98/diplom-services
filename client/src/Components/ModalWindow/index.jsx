@@ -5,7 +5,6 @@ import uuid from 'uuid/v4';
 const { Option } = Select;
 class ModalWindow extends React.Component {
     state = {
-        uuid: null,
         login: null,
         visible: false,
         name: null,
@@ -22,7 +21,7 @@ class ModalWindow extends React.Component {
       };
     
       handleOk = e => {
-          const { login, name, password, departament, email, loading } = this.state;
+          const { login, name, password, departament, email, loading, surname } = this.state;
           const { firebase } = this.props;
         debugger;
         if (login && name && password && departament && email && !loading){
@@ -31,13 +30,15 @@ class ModalWindow extends React.Component {
                 debugger;
                 if (res.additionalUserInfo.isNewUser)
                 firebase.db.collection('users').add({
-                    uuid: this.state.uuid,
+                    uuid: uuid(),
                     login: login,
                     name: name,
-                    password: password,
+                    surname: surname,
                     departament: departament,
                     email: email,
-                    main: true, active: false, ofline: false
+                    rules: 'false',
+                    position: 'Не установлено',
+                    status: 'Новый сотрудник',
             })
 
             })

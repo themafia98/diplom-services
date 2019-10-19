@@ -3,6 +3,9 @@ import { Icon, Empty } from 'antd';
 import Loader from '../Loader';
 import Scrollbars from 'react-custom-scrollbars';
 import uuid from 'uuid/v4';
+
+import Output from '../Output'; 
+
 class TableView extends React.Component {
 
     state = {
@@ -13,19 +16,12 @@ class TableView extends React.Component {
     getRowsTable = arrayData => {
         return arrayData.map(it => {
             return (
-                <tr key = {uuid()}>
-                <td>
-                    <span className = 'status online'>{it.ofline}</span>
-                </td>
-                <td>
-                    {it.name}
-                </td>
-                <td>
-                   {it.departament}
-                </td>
-                <td>
-                  {it.main ? <Icon type="mail" /> : null}
-                </td>
+            <tr className = 'contentTr' key = {uuid()}>
+                    <Output key = {uuid()} type = 'table' className = 'status'>{it.status}</Output>
+                    <Output key = {uuid()} type = 'table' className = 'nameSurname'>{`${it.name} ${it.surname}`}</Output>
+                    <Output key = {uuid()} type = 'table' className = 'departament'>{it.departament}</Output>
+                    <Output key = {uuid()} type = 'table' className = 'departament'>{it.position}</Output>
+                  {it.email ? <td><Icon type="mail" /></td> : null}
             </tr>
             )
         });
@@ -49,7 +45,6 @@ class TableView extends React.Component {
 
         const { users, load } = this.state;
 
-        if (load)
         return (
             <Scrollbars>
                 <table key = {uuid()}>
@@ -58,20 +53,22 @@ class TableView extends React.Component {
                             <td>Статус</td>
                             <td>Сотрудник</td>
                             <td>Отдел</td>
+                            <td>Должность</td>
                             <td></td>
                         </tr>
                     </thead>
                     <tbody>
-                        {users ? this.getRowsTable(users) : null}
+                        <tr>
+                            {users.length && load ? this.getRowsTable(users) : load ? 
+                                <td colSpan = '5'><Empty className = 'emptyTable' /></td> :
+                                <td colSpan = '5'><Loader classNameSpiner = 'tableLoader' className = 'wrapperLoaderTable' /></td>
+                            }
+                        </tr>
                     </tbody>
                     <tfoot></tfoot>
                 </table>
-                {users.length === 0 ? <Empty /> : null }
             </Scrollbars>
         )
-        else return (
-                <Loader classNameSpiner = 'tableLoader' className = 'wrapperLoaderTable' />
-        );
     }
 };
 export default TableView;
