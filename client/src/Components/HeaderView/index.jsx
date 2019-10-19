@@ -1,8 +1,10 @@
 import React from "react";
+import { connect } from "react-redux";
 import _ from "lodash";
 import Tab from "./Tab";
 import { Layout } from "antd";
 
+import { setparentSizeAction, setChildrenSizeAction } from "../../Redux/actions/tabActions";
 import uuid from "uuid/v4";
 
 const { Header } = Layout;
@@ -12,47 +14,55 @@ class HeaderView extends React.Component {
         sizeCount: 10,
         parentSize: null,
     };
-    wrapper = null;
-    refWrapper = node => (this.wrapper = node);
-
-    cdResize = count => {
-        if (count === 10 && this.state.sizeCount !== 10) return this.setState({ sizeCount: 10 });
-        return this.setState(state => ({
-            sizeCount: state.sizeCount - 1 < 5 ? 5 : state.sizeCount - 1,
-        }));
-    };
-
-    resizeCalck = resize => {
-        const addToTabs = resize - this.state.sizeCount;
-        this.setState(state => ({
-            sizeCount: state.sizeCount + addToTabs,
-        }));
-    };
 
     componentDidMount = () => {
-        if (!_.isNull(this.wrapper) && _.isNull(this.state.parentSize)) {
-            this.setState({
-                parentSize: this.wrapper.getBoundingClientRect().right / 1.8,
-            });
+        const { tabData, onSetparentSizeAction } = this.props;
+        if (!_.isNull(this.wrapper) && !_.isNull(tabData) && _.isNull(tabData.parentSize)) {
+            onSetparentSizeAction(this.wrapper.getBoundingClientRect().width);
         }
     };
 
+    componentDidUpdate = () => {
+        const { tabArray, tabData, onSetChildrenSizeAction } = this.props;
+        if (
+            !_.isNull(tabData) &&
+            !_.isNull(tabData.childrenSize) &&
+            !_.isNull(tabData.parentSize) &&
+            tabArray.length > 1
+        ) {
+            const length = tabData.childrenSize + 15 * tabArray.length;
+            if (tabData.parentSize <= length || tabData.parentSize / tabArray.length < tabData.childrenSize + 15) {
+                const size = tabData.parentSize / tabArray.length / 1.6;
+                onSetChildrenSizeAction(size);
+            }
+        }
+    };
+
+    wrapper = null;
+    refWrapper = node => (this.wrapper = node);
+
     renderTabs = items => {
-        const { activeTabEUID, cbMenuTabHandler } = this.props;
+        const { activeTabEUID, cbMenuTabHandler, tabArray, tabData } = this.props;
+        let sizeTab = 160;
+        let flag = false;
+        const length = sizeTab * tabArray.length;
+        if (sizeTab > tabData.childrenSize + 15 && tabData.parentSize <= length) {
+            flag = true;
+            sizeTab = tabData.childrenSize;
+        }
+
         return (
             <ul ref={this.refWrapper} className="tabsMenu">
                 {items.map(item => {
                     return (
                         <Tab
-                            cbCallbackResize={this.resizeCalck}
-                            sizeCount={this.state.sizeCount}
                             hendlerTab={cbMenuTabHandler}
                             active={activeTabEUID === item.EUID}
                             key={item.EUID + uuid()}
                             itemKey={item.EUID}
                             value={item.VALUE}
-                            cdResize={this.cdResize}
-                            wrapperRight={this.state.parentSize ? this.state.parentSize : null}
+                            sizeTab={sizeTab}
+                            flag={flag}
                         />
                     );
                 })}
@@ -73,4 +83,21 @@ class HeaderView extends React.Component {
     }
 }
 
-export default HeaderView;
+const mapStateTopProps = state => {
+    return {
+        tabData: state.tabReducer,
+        tabArray: state.router.actionTabs,
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onSetparentSizeAction: size => dispatch(setparentSizeAction(size)),
+        onSetChildrenSizeAction: size => dispatch(setChildrenSizeAction(size)),
+    };
+};
+
+export default connect(
+    mapStateTopProps,
+    mapDispatchToProps,
+)(HeaderView);

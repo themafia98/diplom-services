@@ -68,7 +68,7 @@ class CabinetModule extends React.Component {
     }
 
     render() {
-        const { visible, imageUrl, loading, error } = this.state;
+        const { visible, imageUrl } = this.state;
 
         const props = {
             action: "https://www.mocky.io/v2/5cc8019d300000980a055e76",

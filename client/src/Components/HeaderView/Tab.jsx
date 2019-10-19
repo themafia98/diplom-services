@@ -1,60 +1,71 @@
-import React, { useState, createRef, useEffect } from "react";
+import React from "react";
+import { connect } from "react-redux";
 import _ from "lodash";
 import { Icon } from "antd";
 
-const Tab = ({
-    value,
-    active,
-    hendlerTab: callbackHendlerTab,
-    cbCallbackResize,
-    itemKey,
-    wrapperRight,
-    cdResize,
-    sizeCount,
-    items,
-}) => {
-    const [saveKey] = useState(itemKey);
-    const [resizeUse, setResizeUse] = useState(false);
-    const [tabNode, setNode] = useState(null);
-    const [resize, setResize] = useState(sizeCount);
-    const tabRef = createRef();
-    const eventHandler = event => {
-        event.stopPropagation();
-        callbackHendlerTab(event, saveKey, "open");
+import { setChildrenSizeAction } from "../../Redux/actions/tabActions";
+
+class Tab extends React.Component {
+    componentDidMount = () => {
+        const { tabData, onSetChildrenSizeAction } = this.props;
+
+        if (!_.isNull(this.tab) && !_.isNull(tabData) && _.isNull(tabData.childrenSize)) {
+            onSetChildrenSizeAction(this.tab.getBoundingClientRect().width);
+        }
     };
 
-    const eventCloseHandler = event => {
+    eventHandler = event => {
+        const { hendlerTab: callbackHendlerTab, itemKey } = this.props;
         event.stopPropagation();
-        if (saveKey === "mainModule") return;
-        cbCallbackResize(resize);
-        callbackHendlerTab(event, saveKey, "close", resize);
+        callbackHendlerTab(event, itemKey, "open");
     };
 
-    useEffect(() => {
-        const tabNode = tabRef.current.getBoundingClientRect().right;
-        // if (tabNode > wrapperRight && !_.isNull(wrapperRight) && !resizeUse) cdResize(resize);
-        // if (tabNode < wrapperRight && resize !== 10 && sizeCount !== 10) {
-        //     cbCallbackResize(10);
-        // }
-        // setResizeUse(true);
-        if (!_.isNull(tabNode) && tabNode) setNode(tabNode);
-    }, [tabRef, wrapperRight, resize, cbCallbackResize, cdResize, resizeUse, sizeCount]);
-    return (
-        <li
-            style={{ flex: `0 0 ${resize}%` }}
-            onClick={callbackHendlerTab ? eventHandler : null}
-            className={[active ? "active" : null].join(" ")}
-            key={saveKey}
-            ref={tabRef}
-        >
-            <span className={[active ? "selected" : null].join(" ")}>{value}</span>
-            <Icon
-                className={["closeTab", tabNode > wrapperRight && resize <= 7 ? "resizeTab" : null].join(" ")}
-                onClick={callbackHendlerTab ? eventCloseHandler : null}
-                type="close"
-            />
-        </li>
-    );
+    eventCloseHandler = event => {
+        const { hendlerTab: callbackHendlerTab, itemKey } = this.props;
+        event.stopPropagation();
+        if (itemKey === "mainModule") return;
+        // cbCallbackResize(resize);
+        callbackHendlerTab(event, itemKey, "close");
+    };
+
+    tab = null;
+    tabRef = node => (this.tab = node);
+
+    render() {
+        const { flag, value, active, hendlerTab: callbackHendlerTab, itemKey, sizeTab = 10 } = this.props;
+        return (
+            <li
+                style={{ width: `${sizeTab}px`, maxWidth: `${sizeTab}px`, minWidth: flag ? `${sizeTab}px` : null }}
+                onClick={callbackHendlerTab ? this.eventHandler : null}
+                className={[active ? "active" : null].join(" ")}
+                key={itemKey}
+                ref={this.tabRef}
+            >
+                <span className={[active ? "selected" : null].join(" ")}>{value}</span>
+                <Icon
+                    style={{ left: sizeTab < 60 ? `85%` : sizeTab < 90 ? `90%` : sizeTab < 102 ? `93%` : null }}
+                    className={["closeTab"].join(" ")}
+                    onClick={callbackHendlerTab ? this.eventCloseHandler : null}
+                    type="close"
+                />
+            </li>
+        );
+    }
+}
+
+const mapStateToProps = state => {
+    return {
+        tabData: state.tabReducer,
+    };
 };
 
-export default Tab;
+const mapDispatchToProps = dispatch => {
+    return {
+        onSetChildrenSizeAction: size => dispatch(setChildrenSizeAction(size)),
+    };
+};
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(Tab);

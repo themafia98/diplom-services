@@ -1,8 +1,8 @@
 import { combineReducers } from "redux";
-import publicReducer from "./publicReducer";
+import tabReducer from "./tabReducer";
 import routerStateReducer from "./routerStateReducer";
 
 export default combineReducers({
-    public: publicReducer,
+    tabReducer: tabReducer,
     router: routerStateReducer,
 });
