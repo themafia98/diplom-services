@@ -42,6 +42,12 @@
       "transform-decorators-legacy"
     ]
   },
+  "lint-staged": {
+    "*.(js|jsx)": [
+      "npm run lint:write",
+      "git add"
+    ]
+  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -55,6 +61,7 @@
     ]
   },
   "devDependencies": {
+    "lint-staged": "^9.4.2",
     "node-sass": "^4.12.0"
   }
 }

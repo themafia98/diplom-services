@@ -1,24 +1,24 @@
-@import './Utils//palette.scss';
-@import './Components/MenuView/menuView.scss';
-@import './Components/ContentView/contentView.scss';
-@import './Components/HeaderView/header.scss';
-@import './Components/Loader/loader.scss';
-@import './Components/Pages/LoginPage/loginPage.scss';
-@import './Components/Pages/UserPanel/userPanel.scss';
-@import './Components/Modules/MainModule/mainModule.scss';
-@import './Components/TitleModule/titleModule.scss';
-@import './Components//StreamBox/streamBox.scss';
-@import './Components/WeatherWidget/weatherWidjet.scss';
-@import './Components/TableView/tableView.scss';
-@import './Components/ErrorBoundary/errorPage.scss';
-@import './Components/ModalWindow/modalWindow.scss';
-@import './Components/Output/output.scss';
-@import './Components/Modules/CabinetModule/cabinetModule.scss';
-@import './Components/UserCard/userCard.scss';
+@import "./Utils//palette.scss";
+@import "./Components/MenuView/menuView.scss";
+@import "./Components/ContentView/contentView.scss";
+@import "./Components/HeaderView/header.scss";
+@import "./Components/Loader/loader.scss";
+@import "./Components/Pages/LoginPage/loginPage.scss";
+@import "./Components/Pages/UserPanel/userPanel.scss";
+@import "./Components/Modules/MainModule/mainModule.scss";
+@import "./Components/TitleModule/titleModule.scss";
+@import "./Components//StreamBox/streamBox.scss";
+@import "./Components/WeatherWidget/weatherWidjet.scss";
+@import "./Components/TableView/tableView.scss";
+@import "./Components/ErrorBoundary/errorPage.scss";
+@import "./Components/ModalWindow/modalWindow.scss";
+@import "./Components/Output/output.scss";
+@import "./Components/Modules/CabinetModule/cabinetModule.scss";
+@import "./Components/UserCard/userCard.scss";
 
 /* Columns */
 body {
-    font-family: Roboto,Arial,sans-serif;
+    font-family: Roboto, Arial, sans-serif;
 }
 
 .col-8 {
@@ -33,6 +33,7 @@ body {
     flex: 0 0 33.333%;
 }
 
-p, span {
+p,
+span {
     cursor: context-menu;
 }

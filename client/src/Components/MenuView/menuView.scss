@@ -1,6 +1,7 @@
 ul {
-    &.ant-menu{
-        &.ant-menu-sub, &.ant-menu-dark {
+    &.ant-menu {
+        &.ant-menu-sub,
+        &.ant-menu-dark {
             li {
                 &.ant-menu-item-selected {
                     background-color: unset;
@@ -9,7 +10,6 @@ ul {
         }
     }
 }
-
 
 .aside_menu {
     flex: 0 0 210px;
@@ -29,7 +29,7 @@ ul {
         cursor: pointer;
         img {
             width: 50px;
-            transition: all .2s linear;
+            transition: all 0.2s linear;
         }
 
         &:hover {
@@ -38,5 +38,4 @@ ul {
             }
         }
     }
-    
 }

@@ -32,8 +32,8 @@
         background: $errorButton;
         font-weight: bold;
         color: white;
-        transition: .3s all ease-in-out;
-        &:hover{
+        transition: 0.3s all ease-in-out;
+        &:hover {
             background: $errorText;
         }
     }

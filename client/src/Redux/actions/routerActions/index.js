@@ -1,5 +1,4 @@
-import { SET_PATH, ADD_TAB, SET_ACTIVE_TAB, REMOVE_TAB } from './const';
-
+import { SET_PATH, ADD_TAB, SET_ACTIVE_TAB, REMOVE_TAB } from "./const";
 
 export const updatePathAction = state => {
     return {
@@ -19,12 +18,12 @@ export const setActiveTabAction = state => {
     return {
         type: SET_ACTIVE_TAB,
         payload: state,
-    }
+    };
 };
 
 export const removeTabAction = state => {
     return {
         type: REMOVE_TAB,
         payload: state,
-    }
-}
+    };
+};

@@ -1,11 +1,11 @@
-import React from 'react';
+import React from "react";
 
-const ErrorPage = ({error, logger}) => {
+const ErrorPage = ({ error, logger }) => {
     return (
-        <div className = 'errorPage'>
-        <p className = 'errorStatus'>App crash</p>
-        <p className = 'messageError'>{error.message}</p>
-        <button onClick={logger}>Report feedback</button>
+        <div className="errorPage">
+            <p className="errorStatus">App crash</p>
+            <p className="messageError">{error.message}</p>
+            <button onClick={logger}>Report feedback</button>
         </div>
     );
 };

@@ -12,13 +12,13 @@
     border-radius: 4px;
     img {
         pointer-events: none;
-        user-select: none; 
+        user-select: none;
     }
     p {
         font-size: 1rem;
         pointer-events: none;
-        user-select: none; 
-    
+        user-select: none;
+
         color: white;
         &.templo {
             margin-top: 0;
@@ -45,7 +45,7 @@
     display: flex;
     justify-content: center;
     .weatherLoader {
-            width: 100px;
-            height: 100px;
+        width: 100px;
+        height: 100px;
     }
 }

@@ -1,14 +1,13 @@
 header {
     $boxTab: 85%;
 
-     &.ant-layout-header {
+    &.ant-layout-header {
         padding: 0;
         background-color: $headerColor;
-     }
+    }
     display: flex;
     flex-direction: row;
     align-items: center;
-
 
     .wrapperTabs {
         width: $boxTab;
@@ -22,12 +21,12 @@ header {
             height: 100%;
             padding: 0;
             margin: 0;
-           li { 
-            margin: 0 5px;
-               cursor: pointer; 
-               span { 
-                   cursor: pointer; 
-                } 
+            li {
+                margin: 0 5px;
+                cursor: pointer;
+                span {
+                    cursor: pointer;
+                }
             }
 
             .closeTab {
@@ -36,10 +35,10 @@ header {
                 left: 95%;
                 transform: translate(-50%);
                 color: $headerColor;
-                font-size: 15px;  
-                &:hover{
+                font-size: 15px;
+                &:hover {
                     color: red;
-                }    
+                }
             }
             li {
                 border: 1px solid $tabBorder;
@@ -75,7 +74,6 @@ header {
                     }
                 }
             }
-            
         }
     }
 }

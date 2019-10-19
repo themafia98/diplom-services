@@ -4,7 +4,7 @@
     height: 100%;
     .titleModule {
         flex: 0 0 10%;
-        user-select: none; 
+        user-select: none;
         span {
             font-weight: bold;
             font-size: 22px;
@@ -16,7 +16,7 @@
         font-size: 30px;
         font-weight: bold;
         margin: 0;
-        user-select: none; 
+        user-select: none;
     }
     .mainModule_main {
         display: flex;
@@ -32,7 +32,7 @@
             width: 36%;
             height: 340px;
             justify-content: flex-end;
-            .react-calendar__navigation{
+            .react-calendar__navigation {
                 height: 40px;
             }
         }
