@@ -44,12 +44,11 @@ class HeaderView extends React.Component {
                 {items.map(item => {
                     return (
                         <Tab
-                            key={uuid()}
                             cbCallbackResize={this.resizeCalck}
                             sizeCount={this.state.sizeCount}
                             hendlerTab={cbMenuTabHandler}
                             active={activeTabEUID === item.EUID}
-                            key={item.EUID}
+                            key={item.EUID + uuid()}
                             itemKey={item.EUID}
                             value={item.VALUE}
                             cdResize={this.cdResize}

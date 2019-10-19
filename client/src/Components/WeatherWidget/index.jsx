@@ -18,22 +18,27 @@ class WeatherWidjet extends React.Component {
             .then(res => {
                 let findCountry = "Minsk,BLR";
                 if (res.status === 200) findCountry = `${res.data.city},${res.data.country_code3}`;
-                return axios
-                    .get(`${api}?q=${findCountry}&APPID=${process.env.REACT_APP_WEATHER_API_TOKEN}`)
-                    .then(res => {
-                        if (res.status === 200) {
-                            const {
-                                data: { list, city },
-                            } = res;
-                            return this.setState({
-                                list: list.filter(item => /21:00:00/gi.test(item.dt_txt)),
-                                info: { ...city },
-                            });
-                        } else throw Error(res.statusText);
-                    })
-                    .catch(error => {
-                        console.error(error);
+                this.sendRequstWeather(findCountry, api);
+            })
+            .catch(error => {
+                console.error(error);
+                this.sendRequstWeather("Minsk,BLR", api);
+            });
+    };
+
+    sendRequstWeather = (findCountry, api) => {
+        return axios
+            .get(`${api}?q=${findCountry}&APPID=${process.env.REACT_APP_WEATHER_API_TOKEN}`)
+            .then(res => {
+                if (res.status === 200) {
+                    const {
+                        data: { list, city },
+                    } = res;
+                    return this.setState({
+                        list: list.filter(item => /21:00:00/gi.test(item.dt_txt)),
+                        info: { ...city },
                     });
+                } else throw Error(res.statusText);
             })
             .catch(error => {
                 console.error(error);

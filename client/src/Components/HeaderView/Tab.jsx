@@ -31,13 +31,12 @@ const Tab = ({
     };
 
     useEffect(() => {
-        console.log("asd");
         const tabNode = tabRef.current.getBoundingClientRect().right;
-        if (tabNode > wrapperRight && !_.isNull(wrapperRight) && !resizeUse) cdResize(resize);
-        if (tabNode < wrapperRight && resize !== 10 && sizeCount !== 10) {
-            cbCallbackResize(10);
-        }
-        setResizeUse(true);
+        // if (tabNode > wrapperRight && !_.isNull(wrapperRight) && !resizeUse) cdResize(resize);
+        // if (tabNode < wrapperRight && resize !== 10 && sizeCount !== 10) {
+        //     cbCallbackResize(10);
+        // }
+        // setResizeUse(true);
         if (!_.isNull(tabNode) && tabNode) setNode(tabNode);
     }, [tabRef, wrapperRight, resize, cbCallbackResize, cdResize, resizeUse, sizeCount]);
     return (
