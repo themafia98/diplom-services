@@ -3,7 +3,7 @@ import { Avatar, Tooltip } from 'antd';
 import { Scrollbars } from 'react-custom-scrollbars';
 class StreamBox extends React.Component {
     render(){
-
+        const { mode, boxClassName } = this.props;
         let value = `
         Hello world!!! 
         My name Pavel Petrovich and I'm Frontend developer. I looking for job.
@@ -22,8 +22,8 @@ class StreamBox extends React.Component {
                     autoHeightMin={0}
                     autoHeightMax={'78vh'}
                 >
-                <div className = 'streamBox'>
-                    <div className = 'cardStream'>
+                <div className = {['streamBox', boxClassName ? boxClassName : null].join(" ")}>
+                <div className = {['cardStream', mode ? mode : null].join(" ")}>
                         <p className = 'name'>Pavel Petrovich</p>
                         <Avatar shape="square" size="large" icon="user" />
                         <Tooltip placement="topLeft" title={value}>
@@ -32,7 +32,7 @@ class StreamBox extends React.Component {
                             </p>
                         </Tooltip>
                     </div>
-                    <div className = 'cardStream'>
+                    <div className = {['cardStream', mode ? mode : null].join(" ")}>
                         <p className = 'name'>Pavel Petrovich</p>
                         <Avatar shape="square" size="large" icon="user" />
                         <Tooltip placement="topLeft" title={value}>
@@ -41,7 +41,7 @@ class StreamBox extends React.Component {
                             </p>
                         </Tooltip>
                     </div>
-                    <div className = 'cardStream'>
+                    <div className = {['cardStream', mode ? mode : null].join(" ")}>
                     <p className = 'name'>Pavel Petrovich</p>
                     <Avatar shape="square" size="large" icon="user" />
                     <Tooltip placement="topLeft" title={value}>
@@ -50,7 +50,7 @@ class StreamBox extends React.Component {
                         </p>
                 </Tooltip>
                 </div>
-                <div className = 'cardStream'>
+                <div className = {['cardStream', mode ? mode : null].join(" ")}>
                 <p className = 'name'>Pavel Petrovich</p>
                 <Avatar shape="square" size="large" icon="user" />
                 <Tooltip placement="topLeft" title={value}>

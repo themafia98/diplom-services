@@ -14,6 +14,9 @@
             text-align: center;
         }
         thead {
+            background-color: $headerTable;
+            color: #FFFF;
+            font-weight: bold;
             tr {
                 display: flex;
                 text-align: center;

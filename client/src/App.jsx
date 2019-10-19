@@ -36,7 +36,7 @@ class App extends React.Component {
         /** load app */
         this.props.firebase.auth.onAuthStateChanged((user) => {
             if (!this.state.firebaseLoadState){
-               setTimeout(user ? this.loadAppSession.bind(this) : this.loadApp.bind(this), 500);
+               setTimeout(user ? this.loadAppSession.bind(this) : this.loadApp.bind(this), 0);
 			};
 		});
 

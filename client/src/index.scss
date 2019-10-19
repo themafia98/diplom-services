@@ -5,7 +5,7 @@
 @import './Components/Loader/loader.scss';
 @import './Components/Pages/LoginPage/loginPage.scss';
 @import './Components/Pages/UserPanel/userPanel.scss';
-@import './Components/Modules/MainModuleComponent/mainModule.scss';
+@import './Components/Modules/MainModule/mainModule.scss';
 @import './Components/TitleModule/titleModule.scss';
 @import './Components//StreamBox/streamBox.scss';
 @import './Components/WeatherWidget/weatherWidjet.scss';
@@ -13,6 +13,8 @@
 @import './Components/ErrorBoundary/errorPage.scss';
 @import './Components/ModalWindow/modalWindow.scss';
 @import './Components/Output/output.scss';
+@import './Components/Modules/CabinetModule/cabinetModule.scss';
+@import './Components/UserCard/userCard.scss';
 
 /* Columns */
 body {

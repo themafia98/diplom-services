@@ -6,7 +6,7 @@ import TitleModule from '../../TitleModule';
 import Calendar from 'react-calendar';
 
 
-class MainModuleComponent extends React.Component {
+class MainModule extends React.Component {
 
     state = {
         date: new Date(),
@@ -34,4 +34,4 @@ class MainModuleComponent extends React.Component {
     }
 };
 
-export default MainModuleComponent;
+export default MainModule;

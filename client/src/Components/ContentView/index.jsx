@@ -2,7 +2,9 @@ import React from 'react';
 import $ from "jquery";
 import { Layout } from 'antd';
 
-import MainModuleComponent from '../Modules/MainModuleComponent';
+import MainModule from '../Modules/MainModule';
+import CabinetModule from '../Modules/CabinetModule';
+
 
 const { Content } = Layout;
 
@@ -14,7 +16,8 @@ class ContentView extends React.Component {
 
     getComponentByMode = mode => {
         const { firebase } = this.props;
-        if (mode === 'mainModule') return <MainModuleComponent firebase = {firebase}  />;
+        if (mode === 'mainModule') return <MainModule firebase = {firebase}  />;
+        if (mode === 'cabinetModule') return <CabinetModule firebase ={firebase} />;
         else return <div>Not found module: ${mode}</div>
     }
 

@@ -1,0 +1,64 @@
+.userCard {
+    .wallpaper {
+        height: 200px;
+        width: 100%;
+        background-image: url('/img/wallpaper_user.jpg');
+        background-size: cover;
+    }
+
+    .mainContentCard {
+        position: relative;
+        background-color: $uiCardInfo;
+        display: flex;
+        box-shadow: 0 5px 5px 0;
+        .col-6:first-child {
+            text-align: center;
+        }
+        .userLogo {
+            position: absolute;
+            top: -44%;
+            transform: translate(-50%);
+            color: black;
+            box-sizing: content-box;
+            font-size: 42px;
+            border: 5px solid white;
+        }
+
+        .mainInformUser {
+            padding-top: 25px;
+            padding-bottom: 20px;
+            .name {
+                font-weight: bold;
+                font-size: 22px;
+                margin-bottom: 0;
+            }
+
+            button {
+                &.controller {
+                    margin-right: 5px;
+                }
+            }
+
+            .position {
+                font-size: 13px;
+            }
+        }
+
+        .summary {
+            font-size: 17px;
+            padding-top: 29px;
+            padding-right: 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.2;
+        }
+
+        .contact {
+            display: flex;
+            justify-content: space-around;
+            padding-bottom: 10px;
+        }
+    }
+}
