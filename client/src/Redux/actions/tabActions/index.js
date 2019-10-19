@@ -1,6 +1,6 @@
 import { SET_PARENT_SIZE, SET_CHILDREN_SIZE } from "./const";
 
-export const setparentSizeAction = state => {
+export const setParentSizeAction = state => {
     return {
         type: SET_PARENT_SIZE,
         payload: state,

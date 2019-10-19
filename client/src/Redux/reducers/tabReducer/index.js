@@ -4,6 +4,7 @@ import { SET_PARENT_SIZE, SET_CHILDREN_SIZE } from "../../actions/tabActions/con
 const initialState = {
     parentSize: null,
     childrenSize: null,
+    flag: false,
 };
 
 export default (state = initialState, action) => {
@@ -18,6 +19,7 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 childrenSize: action.payload,
+                flag: action.payload,
             };
         }
         default:

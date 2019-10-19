@@ -1,6 +1,6 @@
 import React from "react";
 import config from "../../../config.json";
-import { Layout } from "antd";
+import { Layout, message } from "antd";
 import { connect } from "react-redux";
 import {
     updatePathAction,
@@ -8,6 +8,8 @@ import {
     setActiveTabAction,
     removeTabAction,
 } from "../../../Redux/actions/routerActions";
+
+import { setChildrenSizeAction } from "../../../Redux/actions/tabActions";
 
 import HeaderView from "../../HeaderView";
 import ContentView from "../../ContentView";
@@ -46,16 +48,28 @@ class UserPanel extends React.Component {
 
     menuHandler = (event, key, mode = "open") => {
         const path = event["key"] ? event["key"] : key;
-        const { router: { currentActionTab, actionTabs = [] } = {}, addTab, setCurrentTab, removeTab } = this.props;
+        const {
+            router: { currentActionTab, actionTabs = [] } = {},
+            addTab,
+            setCurrentTab,
+            removeTab,
+            tabData,
+            onSetChildrenSizeAction,
+        } = this.props;
         const actionTabsCopy = [...actionTabs];
         const isFind = actionTabsCopy.findIndex(tab => tab === path) !== -1;
         if (mode === "open") {
+            if (!isFind && config.tabsLimit <= actionTabsCopy.length)
+                return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
             if (!isFind) addTab(path);
             else if (currentActionTab !== path) {
                 setCurrentTab(path);
             }
         } else if (mode === "close") {
+            let size = tabData.parentSize / (actionTabsCopy.length + 1) - 24;
+            if (size > 160) size = 160;
             if (isFind) removeTab(path);
+            if (size !== tabData.childrenSize) onSetChildrenSizeAction(size, true);
         }
     };
 
@@ -92,6 +106,7 @@ class UserPanel extends React.Component {
 const mapStateToProps = state => {
     return {
         router: { ...state.router },
+        tabData: state.tabReducer,
     };
 };
 
@@ -101,6 +116,7 @@ const mapDispatchToProps = dispatch => {
         addTab: tab => dispatch(addTabAction(tab)),
         removeTab: tab => dispatch(removeTabAction(tab)),
         setCurrentTab: tab => dispatch(setActiveTabAction(tab)),
+        onSetChildrenSizeAction: (size, flag) => dispatch(setChildrenSizeAction(size, flag)),
     };
 };
 

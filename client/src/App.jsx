@@ -11,6 +11,8 @@ import Recovery from "./Components/Pages/Recovery";
 import LoginPage from "./Components/Pages/LoginPage";
 import UserPanel from "./Components/Pages/UserPanel";
 
+import { BrowserView, MobileView, isBrowser, isMobile } from "react-device-detect";
+
 class App extends React.Component {
     state = {
         firebaseLoadState: false,
@@ -43,6 +45,7 @@ class App extends React.Component {
     }
 
     render() {
+        console.log(isMobile);
         const { firebase } = this.props;
         const { firebaseLoadState, isUser } = this.state;
         if (firebaseLoadState) {
