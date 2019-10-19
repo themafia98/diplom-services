@@ -1,15 +1,30 @@
 import React from "react";
-import { Avatar, Button, Icon } from "antd";
+import { Avatar, Button, Icon, Dropdown, Menu } from "antd";
 
 class UserCard extends React.Component {
     render() {
         const data = { mail: true, online: true, email: "admin@admin.com", phone: "+37529554433" };
+        const isMine = true;
+        const { cdShowModal } = this.props;
+        const menu = (
+            <Menu>
+                <Menu.Item onClick={cdShowModal ? cdShowModal : null} key="photoChange">
+                    Сменить аватар
+                </Menu.Item>
+            </Menu>
+        );
         return (
             <div className="userCard">
                 <div className="wallpaper"></div>
                 <div className="mainContentCard">
                     <div className="col-6">
-                        <Avatar className="userLogo" size={84} icon="user" />
+                        {isMine ? (
+                            <Dropdown overlay={menu} trigger={["contextMenu"]}>
+                                <Avatar className="userLogo" size={84} icon="user" />
+                            </Dropdown>
+                        ) : (
+                            <Avatar className="userLogo" size={84} icon="user" />
+                        )}
                         <div className="mainInformUser">
                             <p className="name">Павел Петрович</p>
                             <p className="position">Разработчик</p>

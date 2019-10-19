@@ -85,6 +85,12 @@
             "VALUE": "Статистика",
             "ICON": "line-chart",
             "PARENT_CODE": null
+        },
+        {
+            "EUID": "settingsModule",
+            "VALUE": "Настройки",
+            "ICON": "build",
+            "PARENT_CODE": null
         }
     ],
     "about": {

@@ -6,7 +6,7 @@ import {
     updatePathAction,
     addTabAction,
     setActiveTabAction,
-    removeTabAction
+    removeTabAction,
 } from "../../../Redux/actions/routerActions";
 
 import HeaderView from "../../HeaderView";
@@ -16,7 +16,7 @@ import MenuView from "../../MenuView";
 class UserPanel extends React.Component {
     state = {
         collapsed: false,
-        menuItems: config.menu
+        menuItems: config.menu,
     };
 
     onCollapse = collapsed => {
@@ -91,7 +91,7 @@ class UserPanel extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        router: { ...state.router }
+        router: { ...state.router },
     };
 };
 
@@ -100,11 +100,11 @@ const mapDispatchToProps = dispatch => {
         moveTo: async path => await dispatch(updatePathAction(path)),
         addTab: tab => dispatch(addTabAction(tab)),
         removeTab: tab => dispatch(removeTabAction(tab)),
-        setCurrentTab: tab => dispatch(setActiveTabAction(tab))
+        setCurrentTab: tab => dispatch(setActiveTabAction(tab)),
     };
 };
 
 export default connect(
     mapStateToProps,
-    mapDispatchToProps
+    mapDispatchToProps,
 )(UserPanel);

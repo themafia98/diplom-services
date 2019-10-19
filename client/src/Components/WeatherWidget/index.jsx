@@ -16,25 +16,24 @@ class WeatherWidjet extends React.Component {
         axios
             .get(`${apiIP}${process.env.REACT_APP_IP_API_TOKEN}`)
             .then(res => {
-                if (res.status === 200) {
-                    const findCountry = `${res.data.city},${res.data.country_code3}`;
-                    return axios
-                        .get(`${api}?q=${findCountry}&APPID=${process.env.REACT_APP_WEATHER_API_TOKEN}`)
-                        .then(res => {
-                            if (res.status === 200) {
-                                const {
-                                    data: { list, city },
-                                } = res;
-                                return this.setState({
-                                    list: list.filter(item => /21:00:00/gi.test(item.dt_txt)),
-                                    info: { ...city },
-                                });
-                            } else throw Error(res.statusText);
-                        })
-                        .catch(error => {
-                            console.error(error);
-                        });
-                } else throw new Error(res.statusText);
+                let findCountry = "Minsk,BLR";
+                if (res.status === 200) findCountry = `${res.data.city},${res.data.country_code3}`;
+                return axios
+                    .get(`${api}?q=${findCountry}&APPID=${process.env.REACT_APP_WEATHER_API_TOKEN}`)
+                    .then(res => {
+                        if (res.status === 200) {
+                            const {
+                                data: { list, city },
+                            } = res;
+                            return this.setState({
+                                list: list.filter(item => /21:00:00/gi.test(item.dt_txt)),
+                                info: { ...city },
+                            });
+                        } else throw Error(res.statusText);
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
             })
             .catch(error => {
                 console.error(error);

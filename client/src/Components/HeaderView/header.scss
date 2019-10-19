@@ -36,6 +36,10 @@ header {
                 transform: translate(-50%);
                 color: $headerColor;
                 font-size: 15px;
+                &.resizeTab {
+                    left: 90%;
+                }
+
                 &:hover {
                     color: red;
                 }
@@ -54,7 +58,7 @@ header {
                 cursor: pointer;
                 background-color: $unactiveTab;
                 padding: 0;
-                flex: 0 0 10%;
+                // flex: 0 0 10%;
                 list-style-type: none;
                 margin: 0 5px;
 
