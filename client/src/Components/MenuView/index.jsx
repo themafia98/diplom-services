@@ -45,7 +45,7 @@ const MenuView = ({ collapsed, cbOnCollapse, items, cbMenuHandler, activeTabEUID
     };
 
     return (
-        <Sider width="210px" collapsible collapsed={collapsed} onCollapse={cbOnCollapse}>
+        <Sider collapsible collapsed={collapsed} onCollapse={cbOnCollapse}>
             <div className="logo" onClick={cbGoMain}>
                 {/*<span>{confing.title}</span>*/}
                 <img src={confing.icon} alt="logo" />

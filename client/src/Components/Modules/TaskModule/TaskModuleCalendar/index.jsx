@@ -1,27 +1,29 @@
 import React from "react";
+import moment from "moment";
 import TitleModule from "../../../TitleModule";
-import { Calendar, Badge } from "antd";
+import Output from "../../../Output";
+import { Calendar, Popover, Button } from "antd";
 
 class TaskModuleCalendar extends React.PureComponent {
     getListData = value => {
-        let listData;
-        switch (value.date()) {
-            case 8:
+        let listData = [];
+        let today = moment().date();
+        let valueDate = value.date();
+
+        switch (valueDate) {
+            case today: {
+                listData = [{ type: "error", content: "Исправить баги. " }];
+                break;
+            }
+            case today - 7: {
                 listData = [
-                    { type: "warning", content: "This is warning event." },
-                    { type: "success", content: "This is usual event." },
+                    {
+                        type: "success",
+                        content: "Исправить баг. Исправить баги.Исправить баги. Исправить баги. Исправить баги.",
+                    },
                 ];
                 break;
-            case 10:
-                listData = [
-                    { type: "warning", content: "This is warning event." },
-                    { type: "success", content: "This is usual event." },
-                    { type: "error", content: "This is error event." },
-                ];
-                break;
-            case 15:
-                listData = [{ type: "warning", content: "This is warning event" }];
-                break;
+            }
             default:
         }
         return listData || [];
@@ -29,16 +31,35 @@ class TaskModuleCalendar extends React.PureComponent {
 
     dateCellRender = value => {
         const listData = this.getListData(value);
-        return (
-            <ul className="events">
-                {listData.map(item => (
-                    <li key={item.content}>
-                        <Badge status={item.type} text={item.content} />
-                    </li>
-                ))}
+        const content = listData.map(item => {
+            return (
+                <li onClick={this.test} key={item.content}>
+                    {item.content}
+                </li>
+            );
+        });
+
+        const list = (
+            <ul key="list" className="listTasks">
+                {content}
             </ul>
         );
+        let outValues = listData.length ? [...listData] : null;
+        if (listData.length) {
+            outValues = outValues.reduce((prev, current) => prev.content + current.content);
+        }
+
+        if (content.length)
+            return (
+                <Popover content={list}>
+                    <Button>
+                        <Output>{outValues ? outValues.content : null}</Output>
+                    </Button>
+                </Popover>
+            );
     };
+
+    test = event => {};
 
     render() {
         return (

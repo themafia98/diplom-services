@@ -11,38 +11,42 @@ class StreamBox extends React.Component {
         My name Pavel Petrovich and I'm Frontend developer. I looking for job.
         Hello world!!! 
         My name Pavel Petrovich and I'm Frontend developer. I looking for job.
-        Hello world!!! 
-        My name Pavel Petrovich and I'm Frontend developer. I looking for job.
-        My name Pavel Petrovich and I'm Frontend developer. I looking for job.
-        My name Pavel Petrovich and I'm Frontend developer. I looking for job.
-        My name Pavel Petrovich and I'm Frontend developer. I looking for job.`;
+        Hello world!!!`;
         return (
-            <Scrollbars>
+            <Scrollbars style={mode ? { height: "500px" } : null}>
                 <div className={["streamBox", boxClassName ? boxClassName : null].join(" ")}>
                     <div className={["cardStream", mode ? mode : null].join(" ")}>
-                        <p className="name">Pavel Petrovich</p>
-                        <Avatar shape="square" size="large" icon="user" />
+                        <div className="about">
+                            <Avatar size="64" icon="user" />
+                            <p className="name">Pavel Petrovich</p>
+                        </div>
                         <Tooltip placement="topLeft" title={value}>
                             <p className="card_message">{value}</p>
                         </Tooltip>
                     </div>
                     <div className={["cardStream", mode ? mode : null].join(" ")}>
-                        <p className="name">Pavel Petrovich</p>
-                        <Avatar shape="square" size="large" icon="user" />
+                        <div className="about">
+                            <Avatar size="64" icon="user" />
+                            <p className="name">Pavel Petrovich</p>
+                        </div>
                         <Tooltip placement="topLeft" title={value}>
                             <p className="card_message">{value}</p>
                         </Tooltip>
                     </div>
                     <div className={["cardStream", mode ? mode : null].join(" ")}>
-                        <p className="name">Pavel Petrovich</p>
-                        <Avatar shape="square" size="large" icon="user" />
+                        <div className="about">
+                            <Avatar size="64" icon="user" />
+                            <p className="name">Pavel Petrovich</p>
+                        </div>
                         <Tooltip placement="topLeft" title={value}>
                             <p className="card_message">{value}</p>
                         </Tooltip>
                     </div>
                     <div className={["cardStream", mode ? mode : null].join(" ")}>
-                        <p className="name">Pavel Petrovich</p>
-                        <Avatar shape="square" size="large" icon="user" />
+                        <div className="about">
+                            <Avatar size="64" icon="user" />
+                            <p className="name">Pavel Petrovich</p>
+                        </div>
                         <Tooltip placement="topLeft" title={value}>
                             <p className="card_message">{value}</p>
                         </Tooltip>
