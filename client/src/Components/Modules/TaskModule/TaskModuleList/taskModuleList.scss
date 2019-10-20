@@ -1,4 +1,6 @@
 .taskModule {
+    width: 100%;
+    height: 100%;
     .taskModuleTittle {
         font-size: 30px;
         font-weight: bold;
@@ -8,7 +10,6 @@
         user-select: none;
     }
     .taskModule_all {
-        overflow: auto;
         margin-top: 2px;
         max-height: 85vh;
     }
@@ -19,7 +20,11 @@
         }
     }
     .taskModuleAll_main {
+        .ant-pagination {
+            padding: 10px;
+        }
         table {
+            padding: 10px;
             .ant-table-thead {
                 background-color: $headerTable;
                 border-bottom: 0.5px solid $blueDark;
