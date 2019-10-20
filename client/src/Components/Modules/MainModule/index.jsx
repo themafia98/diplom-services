@@ -3,7 +3,8 @@ import TableView from "../../TableView";
 import WeatherWidjet from "../../WeatherWidget";
 import StreamBox from "../../StreamBox";
 import TitleModule from "../../TitleModule";
-import Calendar from "react-calendar";
+import { Calendar } from "antd";
+// import Calendar from "react-calendar";
 
 class MainModule extends React.Component {
     state = {
@@ -20,8 +21,10 @@ class MainModule extends React.Component {
                         <StreamBox />
                     </div>
                     <div className="col-8 columnModuleRight">
-                        <WeatherWidjet ket="weatherWidjet" />
-                        <Calendar className="mainModule_calendar" value={this.state.date} />
+                        <div className="widjects">
+                            <WeatherWidjet ket="weatherWidjet" />
+                            <Calendar className="mainModule_calendar" fullscreen={false} />
+                        </div>
                         <div className="tableViw__wrapper">
                             <TableView path="mainModule__table" firebase={firebase} />
                         </div>

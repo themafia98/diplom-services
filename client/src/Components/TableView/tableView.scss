@@ -1,7 +1,9 @@
 .tableViw__wrapper {
     width: 100%;
+    position: absolute;
+    bottom: 0;
+    top: 55%;
     margin: 10px;
-    height: 375px;
     table {
         width: 100%;
         min-height: 85%;
