@@ -6,7 +6,7 @@ import StreamBox from "../../StreamBox";
 
 const { Dragger } = Upload;
 
-class CabinetModule extends React.Component {
+class CabinetModule extends React.PureComponent {
     state = {
         imageUrl: null,
         loading: false,
@@ -14,22 +14,22 @@ class CabinetModule extends React.Component {
     };
 
     showModal = event => {
-        this.setState({ visible: true });
+        this.setState({ ...this.state, visible: true });
     };
 
     hideModal = event => {
-        this.setState({ visible: false, imageUrl: null, loading: false, disabled: false });
+        this.setState({ ...this.state, visible: false, imageUrl: null, loading: false, disabled: false });
     };
 
     beforeUpload = file => {
         const isJpgOrPng = file.type.startsWith("image/");
         if (!isJpgOrPng) {
-            this.setState(state => ({ loading: !state.loading, disabled: false, error: true }));
+            this.setState(state => ({ ...state, loading: !state.loading, disabled: false, error: true }));
             message.error("Вы можете загрузить только изображение.");
         }
         const isLt2M = file.size / 1024 / 1024 < 5;
         if (!isLt2M) {
-            this.setState(state => ({ loading: !state.loading, disabled: false, error: true }));
+            this.setState(state => ({ ...state, loading: !state.loading, disabled: false, error: true }));
             message.error("Изображение должно быть меньше 5 мб.");
         }
         return isJpgOrPng && isLt2M;
@@ -49,7 +49,7 @@ class CabinetModule extends React.Component {
     };
 
     reset = event => {
-        this.setState({ imageUrl: null, loading: false, disabled: false });
+        this.setState({ ...this.state, imageUrl: null, loading: false, disabled: false });
     };
 
     onChangeFile(info) {

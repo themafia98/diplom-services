@@ -32,7 +32,7 @@ class TableView extends React.Component {
 
     getComponentByPath = path => {
         const { users, load } = this.state;
-        debugger;
+
         if (path === "mainModule__table") {
             return (
                 <Scrollbars>

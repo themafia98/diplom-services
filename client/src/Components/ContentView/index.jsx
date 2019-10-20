@@ -6,11 +6,13 @@ import MainModule from "../Modules/MainModule";
 import CabinetModule from "../Modules/CabinetModule";
 import TaskModule from "../Modules/TaskModule";
 
+import uuid from "uuid/v4";
+
 const { Content } = Layout;
 
-class ContentView extends React.Component {
+class ContentView extends React.PureComponent {
     state = {
-        key: Math.random(),
+        key: uuid(),
     };
 
     getComponentByPath = path => {
@@ -27,7 +29,7 @@ class ContentView extends React.Component {
     disableF5 = event => {
         if ((event.which || event.keyCode) === 116) {
             event.preventDefault();
-            return this.setState({ key: Math.random() });
+            return this.setState({ ...this.state, key: uuid() });
         }
     };
 

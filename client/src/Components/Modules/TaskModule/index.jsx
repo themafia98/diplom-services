@@ -2,7 +2,7 @@ import React from "react";
 
 import TaskModuleList from "./TaskModuleList";
 
-class TaskModule extends React.Component {
+class TaskModule extends React.PureComponent {
     getTaskByPath = path => {
         if (path) {
             if (path === "taskModule_all") return <TaskModuleList />;
