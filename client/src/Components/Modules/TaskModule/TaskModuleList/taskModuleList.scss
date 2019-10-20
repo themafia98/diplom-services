@@ -21,10 +21,12 @@
     }
     .taskModuleAll_main {
         .ant-pagination {
-            padding: 10px;
+            width: 100%;
+            display: flex;
+            justify-content: flex-start;
         }
         table {
-            padding: 10px;
+            padding-right: 45px;
             .ant-table-thead {
                 background-color: $headerTable;
                 border-bottom: 0.5px solid $blueDark;
