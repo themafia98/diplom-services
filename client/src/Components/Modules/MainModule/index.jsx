@@ -4,7 +4,6 @@ import WeatherWidjet from "../../WeatherWidget";
 import StreamBox from "../../StreamBox";
 import TitleModule from "../../TitleModule";
 import { Calendar } from "antd";
-// import Calendar from "react-calendar";
 
 class MainModule extends React.Component {
     state = {
