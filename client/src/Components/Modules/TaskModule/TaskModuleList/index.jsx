@@ -9,9 +9,7 @@ class TaskModuleList extends React.PureComponent {
             <div className="taskModule_all">
                 <TitleModule additional="Все задачи" classNameTitle="taskModuleTittle" title="Список всех задач" />
                 <div className="taskModuleAll_main">
-                    <div className="tableViw__wrapper">
-                        <TableView path={"taskModule__all"} />
-                    </div>
+                    <TableView path="searchTable" />
                 </div>
             </div>
         );

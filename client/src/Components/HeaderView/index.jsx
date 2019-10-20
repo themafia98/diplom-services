@@ -18,7 +18,8 @@ class HeaderView extends React.Component {
         const { tabArray, tabData, onSetChildrenSizeAction, onsetParentSizeAction } = this.props;
         let sizeTab = !tabData.flag ? this.state.defaultSizeTab : tabData.childrenSize;
         if (!_.isNull(this.wrapper) && !_.isNull(tabData) && _.isNull(tabData.parentSize)) {
-            return onsetParentSizeAction(this.wrapper.getBoundingClientRect().width);
+            const newSize = this.wrapper.getBoundingClientRect().width;
+            if (tabData.parentSize !== newSize) onsetParentSizeAction(newSize);
         }
 
         if (
@@ -28,9 +29,9 @@ class HeaderView extends React.Component {
             tabArray.length > 1
         ) {
             const length = tabData.childrenSize * tabArray.length;
-            if (tabData.parentSize - sizeTab < length + sizeTab) {
+            if (tabData.parentSize < length + sizeTab) {
                 const size = tabData.parentSize / (tabArray.length + 1) - 24;
-                onSetChildrenSizeAction(size, true);
+                if (size !== tabData.childrenSize) onSetChildrenSizeAction(size, true);
             }
         }
     };

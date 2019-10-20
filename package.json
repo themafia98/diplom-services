@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "react-device-detect": "^1.9.10"
+    "react-device-detect": "^1.9.10",
+    "react-highlight-words": "^0.16.0"
   }
 }
