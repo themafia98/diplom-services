@@ -1,4 +1,4 @@
-import { SET_PATH, ADD_TAB, SET_ACTIVE_TAB, REMOVE_TAB } from "../../actions/routerActions/const";
+import { SET_PATH, ADD_TAB, SET_ACTIVE_TAB, REMOVE_TAB, LOGOUT } from "../../actions/routerActions/const";
 
 const initialState = {
     position: "/",
@@ -37,6 +37,14 @@ export default (state = initialState, action) => {
                         ? filterArray[index !== 0 ? index - 1 : 0]
                         : state.currentActionTab,
                 actionTabs: filterArray,
+            };
+        }
+        case LOGOUT: {
+            return {
+                ...state,
+                position: "/",
+                currentActionTab: "mainModule",
+                actionTabs: [],
             };
         }
         default:

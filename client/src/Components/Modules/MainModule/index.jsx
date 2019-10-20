@@ -23,7 +23,7 @@ class MainModule extends React.Component {
                         <WeatherWidjet ket="weatherWidjet" />
                         <Calendar className="mainModule_calendar" value={this.state.date} />
                         <div className="tableViw__wrapper">
-                            <TableView firebase={firebase} />
+                            <TableView path="mainModule__table" firebase={firebase} />
                         </div>
                     </div>
                 </div>

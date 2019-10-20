@@ -11,24 +11,24 @@ class WeatherWidjet extends React.Component {
     };
 
     componentDidMount = () => {
-        const apiIP = "https://api.ipgeolocation.io/ipgeo?apiKey=";
-        const api = "http://api.openweathermap.org/data/2.5/forecast";
         axios
-            .get(`${apiIP}${process.env.REACT_APP_IP_API_TOKEN}`)
+            .get("http://ip-api.com/json/")
             .then(res => {
                 let findCountry = "Minsk,BLR";
-                if (res.status === 200) findCountry = `${res.data.city},${res.data.country_code3}`;
-                this.sendRequstWeather(findCountry, api);
+                if (res.status === 200) findCountry = `${res.data.city},${res.data.countryCode}`;
+                this.sendRequstWeather(findCountry);
             })
             .catch(error => {
                 console.error(error);
-                this.sendRequstWeather("Minsk,BLR", api);
+                this.sendRequstWeather("Minsk,BLR");
             });
     };
 
-    sendRequstWeather = (findCountry, api) => {
+    sendRequstWeather = findCountry => {
         return axios
-            .get(`${api}?q=${findCountry}&APPID=${process.env.REACT_APP_WEATHER_API_TOKEN}`)
+            .get(
+                `http://api.openweathermap.org/data/2.5/forecast?q=${findCountry}&APPID=${process.env.REACT_APP_WEATHER_API_TOKEN}`,
+            )
             .then(res => {
                 if (res.status === 200) {
                     const {

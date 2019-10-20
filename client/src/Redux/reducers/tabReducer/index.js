@@ -1,5 +1,5 @@
 /** Here action constants import */
-import { SET_PARENT_SIZE, SET_CHILDREN_SIZE } from "../../actions/tabActions/const";
+import { SET_PARENT_SIZE, SET_CHILDREN_SIZE, SET_LOGOUT_TABS } from "../../actions/tabActions/const";
 
 const initialState = {
     parentSize: null,
@@ -20,6 +20,14 @@ export default (state = initialState, action) => {
                 ...state,
                 childrenSize: action.payload,
                 flag: action.payload,
+            };
+        }
+        case SET_LOGOUT_TABS: {
+            return {
+                ...state,
+                parentSize: null,
+                childrenSize: null,
+                flag: false,
             };
         }
         default:

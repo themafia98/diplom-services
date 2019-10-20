@@ -7,6 +7,7 @@ import {
     addTabAction,
     setActiveTabAction,
     removeTabAction,
+    logoutAction,
 } from "../../../Redux/actions/routerActions";
 
 import { setChildrenSizeAction } from "../../../Redux/actions/tabActions";
@@ -26,8 +27,8 @@ class UserPanel extends React.Component {
     };
 
     logout = event => {
-        const { firebase } = this.props;
-        if (firebase) firebase.signOut().then(() => this.props.history.push("/"));
+        const { firebase, onLogoutAction } = this.props;
+        if (firebase) firebase.signOut().then(() => onLogoutAction().then(() => this.props.history.push("/")));
     };
 
     getActionTabs = (tabs = [], menu) => {
@@ -96,7 +97,7 @@ class UserPanel extends React.Component {
                         actionTabs={actionTabsData}
                         logout={this.logout}
                     />
-                    <ContentView firebase={firebase} key={currentActionTab} mode={currentActionTab} />
+                    <ContentView firebase={firebase} key={currentActionTab} path={currentActionTab} />
                 </Layout>
             </Layout>
         );
@@ -117,6 +118,7 @@ const mapDispatchToProps = dispatch => {
         removeTab: tab => dispatch(removeTabAction(tab)),
         setCurrentTab: tab => dispatch(setActiveTabAction(tab)),
         onSetChildrenSizeAction: (size, flag) => dispatch(setChildrenSizeAction(size, flag)),
+        onLogoutAction: async () => await dispatch(logoutAction()),
     };
 };
 

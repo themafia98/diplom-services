@@ -1,4 +1,5 @@
-import { SET_PATH, ADD_TAB, SET_ACTIVE_TAB, REMOVE_TAB } from "./const";
+import { SET_PATH, ADD_TAB, SET_ACTIVE_TAB, REMOVE_TAB, LOGOUT } from "./const";
+import { setLogoutTabs } from "../tabActions";
 
 export const updatePathAction = state => {
     return {
@@ -25,5 +26,19 @@ export const removeTabAction = state => {
     return {
         type: REMOVE_TAB,
         payload: state,
+    };
+};
+
+export const logoutRouterAction = state => {
+    return {
+        type: LOGOUT,
+        payload: state,
+    };
+};
+
+export const logoutAction = state => {
+    return dispatch => {
+        dispatch(setLogoutTabs());
+        dispatch(logoutRouterAction());
     };
 };

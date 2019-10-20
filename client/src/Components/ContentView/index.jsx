@@ -4,6 +4,7 @@ import { Layout } from "antd";
 
 import MainModule from "../Modules/MainModule";
 import CabinetModule from "../Modules/CabinetModule";
+import TaskModule from "../Modules/TaskModule";
 
 const { Content } = Layout;
 
@@ -12,11 +13,15 @@ class ContentView extends React.Component {
         key: Math.random(),
     };
 
-    getComponentByMode = mode => {
+    getComponentByPath = path => {
         const { firebase } = this.props;
-        if (mode === "mainModule") return <MainModule firebase={firebase} />;
-        if (mode === "cabinetModule") return <CabinetModule firebase={firebase} />;
-        else return <div>Not found module: ${mode}</div>;
+
+        if (path) {
+            if (path === "mainModule") return <MainModule firebase={firebase} />;
+            if (path === "cabinetModule") return <CabinetModule firebase={firebase} />;
+            if (path.startsWith("taskModule")) return <TaskModule path={path} firebase={firebase} />;
+            else return <div>Not found module: ${path}</div>;
+        } else return null;
     };
 
     disableF5 = event => {
@@ -35,9 +40,9 @@ class ContentView extends React.Component {
     };
 
     render() {
-        const { mode } = this.props;
+        const { path } = this.props;
         const { key } = this.state;
-        return <Content key={key}>{this.getComponentByMode(mode)}</Content>;
+        return <Content key={key}>{this.getComponentByPath(path)}</Content>;
     }
 }
 

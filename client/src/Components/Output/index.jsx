@@ -43,7 +43,7 @@ class Output extends React.Component {
             if (!showTooltip) return output;
             else
                 return (
-                    <Tooltip placement="topLeft" title={children}>
+                    <Tooltip className="pointerTooltip" placement="topLeft" title={children}>
                         {output}
                     </Tooltip>
                 );

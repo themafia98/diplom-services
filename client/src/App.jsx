@@ -11,7 +11,7 @@ import Recovery from "./Components/Pages/Recovery";
 import LoginPage from "./Components/Pages/LoginPage";
 import UserPanel from "./Components/Pages/UserPanel";
 
-import { BrowserView, MobileView, isBrowser, isMobile } from "react-device-detect";
+// import { isMobile } from "react-device-detect";
 
 class App extends React.Component {
     state = {
@@ -25,7 +25,7 @@ class App extends React.Component {
             let path = "mainModule";
             const defaultModule = config.menu.find(item => item["SIGN"] === "default");
             if (defaultModule) path = defaultModule.EUID;
-            addTab(path).then(() => moveTo("/panel"));
+            moveTo("/panel").then(() => addTab(path));
         });
     };
 
@@ -45,8 +45,10 @@ class App extends React.Component {
     }
 
     render() {
-        console.log(isMobile);
-        const { firebase } = this.props;
+        const {
+            firebase,
+            router: { position },
+        } = this.props;
         const { firebaseLoadState, isUser } = this.state;
         if (firebaseLoadState) {
             return (
@@ -57,7 +59,7 @@ class App extends React.Component {
                         render={props => <LoginPage {...props} isUser={isUser} firebase={firebase} />}
                     />
                     <Route exact path="/recovory" render={props => <Recovery {...props} firebase={firebase} />} />
-                    <PrivateRoute exact path="/panel" component={UserPanel} firebase={firebase} />
+                    <PrivateRoute exact path={position} component={UserPanel} firebase={firebase} />
                 </Switch>
             );
         } else return <Loader />;

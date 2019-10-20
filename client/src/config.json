@@ -88,91 +88,10 @@
             "PARENT_CODE": null
         },
         {
-            "EUID": "sett1254566ingsModule",
-            "VALUE": "Настройки",
-            "ICON": "build",
-            "PARENT_CODE": null
-        },
-        {
-            "EUID": "set1123232tingsModule",
-            "VALUE": "Настройки",
-            "ICON": "build",
-            "PARENT_CODE": null
-        },
-        {
-            "EUID": "settin2g1232515sModule",
-            "VALUE": "Настройки",
-            "ICON": "build",
-            "PARENT_CODE": null
-        },
-        {
-            "EUID": "s3231etti4ngsModule",
-            "VALUE": "Настройки",
-            "ICON": "build",
-            "PARENT_CODE": null
-        },
-        {
-            "EUID": "sett4122in5gsModule",
-            "VALUE": "Настройки",
-            "ICON": "build",
-            "PARENT_CODE": null
-        },
-        {
-            "EUID": "sett4ing561sModule",
-            "VALUE": "Настройки",
-            "ICON": "build",
-            "PARENT_CODE": null
-        },
-        {
-            "EUID": "se4tti123ngsModule",
-            "VALUE": "Настройки",
-            "ICON": "build",
-            "PARENT_CODE": null
-        },
-        {
-            "EUID": "sett7673ings213Module",
-            "VALUE": "Настройки",
-            "ICON": "build",
-            "PARENT_CODE": null
-        },
-        {
-            "EUID": "se2131231232134124516463t6767tingsModule",
-            "VALUE": "Настройки",
-            "ICON": "build",
-            "PARENT_CODE": null
-        },
-        {
-            "EUID": "sett12313231233ingsMo5677676dule",
-            "VALUE": "Настройки",
-            "ICON": "build",
-            "PARENT_CODE": null
-        },
-        {
-            "EUID": "sett3i213123213123ngsModule",
-            "VALUE": "Настройки",
-            "ICON": "build",
-            "PARENT_CODE": null
-        },
-        {
-            "EUID": "sett132124412431212312i3ngsModule",
-            "VALUE": "Настройки",
-            "ICON": "build",
-            "PARENT_CODE": null
-        },
-        {
-            "EUID": "se12312tti3n421412gsModule",
-            "VALUE": "Настройки",
-            "ICON": "build",
-            "PARENT_CODE": null
-        },
-        {
-            "EUID": "se23123ttingsM41221412odule",
+            "EUID": "settingsModule",
             "VALUE": "Настройки",
             "ICON": "build",
             "PARENT_CODE": null
         }
-    ],
-    "about": {
-        "developer": "Pavel Petrovich"
-    }
+    ]
 }

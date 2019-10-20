@@ -20,11 +20,13 @@
             tr {
                 display: flex;
                 text-align: center;
-                margin-right: -1px;
 
                 &:first-child {
                     td {
                         border-top: 0.5px solid $blueDark;
+                        &:last-child {
+                            margin-left: 1px;
+                        }
                     }
                 }
             }
@@ -63,11 +65,13 @@
             padding-top: 10px;
 
             &:first-child {
+                border-left: 0.5px solid $blueDark;
                 flex: 0 0 10%;
                 max-width: 10%;
                 min-width: 10%;
             }
             &:last-child {
+                border-right: 0.5px solid $blueDark;
                 flex: 0 0 5%;
                 max-width: 5%;
                 min-width: 5%;
