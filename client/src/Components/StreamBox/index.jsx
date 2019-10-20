@@ -17,7 +17,7 @@ class StreamBox extends React.Component {
         My name Pavel Petrovich and I'm Frontend developer. I looking for job.
         My name Pavel Petrovich and I'm Frontend developer. I looking for job.`;
         return (
-            <Scrollbars autoHeight autoHeightMin={0} autoHeightMax={"70vh"}>
+            <Scrollbars>
                 <div className={["streamBox", boxClassName ? boxClassName : null].join(" ")}>
                     <div className={["cardStream", mode ? mode : null].join(" ")}>
                         <p className="name">Pavel Petrovich</p>
