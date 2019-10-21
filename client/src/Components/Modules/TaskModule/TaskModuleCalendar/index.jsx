@@ -1,7 +1,6 @@
 import React from "react";
 import moment from "moment";
 import TitleModule from "../../../TitleModule";
-import Output from "../../../Output";
 import { Calendar, Popover, Button } from "antd";
 
 class TaskModuleCalendar extends React.PureComponent {
@@ -53,7 +52,7 @@ class TaskModuleCalendar extends React.PureComponent {
             return (
                 <Popover content={list}>
                     <Button>
-                        <Output>{outValues ? outValues.content : null}</Output>
+                        <span className="calendarDate-content">{outValues.content}</span>
                     </Button>
                 </Popover>
             );
