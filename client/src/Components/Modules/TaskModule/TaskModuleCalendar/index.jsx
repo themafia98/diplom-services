@@ -1,4 +1,5 @@
 import React from "react";
+import Scrollbars from 'react-custom-scrollbars';
 import moment from "moment";
 import TitleModule from "../../../TitleModule";
 import Output from "../../../Output";
@@ -59,16 +60,18 @@ class TaskModuleCalendar extends React.PureComponent {
             );
     };
 
-    test = event => {};
+    test = event => { };
 
     render() {
         return (
-            <div className="taskModuleCalendar">
-                <TitleModule classNameTitle="taskModuleTittle" title="Календарь задач" />
-                <div className="taskModuleCalendar__main">
-                    <Calendar dateCellRender={this.dateCellRender} monthCellRender={this.monthCellRender} />
+            <Scrollbars>
+                <div className="taskModuleCalendar">
+                    <TitleModule classNameTitle="taskModuleTittle" title="Календарь задач" />
+                    <div className="taskModuleCalendar__main">
+                        <Calendar dateCellRender={this.dateCellRender} monthCellRender={this.monthCellRender} />
+                    </div>
                 </div>
-            </div>
+            </Scrollbars>
         );
     }
 }
