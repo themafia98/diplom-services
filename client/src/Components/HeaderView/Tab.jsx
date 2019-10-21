@@ -10,7 +10,8 @@ class Tab extends React.Component {
         const { tabData, onSetChildrenSizeAction } = this.props;
 
         if (!_.isNull(this.tab) && !_.isNull(tabData) && _.isNull(tabData.childrenSize)) {
-            onSetChildrenSizeAction(this.tab.getBoundingClientRect().width);
+            const tabSize = this.tab.getBoundingClientRect().width;
+            if (tabSize !== tabData.childrenSize) onSetChildrenSizeAction(tabSize);
         }
     };
 

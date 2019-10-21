@@ -67,7 +67,7 @@ class UserPanel extends React.Component {
                 setCurrentTab(path);
             }
         } else if (mode === "close") {
-            let size = tabData.parentSize / actionTabsCopy.length4;
+            let size = tabData.parentSize / actionTabsCopy.length;
             if (size > 160) size = 160;
             if (isFind) removeTab(path);
             if (size !== tabData.childrenSize) onSetChildrenSizeAction(size, true);
