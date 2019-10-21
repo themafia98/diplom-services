@@ -63,16 +63,28 @@ header {
                 margin: 0 5px;
 
                 span {
+                    font-weight: bold;
+                }
+
+                .tabWrapper-content {
                     height: 100%;
                     overflow: hidden;
                     width: 90%;
-                    text-align: center;
+                    align-items: center;
+                    justify-content: center;
+                    display: flex;
                     white-space: nowrap;
-                    font-weight: bold;
-                    -webkit-user-select: none;
-                    -moz-user-select: none;
-                    user-select: none;
-                    text-overflow: ellipsis;
+                    .tab-content {
+                        font-weight: bold;
+                        text-align: center;
+                        overflow: hidden;
+                        display: block;
+                        white-space: nowrap;
+                        width: 90%;
+
+                        user-select: none;
+                        text-overflow: ellipsis;
+                    }
                     &.selected {
                         color: $selected;
                     }

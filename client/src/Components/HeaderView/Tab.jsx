@@ -41,7 +41,9 @@ class Tab extends React.Component {
                 key={itemKey}
                 ref={this.tabRef}
             >
-                <span className={[active ? "selected" : null].join(" ")}>{value}</span>
+                <span className={[active ? "tabWrapper-content selected" : "tabWrapper-content"].join(" ")}>
+                    <span className="tab-content">{value}</span>
+                </span>
                 <Icon
                     style={{ left: sizeTab < 60 ? `85%` : sizeTab < 90 ? `90%` : sizeTab < 102 ? `93%` : null }}
                     className={["closeTab"].join(" ")}

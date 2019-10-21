@@ -30,7 +30,7 @@ class HeaderView extends React.Component {
         ) {
             const length = tabData.childrenSize * tabArray.length;
             if (tabData.parentSize < length + sizeTab) {
-                const size = tabData.parentSize / (tabArray.length + 1) - 24;
+                const size = tabData.parentSize / tabArray.length;
                 if (size !== tabData.childrenSize) onSetChildrenSizeAction(size, true);
             }
         }
