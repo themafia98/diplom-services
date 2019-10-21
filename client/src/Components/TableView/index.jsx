@@ -94,16 +94,13 @@ class TableView extends React.Component {
                     dataIndex: "status",
                     key: "status",
                     render: (text, row, index) => {
-                        const className =
-                            text === "В работе"
-                                ? "active"
-                                : text === "Открыт"
-                                ? ""
-                                : text === "Закрыт"
-                                ? "close"
-                                : text === "Выполнен"
-                                ? "done"
-                                : null;
+                        let className = "";
+                        if (text === "В работе") className = "active";
+                        else if (text === "Открыт") className = "";
+                        else if (text === "Закрыт") className = "close";
+                        else if (text === "Выполнен") className = "done";
+                        else className = "";
+
                         return (
                             <Output className={className} key={uuid()}>
                                 {text}
@@ -132,7 +129,6 @@ class TableView extends React.Component {
                     },
                     ...this.getColumnSearchProps("priority"),
                 },
-                ,
                 {
                     title: "Автор задачи",
                     className: "author",
@@ -153,7 +149,6 @@ class TableView extends React.Component {
                     },
                     ...this.getColumnSearchProps("editor"),
                 },
-                ,
                 {
                     title: "Дата создания",
                     className: "date",

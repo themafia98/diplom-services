@@ -5,6 +5,7 @@ import { Layout } from "antd";
 import MainModule from "../Modules/MainModule";
 import CabinetModule from "../Modules/CabinetModule";
 import TaskModule from "../Modules/TaskModule";
+import SettingsModule from "../Modules/settingsModule";
 
 import uuid from "uuid/v4";
 
@@ -22,6 +23,7 @@ class ContentView extends React.PureComponent {
             if (path === "mainModule") return <MainModule firebase={firebase} />;
             if (path === "cabinetModule") return <CabinetModule firebase={firebase} />;
             if (path.startsWith("taskModule")) return <TaskModule path={path} firebase={firebase} />;
+            if (path === "settingsModule") return <SettingsModule firebase={firebase} />;
             else return <div>Not found module: ${path}</div>;
         } else return null;
     };
