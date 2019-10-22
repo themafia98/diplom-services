@@ -33,6 +33,7 @@ class ContentView extends React.PureComponent {
 
     disableF5 = event => {
         if ((event.which || event.keyCode) === 113) {
+            debugger;
             return this.setState({ ...this.state, drawerView: !this.state.drawerView });
         }
         if ((event.which || event.keyCode) === 116) {
@@ -59,7 +60,7 @@ class ContentView extends React.PureComponent {
         return (
             <React.Fragment>
                 <Content key={key}>{this.getComponentByPath(path)}</Content>
-                {drawerView ? <DrawerViewer onClose={this.onClose} visible={drawerView} /> : null}
+                <DrawerViewer onClose={this.onClose} visible={drawerView} />
             </React.Fragment>
         );
     }
