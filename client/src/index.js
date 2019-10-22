@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import ReactDOM from "react-dom";
 import "normalize.css";
+import "../node_modules/react-vis/dist/style.css";
 import "antd/dist/antd.css";
 import "./index.scss";
 import App from "./App";

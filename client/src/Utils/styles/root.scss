@@ -1,0 +1,25 @@
+/* Columns */
+body {
+    font-family: Roboto, Arial, sans-serif;
+}
+
+.col-8 {
+    flex: 0 0 66.777%;
+}
+
+.col-6 {
+    flex: 0 0 50%;
+}
+
+.col-4 {
+    flex: 0 0 33.333%;
+}
+
+p,
+span {
+    cursor: context-menu;
+}
+
+ul {
+    list-style-type: none;
+}

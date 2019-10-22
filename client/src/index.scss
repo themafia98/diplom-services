@@ -1,4 +1,5 @@
-@import "./Utils//palette.scss";
+@import "./Utils/styles/palette.scss";
+@import "./Utils/styles/root.scss";
 @import "./Components/MenuView/menuView.scss";
 @import "./Components/ContentView/contentView.scss";
 @import "./Components/HeaderView/header.scss";
@@ -19,29 +20,4 @@
 @import "./Components/Modules/TaskModule/TaskModuleCalendar/taskModuleCalendar.scss";
 @import "./Components/Modules/settingsModule/settingsModule.scss";
 @import "./Components/ObserverTime/observerTime.scss";
-
-/* Columns */
-body {
-    font-family: Roboto, Arial, sans-serif;
-}
-
-.col-8 {
-    flex: 0 0 66.777%;
-}
-
-.col-6 {
-    flex: 0 0 50%;
-}
-
-.col-4 {
-    flex: 0 0 33.333%;
-}
-
-p,
-span {
-    cursor: context-menu;
-}
-
-ul {
-    list-style-type: none;
-}
+@import "./Components/Modules/StatisticsModule/statisticsModule.scss";

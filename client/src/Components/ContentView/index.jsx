@@ -7,7 +7,8 @@ import DrawerViewer from "../DrawerViewer";
 import MainModule from "../Modules/MainModule";
 import CabinetModule from "../Modules/CabinetModule";
 import TaskModule from "../Modules/TaskModule";
-import SettingsModule from "../Modules/settingsModule";
+import StatisticsModule from "../Modules/StatisticsModule";
+import SettingsModule from "../Modules/SettingsModule";
 
 import uuid from "uuid/v4";
 
@@ -28,12 +29,12 @@ class ContentView extends React.PureComponent {
         if (path === "cabinetModule") return <CabinetModule firebase={firebase} />;
         if (path.startsWith("taskModule")) return <TaskModule path={path} firebase={firebase} />;
         if (path === "settingsModule") return <SettingsModule firebase={firebase} />;
+        if (path === "statisticModule") return <StatisticsModule firebase={firebase} />;
         else return <div>Not found module: ${path}</div>;
     };
 
     disableF5 = event => {
         if ((event.which || event.keyCode) === 113) {
-            debugger;
             return this.setState({ ...this.state, drawerView: !this.state.drawerView });
         }
         if ((event.which || event.keyCode) === 116) {

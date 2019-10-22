@@ -34,7 +34,7 @@ class SettingsModule extends React.PureComponent {
 
     onChangeInput = event => {
         const { target } = event;
-        debugger;
+
         if (target.dataset.id === "email") {
             this.setState({
                 ...this.state,
