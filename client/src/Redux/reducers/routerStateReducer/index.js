@@ -1,9 +1,18 @@
-import { SET_PATH, ADD_TAB, SET_ACTIVE_TAB, REMOVE_TAB, LOGOUT } from "../../actions/routerActions/const";
+import {
+    SET_PATH,
+    ADD_TAB,
+    SET_ACTIVE_TAB,
+    REMOVE_TAB,
+    LOGOUT,
+    OPEN_PAGE_WITH_DATA,
+} from "../../actions/routerActions/const";
 
 const initialState = {
     position: "/",
     currentActionTab: "mainModule",
     actionTabs: [],
+    routeDataActive: null,
+    routeData: [],
 };
 
 export default (state = initialState, action) => {
@@ -19,6 +28,15 @@ export default (state = initialState, action) => {
                 actionTabs: [...state.actionTabs, action.payload],
                 currentActionTab: action.payload,
             };
+        case OPEN_PAGE_WITH_DATA: {
+            return {
+                ...state,
+                currentActionTab: action.payload.activePage,
+                actionTabs: [...state.actionTabs, action.payload.activePage],
+                routeDataActive: { ...action.payload.routeDataActive },
+                routeData: [...state.routeData, { ...action.payload.routeDataActive }],
+            };
+        }
         case SET_ACTIVE_TAB:
             return {
                 ...state,

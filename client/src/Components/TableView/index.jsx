@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from "react-redux";
 import _ from "lodash";
 import $ from "jquery";
 import { Icon, Empty, Table, Input, Button } from "antd";
@@ -9,7 +10,7 @@ import moment from "moment";
 import Highlighter from "react-highlight-words";
 import Output from "../Output";
 
-// const { Search } = Input;
+import { openPageWithDataAction } from "../../Redux/actions/routerActions";
 
 class TableView extends React.Component {
     state = {
@@ -165,7 +166,7 @@ class TableView extends React.Component {
 
             for (let i = 1; i <= 30; i++) {
                 data.push({
-                    key: i,
+                    key: uuid(),
                     status: i % 3 === 0 ? "В работе" : i % 2 === 0 ? "Закрыт" : i > 20 ? "Выполнен" : "Открыт",
                     name: "Исправление багов " + i,
                     priority: "Средний",
@@ -193,7 +194,28 @@ class TableView extends React.Component {
                       })
                       .filter(Boolean)
                 : data;
-            return <Table scroll={{ x: this.state.isScroll }} columns={columns} dataSource={data} />;
+            return (
+                <Table
+                    scroll={{ x: this.state.isScroll }}
+                    columns={columns}
+                    dataSource={data}
+                    onRow={(record, rowIndex) => {
+                        return {
+                            onClick: event => {
+                                console.log(record);
+                                const {
+                                    onOpenPageWithData,
+                                    router: { currentActionTab },
+                                } = this.props;
+                                onOpenPageWithData({
+                                    activePage: currentActionTab + record.key,
+                                    routeDataActive: record,
+                                });
+                            }, // click row
+                        };
+                    }}
+                />
+            );
         } else return null;
     };
 
@@ -310,4 +332,20 @@ class TableView extends React.Component {
         return component;
     }
 }
-export default TableView;
+
+const mapStateToProps = state => {
+    return {
+        router: state.router,
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onOpenPageWithData: data => dispatch(openPageWithDataAction(data)),
+    };
+};
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(TableView);

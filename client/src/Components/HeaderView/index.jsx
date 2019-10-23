@@ -15,6 +15,7 @@ class HeaderView extends React.Component {
     };
 
     componentDidUpdate = () => {
+        debugger;
         const { tabArray, tabData, onSetChildrenSizeAction, onsetParentSizeAction } = this.props;
         let sizeTab = !tabData.flag ? this.state.defaultSizeTab : tabData.childrenSize;
         if (!_.isNull(this.wrapper) && !_.isNull(tabData) && _.isNull(tabData.parentSize)) {
@@ -47,7 +48,7 @@ class HeaderView extends React.Component {
         if (sizeTab > tabData.childrenSize && tabData.parentSize < length + sizeTab) {
             flag = true;
         }
-
+        debugger;
         return (
             <ul ref={this.refWrapper} className="tabsMenu">
                 {items.map(item => {
