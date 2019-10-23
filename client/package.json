@@ -4,7 +4,6 @@
   "private": true,
   "dependencies": {
     "@nivo/bar": "^0.59.2",
-    "@nivo/heatmap": "^0.59.2",
     "antd": "^3.23.6",
     "axios": "^0.19.0",
     "es6-promise": "^4.2.8",
@@ -31,7 +30,6 @@
   },
   "scripts": {
     "start": "node scripts/start.js",
-    "s": "react-app-rewired start",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js"
   },
