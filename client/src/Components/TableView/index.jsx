@@ -177,7 +177,7 @@ class TableView extends React.Component {
             }
 
             data.push({
-                key: 32,
+                key: uuid(),
                 status: "Закрыт",
                 name: "Исправление багов " + 32,
                 priority: "Средний",
@@ -208,7 +208,7 @@ class TableView extends React.Component {
                                     router: { currentActionTab },
                                 } = this.props;
                                 onOpenPageWithData({
-                                    activePage: currentActionTab + record.key,
+                                    activePage: `${currentActionTab}__${record.key}`,
                                     routeDataActive: record,
                                 });
                             }, // click row

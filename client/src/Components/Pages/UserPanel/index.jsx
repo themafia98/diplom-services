@@ -39,7 +39,7 @@ class UserPanel extends React.Component {
         for (let i = 0; i < tabsCopy.length; i++) {
             let tabItem = menu.find(tab => tab.EUID === tabsCopy[i]);
             if (!tabItem) {
-                const dataPage = tabsCopy[i].split("_");
+                const dataPage = tabsCopy[i].split("__");
                 const PARENT_CODE = dataPage[0];
                 const DATAKEY = dataPage[1];
                 const VALUE = `${routeDataActive.name}`;
@@ -85,7 +85,7 @@ class UserPanel extends React.Component {
     render() {
         const { menuItems = null } = this.state;
         const { router: { actionTabs = [], currentActionTab } = {}, firebase } = this.props;
-        debugger;
+
         const actionTabsData = this.getActionTabs(actionTabs, menuItems);
 
         return (

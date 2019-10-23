@@ -45,15 +45,13 @@ export default (state = initialState, action) => {
         case REMOVE_TAB: {
             let index = 0;
             const filterArray = state.actionTabs.filter((tab, i) => {
-                if (tab !== action.payload) index = i;
+                if (tab === action.payload) index = i;
                 return tab !== action.payload;
             });
             return {
                 ...state,
                 currentActionTab:
-                    state.currentActionTab === action.payload
-                        ? filterArray[index !== 0 ? index - 1 : 0]
-                        : state.currentActionTab,
+                    filterArray[index >= filterArray.length && index !== 0 ? filterArray.length - 1 : index],
                 actionTabs: filterArray,
             };
         }

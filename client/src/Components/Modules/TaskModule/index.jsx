@@ -9,9 +9,10 @@ class TaskModule extends React.PureComponent {
     getTaskByPath = path => {
         if (path) {
             if (path === "taskModule_all") return <TaskModuleList />;
-            if (path === "taskModule_myTasks") return <TaskModuleMyList user="Павел Петрович" />;
-            if (path === "taskModule_сalendar") return <TaskModuleCalendar />;
-            if (path.startsWith("taskModule_")) return <TaskView />;
+            else if (path === "taskModule_myTasks") return <TaskModuleMyList user="Павел Петрович" />;
+            else if (path === "taskModule_сalendar") return <TaskModuleCalendar />;
+            else if (path.startsWith("taskModule_"))
+                return <TaskView key={path.split("__")[1]} uuid={path.split("__")[1]} />;
             else return <div>Not found taskModule</div>;
         }
     };

@@ -1,0 +1,23 @@
+.taskView {
+    display: flex;
+    tbody {
+        border: 0.5px solid $blueDark;
+        tr {
+            &.ant-descriptions-row {
+                border-top: 0.5px solid $blueDark;
+            }
+            th {
+                &.ant-descriptions-item-label {
+                    border-right: 0.5px solid $blueDark;
+                }
+            }
+        }
+    }
+    .historyTaskTitle {
+        font-size: 23px;
+        font-weight: bold;
+        margin: 0;
+        user-select: none;
+        text-align: center;
+    }
+}
