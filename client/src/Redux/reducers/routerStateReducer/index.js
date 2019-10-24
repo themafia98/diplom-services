@@ -44,8 +44,10 @@ export default (state = initialState, action) => {
             };
         case REMOVE_TAB: {
             let index = 0;
+            let deleteKey = action.payload.split("__")[1];
             const filterArray = state.actionTabs.filter((tab, i) => {
                 if (tab === action.payload) index = i;
+                if (deleteKey && tab.includes(deleteKey)) return false;
                 return tab !== action.payload;
             });
             return {
@@ -53,6 +55,8 @@ export default (state = initialState, action) => {
                 currentActionTab:
                     filterArray[index >= filterArray.length && index !== 0 ? filterArray.length - 1 : index],
                 actionTabs: filterArray,
+                routeDataActive: deleteKey === state.routeDataActive.key ? null : { ...state.routeDataActive },
+                routeData: deleteKey ? state.routeData.filter(it => it.key !== deleteKey) : { ...state.routeData },
             };
         }
         case LOGOUT: {
