@@ -32,7 +32,7 @@ class UserPanel extends React.Component {
     };
 
     getActionTabs = (tabs = [], menu) => {
-        const { router: { routeDataActive } = {} } = this.props;
+        const { router: { routeDataActive, routeData = {} } = {} } = this.props;
         const tabsCopy = [...tabs];
         const tabsArray = [];
 
@@ -42,7 +42,12 @@ class UserPanel extends React.Component {
                 const dataPage = tabsCopy[i].split("__");
                 const PARENT_CODE = dataPage[0];
                 const DATAKEY = dataPage[1];
-                const VALUE = `${routeDataActive.name}`;
+                console.log(routeDataActive);
+                const VALUE = routeDataActive
+                    ? routeDataActive.name
+                        ? routeDataActive.name
+                        : null
+                    : routeData[DATAKEY].name;
                 tabItem = { EUID: tabsCopy[i], PARENT_CODE, DATAKEY, VALUE };
             }
             if (tabItem) tabsArray.push({ ...tabItem });
@@ -77,6 +82,7 @@ class UserPanel extends React.Component {
         } else if (mode === "close") {
             let size = tabData.parentSize / actionTabsCopy.length;
             if (size > 160) size = 160;
+            debugger;
             if (isFind) removeTab(path);
             if (size !== tabData.childrenSize) onSetChildrenSizeAction(size, true);
         }

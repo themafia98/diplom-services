@@ -14,10 +14,13 @@ class TaskView extends React.Component {
         else return state;
     };
 
+    componentDidUpdate = () => {};
+
     render() {
         const {
             router: { routeDataActive = {} },
         } = this.props;
+
         const isValid = !_.isNull(routeDataActive) && !_.isNull(routeDataActive.key);
         if (isValid && routeDataActive.key === this.state.uuid) {
             return (
