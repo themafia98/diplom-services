@@ -9,6 +9,8 @@ import CabinetModule from "../Modules/CabinetModule";
 import TaskModule from "../Modules/TaskModule";
 import StatisticsModule from "../Modules/StatisticsModule";
 import SettingsModule from "../Modules/SettingsModule";
+import ContactModule from "../Modules/ContactModule";
+import CustomersModule from "../Modules/CustomersModule";
 
 import uuid from "uuid/v4";
 
@@ -28,6 +30,8 @@ class ContentView extends React.PureComponent {
         if (path === "mainModule") return <MainModule firebase={firebase} />;
         if (path === "cabinetModule") return <CabinetModule firebase={firebase} />;
         if (path.startsWith("taskModule")) return <TaskModule path={path} firebase={firebase} />;
+        if (path.startsWith("contactModule")) return <ContactModule path={path} firebase={firebase} />;
+        if (path.startsWith("customersModule")) return <CustomersModule path={path} firebase={firebase} />;
         if (path === "settingsModule") return <SettingsModule firebase={firebase} />;
         if (path === "statisticModule") return <StatisticsModule firebase={firebase} />;
         else return <div>Not found module: ${path}</div>;

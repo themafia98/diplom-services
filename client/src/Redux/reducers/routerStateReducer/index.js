@@ -88,7 +88,7 @@ export default (state = initialState, action) => {
                         ? indexFind
                         : index
                 ];
-            if (indexFind > index) debugger;
+
             const uuid = typeof nextTab === "string" ? nextTab.split("__")[1] : null;
 
             return {
