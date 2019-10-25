@@ -20,4 +20,33 @@
         user-select: none;
         text-align: center;
     }
+    .descriptionTask {
+        .descriptionTask__title,
+        .task_file,
+        .descriptionTask__comment {
+            text-align: center;
+            font-weight: bold;
+            padding: 5px;
+            font-size: 16px;
+        }
+        .descriptionTask__content {
+            display: block;
+            width: 98%;
+            min-height: 50px;
+            max-height: 150px;
+            font-size: 15px;
+            padding: 10px;
+            border: 1px solid $blueDark;
+        }
+    }
+}
+
+.col-taskDescription {
+    height: 680px;
+    max-height: 750px;
+    .ant-descriptions {
+        &.ant-descriptions-bordered {
+            width: 98%;
+        }
+    }
 }

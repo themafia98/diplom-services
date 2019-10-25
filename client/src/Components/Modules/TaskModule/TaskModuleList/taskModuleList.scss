@@ -20,6 +20,11 @@
         }
     }
     .taskModuleAll_main {
+        .ant-table-placeholder {
+            width: 100%;
+            background: unset;
+            border: none;
+        }
         .ant-pagination {
             width: 100%;
             display: flex;

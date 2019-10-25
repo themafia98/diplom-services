@@ -80,7 +80,7 @@ class TableView extends React.Component {
                             ) : load ? (
                                 <tr>
                                     <td colSpan="5">
-                                        <Empty className="emptyTable" />
+                                        <Empty description={<span>Данных нету</span>} className="emptyTable" />
                                     </td>
                                 </tr>
                             ) : (
@@ -184,7 +184,7 @@ class TableView extends React.Component {
 
             let data = [];
 
-            for (let i = 1; i <= 30; i++) {
+            for (let i = 1; i <= 50; i++) {
                 data.push({
                     key: uuid(),
                     status: i % 3 === 0 ? "В работе" : i % 2 === 0 ? "Закрыт" : i > 20 ? "Выполнен" : "Открыт",
@@ -199,21 +199,23 @@ class TableView extends React.Component {
             data.push({
                 key: uuid(),
                 status: "Закрыт",
-                name: "Исправление багов " + 32,
+                name: "Исправление багов " + 52,
                 priority: "Средний",
                 author: "Вася Василевский",
                 editor: "Павел Петрович",
                 date: moment().format("L"),
             });
 
-            data = flag
-                ? data
-                      .map(it => {
-                          if (it.editor === user) return it;
-                          else return null;
-                      })
-                      .filter(Boolean)
-                : data;
+            data =
+                flag && data.length
+                    ? data
+                          .map(it => {
+                              if (it.editor === user) return it;
+                              else return null;
+                          })
+                          .filter(Boolean)
+                    : data;
+
             return (
                 <Table
                     scroll={{ x: this.state.isScroll }}

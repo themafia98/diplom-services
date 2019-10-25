@@ -1,0 +1,33 @@
+.comments {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    .comments__controllers {
+        width: 75%;
+        .sendCommentsButton {
+            margin-left: 5px;
+            margin-top: 3px;
+        }
+    }
+    .commnetsListBox {
+        width: 90%;
+        min-width: 85%;
+        min-height: 200px;
+        border: 1px solid $blueDark;
+        padding: 5px;
+        margin-bottom: 10px;
+        .aboutCommentSender {
+            font-weight: bold;
+            .sender_name {
+                cursor: pointer;
+                color: $blueDark;
+            }
+        }
+        .commentContet {
+            display: flex;
+            width: 98%;
+            border-bottom: 1px solid black;
+        }
+    }
+}
