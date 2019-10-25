@@ -15,6 +15,7 @@ import { openPageWithDataAction } from "../../Redux/actions/routerActions";
 class TableView extends React.Component {
     state = {
         searchText: null,
+        sortedInfo: null,
         users: [],
         load: false,
         isScroll: null,
@@ -47,6 +48,13 @@ class TableView extends React.Component {
     setSizeWindow = event => {
         if (window.innerWidth <= 1200 && _.isNull(this.state.isScroll)) this.setState({ isScroll: true });
         else if (this.state.isScroll && window.innerWidth > 1200) this.setState({ isScroll: null });
+    };
+
+    handleFilter = (pagination, filters, sorter) => {
+        this.setState({
+            filteredInfo: filters,
+            sortedInfo: sorter,
+        });
     };
 
     getComponentByPath = path => {
@@ -88,6 +96,7 @@ class TableView extends React.Component {
                 </Scrollbars>
             );
         } else if (path === "searchTable") {
+            const { sortedInfo } = this.state;
             const columns = [
                 {
                     title: "Статус",
@@ -118,6 +127,9 @@ class TableView extends React.Component {
                     render: (text, row, index) => {
                         return <Output key={uuid()}>{text}</Output>;
                     },
+                    onFilter: (value, record) => record.name.includes(value),
+                    sorter: (a, b) => a.name.length - b.name.length,
+                    sortDirections: ["descend", "ascend"],
                     ...this.getColumnSearchProps("name"),
                 },
                 {
@@ -128,6 +140,8 @@ class TableView extends React.Component {
                     render: (text, row, index) => {
                         return <Output key={uuid()}>{text}</Output>;
                     },
+                    sorter: (a, b) => a.priority.length - b.priority.length,
+                    sortDirections: ["descend", "ascend"],
                     ...this.getColumnSearchProps("priority"),
                 },
                 {
@@ -135,6 +149,8 @@ class TableView extends React.Component {
                     className: "author",
                     dataIndex: "author",
                     key: "author",
+                    sorter: (a, b) => a.author.length - b.author.length,
+                    sortDirections: ["descend", "ascend"],
                     render: (text, row, index) => {
                         return <Output key={uuid()}>{text}</Output>;
                     },
@@ -145,6 +161,8 @@ class TableView extends React.Component {
                     className: "editor",
                     dataIndex: "editor",
                     key: "editor",
+                    sorter: (a, b) => a.editor.length - b.editor.length,
+                    sortDirections: ["descend", "ascend"],
                     render: (text, row, index) => {
                         return <Output key={uuid()}>{text}</Output>;
                     },
@@ -155,6 +173,8 @@ class TableView extends React.Component {
                     className: "date",
                     dataIndex: "date",
                     key: "date",
+                    sorter: (a, b) => a.date.length - b.date.length,
+                    sortDirections: ["descend", "ascend"],
                     render: (text, row, index) => {
                         return <Output key={uuid()}> {text}</Output>;
                     },
@@ -197,6 +217,7 @@ class TableView extends React.Component {
             return (
                 <Table
                     scroll={{ x: this.state.isScroll }}
+                    onChange={this.handleFilter}
                     columns={columns}
                     dataSource={data}
                     onRow={(record, rowIndex) => {
