@@ -1,12 +1,23 @@
 import React from "react";
+import { connect } from "react-redux";
 import Scrollbars from "react-custom-scrollbars";
 import { Button } from "antd";
+
+import { addTabAction } from "../../../Redux/actions/routerActions";
 import TaskModuleCalendar from "./TaskModuleCalendar";
 import TaskModuleList from "./TaskModuleList";
 import TaskModuleMyList from "./TaskModuleMyList";
 import TaskView from "../TaskModule/TaskView";
 
 class TaskModule extends React.PureComponent {
+    handlerNewTask = event => {
+        const {
+            addTab,
+            router: { currentActionTab },
+        } = this.props;
+        if (currentActionTab !== "taskModule_createTask") addTab("taskModule_createTask");
+    };
+
     getTaskByPath = path => {
         if (path) {
             const isList = path === "taskModule_myTasks" || path === "taskModule_all";
@@ -23,7 +34,11 @@ class TaskModule extends React.PureComponent {
                     ) : (
                         <div>Not found taskModule</div>
                     )}
-                    {isList ? <Button type="primary">Создать новую задачу</Button> : null}
+                    {isList ? (
+                        <Button onClick={this.handlerNewTask} type="primary">
+                            Создать новую задачу
+                        </Button>
+                    ) : null}
                 </Scrollbars>
             );
         } else return <div>Not found path module</div>;
@@ -36,4 +51,19 @@ class TaskModule extends React.PureComponent {
     }
 }
 
-export default TaskModule;
+const mapStateToProps = state => {
+    return {
+        router: state.router,
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        addTab: tab => dispatch(addTabAction(tab)),
+    };
+};
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(TaskModule);

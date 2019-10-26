@@ -96,7 +96,6 @@ class TableView extends React.Component {
                 </Scrollbars>
             );
         } else if (path === "searchTable") {
-            const { sortedInfo } = this.state;
             const columns = [
                 {
                     title: "Статус",

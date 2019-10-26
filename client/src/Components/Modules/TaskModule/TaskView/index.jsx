@@ -2,7 +2,6 @@ import React from "react";
 import { TASK_SCHEMA } from "../../../../Utils/schema/const";
 import { getSchema } from "../../../../Utils";
 import { Descriptions, Empty } from "antd";
-import _ from "lodash";
 import { connect } from "react-redux";
 import Scrollbars from "react-custom-scrollbars";
 
@@ -19,8 +18,6 @@ class TaskView extends React.Component {
         if (props.uuid !== state.uuid) return { ...state, uuid: props.uuid };
         else return state;
     };
-
-    componentDidUpdate = () => {};
 
     render() {
         const {
