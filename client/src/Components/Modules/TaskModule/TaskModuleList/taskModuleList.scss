@@ -62,7 +62,7 @@
                             flex: 0 0 8%;
                         }
                         &.name {
-                            flex: 0 0 25%;
+                            max-width: 300px;
                         }
                         &.priority {
                             flex: 0 0 11%;
@@ -106,8 +106,7 @@
                             max-width: 8%;
                         }
                         &.name {
-                            flex: 0 0 25%;
-                            max-width: 25%;
+                            max-width: 300px;
                         }
                         &.priority {
                             flex: 0 0 11%;

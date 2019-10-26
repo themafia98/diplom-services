@@ -269,7 +269,7 @@ class TableView extends React.Component {
                             highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
                             searchWords={[this.state.searchText]}
                             autoEscape
-                            textToHighlight={text.toString()}
+                            textToHighlight={text}
                         />
                     </Output>
                 );
