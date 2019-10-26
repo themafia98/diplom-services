@@ -97,7 +97,7 @@ export default (state = initialState, action) => {
                 ];
 
             const uuid = typeof nextTab === "string" ? nextTab.split("__")[1] : null;
-            debugger;
+
             const copyData = routeDataNew;
             return {
                 ...state,

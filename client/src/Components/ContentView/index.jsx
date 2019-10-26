@@ -82,10 +82,10 @@ class ContentView extends React.PureComponent {
 
     render() {
         const { path } = this.props;
-        const { key, drawerView } = this.state;
+        const { drawerView } = this.state;
         return (
             <React.Fragment>
-                <Content key="content">{this.getComponentByPath(path)}</Content>
+                <Content key={this.state.key}>{this.getComponentByPath(path)}</Content>
                 <DrawerViewer onClose={this.onClose} visible={drawerView} />
             </React.Fragment>
         );

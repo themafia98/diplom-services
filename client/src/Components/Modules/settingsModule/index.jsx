@@ -25,7 +25,7 @@ class SettingsModule extends React.PureComponent {
     componentWillUnmount = () => {
         const { haveChanges } = this.state;
         const { onSaveComponentState, path, router } = this.props;
-        debugger;
+
         if (haveChanges && !_.isEqual(router.routeData[path], this.state))
             return onSaveComponentState({ ...this.state, path: path });
     };
