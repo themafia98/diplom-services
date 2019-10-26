@@ -6,6 +6,7 @@ import {
     LOGOUT,
     OPEN_PAGE_WITH_DATA,
     SAVE_STATE,
+    SET_FLAG_LOAD_DATA,
 } from "../../actions/routerActions/const";
 
 const initialState = {
@@ -43,6 +44,14 @@ export default (state = initialState, action) => {
         case SAVE_STATE: {
             const copyRouteData = { ...state.routeData };
             copyRouteData[action.payload.path] = action.payload;
+            return {
+                ...state,
+                routeData: copyRouteData,
+            };
+        }
+        case SET_FLAG_LOAD_DATA: {
+            const copyRouteData = { ...state.routeData };
+            copyRouteData[action.payload.path].load = action.payload.load;
             return {
                 ...state,
                 routeData: copyRouteData,

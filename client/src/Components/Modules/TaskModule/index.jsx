@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import Scrollbars from "react-custom-scrollbars";
 import { Button } from "antd";
 
-import { addTabAction } from "../../../Redux/actions/routerActions";
+import { addTabAction, loadCurrentData } from "../../../Redux/actions/routerActions";
 import TaskModuleCalendar from "./TaskModuleCalendar";
 import TaskModuleList from "./TaskModuleList";
 import TaskModuleMyList from "./TaskModuleMyList";

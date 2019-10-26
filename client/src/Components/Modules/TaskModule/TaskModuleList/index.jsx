@@ -3,6 +3,9 @@ import TableView from "../../../TableView";
 import TitleModule from "../../../TitleModule";
 
 class TaskModuleList extends React.PureComponent {
+    componentDidMount = () => {
+        const { firebase } = this.props;
+    };
     render() {
         return (
             <div className="taskModule_all">

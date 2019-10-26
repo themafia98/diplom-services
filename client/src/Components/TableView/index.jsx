@@ -10,34 +10,19 @@ import moment from "moment";
 import Highlighter from "react-highlight-words";
 import Output from "../Output";
 
-import { openPageWithDataAction } from "../../Redux/actions/routerActions";
+import { openPageWithDataAction, loadCurrentData } from "../../Redux/actions/routerActions";
 
 class TableView extends React.Component {
     state = {
         searchText: null,
         sortedInfo: null,
-        users: [],
-        load: false,
         isScroll: null,
     };
 
     componentDidMount = () => {
-        const { firebase: { db = null } = {}, path } = this.props;
-        if (path === "mainModule__table") {
-            db.collection("users")
-                .get()
-                .then(function(querySnapshot) {
-                    const users = [];
-                    querySnapshot.forEach(function(doc) {
-                        users.push(doc.data());
-                    });
-                    return users;
-                })
-                .then(users => {
-                    this.setState({ users: users, load: true });
-                });
-        }
+        const { firebase: { db = null } = {}, path, onLoadCurrentData, dispatch } = this.props;
 
+        if (path === "mainModule__table") onLoadCurrentData(path);
         $(window).on("resize", this.setSizeWindow);
     };
 
@@ -58,9 +43,9 @@ class TableView extends React.Component {
     };
 
     getComponentByPath = path => {
-        const { users, load } = this.state;
-        const { user, flag } = this.props;
-
+        const { user, flag, router } = this.props;
+        const { routeData } = router;
+        const currentData = routeData[path];
         if (path === "mainModule__table") {
             return (
                 <Scrollbars>
@@ -75,9 +60,9 @@ class TableView extends React.Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {users.length && load ? (
-                                this.getRowsTable(users)
-                            ) : load ? (
+                            {currentData && currentData.users.length && currentData.load ? (
+                                this.getRowsTable(currentData.users)
+                            ) : currentData && currentData.load ? (
                                 <tr>
                                     <td colSpan="5">
                                         <Empty description={<span>Данных нету</span>} className="emptyTable" />
@@ -366,6 +351,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onOpenPageWithData: data => dispatch(openPageWithDataAction(data)),
+        onLoadCurrentData: path => dispatch(loadCurrentData(path)),
     };
 };
 

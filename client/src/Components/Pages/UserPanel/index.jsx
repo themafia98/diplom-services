@@ -58,10 +58,6 @@ class UserPanel extends React.PureComponent {
         setCurrentTab("mainModule");
     };
 
-    componentDidUpdate = () => {
-        console.log("componentDidUpdate UserPanel");
-    };
-
     menuHandler = (event, key, mode = "open") => {
         const path = event["key"] ? event["key"] : key;
         const {
