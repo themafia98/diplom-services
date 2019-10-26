@@ -1,4 +1,7 @@
 import React from "react";
+import _ from "lodash";
+import { connect } from "react-redux";
+import { saveComponentStateAction } from "../../../Redux/actions/routerActions";
 import { Collapse, Switch, Input, Button } from "antd";
 import ObserverTime from "../../ObserverTime";
 import TitleModule from "../../TitleModule";
@@ -10,6 +13,21 @@ class SettingsModule extends React.PureComponent {
         telValue: "",
         mail: false,
         phone: false,
+    };
+
+    componentDidMount = () => {
+        const { router, path } = this.props;
+        if (router && router.routeData[path] && router.routeData[path].haveChanges) {
+            this.setState({ ...this.state, ...router.routeData[path] });
+        }
+    };
+
+    componentWillUnmount = () => {
+        const { haveChanges } = this.state;
+        const { onSaveComponentState, path, router } = this.props;
+        debugger;
+        if (haveChanges && !_.isEqual(router.routeData[path], this.state))
+            return onSaveComponentState({ ...this.state, path: path });
     };
 
     hideMail = event => {
@@ -84,11 +102,11 @@ class SettingsModule extends React.PureComponent {
                             </Panel>
                             <Panel header="Настройки профиля" key="profile">
                                 <div className="configWrapper">
-                                    <Switch defaultChecked={false} onChange={this.hideMail} />
+                                    <Switch defaultChecked={this.state.mail} onChange={this.hideMail} />
                                     <span className="configTitle">Скрывать почту</span>
                                 </div>
                                 <div className="configWrapper">
-                                    <Switch defaultChecked={false} onChange={this.hidePhone} />
+                                    <Switch defaultChecked={this.state.phone} onChange={this.hidePhone} />
                                     <span className="configTitle">Скрывать телефон</span>
                                 </div>
                             </Panel>
@@ -118,4 +136,19 @@ class SettingsModule extends React.PureComponent {
         );
     }
 }
-export default SettingsModule;
+const mapStateToProps = state => {
+    return {
+        router: { ...state.router },
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onSaveComponentState: data => dispatch(saveComponentStateAction(data)),
+    };
+};
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(SettingsModule);

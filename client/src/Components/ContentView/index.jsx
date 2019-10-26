@@ -19,7 +19,15 @@ const { Content } = Layout;
 class ContentView extends React.PureComponent {
     state = {
         drawerView: false,
-        key: uuid(),
+        key: null,
+    };
+
+    componentDidMount = () => {
+        if (!this.state.key) this.setState({ ...this.state, key: uuid() });
+    };
+
+    componentDidUpdate = () => {
+        console.log("componentDidUpdate ContentView");
     };
 
     getComponentByPath = path => {
@@ -27,14 +35,27 @@ class ContentView extends React.PureComponent {
 
         const { firebase } = this.props;
 
-        if (path === "mainModule") return <MainModule firebase={firebase} />;
-        if (path === "cabinetModule") return <CabinetModule firebase={firebase} />;
-        if (path.startsWith("taskModule")) return <TaskModule path={path} firebase={firebase} />;
-        if (path.startsWith("contactModule")) return <ContactModule path={path} firebase={firebase} />;
-        if (path.startsWith("customersModule")) return <CustomersModule path={path} firebase={firebase} />;
-        if (path === "settingsModule") return <SettingsModule firebase={firebase} />;
-        if (path === "statisticModule") return <StatisticsModule firebase={firebase} />;
-        else return <div>Not found module: ${path}</div>;
+        return (
+            <React.Fragment>
+                {path === "mainModule" ? (
+                    <MainModule key="mainModule" firebase={firebase} />
+                ) : path === "cabinetModule" ? (
+                    <CabinetModule key="cabinet" firebase={firebase} />
+                ) : path.startsWith("taskModule") ? (
+                    <TaskModule key="taskModule" path={path} firebase={firebase} />
+                ) : path.startsWith("contactModule") ? (
+                    <ContactModule key="contact" path={path} firebase={firebase} />
+                ) : path.startsWith("customersModule") ? (
+                    <CustomersModule key="customers" path={path} firebase={firebase} />
+                ) : path === "settingsModule" ? (
+                    <SettingsModule key="settings" path={path} firebase={firebase} />
+                ) : path === "statisticModule" ? (
+                    <StatisticsModule key="statistic" firebase={firebase} />
+                ) : (
+                    <div>Not found module: ${path}</div>
+                )}
+            </React.Fragment>
+        );
     };
 
     disableF5 = event => {
@@ -64,7 +85,7 @@ class ContentView extends React.PureComponent {
         const { key, drawerView } = this.state;
         return (
             <React.Fragment>
-                <Content key={key}>{this.getComponentByPath(path)}</Content>
+                <Content key="content">{this.getComponentByPath(path)}</Content>
                 <DrawerViewer onClose={this.onClose} visible={drawerView} />
             </React.Fragment>
         );

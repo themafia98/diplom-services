@@ -7,7 +7,8 @@ import { addTabAction } from "../../../Redux/actions/routerActions";
 import TaskModuleCalendar from "./TaskModuleCalendar";
 import TaskModuleList from "./TaskModuleList";
 import TaskModuleMyList from "./TaskModuleMyList";
-import TaskView from "../TaskModule/TaskView";
+import TaskView from "./TaskView";
+import CreateTask from "./CreateTask";
 
 class TaskModule extends React.PureComponent {
     handlerNewTask = event => {
@@ -29,6 +30,8 @@ class TaskModule extends React.PureComponent {
                         <TaskModuleMyList user="Павел Петрович" />
                     ) : path === "taskModule_сalendar" ? (
                         <TaskModuleCalendar />
+                    ) : path === "taskModule_createTask" ? (
+                        <CreateTask />
                     ) : path.startsWith("taskModule_") ? (
                         <TaskView key={path.split("__")[1]} uuid={path.split("__")[1]} />
                     ) : (

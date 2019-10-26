@@ -1,4 +1,4 @@
-import { SET_PATH, ADD_TAB, SET_ACTIVE_TAB, REMOVE_TAB, LOGOUT, OPEN_PAGE_WITH_DATA } from "./const";
+import { SET_PATH, ADD_TAB, SET_ACTIVE_TAB, REMOVE_TAB, LOGOUT, OPEN_PAGE_WITH_DATA, SAVE_STATE } from "./const";
 import { setLogoutTabs } from "../tabActions";
 
 export const updatePathAction = state => {
@@ -39,6 +39,13 @@ export const removeTabAction = state => {
 export const logoutRouterAction = state => {
     return {
         type: LOGOUT,
+        payload: state,
+    };
+};
+
+export const saveComponentStateAction = state => {
+    return {
+        type: SAVE_STATE,
         payload: state,
     };
 };

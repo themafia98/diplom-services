@@ -46,6 +46,12 @@
             "PARENT_CODE": "taskModule"
         },
         {
+            "EUID": "taskModule_createTask",
+            "VALUE": "Новая задача",
+            "ICON": null,
+            "SIGN": "freedom"
+        },
+        {
             "EUID": "customersModule",
             "VALUE": "Работа с клиентами",
             "ICON": "global",

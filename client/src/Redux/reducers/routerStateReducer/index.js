@@ -5,6 +5,7 @@ import {
     REMOVE_TAB,
     LOGOUT,
     OPEN_PAGE_WITH_DATA,
+    SAVE_STATE,
 } from "../../actions/routerActions/const";
 
 const initialState = {
@@ -39,6 +40,14 @@ export default (state = initialState, action) => {
                 routeData: copyRouteData,
             };
         }
+        case SAVE_STATE: {
+            const copyRouteData = { ...state.routeData };
+            copyRouteData[action.payload.path] = action.payload;
+            return {
+                ...state,
+                routeData: copyRouteData,
+            };
+        }
         case SET_ACTIVE_TAB: {
             const content = action.payload.split("__")[1];
             let currentActive = null;
@@ -67,11 +76,9 @@ export default (state = initialState, action) => {
             const keys = Object.keys(state.routeData);
             const routeDataNew = {};
 
-            if (deleteKey) {
-                for (let i = 0; i < keys.length; i++) {
-                    if (state.routeData[keys[i]].key !== deleteKey) {
-                        routeDataNew[keys[i]] = { ...state.routeData[keys[i]] };
-                    }
+            for (let i = 0; i < keys.length; i++) {
+                if (state.routeData[keys[i]].key !== deleteKey) {
+                    routeDataNew[keys[i]] = { ...state.routeData[keys[i]] };
                 }
             }
 
@@ -90,7 +97,8 @@ export default (state = initialState, action) => {
                 ];
 
             const uuid = typeof nextTab === "string" ? nextTab.split("__")[1] : null;
-
+            debugger;
+            const copyData = routeDataNew;
             return {
                 ...state,
                 currentActionTab: nextTab,
@@ -105,7 +113,7 @@ export default (state = initialState, action) => {
                         : nextTab === state.currentActionTab
                         ? { ...state.routeDataActive }
                         : null,
-                routeData: deleteKey && routeDataNew ? routeDataNew : { ...state.routeData },
+                routeData: copyData,
             };
         }
         case LOGOUT: {

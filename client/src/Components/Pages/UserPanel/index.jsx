@@ -16,14 +16,14 @@ import HeaderView from "../../HeaderView";
 import ContentView from "../../ContentView";
 import MenuView from "../../MenuView";
 
-class UserPanel extends React.Component {
+class UserPanel extends React.PureComponent {
     state = {
         collapsed: false,
         menuItems: config.menu,
     };
 
     onCollapse = collapsed => {
-        this.setState({ collapsed });
+        this.setState({ ...this.state, collapsed });
     };
 
     logout = event => {
@@ -35,14 +35,12 @@ class UserPanel extends React.Component {
         const { router: { routeDataActive, routeData = {} } = {} } = this.props;
         const tabsCopy = [...tabs];
         const tabsArray = [];
-
         for (let i = 0; i < tabsCopy.length; i++) {
             let tabItem = menu.find(tab => tab.EUID === tabsCopy[i]);
             if (!tabItem) {
                 const dataPage = tabsCopy[i].split("__");
                 const PARENT_CODE = dataPage[0];
                 const DATAKEY = dataPage[1];
-                console.log(routeDataActive);
                 const VALUE = routeDataActive
                     ? routeDataActive.name
                         ? routeDataActive.name
@@ -58,6 +56,10 @@ class UserPanel extends React.Component {
     goHome = event => {
         const { setCurrentTab } = this.props;
         setCurrentTab("mainModule");
+    };
+
+    componentDidUpdate = () => {
+        console.log("componentDidUpdate UserPanel");
     };
 
     menuHandler = (event, key, mode = "open") => {
@@ -111,7 +113,7 @@ class UserPanel extends React.Component {
                         actionTabs={actionTabsData}
                         logout={this.logout}
                     />
-                    <ContentView firebase={firebase} key={currentActionTab} path={currentActionTab} />
+                    <ContentView firebase={firebase} key="contentView" path={currentActionTab} />
                 </Layout>
             </Layout>
         );
