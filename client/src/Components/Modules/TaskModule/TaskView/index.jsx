@@ -1,6 +1,4 @@
 import React from "react";
-import { TASK_SCHEMA } from "../../../../Utils/schema/const";
-import { getSchema } from "../../../../Utils";
 import { Descriptions, Empty } from "antd";
 import { connect } from "react-redux";
 import Scrollbars from "react-custom-scrollbars";
@@ -21,10 +19,9 @@ class TaskView extends React.Component {
 
     render() {
         const {
-            router: { routeDataActive = {} },
+            router: { routeDataActive = null },
         } = this.props;
-        const task = getSchema(TASK_SCHEMA, routeDataActive);
-        if (task && task.key === this.state.uuid) {
+        if (routeDataActive) {
             return (
                 <React.Fragment>
                     <TitleModule classNameTitle="taskModuleTittle" title="Карточка задачи" />
@@ -32,17 +29,19 @@ class TaskView extends React.Component {
                         <div className="col-6 col-taskDescription">
                             <Scrollbars>
                                 <Descriptions bordered column={{ xxl: 1, xl: 1, lg: 1, d: 1, sm: 1, xs: 1 }}>
-                                    <Descriptions.Item label="Артикул">{task.key}</Descriptions.Item>
-                                    <Descriptions.Item label="Название">{task.name}</Descriptions.Item>
-                                    <Descriptions.Item label="Статус">{task.status}</Descriptions.Item>
-                                    <Descriptions.Item label="Приоритет">{task.priority}</Descriptions.Item>
-                                    <Descriptions.Item label="Автор задачи">{task.author}</Descriptions.Item>
-                                    <Descriptions.Item label="Исполнитель">{task.editor}</Descriptions.Item>
-                                    <Descriptions.Item label="Дата назначения">{task.date}</Descriptions.Item>
+                                    <Descriptions.Item label="Артикул">{routeDataActive.key}</Descriptions.Item>
+                                    <Descriptions.Item label="Название">{routeDataActive.name}</Descriptions.Item>
+                                    <Descriptions.Item label="Статус">{routeDataActive.status}</Descriptions.Item>
+                                    <Descriptions.Item label="Приоритет">{routeDataActive.priority}</Descriptions.Item>
+                                    <Descriptions.Item label="Автор задачи">{routeDataActive.author}</Descriptions.Item>
+                                    <Descriptions.Item label="Исполнитель">{routeDataActive.editor}</Descriptions.Item>
+                                    <Descriptions.Item label="Дата назначения">
+                                        {routeDataActive.date}
+                                    </Descriptions.Item>
                                 </Descriptions>
                                 <div className="descriptionTask">
                                     <p className="descriptionTask__title">Задача</p>
-                                    <p className="descriptionTask__content">Исправить баги в компоненте задача</p>
+                                    <p className="descriptionTask__content">{routeDataActive.description}</p>
                                     <p className="task_file">Дополнительные файлы для задачи</p>
                                     <File />
                                     <p className="descriptionTask__comment">Коментарии</p>

@@ -6,6 +6,7 @@
         "lowConnection": "false"
     },
     "forceUpdate": false,
+    "msTimeoutLoading": 0,
     "tabsLimit": 20,
     "menu": [
         {

@@ -37,11 +37,14 @@ class App extends React.Component {
         /** load app */
         this.props.firebase.auth.onAuthStateChanged(user => {
             if (!this.state.firebaseLoadState) {
-                setTimeout(user ? this.loadAppSession.bind(this) : this.loadApp.bind(this), 0);
+                setTimeout(
+                    user ? this.loadAppSession.bind(this) : this.loadApp.bind(this),
+                    Number(config.msTimeoutLoading),
+                );
             }
         });
 
-        if (config.forceUpdate === true) forceUpdateDetectedInit();
+        if (config.forceUpdate === true || process.env.NODE_ENV === "production") forceUpdateDetectedInit();
     }
 
     render() {

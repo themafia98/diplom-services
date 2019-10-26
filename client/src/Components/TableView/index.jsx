@@ -43,7 +43,7 @@ class TableView extends React.Component {
     };
 
     getComponentByPath = path => {
-        const { user, flag, router } = this.props;
+        const { user, flag, router, tasks } = this.props;
         const { routeData } = router;
         const currentData = routeData[path];
         if (path === "mainModule__table") {
@@ -165,40 +165,20 @@ class TableView extends React.Component {
                     ...this.getColumnSearchProps("date"),
                 },
             ];
+            let tasksCopy = null;
+            if (tasks) tasksCopy = [...tasks];
+            let data = tasksCopy;
 
-            let data = [];
-
-            for (let i = 1; i <= 50; i++) {
-                data.push({
-                    key: uuid(),
-                    status: i % 3 === 0 ? "В работе" : i % 2 === 0 ? "Закрыт" : i > 20 ? "Выполнен" : "Открыт",
-                    name: "Исправление багов " + i,
-                    priority: "Средний",
-                    author: "Павел Петрович",
-                    editor: "Гена Букин",
-                    date: moment().format("L"),
-                });
-            }
-
-            data.push({
-                key: uuid(),
-                status: "Закрыт",
-                name: "Исправление багов " + 52,
-                priority: "Средний",
-                author: "Вася Василевский",
-                editor: "Павел Петрович",
-                date: moment().format("L"),
-            });
-
-            data =
-                flag && data.length
-                    ? data
-                          .map(it => {
-                              if (it.editor === user) return it;
-                              else return null;
-                          })
-                          .filter(Boolean)
-                    : data;
+            if (data)
+                data =
+                    flag && data.length
+                        ? data
+                              .map(it => {
+                                  if (it.editor === user) return it;
+                                  else return null;
+                              })
+                              .filter(Boolean)
+                        : data;
 
             return (
                 <Table

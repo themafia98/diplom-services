@@ -8,6 +8,7 @@ import {
     SAVE_STATE,
     SET_FLAG_LOAD_DATA,
 } from "./const";
+import { USER_SCHEMA, TASK_SCHEMA } from "../../../Utils/schema/const";
 import { setLogoutTabs } from "../tabActions";
 
 export const updatePathAction = state => {
@@ -59,13 +60,6 @@ export const saveComponentStateAction = state => {
     };
 };
 
-export const logoutAction = state => {
-    return dispatch => {
-        dispatch(setLogoutTabs());
-        dispatch(logoutRouterAction());
-    };
-};
-
 export const loadFlagAction = state => {
     return {
         type: SET_FLAG_LOAD_DATA,
@@ -73,7 +67,23 @@ export const loadFlagAction = state => {
     };
 };
 
-export const loadCurrentData = path => (dispatch, getState, { firebase }) => {
+// middlewares
+
+export const logoutAction = state => {
+    return dispatch => {
+        dispatch(setLogoutTabs());
+        dispatch(logoutRouterAction());
+    };
+};
+
+export const saveTaskAction = (path, dataTask) => (dispatch, getState, { firebase, getSchema }) => {
+    if (path.startsWith("taskModule_")) {
+        const dataTaskCopy = dataTask.map(it => getSchema(TASK_SCHEMA, it)).filter(Boolean);
+        debugger;
+    }
+};
+
+export const loadCurrentData = path => (dispatch, getState, { firebase, getSchema }) => {
     const router = getState().router;
     if (router.routeData && router.routeData[path] && router.routeData[path].load)
         dispatch(loadFlagAction({ path: path, load: false }));
@@ -90,7 +100,8 @@ export const loadCurrentData = path => (dispatch, getState, { firebase }) => {
                 return users;
             })
             .then(users => {
-                dispatch(saveComponentStateAction({ users: users, load: true, path }));
+                const usersCopy = users.map(it => getSchema(USER_SCHEMA, it)).filter(Boolean);
+                dispatch(saveComponentStateAction({ users: usersCopy, load: true, path }));
             });
     } else if (path.startsWith("taskModule_")) {
         firebase.db
@@ -104,6 +115,7 @@ export const loadCurrentData = path => (dispatch, getState, { firebase }) => {
                 return tasks;
             })
             .then(tasks => {
+                const tasksCopy = tasks.map(it => getSchema(TASK_SCHEMA, it)).filter(Boolean);
                 dispatch(saveComponentStateAction({ tasks: tasks, load: true, path }));
             });
     }

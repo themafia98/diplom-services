@@ -1,14 +1,75 @@
 import React from "react";
+import _ from "lodash";
 import TitleModule from "../../../TitleModule";
 import moment from "moment";
 import { Button, Input, Select, DatePicker } from "antd";
 
 import File from "../../../File";
+import uuid from "uuid/v4";
+
+import { getSchema } from "../../../../Utils/index";
+import { USER_SCHEMA, TASK_SCHEMA } from "../../../../Utils/schema/const"; // delay
 
 const { Option } = Select;
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;
+
 class CreateTask extends React.Component {
+    state = {
+        load: false,
+        card: {
+            key: uuid(),
+            status: "Открыт",
+            name: null,
+            priority: "Средний",
+            author: "Петрович Павел",
+            editor: null,
+            description: null,
+            date: [moment().format("l"), moment().format("l")],
+        },
+    };
+
+    onChangeHandler = event => {
+        const { target = null } = event;
+        if (_.isNull(target)) return;
+        if (!_.isNull(target) && target.name === "name")
+            return this.setState({ card: { ...this.state.card, name: target.value } });
+        else if (!_.isNull(target) && target.name === "description")
+            return this.setState({ card: { ...this.state.card, description: target.value } });
+    };
+
+    onChangeHandlerDate = (date, dateArray) => {
+        if (_.isArray(dateArray) && dateArray !== this.state.date) {
+            return this.setState({ card: { ...this.state.card, date: dateArray } });
+        }
+    };
+
+    onChangeHandlerSelectEditor = eventArray => {
+        if (!_.isArray(eventArray) || eventArray === this.state.editor) return;
+        else return this.setState({ card: { ...this.state.card, editor: eventArray } });
+    };
+
+    onChangeHandlerSelectPriority = eventString => {
+        if (!_.isString(eventString) || eventString === this.state.priority) return;
+        else {
+            this.setState({ card: { ...this.state.card, priority: eventString } });
+        }
+    };
+
+    handlerCreateTask = event => {
+        const { firebase } = this.props;
+        let keys = Object.keys(this.state.card);
+        if (keys.every(key => _.isNull(this.state.card[key]))) return;
+        const validHashCopy = [{ ...this.state.card }];
+        const validHash = validHashCopy.map(it => getSchema(TASK_SCHEMA, it)).filter(Boolean)[0];
+        this.setState({ load: true });
+        firebase.db
+            .collection("tasks")
+            .doc()
+            .set(validHash)
+            .then(() => this.setState({ load: false }));
+    };
+
     render() {
         const startFormat = moment().format("l");
         const dateFormat = "YYYY/MM/DD";
@@ -22,33 +83,40 @@ class CreateTask extends React.Component {
                     <div className="col-6">
                         <form className="taskForm" name="taskForm">
                             <label>Название: </label>
-                            <Input name="name" type="text" />
+                            <Input onChange={this.onChangeHandler} name="name" type="text" />
                             <label>Приоритет: </label>
-                            <Select defaultValue="medium" name="priority" type="text">
-                                <Option value="low">Низкий</Option>
-                                <Option value="medium">Средний</Option>
-                                <Option value="hot">Высокий</Option>
+                            <Select
+                                onChange={this.onChangeHandlerSelectPriority}
+                                defaultValue="Средний"
+                                name="priority"
+                                type="text"
+                            >
+                                <Option value="Низкий">Низкий</Option>
+                                <Option value="Средний">Средний</Option>
+                                <Option value="Высокий">Высокий</Option>
                             </Select>
                             <label>Назначить исполнителя/исполнителей:</label>
                             <Select
+                                onChange={this.onChangeHandlerSelectEditor}
                                 name="editor"
                                 mode="multiple"
                                 placeholder="выберете исполнителя"
                                 optionLabelProp="label"
                             >
-                                <Option value="user1" label="Павел Петрович">
+                                <Option value="Павел Петрович" label="Павел Петрович">
                                     <span>Павел Петрович</span>
                                 </Option>
-                                <Option value="user2" label="Гена Букин">
+                                <Option value="Гена Букин" label="Гена Букин">
                                     <span>Гена Букин</span>
                                 </Option>
                             </Select>
                             <label>Описание задачи: </label>
-                            <TextArea rows={8} />
+                            <TextArea name="description" onChange={this.onChangeHandler} rows={8} />
                             <label>Прикрепить файлы: </label>
                             <File />
                             <label>Срок сдачи: </label>
                             <RangePicker
+                                onChange={this.onChangeHandlerDate}
                                 defaultValue={[
                                     moment(moment().format("l"), dateFormat),
                                     moment(moment().format("l"), dateFormat),
@@ -56,7 +124,7 @@ class CreateTask extends React.Component {
                                 name="date"
                                 type="date"
                             />
-                            <Button loading={false} type="primary">
+                            <Button onClick={this.handlerCreateTask} loading={this.state.load} type="primary">
                                 Создать задачу
                             </Button>
                         </form>

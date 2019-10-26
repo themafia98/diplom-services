@@ -19,21 +19,27 @@ class TaskModule extends React.PureComponent {
         if (currentActionTab !== "taskModule_createTask") addTab("taskModule_createTask");
     };
 
+    componentDidMount = () => {
+        const { onLoadCurrentData, path } = this.props;
+        onLoadCurrentData(path);
+    };
+
     getTaskByPath = path => {
         if (path) {
             const isList = path === "taskModule_myTasks" || path === "taskModule_all";
+            const { router, firebase } = this.props;
             return (
                 <Scrollbars>
                     {path === "taskModule_all" ? (
-                        <TaskModuleList />
+                        <TaskModuleList data={router.routeData[path]} />
                     ) : path === "taskModule_myTasks" ? (
-                        <TaskModuleMyList user="Павел Петрович" />
+                        <TaskModuleMyList data={router.routeData[path]} user="Павел Петрович" />
                     ) : path === "taskModule_сalendar" ? (
                         <TaskModuleCalendar />
                     ) : path === "taskModule_createTask" ? (
-                        <CreateTask />
+                        <CreateTask firebase={firebase} />
                     ) : path.startsWith("taskModule_") ? (
-                        <TaskView key={path.split("__")[1]} uuid={path.split("__")[1]} />
+                        <TaskView key={path.split("__")[1]} data={router.routeData[path]} />
                     ) : (
                         <div>Not found taskModule</div>
                     )}
@@ -63,6 +69,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         addTab: tab => dispatch(addTabAction(tab)),
+        onLoadCurrentData: path => dispatch(loadCurrentData(path)),
     };
 };
 

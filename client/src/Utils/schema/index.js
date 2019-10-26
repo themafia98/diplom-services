@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { TASK_SCHEMA } from "./const";
+import { TASK_SCHEMA, USER_SCHEMA } from "./const";
 
 export const getValidateSchema = type => {
     switch (type) {
@@ -11,7 +11,20 @@ export const getValidateSchema = type => {
                 priority: null,
                 author: null,
                 editor: null,
+                description: null,
                 date: null,
+            };
+        case USER_SCHEMA:
+            return {
+                departament: null,
+                email: null,
+                login: null, // delay firebase
+                name: null,
+                position: null,
+                rules: null, // delay firebase
+                status: null,
+                surname: null,
+                uuid: null, // delay firebase
             };
         default:
             return null;
