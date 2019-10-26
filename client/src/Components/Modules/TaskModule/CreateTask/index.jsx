@@ -124,7 +124,12 @@ class CreateTask extends React.Component {
                                 name="date"
                                 type="date"
                             />
-                            <Button onClick={this.handlerCreateTask} loading={this.state.load} type="primary">
+                            <Button
+                                disabled={this.state.load}
+                                onClick={this.handlerCreateTask}
+                                loading={this.state.load}
+                                type="primary"
+                            >
                                 Создать задачу
                             </Button>
                         </form>

@@ -104,6 +104,7 @@ export const loadCurrentData = path => (dispatch, getState, { firebase, getSchem
                 dispatch(saveComponentStateAction({ users: usersCopy, load: true, path }));
             });
     } else if (path.startsWith("taskModule_")) {
+        debugger;
         firebase.db
             .collection("tasks")
             .get()
@@ -115,6 +116,7 @@ export const loadCurrentData = path => (dispatch, getState, { firebase, getSchem
                 return tasks;
             })
             .then(tasks => {
+                debugger;
                 const tasksCopy = tasks.map(it => getSchema(TASK_SCHEMA, it)).filter(Boolean);
                 dispatch(saveComponentStateAction({ tasks: tasks, load: true, path }));
             });

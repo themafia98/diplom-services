@@ -276,7 +276,7 @@ class TableView extends React.Component {
             else
                 return (
                     <Output className={className} key={uuid()}>
-                        {text.toString()}
+                        {text}
                     </Output>
                 );
         },
