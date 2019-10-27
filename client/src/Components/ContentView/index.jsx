@@ -1,9 +1,7 @@
 import React from "react";
-import $ from "jquery";
 import { Layout } from "antd";
 
 import DrawerViewer from "../DrawerViewer";
-
 import MainModule from "../Modules/MainModule";
 import CabinetModule from "../Modules/CabinetModule";
 import TaskModule from "../Modules/TaskModule";
@@ -24,10 +22,6 @@ class ContentView extends React.PureComponent {
 
     componentDidMount = () => {
         if (!this.state.key) this.setState({ ...this.state, key: uuid() });
-    };
-
-    componentDidUpdate = () => {
-        console.log("componentDidUpdate ContentView");
     };
 
     getComponentByPath = path => {
@@ -73,11 +67,11 @@ class ContentView extends React.PureComponent {
     };
 
     componentDidMount = () => {
-        $(document).on("keydown", this.disableF5);
+        document.addEventListener("keydown", this.disableF5);
     };
 
     componentWillUnmount = () => {
-        $(document).off("keydown");
+        document.removeEventListener("keydown", this.disableF5);
     };
 
     render() {

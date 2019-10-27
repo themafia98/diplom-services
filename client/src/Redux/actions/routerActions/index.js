@@ -77,10 +77,9 @@ export const logoutAction = state => {
 };
 
 export const saveTaskAction = (path, dataTask) => (dispatch, getState, { firebase, getSchema }) => {
-    if (path.startsWith("taskModule_")) {
-        const dataTaskCopy = dataTask.map(it => getSchema(TASK_SCHEMA, it)).filter(Boolean);
-        debugger;
-    }
+    // if (path.startsWith("taskModule_")) {
+    //     const dataTaskCopy = dataTask.map(it => getSchema(TASK_SCHEMA, it)).filter(Boolean);
+    // }
 };
 
 export const loadCurrentData = path => (dispatch, getState, { firebase, getSchema }) => {
@@ -104,7 +103,6 @@ export const loadCurrentData = path => (dispatch, getState, { firebase, getSchem
                 dispatch(saveComponentStateAction({ users: usersCopy, load: true, path }));
             });
     } else if (path.startsWith("taskModule_")) {
-        debugger;
         firebase.db
             .collection("tasks")
             .get()
@@ -116,9 +114,8 @@ export const loadCurrentData = path => (dispatch, getState, { firebase, getSchem
                 return tasks;
             })
             .then(tasks => {
-                debugger;
-                const tasksCopy = tasks.map(it => getSchema(TASK_SCHEMA, it)).filter(Boolean);
-                dispatch(saveComponentStateAction({ tasks: tasks, load: true, path }));
+                const tasksCopy = tasks.map(it => getSchema(TASK_SCHEMA, it, "no-strict")).filter(Boolean);
+                dispatch(saveComponentStateAction({ tasks: tasksCopy, load: true, path }));
             });
     }
 };

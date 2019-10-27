@@ -8,7 +8,7 @@ import File from "../../../File";
 import uuid from "uuid/v4";
 
 import { getSchema } from "../../../../Utils/index";
-import { USER_SCHEMA, TASK_SCHEMA } from "../../../../Utils/schema/const"; // delay
+import { TASK_SCHEMA } from "../../../../Utils/schema/const"; // delay
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -71,11 +71,8 @@ class CreateTask extends React.Component {
     };
 
     render() {
-        const startFormat = moment().format("l");
         const dateFormat = "YYYY/MM/DD";
-        const monthFormat = "YYYY/MM";
 
-        const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY"];
         return (
             <div className="createTask">
                 <TitleModule additional="Форма создания задачи" classNameTitle="createTaskTitle" title="Новая задача" />

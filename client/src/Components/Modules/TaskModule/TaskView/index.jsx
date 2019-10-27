@@ -3,6 +3,7 @@ import { Descriptions, Empty } from "antd";
 import { connect } from "react-redux";
 import Scrollbars from "react-custom-scrollbars";
 
+import Output from "../../../Output";
 import TitleModule from "../../../TitleModule";
 import Comments from "../../../Comments";
 import File from "../../../File";
@@ -29,14 +30,26 @@ class TaskView extends React.Component {
                         <div className="col-6 col-taskDescription">
                             <Scrollbars>
                                 <Descriptions bordered column={{ xxl: 1, xl: 1, lg: 1, d: 1, sm: 1, xs: 1 }}>
-                                    <Descriptions.Item label="Артикул">{routeDataActive.key}</Descriptions.Item>
-                                    <Descriptions.Item label="Название">{routeDataActive.name}</Descriptions.Item>
-                                    <Descriptions.Item label="Статус">{routeDataActive.status}</Descriptions.Item>
-                                    <Descriptions.Item label="Приоритет">{routeDataActive.priority}</Descriptions.Item>
-                                    <Descriptions.Item label="Автор задачи">{routeDataActive.author}</Descriptions.Item>
-                                    <Descriptions.Item label="Исполнитель">{routeDataActive.editor}</Descriptions.Item>
+                                    <Descriptions.Item label="Артикул">
+                                        <Output>{routeDataActive.key}</Output>
+                                    </Descriptions.Item>
+                                    <Descriptions.Item label="Название">
+                                        <Output>{routeDataActive.name}</Output>
+                                    </Descriptions.Item>
+                                    <Descriptions.Item label="Статус">
+                                        <Output>{routeDataActive.status}</Output>
+                                    </Descriptions.Item>
+                                    <Descriptions.Item label="Приоритет">
+                                        <Output>{routeDataActive.priority}</Output>
+                                    </Descriptions.Item>
+                                    <Descriptions.Item label="Автор задачи">
+                                        <Output>{routeDataActive.author}</Output>
+                                    </Descriptions.Item>
+                                    <Descriptions.Item label="Исполнитель">
+                                        <Output>{routeDataActive.editor}</Output>
+                                    </Descriptions.Item>
                                     <Descriptions.Item label="Дата назначения">
-                                        {routeDataActive.date}
+                                        <Output> {routeDataActive.date}</Output>
                                     </Descriptions.Item>
                                 </Descriptions>
                                 <div className="descriptionTask">

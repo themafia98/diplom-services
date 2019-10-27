@@ -32,6 +32,7 @@
         }
         table {
             padding-right: 45px;
+            max-width: 650px;
             .ant-table-thead {
                 background-color: $headerTable;
                 border-bottom: 0.5px solid $blueDark;
@@ -43,7 +44,11 @@
                 }
                 tr {
                     display: flex;
+                    cursor: pointer;
                     th {
+                        .ant-table-column-sorter {
+                            opacity: 0;
+                        }
                         .ant-table-header-column {
                             display: block;
                             .ant-table-column-title {
@@ -54,24 +59,29 @@
                                 display: block;
                             }
                         }
-
+                        cursor: pointer;
                         width: 100%;
                         text-align: center;
                         overflow: hidden;
                         &.status {
-                            flex: 0 0 8%;
+                            flex: 0 0 10%;
+                            max-width: 10%;
                         }
                         &.name {
-                            max-width: 300px;
+                            flex: 0 0 20%;
+                            max-width: 20%;
                         }
                         &.priority {
-                            flex: 0 0 11%;
+                            flex: 0 0 10%;
+                            max-width: 10%;
                         }
                         &.author {
-                            flex: 0 0 20%;
+                            flex: 0 0 10%;
+                            max-width: 10%;
                         }
                         &.editor {
                             flex: 0 0 20%;
+                            max-width: 20%;
                         }
                         border-left: 0.5px solid $blueDark;
                         color: #ffff;
@@ -89,6 +99,7 @@
 
             .ant-table-tbody {
                 tr {
+                    width: 100vw;
                     cursor: pointer;
                     display: flex;
                     td {
@@ -102,22 +113,24 @@
                         }
 
                         &.status {
-                            flex: 0 0 8%;
-                            max-width: 8%;
+                            flex: 0 0 10%;
+                            max-width: 10%;
                         }
                         &.name {
-                            max-width: 300px;
-                        }
-                        &.priority {
-                            flex: 0 0 11%;
-                            max-width: 25%;
-                        }
-                        &.author {
                             flex: 0 0 20%;
                             max-width: 20%;
                         }
+                        &.priority {
+                            flex: 0 0 10%;
+                            max-width: 10%;
+                        }
+                        &.author {
+                            flex: 0 0 10%;
+                            max-width: 10%;
+                        }
                         &.editor {
                             flex: 0 0 20%;
+                            max-width: 20%;
                         }
                     }
                     td:last-child {

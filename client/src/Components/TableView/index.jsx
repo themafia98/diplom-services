@@ -1,16 +1,15 @@
 import React from "react";
 import { connect } from "react-redux";
 import _ from "lodash";
-import $ from "jquery";
 import { Icon, Empty, Table, Input, Button } from "antd";
 import Loader from "../Loader";
 import Scrollbars from "react-custom-scrollbars";
 import uuid from "uuid/v4";
-import moment from "moment";
 import Highlighter from "react-highlight-words";
 import Output from "../Output";
 
 import { openPageWithDataAction, loadCurrentData } from "../../Redux/actions/routerActions";
+import moment from "moment";
 
 class TableView extends React.Component {
     state = {
@@ -20,14 +19,14 @@ class TableView extends React.Component {
     };
 
     componentDidMount = () => {
-        const { firebase: { db = null } = {}, path, onLoadCurrentData, dispatch } = this.props;
+        const { path, onLoadCurrentData } = this.props;
 
         if (path === "mainModule__table") onLoadCurrentData(path);
-        $(window).on("resize", this.setSizeWindow);
+        window.addEventListener("resize", this.setSizeWindow);
     };
 
     componentWillUnmount = () => {
-        $(window).off("resize", this.setSizeWindow);
+        window.removeEventListener("resize", this.setSizeWindow);
     };
 
     setSizeWindow = event => {
@@ -153,7 +152,7 @@ class TableView extends React.Component {
                     ...this.getColumnSearchProps("editor"),
                 },
                 {
-                    title: "Дата создания",
+                    title: "Сроки исполнения",
                     className: "date",
                     dataIndex: "date",
                     key: "date",
@@ -182,6 +181,7 @@ class TableView extends React.Component {
 
             return (
                 <Table
+                    width="650px"
                     scroll={{ x: this.state.isScroll }}
                     onChange={this.handleFilter}
                     columns={columns}
@@ -251,6 +251,7 @@ class TableView extends React.Component {
             }
         },
         render: text => {
+            const isDateString = _.isArray(text) && moment(text[0], "DD-MM-YYYY")._isValid;
             const className =
                 text === "В работе"
                     ? "active"
@@ -276,7 +277,7 @@ class TableView extends React.Component {
             else
                 return (
                     <Output className={className} key={uuid()}>
-                        {text}
+                        {_.isArray(text) ? (!isDateString ? text.join(",") : text.join(" - ")) : text}
                     </Output>
                 );
         },

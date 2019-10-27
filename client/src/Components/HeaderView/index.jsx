@@ -55,7 +55,7 @@ class HeaderView extends React.Component {
                         <Tab
                             hendlerTab={cbMenuTabHandler}
                             active={activeTabEUID === item.EUID}
-                            key={item.EUID + uuid()}
+                            key={item.EUID}
                             itemKey={item.EUID}
                             value={item.VALUE}
                             sizeTab={sizeTab}

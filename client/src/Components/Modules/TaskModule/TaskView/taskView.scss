@@ -1,5 +1,11 @@
 .taskView {
     display: flex;
+
+    .ant-descriptions-row {
+        .output {
+            text-align: start;
+        }
+    }
     tbody {
         border: 0.5px solid $blueDark;
         tr {
@@ -10,6 +16,9 @@
                 &.ant-descriptions-item-label {
                     border-right: 0.5px solid $blueDark;
                 }
+            }
+            .ant-descriptions-item-content {
+                max-width: 300px;
             }
         }
     }
@@ -36,6 +45,7 @@
             max-height: 150px;
             font-size: 15px;
             padding: 10px;
+            word-break: break-word;
             border: 1px solid $blueDark;
         }
     }

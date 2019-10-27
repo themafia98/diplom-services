@@ -32,7 +32,7 @@ class UserPanel extends React.PureComponent {
     };
 
     getActionTabs = (tabs = [], menu) => {
-        const { router: { routeDataActive, routeData = {} } = {} } = this.props;
+        const { router: { routeData = {} } = {} } = this.props;
         const tabsCopy = [...tabs];
         const tabsArray = [];
         for (let i = 0; i < tabsCopy.length; i++) {
@@ -41,11 +41,7 @@ class UserPanel extends React.PureComponent {
                 const dataPage = tabsCopy[i].split("__");
                 const PARENT_CODE = dataPage[0];
                 const DATAKEY = dataPage[1];
-                const VALUE = routeDataActive
-                    ? routeDataActive.name
-                        ? routeDataActive.name
-                        : null
-                    : routeData[DATAKEY].name;
+                const VALUE = routeData[DATAKEY].name;
                 tabItem = { EUID: tabsCopy[i], PARENT_CODE, DATAKEY, VALUE };
             }
             if (tabItem) tabsArray.push({ ...tabItem });

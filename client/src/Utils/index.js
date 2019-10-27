@@ -7,7 +7,7 @@ const forceUpdateDetectedInit = () => {
     });
 };
 
-const getSchema = (type, data) => {
+const getSchema = (type, data, mode = null) => {
     if (!_.isObject(data)) return null;
     if (!_.isString(type)) return null;
     if (_.isNull(data)) return null;
@@ -18,7 +18,7 @@ const getSchema = (type, data) => {
     if (schema) keysSchema = Object.keys(schema);
     else return null;
 
-    if (validateSchema(keysData, keysSchema)) return { ...data };
+    if (validateSchema(keysData, keysSchema, mode)) return { ...data };
     else return null;
 };
 

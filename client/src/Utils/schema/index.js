@@ -31,8 +31,10 @@ export const getValidateSchema = type => {
     }
 };
 
-export const validateSchema = (data, schema) => {
+export const validateSchema = (data, schema, mode) => {
     if (!_.isArray(data) || !_.isArray(schema)) return false;
     if (data.length !== schema.length) return false;
-    return data.every((dataKey, i) => dataKey === schema[i]);
+    return mode !== "no-strict"
+        ? data.every((dataKey, i) => dataKey === schema[i])
+        : data.every((dataKey, i) => schema.findIndex(it => it === dataKey) !== -1);
 };

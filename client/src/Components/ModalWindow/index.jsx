@@ -52,8 +52,7 @@ class ModalWindow extends React.Component {
         }
     };
 
-    handleCancel = e => {
-        console.log(e);
+    handleCancel = event => {
         this.setState({
             visible: false,
             loading: false,

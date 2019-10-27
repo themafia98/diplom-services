@@ -42,6 +42,7 @@
                 cursor: pointer;
                 font-size: 22px;
                 &:hover {
+                    cursor: pointer;
                     color: $blueDark;
                 }
             }
@@ -95,6 +96,7 @@
 
 .ant-table-thead > tr > th.ant-table-column-has-actions.ant-table-column-has-sorters:hover {
     background: unset;
+    cursor: pointer;
 }
 .ant-table-thead > tr > th.ant-table-column-has-actions.ant-table-column-has-sorters:hover .anticon-filter,
 .ant-table-thead > tr > th.ant-table-column-has-actions.ant-table-column-has-sorters:hover .ant-table-filter-icon {
