@@ -1,5 +1,6 @@
 import React from "react";
 import _ from "lodash";
+import Scrollbars from "react-custom-scrollbars";
 import TitleModule from "../../../TitleModule";
 import moment from "moment";
 import { Button, Input, Select, DatePicker } from "antd";
@@ -78,58 +79,60 @@ class CreateTask extends React.Component {
                 <TitleModule additional="Форма создания задачи" classNameTitle="createTaskTitle" title="Новая задача" />
                 <div className="createTask__main">
                     <div className="col-6">
-                        <form className="taskForm" name="taskForm">
-                            <label>Название: </label>
-                            <Input onChange={this.onChangeHandler} name="name" type="text" />
-                            <label>Приоритет: </label>
-                            <Select
-                                onChange={this.onChangeHandlerSelectPriority}
-                                defaultValue="Средний"
-                                name="priority"
-                                type="text"
-                            >
-                                <Option value="Низкий">Низкий</Option>
-                                <Option value="Средний">Средний</Option>
-                                <Option value="Высокий">Высокий</Option>
-                            </Select>
-                            <label>Назначить исполнителя/исполнителей:</label>
-                            <Select
-                                onChange={this.onChangeHandlerSelectEditor}
-                                name="editor"
-                                mode="multiple"
-                                placeholder="выберете исполнителя"
-                                optionLabelProp="label"
-                            >
-                                <Option value="Павел Петрович" label="Павел Петрович">
-                                    <span>Павел Петрович</span>
-                                </Option>
-                                <Option value="Гена Букин" label="Гена Букин">
-                                    <span>Гена Букин</span>
-                                </Option>
-                            </Select>
-                            <label>Описание задачи: </label>
-                            <TextArea name="description" onChange={this.onChangeHandler} rows={8} />
-                            <label>Прикрепить файлы: </label>
-                            <File />
-                            <label>Срок сдачи: </label>
-                            <RangePicker
-                                onChange={this.onChangeHandlerDate}
-                                defaultValue={[
-                                    moment(moment().format("l"), dateFormat),
-                                    moment(moment().format("l"), dateFormat),
-                                ]}
-                                name="date"
-                                type="date"
-                            />
-                            <Button
-                                disabled={this.state.load}
-                                onClick={this.handlerCreateTask}
-                                loading={this.state.load}
-                                type="primary"
-                            >
-                                Создать задачу
-                            </Button>
-                        </form>
+                        <Scrollbars>
+                            <form className="taskForm" name="taskForm">
+                                <label>Название: </label>
+                                <Input onChange={this.onChangeHandler} name="name" type="text" />
+                                <label>Приоритет: </label>
+                                <Select
+                                    onChange={this.onChangeHandlerSelectPriority}
+                                    defaultValue="Средний"
+                                    name="priority"
+                                    type="text"
+                                >
+                                    <Option value="Низкий">Низкий</Option>
+                                    <Option value="Средний">Средний</Option>
+                                    <Option value="Высокий">Высокий</Option>
+                                </Select>
+                                <label>Назначить исполнителя/исполнителей:</label>
+                                <Select
+                                    onChange={this.onChangeHandlerSelectEditor}
+                                    name="editor"
+                                    mode="multiple"
+                                    placeholder="выберете исполнителя"
+                                    optionLabelProp="label"
+                                >
+                                    <Option value="Павел Петрович" label="Павел Петрович">
+                                        <span>Павел Петрович</span>
+                                    </Option>
+                                    <Option value="Гена Букин" label="Гена Букин">
+                                        <span>Гена Букин</span>
+                                    </Option>
+                                </Select>
+                                <label>Описание задачи: </label>
+                                <TextArea name="description" onChange={this.onChangeHandler} rows={8} />
+                                <label>Прикрепить файлы: </label>
+                                <File />
+                                <label>Срок сдачи: </label>
+                                <RangePicker
+                                    onChange={this.onChangeHandlerDate}
+                                    defaultValue={[
+                                        moment(moment().format("l"), dateFormat),
+                                        moment(moment().format("l"), dateFormat),
+                                    ]}
+                                    name="date"
+                                    type="date"
+                                />
+                                <Button
+                                    disabled={this.state.load}
+                                    onClick={this.handlerCreateTask}
+                                    loading={this.state.load}
+                                    type="primary"
+                                >
+                                    Создать задачу
+                                </Button>
+                            </form>
+                        </Scrollbars>
                     </div>
                 </div>
             </div>

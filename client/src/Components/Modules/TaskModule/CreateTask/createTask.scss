@@ -9,8 +9,11 @@
         width: 100%;
         display: flex;
         .taskForm {
+            overflow: hidden;
             margin-top: 10px;
             width: 100%;
+            max-height: 80vh;
+            height: 80vh;
             display: flex;
             flex-direction: column;
             align-items: center;
