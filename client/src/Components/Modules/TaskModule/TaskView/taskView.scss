@@ -60,3 +60,14 @@
         }
     }
 }
+
+.dropDownWrapper {
+    max-width: 200px;
+}
+.ant-dropdown-menu-item {
+    cursor: pointer;
+    p {
+        text-align: center;
+        cursor: pointer;
+    }
+}

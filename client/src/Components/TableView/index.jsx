@@ -1,15 +1,17 @@
 import React from "react";
 import { connect } from "react-redux";
+import moment from "moment";
 import _ from "lodash";
 import { Icon, Empty, Table, Input, Button } from "antd";
 import Loader from "../Loader";
 import Scrollbars from "react-custom-scrollbars";
 import uuid from "uuid/v4";
 import Highlighter from "react-highlight-words";
+
 import Output from "../Output";
 
-import { openPageWithDataAction, loadCurrentData } from "../../Redux/actions/routerActions";
-import moment from "moment";
+import { openPageWithDataAction } from "../../Redux/actions/routerActions";
+import { loadCurrentData } from "../../Redux/actions/routerActions/middleware";
 
 class TableView extends React.Component {
     state = {
@@ -42,9 +44,12 @@ class TableView extends React.Component {
     };
 
     getComponentByPath = path => {
-        const { user, flag, router, tasks } = this.props;
+        const { user, flag, router } = this.props;
         const { routeData } = router;
-        const currentData = routeData[path];
+        const routePathData = router.currentActionTab.split("_")[0];
+        const currentData = routeData[routePathData];
+        const tasks = currentData ? currentData.tasks : null;
+
         if (path === "mainModule__table") {
             return (
                 <Scrollbars>
@@ -173,7 +178,7 @@ class TableView extends React.Component {
                     flag && data.length
                         ? data
                               .map(it => {
-                                  if (it.editor === user) return it;
+                                  if (!_.isNull(it.editor) && it.editor.some(editor => editor === user)) return it;
                                   else return null;
                               })
                               .filter(Boolean)

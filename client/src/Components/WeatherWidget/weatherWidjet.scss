@@ -1,5 +1,6 @@
 .weatherWidjet {
     display: flex;
+    overflow: hidden;
     flex-direction: row;
     justify-content: center;
     align-items: center;

@@ -1,6 +1,7 @@
 import React from "react";
 import { Descriptions, Empty } from "antd";
 import { connect } from "react-redux";
+import { Menu, Dropdown, Icon } from "antd";
 import Scrollbars from "react-custom-scrollbars";
 
 import Output from "../../../Output";
@@ -23,9 +24,28 @@ class TaskView extends React.Component {
             router: { routeDataActive = null },
         } = this.props;
         if (routeDataActive) {
+            const menu = (
+                <Menu>
+                    <Menu.Item>
+                        <p>Занести в журнал работы</p>
+                    </Menu.Item>
+                    <Menu.Item>
+                        <p>Сменить статус задачи</p>
+                    </Menu.Item>
+                </Menu>
+            );
+
             return (
                 <React.Fragment>
                     <TitleModule classNameTitle="taskModuleTittle" title="Карточка задачи" />
+                    <div className="dropDownWrapper">
+                        <Dropdown overlay={menu}>
+                            <p>
+                                Управление задачей
+                                <Icon type="down" />
+                            </p>
+                        </Dropdown>
+                    </div>
                     <div className="taskView">
                         <div className="col-6 col-taskDescription">
                             <Scrollbars>

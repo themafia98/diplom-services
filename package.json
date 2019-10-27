@@ -16,7 +16,6 @@
     "deploy:prod": "yarn build && netlify deploy --dir=client/build --functions=functions --prod"
   },
   "dependencies": {
-    "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "serverless-http": "^1.9.0"
   },

@@ -43,7 +43,16 @@ export default (state = initialState, action) => {
         }
         case SAVE_STATE: {
             const copyRouteData = { ...state.routeData };
-            copyRouteData[action.payload.path] = action.payload;
+            let path = action.payload.path;
+            let pathParse = path.split("_");
+            if (
+                pathParse[0] === "taskModule" &&
+                pathParse[1] &&
+                (pathParse[1] == "myTasks" || pathParse[1] === "all")
+            ) {
+                path = pathParse[0];
+            }
+            copyRouteData[path] = action.payload;
             return {
                 ...state,
                 routeData: copyRouteData,
