@@ -128,7 +128,7 @@ class TableView extends React.Component {
                     ...this.getColumnSearchProps("priority"),
                 },
                 {
-                    title: "Автор задачи",
+                    title: "Автор",
                     className: "author",
                     dataIndex: "author",
                     key: "author",
