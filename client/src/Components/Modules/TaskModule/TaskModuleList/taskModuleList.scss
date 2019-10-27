@@ -21,7 +21,6 @@
     }
     .taskModuleAll_main {
         .ant-table-placeholder {
-            width: 100%;
             background: unset;
             border: none;
         }
@@ -31,8 +30,7 @@
             justify-content: flex-start;
         }
         table {
-            padding-right: 45px;
-            max-width: 650px;
+            padding-right: 25px;
             .ant-table-thead {
                 background-color: $headerTable;
                 border-bottom: 0.5px solid $blueDark;
@@ -60,7 +58,7 @@
                             }
                         }
                         cursor: pointer;
-                        width: 100%;
+
                         text-align: center;
                         overflow: hidden;
                         &.status {
@@ -68,16 +66,16 @@
                             max-width: 10%;
                         }
                         &.name {
-                            flex: 0 0 20%;
-                            max-width: 20%;
+                            flex: 0 0 25%;
+                            max-width: 25%;
                         }
                         &.priority {
-                            flex: 0 0 10%;
-                            max-width: 10%;
+                            flex: 0 0 15%;
+                            max-width: 15%;
                         }
                         &.author {
-                            flex: 0 0 10%;
-                            max-width: 10%;
+                            flex: 0 0 16%;
+                            max-width: 16%;
                         }
                         &.editor {
                             flex: 0 0 20%;
@@ -92,6 +90,7 @@
                     }
 
                     th:last-child {
+                        width: 100%;
                         border-right: 0.5px solid $blueDark;
                     }
                 }
@@ -99,13 +98,13 @@
 
             .ant-table-tbody {
                 tr {
-                    width: 100vw;
                     cursor: pointer;
                     display: flex;
                     td {
                         border-left: 0.5px solid $blueDark;
                         border-bottom: 0.5px solid $blueDark;
                         width: 100%;
+                        overflow: hidden;
                         span {
                             font-weight: bold;
                             cursor: pointer;
@@ -117,16 +116,16 @@
                             max-width: 10%;
                         }
                         &.name {
-                            flex: 0 0 20%;
-                            max-width: 20%;
+                            flex: 0 0 25%;
+                            max-width: 25%;
                         }
                         &.priority {
-                            flex: 0 0 10%;
-                            max-width: 10%;
+                            flex: 0 0 15%;
+                            max-width: 15%;
                         }
                         &.author {
-                            flex: 0 0 10%;
-                            max-width: 10%;
+                            flex: 0 0 16%;
+                            max-width: 16%;
                         }
                         &.editor {
                             flex: 0 0 20%;

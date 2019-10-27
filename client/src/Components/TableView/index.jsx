@@ -30,7 +30,7 @@ class TableView extends React.Component {
     };
 
     setSizeWindow = event => {
-        if (window.innerWidth <= 1200 && _.isNull(this.state.isScroll)) this.setState({ isScroll: true });
+        if (window.innerWidth <= 1450 && _.isNull(this.state.isScroll)) this.setState({ isScroll: true });
         else if (this.state.isScroll && window.innerWidth > 1200) this.setState({ isScroll: null });
     };
 
@@ -152,7 +152,7 @@ class TableView extends React.Component {
                     ...this.getColumnSearchProps("editor"),
                 },
                 {
-                    title: "Сроки исполнения",
+                    title: "Сроки",
                     className: "date",
                     dataIndex: "date",
                     key: "date",
@@ -181,7 +181,6 @@ class TableView extends React.Component {
 
             return (
                 <Table
-                    width="650px"
                     scroll={{ x: this.state.isScroll }}
                     onChange={this.handleFilter}
                     columns={columns}
