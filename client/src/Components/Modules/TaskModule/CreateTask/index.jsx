@@ -78,7 +78,7 @@ class CreateTask extends React.Component {
             <div className="createTask">
                 <TitleModule additional="Форма создания задачи" classNameTitle="createTaskTitle" title="Новая задача" />
                 <div className="createTask__main">
-                    <div className="col-6">
+                    <div className="col-6 col-task">
                         <Scrollbars>
                             <form className="taskForm" name="taskForm">
                                 <label>Название: </label>

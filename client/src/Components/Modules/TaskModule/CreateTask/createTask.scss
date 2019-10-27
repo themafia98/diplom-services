@@ -8,12 +8,14 @@
     .createTask__main {
         width: 100%;
         display: flex;
+        .col-task {
+            max-height: 80vh;
+            height: 80vh;
+        }
         .taskForm {
             overflow: hidden;
             margin-top: 10px;
             width: 100%;
-            max-height: 80vh;
-            height: 80vh;
             display: flex;
             flex-direction: column;
             align-items: center;
