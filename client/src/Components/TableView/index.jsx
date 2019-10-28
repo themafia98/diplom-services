@@ -44,7 +44,12 @@ class TableView extends React.Component {
     };
 
     getComponentByPath = path => {
-        const { user, flag, router } = this.props;
+        const {
+            user,
+            flag,
+            router,
+            publicReducer: { requestError },
+        } = this.props;
         const { routeData } = router;
         const routePathData = router.currentActionTab.split("_")[0];
         const currentData = routeData[routePathData];
@@ -66,7 +71,8 @@ class TableView extends React.Component {
                         <tbody>
                             {currentData && currentData.users.length && currentData.load ? (
                                 this.getRowsTable(currentData.users)
-                            ) : currentData && currentData.load ? (
+                            ) : (currentData && currentData.load) ||
+                              (currentData && !currentData.load && requestError) ? (
                                 <tr>
                                     <td colSpan="5">
                                         <Empty description={<span>Данных нету</span>} className="emptyTable" />
@@ -330,6 +336,7 @@ class TableView extends React.Component {
 const mapStateToProps = state => {
     return {
         router: state.router,
+        publicReducer: state.publicReducer,
     };
 };
 

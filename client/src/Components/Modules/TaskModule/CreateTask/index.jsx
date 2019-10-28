@@ -3,7 +3,7 @@ import _ from "lodash";
 import Scrollbars from "react-custom-scrollbars";
 import TitleModule from "../../../TitleModule";
 import moment from "moment";
-import { Button, Input, Select, DatePicker } from "antd";
+import { Button, Input, Select, DatePicker, message } from "antd";
 
 import File from "../../../File";
 import uuid from "uuid/v4";
@@ -28,6 +28,74 @@ class CreateTask extends React.Component {
             description: null,
             date: [moment().format("l"), moment().format("l")],
         },
+        errorBundle: {},
+    };
+
+    validation = () => {
+        const {
+            card: { key, status, name, priority, author, editor, description, date },
+            errorBundle: errorBundleState,
+        } = this.state;
+        let isUpdate = false;
+        const copyErrorBundleState = { ...errorBundleState };
+        const errorBundle = {};
+        
+        if (!key) errorBundle.key = "Ключ не найден.";
+        else if (!_.isEmpty(copyErrorBundleState) && copyErrorBundleState.key) {
+            isUpdate = true;
+            copyErrorBundleState.key = null;
+        }
+        if (!status) errorBundle.status = "Статус не найден.";
+        else if (!_.isEmpty(copyErrorBundleState) && copyErrorBundleState.status) {
+            isUpdate = true;
+            copyErrorBundleState.status = null;
+        }
+        if (!name) errorBundle.name = "Имя не найдено.";
+        else if (!_.isEmpty(copyErrorBundleState) && copyErrorBundleState.name) {
+            
+            isUpdate = true;
+            copyErrorBundleState.name = null;
+        }
+        if (!priority) errorBundle.priority = "Приоритет не найден.";
+        else if (!_.isEmpty(copyErrorBundleState) && copyErrorBundleState.priority) {
+            isUpdate = true;
+            copyErrorBundleState.priority = null;
+        }
+        if (!author) errorBundle.author = "Автор не найден.";
+        else if (!_.isEmpty(copyErrorBundleState) && copyErrorBundleState.author) {
+            isUpdate = true;
+            copyErrorBundleState.author = null;
+        }
+        if (!editor) errorBundle.editor = "Исполнитель(и) не найден(ы).";
+        else if (!_.isEmpty(copyErrorBundleState) && copyErrorBundleState.editor) {
+            isUpdate = true;
+            copyErrorBundleState.editor = null;
+        }
+        if (!description) errorBundle.description = "Описание задачи не найдено.";
+        else if (!_.isEmpty(copyErrorBundleState) && copyErrorBundleState.description) {
+            isUpdate = true;
+            copyErrorBundleState.description = null;
+        }
+        if (!date.length) errorBundle.date = "Срок сдачи не найден.";
+        else if (!_.isEmpty(copyErrorBundleState) && copyErrorBundleState.date) {
+            isUpdate = true;
+            copyErrorBundleState.date = null;
+        }
+
+        if (isUpdate) {
+            const keyCopy = Object.keys(copyErrorBundleState);
+            let newCopyErrorBundle = {};
+            keyCopy.forEach(key => {
+                if (copyErrorBundleState[key] !== null) newCopyErrorBundle[key] = copyErrorBundleState[key];
+            });
+            this.setState({ errorBundle: { ...newCopyErrorBundle } });
+        }
+        if (_.isEmpty(errorBundle)) return true;
+        else {
+            message.error("Не все поля заполнены!");
+            this.setState({ errorBundle: errorBundle });
+            return;
+        }
     };
 
     onChangeHandler = event => {
@@ -59,21 +127,24 @@ class CreateTask extends React.Component {
 
     handlerCreateTask = event => {
         const { firebase } = this.props;
+        if (!this.validation()) return;
         let keys = Object.keys(this.state.card);
         if (keys.every(key => _.isNull(this.state.card[key]))) return;
         const validHashCopy = [{ ...this.state.card }];
-        const validHash = validHashCopy.map(it => getSchema(TASK_SCHEMA, it)).filter(Boolean)[0];
+        const validHash = validHashCopy.map(it => getSchema(TASK_SCHEMA, it, "no-strict")).filter(Boolean)[0];
+        if (!validHash) return message.error("Не валидные данные.");
+
         this.setState({ load: true });
         firebase.db
             .collection("tasks")
             .doc()
             .set(validHash)
-            .then(() => this.setState({ load: false }));
+            .then(() => this.setState({ load: false }, () => message.success(`Задача создана.`)));
     };
 
     render() {
         const dateFormat = "YYYY/MM/DD";
-
+        const { errorBundle } = this.state;
         return (
             <div className="createTask">
                 <TitleModule additional="Форма создания задачи" classNameTitle="createTaskTitle" title="Новая задача" />
@@ -82,9 +153,19 @@ class CreateTask extends React.Component {
                         <Scrollbars>
                             <form className="taskForm" name="taskForm">
                                 <label>Название: </label>
-                                <Input onChange={this.onChangeHandler} name="name" type="text" />
+                                <Input
+                                    className={[!_.isEmpty(errorBundle) && errorBundle.name ? "isError" : null].join(
+                                        " ",
+                                    )}
+                                    onChange={this.onChangeHandler}
+                                    name="name"
+                                    type="text"
+                                />
                                 <label>Приоритет: </label>
                                 <Select
+                                    className={[
+                                        !_.isEmpty(errorBundle) && errorBundle.priority ? "isError" : null,
+                                    ].join(" ")}
                                     onChange={this.onChangeHandlerSelectPriority}
                                     defaultValue="Средний"
                                     name="priority"
@@ -96,6 +177,9 @@ class CreateTask extends React.Component {
                                 </Select>
                                 <label>Назначить исполнителя/исполнителей:</label>
                                 <Select
+                                    className={[!_.isEmpty(errorBundle) && errorBundle.editor ? "isError" : null].join(
+                                        " ",
+                                    )}
                                     onChange={this.onChangeHandlerSelectEditor}
                                     name="editor"
                                     mode="multiple"
@@ -110,11 +194,21 @@ class CreateTask extends React.Component {
                                     </Option>
                                 </Select>
                                 <label>Описание задачи: </label>
-                                <TextArea name="description" onChange={this.onChangeHandler} rows={8} />
+                                <TextArea
+                                    className={[
+                                        !_.isEmpty(errorBundle) && errorBundle.description ? "isError" : null,
+                                    ].join(" ")}
+                                    name="description"
+                                    onChange={this.onChangeHandler}
+                                    rows={8}
+                                />
                                 <label>Прикрепить файлы: </label>
                                 <File />
                                 <label>Срок сдачи: </label>
                                 <RangePicker
+                                    className={[!_.isEmpty(errorBundle) && errorBundle.date ? "isError" : null].join(
+                                        " ",
+                                    )}
                                     onChange={this.onChangeHandlerDate}
                                     defaultValue={[
                                         moment(moment().format("l"), dateFormat),

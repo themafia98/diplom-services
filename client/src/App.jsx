@@ -48,10 +48,7 @@ class App extends React.Component {
     }
 
     render() {
-        const {
-            firebase,
-            router: { position },
-        } = this.props;
+        const { firebase } = this.props;
         const { firebaseLoadState, isUser } = this.state;
         if (firebaseLoadState) {
             return (

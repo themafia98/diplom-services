@@ -1,7 +1,6 @@
 import React from "react";
 import _ from "lodash";
 import axios from "axios";
-import { notification } from "antd";
 import Loader from "../Loader";
 
 class WeatherWidjet extends React.Component {
@@ -27,7 +26,7 @@ class WeatherWidjet extends React.Component {
                         {
                             isNetworkError: true,
                         },
-                        () => onErrorRequstAction(),
+                        () => onErrorRequstAction("Network Error"),
                     );
                 } else this.sendRequstWeather("Minsk,BLR");
             });
@@ -57,7 +56,7 @@ class WeatherWidjet extends React.Component {
                         {
                             isNetworkError: true,
                         },
-                        () => onErrorRequstAction(),
+                        () => onErrorRequstAction("Network Error"),
                     );
                 }
             });

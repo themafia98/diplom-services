@@ -7,7 +7,6 @@ const initialState = {
 export default (state = initialState, action) => {
     switch (action.type) {
         case SET_ERROR: {
-            debugger;
             return {
                 ...state,
                 requestError: action.payload ? action.payload : null,

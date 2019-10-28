@@ -1,5 +1,4 @@
 import React from "react";
-import confing from "../../config.json";
 import _ from "lodash";
 import { Menu, Layout, Icon } from "antd";
 

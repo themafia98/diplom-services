@@ -32,8 +32,10 @@
         background: $errorButton;
         font-weight: bold;
         color: white;
+        margin: 10px;
         transition: 0.3s all ease-in-out;
         &:hover {
+            cursor: pointer;
             background: $errorText;
         }
     }

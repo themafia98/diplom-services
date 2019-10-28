@@ -1,4 +1,5 @@
 import React from "react";
+import _ from "lodash";
 import { Layout } from "antd";
 
 import DrawerViewer from "../DrawerViewer";
@@ -17,34 +18,59 @@ const { Content } = Layout;
 class ContentView extends React.PureComponent {
     state = {
         drawerView: false,
-        key: null,
+        key: uuid(),
     };
 
-    componentDidMount = () => {
-        if (!this.state.key) this.setState({ ...this.state, key: uuid() });
-    };
+    // componentDidUpdate = (prevProps, prevState) => {
+    //     const { key } = this.state;
+    //     const { updateLoader } = this.props;
+    //     const { ley: prevKey } = prevState;
+    //     if (!_.isNull(key) && !_.isNull(prevKey) && prevKey !== key) {
+    //         updateLoader();
+    //     }
+    // };
 
     getComponentByPath = path => {
         if (!path) return null;
 
-        const { firebase } = this.props;
+        const { firebase, onErrorRequstAction } = this.props;
 
         return (
             <React.Fragment>
                 {path === "mainModule" ? (
-                    <MainModule key="mainModule" firebase={firebase} />
+                    <MainModule onErrorRequstAction={onErrorRequstAction} key="mainModule" firebase={firebase} />
                 ) : path === "cabinetModule" ? (
-                    <CabinetModule key="cabinet" firebase={firebase} />
+                    <CabinetModule onErrorRequstAction={onErrorRequstAction} key="cabinet" firebase={firebase} />
                 ) : path.startsWith("taskModule") ? (
-                    <TaskModule key="taskModule" path={path} firebase={firebase} />
+                    <TaskModule
+                        onErrorRequstAction={onErrorRequstAction}
+                        key="taskModule"
+                        path={path}
+                        firebase={firebase}
+                    />
                 ) : path.startsWith("contactModule") ? (
-                    <ContactModule key="contact" path={path} firebase={firebase} />
+                    <ContactModule
+                        onErrorRequstAction={onErrorRequstAction}
+                        key="contact"
+                        path={path}
+                        firebase={firebase}
+                    />
                 ) : path.startsWith("customersModule") ? (
-                    <CustomersModule key="customers" path={path} firebase={firebase} />
+                    <CustomersModule
+                        onErrorRequstAction={onErrorRequstAction}
+                        key="customers"
+                        path={path}
+                        firebase={firebase}
+                    />
                 ) : path === "settingsModule" ? (
-                    <SettingsModule key="settings" path={path} firebase={firebase} />
+                    <SettingsModule
+                        onErrorRequstAction={onErrorRequstAction}
+                        key="settings"
+                        path={path}
+                        firebase={firebase}
+                    />
                 ) : path === "statisticModule" ? (
-                    <StatisticsModule key="statistic" firebase={firebase} />
+                    <StatisticsModule onErrorRequstAction={onErrorRequstAction} key="statistic" firebase={firebase} />
                 ) : (
                     <div>Not found module: ${path}</div>
                 )}
@@ -52,13 +78,18 @@ class ContentView extends React.PureComponent {
         );
     };
 
+    updateFunction = _.debounce(() => {
+        const { updateLoader } = this.props;
+        this.setState({ ...this.state, key: uuid() }, () => updateLoader());
+    }, 500);
+
     disableF5 = event => {
         if ((event.which || event.keyCode) === 113) {
             return this.setState({ ...this.state, drawerView: !this.state.drawerView });
         }
         if ((event.which || event.keyCode) === 116) {
             event.preventDefault();
-            return this.setState({ ...this.state, key: uuid() });
+            this.updateFunction();
         }
     };
 

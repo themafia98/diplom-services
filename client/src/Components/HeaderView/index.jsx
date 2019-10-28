@@ -5,7 +5,6 @@ import Tab from "./Tab";
 import { Layout } from "antd";
 
 import { setParentSizeAction, setChildrenSizeAction } from "../../Redux/actions/tabActions";
-import uuid from "uuid/v4";
 
 const { Header } = Layout;
 

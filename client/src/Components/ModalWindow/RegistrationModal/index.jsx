@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Input, Select } from "antd";
+import { Input, Select } from "antd";
 const { Option } = Select;
 const RegistrationModal = ({ cbOnChangeSelect, cbOnChange }) => (
     <div>

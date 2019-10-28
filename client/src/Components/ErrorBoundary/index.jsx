@@ -14,6 +14,14 @@ class ErrorBoundary extends React.Component {
         return { hasError: true, error: error };
     }
 
+    update = event => {
+        this.setState({
+            hasError: false,
+            eventId: null,
+            error: null,
+        });
+    };
+
     componentDidCatch(error, errorInfo) {
         Sentry.withScope(scope => {
             scope.setExtras(errorInfo);
@@ -30,7 +38,7 @@ class ErrorBoundary extends React.Component {
     render() {
         if (this.state.hasError) {
             //render fallback UI
-            return <ErrorPage logger={this.logger} error={this.state.error} />;
+            return <ErrorPage update={this.update} logger={this.logger} error={this.state.error} />;
         }
         //when there's not an error, render children untouched
         return this.props.children;

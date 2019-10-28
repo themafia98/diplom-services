@@ -1,6 +1,7 @@
 import React from "react";
+import _ from "lodash";
 import config from "../../../config.json";
-import { Layout, message } from "antd";
+import { Layout, message, notification } from "antd";
 import { connect } from "react-redux";
 import {
     updatePathAction,
@@ -10,9 +11,10 @@ import {
     logoutAction,
 } from "../../../Redux/actions/routerActions";
 import { loadCurrentData } from "../../../Redux/actions/routerActions/middleware";
-
+import { errorRequstAction } from "../../../Redux/actions/publicActions";
 import { setChildrenSizeAction } from "../../../Redux/actions/tabActions";
 
+import Loader from "../../Loader";
 import HeaderView from "../../HeaderView";
 import ContentView from "../../ContentView";
 import MenuView from "../../MenuView";
@@ -21,6 +23,39 @@ class Dashboard extends React.PureComponent {
     state = {
         collapsed: false,
         menuItems: config.menu,
+        showLoader: false,
+    };
+
+    componentDidUpdate = () => {
+        const {
+            onErrorRequstAction,
+            publicReducer: { requestError = null } = {},
+            router,
+            router: { currentActionTab },
+        } = this.props;
+        const { showLoader } = this.state;
+        if (!_.isNull(requestError)) {
+            onErrorRequstAction(false).then(() => {
+                if (requestError === "Network error")
+                    notification.error({ message: "Ошибка", description: "Интернет соединение недоступно." });
+            });
+        }
+
+        if (showLoader) {
+            const { routeData = {} } = router;
+            const copyRouteData = { ...routeData };
+            let currentArray = currentActionTab.split("_" || "__");
+            let regExp = new RegExp(currentArray[0], "gi");
+            let keys = Object.keys(copyRouteData).filter(key => /Module/gi.test(key) && regExp.test(key));
+
+            if (keys.every(key => copyRouteData[key].load === true) || requestError === "Network error") {
+                if (requestError === "Network error") setTimeout(() => this.setState({ showLoader: false }), 500);
+                else
+                    this.setState({
+                        showLoader: false,
+                    });
+            }
+        }
     };
 
     onCollapse = collapsed => {
@@ -30,6 +65,24 @@ class Dashboard extends React.PureComponent {
     logout = event => {
         const { firebase, onLogoutAction } = this.props;
         if (firebase) firebase.signOut().then(() => onLogoutAction().then(() => this.props.history.push("/")));
+    };
+
+    updateLoader = event => {
+        const {
+            router,
+            router: { currentActionTab },
+        } = this.props;
+        const { routeData = {} } = router;
+        const copyRouteData = { ...routeData };
+        let currentArray = currentActionTab.split("_" || "__");
+        let regExp = new RegExp(currentArray[0], "gi");
+        let keys = Object.keys(copyRouteData).filter(key => /Module/gi.test(key) && regExp.test(key));
+
+        if (keys.length) {
+            this.setState({
+                showLoader: true,
+            });
+        }
     };
 
     getActionTabs = (tabs = [], menu) => {
@@ -86,31 +139,40 @@ class Dashboard extends React.PureComponent {
     };
 
     render() {
-        const { menuItems = null } = this.state;
-        const { router: { actionTabs = [], currentActionTab } = {}, firebase } = this.props;
+        const { menuItems = null, showLoader } = this.state;
+        const { router: { actionTabs = [], currentActionTab } = {}, firebase, onErrorRequstAction } = this.props;
 
         const actionTabsData = this.getActionTabs(actionTabs, menuItems);
 
         return (
-            <Layout className="layout_menu">
-                <MenuView
-                    items={menuItems}
-                    activeTabEUID={currentActionTab}
-                    cbMenuHandler={this.menuHandler}
-                    collapsed={this.state.collapsed}
-                    cbOnCollapse={this.onCollapse}
-                    cbGoMain={this.goHome}
-                />
-                <Layout>
-                    <HeaderView
-                        cbMenuTabHandler={this.menuHandler}
+            <React.Fragment>
+                {showLoader ? <Loader className="mainLoader" /> : null}
+                <Layout className="layout_menu">
+                    <MenuView
+                        items={menuItems}
                         activeTabEUID={currentActionTab}
-                        actionTabs={actionTabsData}
-                        logout={this.logout}
+                        cbMenuHandler={this.menuHandler}
+                        collapsed={this.state.collapsed}
+                        cbOnCollapse={this.onCollapse}
+                        cbGoMain={this.goHome}
                     />
-                    <ContentView firebase={firebase} key="contentView" path={currentActionTab} />
+                    <Layout>
+                        <HeaderView
+                            cbMenuTabHandler={this.menuHandler}
+                            activeTabEUID={currentActionTab}
+                            actionTabs={actionTabsData}
+                            logout={this.logout}
+                        />
+                        <ContentView
+                            updateLoader={this.updateLoader}
+                            onErrorRequstAction={onErrorRequstAction}
+                            firebase={firebase}
+                            key="contentView"
+                            path={currentActionTab}
+                        />
+                    </Layout>
                 </Layout>
-            </Layout>
+            </React.Fragment>
         );
     }
 }
@@ -119,6 +181,7 @@ const mapStateToProps = state => {
     return {
         router: { ...state.router },
         tabData: state.tabReducer,
+        publicReducer: state.publicReducer,
     };
 };
 
@@ -130,6 +193,7 @@ const mapDispatchToProps = dispatch => {
         setCurrentTab: tab => dispatch(setActiveTabAction(tab)),
         onSetChildrenSizeAction: (size, flag) => dispatch(setChildrenSizeAction(size, flag)),
         onLoadCurrentData: path => dispatch(loadCurrentData(path)),
+        onErrorRequstAction: async error => await errorRequstAction(error),
         onLogoutAction: async () => await dispatch(logoutAction()),
     };
 };

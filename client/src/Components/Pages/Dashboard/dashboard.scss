@@ -23,12 +23,16 @@ footer {
     // }
 }
 
-// .ant-layout-sider {
-//     max-width: $sideSize;
-//     min-width: $sideSize;
-//     width: $sideSize;
-//     overflow: auto;
-//     left: 0;
-//     position: fixed;
-//     height: 100vh;
-// }
+.mainLoader {
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.2);
+    position: absolute;
+    img {
+        position: absolute;
+        transform: translate(-50%, -50%);
+        left: 50%;
+        top: 50%;
+    }
+}

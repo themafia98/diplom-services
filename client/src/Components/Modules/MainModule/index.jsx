@@ -1,10 +1,6 @@
 import React from "react";
 
-import _ from "lodash";
-import { connect } from "react-redux";
-import { Calendar, notification } from "antd";
-
-import { errorRequstAction } from "../../../Redux/actions/publicActions";
+import { Calendar } from "antd";
 
 import TableView from "../../TableView";
 import WeatherWidjet from "../../WeatherWidget";
@@ -14,16 +10,6 @@ import TitleModule from "../../TitleModule";
 class MainModule extends React.Component {
     state = {
         date: new Date(),
-    };
-
-    componentDidUpdate = () => {
-        const { onErrorRequstAction, publicReducer: { requestError = null } = {} } = this.props;
-        if (!_.isNull(requestError)) {
-            onErrorRequstAction(false).then(() => {
-                if (requestError === "Network error")
-                    notification.error({ message: "Ошибка", description: "Интернет соединение недоступно." });
-            });
-        }
     };
 
     render() {
@@ -50,19 +36,4 @@ class MainModule extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        publicReducer: state.publicReducer,
-    };
-};
-
-const mapDispatchToProps = dispatch => {
-    return {
-        onErrorRequstAction: async error => await errorRequstAction(error),
-    };
-};
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(MainModule);
+export default MainModule;
