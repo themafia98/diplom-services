@@ -3,9 +3,11 @@ import { IntlProvider } from "react-intl";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import ReactDOM from "react-dom";
+
 import "normalize.css";
 import "antd/dist/antd.css";
 import "./index.scss";
+
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import * as Sentry from "@sentry/browser";

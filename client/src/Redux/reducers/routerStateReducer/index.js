@@ -48,7 +48,7 @@ export default (state = initialState, action) => {
             if (
                 pathParse[0] === "taskModule" &&
                 pathParse[1] &&
-                (pathParse[1] == "myTasks" || pathParse[1] === "all")
+                (pathParse[1] === "myTasks" || pathParse[1] === "all")
             ) {
                 path = pathParse[0];
             }

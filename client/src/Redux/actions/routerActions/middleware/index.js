@@ -3,8 +3,9 @@ import { saveComponentStateAction, loadFlagAction } from "../";
 
 export const loadCurrentData = path => (dispatch, getState, { firebase, getSchema }) => {
     const router = getState().router;
-    if (router.routeData && router.routeData[path] && router.routeData[path].load)
-        dispatch(loadFlagAction({ path: path, load: false }));
+    const pathValid = path.startsWith("taskModule_") ? "taskModule" : path.split("__")[0];
+    if (router.routeData && router.routeData[pathValid] && router.routeData[pathValid].load)
+        dispatch(loadFlagAction({ path: pathValid, load: false }));
 
     if (path === "mainModule__table") {
         firebase.db
@@ -19,9 +20,9 @@ export const loadCurrentData = path => (dispatch, getState, { firebase, getSchem
             })
             .then(users => {
                 const usersCopy = users.map(it => getSchema(USER_SCHEMA, it)).filter(Boolean);
-                dispatch(saveComponentStateAction({ users: usersCopy, load: true, path: "mainModule" }));
+                dispatch(saveComponentStateAction({ users: usersCopy, load: true, path: pathValid }));
             });
-    } else if (path.startsWith("taskModule_")) {
+    } else if (pathValid === "taskModule") {
         firebase.db
             .collection("tasks")
             .get()
@@ -34,7 +35,7 @@ export const loadCurrentData = path => (dispatch, getState, { firebase, getSchem
             })
             .then(tasks => {
                 const tasksCopy = tasks.map(it => getSchema(TASK_SCHEMA, it, "no-strict")).filter(Boolean);
-                dispatch(saveComponentStateAction({ tasks: tasksCopy, load: true, path }));
+                dispatch(saveComponentStateAction({ tasks: tasksCopy, load: true, path: pathValid }));
             });
     }
 };

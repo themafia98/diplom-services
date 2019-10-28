@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import { updatePathAction, addTabAction } from "../../../Redux/actions/routerActions";
 import config from "../../../config.json";
 
+import Logo from "../../Logo";
 import ModalWindow from "../../ModalWindow";
 
 class LoginPage extends React.Component {
@@ -57,17 +58,15 @@ class LoginPage extends React.Component {
             <div className="loginPage">
                 <div className="loginPage__loginContainer">
                     <h1 className="loginContainer__title">{config["title"]}</h1>
-                    <div className="loginContainer__logo">
-                        <img src={config["icon"]} alt="icon" />
-                    </div>
+                    <Logo />
                     <form name="loginForm" className="loginContainer__loginForm">
                         <Input size="large" placeholder="login" ref={refLogin} />
                         <Input type="password" size="large" placeholder="password" ref={refPassword} />
                         <Button type="primary" loading={loading} onClick={enterLoading}>
-                            Enter
+                            Войти
                         </Button>
                         <ModalWindow firebase={firebase} mode="reg" />
-                        <NavLink to="/recovory">Recovory password</NavLink>
+                        <NavLink to="/recovory">Восстановление доступа</NavLink>
                     </form>
                 </div>
             </div>

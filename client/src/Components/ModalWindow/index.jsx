@@ -1,8 +1,7 @@
 import React from "react";
-import { Modal } from "antd";
-import { Button, Input, Select } from "antd";
+import { Modal, Button } from "antd";
 import uuid from "uuid/v4";
-const { Option } = Select;
+import RegistrationModal from "./RegistrationModal";
 class ModalWindow extends React.Component {
     state = {
         login: null,
@@ -91,65 +90,24 @@ class ModalWindow extends React.Component {
     render() {
         const { mode } = this.props;
         if (mode !== "reg") return null;
-        else if (mode === "reg")
+        else
             return (
-                <div>
-                    <Button type="primary" onClick={this.showModal}>
-                        Registration
-                    </Button>
+                <React.Fragment>
+                    {mode === "reg" ? (
+                        <Button type="primary" onClick={this.showModal}>
+                            Регистрация
+                        </Button>
+                    ) : null}
                     <Modal
                         className="modalWindow"
                         visible={this.state.visible}
                         onOk={this.handleOk}
                         onCancel={this.handleCancel}
-                        title="Registration"
+                        title={mode === "reg" ? "Регистрация" : null}
                     >
-                        <Input
-                            onChange={this.onChange}
-                            className="email"
-                            type="text"
-                            size="default"
-                            placeholder="email"
-                        />
-                        <Input
-                            onChange={this.onChange}
-                            className="password"
-                            type="password"
-                            size="default"
-                            placeholder="password"
-                        />
-                        <Input
-                            onChange={this.onChange}
-                            className="login"
-                            type="email"
-                            size="default"
-                            placeholder="login"
-                        />
-                        <Input
-                            onChange={this.onChange}
-                            className="name"
-                            type="text"
-                            size="default"
-                            placeholder="name"
-                        />
-                        <Input
-                            onChange={this.onChange}
-                            className="surname"
-                            type="text"
-                            size="default"
-                            placeholder="surname"
-                        />
-                        <Select
-                            onChange={this.onChangeSelect}
-                            className="selectDepartament"
-                            placeholder="Select a departament"
-                            optionFilterProp="depart"
-                        >
-                            <Option value="Admin">Admin</Option>
-                            <Option value="Doctor">Doctor</Option>
-                        </Select>
+                        {mode === "reg" ? <RegistrationModal /> : <div></div>}
                     </Modal>
-                </div>
+                </React.Fragment>
             );
     }
 }

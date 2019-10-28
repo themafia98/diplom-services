@@ -3,6 +3,8 @@ import confing from "../../config.json";
 import _ from "lodash";
 import { Menu, Layout, Icon } from "antd";
 
+import Logo from "../Logo";
+
 const { Sider } = Layout;
 const { SubMenu } = Menu;
 
@@ -47,8 +49,7 @@ const MenuView = ({ collapsed, cbOnCollapse, items, cbMenuHandler, activeTabEUID
     return (
         <Sider collapsible collapsed={collapsed} onCollapse={cbOnCollapse}>
             <div className="logo" onClick={cbGoMain}>
-                {/*<span>{confing.title}</span>*/}
-                <img src={confing.icon} alt="logo" />
+                <Logo />
             </div>
             {items ? (
                 <Menu selectedKeys={[activeTabEUID]} theme="dark" defaultSelectedKeys={[items[0].VALUE]} mode="inline">

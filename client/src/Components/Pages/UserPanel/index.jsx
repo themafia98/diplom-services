@@ -9,6 +9,7 @@ import {
     removeTabAction,
     logoutAction,
 } from "../../../Redux/actions/routerActions";
+import { loadCurrentData } from "../../../Redux/actions/routerActions/middleware";
 
 import { setChildrenSizeAction } from "../../../Redux/actions/tabActions";
 
@@ -61,6 +62,7 @@ class UserPanel extends React.PureComponent {
             addTab,
             setCurrentTab,
             removeTab,
+            onLoadCurrentData,
             tabData,
             onSetChildrenSizeAction,
         } = this.props;
@@ -72,6 +74,7 @@ class UserPanel extends React.PureComponent {
             if (!isFind) addTab(path);
             else if (currentActionTab !== path) {
                 setCurrentTab(path);
+                if (path.startsWith("taskModule") && path !== "taskModule_createTask") onLoadCurrentData(path);
             }
         } else if (mode === "close") {
             let size = tabData.parentSize / actionTabsCopy.length;
@@ -126,6 +129,7 @@ const mapDispatchToProps = dispatch => {
         removeTab: tab => dispatch(removeTabAction(tab)),
         setCurrentTab: tab => dispatch(setActiveTabAction(tab)),
         onSetChildrenSizeAction: (size, flag) => dispatch(setChildrenSizeAction(size, flag)),
+        onLoadCurrentData: path => dispatch(loadCurrentData(path)),
         onLogoutAction: async () => await dispatch(logoutAction()),
     };
 };
