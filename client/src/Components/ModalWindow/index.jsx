@@ -47,7 +47,7 @@ class ModalWindow extends React.Component {
                         loading: false,
                     });
                 })
-                .catch(error => console.error(error));
+                .catch(error => console.error(error.message));
         }
     };
 

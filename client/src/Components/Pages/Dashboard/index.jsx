@@ -17,7 +17,7 @@ import HeaderView from "../../HeaderView";
 import ContentView from "../../ContentView";
 import MenuView from "../../MenuView";
 
-class UserPanel extends React.PureComponent {
+class Dashboard extends React.PureComponent {
     state = {
         collapsed: false,
         menuItems: config.menu,
@@ -137,4 +137,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
     mapStateToProps,
     mapDispatchToProps,
-)(UserPanel);
+)(Dashboard);

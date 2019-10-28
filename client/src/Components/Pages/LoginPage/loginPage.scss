@@ -8,12 +8,21 @@
     max-width: 1140px;
     margin: 0 auto;
 
+    .notificationWrapper {
+        height: 55px;
+        .errorMessage {
+            text-align: center;
+            font-weight: bold;
+            color: red;
+        }
+    }
+
     .loginPage__loginContainer {
         display: flex;
         flex-direction: column;
         align-items: center;
-        width: 60%;
-        height: 70vh;
+        width: 65%;
+        height: 75vh;
         box-shadow: 0 0 3px;
         padding: 5px;
         background-color: $snow_l1;
@@ -36,6 +45,7 @@
             width: 60%;
             flex-direction: column;
             margin-top: 10%;
+            height: 100%;
 
             input,
             button {

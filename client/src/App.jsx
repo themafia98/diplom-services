@@ -9,7 +9,7 @@ import { updatePathAction, addTabAction } from "./Redux/actions/routerActions";
 import Loader from "./Components/Loader";
 import Recovery from "./Components/Pages/Recovery";
 import LoginPage from "./Components/Pages/LoginPage";
-import UserPanel from "./Components/Pages/UserPanel";
+import Dashboard from "./Components/Pages/Dashboard";
 
 // import { isMobile } from "react-device-detect";
 
@@ -25,7 +25,7 @@ class App extends React.Component {
             let path = "mainModule";
             const defaultModule = config.menu.find(item => item["SIGN"] === "default");
             if (defaultModule) path = defaultModule.EUID;
-            moveTo("/panel").then(() => addTab(path));
+            moveTo("/dashboard").then(() => addTab(path));
         });
     };
 
@@ -54,6 +54,7 @@ class App extends React.Component {
         } = this.props;
         const { firebaseLoadState, isUser } = this.state;
         if (firebaseLoadState) {
+            debugger;
             return (
                 <Switch>
                     <Route
@@ -62,7 +63,7 @@ class App extends React.Component {
                         render={props => <LoginPage {...props} isUser={isUser} firebase={firebase} />}
                     />
                     <Route exact path="/recovory" render={props => <Recovery {...props} firebase={firebase} />} />
-                    <PrivateRoute exact path={position} component={UserPanel} firebase={firebase} />
+                    <PrivateRoute exact path="/dashboard" component={Dashboard} firebase={firebase} />
                 </Switch>
             );
         } else return <Loader />;

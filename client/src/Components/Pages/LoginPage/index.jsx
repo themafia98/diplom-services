@@ -13,6 +13,7 @@ class LoginPage extends React.Component {
     state = {
         loading: false,
         redirect: false,
+        errorMessage: null,
     };
 
     enterLoading = event => {
@@ -25,19 +26,21 @@ class LoginPage extends React.Component {
         const { router: { actionTabs = [], currentActionTab } = {}, addTab, moveTo } = this.props;
 
         if (login && password) {
-            this.setState({ loading: true });
+            this.setState({ errorMessage: null, loading: true });
             this.props.firebase
                 .login(login, password)
                 .then(res => {
                     if (res) {
-                        moveTo("/panel")
+                        moveTo("/dashboard")
                             .then(() => {
                                 if (_.isEmpty(actionTabs)) addTab(currentActionTab);
                             })
-                            .then(() => this.props.history.push("/panel"));
+                            .then(() => this.props.history.push("/dashboard"));
                     } else throw new Error("Error enter");
                 })
-                .catch(error => this.setState({ loading: false }));
+                .catch(error => {
+                    this.setState({ errorMessage: error.message, loading: false });
+                });
         }
     };
 
@@ -50,9 +53,9 @@ class LoginPage extends React.Component {
     render() {
         const { refLogin, refPassword, enterLoading } = this;
         const { isUser, firebase } = this.props;
-        const { loading } = this.state;
+        const { loading, errorMessage } = this.state;
 
-        if (isUser && firebase.getCurrentUser()) return <Redirect to="/panel" />;
+        if (isUser && firebase.getCurrentUser()) return <Redirect to="/dashboard" />;
 
         return (
             <div className="loginPage">
@@ -60,6 +63,9 @@ class LoginPage extends React.Component {
                     <h1 className="loginContainer__title">{config["title"]}</h1>
                     <Logo />
                     <form name="loginForm" className="loginContainer__loginForm">
+                        <div className="notificationWrapper">
+                            {errorMessage ? <p className="errorMessage">{errorMessage}</p> : null}
+                        </div>
                         <Input size="large" placeholder="login" ref={refLogin} />
                         <Input type="password" size="large" placeholder="password" ref={refPassword} />
                         <Button type="primary" loading={loading} onClick={enterLoading}>
