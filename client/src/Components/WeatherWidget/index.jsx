@@ -25,10 +25,9 @@ class WeatherWidjet extends React.Component {
     };
 
     sendRequstWeather = findCountry => {
+        const api = "https://cors-anywhere.herokuapp.com/http://api.openweathermap.org/data/2.5/forecast?q=";
         return axios
-            .get(
-                `http://api.openweathermap.org/data/2.5/forecast?q=${findCountry}&APPID=${process.env.REACT_APP_WEATHER_API_TOKEN}`,
-            )
+            .get(`${api}${findCountry}&APPID=${process.env.REACT_APP_WEATHER_API_TOKEN}`)
             .then(res => {
                 if (res.status === 200) {
                     const {

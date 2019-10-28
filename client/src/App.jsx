@@ -54,7 +54,6 @@ class App extends React.Component {
         } = this.props;
         const { firebaseLoadState, isUser } = this.state;
         if (firebaseLoadState) {
-            debugger;
             return (
                 <Switch>
                     <Route
