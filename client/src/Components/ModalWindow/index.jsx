@@ -105,7 +105,11 @@ class ModalWindow extends React.Component {
                         onCancel={this.handleCancel}
                         title={mode === "reg" ? "Регистрация" : null}
                     >
-                        {mode === "reg" ? <RegistrationModal /> : <div></div>}
+                        {mode === "reg" ? (
+                            <RegistrationModal cbOnChange={this.onChange} cbOnChangeSelect={this.onChangeSelect} />
+                        ) : (
+                            <div></div>
+                        )}
                     </Modal>
                 </React.Fragment>
             );
