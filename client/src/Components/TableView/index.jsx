@@ -51,7 +51,6 @@ class TableView extends React.Component {
         const tasks = currentData ? currentData.tasks : null;
 
         if (path === "mainModule__table") {
-            debugger;
             return (
                 <Scrollbars>
                     <table key={uuid()}>
