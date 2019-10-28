@@ -1,16 +1,18 @@
 import React from "react";
 import _ from "lodash";
 import axios from "axios";
-
+import { notification } from "antd";
 import Loader from "../Loader";
 
 class WeatherWidjet extends React.Component {
     state = {
+        isNetworkError: false,
         list: null,
         info: null,
     };
 
     componentDidMount = () => {
+        const { onErrorRequstAction } = this.props;
         axios
             .get("http://ip-api.com/json/")
             .then(res => {
@@ -19,12 +21,20 @@ class WeatherWidjet extends React.Component {
                 this.sendRequstWeather(findCountry);
             })
             .catch(error => {
-                console.error(error);
-                this.sendRequstWeather("Minsk,BLR");
+                console.error(error.message);
+                if (error.message === "Network Error") {
+                    return this.setState(
+                        {
+                            isNetworkError: true,
+                        },
+                        () => onErrorRequstAction(),
+                    );
+                } else this.sendRequstWeather("Minsk,BLR");
             });
     };
 
     sendRequstWeather = findCountry => {
+        const { onErrorRequstAction } = this.props;
         const api = "https://cors-anywhere.herokuapp.com/http://api.openweathermap.org/data/2.5/forecast?q=";
         return axios
             .get(`${api}${findCountry}&APPID=${process.env.REACT_APP_WEATHER_API_TOKEN}`)
@@ -36,11 +46,20 @@ class WeatherWidjet extends React.Component {
                     return this.setState({
                         list: list.filter(item => /21:00:00/gi.test(item.dt_txt)),
                         info: { ...city },
+                        isNetworkError: false,
                     });
                 } else throw Error(res.statusText);
             })
             .catch(error => {
-                console.error(error);
+                console.error(error.message);
+                if (error.message === "Network Error") {
+                    return this.setState(
+                        {
+                            isNetworkError: true,
+                        },
+                        () => onErrorRequstAction(),
+                    );
+                }
             });
     };
 
@@ -66,15 +85,19 @@ class WeatherWidjet extends React.Component {
     };
 
     render() {
-        const { list, info } = this.state;
-        if (!_.isNull(list) && !_.isNull(info))
-            return <div className="weatherWidjet">{this.getWeatherParseDataComponent(list, info)}</div>;
-        else
-            return (
-                <div className="weatherWidjet">
+        const { list, info, isNetworkError } = this.state;
+
+        return (
+            <div className="weatherWidjet">
+                {!_.isNull(list) && !_.isNull(info) && !isNetworkError ? (
+                    this.getWeatherParseDataComponent(list, info)
+                ) : !isNetworkError ? (
                     <Loader classNameSpiner="weatherLoader" className="wrapperLoader" />
-                </div>
-            );
+                ) : isNetworkError ? (
+                    <div>Network error</div>
+                ) : null}
+            </div>
+        );
     }
 }
 

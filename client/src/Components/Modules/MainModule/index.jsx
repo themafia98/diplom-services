@@ -1,17 +1,33 @@
 import React from "react";
+
+import _ from "lodash";
+import { connect } from "react-redux";
+import { Calendar, notification } from "antd";
+
+import { errorRequstAction } from "../../../Redux/actions/publicActions";
+
 import TableView from "../../TableView";
 import WeatherWidjet from "../../WeatherWidget";
 import StreamBox from "../../StreamBox";
 import TitleModule from "../../TitleModule";
-import { Calendar } from "antd";
 
 class MainModule extends React.Component {
     state = {
         date: new Date(),
     };
 
+    componentDidUpdate = () => {
+        const { onErrorRequstAction, publicReducer: { requestError = null } = {} } = this.props;
+        if (!_.isNull(requestError)) {
+            onErrorRequstAction(false).then(() => {
+                if (requestError === "Network error")
+                    notification.error({ message: "Ошибка", description: "Интернет соединение недоступно." });
+            });
+        }
+    };
+
     render() {
-        const { firebase } = this.props;
+        const { firebase, onErrorRequstAction } = this.props;
         return (
             <div className="mainModule">
                 <TitleModule additional="Общая информация" classNameTitle="mainModuleTitle" title="Главная страница" />
@@ -21,7 +37,7 @@ class MainModule extends React.Component {
                     </div>
                     <div className="col-8 columnModuleRight">
                         <div className="widjects">
-                            <WeatherWidjet ket="weatherWidjet" />
+                            <WeatherWidjet onErrorRequstAction={onErrorRequstAction} ket="weatherWidjet" />
                             <Calendar className="mainModule_calendar" fullscreen={false} />
                         </div>
                         <div className="tableViw__wrapper">
@@ -34,4 +50,19 @@ class MainModule extends React.Component {
     }
 }
 
-export default MainModule;
+const mapStateToProps = state => {
+    return {
+        publicReducer: state.publicReducer,
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onErrorRequstAction: async error => await errorRequstAction(error),
+    };
+};
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(MainModule);
