@@ -69,7 +69,10 @@ class TaskView extends React.Component {
                                         <Output>{routeDataActive.editor}</Output>
                                     </Descriptions.Item>
                                     <Descriptions.Item label="Дата назначения">
-                                        <Output> {routeDataActive.date}</Output>
+                                        <Output> {routeDataActive.date[0]}</Output>
+                                    </Descriptions.Item>
+                                    <Descriptions.Item label="Дата завершения">
+                                        <Output> {routeDataActive.date[1]}</Output>
                                     </Descriptions.Item>
                                 </Descriptions>
                                 <div className="descriptionTask">

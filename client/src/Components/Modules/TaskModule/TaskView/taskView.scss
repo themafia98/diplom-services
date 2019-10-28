@@ -64,10 +64,19 @@
 .dropDownWrapper {
     max-width: 200px;
 }
+
+.ant-dropdown-trigger:hover {
+    color: red;
+}
+
 .ant-dropdown-menu-item {
     cursor: pointer;
     p {
         text-align: center;
         cursor: pointer;
+    }
+
+    p:hover {
+        font-weight: bold;
     }
 }
