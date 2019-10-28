@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, Button } from "antd";
+import { Modal, Button, Dropdown, Icon, Menu } from "antd";
 import uuid from "uuid/v4";
 import RegistrationModal from "./RegistrationModal";
 class ModalWindow extends React.Component {
@@ -89,8 +89,7 @@ class ModalWindow extends React.Component {
 
     render() {
         const { mode } = this.props;
-        if (mode !== "reg") return null;
-        else
+        if (mode === "reg") {
             return (
                 <React.Fragment>
                     {mode === "reg" ? (
@@ -113,6 +112,34 @@ class ModalWindow extends React.Component {
                     </Modal>
                 </React.Fragment>
             );
+        } else if (mode === "jur") {
+            const menu = (
+                <Menu>
+                    <Menu.Item>
+                        <p onClick={this.showModal}>Занести в журнал работы</p>
+                    </Menu.Item>
+                </Menu>
+            );
+            return (
+                <React.Fragment>
+                    <div className="dropDownWrapper">
+                        <Dropdown overlay={menu}>
+                            <p>
+                                Управление задачей
+                                <Icon type="down" />
+                            </p>
+                        </Dropdown>
+                    </div>
+                    <Modal
+                        className="modalWindow"
+                        visible={this.state.visible}
+                        onOk={this.handleOk}
+                        onCancel={this.handleCancel}
+                        title=" Отчет времени."
+                    ></Modal>
+                </React.Fragment>
+            );
+        }
     }
 }
 export default ModalWindow;

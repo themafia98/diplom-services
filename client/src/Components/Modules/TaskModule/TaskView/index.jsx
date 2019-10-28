@@ -1,9 +1,9 @@
 import React from "react";
 import { Descriptions, Empty } from "antd";
 import { connect } from "react-redux";
-import { Menu, Dropdown, Icon } from "antd";
 import Scrollbars from "react-custom-scrollbars";
 
+import ModalWindow from "../../../ModalWindow";
 import Output from "../../../Output";
 import TitleModule from "../../../TitleModule";
 import Comments from "../../../Comments";
@@ -12,6 +12,8 @@ import File from "../../../File";
 class TaskView extends React.Component {
     state = {
         uuid: this.props.uuid ? this.props.uuid : null,
+        mode: "jur",
+        showModalJur: false,
     };
 
     static getDerivedStateFromProps = (props, state) => {
@@ -19,33 +21,23 @@ class TaskView extends React.Component {
         else return state;
     };
 
+    showModalWorkJur = event => {
+        this.setState({
+            mode: "jur",
+            showModalJur: true,
+        });
+    };
+
     render() {
         const {
             router: { routeDataActive = null },
         } = this.props;
+        const { showModalJur, mode } = this.state;
         if (routeDataActive) {
-            const menu = (
-                <Menu>
-                    <Menu.Item>
-                        <p>Занести в журнал работы</p>
-                    </Menu.Item>
-                    <Menu.Item>
-                        <p>Сменить статус задачи</p>
-                    </Menu.Item>
-                </Menu>
-            );
-
             return (
                 <React.Fragment>
                     <TitleModule classNameTitle="taskModuleTittle" title="Карточка задачи" />
-                    <div className="dropDownWrapper">
-                        <Dropdown overlay={menu}>
-                            <p>
-                                Управление задачей
-                                <Icon type="down" />
-                            </p>
-                        </Dropdown>
-                    </div>
+                    <ModalWindow mode={mode} />
                     <div className="taskView">
                         <div className="col-6 col-taskDescription">
                             <Scrollbars>
