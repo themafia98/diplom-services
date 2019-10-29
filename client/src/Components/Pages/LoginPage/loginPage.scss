@@ -22,7 +22,7 @@
         flex-direction: column;
         align-items: center;
         width: 65%;
-        height: 75vh;
+        height: 80%;
         box-shadow: 0 0 3px;
         padding: 5px;
         background-color: $snow_l1;
@@ -58,6 +58,27 @@
 
             button {
                 font-weight: bold;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 905px) {
+    .loginPage {
+        .loginPage__loginContainer {
+            width: 98%;
+            height: 98%;
+            .loginContainer__loginForm {
+                width: 70%;
+            }
+        }
+    }
+}
+@media screen and (max-width: 650px) {
+    .loginPage {
+        .loginPage__loginContainer {
+            .loginContainer__loginForm {
+                width: 80%;
             }
         }
     }

@@ -23,7 +23,7 @@ class MainModule extends React.Component {
                     </div>
                     <div className="col-8 columnModuleRight">
                         <div className="widjects">
-                            <WeatherWidjet onErrorRequstAction={onErrorRequstAction} ket="weatherWidjet" />
+                            {/* <WeatherWidjet onErrorRequstAction={onErrorRequstAction} ket="weatherWidjet" /> */}
                             <Calendar className="mainModule_calendar" fullscreen={false} />
                         </div>
                         <div className="tableViw__wrapper">

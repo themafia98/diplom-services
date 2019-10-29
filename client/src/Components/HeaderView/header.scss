@@ -93,3 +93,23 @@ header {
         }
     }
 }
+
+@media screen and (max-width: 820px) {
+    header {
+        &.ant-layout-header {
+            .logout {
+                position: fixed;
+                left: 85%;
+                top: 90%;
+                text-align: center;
+                height: 40px;
+                padding: 6px;
+                z-index: 10099;
+                background-color: $blueDark;
+                transform: translate(-50%);
+                display: flex;
+                align-items: center;
+            }
+        }
+    }
+}

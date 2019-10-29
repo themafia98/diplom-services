@@ -4,8 +4,6 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    width: 60%;
-    max-width: 60%;
     min-width: 50%;
     max-height: 321px;
     min-height: 250px;
@@ -35,7 +33,6 @@
         flex: 0 0 14%;
         font-weight: bold;
         border-right: 1px solid;
-        margin: 5px;
         text-align: center;
         padding: 3px;
         &:first-child {

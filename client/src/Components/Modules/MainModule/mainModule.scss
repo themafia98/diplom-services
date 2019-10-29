@@ -34,6 +34,7 @@
         .mainModule_calendar {
             width: 100%;
             display: flex;
+            padding: 0 20px;
             flex-direction: column;
             .ant-fullcalendar {
                 table {
