@@ -1,7 +1,11 @@
 {
   "short_name": "Controll system",
-  "name": "CS",
+  "name": "Controll system",
   "description": "Controll system for company.",
+  "categories": [
+    "system",
+    "controll"
+  ],
   "icons": [
     {
       "src": "favicon.ico",
@@ -26,7 +30,7 @@
   ],
   "related_applications": [
     {
-      "platform": "play",
+      "platform": "windows",
       "url": "https://play.google.com/store/apps/details?id=controllSystem"
     }
   ],

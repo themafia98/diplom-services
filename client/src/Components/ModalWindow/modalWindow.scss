@@ -3,6 +3,14 @@
         margin: 5px;
     }
 
+    .ant-calendar-picker {
+        width: 100%;
+    }
+
+    .ant-calendar-time-picker-btn {
+        display: none;
+    }
+
     .ant-modal-body {
         display: flex;
         flex-direction: column;

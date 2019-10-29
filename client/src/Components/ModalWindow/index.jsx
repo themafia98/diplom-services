@@ -1,7 +1,10 @@
 import React from "react";
-import { Modal, Button, Dropdown, Icon, Menu } from "antd";
+import _ from "lodash";
+import moment from "moment";
+import { Modal, Button, Dropdown, Icon, Menu, Input, DatePicker } from "antd";
 import uuid from "uuid/v4";
 import RegistrationModal from "./RegistrationModal";
+const { TextArea } = Input;
 class ModalWindow extends React.Component {
     state = {
         login: null,
@@ -10,6 +13,11 @@ class ModalWindow extends React.Component {
         password: null,
         departament: null,
         email: null,
+        jurnal: {
+            timeLost: null,
+            date: moment().format("H"),
+            description: null,
+        },
         loading: false,
     };
 
@@ -19,35 +27,40 @@ class ModalWindow extends React.Component {
         });
     };
 
-    handleOk = e => {
-        const { login, name, password, departament, email, loading, surname } = this.state;
-        const { firebase } = this.props;
-
-        if (login && name && password && departament && email && !loading) {
-            firebase
-                .registration(email, password)
-                .then(res => {
-                    if (res.additionalUserInfo.isNewUser)
-                        firebase.db.collection("users").add({
+    handleOk = async e => {
+        const { login, name, password, departament, email, loading, surname, jurnal } = this.state;
+        const { firebase, mode, routeDataActive, onCaching } = this.props;
+        debugger;
+        if (mode === "reg") {
+            if (login && name && password && departament && email && !loading) {
+                firebase
+                    .registration(email, password)
+                    .then(res => {
+                        if (res.additionalUserInfo.isNewUser)
+                            firebase.db.collection("users").add({
+                                uuid: uuid(),
+                                login: login,
+                                name: name,
+                                surname: surname,
+                                departament: departament,
+                                email: email,
+                                rules: "false",
+                                position: "Не установлено",
+                                status: "Новый сотрудник",
+                            });
+                    })
+                    .then(res => {
+                        this.setState({
                             uuid: uuid(),
-                            login: login,
-                            name: name,
-                            surname: surname,
-                            departament: departament,
-                            email: email,
-                            rules: "false",
-                            position: "Не установлено",
-                            status: "Новый сотрудник",
+                            visible: false,
+                            loading: false,
                         });
-                })
-                .then(res => {
-                    this.setState({
-                        uuid: uuid(),
-                        visible: false,
-                        loading: false,
-                    });
-                })
-                .catch(error => console.error(error.message));
+                    })
+                    .catch(error => console.error(error.message));
+            }
+        } else if (mode === "jur") {
+            const jurCopy = { ...jurnal, key: routeDataActive.key, editor: "Павел Петрович" };
+            if (onCaching) await onCaching(jurCopy).then(() => this.handleCancel());
         }
     };
 
@@ -83,6 +96,23 @@ class ModalWindow extends React.Component {
         } else if (target.className.split(" ")[1] === "email") {
             this.setState({
                 email: target.value,
+            });
+        }
+    };
+
+    onChangeTask = event => {
+        const { target, _isValid = null, _d = null } = event;
+        if (target && target.className.split(" ")[1] === "timeLost") {
+            this.setState({
+                jurnal: { ...this.state.jurnal, timeLost: target.value },
+            });
+        } else if (_isValid) {
+            this.setState({
+                jurnal: { ...this.state.jurnal, date: event.toString() },
+            });
+        } else if (target && target.className.split(" ")[1] === "description") {
+            this.setState({
+                jurnal: { ...this.state.jurnal, description: target.value },
             });
         }
     };
@@ -136,7 +166,25 @@ class ModalWindow extends React.Component {
                         onOk={this.handleOk}
                         onCancel={this.handleCancel}
                         title=" Отчет времени."
-                    ></Modal>
+                    >
+                        <span>Затраченое время:</span>
+                        <Input
+                            onChange={this.onChangeTask}
+                            className="timeLost"
+                            type="text"
+                            size="default"
+                            placeholder="20m / 1h / 2.5h "
+                        />
+                        <span>Дата и время:</span>
+                        <DatePicker
+                            onChange={this.onChangeTask}
+                            className="date"
+                            format="YYYY-MM-DD HH:mm:ss"
+                            showTime={{ defaultValue: moment().format("H") }}
+                        />
+                        <span>Кометарии:</span>
+                        <TextArea onChange={this.onChangeTask} className="description" rows={4} />
+                    </Modal>
                 </React.Fragment>
             );
         }

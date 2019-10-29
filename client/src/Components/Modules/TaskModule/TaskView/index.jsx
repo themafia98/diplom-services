@@ -3,6 +3,8 @@ import { Descriptions, Empty } from "antd";
 import { connect } from "react-redux";
 import Scrollbars from "react-custom-scrollbars";
 
+import { сachingAction } from "../../../../Redux/actions/publicActions";
+
 import ModalWindow from "../../../ModalWindow";
 import Output from "../../../Output";
 import TitleModule from "../../../TitleModule";
@@ -31,13 +33,14 @@ class TaskView extends React.Component {
     render() {
         const {
             router: { routeDataActive = null },
+            onCaching,
         } = this.props;
         const { showModalJur, mode } = this.state;
         if (routeDataActive) {
             return (
                 <React.Fragment>
                     <TitleModule classNameTitle="taskModuleTittle" title="Карточка задачи" />
-                    <ModalWindow mode={mode} />
+                    <ModalWindow onCaching={onCaching} routeDataActive={routeDataActive} mode={mode} />
                     <div className="taskView">
                         <div className="col-6 col-taskDescription">
                             <Scrollbars>
@@ -95,7 +98,9 @@ const mapStateTopProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-    return {};
+    return {
+        onCaching: async data => await dispatch(сachingAction(data)),
+    };
 };
 
 export default connect(

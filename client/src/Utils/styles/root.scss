@@ -2,6 +2,13 @@
 body {
     font-family: Roboto, Arial, sans-serif;
 }
+.ant-calendar-time {
+    .ant-calendar-footer {
+        .ant-calendar-time-picker-btn {
+            display: none;
+        }
+    }
+}
 
 .col-8 {
     flex: 0 0 66.777%;

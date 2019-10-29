@@ -38,6 +38,13 @@ class TaskModule extends React.PureComponent {
             const { router, firebase } = this.props;
             return (
                 <Scrollbars>
+                    {isList ? (
+                        <div className="controllersWrapper">
+                            <Button onClick={this.handlerNewTask} type="primary">
+                                Создать новую задачу
+                            </Button>
+                        </div>
+                    ) : null}
                     {path === "taskModule_all" ? (
                         <TaskModuleList data={router.routeData[path]} />
                     ) : path === "taskModule_myTasks" ? (
@@ -51,11 +58,6 @@ class TaskModule extends React.PureComponent {
                     ) : (
                         <div>Not found taskModule</div>
                     )}
-                    {isList ? (
-                        <Button onClick={this.handlerNewTask} type="primary">
-                            Создать новую задачу
-                        </Button>
-                    ) : null}
                 </Scrollbars>
             );
         } else return <div>Not found path module</div>;
