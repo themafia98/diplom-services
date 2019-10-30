@@ -108,6 +108,7 @@ class TableView extends React.Component {
                     title: "Статус",
                     className: "status",
                     dataIndex: "status",
+                    sorter: (a, b) => a.status.length - b.status.length,
                     key: "status",
                     render: (text, row, index) => {
                         let className = "";
@@ -167,7 +168,7 @@ class TableView extends React.Component {
                     className: "editor",
                     dataIndex: "editor",
                     key: "editor",
-                    sorter: (a, b) => a.editor.length - b.editor.length,
+                    sorter: (a, b) => (a.editor && b.editor ? a.editor[0].length - b.editor[0].length : null),
                     sortDirections: ["descend", "ascend"],
                     render: (text, row, index) => {
                         return <Output key={uuid()}>{text}</Output>;
@@ -179,7 +180,7 @@ class TableView extends React.Component {
                     className: "date",
                     dataIndex: "date",
                     key: "date",
-                    sorter: (a, b) => a.date.length - b.date.length,
+                    sorter: (a, b) => (a.date && b.date ? a.date[0].length - b.date[0].length : null),
                     sortDirections: ["descend", "ascend"],
                     render: (text, row, index) => {
                         return <Output key={uuid()}> {text}</Output>;
@@ -294,7 +295,7 @@ class TableView extends React.Component {
                             highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
                             searchWords={[this.state.searchText]}
                             autoEscape
-                            textToHighlight={text}
+                            textToHighlight={typeof text === "string" && text ? text : text ? text.toString() : null}
                         />
                     </Output>
                 );

@@ -1,4 +1,5 @@
 .statisticsModule {
+    height: 100%;
     .statisticsModuleTitle {
         font-size: 30px;
         font-weight: bold;
@@ -8,6 +9,6 @@
 
     .statisticsModule__main {
         overflow: hidden;
-        height: 750px;
+        height: calc(100% - 100px);
     }
 }
