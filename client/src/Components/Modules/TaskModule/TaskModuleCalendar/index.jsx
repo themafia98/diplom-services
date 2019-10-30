@@ -1,5 +1,5 @@
 import React from "react";
-import Scrollbars from 'react-custom-scrollbars';
+import Scrollbars from "react-custom-scrollbars";
 import moment from "moment";
 import TitleModule from "../../../TitleModule";
 import { Calendar, Popover, Button } from "antd";
@@ -59,7 +59,7 @@ class TaskModuleCalendar extends React.PureComponent {
             );
     };
 
-    test = event => { };
+    test = event => {};
 
     render() {
         return (
@@ -67,7 +67,11 @@ class TaskModuleCalendar extends React.PureComponent {
                 <div className="taskModuleCalendar">
                     <TitleModule classNameTitle="taskModuleTittle" title="Календарь задач" />
                     <div className="taskModuleCalendar__main">
-                        <Calendar dateCellRender={this.dateCellRender} monthCellRender={this.monthCellRender} />
+                        <Calendar
+                            locale="default"
+                            dateCellRender={this.dateCellRender}
+                            monthCellRender={this.monthCellRender}
+                        />
                     </div>
                 </div>
             </Scrollbars>

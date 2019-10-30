@@ -13,7 +13,7 @@ class StreamBox extends React.Component {
         My name Pavel Petrovich and I'm Frontend developer. I looking for job.
         Hello world!!!`;
         return (
-            <Scrollbars style={mode ? { height: "500px" } : null}>
+            <Scrollbars style={mode ? { height: "calc(100% - 100px)" } : null}>
                 <div className={["streamBox", boxClassName ? boxClassName : null].join(" ")}>
                     <div className={["cardStream", mode ? mode : null].join(" ")}>
                         <div className="about">

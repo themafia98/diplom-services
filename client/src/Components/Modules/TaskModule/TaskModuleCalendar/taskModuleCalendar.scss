@@ -1,6 +1,7 @@
 .taskModuleCalendar {
-    max-height: 85vh;
+    height: 100%;
     .taskModuleCalendar__main {
+        height: calc(100% - 100px);
         .calendarDate-content {
             overflow: hidden;
             text-overflow: ellipsis;
@@ -22,9 +23,10 @@
             position: absolute;
             z-index: 1;
             left: 80%;
+            font-weight: bold;
         }
         .ant-fullcalendar-fullscreen {
-            background-color: $snow_l1;
+            background-color: $calendarBG;
             ul {
                 padding: 0;
             }

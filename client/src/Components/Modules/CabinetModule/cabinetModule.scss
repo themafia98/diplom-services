@@ -1,4 +1,5 @@
 .cabinetModule {
+    height: 100%;
     .titleModule {
         flex: 0 0 10%;
         user-select: none;
@@ -18,6 +19,7 @@
 
     .cabinetModule_main {
         display: flex;
+        height: calc(100% - 100px);
     }
 
     .lastActivity {

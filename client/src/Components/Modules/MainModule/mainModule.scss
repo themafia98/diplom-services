@@ -21,6 +21,8 @@
     .mainModule_main {
         display: flex;
         flex: 0 0 88%;
+        height: calc(100% - 100px);
+        min-height: calc(100% - 100px);
         .columnModuleRight {
             position: relative;
             display: flex;
