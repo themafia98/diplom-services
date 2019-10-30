@@ -29,7 +29,8 @@
             justify-content: flex-start;
         }
         table {
-            padding-right: 25px;
+            // padding-right: 25px;
+            border-bottom: 0.5px solid $blueDark;
             .ant-table-thead {
                 background-color: $headerTable;
                 border-bottom: 0.5px solid $blueDark;
@@ -40,7 +41,7 @@
                     background: #7ac0da;
                 }
                 tr {
-                    display: flex;
+                    // display: flex;
                     cursor: pointer;
                     th {
                         .ant-table-column-sorter {
@@ -89,7 +90,7 @@
                     }
 
                     th:last-child {
-                        width: 100%;
+                        // width: 100%;
                         border-right: 0.5px solid $blueDark;
                     }
                 }
@@ -98,7 +99,7 @@
             .ant-table-tbody {
                 tr {
                     cursor: pointer;
-                    display: flex;
+                    // display: flex;
                     td {
                         border-left: 0.5px solid $blueDark;
                         border-bottom: 0.5px solid $blueDark;
@@ -138,4 +139,8 @@
             }
         }
     }
+}
+
+.ant-table-header {
+    background: none;
 }

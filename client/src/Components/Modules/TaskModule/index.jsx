@@ -37,7 +37,7 @@ class TaskModule extends React.PureComponent {
             const isList = path === "taskModule_myTasks" || path === "taskModule_all";
             const { router, firebase } = this.props;
             return (
-                <Scrollbars>
+                <React.Fragment>
                     {isList ? (
                         <div className="controllersWrapper">
                             <Button onClick={this.handlerNewTask} type="primary">
@@ -50,15 +50,21 @@ class TaskModule extends React.PureComponent {
                     ) : path === "taskModule_myTasks" ? (
                         <TaskModuleMyList data={router.routeData[path]} user="Павел Петрович" />
                     ) : path === "taskModule_сalendar" ? (
-                        <TaskModuleCalendar />
+                        <Scrollbars>
+                            <TaskModuleCalendar />
+                        </Scrollbars>
                     ) : path === "taskModule_createTask" ? (
-                        <CreateTask firebase={firebase} />
+                        <Scrollbars>
+                            <CreateTask firebase={firebase} />
+                        </Scrollbars>
                     ) : path.startsWith("taskModule_") ? (
-                        <TaskView key={path.split("__")[1]} data={router.routeData[path]} />
+                        <Scrollbars>
+                            <TaskView key={path.split("__")[1]} data={router.routeData[path]} />
+                        </Scrollbars>
                     ) : (
                         <div>Not found taskModule</div>
                     )}
-                </Scrollbars>
+                </React.Fragment>
             );
         } else return <div>Not found path module</div>;
     };

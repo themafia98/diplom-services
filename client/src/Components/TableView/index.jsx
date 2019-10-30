@@ -18,6 +18,7 @@ class TableView extends React.Component {
         searchText: null,
         sortedInfo: null,
         isScroll: null,
+        sizeHeight: 500,
     };
 
     componentDidMount = () => {
@@ -27,13 +28,23 @@ class TableView extends React.Component {
         window.addEventListener("resize", this.setSizeWindow);
     };
 
+    componentDidUpdate = (props, state) => {
+        if (state.sizeHeight < window.innerHeight - 350) {
+            this.setState({
+                sizeHeight: window.innerHeight - 350,
+            });
+        }
+    };
+
     componentWillUnmount = () => {
         window.removeEventListener("resize", this.setSizeWindow);
     };
 
     setSizeWindow = event => {
-        if (window.innerWidth <= 1450 && _.isNull(this.state.isScroll)) this.setState({ isScroll: true });
-        else if (this.state.isScroll && window.innerWidth > 1200) this.setState({ isScroll: null });
+        if (window.innerWidth <= 1450 && _.isNull(this.state.isScroll))
+            this.setState({ isScroll: true, sizeHeight: window.innerHeight - 350 });
+        else if (this.state.isScroll && window.innerWidth > 1200)
+            this.setState({ isScroll: null, sizeHeight: window.innerHeight - 350 });
     };
 
     handleFilter = (pagination, filters, sorter) => {
@@ -50,6 +61,7 @@ class TableView extends React.Component {
             router,
             publicReducer: { requestError },
         } = this.props;
+        const { sizeHeight } = this.state;
         const { routeData } = router;
         const routePathData = router.currentActionTab.split("_")[0];
         const currentData = routeData[routePathData];
@@ -192,7 +204,9 @@ class TableView extends React.Component {
 
             return (
                 <Table
-                    scroll={{ x: this.state.isScroll }}
+                    pagination={{ pageSize: 14 }}
+                    size="medium"
+                    scroll={{ y: sizeHeight }}
                     onChange={this.handleFilter}
                     columns={columns}
                     dataSource={data}

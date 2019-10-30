@@ -4,6 +4,7 @@
     bottom: 0;
     top: 50%;
     margin: 10px;
+
     table {
         width: 92%;
         min-height: 85%;
@@ -94,6 +95,10 @@
     }
 }
 
+.ant-table-small > .ant-table-content > .ant-table-body {
+    margin: 0;
+}
+
 .ant-table-thead > tr > th.ant-table-column-has-actions.ant-table-column-has-sorters:hover {
     background: unset;
     cursor: pointer;
@@ -113,4 +118,27 @@
 
 .ant-table-thead > tr > th .ant-table-header-column .ant-table-column-sorters {
     display: flex;
+}
+
+.ant-table-body {
+    /* width */
+    &::-webkit-scrollbar {
+        width: 15px;
+        border-radius: 3px;
+    }
+
+    /* Track */
+    &::-webkit-scrollbar-track {
+        background-color: rgba(0, 0, 0, 0.2);
+    }
+
+    /* Handle */
+    &::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.2);
+    }
+
+    /* Handle on hover */
+    &::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
 }

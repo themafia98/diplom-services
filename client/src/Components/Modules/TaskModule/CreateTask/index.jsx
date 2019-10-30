@@ -39,7 +39,7 @@ class CreateTask extends React.Component {
         let isUpdate = false;
         const copyErrorBundleState = { ...errorBundleState };
         const errorBundle = {};
-        
+
         if (!key) errorBundle.key = "Ключ не найден.";
         else if (!_.isEmpty(copyErrorBundleState) && copyErrorBundleState.key) {
             isUpdate = true;
@@ -52,7 +52,6 @@ class CreateTask extends React.Component {
         }
         if (!name) errorBundle.name = "Имя не найдено.";
         else if (!_.isEmpty(copyErrorBundleState) && copyErrorBundleState.name) {
-            
             isUpdate = true;
             copyErrorBundleState.name = null;
         }
@@ -150,7 +149,7 @@ class CreateTask extends React.Component {
                 <TitleModule additional="Форма создания задачи" classNameTitle="createTaskTitle" title="Новая задача" />
                 <div className="createTask__main">
                     <div className="col-6 col-task">
-                        <Scrollbars>
+                        <Scrollbars autoHide>
                             <form className="taskForm" name="taskForm">
                                 <label>Название: </label>
                                 <Input
