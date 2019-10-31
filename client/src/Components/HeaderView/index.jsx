@@ -69,7 +69,7 @@ class HeaderView extends React.Component {
 
     update = () => {
         const { dashboardStrem } = this.props;
-        dashboardnStrem.emit("EventUpdate");
+        dashboardStrem.emit("EventUpdate");
     };
 
     render() {
