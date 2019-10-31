@@ -1,10 +1,11 @@
 import React from "react";
 import { connect } from "react-redux";
 import _ from "lodash";
-import Tab from "./Tab";
 import { Layout } from "antd";
 
 import { setParentSizeAction, setChildrenSizeAction } from "../../Redux/actions/tabActions";
+import Tab from "./Tab";
+import Updater from "../Updater";
 
 const { Header } = Layout;
 
@@ -66,13 +67,21 @@ class HeaderView extends React.Component {
         );
     };
 
+    update = () => {
+        const { dashboardStrem } = this.props;
+        dashboardStrem.emit("EventUpdate");
+    };
+
     render() {
         const { logout, actionTabs } = this.props;
         return (
             <Header>
                 {actionTabs ? this.renderTabs(actionTabs) : null}
-                <div onClick={logout} className="logout">
-                    Выйти
+                <div className="headerControllers">
+                    <Updater onClick={this.update} additionalClassName="updaterDefault" />
+                    <div onClick={logout} className="logout">
+                        Выйти
+                    </div>
                 </div>
             </Header>
         );

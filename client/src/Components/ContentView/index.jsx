@@ -21,14 +21,17 @@ class ContentView extends React.PureComponent {
         key: uuid(),
     };
 
-    // componentDidUpdate = (prevProps, prevState) => {
-    //     const { key } = this.state;
-    //     const { updateLoader } = this.props;
-    //     const { ley: prevKey } = prevState;
-    //     if (!_.isNull(key) && !_.isNull(prevKey) && prevKey !== key) {
-    //         updateLoader();
-    //     }
-    // };
+    componentDidMount = () => {
+        const { dashboardStrem = null } = this.props;
+        document.addEventListener("keydown", this.disableF5);
+        dashboardStrem.on("EventUpdate", this.updateFunction);
+    };
+
+    componentWillUnmount = () => {
+        const { dashboardStrem = null } = this.props;
+        document.removeEventListener("keydown", this.disableF5);
+        dashboardStrem.off("EventUpdate", this.updateFunction);
+    };
 
     getComponentByPath = path => {
         if (!path) return null;
@@ -95,14 +98,6 @@ class ContentView extends React.PureComponent {
 
     onClose = event => {
         return this.setState({ ...this.state, drawerView: false });
-    };
-
-    componentDidMount = () => {
-        document.addEventListener("keydown", this.disableF5);
-    };
-
-    componentWillUnmount = () => {
-        document.removeEventListener("keydown", this.disableF5);
     };
 
     render() {
