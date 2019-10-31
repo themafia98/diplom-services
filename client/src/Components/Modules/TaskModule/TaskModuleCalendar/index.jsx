@@ -15,23 +15,24 @@ class TaskModuleCalendar extends React.PureComponent {
             .join(".")
             .trim();
 
-        let dateArrayTask = data
-            ? data.tasks
-                  .map(it => {
-                      if (
-                          valueDate ===
-                          moment(
-                              it.date[0]
-                                  .split(".")
-                                  .reverse()
-                                  .join("."),
-                          ).format("l")
-                      )
-                          return it;
-                      else return null;
-                  })
-                  .filter(Boolean)
-            : null;
+        let dateArrayTask =
+            data && data.tasks
+                ? data.tasks
+                      .map(it => {
+                          if (
+                              valueDate ===
+                              moment(
+                                  it.date[0]
+                                      .split(".")
+                                      .reverse()
+                                      .join("."),
+                              ).format("l")
+                          )
+                              return it;
+                          else return null;
+                      })
+                      .filter(Boolean)
+                : null;
         const listData = dateArrayTask.map(it => {
             return { type: "success", content: it.description };
         });
