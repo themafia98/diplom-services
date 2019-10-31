@@ -1,4 +1,5 @@
 import React from "react";
+import { EventEmitter } from "events";
 import _ from "lodash";
 import config from "../../../config.json";
 import { Layout, message, notification } from "antd";
@@ -25,6 +26,8 @@ class Dashboard extends React.PureComponent {
         menuItems: config.menu,
         showLoader: false,
     };
+
+    dashboardStrem = new EventEmitter();
 
     componentDidUpdate = () => {
         const {
@@ -158,12 +161,14 @@ class Dashboard extends React.PureComponent {
                     />
                     <Layout>
                         <HeaderView
+                            dashboardStrem={this.dashboardStrem}
                             cbMenuTabHandler={this.menuHandler}
                             activeTabEUID={currentActionTab}
                             actionTabs={actionTabsData}
                             logout={this.logout}
                         />
                         <ContentView
+                            dashboardStrem={this.dashboardStrem}
                             updateLoader={this.updateLoader}
                             onErrorRequstAction={onErrorRequstAction}
                             firebase={firebase}

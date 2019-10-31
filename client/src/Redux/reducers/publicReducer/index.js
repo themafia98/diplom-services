@@ -14,7 +14,6 @@ export default (state = initialState, action) => {
             };
         }
         case SET_CACHE: {
-            debugger;
             const key = action.payload.key;
             return {
                 ...state,

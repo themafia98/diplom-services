@@ -97,18 +97,28 @@ header {
 @media screen and (max-width: 820px) {
     header {
         &.ant-layout-header {
-            .logout {
+            .headerControllers {
                 position: fixed;
                 left: 85%;
-                top: 90%;
+                top: 88%;
                 text-align: center;
-                height: 40px;
+                height: 80px;
                 padding: 6px;
                 z-index: 10099;
-                background-color: $blueDark;
                 transform: translate(-50%);
                 display: flex;
                 align-items: center;
+                justify-content: space-between;
+            }
+            .logout {
+                background-color: $blueDark;
+            }
+
+            .updater {
+                img {
+                    width: 45px;
+                    padding-right: 5px;
+                }
             }
         }
     }

@@ -30,7 +30,6 @@ class ModalWindow extends React.Component {
     handleOk = async e => {
         const { login, name, password, departament, email, loading, surname, jurnal } = this.state;
         const { firebase, mode, routeDataActive, onCaching } = this.props;
-        debugger;
         if (mode === "reg") {
             if (login && name && password && departament && email && !loading) {
                 firebase

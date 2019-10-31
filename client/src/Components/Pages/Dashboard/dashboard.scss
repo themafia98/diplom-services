@@ -1,12 +1,14 @@
 header {
-    .logout {
-        cursor: pointer;
+    .headerControllers {
+        width: 12%;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        height: 100%;
         font-weight: bold;
-        position: absolute;
-        left: 95%;
-        transform: translate(-50%);
 
-        &:hover {
+        .logout:hover {
+            cursor: pointer;
             color: $important_default;
         }
     }
