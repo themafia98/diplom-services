@@ -1,9 +1,9 @@
 import React from "react";
 
 import { Calendar } from "antd";
-
+import ClockWidjet from "../../ClockWidjet";
 import TableView from "../../TableView";
-import WeatherWidjet from "../../WeatherWidget";
+// import WeatherWidjet from "../../WeatherWidget";
 import StreamBox from "../../StreamBox";
 import TitleModule from "../../TitleModule";
 
@@ -13,7 +13,7 @@ class MainModule extends React.Component {
     };
 
     render() {
-        const { firebase, onErrorRequstAction } = this.props;
+        const { firebase } = this.props;
         return (
             <div className="mainModule">
                 <TitleModule additional="Общая информация" classNameTitle="mainModuleTitle" title="Главная страница" />
@@ -24,6 +24,7 @@ class MainModule extends React.Component {
                     <div className="col-8 columnModuleRight">
                         <div className="widjects">
                             {/* <WeatherWidjet onErrorRequstAction={onErrorRequstAction} ket="weatherWidjet" /> */}
+                            <ClockWidjet />
                             <Calendar className="mainModule_calendar" fullscreen={false} />
                         </div>
                         <div className="tableViw__wrapper">

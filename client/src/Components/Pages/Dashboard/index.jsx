@@ -39,8 +39,12 @@ class Dashboard extends React.PureComponent {
         const { showLoader } = this.state;
         if (!_.isNull(requestError)) {
             onErrorRequstAction(false).then(() => {
-                if (requestError === "Network error")
-                    notification.error({ message: "Ошибка", description: "Интернет соединение недоступно." });
+                if (requestError[requestError.length - 1] === "Network error")
+                    if (
+                        requestError.length === 1 ||
+                        requestError[requestError.length - 1] !== requestError[requestError.length - 2]
+                    )
+                        notification.error({ message: "Ошибка", description: "Интернет соединение недоступно." });
             });
         }
 
@@ -52,7 +56,8 @@ class Dashboard extends React.PureComponent {
             let keys = Object.keys(copyRouteData).filter(key => /Module/gi.test(key) && regExp.test(key));
 
             if (keys.every(key => copyRouteData[key].load === true) || requestError === "Network error") {
-                if (requestError === "Network error") setTimeout(() => this.setState({ showLoader: false }), 500);
+                debugger;
+                if (!_.isNull(requestError)) setTimeout(() => this.setState({ showLoader: false }), 500);
                 else
                     this.setState({
                         showLoader: false,
@@ -135,7 +140,7 @@ class Dashboard extends React.PureComponent {
         } else if (mode === "close") {
             let size = tabData.parentSize / actionTabsCopy.length;
             if (size > 160) size = 160;
-            console.log(path);
+
             let type = "deafult";
             if (path.split("__")[1]) type = "itemTab";
             if (isFind) removeTab({ path: path, type: type });

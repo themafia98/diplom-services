@@ -35,7 +35,7 @@ class TaskView extends React.Component {
             router: { routeDataActive = null },
             onCaching,
         } = this.props;
-        const { showModalJur, mode } = this.state;
+        const { mode } = this.state;
         if (routeDataActive) {
             return (
                 <React.Fragment>

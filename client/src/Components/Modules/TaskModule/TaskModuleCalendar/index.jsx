@@ -6,31 +6,42 @@ import { Calendar, Popover, Button } from "antd";
 
 class TaskModuleCalendar extends React.PureComponent {
     getListData = value => {
-        let listData = [];
-        let today = moment().date();
-        let valueDate = value.date();
+        const { data = null } = this.props;
 
-        switch (valueDate) {
-            case today: {
-                listData = [{ type: "error", content: "Исправить баги. " }];
-                break;
-            }
-            case today - 7: {
-                listData = [
-                    {
-                        type: "success",
-                        content: "Исправить баг. Исправить баги.Исправить баги. Исправить баги. Исправить баги.",
-                    },
-                ];
-                break;
-            }
-            default:
-        }
+        let today = null;
+        let valueDate = moment(value.toString())
+            .format("DD MM YYYY")
+            .split(" ")
+            .join(".")
+            .trim();
+
+        let dateArrayTask = data
+            ? data.tasks
+                  .map(it => {
+                      if (
+                          valueDate ===
+                          moment(
+                              it.date[0]
+                                  .split(".")
+                                  .reverse()
+                                  .join("."),
+                          ).format("l")
+                      )
+                          return it;
+                      else return null;
+                  })
+                  .filter(Boolean)
+            : null;
+        const listData = dateArrayTask.map(it => {
+            return { type: "success", content: it.description };
+        });
+
         return listData || [];
     };
 
     dateCellRender = value => {
         const listData = this.getListData(value);
+        if (listData.length) debugger;
         const content = listData.map(item => {
             return (
                 <li onClick={this.test} key={item.content}>

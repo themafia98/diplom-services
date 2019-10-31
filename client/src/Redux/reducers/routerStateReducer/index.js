@@ -81,13 +81,13 @@ export default (state = initialState, action) => {
             };
         }
         case REMOVE_TAB: {
-            let index = 0;
-            const isOneActive = action.payload === state.currentActionTab;
+            //  let index = 0;
+            //const isOneActive = action.payload === state.currentActionTab;
             let deleteKey =
                 action.payload.type === "itemTab" ? action.payload.path.split("__")[1] : action.payload.path;
             let deleteKeyOnce = !deleteKey ? action.payload.path : null;
             const filterArray = state.actionTabs.filter((tab, i) => {
-                if (tab === action.payload) index = i;
+                // if (tab === action.payload) index = i;
                 if (
                     deleteKey &&
                     ((action.payload.type === "itemTab" &&
