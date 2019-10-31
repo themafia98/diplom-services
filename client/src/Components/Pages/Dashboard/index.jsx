@@ -135,8 +135,10 @@ class Dashboard extends React.PureComponent {
         } else if (mode === "close") {
             let size = tabData.parentSize / actionTabsCopy.length;
             if (size > 160) size = 160;
-
-            if (isFind) removeTab(path);
+            console.log(path);
+            let type = "deafult";
+            if (path.split("__")[1]) type = "itemTab";
+            if (isFind) removeTab({ path: path, type: type });
             if (size !== tabData.childrenSize) onSetChildrenSizeAction(size, true);
         }
     };
