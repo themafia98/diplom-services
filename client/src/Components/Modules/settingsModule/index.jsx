@@ -1,8 +1,8 @@
-import React from "react";
-import _ from "lodash";
-import { connect } from "react-redux";
+import React from "./node_modules/react";
+import _ from "./node_modules/lodash";
+import { connect } from "./node_modules/react-redux";
 import { saveComponentStateAction } from "../../../Redux/actions/routerActions";
-import { Collapse, Switch, Input, Button } from "antd";
+import { Collapse, Switch, Input, Button } from "./node_modules/antd";
 import ObserverTime from "../../ObserverTime";
 import TitleModule from "../../TitleModule";
 const { Panel } = Collapse;
