@@ -33,9 +33,11 @@ class TaskModuleCalendar extends React.PureComponent {
                       })
                       .filter(Boolean)
                 : null;
-        const listData = dateArrayTask.map(it => {
-            return { type: "success", content: it.description };
-        });
+        const listData = Array.isArray(dateArrayTask)
+            ? dateArrayTask.map(it => {
+                  return { type: "success", content: it.description };
+              })
+            : [];
 
         return listData || [];
     };
