@@ -65,16 +65,18 @@
             .columnModuleRight {
                 .widjects {
                     height: 30%;
-                }
-            }
-            .mainModule_calendar {
-                padding: 0;
-                .ant-fullcalendar-header {
-                    display: none;
-                }
-                .ant-fullcalendar {
-                    table {
-                        height: 160px;
+
+                    .mainModule_calendar {
+                        padding: 0;
+                        .ant-fullcalendar-header {
+                            display: flex;
+                            justify-content: center;
+                        }
+                        .ant-fullcalendar {
+                            table {
+                                height: 160px;
+                            }
+                        }
                     }
                 }
             }

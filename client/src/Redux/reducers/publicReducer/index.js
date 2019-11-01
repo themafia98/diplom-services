@@ -10,7 +10,9 @@ export default (state = initialState, action) => {
         case SET_ERROR: {
             return {
                 ...state,
-                requestError: action.payload ? action.payload : null,
+                requestError: Array.isArray(state.requestError)
+                    ? [...state.requestError, action.payload]
+                    : [action.payload],
             };
         }
         case SET_CACHE: {

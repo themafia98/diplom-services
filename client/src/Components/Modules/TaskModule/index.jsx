@@ -51,7 +51,7 @@ class TaskModule extends React.PureComponent {
                         <TaskModuleMyList data={router.routeData[path]} user="Павел Петрович" />
                     ) : path === "taskModule_сalendar" ? (
                         <Scrollbars>
-                            <TaskModuleCalendar />
+                            <TaskModuleCalendar data={router.routeData["taskModule"]} />
                         </Scrollbars>
                     ) : path === "taskModule_createTask" ? (
                         <Scrollbars>

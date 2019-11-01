@@ -1,4 +1,4 @@
-import { USER_SCHEMA, TASK_SCHEMA } from "Utils/schema/const";
+import { USER_SCHEMA, TASK_SCHEMA } from "../../../../Utils/schema/const";
 import { saveComponentStateAction, loadFlagAction } from "../";
 import { errorRequstAction } from "../../publicActions";
 

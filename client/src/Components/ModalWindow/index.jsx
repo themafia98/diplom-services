@@ -1,5 +1,4 @@
 import React from "react";
-import _ from "lodash";
 import moment from "moment";
 import { Modal, Button, Dropdown, Icon, Menu, Input, DatePicker } from "antd";
 import uuid from "uuid/v4";
@@ -100,7 +99,7 @@ class ModalWindow extends React.Component {
     };
 
     onChangeTask = event => {
-        const { target, _isValid = null, _d = null } = event;
+        const { target, _isValid = null } = event;
         if (target && target.className.split(" ")[1] === "timeLost") {
             this.setState({
                 jurnal: { ...this.state.jurnal, timeLost: target.value },

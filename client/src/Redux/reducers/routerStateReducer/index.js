@@ -81,13 +81,21 @@ export default (state = initialState, action) => {
             };
         }
         case REMOVE_TAB: {
-            let index = 0;
-            const isOneActive = action.payload === state.currentActionTab;
-            let deleteKey = action.payload.split("__")[1];
-            let deleteKeyOnce = !deleteKey ? action.payload : null;
+            //  let index = 0;
+            //const isOneActive = action.payload === state.currentActionTab;
+            let deleteKey =
+                action.payload.type === "itemTab" ? action.payload.path.split("__")[1] : action.payload.path;
+            let deleteKeyOnce = !deleteKey ? action.payload.path : null;
             const filterArray = state.actionTabs.filter((tab, i) => {
-                if (tab === action.payload) index = i;
-                if (deleteKey && tab.includes(deleteKey)) return false;
+                // if (tab === action.payload) index = i;
+                if (
+                    deleteKey &&
+                    ((action.payload.type === "itemTab" &&
+                        tab.includes(action.payload.path.split("__")[1]) &&
+                        action.payload.path.split("__")[1] === deleteKey) ||
+                        (!tab.split("__")[1] && tab.includes(action.payload.path)))
+                )
+                    return false;
                 return tab !== action.payload;
             });
 
@@ -95,26 +103,19 @@ export default (state = initialState, action) => {
             const routeDataNew = {};
 
             for (let i = 0; i < keys.length; i++) {
-                if (state.routeData[keys[i]].key !== deleteKey) {
+                if (
+                    (action.payload.type === "itemTab" && state.routeData[keys[i]].key !== deleteKey) ||
+                    !keys[i].includes(deleteKey)
+                ) {
                     routeDataNew[keys[i]] = { ...state.routeData[keys[i]] };
                 }
             }
 
-            const indexFind = filterArray.findIndex(it => it === state.currentActionTab);
-            const nextTab =
-                filterArray[
-                    isOneActive
-                        ? index - 1
-                        : index >= filterArray.length && index !== 0
-                        ? filterArray.length - 1
-                        : indexFind > index
-                        ? indexFind
-                        : indexFind < index
-                        ? indexFind
-                        : index
-                ];
+            const indexFind = state.actionTabs.findIndex(it => it === state.currentActionTab);
+            const nextTab = filterArray[indexFind - 1];
 
-            const uuid = typeof nextTab === "string" ? nextTab.split("__")[1] : null;
+            const uuid =
+                typeof nextTab === "string" && action.payload.type === "itemTab" ? nextTab.split("__")[1] : nextTab;
 
             const copyData = routeDataNew;
             return {
