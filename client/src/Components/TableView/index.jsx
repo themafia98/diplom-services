@@ -30,7 +30,6 @@ class TableView extends React.Component {
 
     componentDidUpdate = (props, state) => {
         if (state.sizeHeight < window.innerHeight - 380) {
-            debugger;
             this.setState({
                 sizeHeight: window.innerHeight - 380,
             });

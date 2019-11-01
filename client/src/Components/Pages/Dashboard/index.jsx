@@ -56,7 +56,6 @@ class Dashboard extends React.PureComponent {
             let keys = Object.keys(copyRouteData).filter(key => /Module/gi.test(key) && regExp.test(key));
 
             if (keys.every(key => copyRouteData[key].load === true) || requestError === "Network error") {
-                debugger;
                 if (!_.isNull(requestError)) setTimeout(() => this.setState({ showLoader: false }), 500);
                 else
                     this.setState({

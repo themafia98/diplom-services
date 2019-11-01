@@ -18,25 +18,25 @@ class TaskModuleCalendar extends React.PureComponent {
         let dateArrayTask =
             data && data.tasks
                 ? data.tasks
-                      .map(it => {
-                          if (
-                              valueDate ===
-                              moment(
-                                  it.date[0]
-                                      .split(".")
-                                      .reverse()
-                                      .join("."),
-                              ).format("l")
-                          )
-                              return it;
-                          else return null;
-                      })
-                      .filter(Boolean)
+                    .map(it => {
+                        if (
+                            valueDate ===
+                            moment(
+                                it.date[0]
+                                    .split(".")
+                                    .reverse()
+                                    .join("."),
+                            ).format("l")
+                        )
+                            return it;
+                        else return null;
+                    })
+                    .filter(Boolean)
                 : null;
         const listData = Array.isArray(dateArrayTask)
             ? dateArrayTask.map(it => {
-                  return { type: "success", content: it.description };
-              })
+                return { type: "success", content: it.description };
+            })
             : [];
 
         return listData || [];
@@ -44,7 +44,6 @@ class TaskModuleCalendar extends React.PureComponent {
 
     dateCellRender = value => {
         const listData = this.getListData(value);
-        if (listData.length) debugger;
         const content = listData.map(item => {
             return (
                 <li onClick={this.test} key={item.content}>
@@ -73,7 +72,7 @@ class TaskModuleCalendar extends React.PureComponent {
             );
     };
 
-    test = event => {};
+    test = event => { };
 
     render() {
         return (
