@@ -18,7 +18,7 @@ class TableView extends React.Component {
         searchText: null,
         sortedInfo: null,
         isScroll: null,
-        sizeHeight: 500,
+        sizeHeight: 380,
     };
 
     componentDidMount = () => {
@@ -30,6 +30,7 @@ class TableView extends React.Component {
 
     componentDidUpdate = (props, state) => {
         if (state.sizeHeight < window.innerHeight - 380) {
+            debugger;
             this.setState({
                 sizeHeight: window.innerHeight - 380,
             });
@@ -84,19 +85,19 @@ class TableView extends React.Component {
                             {currentData && currentData.users.length && currentData.load ? (
                                 this.getRowsTable(currentData.users)
                             ) : (currentData && currentData.load) ||
-                              (currentData && !currentData.load && requestError) ? (
-                                <tr>
-                                    <td colSpan="5">
-                                        <Empty description={<span>Данных нету</span>} className="emptyTable" />
-                                    </td>
-                                </tr>
-                            ) : (
-                                <tr>
-                                    <td colSpan="5">
-                                        <Loader classNameSpiner="tableLoader" className="wrapperLoaderTable" />
-                                    </td>
-                                </tr>
-                            )}
+                                (currentData && !currentData.load && requestError) ? (
+                                        <tr>
+                                            <td colSpan="5">
+                                                <Empty description={<span>Данных нету</span>} className="emptyTable" />
+                                            </td>
+                                        </tr>
+                                    ) : (
+                                        <tr>
+                                            <td colSpan="5">
+                                                <Loader classNameSpiner="tableLoader" className="wrapperLoaderTable" />
+                                            </td>
+                                        </tr>
+                                    )}
                         </tbody>
                         <tfoot></tfoot>
                     </table>
@@ -196,11 +197,11 @@ class TableView extends React.Component {
                 data =
                     flag && data.length
                         ? data
-                              .map(it => {
-                                  if (!_.isNull(it.editor) && it.editor.some(editor => editor === user)) return it;
-                                  else return null;
-                              })
-                              .filter(Boolean)
+                            .map(it => {
+                                if (!_.isNull(it.editor) && it.editor.some(editor => editor === user)) return it;
+                                else return null;
+                            })
+                            .filter(Boolean)
                         : data;
 
             return (
@@ -281,12 +282,12 @@ class TableView extends React.Component {
                 text === "В работе"
                     ? "active"
                     : text === "Открыт"
-                    ? ""
-                    : text === "Закрыт"
-                    ? "close"
-                    : text === "Выполнен"
-                    ? "done"
-                    : null;
+                        ? ""
+                        : text === "Закрыт"
+                            ? "close"
+                            : text === "Выполнен"
+                                ? "done"
+                                : null;
 
             if (this.state.searchText)
                 return (
