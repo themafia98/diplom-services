@@ -18,7 +18,7 @@ class TableView extends React.Component {
         searchText: null,
         sortedInfo: null,
         isScroll: null,
-        sizeHeight: this.props.height ? window.innerHeight - (this.props.height - this.props.height / 2.3) : null,
+        sizeHeight: this.props.height ? window.innerHeight - (this.props.height - this.props.height / 2.5) : null,
     };
 
     componentDidMount = () => {
@@ -29,7 +29,7 @@ class TableView extends React.Component {
     };
 
     componentDidUpdate = (props, state) => {
-        const height = window.innerHeight - (this.props.height - this.props.height / 2.3);
+        const height = window.innerHeight - (this.props.height - this.props.height / 2.5);
         if (state.sizeHeight < height) {
             debugger;
             this.setState({
@@ -44,7 +44,7 @@ class TableView extends React.Component {
 
     setSizeWindow = event => {
         debugger;
-        const height = window.innerHeight - (this.props.height - this.props.height / 2.3);
+        const height = window.innerHeight - (this.props.height - this.props.height / 2.5);
         if (window.innerWidth <= 1450 && _.isNull(this.state.isScroll))
             this.setState({ isScroll: true, sizeHeight: height });
         else if (this.state.isScroll && window.innerWidth > 1200) this.setState({ isScroll: null, sizeHeight: height });
