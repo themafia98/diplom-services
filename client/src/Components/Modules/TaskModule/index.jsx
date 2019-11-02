@@ -42,7 +42,7 @@ class TaskModule extends React.PureComponent {
     componentDidMount = () => {
         const { onLoadCurrentData, path } = this.props;
         const { height } = this.state;
-        debugger;
+
         if (_.isNull(height) && !_.isNull(this.moduleTask)) {
             const heightControllerForState = this.controller ? this.controller.getBoundingClientRect().height : null;
             const heightForState = this.moduleTask.getBoundingClientRect().height;
@@ -53,11 +53,14 @@ class TaskModule extends React.PureComponent {
 
     componentDidUpdate = () => {
         const { onLoadCurrentData, path, router } = this.props;
-        const { height: heightState } = this.state;
-        if (_.isNull(heightState) && !_.isNull(this.moduleTask)) {
+        const { height, heightController } = this.state;
+
+        if (!_.isNull(height) && !_.isNull(this.moduleTask)) {
             const heightControllerForState = this.controller ? this.controller.getBoundingClientRect().height : null;
             const heightForState = this.moduleTask.getBoundingClientRect().height;
-            this.setState({ ...this.state, height: heightForState, heightController: heightControllerForState });
+
+            if (height !== heightForState || heightControllerForState !== heightController)
+                this.setState({ ...this.state, height: heightForState, heightController: heightControllerForState });
         }
 
         if (path.startsWith("taskModule") && !router.routeData["taskModule"]) {

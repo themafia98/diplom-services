@@ -2,10 +2,9 @@ import React from "react";
 import TableView from "../../../TableView";
 import TitleModule from "../../../TitleModule";
 
-class TaskModuleList extends React.PureComponent {
+class TaskModuleList extends React.Component {
     render() {
         const { data = null, height } = this.props;
-        console.log(height);
         return (
             <div className="taskModule_all">
                 <TitleModule additional="Все задачи" classNameTitle="taskModuleTittle" title="Список всех задач" />

@@ -18,7 +18,6 @@ class TableView extends React.Component {
         searchText: null,
         sortedInfo: null,
         isScroll: null,
-        sizeHeight: this.props.height ? this.props.height : null,
     };
 
     componentDidMount = () => {
@@ -27,24 +26,13 @@ class TableView extends React.Component {
         window.addEventListener("resize", this.setSizeWindow);
     };
 
-    componentDidUpdate = (props, state) => {
-        const height = this.props.height - 250;
-        if (state.sizeHeight < height) {
-            this.setState({
-                sizeHeight: height,
-            });
-        }
-    };
-
     componentWillUnmount = () => {
         window.removeEventListener("resize", this.setSizeWindow);
     };
 
     setSizeWindow = event => {
-        const height = this.props.height - 250;
-        if (window.innerWidth <= 1450 && _.isNull(this.state.isScroll))
-            this.setState({ isScroll: true, sizeHeight: height });
-        else if (this.state.isScroll && window.innerWidth > 1200) this.setState({ isScroll: null, sizeHeight: height });
+        if (window.innerWidth <= 1450 && _.isNull(this.state.isScroll)) this.setState({ isScroll: true });
+        else if (this.state.isScroll && window.innerWidth > 1200) this.setState({ isScroll: null });
     };
 
     handleFilter = (pagination, filters, sorter) => {
@@ -60,12 +48,14 @@ class TableView extends React.Component {
             flag,
             router,
             publicReducer: { requestError },
+            height: heightProps,
         } = this.props;
-        const { sizeHeight } = this.state;
         const { routeData } = router;
         const routePathData = router.currentActionTab.split("_")[0];
         const currentData = routeData[routePathData];
         const tasks = currentData ? currentData.tasks : null;
+
+        const height = heightProps - 250;
 
         if (path === "mainModule__table") {
             return (
@@ -207,7 +197,7 @@ class TableView extends React.Component {
                 <Table
                     pagination={{ pageSize: 14 }}
                     size="medium"
-                    scroll={{ y: sizeHeight }}
+                    scroll={{ y: height }}
                     onChange={this.handleFilter}
                     columns={columns}
                     dataSource={data}
