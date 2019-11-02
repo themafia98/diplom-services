@@ -9,6 +9,7 @@ export const errorRequstAction = state => {
 };
 
 export const сachingAction = state => {
+    debugger;
     return {
         type: SET_CACHE,
         payload: state,

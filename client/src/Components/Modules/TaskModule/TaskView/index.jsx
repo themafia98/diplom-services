@@ -15,6 +15,7 @@ class TaskView extends React.Component {
     state = {
         uuid: this.props.uuid ? this.props.uuid : null,
         mode: "jur",
+        primaryKey: "___taskViewSetJurnal",
         showModalJur: false,
     };
 
@@ -30,17 +31,53 @@ class TaskView extends React.Component {
         });
     };
 
+    renderWorkJurnal = (jurnalDataKeys = []) => {
+        const { publicReducer: { caches = null } = {} } = this.props;
+        return jurnalDataKeys
+            .map(key => {
+                const item = caches[key];
+                return (
+                    <div key={Math.random()} className="jurnalItem">
+                        <p>
+                            <span className="title">Затрачено времени:</span>{" "}
+                            {item.timeLost ? item.timeLost : "не установлено"}
+                        </p>
+                        <p>
+                            <span className="title">Дата:</span> {item.date ? item.date : "не установлено"}
+                        </p>
+                        <p>
+                            <span className="title">Коментарии:</span>
+                        </p>
+                        <p>{item.description ? item.description : "не установлено"}</p>
+                    </div>
+                );
+            })
+            .filter(Boolean);
+    };
+
     render() {
         const {
             router: { routeDataActive = null },
             onCaching,
+            publicReducer: { caches = null } = {},
         } = this.props;
-        const { mode } = this.state;
+        const { mode, primaryKey } = this.state;
+        let jurnalDataKeys = null;
+        if (caches && primaryKey && routeDataActive && routeDataActive.key) {
+            const keys = Object.keys(caches);
+            jurnalDataKeys = keys.filter(key => key.includes(primaryKey));
+        }
+
         if (routeDataActive) {
             return (
                 <React.Fragment>
                     <TitleModule classNameTitle="taskModuleTittle" title="Карточка задачи" />
-                    <ModalWindow onCaching={onCaching} routeDataActive={routeDataActive} mode={mode} />
+                    <ModalWindow
+                        onCaching={onCaching}
+                        primaryKey={primaryKey}
+                        routeDataActive={routeDataActive}
+                        mode={mode}
+                    />
                     <div className="taskView">
                         <div className="col-6 col-taskDescription">
                             <Scrollbars>
@@ -80,9 +117,15 @@ class TaskView extends React.Component {
                                 </div>
                             </Scrollbars>
                         </div>
-                        <div className="col-6">
+                        <div className="col-6 col-taskDescription">
                             <TitleModule classNameTitle="historyTaskTitle" title="Журнал работы" />
-                            <Empty description={<span>Нету данных в журнале</span>} />
+                            <Scrollbars>
+                                {!jurnalDataKeys ? (
+                                    <Empty description={<span>Нету данных в журнале</span>} />
+                                ) : (
+                                    this.renderWorkJurnal(jurnalDataKeys)
+                                )}
+                            </Scrollbars>
                         </div>
                     </div>
                 </React.Fragment>
@@ -94,12 +137,13 @@ class TaskView extends React.Component {
 const mapStateTopProps = state => {
     return {
         router: state.router,
+        publicReducer: state.publicReducer,
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        onCaching: async data => await dispatch(сachingAction(data)),
+        onCaching: async (data, primaryKey) => await dispatch(сachingAction({ data, primaryKey })),
     };
 };
 

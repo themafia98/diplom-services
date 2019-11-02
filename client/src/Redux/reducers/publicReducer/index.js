@@ -16,10 +16,12 @@ export default (state = initialState, action) => {
             };
         }
         case SET_CACHE: {
-            const key = action.payload.key;
+            const { primaryKey } = action.payload;
+            const { data } = action.payload;
+            const key = data && primaryKey && data.key ? `${data.key}${primaryKey}` : data.key;
             return {
                 ...state,
-                caches: { ...state.caches, [key]: { ...action.payload } },
+                caches: { ...state.caches, [key]: { ...data } },
             };
         }
         default:

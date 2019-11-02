@@ -81,13 +81,11 @@ export default (state = initialState, action) => {
             };
         }
         case REMOVE_TAB: {
-            //  let index = 0;
-            //const isOneActive = action.payload === state.currentActionTab;
             let deleteKey =
                 action.payload.type === "itemTab" ? action.payload.path.split("__")[1] : action.payload.path;
+            const { currentActionTab } = state;
             let deleteKeyOnce = !deleteKey ? action.payload.path : null;
             const filterArray = state.actionTabs.filter((tab, i) => {
-                // if (tab === action.payload) index = i;
                 if (
                     deleteKey &&
                     ((action.payload.type === "itemTab" &&
@@ -112,7 +110,8 @@ export default (state = initialState, action) => {
             }
 
             const indexFind = state.actionTabs.findIndex(it => it === state.currentActionTab);
-            const nextTab = filterArray[indexFind - 1];
+            const currentFind = filterArray.findIndex(tab => tab === currentActionTab);
+            const nextTab = currentFind !== -1 ? currentActionTab : filterArray[indexFind - 1];
 
             const uuid =
                 typeof nextTab === "string" && action.payload.type === "itemTab" ? nextTab.split("__")[1] : nextTab;
@@ -120,7 +119,7 @@ export default (state = initialState, action) => {
             const copyData = routeDataNew;
             return {
                 ...state,
-                currentActionTab: nextTab,
+                currentActionTab: nextTab || "mainModule",
                 actionTabs: filterArray,
                 routeDataActive:
                     state.routeDataActive && deleteKey === state.routeDataActive.key && uuid && !deleteKeyOnce

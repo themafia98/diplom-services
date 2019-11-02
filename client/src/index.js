@@ -17,6 +17,7 @@ import firebaseContext from "./delayFirebase/firebaseContext";
 import ErrorBoundary from "./Components/ErrorBoundary";
 
 import store from "./Redux/store";
+
 Sentry.init({ dsn: process.env.REACT_APP_LOGGER_DSN });
 
 ReactDOM.render(

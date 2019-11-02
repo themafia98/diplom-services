@@ -28,7 +28,7 @@ class ModalWindow extends React.Component {
 
     handleOk = async e => {
         const { login, name, password, departament, email, loading, surname, jurnal } = this.state;
-        const { firebase, mode, routeDataActive, onCaching } = this.props;
+        const { firebase = null, mode = null, routeDataActive = null, onCaching, primaryKey = null } = this.props;
         if (mode === "reg") {
             if (login && name && password && departament && email && !loading) {
                 firebase
@@ -58,7 +58,7 @@ class ModalWindow extends React.Component {
             }
         } else if (mode === "jur") {
             const jurCopy = { ...jurnal, key: routeDataActive.key, editor: "Павел Петрович" };
-            if (onCaching) await onCaching(jurCopy).then(() => this.handleCancel());
+            if (onCaching) await onCaching(jurCopy, `${Math.random()}${primaryKey}`).then(() => this.handleCancel());
         }
     };
 
