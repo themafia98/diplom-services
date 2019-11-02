@@ -8,7 +8,6 @@ class TaskModuleCalendar extends React.PureComponent {
     getListData = value => {
         const { data = null } = this.props;
 
-        let today = null;
         let valueDate = moment(value.toString())
             .format("DD MM YYYY")
             .split(" ")
@@ -18,25 +17,26 @@ class TaskModuleCalendar extends React.PureComponent {
         let dateArrayTask =
             data && data.tasks
                 ? data.tasks
-                    .map(it => {
-                        if (
-                            valueDate ===
-                            moment(
-                                it.date[0]
-                                    .split(".")
-                                    .reverse()
-                                    .join("."),
-                            ).format("l")
-                        )
-                            return it;
-                        else return null;
-                    })
-                    .filter(Boolean)
+                      .map(it => {
+                          if (
+                              valueDate ===
+                              moment(
+                                  it.date[0]
+                                      .split(".")
+                                      .reverse()
+                                      .join("."),
+                              ).format("l")
+                          )
+                              return it;
+                          else return null;
+                      })
+                      .filter(Boolean)
                 : null;
+
         const listData = Array.isArray(dateArrayTask)
             ? dateArrayTask.map(it => {
-                return { type: "success", content: it.description };
-            })
+                  return { type: "success", content: it.description };
+              })
             : [];
 
         return listData || [];
@@ -59,20 +59,24 @@ class TaskModuleCalendar extends React.PureComponent {
         );
         let outValues = listData.length ? [...listData] : null;
         if (listData.length) {
-            outValues = outValues.reduce((prev, current) => prev.content + current.content);
+            outValues = outValues.reduce((prev, current) =>
+                prev.content ? prev.content + current.content : current.content,
+            );
         }
 
         if (content.length)
             return (
                 <Popover content={list}>
                     <Button>
-                        <span className="calendarDate-content">{outValues.content}</span>
+                        <span className="calendarDate-content">
+                            {outValues ? (outValues.content ? outValues.content : outValues) : null}
+                        </span>
                     </Button>
                 </Popover>
             );
     };
 
-    test = event => { };
+    test = event => {};
 
     render() {
         return (

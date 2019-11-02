@@ -2,6 +2,8 @@ import React from "react";
 import _ from "lodash";
 import { Layout } from "antd";
 
+import Scrollbars from "react-custom-scrollbars";
+
 import DrawerViewer from "../DrawerViewer";
 import MainModule from "../Modules/MainModule";
 import CabinetModule from "../Modules/CabinetModule";
@@ -45,12 +47,14 @@ class ContentView extends React.PureComponent {
                 ) : path === "cabinetModule" ? (
                     <CabinetModule onErrorRequstAction={onErrorRequstAction} key="cabinet" firebase={firebase} />
                 ) : path.startsWith("taskModule") ? (
-                    <TaskModule
-                        onErrorRequstAction={onErrorRequstAction}
-                        key="taskModule"
-                        path={path}
-                        firebase={firebase}
-                    />
+                    <Scrollbars>
+                        <TaskModule
+                            onErrorRequstAction={onErrorRequstAction}
+                            key="taskModule"
+                            path={path}
+                            firebase={firebase}
+                        />
+                    </Scrollbars>
                 ) : path.startsWith("contactModule") ? (
                     <ContactModule
                         onErrorRequstAction={onErrorRequstAction}
@@ -75,8 +79,8 @@ class ContentView extends React.PureComponent {
                 ) : path === "statisticModule" ? (
                     <StatisticsModule onErrorRequstAction={onErrorRequstAction} key="statistic" firebase={firebase} />
                 ) : (
-                                                <div>Not found module: ${path}</div>
-                                            )}
+                    <div>Not found module: ${path}</div>
+                )}
             </React.Fragment>
         );
     };

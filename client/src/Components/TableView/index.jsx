@@ -18,20 +18,22 @@ class TableView extends React.Component {
         searchText: null,
         sortedInfo: null,
         isScroll: null,
-        sizeHeight: 380,
+        sizeHeight: this.props.height ? window.innerHeight - (this.props.height - this.props.height / 2.3) : null,
     };
 
     componentDidMount = () => {
         const { path, onLoadCurrentData } = this.props;
-
+        debugger;
         if (path === "mainModule__table") onLoadCurrentData(path);
         window.addEventListener("resize", this.setSizeWindow);
     };
 
     componentDidUpdate = (props, state) => {
-        if (state.sizeHeight < window.innerHeight - 380) {
+        const height = window.innerHeight - (this.props.height - this.props.height / 2.3);
+        if (state.sizeHeight < height) {
+            debugger;
             this.setState({
-                sizeHeight: window.innerHeight - 380,
+                sizeHeight: height,
             });
         }
     };
@@ -41,10 +43,11 @@ class TableView extends React.Component {
     };
 
     setSizeWindow = event => {
+        debugger;
+        const height = window.innerHeight - (this.props.height - this.props.height / 2.3);
         if (window.innerWidth <= 1450 && _.isNull(this.state.isScroll))
-            this.setState({ isScroll: true, sizeHeight: window.innerHeight - 380 });
-        else if (this.state.isScroll && window.innerWidth > 1200)
-            this.setState({ isScroll: null, sizeHeight: window.innerHeight - 380 });
+            this.setState({ isScroll: true, sizeHeight: height });
+        else if (this.state.isScroll && window.innerWidth > 1200) this.setState({ isScroll: null, sizeHeight: height });
     };
 
     handleFilter = (pagination, filters, sorter) => {
@@ -84,19 +87,19 @@ class TableView extends React.Component {
                             {currentData && currentData.users.length && currentData.load ? (
                                 this.getRowsTable(currentData.users)
                             ) : (currentData && currentData.load) ||
-                                (currentData && !currentData.load && requestError) ? (
-                                        <tr>
-                                            <td colSpan="5">
-                                                <Empty description={<span>Данных нету</span>} className="emptyTable" />
-                                            </td>
-                                        </tr>
-                                    ) : (
-                                        <tr>
-                                            <td colSpan="5">
-                                                <Loader classNameSpiner="tableLoader" className="wrapperLoaderTable" />
-                                            </td>
-                                        </tr>
-                                    )}
+                              (currentData && !currentData.load && requestError) ? (
+                                <tr>
+                                    <td colSpan="5">
+                                        <Empty description={<span>Данных нету</span>} className="emptyTable" />
+                                    </td>
+                                </tr>
+                            ) : (
+                                <tr>
+                                    <td colSpan="5">
+                                        <Loader classNameSpiner="tableLoader" className="wrapperLoaderTable" />
+                                    </td>
+                                </tr>
+                            )}
                         </tbody>
                         <tfoot></tfoot>
                     </table>
@@ -196,11 +199,11 @@ class TableView extends React.Component {
                 data =
                     flag && data.length
                         ? data
-                            .map(it => {
-                                if (!_.isNull(it.editor) && it.editor.some(editor => editor === user)) return it;
-                                else return null;
-                            })
-                            .filter(Boolean)
+                              .map(it => {
+                                  if (!_.isNull(it.editor) && it.editor.some(editor => editor === user)) return it;
+                                  else return null;
+                              })
+                              .filter(Boolean)
                         : data;
 
             return (
@@ -281,12 +284,12 @@ class TableView extends React.Component {
                 text === "В работе"
                     ? "active"
                     : text === "Открыт"
-                        ? ""
-                        : text === "Закрыт"
-                            ? "close"
-                            : text === "Выполнен"
-                                ? "done"
-                                : null;
+                    ? ""
+                    : text === "Закрыт"
+                    ? "close"
+                    : text === "Выполнен"
+                    ? "done"
+                    : null;
 
             if (this.state.searchText)
                 return (
