@@ -79,6 +79,7 @@ class TaskModuleCalendar extends React.PureComponent {
     test = event => {};
 
     render() {
+        // const { height } = this.props;
         return (
             <Scrollbars>
                 <div className="taskModuleCalendar">

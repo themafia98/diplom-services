@@ -1,7 +1,7 @@
 import React from "react";
 
 import { Calendar } from "antd";
-import ClockWidjet from "../../ClockWidjet";
+import ClockWidjet from "../../ClockWidjet/index";
 import TableView from "../../TableView";
 // import WeatherWidjet from "../../WeatherWidget";
 import StreamBox from "../../StreamBox";

@@ -144,6 +144,7 @@ class CreateTask extends React.Component {
     render() {
         const dateFormat = "YYYY/MM/DD";
         const { errorBundle } = this.state;
+        // const { height } = this.props;
         return (
             <div className="createTask">
                 <TitleModule additional="Форма создания задачи" classNameTitle="createTaskTitle" title="Новая задача" />

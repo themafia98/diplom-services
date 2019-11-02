@@ -1,33 +1,10 @@
 import React from "react";
-import _ from "lodash";
 import TableView from "../../../TableView";
 import TitleModule from "../../../TitleModule";
 
 class TaskModuleMyList extends React.PureComponent {
-    state = {
-        height: null,
-    };
-    moduleTask = null;
-    refModuleTask = node => (this.moduleTask = node);
-
-    componentDidMount = () => {
-        const { height } = this.state;
-        if (_.isNull(height) && !_.isNull(this.moduleTask)) {
-            this.setState({ height: this.moduleTask.getBoundingClientRect().height });
-        }
-    };
-
-    componentDidUpdate = () => {
-        const { height: heightState } = this.state;
-        if (_.isNull(heightState) && !_.isNull(this.moduleTask)) {
-            const height = this.moduleTask.getBoundingClientRect().height;
-            if (height !== heightState) this.setState({ height: height });
-        }
-    };
-
     render() {
-        const { user, data = null } = this.props;
-        const { height } = this.state;
+        const { user, data = null, height } = this.props;
         return (
             <div ref={this.refModuleTask} className="taskModule_all">
                 <TitleModule additional="Мои задачи" classNameTitle="taskModuleTittle" title="Список моих задач" />

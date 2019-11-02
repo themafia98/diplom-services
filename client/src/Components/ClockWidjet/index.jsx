@@ -6,9 +6,16 @@ class ClockWidjet extends React.Component {
         date: new Date(),
     };
 
-    componentDidMount() {
-        setInterval(() => this.setState({ date: new Date() }), 1000);
-    }
+    timer = null;
+
+    componentDidMount = () => {
+        this.timer = setInterval(() => this.setState({ date: new Date() }), 1000);
+    };
+
+    componentWillUnmount = () => {
+        clearInterval(this.timer);
+    };
+
     render() {
         return (
             <div className="clockWrapper">
