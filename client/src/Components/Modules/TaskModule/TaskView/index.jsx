@@ -65,7 +65,7 @@ class TaskView extends React.Component {
         let jurnalDataKeys = null;
         if (caches && primaryKey && routeDataActive && routeDataActive.key) {
             const keys = Object.keys(caches);
-            jurnalDataKeys = keys.filter(key => key.includes(primaryKey));
+            jurnalDataKeys = keys.filter(key => key.includes(primaryKey) && key.includes(routeDataActive.key));
         }
 
         if (routeDataActive) {
