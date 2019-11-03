@@ -36,9 +36,9 @@ export const loadCurrentData = path => (dispatch, getState, { firebase, getSchem
                         "offline",
                         statusRequst => {
                             if (getState().publicReducer.status !== statusRequst && statusRequst === "online") {
+                                request.unfollow();
                                 dispatch(setStatus(statusRequst));
                                 dispatch(errorRequstAction(null));
-                                request.unfollow();
                                 dispatch(loadCurrentData(path));
                             }
                         },
@@ -72,9 +72,9 @@ export const loadCurrentData = path => (dispatch, getState, { firebase, getSchem
                         "offline",
                         statusRequst => {
                             if (getState().publicReducer.status !== statusRequst && statusRequst === "online") {
+                                request.unfollow();
                                 dispatch(setStatus(statusRequst));
                                 dispatch(errorRequstAction(null));
-                                request.unfollow();
                                 dispatch(loadCurrentData(path));
                             }
                         },
