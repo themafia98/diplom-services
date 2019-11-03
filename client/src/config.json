@@ -5,6 +5,10 @@
         "session": "SESSION",
         "lowConnection": "false"
     },
+    "clientDB": {
+        "name": "controllSystemDB",
+        "version": 1
+    },
     "forceUpdate": false,
     "msTimeoutLoading": 0,
     "tabsLimit": 20,

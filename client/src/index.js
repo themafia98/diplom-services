@@ -3,7 +3,7 @@ import { IntlProvider } from "react-intl";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import ReactDOM from "react-dom";
-
+import clientDB from "./IndexedDB";
 import "normalize.css";
 import "antd/dist/antd.css";
 import "./index.scss";
