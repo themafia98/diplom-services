@@ -16,6 +16,7 @@ export const getValidateSchema = type => {
             };
         case TASK_CONTROLL_JURNAL_SCHEMA:
             return {
+                key: null,
                 timeLost: null,
                 date: null,
                 description: null,

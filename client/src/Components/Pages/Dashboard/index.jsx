@@ -15,6 +15,8 @@ import { loadCurrentData } from "../../../Redux/actions/routerActions/middleware
 import { errorRequstAction } from "../../../Redux/actions/publicActions";
 import { setChildrenSizeAction } from "../../../Redux/actions/tabActions";
 
+//import clientDB from "../../../clientDB";
+
 import Loader from "../../Loader";
 import HeaderView from "../../HeaderView";
 import ContentView from "../../ContentView";
