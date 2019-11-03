@@ -1,4 +1,7 @@
 import config from "../config.json";
+import { TASK_SCHEMA, USER_SCHEMA, TASK_CONTROLL_JURNAL_SCHEMA } from "../Utils/schema/const";
+import { getValidateSchema } from "../Utils/schema";
+
 class IndexedDB {
     constructor(name, version) {
         this.db = null;
@@ -17,26 +20,51 @@ class IndexedDB {
         requestOpen.onupgradeneeded = event => {
             this.db = event.target.result;
             const { db } = this;
-            // const customerData = [
-            //     { primaryKey: Math.random(), name: "Bill", age: 35, email: "bill@company.com" },
-            //     { primaryKey: Math.random(), name: "Donna", age: 32, email: "donna@home.org" },
-            // ];
 
-            let objectStore = db.createObjectStore("users", {
+            let objectStoreUsers = db.createObjectStore("users", {
                 unique: true,
                 keyPath: "primaryKey",
                 autoIncrement: true,
             });
-            //objectStore.createIndex("name", "name", { unique: false });
-            //objectStore.createIndex("email", "email", { unique: true });
 
-            // objectStore.transaction.oncomplete = function(event) {
-            //     // Store values in the newly created objectStore.
-            //     var customerObjectStore = db.transaction("users", "readwrite").objectStore("users");
-            //     customerData.forEach(function(customer) {
-            //         customerObjectStore.add(customer);
-            //     });
-            // };
+            let objectStoreTasks = db.createObjectStore("tasks", {
+                unique: true,
+                keyPath: "primaryKey",
+                autoIncrement: true,
+            });
+
+            let objectStoreJurnalWork = db.createObjectStore("jurnalWork", {
+                unique: true,
+                keyPath: "primaryKey",
+                autoIncrement: true,
+            });
+
+            const schemaUsers = getValidateSchema(USER_SCHEMA);
+            const keys = Object.keys(schemaUsers);
+
+            keys.forEach(key => {
+                objectStoreUsers.createIndex(key, key, {
+                    unique: key === "uuid" || key === "email" || key === "login" ? true : false,
+                });
+            });
+
+            const schemaTasks = getValidateSchema(TASK_SCHEMA);
+            const keysTasks = Object.keys(schemaTasks);
+
+            keysTasks.forEach(key => {
+                objectStoreTasks.createIndex(key, key, {
+                    unique: key === "key" ? true : false,
+                });
+            });
+
+            const schemaJurnalWork = getValidateSchema(TASK_CONTROLL_JURNAL_SCHEMA);
+            const keysJurnalWork = Object.keys(schemaJurnalWork);
+
+            keysJurnalWork.forEach(key => {
+                objectStoreJurnalWork.createIndex(key, key, {
+                    unique: key === "key" ? true : false,
+                });
+            });
         };
     }
 }
