@@ -56,6 +56,8 @@ class ModalWindow extends React.Component {
                             uuid: uuid(),
                             visible: false,
                             loading: false,
+                            jurnal: { timeLost: null, date: moment().format("YYYY-MM-DD HH:mm:ss"), description: null },
+                            error: new Set(),
                         });
                     })
                     .catch(error => console.error(error.message));
@@ -63,6 +65,13 @@ class ModalWindow extends React.Component {
         } else if (mode === "jur" && this.validation()) {
             const jurCopy = { ...jurnal, key: routeDataActive.key, editor: "Павел Петрович" };
             if (onCaching) await onCaching(jurCopy, `${Math.random()}${primaryKey}`).then(() => this.handleCancel());
+            return this.setState({
+                uuid: uuid(),
+                visible: false,
+                loading: false,
+                jurnal: { timeLost: null, date: moment().format("YYYY-MM-DD HH:mm:ss"), description: null },
+                error: new Set(),
+            });
         }
     };
 
@@ -70,6 +79,8 @@ class ModalWindow extends React.Component {
         this.setState({
             visible: false,
             loading: false,
+            jurnal: { timeLost: null, date: moment().format("YYYY-MM-DD HH:mm:ss"), description: null },
+            error: new Set(),
         });
     };
 
@@ -182,7 +193,10 @@ class ModalWindow extends React.Component {
                 </React.Fragment>
             );
         } else if (mode === "jur") {
-            const { error } = this.state;
+            const {
+                error,
+                jurnal: { date, description, timeLost },
+            } = this.state;
             moment.locale("ru");
             const menu = (
                 <Menu>
@@ -212,6 +226,7 @@ class ModalWindow extends React.Component {
                         <Input
                             onChange={this.onChangeTask}
                             className={["timeLost", error.has("timeLost") ? "errorFild" : null].join(" ")}
+                            value={timeLost}
                             type="text"
                             size="default"
                             placeholder="20m / 1h / 2.5h "
@@ -227,6 +242,7 @@ class ModalWindow extends React.Component {
                         <span>Кометарии:</span>
                         <TextArea
                             onChange={this.onChangeTask}
+                            value={description}
                             className={["description", error.has("description") ? "errorFild" : null].join(" ")}
                             rows={4}
                         />
