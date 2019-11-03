@@ -2,9 +2,7 @@ import React from "react";
 import moment from "moment";
 import TitleModule from "../TitleModule";
 import { Timeline } from "antd";
-import "moment/locale/ru";
-import "moment/locale/eu";
-import "moment/locale/de";
+
 class ObserverTime extends React.Component {
     render() {
         const { title } = this.props;

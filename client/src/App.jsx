@@ -10,7 +10,7 @@ import Loader from "./Components/Loader";
 import Recovery from "./Components/Pages/Recovery";
 import LoginPage from "./Components/Pages/LoginPage";
 import Dashboard from "./Components/Pages/Dashboard";
-
+import "moment/locale/ru";
 // import { isMobile } from "react-device-detect";
 
 class App extends React.Component {

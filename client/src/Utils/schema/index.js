@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { TASK_SCHEMA, USER_SCHEMA, JUR_TASK } from "./const";
+import { TASK_SCHEMA, USER_SCHEMA, JUR_TASK, TASK_CONTROLL_JURNAL_SCHEMA } from "./const";
 
 export const getValidateSchema = type => {
     switch (type) {
@@ -13,6 +13,12 @@ export const getValidateSchema = type => {
                 editor: null,
                 description: null,
                 date: null,
+            };
+        case TASK_CONTROLL_JURNAL_SCHEMA:
+            return {
+                timeLost: null,
+                date: null,
+                description: null,
             };
         case USER_SCHEMA:
             return {
