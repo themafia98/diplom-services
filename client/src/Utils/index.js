@@ -26,7 +26,7 @@ export class Request {
     constructor(prop) {
         this.status = prop;
         this.testAPI = "/favicon.ico?_=";
-        this.follow = null;
+        this.followObserver = null;
         this.observerOffline = null;
         this.observerOnline = null;
     }
@@ -47,17 +47,17 @@ export class Request {
     }
 
     follow(mode = "offline", callback, timeout = 5000) {
-        if (_.isNull(this.follow))
-            this.follow = setInterval(() => {
+        if (_.isNull(this.followObserver))
+            this.followObserver = setInterval(() => {
                 this.test(callback);
             }, timeout);
         else return null;
     }
 
     unfollow() {
-        if (this.follow) {
-            clearInterval(this.follow);
-            this.follow = null;
+        if (this.followObserver) {
+            clearInterval(this.followObserver);
+            this.followObserver = null;
         }
         return true;
     }

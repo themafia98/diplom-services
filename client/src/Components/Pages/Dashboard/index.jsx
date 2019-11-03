@@ -23,6 +23,7 @@ import MenuView from "../../MenuView";
 class Dashboard extends React.PureComponent {
     state = {
         collapsed: false,
+        status: "online",
         menuItems: config.menu,
         showLoader: false,
     };
@@ -32,12 +33,12 @@ class Dashboard extends React.PureComponent {
     componentDidUpdate = () => {
         const {
             onErrorRequstAction,
-            publicReducer: { requestError = null } = {},
+            publicReducer: { requestError = null, status } = {},
             router,
             router: { currentActionTab },
         } = this.props;
-        const { showLoader } = this.state;
-        if (!_.isNull(requestError)) {
+        const { showLoader, status: statusState } = this.state;
+        if (!_.isNull(requestError) && status === "offline") {
             onErrorRequstAction(false).then(() => {
                 if (requestError[requestError.length - 1] === "Network error")
                     if (
@@ -48,7 +49,10 @@ class Dashboard extends React.PureComponent {
             });
         }
 
-        if (showLoader) {
+        if (!showLoader && statusState !== status && status === "online")
+            notification.success({ message: "Удачно", description: "Интернет соединение восстановлено." });
+
+        if (showLoader && _.isNull(requestError) && status === "online") {
             const { routeData = {} } = router;
             const copyRouteData = { ...routeData };
             let currentArray = currentActionTab.split("_" || "__");
@@ -56,12 +60,27 @@ class Dashboard extends React.PureComponent {
             let keys = Object.keys(copyRouteData).filter(key => /Module/gi.test(key) && regExp.test(key));
 
             if (keys.every(key => copyRouteData[key].load === true) || requestError === "Network error") {
-                if (!_.isNull(requestError)) setTimeout(() => this.setState({ showLoader: false }), 500);
-                else
-                    this.setState({
-                        showLoader: false,
-                    });
+                return this.setState({
+                    status: status,
+                    showLoader: false,
+                });
+            } else if (_.isNull(requestError) && status === "online") {
+                return this.setState({
+                    status: status,
+                    showLoader: false,
+                });
             }
+        } else if (showLoader && status === "offline") {
+            return this.setState({
+                status: status,
+                showLoader: false,
+            });
+        }
+
+        if (statusState !== status) {
+            this.setState({
+                status: status,
+            });
         }
     };
 

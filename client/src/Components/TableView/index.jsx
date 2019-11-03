@@ -71,7 +71,9 @@ class TableView extends React.Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {currentData && currentData.users.length && currentData.load ? (
+                            {currentData &&
+                            ((currentData.users.length && currentData.load && !requestError) ||
+                                (currentData.users.length && !currentData.load && requestError)) ? (
                                 this.getRowsTable(currentData.users)
                             ) : (currentData && currentData.load) ||
                               (currentData && !currentData.load && requestError) ? (

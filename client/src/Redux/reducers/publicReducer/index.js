@@ -11,9 +11,12 @@ export default (state = initialState, action) => {
         case SET_ERROR: {
             return {
                 ...state,
-                requestError: Array.isArray(state.requestError)
-                    ? [...state.requestError, action.payload]
-                    : [action.payload],
+                requestError:
+                    action.payload && Array.isArray(state.requestError)
+                        ? [...state.requestError, action.payload]
+                        : action.payload
+                        ? [action.payload]
+                        : null,
             };
         }
         case SET_CACHE: {
@@ -28,7 +31,7 @@ export default (state = initialState, action) => {
         case SET_STATUS: {
             return {
                 ...state,
-                sattus: action.payload,
+                status: action.payload,
             };
         }
         default:

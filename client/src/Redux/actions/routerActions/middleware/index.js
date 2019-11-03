@@ -1,8 +1,8 @@
 import { USER_SCHEMA, TASK_SCHEMA } from "../../../../Utils/schema/const";
 import { saveComponentStateAction, loadFlagAction } from "../";
-import { errorRequstAction } from "../../publicActions";
+import { errorRequstAction, setStatus } from "../../publicActions";
 
-export const loadCurrentData = path => (dispatch, getState, { firebase, getSchema }) => {
+export const loadCurrentData = path => (dispatch, getState, { firebase, getSchema, request }) => {
     const router = getState().router;
     const { requestError, status = "online" } = getState().publicReducer;
     const pathValid = path.startsWith("taskModule_") ? "taskModule" : path.split("__")[0];
@@ -30,7 +30,20 @@ export const loadCurrentData = path => (dispatch, getState, { firebase, getSchem
                     dispatch(saveComponentStateAction({ users: usersCopy, load: true, path: pathValid }));
                 })
                 .catch(error => {
+                    dispatch(setStatus("offline"));
                     dispatch(errorRequstAction(error.message));
+                    request.follow(
+                        "offline",
+                        statusRequst => {
+                            if (getState().publicReducer.status !== statusRequst && statusRequst === "online") {
+                                dispatch(setStatus(statusRequst));
+                                dispatch(errorRequstAction(null));
+                                request.unfollow();
+                                dispatch(loadCurrentData(path));
+                            }
+                        },
+                        3000,
+                    );
                 });
         } else return null;
     } else if (pathValid === "taskModule") {
@@ -49,11 +62,24 @@ export const loadCurrentData = path => (dispatch, getState, { firebase, getSchem
                 })
                 .then(tasks => {
                     const tasksCopy = tasks.map(it => getSchema(TASK_SCHEMA, it, "no-strict")).filter(Boolean);
-                    if (requestError !== null) dispatch(errorRequstAction(null));
+                    if (requestError !== null) dispatch(errorRequstAction(false));
                     dispatch(saveComponentStateAction({ tasks: tasksCopy, load: true, path: pathValid }));
                 })
                 .catch(error => {
+                    dispatch(setStatus("offline"));
                     dispatch(errorRequstAction(error.message));
+                    request.follow(
+                        "offline",
+                        statusRequst => {
+                            if (getState().publicReducer.status !== statusRequst && statusRequst === "online") {
+                                dispatch(setStatus(statusRequst));
+                                dispatch(errorRequstAction(null));
+                                request.unfollow();
+                                dispatch(loadCurrentData(path));
+                            }
+                        },
+                        3000,
+                    );
                 });
         } else return null;
     }
