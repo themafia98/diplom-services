@@ -73,7 +73,8 @@ class TableView extends React.Component {
                         <tbody>
                             {currentData &&
                             ((currentData.users.length && currentData.load && !requestError) ||
-                                (currentData.users.length && !currentData.load && requestError)) ? (
+                                (currentData.users.length && !currentData.load && requestError) ||
+                                (currentData.mode && currentData.mode === "offlineLoading")) ? (
                                 this.getRowsTable(currentData.users)
                             ) : (currentData && currentData.load) ||
                               (currentData && !currentData.load && requestError) ? (

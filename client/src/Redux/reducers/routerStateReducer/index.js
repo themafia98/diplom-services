@@ -53,6 +53,10 @@ export default (state = initialState, action) => {
                 path = pathParse[0];
             }
             copyRouteData[path] = action.payload;
+            if (action.payload.mode === "offline") copyRouteData[path].mode = "offlineLoading";
+            else if (action.payload.mode === "online" && copyRouteData[path].mode === "offlineLoading") {
+                delete copyRouteData[path].mode;
+            }
             return {
                 ...state,
                 routeData: copyRouteData,

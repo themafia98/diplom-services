@@ -2,7 +2,7 @@ import { USER_SCHEMA, TASK_SCHEMA } from "../../../../Utils/schema/const";
 import { saveComponentStateAction, loadFlagAction } from "../";
 import { errorRequstAction, setStatus } from "../../publicActions";
 
-export const loadCurrentData = path => (dispatch, getState, { firebase, getSchema, request }) => {
+export const loadCurrentData = path => (dispatch, getState, { firebase, getSchema, request, clientDB }) => {
     const router = getState().router;
     const { requestError, status = "online" } = getState().publicReducer;
     const pathValid = path.startsWith("taskModule_") ? "taskModule" : path.split("__")[0];
@@ -26,6 +26,11 @@ export const loadCurrentData = path => (dispatch, getState, { firebase, getSchem
                 })
                 .then(users => {
                     const usersCopy = users.map(it => getSchema(USER_SCHEMA, it)).filter(Boolean);
+
+                    usersCopy.forEach(user => {
+                        clientDB.updateItem("users", user);
+                    });
+
                     if (requestError !== null) dispatch(errorRequstAction(null));
                     dispatch(saveComponentStateAction({ users: usersCopy, load: true, path: pathValid }));
                 })
@@ -45,7 +50,16 @@ export const loadCurrentData = path => (dispatch, getState, { firebase, getSchem
                         3000,
                     );
                 });
-        } else return null;
+        } else {
+            const users = clientDB.getAllItems("users");
+            users.onsuccess = event => {
+                const {
+                    target: { result },
+                } = event;
+                const usersCopy = result.map(it => getSchema(USER_SCHEMA, it)).filter(Boolean);
+                dispatch(saveComponentStateAction({ users: usersCopy, load: true, path: pathValid, mode: "offline" }));
+            };
+        }
     } else if (pathValid === "taskModule") {
         if (status === "online") {
             firebase.db
@@ -62,6 +76,11 @@ export const loadCurrentData = path => (dispatch, getState, { firebase, getSchem
                 })
                 .then(tasks => {
                     const tasksCopy = tasks.map(it => getSchema(TASK_SCHEMA, it, "no-strict")).filter(Boolean);
+
+                    tasksCopy.forEach(task => {
+                        clientDB.updateItem("tasks", task);
+                    });
+
                     if (requestError !== null) dispatch(errorRequstAction(false));
                     dispatch(saveComponentStateAction({ tasks: tasksCopy, load: true, path: pathValid }));
                 })
@@ -81,6 +100,15 @@ export const loadCurrentData = path => (dispatch, getState, { firebase, getSchem
                         3000,
                     );
                 });
-        } else return null;
+        } else {
+            const users = clientDB.getAllItems("tasks");
+            users.onsuccess = event => {
+                const {
+                    target: { result },
+                } = event;
+                const tasksCopy = result.map(it => getSchema(TASK_SCHEMA, it, "no-strict")).filter(Boolean);
+                dispatch(saveComponentStateAction({ tasks: tasksCopy, load: true, path: pathValid, mode: "offline" }));
+            };
+        }
     }
 };

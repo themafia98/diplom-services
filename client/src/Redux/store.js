@@ -1,5 +1,6 @@
 import { createStore, applyMiddleware, compose } from "redux";
 import { getSchema, Request } from "../Utils";
+import clientDB from "../clientDB";
 import firebase from "../delayFirebase/Firebase";
 import thunk from "redux-thunk";
 import combineReducers from "./reducers";
@@ -14,7 +15,7 @@ const composeEnhancers =
 
 const middleware = composeEnhancers(
     /** @Include moddleware */
-    applyMiddleware(thunk.withExtraArgument({ firebase, getSchema, request })),
+    applyMiddleware(thunk.withExtraArgument({ firebase, getSchema, request, clientDB })),
 );
 
 const store = createStore(combineReducers, middleware);

@@ -8,9 +8,11 @@ class ClientDB {
         this.db = null;
         this.name = name;
         this.version = version;
+        this.isInit = false;
     }
 
     init() {
+        if (this.isInit) return;
         const indexedDatabase = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
         const requestOpen = indexedDatabase.open(this.name, this.version);
         requestOpen.onsuccess = event => {
@@ -46,7 +48,7 @@ class ClientDB {
 
             keys.forEach(key => {
                 objectStoreUsers.createIndex(key, key, {
-                    unique: key === "uuid" || key === "email" || key === "login" ? true : false,
+                    unique: key === "uuid" || key === "email" ? true : false,
                 });
             });
 
@@ -68,6 +70,8 @@ class ClientDB {
                 });
             });
         };
+
+        this.isInit = true;
     }
 
     getItemByKey(nameStore, key, mode = "readonly") {

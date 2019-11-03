@@ -27,6 +27,7 @@ class Dashboard extends React.PureComponent {
         collapsed: false,
         status: "online",
         menuItems: config.menu,
+        counterError: 0,
         showLoader: false,
     };
 
@@ -39,7 +40,7 @@ class Dashboard extends React.PureComponent {
             router,
             router: { currentActionTab },
         } = this.props;
-        const { showLoader, status: statusState } = this.state;
+        const { showLoader, status: statusState, counterError } = this.state;
 
         if (!showLoader && statusState !== status && status === "online")
             notification.success({ message: "Удачно", description: "Интернет соединение восстановлено." });
@@ -52,29 +53,39 @@ class Dashboard extends React.PureComponent {
             let keys = Object.keys(copyRouteData).filter(key => /Module/gi.test(key) && regExp.test(key));
 
             if (keys.every(key => copyRouteData[key].load === true) || requestError === "Network error") {
-                return this.setState({
-                    status: status,
-                    showLoader: false,
-                });
+                return setTimeout(() => {
+                    this.setState({
+                        status: status,
+                        showLoader: false,
+                    });
+                }, 500);
             } else if (_.isNull(requestError) && status === "online") {
-                return this.setState({
-                    status: status,
-                    showLoader: false,
-                });
+                return setTimeout(() => {
+                    this.setState({
+                        counter: 0,
+                        status: status,
+                        showLoader: false,
+                    });
+                }, 500);
             }
         } else if (showLoader && status === "offline") {
-            return this.setState({
-                status: status,
-                showLoader: false,
-            });
+            return setTimeout(() => {
+                this.setState({
+                    status: status,
+                    showLoader: false,
+                });
+            }, 500);
         }
 
         if (
             !_.isNull(requestError) &&
             requestError[requestError.length - 1] === "Network error" &&
-            status === "offline"
+            status === "offline" &&
+            counterError === 0
         ) {
-            notification.error({ message: "Ошибка", description: "Интернет соединение недоступно." });
+            this.setState({ counterError: counterError + 1 }, () =>
+                notification.error({ message: "Ошибка", description: "Интернет соединение недоступно." }),
+            );
         }
 
         if (statusState !== status) {
