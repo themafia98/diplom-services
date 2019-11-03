@@ -38,16 +38,6 @@ class Dashboard extends React.PureComponent {
             router: { currentActionTab },
         } = this.props;
         const { showLoader, status: statusState } = this.state;
-        if (!_.isNull(requestError) && status === "offline") {
-            onErrorRequstAction(false).then(() => {
-                if (requestError[requestError.length - 1] === "Network error")
-                    if (
-                        requestError.length === 1 ||
-                        requestError[requestError.length - 1] !== requestError[requestError.length - 2]
-                    )
-                        notification.error({ message: "Ошибка", description: "Интернет соединение недоступно." });
-            });
-        }
 
         if (!showLoader && statusState !== status && status === "online")
             notification.success({ message: "Удачно", description: "Интернет соединение восстановлено." });
@@ -75,6 +65,14 @@ class Dashboard extends React.PureComponent {
                 status: status,
                 showLoader: false,
             });
+        }
+
+        if (
+            !_.isNull(requestError) &&
+            requestError[requestError.length - 1] === "Network error" &&
+            status === "offline"
+        ) {
+            notification.error({ message: "Ошибка", description: "Интернет соединение недоступно." });
         }
 
         if (statusState !== status) {

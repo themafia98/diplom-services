@@ -68,7 +68,7 @@ export class Request {
             const api = this.getTestAPI(true);
             testRequst.open("GET", api);
             testRequst.onload = function() {
-                if (this.status === 200 || this.satus === 204) {
+                if (this.status === 200 || this.status === 204) {
                     resolve("online");
                 } else {
                     reject("offline");
