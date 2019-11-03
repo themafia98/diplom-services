@@ -1,6 +1,7 @@
-import { SET_ERROR, SET_CACHE } from "../../actions/publicActions/const";
+import { SET_ERROR, SET_CACHE, SET_STATUS } from "../../actions/publicActions/const";
 
 const initialState = {
+    status: "online",
     requestError: null,
     caches: {},
 };
@@ -22,6 +23,12 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 caches: { ...state.caches, [key]: { ...data } },
+            };
+        }
+        case SET_STATUS: {
+            return {
+                ...state,
+                sattus: action.payload,
             };
         }
         default:

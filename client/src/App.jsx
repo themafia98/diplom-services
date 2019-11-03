@@ -1,9 +1,13 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Switch, Route } from "react-router-dom";
+import { Request } from "./Utils";
+
 import { PrivateRoute } from "./Components/Helpers";
 import config from "./config.json";
 import { forceUpdateDetectedInit } from "./Utils";
+
+import { setStatus } from "./Redux/actions/publicActions";
 import { updatePathAction, addTabAction } from "./Redux/actions/routerActions";
 
 import Loader from "./Components/Loader";
@@ -35,8 +39,14 @@ class App extends React.Component {
 
     componentDidMount() {
         /** load app */
-        this.props.firebase.auth.onAuthStateChanged(user => {
-            if (!this.state.firebaseLoadState) {
+        const {
+            publicReducer: { status },
+            onSetStatus,
+            firebase,
+        } = this.props;
+        const { firebaseLoadState } = this.state;
+        firebase.auth.onAuthStateChanged(user => {
+            if (!firebaseLoadState) {
                 setTimeout(
                     user ? this.loadAppSession.bind(this) : this.loadApp.bind(this),
                     Number(config.msTimeoutLoading),
@@ -45,6 +55,8 @@ class App extends React.Component {
         });
 
         if (config.forceUpdate === true || process.env.NODE_ENV === "production") forceUpdateDetectedInit();
+        const request = new Request();
+        request.test(statusRequst => (status !== statusRequst ? onSetStatus(statusRequst) : null));
     }
 
     render() {
@@ -69,6 +81,7 @@ class App extends React.Component {
 const mapStateToProps = state => {
     return {
         router: { ...state.router },
+        publicReducer: { ...state.publicReducer },
     };
 };
 
@@ -76,6 +89,7 @@ const mapDispatchToProps = dispatch => {
     return {
         moveTo: async path => await dispatch(updatePathAction(path)),
         addTab: async tab => await dispatch(addTabAction(tab)),
+        onSetStatus: status => dispatch(setStatus(status)),
     };
 };
 
