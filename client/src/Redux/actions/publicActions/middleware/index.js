@@ -31,11 +31,13 @@ const middlewareCaching = ({ data, primaryKey, mode, path, type = "GET" }) => (
                     .where("key", "==", primaryKey)
                     .get()
                     .then(function(querySnapshot) {
-                        const { metadata: { fromCache = null } = {} } = querySnapshot;
+                        const { metadata: { fromCache = null } = {}, docs = [] } = querySnapshot;
                         const jurnalWork = [];
-                        querySnapshot.forEach(function(doc) {
-                            jurnalWork.push(doc.data());
-                        });
+
+                        if (docs.length)
+                            docs.forEach(function(doc) {
+                                jurnalWork.push(doc.data());
+                            });
                         if (jurnalWork.length) return jurnalWork;
                         else if (fromCache && !jurnalWork.length) throw new Error("Network error");
                         else throw new Error("Bad requst or no data");
@@ -53,6 +55,7 @@ const middlewareCaching = ({ data, primaryKey, mode, path, type = "GET" }) => (
                         dispatch(сachingAction({ data: jurnalWorkCopy, load: true, primaryKey: primaryKey }));
                     })
                     .catch(error => {
+                        if (error.message !== "Network error") return console.error(error.message);
                         if (status === "offline") return;
                         dispatch(setStatus("offline"));
                         dispatch(errorRequstAction(error.message));

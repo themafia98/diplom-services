@@ -1,4 +1,5 @@
 import React from "react";
+import _ from "lodash";
 import { Descriptions, Empty } from "antd";
 import { connect } from "react-redux";
 import Scrollbars from "react-custom-scrollbars";
@@ -30,6 +31,19 @@ class TaskView extends React.PureComponent {
             mode: "jur",
             showModalJur: true,
         });
+    };
+
+    componentDidMount = () => {
+        const {
+            publicReducer: { caches = {} } = {},
+            router: { routeDataActive = null },
+            onCaching,
+            path = "",
+        } = this.props;
+        const primaryKey = routeDataActive.key;
+        if (_.isEmpty(caches) || !caches[routeDataActive.key]) {
+            onCaching(null, primaryKey, "jur", path, "GET");
+        }
     };
 
     renderWorkJurnal = (jurnalDataKeys = []) => {

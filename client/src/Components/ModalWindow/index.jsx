@@ -163,7 +163,7 @@ class ModalWindow extends React.PureComponent {
             this.setState({ ...this.state, error: errorBundle });
         }
         if (!_valid) return _valid;
-        debugger;
+
         const validData = getSchema(
             TASK_CONTROLL_JURNAL_SCHEMA,
             {
