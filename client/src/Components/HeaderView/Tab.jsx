@@ -5,7 +5,7 @@ import { Icon } from "antd";
 
 import { setChildrenSizeAction } from "../../Redux/actions/tabActions";
 
-class Tab extends React.Component {
+class Tab extends React.PureComponent {
     componentDidMount = () => {
         const { tabData, onSetChildrenSizeAction } = this.props;
 

@@ -7,7 +7,7 @@ import TableView from "../../TableView";
 import StreamBox from "../../StreamBox";
 import TitleModule from "../../TitleModule";
 
-class MainModule extends React.Component {
+class MainModule extends React.PureComponent {
     state = {
         date: new Date(),
     };

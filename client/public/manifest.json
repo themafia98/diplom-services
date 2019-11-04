@@ -23,6 +23,11 @@
       "type": "image/gif"
     },
     {
+      "src": "img/icon-512.gif",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
       "src": "img/logo.svg",
       "sizes": "any",
       "type": "image/svg"

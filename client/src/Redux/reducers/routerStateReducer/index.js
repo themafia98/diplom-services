@@ -10,7 +10,6 @@ import {
 } from "../../actions/routerActions/const";
 
 const initialState = {
-    position: "/",
     currentActionTab: "mainModule",
     actionTabs: [],
     routeDataActive: null,

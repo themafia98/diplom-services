@@ -2,7 +2,7 @@ import React from "react";
 import { Tooltip } from "antd";
 import _ from "lodash";
 
-class Output extends React.Component {
+class Output extends React.PureComponent {
     state = {
         showTooltip: false,
         widthChild: null,
@@ -20,6 +20,7 @@ class Output extends React.Component {
             const childW = this.child.getBoundingClientRect().width;
             const parentW = this.parent.getBoundingClientRect().width;
             this.setState({
+                ...this.state,
                 showTooltip: childW > parentW,
                 widthChild: childW,
                 widthParent: parentW,

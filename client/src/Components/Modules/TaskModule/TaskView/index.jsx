@@ -3,7 +3,7 @@ import { Descriptions, Empty } from "antd";
 import { connect } from "react-redux";
 import Scrollbars from "react-custom-scrollbars";
 
-import { сachingAction } from "../../../../Redux/actions/publicActions";
+import { middlewareCaching } from "../../../../Redux/actions/publicActions/middleware";
 
 import ModalWindow from "../../../ModalWindow";
 import Output from "../../../Output";
@@ -11,7 +11,7 @@ import TitleModule from "../../../TitleModule";
 import Comments from "../../../Comments";
 import File from "../../../File";
 
-class TaskView extends React.Component {
+class TaskView extends React.PureComponent {
     state = {
         uuid: this.props.uuid ? this.props.uuid : null,
         mode: "jur",
@@ -26,6 +26,7 @@ class TaskView extends React.Component {
 
     showModalWorkJur = event => {
         this.setState({
+            ...this.state,
             mode: "jur",
             showModalJur: true,
         });
@@ -60,6 +61,7 @@ class TaskView extends React.Component {
             router: { routeDataActive = null },
             onCaching,
             publicReducer: { caches = null } = {},
+            path,
         } = this.props;
         const { mode, primaryKey } = this.state;
         let jurnalDataKeys = null;
@@ -77,6 +79,10 @@ class TaskView extends React.Component {
                         primaryKey={primaryKey}
                         routeDataActive={routeDataActive}
                         mode={mode}
+                        path={path}
+                        type={"POST"}
+                        key={routeDataActive.key}
+                        keyTask={routeDataActive.key}
                     />
                     <div className="taskView">
                         <div className="col-6 col-taskDescription">
@@ -143,7 +149,10 @@ const mapStateTopProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onCaching: async (data, primaryKey) => await dispatch(сachingAction({ data, primaryKey })),
+        onCaching: async (data, primaryKey, mode, path, type) =>
+            await dispatch(
+                middlewareCaching({ data: data, primaryKey: primaryKey, mode: mode, path: path, type: type }),
+            ),
     };
 };
 

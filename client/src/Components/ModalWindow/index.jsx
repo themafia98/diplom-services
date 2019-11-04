@@ -7,7 +7,7 @@ import { getSchema } from "../../Utils";
 import { TASK_CONTROLL_JURNAL_SCHEMA } from "../../Utils/schema/const";
 import RegistrationModal from "./RegistrationModal";
 const { TextArea } = Input;
-class ModalWindow extends React.Component {
+class ModalWindow extends React.PureComponent {
     state = {
         login: null,
         visible: false,
@@ -26,13 +26,23 @@ class ModalWindow extends React.Component {
 
     showModal = () => {
         this.setState({
+            ...this.state,
             visible: true,
         });
     };
 
     handleOk = async e => {
         const { login, name, password, departament, email, loading, surname, jurnal } = this.state;
-        const { firebase = null, mode = null, routeDataActive = null, onCaching, primaryKey = null } = this.props;
+        const {
+            firebase = null,
+            mode = null,
+            onCaching,
+            primaryKey = null,
+            keyTask = null,
+            path = "",
+            type = "",
+        } = this.props;
+
         if (mode === "reg") {
             if (login && name && password && departament && email && !loading) {
                 firebase
@@ -53,6 +63,7 @@ class ModalWindow extends React.Component {
                     })
                     .then(res => {
                         this.setState({
+                            ...this.state,
                             uuid: uuid(),
                             visible: false,
                             loading: false,
@@ -63,9 +74,16 @@ class ModalWindow extends React.Component {
                     .catch(error => console.error(error.message));
             }
         } else if (mode === "jur" && this.validation()) {
-            const jurCopy = { ...jurnal, key: routeDataActive.key, editor: "Павел Петрович" };
-            if (onCaching) await onCaching(jurCopy, `${Math.random()}${primaryKey}`).then(() => this.handleCancel());
+            const data = { ...jurnal, key: keyTask, editor: "Павел Петрович" };
+
+            if (onCaching) {
+                await onCaching(data, `${Math.random()}${primaryKey}`, mode, path, type).then(() =>
+                    this.handleCancel(),
+                );
+            }
+
             return this.setState({
+                ...this.state,
                 uuid: uuid(),
                 visible: false,
                 loading: false,
@@ -77,6 +95,7 @@ class ModalWindow extends React.Component {
 
     handleCancel = event => {
         this.setState({
+            ...this.state,
             visible: false,
             loading: false,
             jurnal: { timeLost: null, date: moment().format("YYYY-MM-DD HH:mm:ss"), description: null },
@@ -85,29 +104,34 @@ class ModalWindow extends React.Component {
     };
 
     onChangeSelect = event => {
-        this.setState({ departament: event });
+        this.setState({ ...this.state, departament: event });
     };
 
     onChange = event => {
         const { target } = event;
         if (target.className.split(" ")[1] === "surname") {
             this.setState({
+                ...this.state,
                 surname: target.value,
             });
         } else if (target.className.split(" ")[1] === "name") {
             this.setState({
+                ...this.state,
                 name: target.value,
             });
         } else if (target.className.split(" ")[1] === "password") {
             this.setState({
+                ...this.state,
                 password: target.value,
             });
         } else if (target.className.split(" ")[1] === "login") {
             this.setState({
+                ...this.state,
                 login: target.value,
             });
         } else if (target.className.split(" ")[1] === "email") {
             this.setState({
+                ...this.state,
                 email: target.value,
             });
         }
@@ -118,6 +142,7 @@ class ModalWindow extends React.Component {
             jurnal: { timeLost = null, date = moment(), description = null },
             error = [],
         } = this.state;
+        const { keyTask } = this.props;
 
         let _valid = true;
         let invalidDate = !_.isDate(new Date(date));
@@ -135,15 +160,21 @@ class ModalWindow extends React.Component {
             else if (errorBundle.has("timeLost")) errorBundle.delete("timeLost");
             if (invalidDescription) errorBundle.add("description");
             else if (errorBundle.has("description")) errorBundle.delete("description");
-            this.setState({ error: errorBundle });
+            this.setState({ ...this.state, error: errorBundle });
         }
         if (!_valid) return _valid;
-
-        const validData = getSchema(TASK_CONTROLL_JURNAL_SCHEMA, {
-            timeLost: timeLost,
-            date: date,
-            description: description,
-        });
+        debugger;
+        const validData = getSchema(
+            TASK_CONTROLL_JURNAL_SCHEMA,
+            {
+                key: keyTask,
+                timeLost: timeLost,
+                editor: "Павел Петрович",
+                date: date,
+                description: description,
+            },
+            "no-strict",
+        );
         if (validData) return _valid;
         else return false;
     };
@@ -169,6 +200,7 @@ class ModalWindow extends React.Component {
 
     render() {
         const { mode } = this.props;
+
         if (mode === "reg") {
             return (
                 <React.Fragment>

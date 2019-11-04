@@ -1,6 +1,6 @@
 import React from "react";
 import { Drawer } from "antd";
-class DrawerViewer extends React.Component {
+class DrawerViewer extends React.PureComponent {
     state = {};
     render() {
         const { onClose, visible } = this.props;

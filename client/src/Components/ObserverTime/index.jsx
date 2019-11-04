@@ -3,7 +3,7 @@ import moment from "moment";
 import TitleModule from "../TitleModule";
 import { Timeline } from "antd";
 
-class ObserverTime extends React.Component {
+class ObserverTime extends React.PureComponent {
     render() {
         const { title } = this.props;
         return (

@@ -8,7 +8,7 @@ import config from "./config.json";
 import { forceUpdateDetectedInit } from "./Utils";
 
 import { setStatus } from "./Redux/actions/publicActions";
-import { updatePathAction, addTabAction } from "./Redux/actions/routerActions";
+import { addTabAction } from "./Redux/actions/routerActions";
 
 import Loader from "./Components/Loader";
 import Recovery from "./Components/Pages/Recovery";
@@ -24,12 +24,12 @@ class App extends React.Component {
     };
 
     loadAppSession = () => {
-        const { moveTo, addTab } = this.props;
+        const { addTab } = this.props;
         return this.setState({ isUser: true, firebaseLoadState: true }, () => {
             let path = "mainModule";
             const defaultModule = config.menu.find(item => item["SIGN"] === "default");
             if (defaultModule) path = defaultModule.EUID;
-            moveTo("/dashboard").then(() => addTab(path));
+            addTab(path);
         });
     };
 
@@ -55,8 +55,8 @@ class App extends React.Component {
         });
 
         if (config.forceUpdate === true || process.env.NODE_ENV === "production") forceUpdateDetectedInit();
-        const request = new Request();
-        request.test(statusRequst => (status !== statusRequst ? onSetStatus(statusRequst) : null));
+        //const request = new Request();
+        //request.test(statusRequst => (status !== statusRequst ? onSetStatus(statusRequst) : null));
     }
 
     render() {
@@ -87,7 +87,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        moveTo: async path => await dispatch(updatePathAction(path)),
         addTab: async tab => await dispatch(addTabAction(tab)),
         onSetStatus: status => dispatch(setStatus(status)),
     };

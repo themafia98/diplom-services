@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { TASK_SCHEMA, USER_SCHEMA, JUR_TASK, TASK_CONTROLL_JURNAL_SCHEMA } from "./const";
+import { TASK_SCHEMA, USER_SCHEMA, TASK_CONTROLL_JURNAL_SCHEMA } from "./const";
 
 export const getValidateSchema = type => {
     switch (type) {
@@ -18,6 +18,7 @@ export const getValidateSchema = type => {
             return {
                 key: null,
                 timeLost: null,
+                editor: null,
                 date: null,
                 description: null,
             };
@@ -33,20 +34,15 @@ export const getValidateSchema = type => {
                 surname: null,
                 uuid: null, // delay firebase
             };
-        case JUR_TASK:
-            return {
-                timeSpent: null,
-                date: null,
-                description: null,
-            };
         default:
             return null;
     }
 };
 
-export const validateSchema = (data, schema, mode) => {
+export const validateSchema = (data, schema, mode = "no-strict") => {
     if (!_.isArray(data) || !_.isArray(schema)) return false;
     if (data.length !== schema.length) return false;
+    debugger;
     return mode !== "no-strict"
         ? data.every((dataKey, i) => dataKey === schema[i])
         : data.every((dataKey, i) => schema.findIndex(it => it === dataKey) !== -1);

@@ -1,5 +1,4 @@
 import React from "react";
-import { IntlProvider } from "react-intl";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import ReactDOM from "react-dom";
@@ -25,13 +24,7 @@ ReactDOM.render(
         <ErrorBoundary>
             <firebaseContext.Provider value={firebase}>
                 <Provider store={store}>
-                    <firebaseContext.Consumer>
-                        {firebase => (
-                            <IntlProvider locale={navigator.language}>
-                                <App firebase={firebase} />
-                            </IntlProvider>
-                        )}
-                    </firebaseContext.Consumer>
+                    <firebaseContext.Consumer>{firebase => <App firebase={firebase} />}</firebaseContext.Consumer>
                 </Provider>
             </firebaseContext.Provider>
         </ErrorBoundary>

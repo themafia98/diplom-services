@@ -10,13 +10,6 @@ import {
 } from "./const";
 import { setLogoutTabs } from "../tabActions";
 
-export const updatePathAction = state => {
-    return {
-        type: SET_PATH,
-        payload: state,
-    };
-};
-
 export const addTabAction = state => {
     return {
         type: ADD_TAB,

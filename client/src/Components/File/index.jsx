@@ -1,7 +1,7 @@
 import React from "react";
 import { Upload, Button, Icon } from "antd";
 
-class File extends React.Component {
+class File extends React.PureComponent {
     render() {
         const props = {
             action: "https://www.mocky.io/v2/5cc8019d300000980a055e76",

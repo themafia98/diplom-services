@@ -4,13 +4,7 @@ import _ from "lodash";
 import config from "../../../config.json";
 import { Layout, message, notification } from "antd";
 import { connect } from "react-redux";
-import {
-    updatePathAction,
-    addTabAction,
-    setActiveTabAction,
-    removeTabAction,
-    logoutAction,
-} from "../../../Redux/actions/routerActions";
+import { addTabAction, setActiveTabAction, removeTabAction, logoutAction } from "../../../Redux/actions/routerActions";
 import { loadCurrentData } from "../../../Redux/actions/routerActions/middleware";
 import { errorRequstAction } from "../../../Redux/actions/publicActions";
 import { setChildrenSizeAction } from "../../../Redux/actions/tabActions";
@@ -228,7 +222,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        moveTo: async path => await dispatch(updatePathAction(path)),
         addTab: tab => dispatch(addTabAction(tab)),
         removeTab: tab => dispatch(removeTabAction(tab)),
         setCurrentTab: tab => dispatch(setActiveTabAction(tab)),

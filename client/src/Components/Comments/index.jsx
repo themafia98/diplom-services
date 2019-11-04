@@ -4,7 +4,7 @@ import { Input, Button } from "antd";
 
 const { TextArea } = Input;
 
-class Comments extends React.Component {
+class Comments extends React.PureComponent {
     render() {
         return (
             <div className="comments">

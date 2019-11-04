@@ -3,7 +3,7 @@ import _ from "lodash";
 import { Redirect, NavLink } from "react-router-dom";
 import { Button, Input } from "antd";
 import { connect } from "react-redux";
-import { updatePathAction, addTabAction } from "../../../Redux/actions/routerActions";
+import { addTabAction } from "../../../Redux/actions/routerActions";
 import config from "../../../config.json";
 
 import Logo from "../../Logo";
@@ -31,11 +31,7 @@ class LoginPage extends React.Component {
                 .login(login, password)
                 .then(res => {
                     if (res) {
-                        moveTo("/dashboard")
-                            .then(() => {
-                                if (_.isEmpty(actionTabs)) addTab(currentActionTab);
-                            })
-                            .then(() => this.props.history.push("/dashboard"));
+                        this.props.history.push("/dashboard");
                     } else throw new Error("Error enter");
                 })
                 .catch(error => {
@@ -88,7 +84,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        moveTo: async path => await dispatch(updatePathAction(path)),
         addTab: tab => dispatch(addTabAction(tab)),
     };
 };

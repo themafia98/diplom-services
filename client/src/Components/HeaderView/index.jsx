@@ -9,7 +9,7 @@ import Updater from "../Updater";
 
 const { Header } = Layout;
 
-class HeaderView extends React.Component {
+class HeaderView extends React.PureComponent {
     state = {
         defaultSizeTab: 160,
     };

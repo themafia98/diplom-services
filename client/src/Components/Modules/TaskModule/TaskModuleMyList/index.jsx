@@ -2,7 +2,7 @@ import React from "react";
 import TableView from "../../../TableView";
 import TitleModule from "../../../TitleModule";
 
-class TaskModuleMyList extends React.Component {
+class TaskModuleMyList extends React.PureComponent {
     render() {
         const { user, data = null, height } = this.props;
 

@@ -15,7 +15,7 @@ const { Option } = Select;
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 
-class CreateTask extends React.Component {
+class CreateTask extends React.PureComponent {
     state = {
         load: false,
         card: {
@@ -87,12 +87,12 @@ class CreateTask extends React.Component {
             keyCopy.forEach(key => {
                 if (copyErrorBundleState[key] !== null) newCopyErrorBundle[key] = copyErrorBundleState[key];
             });
-            this.setState({ errorBundle: { ...newCopyErrorBundle } });
+            this.setState({ ...this.state, errorBundle: { ...newCopyErrorBundle } });
         }
         if (_.isEmpty(errorBundle)) return true;
         else {
             message.error("Не все поля заполнены!");
-            this.setState({ errorBundle: errorBundle });
+            this.setState({ ...this.state, errorBundle: errorBundle });
             return;
         }
     };
@@ -101,26 +101,26 @@ class CreateTask extends React.Component {
         const { target = null } = event;
         if (_.isNull(target)) return;
         if (!_.isNull(target) && target.name === "name")
-            return this.setState({ card: { ...this.state.card, name: target.value } });
+            return this.setState({ ...this.state, card: { ...this.state.card, name: target.value } });
         else if (!_.isNull(target) && target.name === "description")
-            return this.setState({ card: { ...this.state.card, description: target.value } });
+            return this.setState({ ...this.state, card: { ...this.state.card, description: target.value } });
     };
 
     onChangeHandlerDate = (date, dateArray) => {
         if (_.isArray(dateArray) && dateArray !== this.state.date) {
-            return this.setState({ card: { ...this.state.card, date: dateArray } });
+            return this.setState({ ...this.state, card: { ...this.state.card, date: dateArray } });
         }
     };
 
     onChangeHandlerSelectEditor = eventArray => {
         if (!_.isArray(eventArray) || eventArray === this.state.editor) return;
-        else return this.setState({ card: { ...this.state.card, editor: eventArray } });
+        else return this.setState({ ...this.state, card: { ...this.state.card, editor: eventArray } });
     };
 
     onChangeHandlerSelectPriority = eventString => {
         if (!_.isString(eventString) || eventString === this.state.priority) return;
         else {
-            this.setState({ card: { ...this.state.card, priority: eventString } });
+            this.setState({ ...this.state, card: { ...this.state, ...this.state.card, priority: eventString } });
         }
     };
 
@@ -133,12 +133,12 @@ class CreateTask extends React.Component {
         const validHash = validHashCopy.map(it => getSchema(TASK_SCHEMA, it, "no-strict")).filter(Boolean)[0];
         if (!validHash) return message.error("Не валидные данные.");
 
-        this.setState({ load: true });
+        this.setState({ ...this.state, load: true });
         firebase.db
             .collection("tasks")
             .doc()
             .set(validHash)
-            .then(() => this.setState({ load: false }, () => message.success(`Задача создана.`)));
+            .then(() => this.setState({ ...this.state, load: false }, () => message.success(`Задача создана.`)));
     };
 
     render() {
