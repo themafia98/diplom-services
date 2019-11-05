@@ -1,6 +1,7 @@
 import { сachingAction, setStatus, errorRequstAction } from "../";
+import { saveComponentStateAction, updateItemStateAction } from "../../routerActions";
 import { getSchema } from "../../../../Utils/schema";
-import { TASK_CONTROLL_JURNAL_SCHEMA } from "../../../../Utils/schema/const";
+import { TASK_CONTROLL_JURNAL_SCHEMA, TASK_SCHEMA } from "../../../../Utils/schema/const";
 
 const middlewareCaching = ({ data, primaryKey, mode, path, type = "GET", pk = null }) => (
     dispatch,
@@ -84,4 +85,75 @@ const middlewareCaching = ({ data, primaryKey, mode, path, type = "GET", pk = nu
     }
 };
 
-export { middlewareCaching };
+const middlewareUpdate = ({ id, type, updateProp, updateFild, item, primaryKey = null }) => (
+    dispatch,
+    getState,
+    { firebase, getSchema, request, clientDB },
+) => {
+    const { requestError, status = "online" } = getState().publicReducer;
+    if (status === "online") {
+        if (type === "tasks")
+            firebase.db
+                .collection("tasks")
+                .where("key", "==", id)
+                .get()
+                .then(querySnapshot => {
+                    if (querySnapshot.docs.length)
+                        querySnapshot.docs.forEach(async doc => {
+                            await firebase.db
+                                .collection("tasks")
+                                .doc(doc.id)
+                                .update({ [updateFild]: updateProp })
+                                .then(() => {
+                                    const updaterItem = { ...doc.data(), key: id, [updateFild]: updateProp };
+                                    const tasksCopy = [updaterItem]
+                                        .map(it => getSchema(TASK_SCHEMA, it, "no-strict"))
+                                        .filter(Boolean);
+                                    if (tasksCopy) {
+                                        dispatch(
+                                            updateItemStateAction({
+                                                updaterItem: updaterItem,
+                                                type: type,
+                                                id: id,
+                                            }),
+                                        );
+                                        clientDB.updateItem("jurnalWork", updaterItem);
+                                    }
+                                })
+                                .catch(error => {
+                                    if (error.message !== "Network error") return console.error(error.message);
+                                    if (status === "offline") return;
+                                    dispatch(setStatus("offline"));
+                                    dispatch(errorRequstAction(error.message));
+                                });
+                        });
+                })
+                .catch(error => {
+                    if (error.message !== "Network error") return console.error(error.message);
+                    if (status === "offline") return;
+                    dispatch(setStatus("offline"));
+                    dispatch(errorRequstAction(error.message));
+                });
+    } else if (status === "offline") {
+        const updaterItem = { ...item, key: id, [updateFild]: updateProp };
+        const updater = clientDB.updateItem(type, updaterItem);
+        updater.onsuccess = event => {
+            const {
+                target: { result },
+            } = event;
+            console.log(`Update item ${result} done.`);
+            const tasksCopy = [updaterItem].map(it => getSchema(TASK_SCHEMA, it, "no-strict")).filter(Boolean);
+            if (tasksCopy)
+                dispatch(
+                    updateItemStateAction({
+                        updaterItem: updaterItem,
+                        type: type,
+                        id: id,
+                        mode: "offline",
+                    }),
+                );
+        };
+    }
+};
+
+export { middlewareCaching, middlewareUpdate };

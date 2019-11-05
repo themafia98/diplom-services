@@ -28,7 +28,7 @@ export default (state = initialState, action) => {
                     ? `${data.key}${data.id}${primaryKey}`
                     : Array.isArray(data) && primaryKey && data[0].key && pk
                     ? `${data[0].key}${data[0].id}${pk}`
-                    : Array.isArra(data)
+                    : Array.isArray(data)
                     ? data[0].key
                     : data.key;
             return {

@@ -96,3 +96,13 @@
         color: red;
     }
 }
+
+.modalWindow {
+    .ant-modal-content {
+        .ant-modal-body {
+            .ant-select {
+                width: 100%;
+            }
+        }
+    }
+}

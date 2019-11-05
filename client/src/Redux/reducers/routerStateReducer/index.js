@@ -7,6 +7,7 @@ import {
     OPEN_PAGE_WITH_DATA,
     SAVE_STATE,
     SET_FLAG_LOAD_DATA,
+    UPDATE_ITEM,
 } from "../../actions/routerActions/const";
 
 const initialState = {
@@ -59,6 +60,25 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 routeData: copyRouteData,
+            };
+        }
+
+        case UPDATE_ITEM: {
+            const { routeDataActive } = state;
+
+            const updateCurrent = routeDataActive && routeDataActive.key === action.payload.id ? true : false;
+
+            return {
+                ...state,
+                routeDataActive: updateCurrent
+                    ? { ...action.payload.updaterItem }
+                    : state.routeDataActive
+                    ? { ...state.routeDataActive }
+                    : null,
+                routeData: {
+                    ...state.routeData,
+                    [action.payload.id]: { ...action.payload.updaterItem },
+                },
             };
         }
         case SET_FLAG_LOAD_DATA: {

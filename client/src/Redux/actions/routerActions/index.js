@@ -7,6 +7,7 @@ import {
     OPEN_PAGE_WITH_DATA,
     SAVE_STATE,
     SET_FLAG_LOAD_DATA,
+    UPDATE_ITEM,
 } from "./const";
 import { setLogoutTabs } from "../tabActions";
 
@@ -48,6 +49,13 @@ export const logoutRouterAction = state => {
 export const saveComponentStateAction = state => {
     return {
         type: SAVE_STATE,
+        payload: state,
+    };
+};
+
+export const updateItemStateAction = state => {
+    return {
+        type: UPDATE_ITEM,
         payload: state,
     };
 };

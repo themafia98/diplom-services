@@ -4,7 +4,7 @@ import { Descriptions, Empty } from "antd";
 import { connect } from "react-redux";
 import Scrollbars from "react-custom-scrollbars";
 
-import { middlewareCaching } from "../../../../Redux/actions/publicActions/middleware";
+import { middlewareCaching, middlewareUpdate } from "../../../../Redux/actions/publicActions/middleware";
 
 import ModalWindow from "../../../ModalWindow";
 import Output from "../../../Output";
@@ -83,6 +83,7 @@ class TaskView extends React.PureComponent {
         const {
             router: { routeDataActive = null },
             onCaching,
+            onUpdate,
             publicReducer: { caches = null } = {},
             path,
         } = this.props;
@@ -93,6 +94,8 @@ class TaskView extends React.PureComponent {
 
             jurnalDataKeys = keys.filter(key => key.includes(primaryKey) && key.includes(routeDataActive.key));
         }
+
+        const accessStatus = _.uniq([routeDataActive.status, "Открыт", "Выполнен", "Закрыт", "В работе"]);
 
         if (routeDataActive) {
             return (
@@ -107,6 +110,9 @@ class TaskView extends React.PureComponent {
                         type={"POST"}
                         key={routeDataActive.key}
                         keyTask={routeDataActive.key}
+                        accessStatus={accessStatus}
+                        onUpdate={onUpdate}
+                        statusTaskValue={routeDataActive && routeDataActive.status ? routeDataActive.status : null}
                     />
                     <div className="taskView">
                         <div className="col-6 col-taskDescription">
@@ -177,6 +183,8 @@ const mapDispatchToProps = dispatch => {
             await dispatch(
                 middlewareCaching({ data: data, primaryKey: primaryKey, mode: mode, path: path, type: type, pk: pk }),
             ),
+        onUpdate: async (id, type, updateProp, updateFild, item, primaryKey) =>
+            await dispatch(middlewareUpdate({ id, type, updateProp, updateFild, item, primaryKey })),
     };
 };
 
