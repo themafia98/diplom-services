@@ -1,6 +1,5 @@
 import { сachingAction, setStatus, errorRequstAction } from "../";
-import { saveComponentStateAction, updateItemStateAction } from "../../routerActions";
-import { getSchema } from "../../../../Utils/schema";
+import { updateItemStateAction } from "../../routerActions";
 import { TASK_CONTROLL_JURNAL_SCHEMA, TASK_SCHEMA } from "../../../../Utils/schema/const";
 
 const middlewareCaching = ({ data, primaryKey, mode, path, type = "GET", pk = null }) => (
@@ -31,12 +30,12 @@ const middlewareCaching = ({ data, primaryKey, mode, path, type = "GET", pk = nu
                     .collection("jurnalWork")
                     .where("key", "==", primaryKey)
                     .get()
-                    .then(function(querySnapshot) {
+                    .then(querySnapshot => {
                         const { metadata: { fromCache = null } = {}, docs = [] } = querySnapshot;
                         const jurnalWork = [];
 
                         if (docs.length)
-                            docs.forEach(function(doc) {
+                            docs.forEach(doc => {
                                 jurnalWork.push(doc.data());
                             });
                         if (jurnalWork.length) return jurnalWork;
@@ -51,9 +50,6 @@ const middlewareCaching = ({ data, primaryKey, mode, path, type = "GET", pk = nu
                         jurnalWorkCopy.forEach(item => {
                             clientDB.updateItem("jurnalWork", item);
                         });
-
-                        {
-                        }
 
                         if (requestError !== null) dispatch(errorRequstAction(null));
                         dispatch(
@@ -90,7 +86,7 @@ const middlewareUpdate = ({ id, type, updateProp, updateFild, item, primaryKey =
     getState,
     { firebase, getSchema, request, clientDB },
 ) => {
-    const { requestError, status = "online" } = getState().publicReducer;
+    const { status = "online" } = getState().publicReducer;
     if (status === "online") {
         if (type === "tasks")
             firebase.db

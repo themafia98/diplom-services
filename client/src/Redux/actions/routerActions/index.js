@@ -1,5 +1,4 @@
 import {
-    SET_PATH,
     ADD_TAB,
     SET_ACTIVE_TAB,
     REMOVE_TAB,

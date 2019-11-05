@@ -1,5 +1,4 @@
 import React from "react";
-import _ from "lodash";
 import { Redirect, NavLink } from "react-router-dom";
 import { Button, Input } from "antd";
 import { connect } from "react-redux";
@@ -23,7 +22,6 @@ class LoginPage extends React.Component {
         const {
             state: { value: password },
         } = this.password;
-        const { router: { actionTabs = [], currentActionTab } = {}, addTab, moveTo } = this.props;
 
         if (login && password) {
             this.setState({ errorMessage: null, loading: true });

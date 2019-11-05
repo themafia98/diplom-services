@@ -1,7 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Switch, Route } from "react-router-dom";
-import { Request } from "./Utils";
 
 import { PrivateRoute } from "./Components/Helpers";
 import config from "./config.json";
@@ -39,11 +38,7 @@ class App extends React.Component {
 
     componentDidMount() {
         /** load app */
-        const {
-            publicReducer: { status },
-            onSetStatus,
-            firebase,
-        } = this.props;
+        const { firebase } = this.props;
         const { firebaseLoadState } = this.state;
         firebase.auth.onAuthStateChanged(user => {
             if (!firebaseLoadState) {

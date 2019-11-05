@@ -67,7 +67,7 @@ class ModalWindow extends React.PureComponent {
             path = "",
             type = "",
         } = this.props;
-        debugger;
+
         if (mode === "reg") {
             if (login && name && password && departament && email && !loading) {
                 firebase
@@ -98,7 +98,7 @@ class ModalWindow extends React.PureComponent {
                     })
                     .catch(error => console.error(error.message));
             }
-        } else if (_.isNull(typeValue) && mode === "jur" && this.validation()) {
+        } else if (mode === "jur" && this.validation()) {
             const data = { ...jurnal, id: uuid(), key: keyTask, editor: "Павел Петрович" };
 
             if (onCaching) {
@@ -269,7 +269,7 @@ class ModalWindow extends React.PureComponent {
         } else if (mode === "jur") {
             const {
                 error,
-                jurnal: { date, description, timeLost },
+                jurnal: { description, timeLost },
             } = this.state;
             moment.locale("ru");
             const menu = (

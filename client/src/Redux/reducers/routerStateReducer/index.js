@@ -1,5 +1,4 @@
 import {
-    SET_PATH,
     ADD_TAB,
     SET_ACTIVE_TAB,
     REMOVE_TAB,
@@ -19,11 +18,6 @@ const initialState = {
 
 export default (state = initialState, action) => {
     switch (action.type) {
-        case SET_PATH:
-            return {
-                ...state,
-                position: action.payload,
-            };
         case ADD_TAB:
             return {
                 ...state,

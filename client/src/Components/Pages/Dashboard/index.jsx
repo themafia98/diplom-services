@@ -29,7 +29,6 @@ class Dashboard extends React.PureComponent {
 
     componentDidUpdate = () => {
         const {
-            onErrorRequstAction,
             publicReducer: { requestError = null, status } = {},
             router,
             router: { currentActionTab },

@@ -87,7 +87,7 @@ class TaskView extends React.PureComponent {
             publicReducer: { caches = null } = {},
             path,
         } = this.props;
-        const { mode, primaryKey, uuid } = this.state;
+        const { mode, primaryKey } = this.state;
         let jurnalDataKeys = null;
         if (caches && primaryKey && routeDataActive && routeDataActive.key) {
             const keys = Object.keys(caches);

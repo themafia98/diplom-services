@@ -14,10 +14,10 @@ export const loadCurrentData = path => (dispatch, getState, { firebase, getSchem
             firebase.db
                 .collection("users")
                 .get()
-                .then(function(querySnapshot) {
+                .then(querySnapshot => {
                     const { metadata: { fromCache = null } = {} } = querySnapshot;
                     const users = [];
-                    querySnapshot.forEach(function(doc) {
+                    querySnapshot.forEach(doc => {
                         users.push(doc.data());
                     });
                     if (users.length) return users;
@@ -98,10 +98,10 @@ export const loadCurrentData = path => (dispatch, getState, { firebase, getSchem
             firebase.db
                 .collection("tasks")
                 .get()
-                .then(function(querySnapshot) {
+                .then(querySnapshot => {
                     const { metadata: { fromCache = null } = {} } = querySnapshot;
                     const tasks = [];
-                    querySnapshot.forEach(function(doc) {
+                    querySnapshot.forEach(doc => {
                         tasks.push(doc.data());
                     });
                     if (tasks.length) return tasks;
@@ -142,7 +142,6 @@ export const loadCurrentData = path => (dispatch, getState, { firebase, getSchem
 
                         if (flag && undefiendTasks.length) {
                             undefiendTasks.forEach(task => {
-                                debugger;
                                 firebase.db
                                     .collection("tasks")
                                     .doc()
