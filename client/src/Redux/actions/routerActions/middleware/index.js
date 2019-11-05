@@ -25,14 +25,47 @@ export const loadCurrentData = path => (dispatch, getState, { firebase, getSchem
                     else throw new Error("Bad requst or no data");
                 })
                 .then(users => {
-                    const usersCopy = users.map(it => getSchema(USER_SCHEMA, it)).filter(Boolean);
+                    const usersCopyStore = [...users];
+                    const undefiendUsers = [];
+                    const cursor = clientDB.getCursor("users");
 
-                    usersCopy.forEach(user => {
-                        clientDB.updateItem("users", user);
-                    });
+                    cursor.onsuccess = event => {
+                        const {
+                            target: { result: cursor },
+                        } = event;
+                        if (!cursor) return next(true);
 
-                    if (requestError !== null) dispatch(errorRequstAction(null));
-                    dispatch(saveComponentStateAction({ users: usersCopy, load: true, path: pathValid }));
+                        if (usersCopyStore && usersCopyStore.findIndex(user => user.uuid === cursor.key) === -1) {
+                            usersCopyStore.push({ ...cursor.value });
+                            undefiendUsers.push({ ...cursor.value });
+                        }
+                        cursor.continue();
+                    };
+
+                    const next = (flag = false) => {
+                        let usersCopy = usersCopyStore.map(it => getSchema(USER_SCHEMA, it)).filter(Boolean);
+                        if (!usersCopy.length) return;
+
+                        usersCopy.forEach(user => {
+                            clientDB.updateItem("users", user);
+                        });
+
+                        const onAction = () => {
+                            if (requestError !== null) dispatch(errorRequstAction(null));
+                            dispatch(saveComponentStateAction({ users: usersCopy, load: true, path: pathValid }));
+                        };
+
+                        if (flag && undefiendUsers.length) {
+                            undefiendUsers.forEach(user => {
+                                firebase.db
+                                    .collection("users")
+                                    .doc()
+                                    .set(user)
+                                    .catch(error => console.error(error));
+                            });
+                            onAction();
+                        } else onAction();
+                    };
                 })
                 .catch(error => {
                     dispatch(setStatus("offline"));
@@ -75,14 +108,50 @@ export const loadCurrentData = path => (dispatch, getState, { firebase, getSchem
                     else if (fromCache && !tasks.length) throw new Error("Network error");
                 })
                 .then(tasks => {
-                    const tasksCopy = tasks.map(it => getSchema(TASK_SCHEMA, it, "no-strict")).filter(Boolean);
+                    const tasksCopyStore = [...tasks];
+                    const undefiendTasks = [];
+                    const cursor = clientDB.getCursor("tasks");
 
-                    tasksCopy.forEach(task => {
-                        clientDB.updateItem("tasks", task);
-                    });
+                    cursor.onsuccess = event => {
+                        const {
+                            target: { result: cursor },
+                        } = event;
+                        if (!cursor) return next(true);
 
-                    if (requestError !== null) dispatch(errorRequstAction(false));
-                    dispatch(saveComponentStateAction({ tasks: tasksCopy, load: true, path: pathValid }));
+                        if (tasksCopyStore && tasksCopyStore.findIndex(task => task.key === cursor.key) === -1) {
+                            tasksCopyStore.push({ ...cursor.value });
+                            undefiendTasks.push({ ...cursor.value });
+                        }
+                        cursor.continue();
+                    };
+
+                    const next = (flag = false) => {
+                        const tasksCopy = tasksCopyStore
+                            .map(it => getSchema(TASK_SCHEMA, it, "no-strict"))
+                            .filter(Boolean);
+                        if (!tasksCopy.length) return;
+
+                        tasksCopy.forEach(task => {
+                            clientDB.updateItem("tasks", task);
+                        });
+
+                        const onAction = () => {
+                            if (requestError !== null) dispatch(errorRequstAction(false));
+                            dispatch(saveComponentStateAction({ tasks: tasksCopy, load: true, path: pathValid }));
+                        };
+
+                        if (flag && undefiendTasks.length) {
+                            undefiendTasks.forEach(task => {
+                                debugger;
+                                firebase.db
+                                    .collection("tasks")
+                                    .doc()
+                                    .set(task)
+                                    .catch(error => console.error(error));
+                            });
+                            onAction();
+                        } else onAction();
+                    };
                 })
                 .catch(error => {
                     dispatch(setStatus("offline"));

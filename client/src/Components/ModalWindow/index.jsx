@@ -42,7 +42,7 @@ class ModalWindow extends React.PureComponent {
         });
     };
 
-    handleOk = async e => {
+    handleOk = e => {
         const {
             login,
             name,
@@ -60,14 +60,14 @@ class ModalWindow extends React.PureComponent {
             mode = null,
             onCaching,
             onUpdate,
-            routeDataActive,
-            routeDataActive: { key },
+            routeDataActive = {},
+            routeDataActive: { key = null } = {},
             primaryKey = null,
             keyTask = null,
             path = "",
             type = "",
         } = this.props;
-
+        debugger;
         if (mode === "reg") {
             if (login && name && password && departament && email && !loading) {
                 firebase
@@ -102,7 +102,7 @@ class ModalWindow extends React.PureComponent {
             const data = { ...jurnal, id: uuid(), key: keyTask, editor: "Павел Петрович" };
 
             if (onCaching) {
-                await onCaching(data, `${data.id}${primaryKey}`, mode, path, type).then(() => this.handleCancel());
+                onCaching(data, `${data.id}${primaryKey}`, mode, path, type).then(() => this.handleCancel());
             }
 
             return this.setState({

@@ -11,7 +11,7 @@ class Request {
 
     getTestAPI(flag = null) {
         if (flag) return this.testAPI + new Date().getTime();
-        else return this.testAPI;
+        else return this.testAPI.split("_")[0];
     }
 
     subscribe(event, mode = "offline") {
