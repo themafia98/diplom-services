@@ -21,11 +21,19 @@ export default (state = initialState, action) => {
         }
         case SET_CACHE: {
             const { primaryKey } = action.payload;
+            const { pk = null } = action.payload;
             const { data } = action.payload;
-            const key = data && primaryKey && data.key ? `${data.key}${primaryKey}` : data.key;
+            const key =
+                data && !Array.isArray(data) && primaryKey && data.key
+                    ? `${data.key}${data.id}${primaryKey}`
+                    : Array.isArray(data) && primaryKey && data[0].key && pk
+                    ? `${data[0].key}${data[0].id}${pk}`
+                    : Array.isArra(data)
+                    ? data[0].key
+                    : data.key;
             return {
                 ...state,
-                caches: { ...state.caches, [key]: { ...data } },
+                caches: { ...state.caches, [key]: data[0] ? { ...data[0] } : data },
             };
         }
         case SET_STATUS: {

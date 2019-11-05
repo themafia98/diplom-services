@@ -2,7 +2,7 @@ import { сachingAction, setStatus, errorRequstAction } from "../";
 import { getSchema } from "../../../../Utils/schema";
 import { TASK_CONTROLL_JURNAL_SCHEMA } from "../../../../Utils/schema/const";
 
-const middlewareCaching = ({ data, primaryKey, mode, path, type = "GET" }) => (
+const middlewareCaching = ({ data, primaryKey, mode, path, type = "GET", pk = null }) => (
     dispatch,
     getState,
     { firebase, getSchema, request, clientDB },
@@ -51,8 +51,18 @@ const middlewareCaching = ({ data, primaryKey, mode, path, type = "GET" }) => (
                             clientDB.updateItem("jurnalWork", item);
                         });
 
+                        {
+                        }
+
                         if (requestError !== null) dispatch(errorRequstAction(null));
-                        dispatch(сachingAction({ data: jurnalWorkCopy, load: true, primaryKey: primaryKey }));
+                        dispatch(
+                            сachingAction({
+                                data: jurnalWorkCopy,
+                                load: true,
+                                primaryKey: primaryKey,
+                                pk: pk ? pk : null,
+                            }),
+                        );
                     })
                     .catch(error => {
                         if (error.message !== "Network error") return console.error(error.message);

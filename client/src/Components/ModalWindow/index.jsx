@@ -74,12 +74,10 @@ class ModalWindow extends React.PureComponent {
                     .catch(error => console.error(error.message));
             }
         } else if (mode === "jur" && this.validation()) {
-            const data = { ...jurnal, key: keyTask, editor: "Павел Петрович" };
+            const data = { ...jurnal, id: uuid(), key: keyTask, editor: "Павел Петрович" };
 
             if (onCaching) {
-                await onCaching(data, `${Math.random()}${primaryKey}`, mode, path, type).then(() =>
-                    this.handleCancel(),
-                );
+                await onCaching(data, `${data.id}${primaryKey}`, mode, path, type).then(() => this.handleCancel());
             }
 
             return this.setState({
@@ -169,6 +167,7 @@ class ModalWindow extends React.PureComponent {
             {
                 key: keyTask,
                 timeLost: timeLost,
+                id: null,
                 editor: "Павел Петрович",
                 date: date,
                 description: description,

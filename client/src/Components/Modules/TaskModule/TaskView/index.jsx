@@ -40,9 +40,10 @@ class TaskView extends React.PureComponent {
             onCaching,
             path = "",
         } = this.props;
+        const { primaryKey: primaryKeyState } = this.state;
         const primaryKey = routeDataActive.key;
         if (_.isEmpty(caches) || !caches[routeDataActive.key]) {
-            onCaching(null, primaryKey, "jur", path, "GET");
+            onCaching(null, primaryKey, "jur", path, "GET", primaryKeyState);
         }
     };
 
@@ -51,19 +52,27 @@ class TaskView extends React.PureComponent {
         return jurnalDataKeys
             .map(key => {
                 const item = caches[key];
+
                 return (
                     <div key={Math.random()} className="jurnalItem">
                         <p>
                             <span className="title">Затрачено времени:</span>{" "}
-                            {item.timeLost ? item.timeLost : "не установлено"}
+                            {item.timeLost ? item.timeLost : item[0] ? item[0].timeLost : "не установлено"}
                         </p>
                         <p>
-                            <span className="title">Дата:</span> {item.date ? item.date : "не установлено"}
+                            <span className="title">Дата:</span>{" "}
+                            {item.date ? item.date : item[0] ? item[0].date : "не установлено"}
                         </p>
                         <p>
                             <span className="title">Коментарии:</span>
                         </p>
-                        <p>{item.description ? item.description : "не установлено"}</p>
+                        <p>
+                            {item.description
+                                ? item.description
+                                : item[0].description
+                                ? item[0].description
+                                : "не установлено"}
+                        </p>
                     </div>
                 );
             })
@@ -77,10 +86,11 @@ class TaskView extends React.PureComponent {
             publicReducer: { caches = null } = {},
             path,
         } = this.props;
-        const { mode, primaryKey } = this.state;
+        const { mode, primaryKey, uuid } = this.state;
         let jurnalDataKeys = null;
         if (caches && primaryKey && routeDataActive && routeDataActive.key) {
             const keys = Object.keys(caches);
+
             jurnalDataKeys = keys.filter(key => key.includes(primaryKey) && key.includes(routeDataActive.key));
         }
 
@@ -163,9 +173,9 @@ const mapStateTopProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onCaching: async (data, primaryKey, mode, path, type) =>
+        onCaching: async (data, primaryKey, mode, path, type, pk) =>
             await dispatch(
-                middlewareCaching({ data: data, primaryKey: primaryKey, mode: mode, path: path, type: type }),
+                middlewareCaching({ data: data, primaryKey: primaryKey, mode: mode, path: path, type: type, pk: pk }),
             ),
     };
 };
