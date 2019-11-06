@@ -14,6 +14,7 @@ class ModalWindow extends React.PureComponent {
         visible: false,
         name: null,
         password: null,
+        modeSetTime: null,
         departament: null,
         email: null,
         jurnal: {
@@ -27,16 +28,31 @@ class ModalWindow extends React.PureComponent {
         type: null,
     };
 
+    static getDerivedStateFromProps = (state, props) => {
+        if (state.modeSetTime !== props.modeSetTime) {
+            return {
+                ...state,
+                modeSetTime: props.modeSetTime,
+            };
+        } else return state;
+    };
+
+    onMessage = event => {
+        message.warning("Вы в режиме редактирования карточки.");
+    };
+
     showModal = event => {
         const { mode } = this.props;
         const { currentTarget = {} } = event;
         let type = mode;
+
         if (mode !== currentTarget.className.split(" ")[0]) {
             type = currentTarget.className.split(" ")[0];
         }
 
         this.setState({
             ...this.state,
+            modeSetTime: true,
             visible: true,
             type: type,
         });
@@ -66,9 +82,9 @@ class ModalWindow extends React.PureComponent {
             primaryKey = null,
             keyTask = null,
             path = "",
-            type = "",
+            typeRequst: type = "",
         } = this.props;
-
+        debugger;
         if (mode === "reg") {
             if (login && name && password && departament && email && !loading) {
                 firebase
@@ -99,7 +115,7 @@ class ModalWindow extends React.PureComponent {
                     })
                     .catch(error => console.error(error.message));
             }
-        } else if (visible && mode === "jur" && this.validation()) {
+        } else if ((visible && mode === "jur" && this.validation() && !typeValue) || typeValue === "jur") {
             const data = { ...jurnal, id: uuid(), key: keyTask, editor: "Павел Петрович" };
 
             if (onCaching) {
@@ -181,6 +197,7 @@ class ModalWindow extends React.PureComponent {
         const {
             jurnal: { timeLost = null, date = moment(), description = null },
             error = [],
+            type: typeState,
         } = this.state;
         const { keyTask } = this.props;
 
@@ -189,7 +206,7 @@ class ModalWindow extends React.PureComponent {
         let invalidTimeLost = !_.isString(timeLost);
         let invalidDescription = !_.isString(description);
 
-        if (invalidDate || invalidTimeLost || invalidDescription) {
+        if ((invalidDate || invalidTimeLost || invalidDescription) && !typeState) {
             _valid = false;
             const errorBundle = error.size ? new Set([...error]) : new Set();
             message.error("Не все поля заполнены!");
@@ -240,9 +257,18 @@ class ModalWindow extends React.PureComponent {
     };
 
     render() {
-        const { mode, statusTaskValue, accessStatus } = this.props;
-        const { type } = this.state;
-
+        const {
+            mode = "",
+            statusTaskValue = "",
+            accessStatus = [],
+            onEdit = null,
+            modeControll = null,
+            onRejectEdit = null,
+            modeEditContent = null,
+            onCancelEditModeContent = null,
+            editableContent = "",
+        } = this.props;
+        const { type: typeState = "", modeSetTime = null } = this.state;
         if (mode === "reg") {
             return (
                 <React.Fragment>
@@ -273,21 +299,30 @@ class ModalWindow extends React.PureComponent {
             } = this.state;
             moment.locale("ru");
             const menu = (
-                <Menu>
-                    <Menu.Item>
-                        <p className="jur" onClick={this.showModal}>
-                            Занести в журнал работы
-                        </p>
-                    </Menu.Item>
-                    <Menu.Item>
-                        <p className="statusTask" onClick={this.showModal}>
-                            Сменить статус задачи
-                        </p>
-                    </Menu.Item>
-                </Menu>
+                <React.Fragment>
+                    <Menu>
+                        <Menu.Item>
+                            <p className="jur" onClick={modeControll === "edit" ? this.onMessage : this.showModal}>
+                                Занести в журнал работы
+                            </p>
+                        </Menu.Item>
+                        <Menu.Item>
+                            <p
+                                className="statusTask"
+                                onClick={modeControll === "edit" ? this.onMessage : this.showModal}
+                            >
+                                Сменить статус задачи
+                            </p>
+                        </Menu.Item>
+                        <Menu.Item>
+                            <p className="statusTask" onClick={modeControll === "edit" ? this.onMessage : onEdit}>
+                                Редактировать задачу
+                            </p>
+                        </Menu.Item>
+                    </Menu>
+                </React.Fragment>
             );
-
-            switch (type) {
+            switch (typeState) {
                 case "statusTask": {
                     return (
                         <div className="dropDownWrapper">
@@ -332,43 +367,67 @@ class ModalWindow extends React.PureComponent {
                                         <Icon type="down" />
                                     </p>
                                 </Dropdown>
+                                {modeControll === "edit" ? (
+                                    <React.Fragment>
+                                        <p className="modeControllEdit">Сохранить изменения</p>
+                                        <p onClick={onRejectEdit} className="modeControllEditReject">
+                                            Отмена изменений
+                                        </p>
+                                    </React.Fragment>
+                                ) : null}
                             </div>
-                            <Modal
-                                className="modalWindow"
-                                visible={this.state.visible}
-                                onOk={this.handleOk}
-                                onCancel={this.handleCancel}
-                                title=" Отчет времени"
-                            >
-                                <span>Затраченое время:</span>
-                                <Input
-                                    onChange={this.onChangeTask}
-                                    className={["timeLost", error.has("timeLost") ? "errorFild" : null].join(" ")}
-                                    value={timeLost}
-                                    type="text"
-                                    size="default"
-                                    placeholder="20m / 1h / 2.5h "
-                                />
-                                <span>Дата и время:</span>
-                                <DatePicker
-                                    onChange={this.onChangeTask}
-                                    className={["date", error.has("date") ? "errorFild" : null].join(" ")}
-                                    format="YYYY-MM-DD HH:mm:ss"
-                                    showTime={{ defaultValue: moment().format("YYYY-MM-DD HH:mm:ss") }}
-                                    defaultValue={moment()}
-                                />
-                                <span>Кометарии:</span>
-                                <TextArea
-                                    onChange={this.onChangeTask}
-                                    value={description}
-                                    className={["description", error.has("description") ? "errorFild" : null].join(" ")}
-                                    rows={4}
-                                />
-                            </Modal>
+                            {mode === "jur" && modeEditContent ? (
+                                <Modal
+                                    className="modalWindow"
+                                    visible={modeEditContent}
+                                    onOk={this.handleOk}
+                                    onCancel={onCancelEditModeContent}
+                                    title={"Редактирование"}
+                                >
+                                    <TextArea className="editContentDescription" row={10} value={editableContent} />
+                                </Modal>
+                            ) : modeSetTime ? (
+                                <Modal
+                                    className="modalWindow"
+                                    visible={this.state.visible}
+                                    onOk={this.handleOk}
+                                    onCancel={this.handleCancel}
+                                    title=" Отчет времени"
+                                >
+                                    <span>Затраченое время:</span>
+                                    <Input
+                                        onChange={this.onChangeTask}
+                                        className={["timeLost", error.has("timeLost") ? "errorFild" : null].join(" ")}
+                                        value={timeLost}
+                                        type="text"
+                                        size="default"
+                                        placeholder="20m / 1h / 2.5h "
+                                    />
+                                    <span>Дата и время:</span>
+                                    <DatePicker
+                                        onChange={this.onChangeTask}
+                                        className={["date", error.has("date") ? "errorFild" : null].join(" ")}
+                                        format="YYYY-MM-DD HH:mm:ss"
+                                        showTime={{ defaultValue: moment().format("YYYY-MM-DD HH:mm:ss") }}
+                                        defaultValue={moment()}
+                                    />
+                                    <span>Кометарии:</span>
+                                    <TextArea
+                                        onChange={this.onChangeTask}
+                                        value={description}
+                                        className={["description", error.has("description") ? "errorFild" : null].join(
+                                            " ",
+                                        )}
+                                        rows={4}
+                                    />
+                                </Modal>
+                            ) : (
+                                <Modal></Modal>
+                            )}
                         </React.Fragment>
                     );
             }
-        }
+        } else return null;
     }
 }
 export default ModalWindow;

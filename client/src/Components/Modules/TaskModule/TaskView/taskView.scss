@@ -15,9 +15,35 @@
         }
     }
 
+    .descriptionTask__content {
+        position: relative;
+        transition: all 0.3s ease-in-out;
+        transition: visibility 1s ease-in-out;
+        .icon-wrapper {
+            visibility: hidden;
+        }
+        &:hover {
+            &.editable {
+                cursor: pointer;
+                background-color: $editable;
+                .icon-wrapper {
+                    visibility: visible;
+                    position: absolute;
+                    top: 0;
+                    left: 97%;
+                }
+            }
+        }
+    }
+
     .ant-descriptions-row {
         .output {
             text-align: start;
+        }
+
+        .ant-select,
+        .ant-calendar-picker {
+            width: 100%;
         }
     }
     tbody {
@@ -76,7 +102,21 @@
 }
 
 .dropDownWrapper {
-    max-width: 200px;
+    max-width: 50%;
+    display: flex;
+    p {
+        margin-right: 15px;
+        margin-bottom: 5px;
+    }
+
+    .modeControllEdit,
+    .modeControllEditReject {
+        font-weight: bold;
+        cursor: pointer;
+        &:hover {
+            color: red;
+        }
+    }
 }
 
 .ant-dropdown-trigger:hover {
