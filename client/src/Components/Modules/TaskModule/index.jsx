@@ -72,7 +72,7 @@ class TaskModule extends React.PureComponent {
         if (path) {
             const { height, heightController } = this.state;
             const isList = path === "taskModule_myTasks" || path === "taskModule_all";
-            const { router, firebase } = this.props;
+            const { router, firebase, publicReducer: { status = null } = {} } = this.props;
             return (
                 <React.Fragment>
                     {isList ? (
@@ -101,6 +101,7 @@ class TaskModule extends React.PureComponent {
                             <CreateTask
                                 height={heightController ? height - heightController : height}
                                 firebase={firebase}
+                                statusApp={status}
                             />
                         </Scrollbars>
                     ) : path.startsWith("taskModule_") ? (
@@ -132,6 +133,7 @@ class TaskModule extends React.PureComponent {
 
 const mapStateToProps = state => {
     return {
+        publicReducer: state.publicReducer,
         router: state.router,
     };
 };

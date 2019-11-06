@@ -48,6 +48,7 @@ class ModalWindow extends React.PureComponent {
             name,
             password,
             departament,
+            visible,
             email,
             loading,
             surname,
@@ -98,7 +99,7 @@ class ModalWindow extends React.PureComponent {
                     })
                     .catch(error => console.error(error.message));
             }
-        } else if (mode === "jur" && this.validation()) {
+        } else if (visible && mode === "jur" && this.validation()) {
             const data = { ...jurnal, id: uuid(), key: keyTask, editor: "Павел Петрович" };
 
             if (onCaching) {
@@ -107,7 +108,6 @@ class ModalWindow extends React.PureComponent {
 
             return this.setState({
                 ...this.state,
-                uuid: uuid(),
                 visible: false,
                 loading: false,
                 jurnal: { timeLost: null, date: moment().format("YYYY-MM-DD HH:mm:ss"), description: null },

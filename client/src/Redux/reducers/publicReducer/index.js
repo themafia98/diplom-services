@@ -2,6 +2,7 @@ import { SET_ERROR, SET_CACHE, SET_STATUS } from "../../actions/publicActions/co
 
 const initialState = {
     status: "online",
+    prewStatus: "online",
     requestError: null,
     caches: {},
 };
@@ -40,6 +41,7 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 status: action.payload,
+                prewStatus: state.status,
             };
         }
         default:

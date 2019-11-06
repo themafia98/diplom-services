@@ -1,5 +1,6 @@
 import React from "react";
 import _ from "lodash";
+import clientDB from "../../../../clientDB";
 import Scrollbars from "react-custom-scrollbars";
 import TitleModule from "../../../TitleModule";
 import moment from "moment";
@@ -125,7 +126,7 @@ class CreateTask extends React.PureComponent {
     };
 
     handlerCreateTask = event => {
-        const { firebase } = this.props;
+        const { firebase, statusApp = "" } = this.props;
         if (!this.validation()) return;
         let keys = Object.keys(this.state.card);
         if (keys.every(key => _.isNull(this.state.card[key]))) return;
@@ -134,11 +135,25 @@ class CreateTask extends React.PureComponent {
         if (!validHash) return message.error("Не валидные данные.");
 
         this.setState({ ...this.state, load: true });
-        firebase.db
-            .collection("tasks")
-            .doc()
-            .set(validHash)
-            .then(() => this.setState({ ...this.state, load: false }, () => message.success(`Задача создана.`)));
+
+        if (statusApp === "online") {
+            firebase.db
+                .collection("tasks")
+                .doc()
+                .set(validHash)
+                .then(() =>
+                    this.setState({ ...this.state, card: { ...this.state.card, key: uuid() }, load: false }, () =>
+                        message.success(`Задача создана.`),
+                    ),
+                );
+        } else if (statusApp === "offline") {
+            const putAction = clientDB.addItem("tasks", validHash);
+            putAction.onsuccess = event => {
+                this.setState({ ...this.state, card: { ...this.state.card, key: uuid() }, load: false }, () =>
+                    message.success(`Задача создана.`),
+                );
+            };
+        }
     };
 
     render() {

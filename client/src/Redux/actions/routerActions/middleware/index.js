@@ -29,11 +29,11 @@ export const loadCurrentData = path => (dispatch, getState, { firebase, getSchem
                     const undefiendUsers = [];
                     const cursor = clientDB.getCursor("users");
 
-                    cursor.onsuccess = event => {
+                    cursor.onsuccess = async event => {
                         const {
                             target: { result: cursor },
                         } = event;
-                        if (!cursor) return next(true);
+                        if (!cursor) return await next(true);
 
                         if (usersCopyStore && usersCopyStore.findIndex(user => user.uuid === cursor.key) === -1) {
                             usersCopyStore.push({ ...cursor.value });
@@ -42,7 +42,7 @@ export const loadCurrentData = path => (dispatch, getState, { firebase, getSchem
                         cursor.continue();
                     };
 
-                    const next = (flag = false) => {
+                    const next = async (flag = false) => {
                         let usersCopy = usersCopyStore.map(it => getSchema(USER_SCHEMA, it)).filter(Boolean);
                         if (!usersCopy.length) return;
 
@@ -56,13 +56,13 @@ export const loadCurrentData = path => (dispatch, getState, { firebase, getSchem
                         };
 
                         if (flag && undefiendUsers.length) {
-                            undefiendUsers.forEach(user => {
-                                firebase.db
-                                    .collection("users")
-                                    .doc()
-                                    .set(user)
-                                    .catch(error => console.error(error));
+                            const tasks = firebase.db.collection("users");
+                            const batch = firebase.db.batch();
+                            undefiendUsers.forEach(task => {
+                                const taskRef = tasks.doc();
+                                batch.set(taskRef, task);
                             });
+                            await batch.commit();
                             onAction();
                         } else onAction();
                     };
@@ -112,11 +112,11 @@ export const loadCurrentData = path => (dispatch, getState, { firebase, getSchem
                     const undefiendTasks = [];
                     const cursor = clientDB.getCursor("tasks");
 
-                    cursor.onsuccess = event => {
+                    cursor.onsuccess = async event => {
                         const {
                             target: { result: cursor },
                         } = event;
-                        if (!cursor) return next(true);
+                        if (!cursor) return await next(true);
 
                         if (tasksCopyStore && tasksCopyStore.findIndex(task => task.key === cursor.key) === -1) {
                             tasksCopyStore.push({ ...cursor.value });
@@ -125,7 +125,7 @@ export const loadCurrentData = path => (dispatch, getState, { firebase, getSchem
                         cursor.continue();
                     };
 
-                    const next = (flag = false) => {
+                    const next = async (flag = false) => {
                         const tasksCopy = tasksCopyStore
                             .map(it => getSchema(TASK_SCHEMA, it, "no-strict"))
                             .filter(Boolean);
@@ -140,16 +140,15 @@ export const loadCurrentData = path => (dispatch, getState, { firebase, getSchem
                             dispatch(saveComponentStateAction({ tasks: tasksCopy, load: true, path: pathValid }));
                         };
 
-                        if (flag && undefiendTasks.length) {
-                            undefiendTasks.forEach(task => {
-                                firebase.db
-                                    .collection("tasks")
-                                    .doc()
-                                    .set(task)
-                                    .catch(error => console.error(error));
-                            });
-                            onAction();
-                        } else onAction();
+                        const tasks = firebase.db.collection("tasks");
+                        const batch = firebase.db.batch();
+                        undefiendTasks.forEach(task => {
+                            const taskRef = tasks.doc();
+                            batch.set(taskRef, task);
+                        });
+                        await batch.commit();
+
+                        onAction();
                     };
                 })
                 .catch(error => {

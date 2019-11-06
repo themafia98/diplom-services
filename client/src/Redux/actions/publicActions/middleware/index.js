@@ -139,6 +139,7 @@ const middlewareUpdate = ({ id, type, updateProp, updateFild, item, primaryKey =
             } = event;
             console.log(`Update item ${result} done.`);
             const tasksCopy = [updaterItem].map(it => getSchema(TASK_SCHEMA, it, "no-strict")).filter(Boolean);
+
             if (tasksCopy)
                 dispatch(
                     updateItemStateAction({
