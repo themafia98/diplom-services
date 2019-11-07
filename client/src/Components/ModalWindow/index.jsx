@@ -280,7 +280,11 @@ class ModalWindow extends React.PureComponent {
             this.setState({
                 jurnal: { ...this.state.jurnal, date: event.toString() },
             });
-        } else if (target && target.value && target.className.split(" ")[1] === "description") {
+        } else if (
+            target &&
+            (target.value || target.value === "") &&
+            target.className.split(" ")[1] === "description"
+        ) {
             this.setState({
                 jurnal: { ...this.state.jurnal, description: target.value },
             });
