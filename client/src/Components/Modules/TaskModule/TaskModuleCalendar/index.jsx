@@ -16,6 +16,7 @@ class TaskModuleCalendar extends React.PureComponent {
                 ? tasks
                       .map(it => {
                           if (valueDate === it.date[0]) return it;
+                          else if (valueDate === it.date[1]) return { ...it, name: `Конец срока: ${it.name}` };
                           else return null;
                       })
                       .filter(Boolean)
