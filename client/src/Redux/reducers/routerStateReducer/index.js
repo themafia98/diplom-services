@@ -39,6 +39,7 @@ export default (state = initialState, action) => {
             const copyRouteData = { ...state.routeData };
             let path = action.payload.path;
             let pathParse = path.split("_");
+
             if (
                 pathParse[0] === "taskModule" &&
                 pathParse[1] &&

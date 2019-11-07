@@ -39,7 +39,7 @@ class ClientDB {
 
             let objectStoreJurnalWork = db.createObjectStore("jurnalWork", {
                 unique: true,
-                keyPath: "key",
+                keyPath: "id",
                 autoIncrement: true,
             });
 
@@ -66,7 +66,7 @@ class ClientDB {
 
             keysJurnalWork.forEach(key => {
                 objectStoreJurnalWork.createIndex(key, key, {
-                    unique: key === "key" ? true : false,
+                    unique: key === "id" ? true : false,
                 });
             });
         };

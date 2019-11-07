@@ -157,7 +157,8 @@ class Dashboard extends React.PureComponent {
             if (!isFind) addTab(path);
             else if (currentActionTab !== path) {
                 setCurrentTab(path);
-                if (path.startsWith("taskModule") && path !== "taskModule_createTask") onLoadCurrentData(path);
+                if (path.startsWith("taskModule") && path !== "taskModule_createTask")
+                    onLoadCurrentData({ path, storeLoad: "tasks" });
             }
         } else if (mode === "close") {
             let size = tabData.parentSize / actionTabsCopy.length;
@@ -225,7 +226,7 @@ const mapDispatchToProps = dispatch => {
         removeTab: tab => dispatch(removeTabAction(tab)),
         setCurrentTab: tab => dispatch(setActiveTabAction(tab)),
         onSetChildrenSizeAction: (size, flag) => dispatch(setChildrenSizeAction(size, flag)),
-        onLoadCurrentData: path => dispatch(loadCurrentData(path)),
+        onLoadCurrentData: ({ path, storeLoad }) => dispatch(loadCurrentData({ path, storeLoad })),
         onErrorRequstAction: async error => await errorRequstAction(error),
         onLogoutAction: async () => await dispatch(logoutAction()),
     };

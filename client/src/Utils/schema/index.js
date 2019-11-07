@@ -13,6 +13,7 @@ export const getValidateSchema = type => {
                 editor: null,
                 description: null,
                 date: null,
+                modeAdd: "any",
             };
         case TASK_CONTROLL_JURNAL_SCHEMA:
             return {
@@ -22,6 +23,7 @@ export const getValidateSchema = type => {
                 editor: null,
                 date: null,
                 description: null,
+                modeAdd: "any",
             };
         case USER_SCHEMA:
             return {
@@ -34,6 +36,7 @@ export const getValidateSchema = type => {
                 status: null,
                 surname: null,
                 uuid: null, // delay firebase
+                modeAdd: "any",
             };
         default:
             return null;
@@ -42,7 +45,15 @@ export const getValidateSchema = type => {
 
 export const validateSchema = (data, schema, mode = "no-strict") => {
     if (!_.isArray(data) || !_.isArray(schema)) return false;
-    if (data.length !== schema.length) return false;
+
+    const isFind = schema.findIndex(it => it === "modeAdd") !== -1;
+    const isFindBoth = isFind && data.findIndex(it => it === "modeAdd") !== -1;
+    if (
+        (isFindBoth && data.length !== schema.length) ||
+        (isFind && !isFindBoth && data.length + 1 !== schema.length) ||
+        (!isFind && data.length !== schema.length)
+    )
+        return false;
 
     return mode !== "no-strict"
         ? data.every((dataKey, i) => dataKey === schema[i])

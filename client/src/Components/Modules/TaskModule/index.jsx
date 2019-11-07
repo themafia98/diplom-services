@@ -48,7 +48,7 @@ class TaskModule extends React.PureComponent {
             const heightForState = this.moduleTask.getBoundingClientRect().height;
             this.setState({ ...this.state, height: heightForState, heightController: heightControllerForState });
         }
-        onLoadCurrentData(path);
+        onLoadCurrentData({ path, storeLoad: "tasks" });
     };
 
     componentDidUpdate = () => {
@@ -64,7 +64,7 @@ class TaskModule extends React.PureComponent {
         }
 
         if (path.startsWith("taskModule") && !router.routeData["taskModule"]) {
-            onLoadCurrentData(path);
+            onLoadCurrentData({ path, storeLoad: "tasks" });
         }
     };
 
@@ -141,7 +141,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         addTab: tab => dispatch(addTabAction(tab)),
-        onLoadCurrentData: path => dispatch(loadCurrentData(path)),
+        onLoadCurrentData: ({ path, storeLoad }) => dispatch(loadCurrentData({ path, storeLoad })),
     };
 };
 

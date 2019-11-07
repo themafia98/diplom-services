@@ -22,7 +22,7 @@ class TableView extends React.Component {
 
     componentDidMount = () => {
         const { path, onLoadCurrentData } = this.props;
-        if (path === "mainModule__table") onLoadCurrentData(path);
+        if (path === "mainModule__table") onLoadCurrentData({ path, storeLoad: "users" });
         window.addEventListener("resize", this.setSizeWindow);
     };
 
@@ -351,7 +351,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onOpenPageWithData: data => dispatch(openPageWithDataAction(data)),
-        onLoadCurrentData: path => dispatch(loadCurrentData(path)),
+        onLoadCurrentData: ({ path, storeLoad }) => dispatch(loadCurrentData({ path, storeLoad })),
     };
 };
 

@@ -73,21 +73,20 @@ class TaskView extends React.PureComponent {
             publicReducer: { caches = {} } = {},
             router: { routeDataActive = null },
             onCaching,
-            path = "",
         } = this.props;
         const { primaryKey: primaryKeyState } = this.state;
         const primaryKey = routeDataActive.key;
         if (_.isEmpty(caches) || !caches[routeDataActive.key]) {
-            onCaching(null, primaryKey, "jur", path, "GET", primaryKeyState);
+            onCaching(null, primaryKey, "GET", primaryKeyState, "jurnalWork");
         }
     };
 
     renderWorkJurnal = (jurnalDataKeys = []) => {
         const { publicReducer: { caches = null } = {} } = this.props;
-        return jurnalDataKeys
+
+        return _.uniq(jurnalDataKeys)
             .map(key => {
                 const item = caches[key];
-
                 return (
                     <div key={Math.random()} className="jurnalItem">
                         <p>
@@ -316,12 +315,10 @@ const mapStateTopProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onCaching: async (data, primaryKey, mode, path, type, pk) =>
-            await dispatch(
-                middlewareCaching({ data: data, primaryKey: primaryKey, mode: mode, path: path, type: type, pk: pk }),
-            ),
-        onUpdate: async (id, type, updateProp, updateFild, item, primaryKey) =>
-            await dispatch(middlewareUpdate({ id, type, updateProp, updateFild, item, primaryKey })),
+        onCaching: async (data, primaryKey, type, pk, store) =>
+            await dispatch(middlewareCaching({ data, primaryKey, type, pk, store })),
+        onUpdate: async (id, type, updateProp, updateFild, item, findStore, updateStore) =>
+            await dispatch(middlewareUpdate({ id, type, updateProp, updateFild, item, findStore, updateStore })),
     };
 };
 

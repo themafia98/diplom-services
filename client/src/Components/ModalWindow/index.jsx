@@ -84,7 +84,7 @@ class ModalWindow extends React.PureComponent {
             path = "",
             typeRequst: type = "",
         } = this.props;
-        debugger;
+
         if (mode === "reg") {
             if (login && name && password && departament && email && !loading) {
                 firebase
@@ -119,7 +119,9 @@ class ModalWindow extends React.PureComponent {
             const data = { ...jurnal, id: uuid(), key: keyTask, editor: "Павел Петрович" };
 
             if (onCaching) {
-                onCaching(data, `${data.id}${primaryKey}`, mode, path, type).then(() => this.handleCancel());
+                onCaching(data, `${data.id}${primaryKey}`, type, primaryKey, "jurnalWork").then(() =>
+                    this.handleCancel(),
+                );
             }
 
             return this.setState({
@@ -137,7 +139,8 @@ class ModalWindow extends React.PureComponent {
                     loading: false,
                 });
             }
-            onUpdate(key, "tasks", taskStatus, "status", { ...routeDataActive }, primaryKey);
+
+            onUpdate(key, "UPDATE", taskStatus, "status", { ...routeDataActive }, "tasks");
             return this.setState({
                 ...this.state,
                 visible: false,
