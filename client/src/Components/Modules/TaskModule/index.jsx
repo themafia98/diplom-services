@@ -63,8 +63,12 @@ class TaskModule extends React.PureComponent {
                 this.setState({ ...this.state, height: heightForState, heightController: heightControllerForState });
         }
 
-        if (path.startsWith("taskModule") && !router.routeData["taskModule"]) {
-            onLoadCurrentData({ path, storeLoad: "tasks" });
+        if (
+            path.startsWith("taskModule") &&
+            !router.routeData["taskModule"] &&
+            !router.routeData["taskModule_сalendar"]
+        ) {
+            onLoadCurrentData({ path: "taskModule", storeLoad: "tasks" });
         }
     };
 
@@ -93,7 +97,7 @@ class TaskModule extends React.PureComponent {
                         <Scrollbars>
                             <TaskModuleCalendar
                                 height={heightController ? height - heightController : height}
-                                data={router.routeData["taskModule"]}
+                                router={router}
                             />
                         </Scrollbars>
                     ) : path === "taskModule_createTask" ? (

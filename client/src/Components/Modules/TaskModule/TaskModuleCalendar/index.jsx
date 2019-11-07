@@ -6,28 +6,16 @@ import { Calendar, Popover, Button } from "antd";
 
 class TaskModuleCalendar extends React.PureComponent {
     getListData = value => {
-        const { data = null } = this.props;
-
+        const { router: { routeData = {}, currentActionTab = "" } = {} } = this.props;
+        const { tasks = [] } = routeData[currentActionTab] || routeData["taskModule"] || {};
         let valueDate = moment(value.toString())
-            .format("DD MM YYYY")
-            .split(" ")
-            .join(".")
+            .format("DD.MM.YYYY")
             .trim();
-
         let dateArrayTask =
-            data && data.tasks
-                ? data.tasks
+            tasks && tasks
+                ? tasks
                       .map(it => {
-                          if (
-                              valueDate ===
-                              moment(
-                                  it.date[0]
-                                      .split(".")
-                                      .reverse()
-                                      .join("."),
-                              ).format("l")
-                          )
-                              return it;
+                          if (valueDate === it.date[0]) return it;
                           else return null;
                       })
                       .filter(Boolean)
@@ -35,7 +23,7 @@ class TaskModuleCalendar extends React.PureComponent {
 
         const listData = Array.isArray(dateArrayTask)
             ? dateArrayTask.map(it => {
-                  return { type: "success", content: it.description };
+                  return { type: "success", content: it.name };
               })
             : [];
 

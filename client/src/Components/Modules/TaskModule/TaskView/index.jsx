@@ -131,8 +131,19 @@ class TaskView extends React.PureComponent {
             jurnalDataKeys = keys.filter(key => key.includes(primaryKey) && key.includes(routeDataActive.key));
         }
 
-        const accessStatus = _.uniq([routeDataActive.status, "Открыт", "Выполнен", "Закрыт", "В работе"]);
-        const accessPriority = _.uniq([routeDataActive.priority, "Высокий", "Средний", "Низкий"]);
+        const accessStatus = _.uniq([
+            routeDataActive && routeDataActive.status ? routeDataActive.status : null,
+            "Открыт",
+            "Выполнен",
+            "Закрыт",
+            "В работе",
+        ]).filter(Boolean);
+        const accessPriority = _.uniq([
+            routeDataActive && routeDataActive.priority ? routeDataActive.priority : null,
+            "Высокий",
+            "Средний",
+            "Низкий",
+        ]).filter(Boolean);
         const rulesEdit = true;
 
         const statusClassName = routeDataActive
