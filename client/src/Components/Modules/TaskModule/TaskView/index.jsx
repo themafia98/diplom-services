@@ -212,7 +212,7 @@ class TaskView extends React.PureComponent {
             .map(key => {
                 const item = caches[key];
                 return (
-                    <div key={Math.random()} className="jurnalItem">
+                    <div key={key} className="jurnalItem">
                         <p>
                             <span className="title">Затрачено времени:</span>{" "}
                             {item && item.timeLost ? item.timeLost : item[0] ? item[0].timeLost : "не установлено"}

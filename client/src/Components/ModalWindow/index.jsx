@@ -31,15 +31,6 @@ class ModalWindow extends React.PureComponent {
         type: null,
     };
 
-    static getDerivedStateFromProps = (props, state) => {
-        if (state.modeSetTime !== props.modeSetTime) {
-            return {
-                ...state,
-                modeSetTime: state.modeSetTime !== props.modeSetTime ? props.modeSetTime : state.modeSetTime,
-            };
-        } else return state;
-    };
-
     onMessage = event => {
         message.warning("Вы в режиме редактирования карточки.");
     };
@@ -373,6 +364,16 @@ class ModalWindow extends React.PureComponent {
                                     <Icon type="down" />
                                 </p>
                             </Dropdown>
+                            {modeControll === "edit" ? (
+                                <React.Fragment>
+                                    <p onClick={onUpdateEditable} className="modeControllEdit">
+                                        Сохранить изменения
+                                    </p>
+                                    <p onClick={onRejectEdit} className="modeControllEditReject">
+                                        Отмена изменений
+                                    </p>
+                                </React.Fragment>
+                            ) : null}
                             <Modal
                                 className="modalWindow changeStatus"
                                 visible={this.state.visible}
@@ -398,7 +399,7 @@ class ModalWindow extends React.PureComponent {
                     );
                 }
 
-                default:
+                default: {
                     return (
                         <React.Fragment>
                             <div className="dropDownWrapper">
@@ -475,6 +476,7 @@ class ModalWindow extends React.PureComponent {
                             )}
                         </React.Fragment>
                     );
+                }
             }
         } else return null;
     }
