@@ -120,14 +120,14 @@ class CreateTask extends React.PureComponent {
     };
 
     onChangeHandlerSelectEditor = eventArray => {
-        if (!_.isArray(eventArray) || eventArray === this.state.editor) return;
+        if (!_.isArray(eventArray) || eventArray === this.state.card.editor) return;
         else return this.setState({ ...this.state, card: { ...this.state.card, editor: eventArray } });
     };
 
     onChangeHandlerSelectPriority = eventString => {
         if (!_.isString(eventString) || eventString === this.state.priority) return;
         else {
-            this.setState({ ...this.state, card: { ...this.state, ...this.state.card, priority: eventString } });
+            this.setState({ ...this.state, card: { ...this.state.card, priority: eventString } });
         }
     };
 
