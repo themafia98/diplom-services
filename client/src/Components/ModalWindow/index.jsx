@@ -22,23 +22,39 @@ class ModalWindow extends React.PureComponent {
             date: moment().format("DD.MM.YYYYY HH:mm:ss"),
             description: null,
         },
+        description: {
+            value: this.props.editableContent || null,
+        },
         error: new Set(),
         loading: false,
         taskStatus: null,
         type: null,
     };
 
-    static getDerivedStateFromProps = (state, props) => {
+    static getDerivedStateFromProps = (props, state) => {
         if (state.modeSetTime !== props.modeSetTime) {
             return {
                 ...state,
-                modeSetTime: props.modeSetTime,
+                modeSetTime: state.modeSetTime !== props.modeSetTime ? props.modeSetTime : state.modeSetTime,
             };
         } else return state;
     };
 
     onMessage = event => {
         message.warning("Вы в режиме редактирования карточки.");
+    };
+
+    onChangeDescription = event => {
+        const { currentTarget: { value: valueTarget = "" } = {} } = event;
+        const { description: { value = "" } = {} } = this.state;
+        if (value && value !== valueTarget)
+            this.setState({
+                ...this.state,
+                description: {
+                    ...this.state.description,
+                    value: valueTarget,
+                },
+            });
     };
 
     showModal = event => {
@@ -58,7 +74,7 @@ class ModalWindow extends React.PureComponent {
         });
     };
 
-    handleOk = e => {
+    handleOk = event => {
         const {
             login,
             name,
@@ -71,6 +87,7 @@ class ModalWindow extends React.PureComponent {
             jurnal,
             type: typeValue,
             taskStatus = null,
+            description: { value: valueDescription = "" } = {},
         } = this.state;
         const {
             firebase = null,
@@ -83,6 +100,8 @@ class ModalWindow extends React.PureComponent {
             keyTask = null,
             path = "",
             typeRequst: type = "",
+            onCancelEditModeContent,
+            modeEditContent = null,
         } = this.props;
 
         if (mode === "reg") {
@@ -119,6 +138,20 @@ class ModalWindow extends React.PureComponent {
                     })
                     .catch(error => console.error(error.message));
             }
+        } else if (mode === "jur" && modeEditContent) {
+            onUpdate(key, "UPDATE", valueDescription, "description", { ...routeDataActive }, "tasks")
+                .then(res => {
+                    onCancelEditModeContent(event);
+                    this.setState({
+                        ...this.state,
+                        visible: false,
+                        loading: false,
+                    });
+                    message.success("Описание изменено.");
+                })
+                .catch(error => {
+                    message.error("Ошибка редактирования.");
+                });
         } else if ((visible && mode === "jur" && this.validation() && !typeValue) || typeValue === "jur") {
             const data = { ...jurnal, id: uuid(), key: keyTask, editor: "Павел Петрович" };
 
@@ -274,8 +307,9 @@ class ModalWindow extends React.PureComponent {
             modeEditContent = null,
             onCancelEditModeContent = null,
             editableContent = "",
+            onUpdateEditable,
         } = this.props;
-        const { type: typeState = "", modeSetTime = null } = this.state;
+        const { type: typeState = "", modeSetTime = null, description: { value: valueDesc = "" } = {} } = this.state;
         if (mode === "reg") {
             return (
                 <React.Fragment>
@@ -376,7 +410,9 @@ class ModalWindow extends React.PureComponent {
                                 </Dropdown>
                                 {modeControll === "edit" ? (
                                     <React.Fragment>
-                                        <p className="modeControllEdit">Сохранить изменения</p>
+                                        <p onClick={onUpdateEditable} className="modeControllEdit">
+                                            Сохранить изменения
+                                        </p>
                                         <p onClick={onRejectEdit} className="modeControllEditReject">
                                             Отмена изменений
                                         </p>
@@ -391,7 +427,13 @@ class ModalWindow extends React.PureComponent {
                                     onCancel={onCancelEditModeContent}
                                     title={"Редактирование"}
                                 >
-                                    <TextArea className="editContentDescription" row={10} value={editableContent} />
+                                    <TextArea
+                                        className="editContentDescription"
+                                        row={10}
+                                        onChange={this.onChangeDescription}
+                                        value={valueDesc ? valueDesc : ""}
+                                        defaultValue={valueDesc ? valueDesc : ""}
+                                    />
                                 </Modal>
                             ) : modeSetTime ? (
                                 <Modal

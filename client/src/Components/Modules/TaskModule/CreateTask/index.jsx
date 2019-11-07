@@ -11,7 +11,6 @@ import uuid from "uuid/v4";
 
 import { getSchema } from "../../../../Utils/index";
 import { TASK_SCHEMA } from "../../../../Utils/schema/const"; // delay
-import { parse } from "upath";
 
 const { Option } = Select;
 const { TextArea } = Input;

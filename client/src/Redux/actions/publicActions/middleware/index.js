@@ -105,17 +105,30 @@ const middlewareCaching = ({ data, primaryKey, type = "GET", pk = null, store = 
 const middlewareUpdate = ({
     id,
     type = "UPDATE",
-    updateProp,
-    updateFild,
-    item,
+    updateProp = "",
+    updateFild = "",
+    item = {},
     findStore = "",
     updateStore = findStore,
+    multiply = false,
     limitUpdate = 20,
 }) => (dispatch, getState, { firebase, getSchema, request, clientDB }) => {
-    const isOnceStore = findStore === updateStore && typeof findStore === "string";
     const { status = "online" } = getState().publicReducer;
 
     if ((type === "UPDATE", updateStore && status === "online")) {
+        const updater = async doc => {
+            if (!multiply)
+                return await firebase.db
+                    .collection(updateStore)
+                    .doc(doc.id)
+                    .update({ [updateFild]: updateProp });
+            else
+                return await firebase.db
+                    .collection(updateStore)
+                    .doc(doc.id)
+                    .update({ ...updateProp });
+        };
+
         if (updateStore && findStore)
             firebase.db
                 .collection(findStore) // tasks
@@ -125,17 +138,25 @@ const middlewareUpdate = ({
                     if (querySnapshot.docs.length)
                         querySnapshot.docs.forEach(async (doc, i) => {
                             if (i < limitUpdate) {
-                                await firebase.db
-                                    .collection(updateStore)
-                                    .doc(doc.id)
-                                    .update({ [updateFild]: updateProp })
+                                await updater(doc)
                                     .then(() => {
-                                        const updaterItem = {
-                                            ...doc.data(),
-                                            key: id,
-                                            [updateFild]: updateProp,
-                                            modeAdd: "online",
-                                        };
+                                        let updaterItem = null;
+
+                                        if (!multiply)
+                                            updaterItem = {
+                                                ...doc.data(),
+                                                key: id,
+                                                [updateFild]: updateProp,
+                                                modeAdd: "online",
+                                            };
+                                        else {
+                                            updaterItem = {
+                                                ...doc.data(),
+                                                key: id,
+                                                ...updateProp,
+                                                modeAdd: "online",
+                                            };
+                                        }
 
                                         const schema =
                                             updateStore === "jurnalWork"
