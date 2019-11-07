@@ -11,6 +11,7 @@ import uuid from "uuid/v4";
 
 import { getSchema } from "../../../../Utils/index";
 import { TASK_SCHEMA } from "../../../../Utils/schema/const"; // delay
+import { parse } from "upath";
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -27,7 +28,7 @@ class CreateTask extends React.PureComponent {
             author: "Петрович Павел",
             editor: null,
             description: null,
-            date: [moment().format("l"), moment().format("l")],
+            date: [moment().format("DD.MM.YYYY"), moment().format("DD.MM.YYYY")],
         },
         errorBundle: {},
     };
@@ -107,6 +108,11 @@ class CreateTask extends React.PureComponent {
             return this.setState({ ...this.state, card: { ...this.state.card, description: target.value } });
     };
 
+    onChangeTextArea = event => {
+        const { target } = event;
+        this.setState({ ...this.state, card: { ...this.state.card, description: target.value } });
+    };
+
     onChangeHandlerDate = (date, dateArray) => {
         if (_.isArray(dateArray) && dateArray !== this.state.date) {
             return this.setState({ ...this.state, card: { ...this.state.card, date: dateArray } });
@@ -133,6 +139,12 @@ class CreateTask extends React.PureComponent {
         const validHashCopy = [{ ...this.state.card }];
         const validHash = validHashCopy.map(it => getSchema(TASK_SCHEMA, it, "no-strict")).filter(Boolean)[0];
         if (!validHash) return message.error("Не валидные данные.");
+        const parseDateArray = [];
+        // validHash.date.forEach(dateItem => {
+        //     parseDateArray.push(moment(dateItem, "YYYY-MM-DD").format("DD.MM.YYYY"));
+        // });
+
+        if (parseDateArray.length) validHash.date = parseDateArray;
 
         this.setState({ ...this.state, load: true });
 
@@ -157,7 +169,7 @@ class CreateTask extends React.PureComponent {
     };
 
     render() {
-        const dateFormat = "YYYY/MM/DD";
+        const dateFormat = "DD.MM.YYYYY";
         const { errorBundle } = this.state;
         // const { height } = this.props;
         return (
@@ -226,10 +238,11 @@ class CreateTask extends React.PureComponent {
                                     )}
                                     onChange={this.onChangeHandlerDate}
                                     defaultValue={[
-                                        moment(moment().format("l"), dateFormat),
-                                        moment(moment().format("l"), dateFormat),
+                                        moment(moment().format("DD.MM.YYYY"), dateFormat),
+                                        moment(moment().format("DD.MM.YYYY"), dateFormat),
                                     ]}
                                     name="date"
+                                    format="DD.MM.YYYY"
                                     type="date"
                                 />
                                 <Button

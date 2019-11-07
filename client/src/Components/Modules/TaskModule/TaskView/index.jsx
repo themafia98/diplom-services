@@ -245,10 +245,10 @@ class TaskView extends React.PureComponent {
                                             <DatePicker
                                                 defaultValue={
                                                     routeDataActive.date[0]
-                                                        ? moment(routeDataActive.date[0], "DD.MM.YYYY")
+                                                        ? moment(routeDataActive.date[0], "DD.MM.YYYYY")
                                                         : null
                                                 }
-                                                format="DD.MM.YYYY"
+                                                format="DD.MM.YYYYY"
                                             />
                                         ) : null}
                                     </Descriptions.Item>
@@ -259,10 +259,10 @@ class TaskView extends React.PureComponent {
                                             <DatePicker
                                                 defaultValue={
                                                     routeDataActive.date[1]
-                                                        ? moment(routeDataActive.date[1], "DD.MM.YYYY")
+                                                        ? moment(routeDataActive.date[1], "DD.MM.YYYYY")
                                                         : null
                                                 }
-                                                format="DD.MM.YYYY"
+                                                format="DD.MM.YYYYY"
                                             />
                                         ) : null}
                                     </Descriptions.Item>

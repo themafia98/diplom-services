@@ -269,7 +269,7 @@ class TableView extends React.Component {
             }
         },
         render: text => {
-            const isDateString = _.isArray(text) && moment(text[0], "DD-MM-YYYY")._isValid;
+            const isDateString = _.isArray(text) && moment(text[0], "DD.MM.YYYY")._isValid;
             const className =
                 text === "В работе"
                     ? "active"
@@ -295,7 +295,7 @@ class TableView extends React.Component {
             else
                 return (
                     <Output className={className} key={uuid()}>
-                        {_.isArray(text) ? (!isDateString ? text.join(",") : text.join(" - ")) : text}
+                        {_.isArray(text) ? (!isDateString ? text.join(" , ") : text.join(" - ")) : text}
                     </Output>
                 );
         },

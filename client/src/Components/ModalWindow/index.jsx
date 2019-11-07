@@ -19,7 +19,7 @@ class ModalWindow extends React.PureComponent {
         email: null,
         jurnal: {
             timeLost: null,
-            date: moment().format("YYYY-MM-DD HH:mm:ss"),
+            date: moment().format("DD.MM.YYYYY HH:mm:ss"),
             description: null,
         },
         error: new Set(),
@@ -109,7 +109,11 @@ class ModalWindow extends React.PureComponent {
                             uuid: uuid(),
                             visible: false,
                             loading: false,
-                            jurnal: { timeLost: null, date: moment().format("YYYY-MM-DD HH:mm:ss"), description: null },
+                            jurnal: {
+                                timeLost: null,
+                                date: moment().format("DD.MM.YYYYY HH:mm:ss"),
+                                description: null,
+                            },
                             error: new Set(),
                         });
                     })
@@ -128,7 +132,7 @@ class ModalWindow extends React.PureComponent {
                 ...this.state,
                 visible: false,
                 loading: false,
-                jurnal: { timeLost: null, date: moment().format("YYYY-MM-DD HH:mm:ss"), description: null },
+                jurnal: { timeLost: null, date: moment().format("DD.MM.YYYYY HH:mm:ss"), description: null },
                 error: new Set(),
             });
         } else if (!_.isNull(typeValue) && typeValue === "statusTask") {
@@ -154,7 +158,7 @@ class ModalWindow extends React.PureComponent {
             ...this.state,
             visible: false,
             loading: false,
-            jurnal: { timeLost: null, date: moment().format("YYYY-MM-DD HH:mm:ss"), description: null },
+            jurnal: { timeLost: null, date: moment().format("DD.MM.YYYYY HH:mm:ss"), description: null },
             error: new Set(),
         });
     };
@@ -410,8 +414,8 @@ class ModalWindow extends React.PureComponent {
                                     <DatePicker
                                         onChange={this.onChangeTask}
                                         className={["date", error.has("date") ? "errorFild" : null].join(" ")}
-                                        format="YYYY-MM-DD HH:mm:ss"
-                                        showTime={{ defaultValue: moment().format("YYYY-MM-DD HH:mm:ss") }}
+                                        format="DD.MM.YYYYY HH:mm:ss"
+                                        showTime={{ defaultValue: moment().format("DD.MM.YYYYY HH:mm:ss") }}
                                         defaultValue={moment()}
                                     />
                                     <span>Кометарии:</span>
