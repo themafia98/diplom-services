@@ -205,7 +205,6 @@ class TableView extends React.Component {
                     columns={columns}
                     dataSource={data}
                     onRow={(record, rowIndex) => {
-                        console.log(record);
                         return {
                             onClick: event => {
                                 const {
