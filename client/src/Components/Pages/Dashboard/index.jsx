@@ -173,7 +173,12 @@ class Dashboard extends React.PureComponent {
 
     render() {
         const { menuItems = null, showLoader } = this.state;
-        const { router: { actionTabs = [], currentActionTab } = {}, firebase, onErrorRequstAction } = this.props;
+        const {
+            router: { actionTabs = [], currentActionTab } = {},
+            firebase,
+            onErrorRequstAction,
+            setCurrentTab,
+        } = this.props;
 
         const actionTabsData = this.getActionTabs(actionTabs, menuItems);
 
@@ -199,6 +204,7 @@ class Dashboard extends React.PureComponent {
                         />
                         <ContentView
                             dashboardStrem={this.dashboardStrem}
+                            setCurrentTab={setCurrentTab}
                             updateLoader={this.updateLoader}
                             onErrorRequstAction={onErrorRequstAction}
                             firebase={firebase}

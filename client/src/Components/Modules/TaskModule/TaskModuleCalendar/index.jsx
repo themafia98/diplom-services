@@ -5,6 +5,30 @@ import TitleModule from "../../../TitleModule";
 import { Calendar, Popover, Button } from "antd";
 
 class TaskModuleCalendar extends React.PureComponent {
+    onClick = event => {
+        const {
+            onOpenPageWithData,
+            router: { routeData = {}, currentActionTab = "", actionTabs = [] },
+            setCurrentTab,
+        } = this.props;
+        const { tasks = [] } = routeData[currentActionTab] || routeData["taskModule"] || {};
+        const { currentTarget } = event;
+        const record = currentTarget.className;
+
+        const page = `taskModule_all__${record}`;
+        const index = actionTabs.findIndex(tab => tab === page);
+        const isFind = index !== -1;
+        if (!isFind) {
+            const item = tasks.find(it => it.key === record);
+            if (!item) return;
+            onOpenPageWithData({
+                activePage: page,
+                routeDataActive: { ...item },
+            });
+        } else {
+            setCurrentTab(actionTabs[index]);
+        }
+    };
     getListData = value => {
         const { router: { routeData = {}, currentActionTab = "" } = {} } = this.props;
         const { tasks = [] } = routeData[currentActionTab] || routeData["taskModule"] || {};
@@ -15,8 +39,10 @@ class TaskModuleCalendar extends React.PureComponent {
             tasks && tasks
                 ? tasks
                       .map(it => {
-                          if (valueDate === it.date[0]) return it;
-                          else if (valueDate === it.date[1]) return { ...it, name: `Конец срока: ${it.name}` };
+                          if (valueDate === it.date[1] && it.date[0] === it.date[1])
+                              return { ...it, name: `Конец и начало срока: ${it.name}`, key: it.key };
+                          if (valueDate === it.date[1]) return { ...it, name: `Конец срока: ${it.name}`, key: it.key };
+                          if (valueDate === it.date[0]) return { ...it, name: `Начало срока: ${it.name}`, key: it.key };
                           else return null;
                       })
                       .filter(Boolean)
@@ -24,7 +50,7 @@ class TaskModuleCalendar extends React.PureComponent {
 
         const listData = Array.isArray(dateArrayTask)
             ? dateArrayTask.map(it => {
-                  return { type: "success", content: it.name };
+                  return { type: "success", content: it.name, key: it.key };
               })
             : [];
 
@@ -35,7 +61,7 @@ class TaskModuleCalendar extends React.PureComponent {
         const listData = this.getListData(value);
         const content = listData.map(item => {
             return (
-                <li onClick={this.test} key={item.content}>
+                <li className={item.key} onClick={this.onClick} key={item.key}>
                     {item.content}
                 </li>
             );
@@ -49,7 +75,7 @@ class TaskModuleCalendar extends React.PureComponent {
         let outValues = listData.length ? [...listData] : null;
         if (listData.length) {
             outValues = outValues.reduce((prev, current) =>
-                prev.content ? prev.content + current.content : current.content,
+                prev.content ? prev.content + "," + current.content : current.content,
             );
         }
 
@@ -64,8 +90,6 @@ class TaskModuleCalendar extends React.PureComponent {
                 </Popover>
             );
     };
-
-    test = event => {};
 
     render() {
         // const { height } = this.props;

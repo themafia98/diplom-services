@@ -38,7 +38,7 @@ class ContentView extends React.PureComponent {
     getComponentByPath = path => {
         if (!path) return null;
 
-        const { firebase, onErrorRequstAction } = this.props;
+        const { firebase, onErrorRequstAction, setCurrentTab } = this.props;
 
         return (
             <React.Fragment>
@@ -50,6 +50,7 @@ class ContentView extends React.PureComponent {
                     <Scrollbars>
                         <TaskModule
                             onErrorRequstAction={onErrorRequstAction}
+                            setCurrentTab={setCurrentTab}
                             key="taskModule"
                             path={path}
                             firebase={firebase}

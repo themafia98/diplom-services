@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import Scrollbars from "react-custom-scrollbars";
 import { Button } from "antd";
 
-import { addTabAction } from "../../../Redux/actions/routerActions";
+import { addTabAction, openPageWithDataAction } from "../../../Redux/actions/routerActions";
 import { loadCurrentData } from "../../../Redux/actions/routerActions/middleware";
 import TaskModuleCalendar from "./TaskModuleCalendar";
 import TaskModuleList from "./TaskModuleList";
@@ -76,7 +76,13 @@ class TaskModule extends React.PureComponent {
         if (path) {
             const { height, heightController } = this.state;
             const isList = path === "taskModule_myTasks" || path === "taskModule_all";
-            const { router, firebase, publicReducer: { status = null } = {} } = this.props;
+            const {
+                router,
+                firebase,
+                publicReducer: { status = null } = {},
+                onOpenPageWithData,
+                setCurrentTab,
+            } = this.props;
             return (
                 <React.Fragment>
                     {isList ? (
@@ -88,14 +94,22 @@ class TaskModule extends React.PureComponent {
                     ) : null}
                     {path === "taskModule_all" ? (
                         <TaskModuleList
+                            setCurrentTab={setCurrentTab}
                             height={heightController ? height - heightController : height}
                             data={router.routeData[path]}
                         />
                     ) : path === "taskModule_myTasks" ? (
-                        <TaskModuleMyList height={height} data={router.routeData[path]} user="Павел Петрович" />
+                        <TaskModuleMyList
+                            setCurrentTab={setCurrentTab}
+                            height={height}
+                            data={router.routeData[path]}
+                            user="Павел Петрович"
+                        />
                     ) : path === "taskModule_сalendar" ? (
                         <Scrollbars>
                             <TaskModuleCalendar
+                                setCurrentTab={setCurrentTab}
+                                onOpenPageWithData={onOpenPageWithData}
                                 height={heightController ? height - heightController : height}
                                 router={router}
                             />
@@ -145,6 +159,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         addTab: tab => dispatch(addTabAction(tab)),
+        onOpenPageWithData: data => dispatch(openPageWithDataAction(data)),
         onLoadCurrentData: ({ path, storeLoad }) => dispatch(loadCurrentData({ path, storeLoad })),
     };
 };

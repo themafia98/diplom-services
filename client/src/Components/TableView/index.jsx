@@ -205,19 +205,25 @@ class TableView extends React.Component {
                     columns={columns}
                     dataSource={data}
                     onRow={(record, rowIndex) => {
+                        console.log(record);
                         return {
                             onClick: event => {
                                 const {
                                     onOpenPageWithData,
                                     router: { currentActionTab, actionTabs },
+                                    setCurrentTab,
                                 } = this.props;
                                 const page = `${currentActionTab}__${record.key}`;
-                                const isFind = actionTabs.findIndex(tab => tab === page) !== -1;
-                                if (!isFind)
+                                const index = actionTabs.findIndex(tab => tab === page);
+                                const isFind = index !== -1;
+                                if (!isFind) {
                                     onOpenPageWithData({
                                         activePage: page,
                                         routeDataActive: record,
                                     });
+                                } else {
+                                    setCurrentTab(actionTabs[index]);
+                                }
                             }, // click row
                         };
                     }}
