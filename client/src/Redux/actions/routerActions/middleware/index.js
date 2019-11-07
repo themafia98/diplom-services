@@ -12,6 +12,7 @@ export const loadCurrentData = ({
 }) => (dispatch, getState, { firebase, getSchema, request, clientDB }) => {
     const router = getState().router;
     const { requestError, status = "online" } = getState().publicReducer;
+
     if (router.routeData && router.routeData[pathValid] && router.routeData[pathValid].load)
         dispatch(loadFlagAction({ path: pathValid, load: false }));
     if (status === "online") {
@@ -45,6 +46,8 @@ export const loadCurrentData = ({
                         copyStore.findIndex(it => (it[primaryKey] || it["key"]) && it[primaryKey] === cursor.key) === -1
                     ) {
                         if (cursor.value.modeAdd === "offline") {
+                            const copy = { ...cursor.value };
+                            delete copy.modeAdd;
                             copyStore.push({ ...cursor.value });
                             undefiendCopyStore.push({ ...cursor.value });
                         }
@@ -110,9 +113,18 @@ export const loadCurrentData = ({
             const {
                 target: { result },
             } = event;
-            const itemsCopy = result.map(it => getSchema(USER_SCHEMA, it)).filter(Boolean);
+            const schema =
+                storeLoad === "jurnalWork"
+                    ? TASK_CONTROLL_JURNAL_SCHEMA
+                    : storeLoad === "users"
+                    ? USER_SCHEMA
+                    : storeLoad === "tasks"
+                    ? TASK_SCHEMA
+                    : null;
+
+            const itemsCopy = result.map(it => getSchema(schema, it)).filter(Boolean);
             dispatch(
-                saveComponentStateAction({ [pathValid]: itemsCopy, load: true, path: pathValid, mode: "offline" }),
+                saveComponentStateAction({ [storeLoad]: itemsCopy, load: true, path: pathValid, mode: "offline" }),
             );
         };
     }

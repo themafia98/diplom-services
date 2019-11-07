@@ -158,7 +158,8 @@ class CreateTask extends React.PureComponent {
                     ),
                 );
         } else if (statusApp === "offline") {
-            const putAction = clientDB.addItem("tasks", validHash);
+            const offlineValidHash = { ...validHash, modeAdd: "offline" };
+            const putAction = clientDB.addItem("tasks", offlineValidHash);
             putAction.onsuccess = event => {
                 this.setState({ ...this.state, card: { ...this.state.card, key: uuid() }, load: false }, () =>
                     message.success(`Задача создана.`),
