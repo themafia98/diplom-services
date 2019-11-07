@@ -45,4 +45,10 @@
 .listTasks {
     padding: 0;
     margin: 0;
+    li {
+        cursor: pointer;
+        &:hover {
+            color: red;
+        }
+    }
 }
