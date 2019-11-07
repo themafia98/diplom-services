@@ -38,7 +38,7 @@ class ModalWindow extends React.PureComponent {
     onChangeDescription = event => {
         const { currentTarget: { value: valueTarget = "" } = {} } = event;
         const { description: { value = "" } = {} } = this.state;
-        if (value && value !== valueTarget)
+        if ((value || value === "") && value !== valueTarget)
             this.setState({
                 ...this.state,
                 description: {
