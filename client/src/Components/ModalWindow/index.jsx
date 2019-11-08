@@ -474,8 +474,8 @@ class ModalWindow extends React.PureComponent {
                                         onChange={this.onChangeTask}
                                         className={["date", error.has("date") ? "errorFild" : null].join(" ")}
                                         format="DD.MM.YYYY HH:mm:ss"
-                                        showTime={{ defaultValue: moment().format("DD.MM.YYYY HH:mm:ss") }}
-                                        defaultValue={moment().format("DD.MM.YYYY HH:mm:ss")}
+                                        showTime={{ defaultValue: moment() }}
+                                        defaultValue={moment()}
                                     />
                                     <span>Кометарии:</span>
                                     <TextArea

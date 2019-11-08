@@ -47,10 +47,10 @@ class Comments extends React.PureComponent {
             return commentsArray.map(it => (
                 <p className="block-comment" key={it.id ? it.id : Math.random()}>
                     {rules ? (
-                        <div className="commentControllers">
+                        <span className="commentControllers">
                             <span className="editComment icon-edit"></span>
                             <span className="deleteComment icon-trash-empty"></span>
-                        </div>
+                        </span>
                     ) : null}
                     <span className="aboutCommentSender">
                         <span className="timeComment">&nbsp;{moment(it.time).format("DD.MM.YYYY HH:mm")}.</span>
