@@ -466,13 +466,13 @@ class TaskView extends React.PureComponent {
                                             ? routeDataActive.description
                                             : "Описания задачи нету."}
                                         <span className="icon-wrapper">
-                                            <i className="icon-pencil-neg"></i>
+                                            <i className="icon-pencil"></i>
                                         </span>
                                     </p>
                                     <p className="task_file">Дополнительные файлы для задачи</p>
                                     <File />
                                     <p className="descriptionTask__comment">Коментарии</p>
-                                    <Comments onUpdate={onUpdate} data={routeDataActive} />
+                                    <Comments rules={true} onUpdate={onUpdate} data={routeDataActive} />
                                 </div>
                             </Scrollbars>
                         </div>

@@ -42,9 +42,16 @@ class Comments extends React.PureComponent {
     refContentFunc = node => (this.refContent = node);
 
     renderComments(commentsArray) {
+        const { rules } = this.props;
         if (commentsArray.length && Array.isArray(commentsArray))
             return commentsArray.map(it => (
-                <p key={it.id ? it.id : Math.random()}>
+                <p className="block-comment" key={it.id ? it.id : Math.random()}>
+                    {rules ? (
+                        <div className="commentControllers">
+                            <span className="editComment icon-edit"></span>
+                            <span className="deleteComment icon-trash-empty"></span>
+                        </div>
+                    ) : null}
                     <span className="aboutCommentSender">
                         <span className="timeComment">&nbsp;{moment(it.time).format("DD.MM.YYYY HH:mm")}.</span>
                         &nbsp;<span className="sender_name">{`${it.username}`}</span> написал:

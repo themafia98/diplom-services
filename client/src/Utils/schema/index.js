@@ -13,7 +13,7 @@ export const getValidateSchema = type => {
                 editor: null,
                 description: null,
                 date: null,
-                comments: null, // array [{ idUser: null, username: null, message: null }]
+                comments: null, // array [{ id: null, username: null, message: null }]
                 modeAdd: "any",
             };
         case TASK_CONTROLL_JURNAL_SCHEMA:
