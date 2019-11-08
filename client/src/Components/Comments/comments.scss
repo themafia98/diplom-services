@@ -17,6 +17,8 @@
         border: 1px solid $blueDark;
         padding: 5px;
         margin-bottom: 10px;
+        height: 300px;
+        overflow: hidden;
         .aboutCommentSender {
             font-weight: bold;
             .sender_name {

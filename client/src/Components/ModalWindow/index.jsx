@@ -19,7 +19,7 @@ class ModalWindow extends React.PureComponent {
         email: null,
         jurnal: {
             timeLost: null,
-            date: moment().format("DD.MM.YYYYY HH:mm:ss"),
+            date: moment().format("DD.MM.YYYY HH:mm:ss"),
             description: null,
         },
         description: {
@@ -117,11 +117,12 @@ class ModalWindow extends React.PureComponent {
                         this.setState({
                             ...this.state,
                             uuid: uuid(),
+                            type: null,
                             visible: false,
                             loading: false,
                             jurnal: {
                                 timeLost: null,
-                                date: moment().format("DD.MM.YYYYY HH:mm:ss"),
+                                date: moment().format("DD.MM.YYYY HH:mm:ss"),
                                 description: null,
                             },
                             error: new Set(),
@@ -136,6 +137,8 @@ class ModalWindow extends React.PureComponent {
                     this.setState({
                         ...this.state,
                         visible: false,
+                        type: null,
+                        modeSetTime: false,
                         loading: false,
                     });
                     message.success("Описание изменено.");
@@ -155,8 +158,10 @@ class ModalWindow extends React.PureComponent {
             return this.setState({
                 ...this.state,
                 visible: false,
+                modeSetTime: false,
+                type: null,
                 loading: false,
-                jurnal: { timeLost: null, date: moment().format("DD.MM.YYYYY HH:mm:ss"), description: null },
+                jurnal: { timeLost: null, date: moment().format("DD.MM.YYYY HH:mm:ss"), description: null },
                 error: new Set(),
             });
         } else if (!_.isNull(typeValue) && typeValue === "statusTask") {
@@ -164,6 +169,8 @@ class ModalWindow extends React.PureComponent {
                 return this.setState({
                     ...this.state,
                     visible: false,
+                    type: null,
+                    modeSetTime: false,
                     loading: false,
                 });
             }
@@ -172,6 +179,8 @@ class ModalWindow extends React.PureComponent {
             return this.setState({
                 ...this.state,
                 visible: false,
+                type: null,
+                modeSetTime: false,
                 loading: false,
             });
         }
@@ -181,8 +190,10 @@ class ModalWindow extends React.PureComponent {
         this.setState({
             ...this.state,
             visible: false,
+            type: null,
+            modeSetTime: false,
             loading: false,
-            jurnal: { timeLost: null, date: moment().format("DD.MM.YYYYY HH:mm:ss"), description: null },
+            jurnal: { timeLost: null, date: moment().format("DD.MM.YYYY HH:mm:ss"), description: null },
             error: new Set(),
         });
     };
@@ -304,6 +315,7 @@ class ModalWindow extends React.PureComponent {
             editableContent = "",
             onUpdateEditable,
         } = this.props;
+
         const { type: typeState = "", modeSetTime = null, description: { value: valueDesc = "" } = {} } = this.state;
         if (mode === "reg") {
             return (
@@ -461,9 +473,9 @@ class ModalWindow extends React.PureComponent {
                                     <DatePicker
                                         onChange={this.onChangeTask}
                                         className={["date", error.has("date") ? "errorFild" : null].join(" ")}
-                                        format="DD.MM.YYYYY HH:mm:ss"
-                                        showTime={{ defaultValue: moment().format("DD.MM.YYYYY HH:mm:ss") }}
-                                        defaultValue={moment()}
+                                        format="DD.MM.YYYY HH:mm:ss"
+                                        showTime={{ defaultValue: moment().format("DD.MM.YYYY HH:mm:ss") }}
+                                        defaultValue={moment().format("DD.MM.YYYY HH:mm:ss")}
                                     />
                                     <span>Кометарии:</span>
                                     <TextArea

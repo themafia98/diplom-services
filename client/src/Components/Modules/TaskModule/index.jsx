@@ -81,6 +81,7 @@ class TaskModule extends React.PureComponent {
                 firebase,
                 publicReducer: { status = null } = {},
                 onOpenPageWithData,
+                onLoadCurrentData,
                 setCurrentTab,
             } = this.props;
             return (
@@ -118,6 +119,7 @@ class TaskModule extends React.PureComponent {
                         <Scrollbars>
                             <CreateTask
                                 height={heightController ? height - heightController : height}
+                                onLoadCurrentData={onLoadCurrentData}
                                 firebase={firebase}
                                 statusApp={status}
                             />
@@ -127,6 +129,7 @@ class TaskModule extends React.PureComponent {
                             <TaskView
                                 height={heightController ? height - heightController : height}
                                 key={path.split("__")[1]}
+                                onLoadCurrentData={onLoadCurrentData}
                                 data={router.routeData[path]}
                             />
                         </Scrollbars>

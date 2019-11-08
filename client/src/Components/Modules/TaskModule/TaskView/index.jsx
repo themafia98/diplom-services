@@ -64,6 +64,7 @@ class TaskView extends React.PureComponent {
         } = this.props;
         this.setState({
             ...this.state,
+            modeEditContent: false,
             modeControll: "edit",
             modeControllEdit: { ...routeDataActive },
         });
@@ -73,6 +74,7 @@ class TaskView extends React.PureComponent {
         this.setState({
             ...this.state,
             modeControll: "default",
+            modeEditContent: false,
             modeControllEdit: {
                 key: null,
                 status: null,
@@ -94,6 +96,7 @@ class TaskView extends React.PureComponent {
 
         return this.setState({
             ...this.state,
+            modeEditContent: false,
             modeControllEdit: {
                 ...this.state.modeControllEdit,
                 date: newDate,
@@ -108,6 +111,7 @@ class TaskView extends React.PureComponent {
         newDate[1] = dateString;
         return this.setState({
             ...this.state,
+            modeEditContent: false,
             modeControllEdit: {
                 ...this.state.modeControllEdit,
                 date: newDate,
@@ -120,6 +124,7 @@ class TaskView extends React.PureComponent {
         if (_.isObject(event) && currentTarget && !_.isEmpty(currentTarget)) {
             return this.setState({
                 ...this.state,
+                modeEditContent: false,
                 modeControllEdit: {
                     ...this.state.modeControllEdit,
                     name: value,
@@ -129,6 +134,7 @@ class TaskView extends React.PureComponent {
             if (_.isArray(event)) {
                 return this.setState({
                     ...this.state,
+                    modeEditContent: false,
                     modeControllEdit: {
                         ...this.state.modeControllEdit,
                         editor: [...event],
@@ -140,6 +146,7 @@ class TaskView extends React.PureComponent {
             if (arrayStatus.some(it => it === event)) {
                 return this.setState({
                     ...this.state,
+                    modeEditContent: false,
                     modeControllEdit: {
                         ...this.state.modeControllEdit,
                         status: event,
@@ -148,6 +155,7 @@ class TaskView extends React.PureComponent {
             } else {
                 return this.setState({
                     ...this.state,
+                    modeEditContent: false,
                     modeControllEdit: {
                         ...this.state.modeControllEdit,
                         priority: event,
@@ -202,6 +210,7 @@ class TaskView extends React.PureComponent {
             ...this.state,
             mode: "jur",
             showModalJur: true,
+            modeEditContent: false,
         });
     };
 
@@ -211,6 +220,7 @@ class TaskView extends React.PureComponent {
         return _.uniq(jurnalDataKeys)
             .map(key => {
                 const item = caches[key];
+
                 return (
                     <div key={key} className="jurnalItem">
                         <p>
@@ -219,7 +229,11 @@ class TaskView extends React.PureComponent {
                         </p>
                         <p>
                             <span className="title">Дата:</span>{" "}
-                            {item && item.date ? item.date : item[0] ? item[0].date : "не установлено"}
+                            {item && item.date
+                                ? moment(item.date).format("DD.MM.YYYY HH:mm:ss")
+                                : item[0]
+                                ? item[0].date
+                                : "не установлено"}
                         </p>
                         <p>
                             <span className="title">Коментарии:</span>
@@ -410,15 +424,15 @@ class TaskView extends React.PureComponent {
                                             <Output> {routeDataActive.date[0] ? routeDataActive.date[0] : null}</Output>
                                         ) : modeControll === "edit" ? (
                                             <DatePicker
-                                                value={moment(modeControllEdit.date[0], "DD.MM.YYYYY")}
+                                                value={moment(modeControllEdit.date[0], "DD.MM.YYYY")}
                                                 className="dateStartEdit"
                                                 onChange={this.onChangeEditableStart}
                                                 defaultValue={
                                                     routeDataActive.date[0]
-                                                        ? moment(routeDataActive.date[0], "DD.MM.YYYYY")
+                                                        ? moment(routeDataActive.date[0], "DD.MM.YYYY")
                                                         : null
                                                 }
-                                                format="DD.MM.YYYYY"
+                                                format="DD.MM.YYYY"
                                             />
                                         ) : null}
                                     </Descriptions.Item>
@@ -427,15 +441,15 @@ class TaskView extends React.PureComponent {
                                             <Output> {routeDataActive.date[1] ? routeDataActive.date[1] : null}</Output>
                                         ) : modeControll === "edit" ? (
                                             <DatePicker
-                                                value={moment(modeControllEdit.date[1], "DD.MM.YYYYY")}
+                                                value={moment(modeControllEdit.date[1], "DD.MM.YYYY")}
                                                 className="dateEndEdit"
                                                 onChange={this.onChangeEditableEnd}
                                                 defaultValue={
                                                     routeDataActive.date[1]
-                                                        ? moment(routeDataActive.date[1], "DD.MM.YYYYY")
+                                                        ? moment(routeDataActive.date[1], "DD.MM.YYYY")
                                                         : null
                                                 }
-                                                format="DD.MM.YYYYY"
+                                                format="DD.MM.YYYY"
                                             />
                                         ) : null}
                                     </Descriptions.Item>
@@ -458,7 +472,7 @@ class TaskView extends React.PureComponent {
                                     <p className="task_file">Дополнительные файлы для задачи</p>
                                     <File />
                                     <p className="descriptionTask__comment">Коментарии</p>
-                                    <Comments />
+                                    <Comments onUpdate={onUpdate} data={routeDataActive} />
                                 </div>
                             </Scrollbars>
                         </div>

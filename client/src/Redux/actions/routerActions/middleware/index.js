@@ -9,14 +9,14 @@ export const loadCurrentData = ({
     storeLoad = "",
     pathValidStart = "_",
     pathValid = path.startsWith(pathValidStart) ? pathValidStart.split("_")[0] || "" : path.split("__")[0],
-}) => (dispatch, getState, { firebase, getSchema, request, clientDB }) => {
+}) => async (dispatch, getState, { firebase, getSchema, request, clientDB }) => {
     const router = getState().router;
     const { requestError, status = "online" } = getState().publicReducer;
 
     if (router.routeData && router.routeData[pathValid] && router.routeData[pathValid].load)
         dispatch(loadFlagAction({ path: pathValid, load: false }));
     if (status === "online") {
-        firebase.db
+        await firebase.db
             .collection(storeLoad)
             .get()
             .then(querySnapshot => {
@@ -41,15 +41,17 @@ export const loadCurrentData = ({
                     } = event;
                     if (!cursor) return await next(true);
 
-                    if (
-                        copyStore &&
-                        copyStore.findIndex(it => (it[primaryKey] || it["key"]) && it[primaryKey] === cursor.key) === -1
-                    ) {
+                    const index = copyStore.findIndex(
+                        it =>
+                            (it[primaryKey] || it["key"]) &&
+                            (it[primaryKey] === cursor.key || it["key"] === cursor.key),
+                    );
+                    const iEmpty = index === -1;
+                    if (copyStore && iEmpty) {
                         if (cursor.value.modeAdd === "offline") {
-                            const copy = { ...cursor.value };
-                            delete copy.modeAdd;
-                            copyStore.push({ ...cursor.value });
-                            undefiendCopyStore.push({ ...cursor.value });
+                            const copy = { ...cursor.value, modeAdd: "online" };
+                            cursor.value.modeAdd = "online";
+                            undefiendCopyStore.push({ ...copy });
                         }
                     }
                     cursor.continue();
@@ -71,10 +73,10 @@ export const loadCurrentData = ({
                         clientDB.updateItem(storeLoad, it);
                     });
 
-                    const onAction = () => {
-                        if (requestError !== null) dispatch(errorRequstAction(null));
+                    const onAction = async () => {
+                        if (requestError !== null) await dispatch(errorRequstAction(null));
 
-                        dispatch(
+                        await dispatch(
                             saveComponentStateAction({ [storeLoad]: storeCopyValid, load: true, path: pathValid }),
                         );
                     };
@@ -82,13 +84,13 @@ export const loadCurrentData = ({
                     if (flag && undefiendCopyStore.length) {
                         const items = firebase.db.collection(storeLoad);
                         const batch = firebase.db.batch();
-                        undefiendCopyStore.forEach(it => {
+                        _.uniqBy(undefiendCopyStore, "key" || "uuid").forEach(it => {
                             const itRef = items.doc();
                             batch.set(itRef, it);
                         });
                         await batch.commit();
-                        onAction();
-                    } else onAction();
+                        await onAction();
+                    } else await onAction();
                 };
             })
             .catch(error => {
@@ -101,7 +103,7 @@ export const loadCurrentData = ({
                             request.unfollow();
                             dispatch(setStatus(statusRequst));
                             dispatch(errorRequstAction(null));
-                            dispatch(loadCurrentData({ path }));
+                            dispatch(loadCurrentData({ path, storeLoad }));
                         }
                     },
                     3000,

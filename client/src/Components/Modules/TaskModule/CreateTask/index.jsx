@@ -27,6 +27,7 @@ class CreateTask extends React.PureComponent {
             author: "Петрович Павел",
             editor: null,
             description: null,
+            comments: [],
             date: [moment().format("DD.MM.YYYY"), moment().format("DD.MM.YYYY")],
         },
         errorBundle: {},
@@ -130,8 +131,18 @@ class CreateTask extends React.PureComponent {
         }
     };
 
+    offlineMode = validHash => {
+        const offlineValidHash = { ...validHash, modeAdd: "offline" };
+        const putAction = clientDB.addItem("tasks", offlineValidHash);
+        putAction.onsuccess = event => {
+            this.setState({ ...this.state, card: { ...this.state.card, key: uuid() }, load: false }, () =>
+                message.success(`Задача создана.`),
+            );
+        };
+    };
+
     handlerCreateTask = event => {
-        const { firebase, statusApp = "" } = this.props;
+        const { firebase, statusApp = "", onLoadCurrentData } = this.props;
         if (!this.validation()) return;
         let keys = Object.keys(this.state.card);
         if (keys.every(key => _.isNull(this.state.card[key]))) return;
@@ -139,9 +150,6 @@ class CreateTask extends React.PureComponent {
         const validHash = validHashCopy.map(it => getSchema(TASK_SCHEMA, it, "no-strict")).filter(Boolean)[0];
         if (!validHash) return message.error("Не валидные данные.");
         const parseDateArray = [];
-        // validHash.date.forEach(dateItem => {
-        //     parseDateArray.push(moment(dateItem, "YYYY-MM-DD").format("DD.MM.YYYY"));
-        // });
 
         if (parseDateArray.length) validHash.date = parseDateArray;
 
@@ -149,27 +157,33 @@ class CreateTask extends React.PureComponent {
 
         if (statusApp === "online") {
             firebase.db
-                .collection("tasks")
+                .collection("Tasks")
                 .doc()
-                .set(validHash)
-                .then(() =>
-                    this.setState({ ...this.state, card: { ...this.state.card, key: uuid() }, load: false }, () =>
-                        message.success(`Задача создана.`),
-                    ),
-                );
-        } else if (statusApp === "offline") {
-            const offlineValidHash = { ...validHash, modeAdd: "offline" };
-            const putAction = clientDB.addItem("tasks", offlineValidHash);
-            putAction.onsuccess = event => {
-                this.setState({ ...this.state, card: { ...this.state.card, key: uuid() }, load: false }, () =>
-                    message.success(`Задача создана.`),
-                );
-            };
-        }
+                .get()
+                .then(res => {
+                    firebase.db
+                        .collection("tasks")
+                        .doc()
+                        .set(validHash)
+                        .then(() =>
+                            this.setState(
+                                { ...this.state, card: { ...this.state.card, key: uuid() }, load: false },
+                                () => message.success(`Задача создана.`),
+                            ),
+                        );
+                })
+                .catch(err => {
+                    if (/offline/gi.test(err.message)) {
+                        onLoadCurrentData({ path: "taskModule", storeLoad: "tasks" }).then(() => {
+                            this.offlineMode(validHash);
+                        });
+                    }
+                });
+        } else if (statusApp === "offline") this.offlineMode(validHash);
     };
 
     render() {
-        const dateFormat = "DD.MM.YYYYY";
+        const dateFormat = "DD.MM.YYYY";
         const { errorBundle } = this.state;
         // const { height } = this.props;
         return (
