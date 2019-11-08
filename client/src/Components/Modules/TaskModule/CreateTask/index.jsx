@@ -157,7 +157,7 @@ class CreateTask extends React.PureComponent {
 
         if (statusApp === "online") {
             firebase.db
-                .collection("Tasks")
+                .collection("tasks")
                 .doc()
                 .get()
                 .then(res => {
