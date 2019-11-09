@@ -5,15 +5,18 @@ import uuid from "uuid/v4";
 import moment from "moment";
 import { Input, Button, Empty, message, notification } from "antd";
 
+import Comment from "./Comment";
+
 const { TextArea } = Input;
 
 class Comments extends React.PureComponent {
     state = {
         onUpdateDisabled: false,
+        value: null,
     };
 
     addCommentsDelay = _.debounce(event => {
-        const { clearableInput: { props: { value = "" } = {} } = {} } = this.refContent || {};
+        const { value = "" } = this.state;
         const { onUpdate, data: { key = "", comments = [] } = {}, data = {} } = this.props;
         if (!value) return message.error("Вы ничего не ввели.");
         else if (key && Array.isArray(comments) && !_.isEmpty(data)) {
@@ -23,7 +26,7 @@ class Comments extends React.PureComponent {
                 username: "Павел Петрович",
                 message: value,
             };
-            this.setState({ ...this.state, onUpdateDisabled: true });
+            this.setState({ ...this.state, onUpdateDisabled: true, value: null });
             onUpdate(key, "UPDATE", [...comments, comment], "comments", { ...data }, "tasks").then(() => {
                 message.success("Коментарий добавлен.");
                 return this.setState({
@@ -38,32 +41,32 @@ class Comments extends React.PureComponent {
         this.addCommentsDelay(event);
     };
 
-    refContent = null;
-    refContentFunc = node => (this.refContent = node);
+    onDelete = (event, keyItem) => {
+        const { onUpdate, data: { key = "", comments = [] } = {}, data = {} } = this.props;
+        onUpdate(key, "DELETE", comments, "comments", { id: keyItem, data: { ...data } }, "tasks")
+            .then(() => message.success("Коментарий удален."))
+            .catch(error => {
+                message.error("Не удалось удалить коментарий.");
+            });
+    };
+
+    onChange = event => {
+        const { target: { value = "" } = {} } = event;
+        this.setState({
+            ...this.state,
+            value: value,
+        });
+    };
 
     renderComments(commentsArray) {
         const { rules } = this.props;
         if (commentsArray.length && Array.isArray(commentsArray))
-            return commentsArray.map(it => (
-                <p className="block-comment" key={it.id ? it.id : Math.random()}>
-                    {rules ? (
-                        <span className="commentControllers">
-                            <span className="editComment icon-edit"></span>
-                            <span className="deleteComment icon-trash-empty"></span>
-                        </span>
-                    ) : null}
-                    <span className="aboutCommentSender">
-                        <span className="timeComment">&nbsp;{moment(it.time).format("DD.MM.YYYY HH:mm")}.</span>
-                        &nbsp;<span className="sender_name">{`${it.username}`}</span> написал:
-                    </span>
-                    <span className="commentContet">{it.message}</span>
-                </p>
-            ));
+            return commentsArray.map(it => <Comment key={it.id} rules={rules} it={it} onDelete={this.onDelete} />);
         else return <Empty />;
     }
     render() {
         const { data: { comments = [] } = {} } = this.props;
-        const { onUpdateDisabled } = this.state;
+        const { onUpdateDisabled, value } = this.state;
 
         return (
             <div className="comments">
@@ -71,7 +74,7 @@ class Comments extends React.PureComponent {
                     <Scrollbars>{this.renderComments(comments)}</Scrollbars>
                 </div>
                 <div className="comments__controllers">
-                    <TextArea ref={this.refContentFunc} rows={4} />
+                    <TextArea value={value} onChange={this.onChange} rows={4} />
                     <Button
                         onClick={this.addComments}
                         disabled={onUpdateDisabled}

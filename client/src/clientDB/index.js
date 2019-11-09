@@ -124,7 +124,7 @@ class ClientDB {
         // };
     }
 
-    updateItem(nameStore, item, mode = "readwrite") {
+    updateItem(nameStore, item, pk, mode = "readwrite") {
         const tx = this.db.transaction([nameStore], mode);
         const store = tx.objectStore(nameStore);
         return store.put(item);

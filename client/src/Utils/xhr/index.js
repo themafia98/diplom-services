@@ -45,6 +45,7 @@ class Request {
     }
 
     test(callback = null) {
+        console.clear();
         return new Promise((resolve, reject) => {
             const testRequst = new XMLHttpRequest();
             const api = this.getTestAPI(true);
@@ -65,7 +66,6 @@ class Request {
                 }
             })
             .catch(error => {
-                console.error(error);
                 if (callback) callback(error);
             });
     }

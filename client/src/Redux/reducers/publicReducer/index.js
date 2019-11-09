@@ -30,8 +30,9 @@ export default (state = initialState, action) => {
             if (data.length > 1) {
                 keys = [];
                 data.forEach(item => {
-                    if (pk) keys.push(`${item.key}${item.id}${primaryKey}${pk}`);
-                    else keys.push(`${item.key}${item.id}${primaryKey}`);
+                    if (pk) {
+                        keys.push(`${item.key}${item.id}${primaryKey}${pk}`);
+                    } else keys.push(`${item.key}${item.id}${primaryKey}`);
                 });
 
                 keys = new Set(keys);

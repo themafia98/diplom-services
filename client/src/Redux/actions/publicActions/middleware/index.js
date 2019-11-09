@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { сachingAction, setStatus, errorRequstAction } from "../";
 import { updateItemStateAction } from "../../routerActions";
 import { TASK_CONTROLL_JURNAL_SCHEMA, USER_SCHEMA, TASK_SCHEMA } from "../../../../Utils/schema/const";
@@ -62,7 +63,7 @@ const middlewareCaching = ({ data, primaryKey, type = "GET", pk = null, store = 
                     const storeArrayCopy = array.map(it => getSchema(schema, it)).filter(Boolean);
 
                     storeArrayCopy.forEach(item => {
-                        clientDB.updateItem(store, item);
+                        clientDB.updateItem(store, item, primaryKey);
                     });
 
                     if (requestError !== null) dispatch(errorRequstAction(null));
@@ -97,7 +98,15 @@ const middlewareCaching = ({ data, primaryKey, type = "GET", pk = null, store = 
                     ? TASK_SCHEMA
                     : null;
             const storeArrayCopy = result.map(it => getSchema(schema, it)).filter(Boolean);
-            dispatch(сachingAction({ data: storeArrayCopy, load: true, path: primaryKey, mode: "offline" }));
+            dispatch(
+                сachingAction({
+                    data: storeArrayCopy,
+                    load: true,
+                    pk: pk ? pk : null,
+                    primaryKey: primaryKey,
+                    mode: "offline",
+                }),
+            );
         };
     }
 };
@@ -107,29 +116,139 @@ const middlewareUpdate = ({
     type = "UPDATE",
     updateProp = "",
     updateFild = "",
-    item = {},
+    item: itemUpdate = {},
     findStore = "",
     updateStore = findStore,
     multiply = false,
     limitUpdate = 20,
 }) => (dispatch, getState, { firebase, getSchema, request, clientDB }) => {
     const { status = "online" } = getState().publicReducer;
+    const item = itemUpdate.data ? itemUpdate.data : itemUpdate;
+    if (type === "UPDATE") {
+        if (updateStore && status === "online") {
+            const updater = async doc => {
+                if (!multiply)
+                    return await firebase.db
+                        .collection(updateStore)
+                        .doc(doc.id)
+                        .update({ [updateFild]: updateProp });
+                else
+                    return await firebase.db
+                        .collection(updateStore)
+                        .doc(doc.id)
+                        .update({ ...updateProp });
+            };
 
-    if ((type === "UPDATE", updateStore && status === "online")) {
-        const updater = async doc => {
-            if (!multiply)
-                return await firebase.db
-                    .collection(updateStore)
-                    .doc(doc.id)
-                    .update({ [updateFild]: updateProp });
-            else
-                return await firebase.db
-                    .collection(updateStore)
-                    .doc(doc.id)
-                    .update({ ...updateProp });
-        };
+            if (updateStore && findStore)
+                firebase.db
+                    .collection(findStore) // tasks
+                    .where("key", "==", id)
+                    .get()
+                    .then(querySnapshot => {
+                        if (querySnapshot.docs.length)
+                            querySnapshot.docs.forEach(async (doc, i) => {
+                                if (i < limitUpdate) {
+                                    await updater(doc)
+                                        .then(() => {
+                                            let updaterItem = null;
 
-        if (updateStore && findStore)
+                                            if (!multiply)
+                                                updaterItem = {
+                                                    ...doc.data(),
+                                                    key: id,
+                                                    [updateFild]: updateProp,
+                                                    modeAdd: "online",
+                                                };
+                                            else {
+                                                updaterItem = {
+                                                    ...doc.data(),
+                                                    key: id,
+                                                    ...updateProp,
+                                                    modeAdd: "online",
+                                                };
+                                            }
+
+                                            const schema =
+                                                updateStore === "jurnalWork"
+                                                    ? TASK_CONTROLL_JURNAL_SCHEMA
+                                                    : updateStore === "users"
+                                                    ? USER_SCHEMA
+                                                    : updateStore === "tasks"
+                                                    ? TASK_SCHEMA
+                                                    : null;
+
+                                            const storeCopy = [updaterItem]
+                                                .map(it => getSchema(schema, it, "no-strict"))
+                                                .filter(Boolean);
+
+                                            if (storeCopy) {
+                                                dispatch(
+                                                    updateItemStateAction({
+                                                        updaterItem: updaterItem,
+                                                        type: findStore || updateStore,
+                                                        id: id,
+                                                    }),
+                                                );
+
+                                                clientDB.updateItem(updateStore, updaterItem); // jurnakWork
+                                            }
+                                        })
+                                        .catch(error => {
+                                            if (error.message !== "Network error") return console.error(error.message);
+                                            if (status === "offline") return;
+                                            dispatch(setStatus("offline"));
+                                            dispatch(errorRequstAction(error.message));
+                                        });
+                                }
+                            });
+                    })
+                    .catch(error => {
+                        if (error.message !== "Network error") return console.error(error.message);
+                        if (status === "offline") return;
+                        dispatch(setStatus("offline"));
+                        dispatch(errorRequstAction(error.message));
+                    });
+        } else if (updateStore && status === "offline") {
+            const updaterItem = { ...item, key: id, [updateFild]: updateProp, modeAdd: "offline" };
+            const updater = clientDB.updateItem(findStore || updateStore, updaterItem);
+            updater.onsuccess = event => {
+                const {
+                    target: { result },
+                } = event;
+                console.log(`Update item ${result} done.`);
+                const schema =
+                    updateStore === "jurnalWork"
+                        ? TASK_CONTROLL_JURNAL_SCHEMA
+                        : updateStore === "users"
+                        ? USER_SCHEMA
+                        : updateStore === "tasks"
+                        ? TASK_SCHEMA
+                        : null;
+
+                const tasksCopy = [updaterItem].map(it => getSchema(schema, it, "no-strict")).filter(Boolean);
+
+                if (tasksCopy)
+                    dispatch(
+                        updateItemStateAction({
+                            updaterItem: updaterItem,
+                            type: findStore || updateStore,
+                            id: id,
+                            mode: "offline",
+                        }),
+                    );
+            };
+        }
+    } else if (type === "DELETE") {
+        const deleteId = itemUpdate.id ? itemUpdate.id : null;
+        if (updateStore && status === "online") {
+            const updater = async (doc, newFild) => {
+                if (!multiply)
+                    return await firebase.db
+                        .collection(updateStore)
+                        .doc(doc.id)
+                        .update({ [updateFild]: newFild });
+            };
+
             firebase.db
                 .collection(findStore) // tasks
                 .where("key", "==", id)
@@ -138,25 +257,24 @@ const middlewareUpdate = ({
                     if (querySnapshot.docs.length)
                         querySnapshot.docs.forEach(async (doc, i) => {
                             if (i < limitUpdate) {
-                                await updater(doc)
+                                const data = doc.data();
+                                const newFild = Array.isArray(data[updateFild])
+                                    ? [...data[updateFild]].filter(it => it.id !== deleteId)
+                                    : _.isObject(data[updateFild])
+                                    ? { ...data[updateFild] }
+                                    : data[updateFild];
+
+                                await updater(doc, newFild)
                                     .then(() => {
                                         let updaterItem = null;
 
                                         if (!multiply)
                                             updaterItem = {
-                                                ...doc.data(),
+                                                ...data,
                                                 key: id,
-                                                [updateFild]: updateProp,
+                                                [updateFild]: newFild,
                                                 modeAdd: "online",
                                             };
-                                        else {
-                                            updaterItem = {
-                                                ...doc.data(),
-                                                key: id,
-                                                ...updateProp,
-                                                modeAdd: "online",
-                                            };
-                                        }
 
                                         const schema =
                                             updateStore === "jurnalWork"
@@ -180,7 +298,7 @@ const middlewareUpdate = ({
                                                 }),
                                             );
 
-                                            clientDB.updateItem(updateStore, updaterItem); // jurnakWork
+                                            clientDB.updateItem(updateStore, updaterItem);
                                         }
                                     })
                                     .catch(error => {
@@ -191,42 +309,43 @@ const middlewareUpdate = ({
                                     });
                             }
                         });
-                })
-                .catch(error => {
-                    if (error.message !== "Network error") return console.error(error.message);
-                    if (status === "offline") return;
-                    dispatch(setStatus("offline"));
-                    dispatch(errorRequstAction(error.message));
                 });
-    } else if (updateStore && status === "offline") {
-        const updaterItem = { ...item, key: id, [updateFild]: updateProp, modeAdd: "offline" };
-        const updater = clientDB.updateItem(findStore || updateStore, updaterItem);
-        updater.onsuccess = event => {
-            const {
-                target: { result },
-            } = event;
-            console.log(`Update item ${result} done.`);
-            const schema =
-                updateStore === "jurnalWork"
-                    ? TASK_CONTROLL_JURNAL_SCHEMA
-                    : updateStore === "users"
-                    ? USER_SCHEMA
-                    : updateStore === "tasks"
-                    ? TASK_SCHEMA
-                    : null;
+        } else if (updateStore && status === "offline") {
+            const newFild = Array.isArray(item[updateFild])
+                ? [...item[updateFild]].filter(it => it.id !== deleteId)
+                : _.isObject(item[updateFild])
+                ? { ...item[updateFild] }
+                : item[updateFild];
 
-            const tasksCopy = [updaterItem].map(it => getSchema(schema, it, "no-strict")).filter(Boolean);
+            const updaterItem = { ...item, key: id, [updateFild]: newFild, modeAdd: "offline" };
+            const updater = clientDB.updateItem(findStore || updateStore, updaterItem);
+            updater.onsuccess = event => {
+                const {
+                    target: { result },
+                } = event;
+                console.log(`Update item ${result} done.`);
+                const schema =
+                    updateStore === "jurnalWork"
+                        ? TASK_CONTROLL_JURNAL_SCHEMA
+                        : updateStore === "users"
+                        ? USER_SCHEMA
+                        : updateStore === "tasks"
+                        ? TASK_SCHEMA
+                        : null;
 
-            if (tasksCopy)
-                dispatch(
-                    updateItemStateAction({
-                        updaterItem: updaterItem,
-                        type: findStore || updateStore,
-                        id: id,
-                        mode: "offline",
-                    }),
-                );
-        };
+                const tasksCopy = [updaterItem].map(it => getSchema(schema, it, "no-strict")).filter(Boolean);
+
+                if (tasksCopy)
+                    dispatch(
+                        updateItemStateAction({
+                            updaterItem: updaterItem,
+                            type: findStore || updateStore,
+                            id: id,
+                            mode: "offline",
+                        }),
+                    );
+            };
+        }
     }
 };
 

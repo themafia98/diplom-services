@@ -17,7 +17,6 @@ import Comments from "../../../Comments";
 import File from "../../../File";
 
 const { Option } = Select;
-const { TextArea } = Input;
 
 class TaskView extends React.PureComponent {
     state = {
@@ -220,7 +219,6 @@ class TaskView extends React.PureComponent {
         return _.uniq(jurnalDataKeys)
             .map(key => {
                 const item = caches[key];
-
                 return (
                     <div key={key} className="jurnalItem">
                         <p>
@@ -250,7 +248,8 @@ class TaskView extends React.PureComponent {
                     </div>
                 );
             })
-            .filter(Boolean);
+            .filter(Boolean)
+            .sort((a, b) => (a.date && b.date ? moment(a.date).valueOf() - moment(b.date).valueOf() : a - b));
     };
 
     render() {
