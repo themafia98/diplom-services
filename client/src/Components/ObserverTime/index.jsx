@@ -1,11 +1,12 @@
 import React from "react";
+import PropTypes from "prop-types";
 import moment from "moment";
 import TitleModule from "../TitleModule";
 import { Timeline } from "antd";
 
 class ObserverTime extends React.PureComponent {
     render() {
-        const { title } = this.props;
+        const { title = "" } = this.props;
         return (
             <React.Fragment>
                 <TitleModule classNameTitle="observerTitle" title={title ? title : "История изменений"} />
@@ -29,4 +30,8 @@ class ObserverTime extends React.PureComponent {
         );
     }
 }
+
+ObserverTime.propTypes = {
+    title: PropTypes.string,
+};
 export default ObserverTime;

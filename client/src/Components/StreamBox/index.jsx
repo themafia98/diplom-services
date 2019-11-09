@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Avatar } from "antd";
 import { Scrollbars } from "react-custom-scrollbars";
 class StreamBox extends React.Component {
@@ -48,5 +49,10 @@ class StreamBox extends React.Component {
         );
     }
 }
+
+StreamBox.propTypes = {
+    mode: PropTypes.string,
+    boxClassName: PropTypes.string,
+};
 
 export default StreamBox;

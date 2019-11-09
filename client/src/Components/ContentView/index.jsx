@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import _ from "lodash";
 import { Layout } from "antd";
 
@@ -21,6 +22,15 @@ class ContentView extends React.PureComponent {
     state = {
         drawerView: false,
         key: uuid(),
+    };
+
+    static propTypes = {
+        dashboardStrem: PropTypes.object.isRequired,
+        setCurrentTab: PropTypes.func.isRequired,
+        updateLoader: PropTypes.func.isRequired,
+        onErrorRequstAction: PropTypes.func.isRequired,
+        firebase: PropTypes.object.isRequired,
+        path: PropTypes.string.isRequired,
     };
 
     componentDidMount = () => {

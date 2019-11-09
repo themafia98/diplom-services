@@ -1,27 +1,19 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Clock from "react-clock";
 
-class ClockWidjet extends React.Component {
-    state = {
-        date: new Date(),
-    };
+const ClockWidjet = () => {
+    const [date, setDate] = useState(new Date());
 
-    timer = null;
+    useEffect(() => {
+        const timer = setInterval(() => setDate(new Date()), 1000);
+        return () => clearInterval(timer);
+    }, []);
 
-    componentDidMount = () => {
-        this.timer = setInterval(() => this.setState({ date: new Date() }), 1000);
-    };
+    return (
+        <div className="clockWrapper">
+            <Clock value={date} />
+        </div>
+    );
+};
 
-    componentWillUnmount = () => {
-        clearInterval(this.timer);
-    };
-
-    render() {
-        return (
-            <div className="clockWrapper">
-                <Clock value={this.state.date} />
-            </div>
-        );
-    }
-}
 export default ClockWidjet;

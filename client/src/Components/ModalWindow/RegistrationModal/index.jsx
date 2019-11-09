@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Input, Select } from "antd";
 const { Option } = Select;
 const RegistrationModal = ({ cbOnChangeSelect, cbOnChange }) => (
@@ -19,5 +20,10 @@ const RegistrationModal = ({ cbOnChangeSelect, cbOnChange }) => (
         </Select>
     </div>
 );
+
+RegistrationModal.propTypes = {
+    cbOnChangeSelect: PropTypes.func.isRequired,
+    cbOnChangeSelect: PropTypes.func.isRequired,
+};
 
 export default RegistrationModal;

@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import _ from "lodash";
 import moment from "moment";
 import { Modal, Button, Dropdown, Icon, Menu, Input, DatePicker, message, Select } from "antd";
@@ -497,4 +498,26 @@ class ModalWindow extends React.PureComponent {
         } else return null;
     }
 }
+
+ModalWindow.propTypes = {
+    firebase: PropTypes.object,
+    onCaching: PropTypes.func,
+    primaryKey: PropTypes.string,
+    routeDataActive: PropTypes.object,
+    mode: PropTypes.string,
+    path: PropTypes.string,
+    typeRequst: PropTypes.string,
+    keyTask: PropTypes.string,
+    accessStatus: PropTypes.array,
+    onUpdate: PropTypes.func,
+    onEdit: PropTypes.func,
+    onRejectEdit: PropTypes.func,
+    modeControll: PropTypes.string,
+    editableContent: PropTypes.string,
+    modeEditContent: PropTypes.bool,
+    onCancelEditModeContent: PropTypes.func,
+    onUpdateEditable: PropTypes.func,
+    statusTaskValue: PropTypes.string,
+};
+
 export default ModalWindow;

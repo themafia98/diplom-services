@@ -199,7 +199,7 @@ class Dashboard extends React.PureComponent {
                             dashboardStrem={this.dashboardStrem}
                             cbMenuTabHandler={this.menuHandler}
                             activeTabEUID={currentActionTab}
-                            actionTabs={actionTabsData}
+                            actionTabs={actionTabsData ? actionTabsData : false}
                             logout={this.logout}
                         />
                         <ContentView

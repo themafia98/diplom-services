@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import _ from "lodash";
 import { Menu, Layout, Icon } from "antd";
 
@@ -57,6 +58,15 @@ const MenuView = ({ collapsed, cbOnCollapse, items, cbMenuHandler, activeTabEUID
             ) : null}
         </Sider>
     );
+};
+
+MenuView.propTypes = {
+    collapsed: PropTypes.bool.isRequired,
+    cbOnCollapse: PropTypes.func.isRequired,
+    items: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
+    cbMenuHandler: PropTypes.func.isRequired,
+    activeTabEUID: PropTypes.string.isRequired,
+    cbGoMain: PropTypes.func.isRequired,
 };
 
 export default MenuView;

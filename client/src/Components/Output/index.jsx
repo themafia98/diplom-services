@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Tooltip } from "antd";
 import _ from "lodash";
 
@@ -66,5 +67,11 @@ class Output extends React.PureComponent {
         }
     }
 }
+
+Output.propTypes = {
+    className: PropTypes.string,
+    children: PropTypes.oneOfType([PropTypes.object, PropTypes.string, () => null]),
+    type: PropTypes.string,
+};
 
 export default Output;

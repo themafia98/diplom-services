@@ -1,7 +1,12 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Avatar, Button, Icon, Dropdown, Menu } from "antd";
 
 class UserCard extends React.Component {
+    static propTypes = {
+        cbShowModal: PropTypes.func.isRequired,
+    };
+
     render() {
         const data = { mail: true, online: true, email: "admin@admin.com", phone: "+37529554433" };
         const isMine = true;

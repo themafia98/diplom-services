@@ -51,7 +51,7 @@ class TaskView extends React.PureComponent {
         } = this.props;
         const { primaryKey: primaryKeyState } = this.state;
         const primaryKey = routeDataActive && routeDataActive.key ? routeDataActive.key : "";
-        if (_.isEmpty(caches) || !caches[routeDataActive.key]) {
+        if (_.isEmpty(caches) || (routeDataActive.key && !caches[routeDataActive.key]) || !routeDataActive.key) {
             onCaching(null, primaryKey, "GET", primaryKeyState, "jurnalWork");
         }
     };

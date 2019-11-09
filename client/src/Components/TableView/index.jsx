@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import moment from "moment";
 import _ from "lodash";
@@ -358,6 +359,17 @@ const mapDispatchToProps = dispatch => {
         onOpenPageWithData: data => dispatch(openPageWithDataAction(data)),
         onLoadCurrentData: ({ path, storeLoad }) => dispatch(loadCurrentData({ path, storeLoad })),
     };
+};
+
+TableView.propTypes = {
+    setCurrentTab: PropTypes.func,
+    height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    tasks: PropTypes.array,
+    path: PropTypes.string,
+    firebase: PropTypes.object,
+    data: PropTypes.object,
+    flag: PropTypes.bool,
+    user: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
 };
 
 export default connect(

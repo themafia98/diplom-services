@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import moment from "moment";
 
 const Comment = ({ onDelete, rules, it }) => {
@@ -23,6 +24,12 @@ const Comment = ({ onDelete, rules, it }) => {
             <span className="commentContet">{it.message}</span>
         </p>
     );
+};
+
+Comment.propTypes = {
+    rules: PropTypes.bool.isRequired,
+    it: PropTypes.object.isRequired,
+    onDelete: PropTypes.func.isRequired,
 };
 
 export default Comment;

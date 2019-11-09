@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 const TitleModule = ({ title, className, classNameTitle, additional }) => {
     return (
@@ -8,4 +9,12 @@ const TitleModule = ({ title, className, classNameTitle, additional }) => {
         </div>
     );
 };
+
+TitleModule.propTypes = {
+    title: PropTypes.string,
+    className: PropTypes.string,
+    classNameTitle: PropTypes.string,
+    additional: PropTypes.string,
+};
+
 export default TitleModule;

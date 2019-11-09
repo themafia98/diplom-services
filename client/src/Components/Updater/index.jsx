@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import updater from "./updater.png";
 import { Tooltip } from "antd";
 
@@ -16,4 +17,11 @@ const Updater = ({ className = null, additionalClassName = null, onClick = null 
         </div>
     );
 };
+
+Updater.propTypes = {
+    className: PropTypes.string,
+    additionalClassName: PropTypes.string,
+    onClick: PropTypes.func.isRequired,
+};
+
 export default Updater;
