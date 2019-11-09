@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import _ from "lodash";
 import { Icon } from "antd";
@@ -6,6 +7,16 @@ import { Icon } from "antd";
 import { setChildrenSizeAction } from "../../Redux/actions/tabActions";
 
 class Tab extends React.PureComponent {
+    static propTypes = {
+        tabData: PropTypes.object.isRequired,
+        hendlerTab: PropTypes.func.isRequired,
+        active: PropTypes.bool.isRequired,
+        itemKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number, () => null]),
+        value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, () => null]),
+        sizeTab: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        flag: PropTypes.bool,
+    };
+
     componentDidMount = () => {
         const { tabData, onSetChildrenSizeAction } = this.props;
 

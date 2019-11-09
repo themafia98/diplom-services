@@ -1,9 +1,17 @@
 import React from "react";
+import PropTypes from "prop-types";
 import data from "./data.json";
 
 import Bar from "./Charts/Bar";
 import TitleModule from "../../TitleModule";
+
 class StatisticsModule extends React.PureComponent {
+    static propTypes = {
+        onErrorRequstAction: PropTypes.func.isRequired,
+        path: PropTypes.string.isRequired,
+        firebase: PropTypes.object.isRequired,
+    };
+
     render() {
         return (
             <div className="statisticsModule">

@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import _ from "lodash";
 import clientDB from "../../../../clientDB";
 import Scrollbars from "react-custom-scrollbars";
@@ -31,6 +32,13 @@ class CreateTask extends React.PureComponent {
             date: [moment().format("DD.MM.YYYY"), moment().format("DD.MM.YYYY")],
         },
         errorBundle: {},
+    };
+
+    static propTypes = {
+        height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        onLoadCurrentData: PropTypes.func.isRequired,
+        firebase: PropTypes.object,
+        statusApp: PropTypes.string.isRequired,
     };
 
     validation = () => {

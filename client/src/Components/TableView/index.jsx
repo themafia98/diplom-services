@@ -21,6 +21,19 @@ class TableView extends React.Component {
         isScroll: null,
     };
 
+    static propTypes = {
+        setCurrentTab: PropTypes.func,
+        height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        tasks: PropTypes.array,
+        path: PropTypes.string,
+        firebase: PropTypes.object,
+        data: PropTypes.object,
+        flag: PropTypes.bool,
+        user: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+        router: PropTypes.object.isRequired,
+        publicReducer: PropTypes.object.isRequired,
+    };
+
     componentDidMount = () => {
         const { path, onLoadCurrentData } = this.props;
         if (path === "mainModule__table") onLoadCurrentData({ path, storeLoad: "users" });
@@ -359,17 +372,6 @@ const mapDispatchToProps = dispatch => {
         onOpenPageWithData: data => dispatch(openPageWithDataAction(data)),
         onLoadCurrentData: ({ path, storeLoad }) => dispatch(loadCurrentData({ path, storeLoad })),
     };
-};
-
-TableView.propTypes = {
-    setCurrentTab: PropTypes.func,
-    height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    tasks: PropTypes.array,
-    path: PropTypes.string,
-    firebase: PropTypes.object,
-    data: PropTypes.object,
-    flag: PropTypes.bool,
-    user: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
 };
 
 export default connect(

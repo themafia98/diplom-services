@@ -1,9 +1,15 @@
 import React from "react";
-
+import PropTypes from "prop-types";
 import Chat from "./Chat";
 import Feedback from "./Feedback";
 
 class ContactModule extends React.PureComponent {
+    static propTypes = {
+        onErrorRequstAction: PropTypes.func.isRequired,
+        path: PropTypes.string.isRequired,
+        firebase: PropTypes.object.isRequired,
+    };
+
     getContactContentByPath = path => {
         if (path) {
             if (path === "contactModule_chat") return <Chat />;

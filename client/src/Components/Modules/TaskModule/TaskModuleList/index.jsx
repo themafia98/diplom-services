@@ -1,8 +1,16 @@
 import React from "react";
+import PropTypes from "prop-types";
 import TableView from "../../../TableView";
 import TitleModule from "../../../TitleModule";
 
 class TaskModuleList extends React.PureComponent {
+    static propTypes = {
+        setCurrentTab: PropTypes.func.isRequired,
+        height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        data: PropTypes.oneOfType([PropTypes.object, () => null]),
+        user: PropTypes.oneOfType([PropTypes.object, PropTypes.string, () => null]),
+    };
+
     render() {
         const { data = null, height, setCurrentTab } = this.props;
         return (

@@ -1,5 +1,7 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { ResponsiveBar } from "@nivo/bar";
+
 const Bar = ({ data }) => (
     <div style={{ height: "80vh" }}>
         <ResponsiveBar
@@ -94,4 +96,8 @@ const Bar = ({ data }) => (
         />
     </div>
 );
+
+Bar.propTypes = {
+    data: PropTypes.object.isRequired,
+};
 export default Bar;

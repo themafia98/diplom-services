@@ -1,9 +1,15 @@
 import React from "react";
-
+import PropTypes from "prop-types";
 import Contacts from "./Contacts";
 import Reception from "./Reception";
 
 class CustomersModule extends React.PureComponent {
+    static propTypes = {
+        onErrorRequstAction: PropTypes.func.isRequired,
+        path: PropTypes.string.isRequired,
+        firebase: PropTypes.object.isRequired,
+    };
+
     getComponentByPath = path => {
         if (path) {
             if (path === "customersModule_contacts") return <Contacts />;

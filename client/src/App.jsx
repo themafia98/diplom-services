@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Switch, Route } from "react-router-dom";
 
@@ -20,6 +21,13 @@ class App extends React.Component {
     state = {
         firebaseLoadState: false,
         isUser: false,
+    };
+
+    static propTypes = {
+        addTab: PropTypes.func.isRequired,
+        onSetStatus: PropTypes.func.isRequired,
+        router: PropTypes.object.isRequired,
+        publicReducer: PropTypes.object.isRequired,
     };
 
     loadAppSession = () => {

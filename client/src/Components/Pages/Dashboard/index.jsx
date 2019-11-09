@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { EventEmitter } from "events";
 import _ from "lodash";
 import config from "../../../config.json";
@@ -8,8 +9,6 @@ import { addTabAction, setActiveTabAction, removeTabAction, logoutAction } from 
 import { loadCurrentData } from "../../../Redux/actions/routerActions/middleware";
 import { errorRequstAction } from "../../../Redux/actions/publicActions";
 import { setChildrenSizeAction } from "../../../Redux/actions/tabActions";
-
-//import clientDB from "../../../clientDB";
 
 import Loader from "../../Loader";
 import HeaderView from "../../HeaderView";
@@ -23,6 +22,19 @@ class Dashboard extends React.PureComponent {
         menuItems: config.menu,
         counterError: 0,
         showLoader: false,
+    };
+
+    static propTypes = {
+        addTab: PropTypes.func.isRequired,
+        removeTab: PropTypes.func.isRequired,
+        setCurrentTab: PropTypes.func.isRequired,
+        onSetChildrenSizeAction: PropTypes.func.isRequired,
+        onLoadCurrentData: PropTypes.func.isRequired,
+        onErrorRequstAction: PropTypes.func.isRequired,
+        onLogoutAction: PropTypes.func.isRequired,
+        router: PropTypes.object.isRequired,
+        tabData: PropTypes.object.isRequired,
+        publicReducer: PropTypes.object.isRequired,
     };
 
     dashboardStrem = new EventEmitter();

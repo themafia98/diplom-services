@@ -1,4 +1,5 @@
-import React from 'react';
+import React from "react";
+import PropTypes from "prop-types";
 import _ from "lodash";
 import { connect } from "react-redux";
 import { saveComponentStateAction } from "../../../Redux/actions/routerActions";
@@ -13,6 +14,14 @@ class SettingsModule extends React.PureComponent {
         telValue: "",
         mail: false,
         phone: false,
+    };
+
+    static propTypes = {
+        onErrorRequstAction: PropTypes.func.isRequired,
+        path: PropTypes.string.isRequired,
+        firebase: PropTypes.object.isRequired,
+        onSaveComponentState: PropTypes.func.isRequired,
+        router: PropTypes.object.isRequired,
     };
 
     componentDidMount = () => {

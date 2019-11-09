@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Modal, Upload, message, Icon, Button } from "antd";
 import UserCard from "../../UserCard";
 import TitleModule from "../../TitleModule";
@@ -11,6 +12,11 @@ class CabinetModule extends React.PureComponent {
         imageUrl: null,
         loading: false,
         disabled: false,
+    };
+
+    static propTypes = {
+        onErrorRequstAction: PropTypes.func.isRequired,
+        firebase: PropTypes.object.isRequired,
     };
 
     showModal = event => {

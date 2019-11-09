@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import _ from "lodash";
 import { connect } from "react-redux";
 import Scrollbars from "react-custom-scrollbars";
@@ -17,6 +18,18 @@ class TaskModule extends React.PureComponent {
         height: null,
         heightController: null,
     };
+
+    static propTypes = {
+        onErrorRequstAction: PropTypes.func.isRequired,
+        path: PropTypes.string.isRequired,
+        firebase: PropTypes.object.isRequired,
+        addTab: PropTypes.func.isRequired,
+        onOpenPageWithData: PropTypes.func.isRequired,
+        onLoadCurrentData: PropTypes.func.isRequired,
+        publicReducer: PropTypes.object.isRequired,
+        router: PropTypes.object.isRequired,
+    };
+
     moduleTask = null;
     controller = null;
     refModuleTask = node => (this.moduleTask = node);

@@ -88,7 +88,12 @@ class ContentView extends React.PureComponent {
                         firebase={firebase}
                     />
                 ) : path === "statisticModule" ? (
-                    <StatisticsModule onErrorRequstAction={onErrorRequstAction} key="statistic" firebase={firebase} />
+                    <StatisticsModule
+                        onErrorRequstAction={onErrorRequstAction}
+                        key="statistic"
+                        path={path}
+                        firebase={firebase}
+                    />
                 ) : (
                     <div>Not found module: ${path}</div>
                 )}

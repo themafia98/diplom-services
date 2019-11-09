@@ -1,14 +1,27 @@
 import React from "react";
+import PropTypes from "prop-types";
 import Scrollbars from "react-custom-scrollbars";
 import moment from "moment";
 import TitleModule from "../../../TitleModule";
 import { Calendar, Popover, Button } from "antd";
 
+// setCurrentTab={setCurrentTab}
+// onOpenPageWithData={onOpenPageWithData}
+// height={heightController ? height - heightController : height}
+// router={router}
+
 class TaskModuleCalendar extends React.PureComponent {
+    static propTypes = {
+        setCurrentTab: PropTypes.func.isRequired,
+        onOpenPageWithData: PropTypes.func.isRequired,
+        height: PropTypes.oneOfType([PropTypes.string, PropTypes.number, () => null]),
+        router: PropTypes.object.isRequired,
+    };
+
     onClick = event => {
         const {
             onOpenPageWithData,
-            router: { routeData = {}, currentActionTab = "", actionTabs = [] },
+            router: { routeData = {}, currentActionTab = "", actionTabs = [] } = {},
             setCurrentTab,
         } = this.props;
         const { tasks = [] } = routeData[currentActionTab] || routeData["taskModule"] || {};

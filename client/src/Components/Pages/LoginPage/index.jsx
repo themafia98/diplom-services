@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Redirect, NavLink } from "react-router-dom";
 import { Button, Input } from "antd";
 import { connect } from "react-redux";
@@ -13,6 +14,11 @@ class LoginPage extends React.Component {
         loading: false,
         redirect: false,
         errorMessage: null,
+    };
+
+    static propTypes = {
+        addTab: PropTypes.func.isRequired,
+        router: PropTypes.object.isRequired,
     };
 
     enterLoading = event => {

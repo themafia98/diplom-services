@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import _ from "lodash";
 import moment from "moment";
 import { Descriptions, Empty, Input, Select, DatePicker, message } from "antd";
@@ -36,6 +37,14 @@ class TaskView extends React.PureComponent {
         primaryKey: "___taskViewSetJurnal",
         showModalJur: false,
         modeEditContent: false,
+    };
+
+    static propTypes = {
+        onCaching: PropTypes.func.isRequired,
+        onUpdate: PropTypes.func.isRequired,
+        height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        onLoadCurrentData: PropTypes.func,
+        data: PropTypes.oneOfType([PropTypes.object, () => null]),
     };
 
     static getDerivedStateFromProps = (props, state) => {

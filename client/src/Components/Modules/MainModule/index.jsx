@@ -1,15 +1,20 @@
 import React from "react";
-
+import PropTypes from "prop-types";
 import { Calendar } from "antd";
+
 import ClockWidjet from "../../ClockWidjet/index";
 import TableView from "../../TableView";
-// import WeatherWidjet from "../../WeatherWidget";
 import StreamBox from "../../StreamBox";
 import TitleModule from "../../TitleModule";
 
 class MainModule extends React.PureComponent {
     state = {
         date: new Date(),
+    };
+
+    static propTypes = {
+        onErrorRequstAction: PropTypes.func.isRequired,
+        firebase: PropTypes.object.isRequired,
     };
 
     render() {
