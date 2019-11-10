@@ -21,8 +21,6 @@ it("Comments test", () => {
     };
     const CommentsWrapper = shallow(<Comments {...props} />);
     expect(toJson(CommentsWrapper)).toMatchSnapshot();
-    CommentsWrapper.find(".sendCommentsButton").simulate("click", []);
-    expect(CommentsWrapper).toMatchSnapshot();
 
     CommentsWrapper.setState({ onUpdateDisabled: true });
     expect(CommentsWrapper.find(".sendCommentsButton").prop("disabled")).toEqual(true);
@@ -30,6 +28,11 @@ it("Comments test", () => {
 
     CommentsWrapper.setState({ onUpdateDisabled: false });
     expect(CommentsWrapper.find(".sendCommentsButton").prop("disabled")).toEqual(false);
+    expect(CommentsWrapper).toMatchSnapshot();
+
+    expect(CommentsWrapper.find(".sendCommentsButton").prop("disabled")).toEqual(false);
+
+    expect(CommentsWrapper.find(".sendCommentsButton").simulate("click", []));
     expect(CommentsWrapper).toMatchSnapshot();
 
     expect(CommentsWrapper.find("Comment")).toHaveLength(1);

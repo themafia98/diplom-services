@@ -113,10 +113,10 @@ exports[`Comments test 2`] = `
     <Button
       block={false}
       className="sendCommentsButton"
-      disabled={false}
+      disabled={true}
       ghost={false}
       htmlType="button"
-      loading={false}
+      loading={true}
       onClick={[Function]}
       type="primary"
     >
@@ -176,10 +176,10 @@ exports[`Comments test 3`] = `
     <Button
       block={false}
       className="sendCommentsButton"
-      disabled={true}
+      disabled={false}
       ghost={false}
       htmlType="button"
-      loading={true}
+      loading={false}
       onClick={[Function]}
       type="primary"
     >

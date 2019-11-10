@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`HeaderView test 1`] = `
+<ContextProvider
+  value={null}
+>
+  <HeaderView
+    actionTabs={
+      Array [
+        "mainModule",
+      ]
+    }
+    activeTabEUID="mainModule"
+    cbMenuTabHandler={[Function]}
+    dashboardStrem={
+      EventEmitter {
+        "_events": Object {},
+        "_eventsCount": 0,
+        "_maxListeners": undefined,
+      }
+    }
+    logout={[Function]}
+    onSetChildrenSizeAction={[Function]}
+    onsetParentSizeAction={[Function]}
+    store={
+      Object {
+        "clearActions": [Function],
+        "dispatch": [Function],
+        "getActions": [Function],
+        "getState": [Function],
+        "replaceReducer": [Function],
+        "subscribe": [Function],
+      }
+    }
+    tabArray={
+      Array [
+        "MainModule",
+      ]
+    }
+    tabData={Object {}}
+  />
+</ContextProvider>
+`;
