@@ -55,20 +55,19 @@ class TaskView extends React.PureComponent {
     componentDidMount = () => {
         const {
             publicReducer: { caches = {} } = {},
-            router: { routeDataActive = null },
+            router: { routeDataActive: { key = "" } = {}, routeDataActive = {} },
             onCaching,
         } = this.props;
         const { primaryKey: primaryKeyState } = this.state;
-        const primaryKey = routeDataActive && routeDataActive.key ? routeDataActive.key : "";
-        if (_.isEmpty(caches) || (routeDataActive.key && !caches[routeDataActive.key]) || !routeDataActive.key) {
+        const primaryKey = !_.isEmpty(routeDataActive) && key ? key : "";
+        if (_.isEmpty(caches) || (key && !caches[key]) || !key) {
             onCaching(null, primaryKey, "GET", primaryKeyState, "jurnalWork");
         }
     };
 
     onEdit = event => {
         const {
-            publicReducer: { caches = {} } = {},
-            router: { routeDataActive = null },
+            router: { routeDataActive = {} },
         } = this.props;
         this.setState({
             ...this.state,
@@ -174,7 +173,7 @@ class TaskView extends React.PureComponent {
     };
 
     onUpdateEditable = event => {
-        const { onUpdate, router: { routeDataActive = null } = {} } = this.props;
+        const { onUpdate, router: { routeDataActive = {} } = {} } = this.props;
         const { modeControllEdit = {} } = this.state;
         const validHashCopy = [{ ...modeControllEdit }];
         const validHash = validHashCopy.map(it => getSchema(TASK_SCHEMA, it, "no-strict")).filter(Boolean)[0];
@@ -263,7 +262,19 @@ class TaskView extends React.PureComponent {
 
     render() {
         const {
-            router: { routeDataActive = null },
+            router: {
+                routeDataActive = {},
+                routeDataActive: {
+                    key = "",
+                    status = "",
+                    priority = "",
+                    name = "",
+                    author = "",
+                    editor = [],
+                    date = [],
+                    description = "",
+                } = {},
+            },
             onCaching,
             onUpdate,
             publicReducer: { caches = null } = {},
@@ -271,29 +282,22 @@ class TaskView extends React.PureComponent {
         } = this.props;
         const { mode, primaryKey, modeControll, modeEditContent, modeControllEdit } = this.state;
         let jurnalDataKeys = null;
-        if (caches && primaryKey && routeDataActive && routeDataActive.key) {
+        if (caches && primaryKey && routeDataActive && key) {
             const keys = Object.keys(caches);
 
-            jurnalDataKeys = keys.filter(key => key.includes(primaryKey) && key.includes(routeDataActive.key));
+            jurnalDataKeys = keys.filter(keyData => keyData.includes(primaryKey) && keyData.includes(key));
         }
 
         const accessStatus = _.uniq([
-            modeControllEdit.status
-                ? modeControllEdit.status
-                : routeDataActive && routeDataActive.status
-                ? routeDataActive.status
-                : null,
+            modeControllEdit.status ? status : status ? status : null,
             "Открыт",
             "Выполнен",
             "Закрыт",
             "В работе",
         ]).filter(Boolean);
+
         const accessPriority = _.uniq([
-            modeControllEdit.priority
-                ? modeControllEdit.priority
-                : routeDataActive && routeDataActive.priority
-                ? routeDataActive.priority
-                : null,
+            modeControllEdit.priority ? modeControllEdit.priority : priority ? priority : null,
             "Высокий",
             "Средний",
             "Низкий",
@@ -301,16 +305,16 @@ class TaskView extends React.PureComponent {
         const rulesEdit = true;
 
         const statusClassName = routeDataActive
-            ? routeDataActive.status === "Выполнен"
+            ? status === "Выполнен"
                 ? "done"
-                : routeDataActive.status === "Закрыт"
+                : status === "Закрыт"
                 ? "close"
-                : routeDataActive.status === "В работе"
+                : status === "В работе"
                 ? "active"
                 : null
             : null;
 
-        if (routeDataActive) {
+        if (key) {
             return (
                 <React.Fragment>
                     <TitleModule classNameTitle="taskModuleTittle" title="Карточка задачи" />
@@ -321,30 +325,30 @@ class TaskView extends React.PureComponent {
                         mode={mode}
                         path={path}
                         typeRequst={"POST"}
-                        key={routeDataActive.key}
-                        keyTask={routeDataActive.key}
+                        key={key}
+                        keyTask={key}
                         accessStatus={accessStatus}
                         onUpdate={onUpdate}
                         onEdit={this.onEdit}
                         onRejectEdit={this.onRejectEdit}
                         modeControll={modeControll}
-                        editableContent={routeDataActive.description}
+                        editableContent={description}
                         modeEditContent={modeEditContent}
                         onCancelEditModeContent={this.onCancelEditModeContent}
                         onUpdateEditable={this.onUpdateEditable}
-                        statusTaskValue={routeDataActive && routeDataActive.status ? routeDataActive.status : null}
+                        statusTaskValue={status ? status : null}
                     />
                     <div className="taskView">
                         <div className="col-6 col-taskDescription">
                             <Scrollbars>
                                 <Descriptions bordered column={{ xxl: 1, xl: 1, lg: 1, d: 1, sm: 1, xs: 1 }}>
                                     <Descriptions.Item label="Артикул">
-                                        <Output>{routeDataActive.key}</Output>
+                                        <Output className="key">{key}</Output>
                                     </Descriptions.Item>
                                     <Descriptions.Item label="Название">
                                         {modeControll === "default" ? (
-                                            <Output>{routeDataActive.name}</Output>
-                                        ) : modeControll === "edit" ? (
+                                            <Output className="name">{name}</Output>
+                                        ) : modeControll === "edit" && modeControllEdit ? (
                                             <Input
                                                 className="nameEdit"
                                                 onChange={this.onChangeEditable}
@@ -354,13 +358,13 @@ class TaskView extends React.PureComponent {
                                     </Descriptions.Item>
                                     <Descriptions.Item label="Статус">
                                         {modeControll === "default" ? (
-                                            <Output className={statusClassName}>{routeDataActive.status}</Output>
-                                        ) : modeControll === "edit" ? (
+                                            <Output className={["status", statusClassName].join(" ")}>{status}</Output>
+                                        ) : modeControll === "edit" && modeControllEdit ? (
                                             <Select
                                                 className="statusEdit"
                                                 value={modeControllEdit.status}
                                                 onChange={this.onChangeEditable}
-                                                defaultValue={routeDataActive.status}
+                                                defaultValue={status}
                                                 name="priority"
                                                 type="text"
                                             >
@@ -374,13 +378,13 @@ class TaskView extends React.PureComponent {
                                     </Descriptions.Item>
                                     <Descriptions.Item label="Приоритет">
                                         {modeControll === "default" ? (
-                                            <Output>{routeDataActive.priority}</Output>
-                                        ) : modeControll === "edit" ? (
+                                            <Output className="priority">{priority}</Output>
+                                        ) : modeControll === "edit" && modeControllEdit ? (
                                             <Select
                                                 className="priorityEdit"
                                                 value={modeControllEdit.priority}
                                                 onChange={this.onChangeEditable}
-                                                defaultValue={routeDataActive.priority}
+                                                defaultValue={priority}
                                                 name="priority"
                                                 type="text"
                                             >
@@ -393,28 +397,25 @@ class TaskView extends React.PureComponent {
                                         ) : null}
                                     </Descriptions.Item>
                                     <Descriptions.Item label="Автор задачи">
-                                        <Output>{routeDataActive.author}</Output>
+                                        <Output className="author">{author}</Output>
                                     </Descriptions.Item>
                                     <Descriptions.Item label="Исполнитель">
                                         {modeControll === "default" ? (
-                                            <Output>
-                                                {Array.isArray(routeDataActive.editor) &&
-                                                routeDataActive.editor.length === 1
-                                                    ? routeDataActive.editor
-                                                    : Array.isArray(routeDataActive.editor) &&
-                                                      routeDataActive &&
-                                                      routeDataActive.editor.length > 1
-                                                    ? routeDataActive.editor.join(",")
+                                            <Output className="editor">
+                                                {Array.isArray(editor) && editor.length === 1
+                                                    ? editor
+                                                    : Array.isArray(editor) && editor.length > 1
+                                                    ? editor.join(",")
                                                     : null}
                                             </Output>
-                                        ) : modeControll === "edit" ? (
+                                        ) : modeControll === "edit" && modeControllEdit ? (
                                             <Select
                                                 className="editorEdit"
                                                 value={modeControllEdit.editor}
                                                 onChange={this.onChangeEditable}
                                                 name="editor"
                                                 mode="multiple"
-                                                defaultValue={routeDataActive.editor}
+                                                defaultValue={editor}
                                                 placeholder="выберете исполнителя"
                                                 optionLabelProp="label"
                                             >
@@ -429,34 +430,40 @@ class TaskView extends React.PureComponent {
                                     </Descriptions.Item>
                                     <Descriptions.Item label="Дата назначения">
                                         {modeControll === "default" ? (
-                                            <Output> {routeDataActive.date[0] ? routeDataActive.date[0] : null}</Output>
-                                        ) : modeControll === "edit" ? (
+                                            <Output className="startDate"> {date[0] ? date[0] : null}</Output>
+                                        ) : modeControll === "edit" && modeControllEdit ? (
                                             <DatePicker
-                                                value={moment(modeControllEdit.date[0], "DD.MM.YYYY")}
+                                                value={moment(
+                                                    modeControllEdit.date && modeControllEdit.date[0]
+                                                        ? modeControllEdit.date[0]
+                                                        : date[0]
+                                                        ? date[0]
+                                                        : moment(),
+                                                    "DD.MM.YYYY",
+                                                )}
                                                 className="dateStartEdit"
                                                 onChange={this.onChangeEditableStart}
-                                                defaultValue={
-                                                    routeDataActive.date[0]
-                                                        ? moment(routeDataActive.date[0], "DD.MM.YYYY")
-                                                        : null
-                                                }
+                                                defaultValue={date[0] ? moment(date[0], "DD.MM.YYYY") : null}
                                                 format="DD.MM.YYYY"
                                             />
                                         ) : null}
                                     </Descriptions.Item>
                                     <Descriptions.Item label="Дата завершения">
                                         {modeControll === "default" ? (
-                                            <Output> {routeDataActive.date[1] ? routeDataActive.date[1] : null}</Output>
-                                        ) : modeControll === "edit" ? (
+                                            <Output className="endDate"> {date[1] ? date[1] : null}</Output>
+                                        ) : modeControll === "edit" && modeControllEdit ? (
                                             <DatePicker
-                                                value={moment(modeControllEdit.date[1], "DD.MM.YYYY")}
+                                                value={moment(
+                                                    modeControllEdit.date && modeControllEdit.date[1]
+                                                        ? modeControllEdit.date[1]
+                                                        : date[1]
+                                                        ? date[1]
+                                                        : moment(),
+                                                    "DD.MM.YYYY",
+                                                )}
                                                 className="dateEndEdit"
                                                 onChange={this.onChangeEditableEnd}
-                                                defaultValue={
-                                                    routeDataActive.date[1]
-                                                        ? moment(routeDataActive.date[1], "DD.MM.YYYY")
-                                                        : null
-                                                }
+                                                defaultValue={date[1] ? moment(date[1], "DD.MM.YYYY") : null}
                                                 format="DD.MM.YYYY"
                                             />
                                         ) : null}
@@ -466,13 +473,13 @@ class TaskView extends React.PureComponent {
                                     <p className="descriptionTask__title">Задача</p>
                                     <p
                                         onClick={rulesEdit ? this.onEditContentMode : null}
-                                        className={["descriptionTask__content", rulesEdit ? "editable" : null].join(
-                                            " ",
-                                        )}
+                                        className={[
+                                            "description",
+                                            " descriptionTask__content",
+                                            rulesEdit ? "editable" : null,
+                                        ].join(" ")}
                                     >
-                                        {routeDataActive.description
-                                            ? routeDataActive.description
-                                            : "Описания задачи нету."}
+                                        {description ? description : "Описания задачи нету."}
                                         <span className="icon-wrapper">
                                             <i className="icon-pencil"></i>
                                         </span>
@@ -539,6 +546,7 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
+export { TaskView };
 export default connect(
     mapStateTopProps,
     mapDispatchToProps,

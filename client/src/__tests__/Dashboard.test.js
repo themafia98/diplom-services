@@ -2,7 +2,6 @@ import React from "react";
 import { shallow } from "enzyme";
 import toJson from "enzyme-to-json";
 
-import store from "../Redux/testStore";
 import { Dashboard } from "../Components/Pages/Dashboard";
 
 describe("<Dashboard /> main page", () => {
@@ -36,7 +35,7 @@ describe("<Dashboard /> main page", () => {
         expect(DashboardWrapper.find("ContentView").prop("path")).toEqual(props.router.currentActionTab);
 
         DashboardWrapper.setState({ collapsed: true });
-        expect(DashboardWrapper.find("MenuView").prop("collapsed")).toEqual(true);
+        expect(DashboardWrapper.find("MenuView").prop("collapsed")).toBeTruthy();
 
         DashboardWrapper.setState({ collapsed: false });
         expect(DashboardWrapper.find("MenuView").prop("collapsed")).toEqual(false);

@@ -4,7 +4,7 @@ import firebase from "../delayFirebase/Firebase";
 
 /** stores for  jest */
 
-const initialState = {
+export const initialState = {
     tabReducer: {
         parentSize: null,
         childrenSize: null,

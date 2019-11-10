@@ -21,7 +21,7 @@ describe("<ContentView />", () => {
         expect(ContentViewWrapper.find("MainModule").prop("firebase")).toEqual(props.firebase);
 
         ContentViewWrapper.setState({ drawerView: true });
-        expect(ContentViewWrapper.find("DrawerViewer").prop("visible")).toEqual(true);
+        expect(ContentViewWrapper.find("DrawerViewer").prop("visible")).toBeTruthy();
 
         ContentViewWrapper.setState({ drawerView: false });
         expect(ContentViewWrapper.find("DrawerViewer").prop("visible")).toEqual(false);

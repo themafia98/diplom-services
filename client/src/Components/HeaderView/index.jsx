@@ -24,23 +24,23 @@ class HeaderView extends React.PureComponent {
     };
 
     componentDidUpdate = () => {
-        const { tabArray, tabData, onSetChildrenSizeAction, onsetParentSizeAction } = this.props;
-        let sizeTab = !tabData.flag ? this.state.defaultSizeTab : tabData.childrenSize;
-        if (!_.isNull(this.wrapper) && !_.isNull(tabData) && _.isNull(tabData.parentSize)) {
+        const { tabArray = [], tabReducer = {}, onSetChildrenSizeAction, onsetParentSizeAction } = this.props;
+        let sizeTab = !tabReducer.flag ? this.state.defaultSizeTab : tabReducer.childrenSize;
+        if (!_.isNull(this.wrapper) && !_.isNull(tabReducer) && _.isNull(tabReducer.parentSize)) {
             const newSize = this.wrapper.getBoundingClientRect().width;
-            if (tabData.parentSize !== newSize) onsetParentSizeAction(newSize);
+            if (tabReducer.parentSize !== newSize) onsetParentSizeAction(newSize);
         }
 
         if (
-            !_.isNull(tabData) &&
-            !_.isNull(tabData.childrenSize) &&
-            !_.isNull(tabData.parentSize) &&
+            !_.isNull(tabReducer) &&
+            !_.isNull(tabReducer.childrenSize) &&
+            !_.isNull(tabReducer.parentSize) &&
             tabArray.length > 1
         ) {
-            const length = tabData.childrenSize * tabArray.length;
-            if (tabData.parentSize < length + sizeTab) {
-                const size = tabData.parentSize / tabArray.length;
-                if (size !== tabData.childrenSize) onSetChildrenSizeAction(size, true);
+            const length = tabReducer.childrenSize * tabArray.length;
+            if (tabReducer.parentSize < length + sizeTab) {
+                const size = tabReducer.parentSize / tabArray.length;
+                if (size !== tabReducer.childrenSize) onSetChildrenSizeAction(size, true);
             }
         }
     };
@@ -49,11 +49,11 @@ class HeaderView extends React.PureComponent {
     refWrapper = node => (this.wrapper = node);
 
     renderTabs = items => {
-        const { activeTabEUID, cbMenuTabHandler, tabArray, tabData } = this.props;
-        let sizeTab = !tabData.flag ? this.state.defaultSizeTab : tabData.childrenSize;
+        const { activeTabEUID = "mainModule", cbMenuTabHandler, tabArray = [], tabReducer = {} } = this.props;
+        let sizeTab = !tabReducer.flag ? this.state.defaultSizeTab : tabReducer.childrenSize;
         let flag = false;
         const length = sizeTab * tabArray.length;
-        if (sizeTab > tabData.childrenSize && tabData.parentSize < length + sizeTab) {
+        if (sizeTab > tabReducer.childrenSize && tabReducer.parentSize < length + sizeTab) {
             flag = true;
         }
 
@@ -82,7 +82,7 @@ class HeaderView extends React.PureComponent {
     };
 
     render() {
-        const { logout = null, actionTabs = false } = this.props;
+        const { logout = null, actionTabs = ["mainModule"] } = this.props;
 
         return (
             <Header>
@@ -100,7 +100,7 @@ class HeaderView extends React.PureComponent {
 
 const mapStateTopProps = state => {
     return {
-        tabData: state.tabReducer,
+        tabReducer: state.tabReducer,
         tabArray: state.router.actionTabs,
     };
 };
@@ -116,3 +116,4 @@ export default connect(
     mapStateTopProps,
     mapDispatchToProps,
 )(HeaderView);
+export { HeaderView };

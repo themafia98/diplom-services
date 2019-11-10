@@ -1,0 +1,240 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<TaskView /> template Should be render with data 1`] = `
+<Fragment>
+  <TitleModule
+    classNameTitle="taskModuleTittle"
+    title="Карточка задачи"
+  />
+  <ModalWindow
+    accessStatus={
+      Array [
+        "В работе",
+        "Открыт",
+        "Выполнен",
+        "Закрыт",
+      ]
+    }
+    editableContent="asdasd"
+    key="testTask"
+    keyTask="testTask"
+    mode="jur"
+    modeControll="default"
+    modeEditContent={false}
+    onCaching={[Function]}
+    onCancelEditModeContent={[Function]}
+    onEdit={[Function]}
+    onRejectEdit={[Function]}
+    onUpdate={[Function]}
+    onUpdateEditable={[Function]}
+    primaryKey="___taskViewSetJurnal"
+    routeDataActive={
+      Object {
+        "author": "Павел Петрович",
+        "date": Array [],
+        "description": "asdasd",
+        "editor": Array [
+          "Павел Петрович",
+          "Гена Букин",
+        ],
+        "key": "testTask",
+        "name": "Task1",
+        "priority": "Средний",
+        "status": "В работе",
+      }
+    }
+    statusTaskValue="В работе"
+    typeRequst="POST"
+  />
+  <div
+    className="taskView"
+  >
+    <div
+      className="col-6 col-taskDescription"
+    >
+      <Scrollbars
+        autoHeight={false}
+        autoHeightMax={200}
+        autoHeightMin={0}
+        autoHide={false}
+        autoHideDuration={200}
+        autoHideTimeout={1000}
+        hideTracksWhenNotNeeded={false}
+        renderThumbHorizontal={[Function]}
+        renderThumbVertical={[Function]}
+        renderTrackHorizontal={[Function]}
+        renderTrackVertical={[Function]}
+        renderView={[Function]}
+        tagName="div"
+        thumbMinSize={30}
+        universal={false}
+      >
+        <Descriptions
+          bordered={true}
+          column={
+            Object {
+              "d": 1,
+              "lg": 1,
+              "sm": 1,
+              "xl": 1,
+              "xs": 1,
+              "xxl": 1,
+            }
+          }
+          size="default"
+        >
+          <DescriptionsItem
+            label="Артикул"
+          >
+            <Output
+              className="key"
+            >
+              testTask
+            </Output>
+          </DescriptionsItem>
+          <DescriptionsItem
+            label="Название"
+          >
+            <Output
+              className="name"
+            >
+              Task1
+            </Output>
+          </DescriptionsItem>
+          <DescriptionsItem
+            label="Статус"
+          >
+            <Output
+              className="status active"
+            >
+              В работе
+            </Output>
+          </DescriptionsItem>
+          <DescriptionsItem
+            label="Приоритет"
+          >
+            <Output
+              className="priority"
+            >
+              Средний
+            </Output>
+          </DescriptionsItem>
+          <DescriptionsItem
+            label="Автор задачи"
+          >
+            <Output
+              className="author"
+            >
+              Павел Петрович
+            </Output>
+          </DescriptionsItem>
+          <DescriptionsItem
+            label="Исполнитель"
+          >
+            <Output
+              className="editor"
+            >
+              Павел Петрович,Гена Букин
+            </Output>
+          </DescriptionsItem>
+          <DescriptionsItem
+            label="Дата назначения"
+          >
+            <Output
+              className="startDate"
+            >
+               
+            </Output>
+          </DescriptionsItem>
+          <DescriptionsItem
+            label="Дата завершения"
+          >
+            <Output
+              className="endDate"
+            >
+               
+            </Output>
+          </DescriptionsItem>
+        </Descriptions>
+        <div
+          className="descriptionTask"
+        >
+          <p
+            className="descriptionTask__title"
+          >
+            Задача
+          </p>
+          <p
+            className="description  descriptionTask__content editable"
+            onClick={[Function]}
+          >
+            asdasd
+            <span
+              className="icon-wrapper"
+            >
+              <i
+                className="icon-pencil"
+              />
+            </span>
+          </p>
+          <p
+            className="task_file"
+          >
+            Дополнительные файлы для задачи
+          </p>
+          <File />
+          <p
+            className="descriptionTask__comment"
+          >
+            Коментарии
+          </p>
+          <Comments
+            data={
+              Object {
+                "author": "Павел Петрович",
+                "date": Array [],
+                "description": "asdasd",
+                "editor": Array [
+                  "Павел Петрович",
+                  "Гена Букин",
+                ],
+                "key": "testTask",
+                "name": "Task1",
+                "priority": "Средний",
+                "status": "В работе",
+              }
+            }
+            onUpdate={[Function]}
+            rules={true}
+          />
+        </div>
+      </Scrollbars>
+    </div>
+    <div
+      className="col-6 col-taskDescription"
+    >
+      <TitleModule
+        classNameTitle="historyTaskTitle"
+        title="Журнал работы"
+      />
+      <Scrollbars
+        autoHeight={false}
+        autoHeightMax={200}
+        autoHeightMin={0}
+        autoHide={false}
+        autoHideDuration={200}
+        autoHideTimeout={1000}
+        hideTracksWhenNotNeeded={false}
+        renderThumbHorizontal={[Function]}
+        renderThumbVertical={[Function]}
+        renderTrackHorizontal={[Function]}
+        renderTrackVertical={[Function]}
+        renderView={[Function]}
+        tagName="div"
+        thumbMinSize={30}
+        universal={false}
+      />
+    </div>
+  </div>
+</Fragment>
+`;

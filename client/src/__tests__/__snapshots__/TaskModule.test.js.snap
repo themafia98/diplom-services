@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<TaskModule /> template Should be render 1`] = `
+<div
+  className="taskModule"
+  key="taskModule"
+>
+  <div
+    className="controllersWrapper"
+    key="controllers"
+  >
+    <Button
+      block={false}
+      className="newTaskButton"
+      ghost={false}
+      htmlType="button"
+      loading={false}
+      onClick={[Function]}
+      type="primary"
+    >
+      Создать новую задачу
+    </Button>
+  </div>
+  <TaskModuleList
+    height={null}
+    setCurrentTab={[Function]}
+  />
+</div>
+`;
+
+exports[`<TaskModule /> template Should be render 2`] = `
+<div
+  className="taskModule"
+  key="taskModule"
+>
+  <div>
+    Not found path module
+  </div>
+</div>
+`;

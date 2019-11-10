@@ -24,7 +24,7 @@ describe("<ContentView />", () => {
         expect(toJson(CommentsWrapper)).toMatchSnapshot();
 
         CommentsWrapper.setState({ onUpdateDisabled: true });
-        expect(CommentsWrapper.find(".sendCommentsButton").prop("disabled")).toEqual(true);
+        expect(CommentsWrapper.find(".sendCommentsButton").prop("disabled")).toBeTruthy();
         expect(CommentsWrapper).toMatchSnapshot();
 
         CommentsWrapper.setState({ onUpdateDisabled: false });

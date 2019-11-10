@@ -22,12 +22,8 @@ class LoginPage extends React.Component {
     };
 
     enterLoading = event => {
-        const {
-            state: { value: login },
-        } = this.login;
-        const {
-            state: { value: password },
-        } = this.password;
+        const { state: { value: login = "" } = {} } = this.login || {};
+        const { state: { value: password = "" } = {} } = this.password || {};
 
         if (login && password) {
             this.setState({ errorMessage: null, loading: true });
@@ -68,7 +64,7 @@ class LoginPage extends React.Component {
                         </div>
                         <Input size="large" placeholder="login" ref={refLogin} />
                         <Input type="password" size="large" placeholder="password" ref={refPassword} />
-                        <Button type="primary" loading={loading} onClick={enterLoading}>
+                        <Button className="enterSystem" type="primary" loading={loading} onClick={enterLoading}>
                             Войти
                         </Button>
                         <ModalWindow firebase={firebase} mode="reg" />
@@ -96,3 +92,4 @@ export default connect(
     mapStateToProps,
     mapDispatchToProps,
 )(LoginPage);
+export { LoginPage };

@@ -101,7 +101,7 @@ class TaskModule extends React.PureComponent {
                 <React.Fragment>
                     {isList ? (
                         <div key="controllers" ref={this.refControllers} className="controllersWrapper">
-                            <Button onClick={this.handlerNewTask} type="primary">
+                            <Button className="newTaskButton" onClick={this.handlerNewTask} type="primary">
                                 Создать новую задачу
                             </Button>
                         </div>
@@ -179,7 +179,7 @@ const mapDispatchToProps = dispatch => {
         onLoadCurrentData: ({ path, storeLoad }) => dispatch(loadCurrentData({ path, storeLoad })),
     };
 };
-
+export { TaskModule };
 export default connect(
     mapStateToProps,
     mapDispatchToProps,

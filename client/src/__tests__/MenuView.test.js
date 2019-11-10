@@ -19,8 +19,8 @@ describe("<MenuView />", () => {
         expect(toJson(MenuViewWrapper)).toMatchSnapshot();
 
         MenuViewWrapper.find(".menuItem").forEach(node => {
-            expect(node.hasClass("menuItem")).toEqual(true);
-            expect(node.exists()).toEqual(true);
+            expect(node.hasClass("menuItem")).toBeTruthy();
+            expect(node.exists()).toBeTruthy();
         });
 
         expect(MenuViewWrapper.find("Menu").prop("defaultSelectedKeys")).toEqual([props.items[0].VALUE]);
