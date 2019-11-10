@@ -137,7 +137,7 @@ class Dashboard extends React.PureComponent {
                 const dataPage = tabsCopy[i].split("__");
                 const PARENT_CODE = dataPage[0];
                 const DATAKEY = dataPage[1];
-                const VALUE = routeData[DATAKEY].name;
+                const VALUE = DATAKEY && routeData[DATAKEY].name ? routeData[DATAKEY].name : DATAKEY;
                 tabItem = { EUID: tabsCopy[i], PARENT_CODE, DATAKEY, VALUE };
             }
             if (tabItem) tabsArray.push({ ...tabItem });
@@ -254,3 +254,4 @@ export default connect(
     mapStateToProps,
     mapDispatchToProps,
 )(Dashboard);
+export { Dashboard };

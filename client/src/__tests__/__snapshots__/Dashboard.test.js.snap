@@ -1,0 +1,360 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Dashboard /> main page Should render component 1`] = `
+<Fragment>
+  <Loader
+    className="mainLoader"
+  />
+  <Adapter
+    className="layout_menu"
+  >
+    <MenuView
+      activeTabEUID="MainModule"
+      cbGoMain={[Function]}
+      cbMenuHandler={[Function]}
+      cbOnCollapse={[Function]}
+      collapsed={false}
+      items={
+        Array [
+          Object {
+            "EUID": "mainModule",
+            "ICON": "home",
+            "PARENT_CODE": null,
+            "SIGN": "default",
+            "VALUE": "Главное меню",
+          },
+          Object {
+            "EUID": "cabinetModule",
+            "ICON": "user",
+            "PARENT_CODE": null,
+            "VALUE": "Личный кабинет",
+          },
+          Object {
+            "EUID": "taskModule",
+            "ICON": "file-done",
+            "PARENT_CODE": null,
+            "VALUE": "Задачи",
+          },
+          Object {
+            "EUID": "taskModule_all",
+            "ICON": null,
+            "PARENT_CODE": "taskModule",
+            "VALUE": "Все задачи",
+          },
+          Object {
+            "EUID": "taskModule_myTasks",
+            "ICON": null,
+            "PARENT_CODE": "taskModule",
+            "VALUE": "Мои задачи",
+          },
+          Object {
+            "EUID": "taskModule_сalendar",
+            "ICON": null,
+            "PARENT_CODE": "taskModule",
+            "VALUE": "Календарь задач",
+          },
+          Object {
+            "EUID": "taskModule_createTask",
+            "ICON": null,
+            "SIGN": "freedom",
+            "VALUE": "Новая задача",
+          },
+          Object {
+            "EUID": "customersModule",
+            "ICON": "global",
+            "PARENT_CODE": null,
+            "VALUE": "Работа с клиентами",
+          },
+          Object {
+            "EUID": "customersModule_contacts",
+            "ICON": null,
+            "PARENT_CODE": "customersModule",
+            "VALUE": "Контакты",
+          },
+          Object {
+            "EUID": "customersModule_reception",
+            "ICON": null,
+            "PARENT_CODE": "customersModule",
+            "VALUE": "Приемы / встречи",
+          },
+          Object {
+            "EUID": "contactModule",
+            "ICON": "global",
+            "PARENT_CODE": null,
+            "VALUE": "Связь",
+          },
+          Object {
+            "EUID": "contactModule_chat",
+            "ICON": null,
+            "PARENT_CODE": "contactModule",
+            "VALUE": "Чат",
+          },
+          Object {
+            "EUID": "contactModule_feedback",
+            "ICON": null,
+            "PARENT_CODE": "contactModule",
+            "VALUE": "Обратная связь",
+          },
+          Object {
+            "EUID": "statisticModule",
+            "ICON": "line-chart",
+            "PARENT_CODE": null,
+            "VALUE": "Статистика",
+          },
+          Object {
+            "EUID": "settingsModule",
+            "ICON": "build",
+            "PARENT_CODE": null,
+            "VALUE": "Настройки",
+          },
+        ]
+      }
+    />
+    <Adapter>
+      <Connect(HeaderView)
+        actionTabs={
+          Array [
+            Object {
+              "DATAKEY": undefined,
+              "EUID": "MainModule",
+              "PARENT_CODE": "MainModule",
+              "VALUE": undefined,
+            },
+          ]
+        }
+        activeTabEUID="MainModule"
+        cbMenuTabHandler={[Function]}
+        dashboardStrem={
+          EventEmitter {
+            "_events": Object {},
+            "_eventsCount": 0,
+            "_maxListeners": undefined,
+          }
+        }
+        logout={[Function]}
+      />
+      <ContentView
+        dashboardStrem={
+          EventEmitter {
+            "_events": Object {},
+            "_eventsCount": 0,
+            "_maxListeners": undefined,
+          }
+        }
+        firebase={Object {}}
+        key="contentView"
+        onErrorRequstAction={[Function]}
+        path="MainModule"
+        setCurrentTab={[Function]}
+        updateLoader={[Function]}
+      />
+    </Adapter>
+  </Adapter>
+</Fragment>
+`;
+
+exports[`<Dashboard /> main page Should render component 2`] = `
+<Fragment>
+  <Adapter
+    className="layout_menu"
+  >
+    <MenuView
+      activeTabEUID="MainModule"
+      cbGoMain={[Function]}
+      cbMenuHandler={[Function]}
+      cbOnCollapse={[Function]}
+      collapsed={false}
+      items={
+        Array [
+          Object {
+            "EUID": "mainModule",
+            "ICON": "home",
+            "PARENT_CODE": null,
+            "SIGN": "default",
+            "VALUE": "Главное меню",
+          },
+          Object {
+            "EUID": "cabinetModule",
+            "ICON": "user",
+            "PARENT_CODE": null,
+            "VALUE": "Личный кабинет",
+          },
+          Object {
+            "EUID": "taskModule",
+            "ICON": "file-done",
+            "PARENT_CODE": null,
+            "VALUE": "Задачи",
+          },
+          Object {
+            "EUID": "taskModule_all",
+            "ICON": null,
+            "PARENT_CODE": "taskModule",
+            "VALUE": "Все задачи",
+          },
+          Object {
+            "EUID": "taskModule_myTasks",
+            "ICON": null,
+            "PARENT_CODE": "taskModule",
+            "VALUE": "Мои задачи",
+          },
+          Object {
+            "EUID": "taskModule_сalendar",
+            "ICON": null,
+            "PARENT_CODE": "taskModule",
+            "VALUE": "Календарь задач",
+          },
+          Object {
+            "EUID": "taskModule_createTask",
+            "ICON": null,
+            "SIGN": "freedom",
+            "VALUE": "Новая задача",
+          },
+          Object {
+            "EUID": "customersModule",
+            "ICON": "global",
+            "PARENT_CODE": null,
+            "VALUE": "Работа с клиентами",
+          },
+          Object {
+            "EUID": "customersModule_contacts",
+            "ICON": null,
+            "PARENT_CODE": "customersModule",
+            "VALUE": "Контакты",
+          },
+          Object {
+            "EUID": "customersModule_reception",
+            "ICON": null,
+            "PARENT_CODE": "customersModule",
+            "VALUE": "Приемы / встречи",
+          },
+          Object {
+            "EUID": "contactModule",
+            "ICON": "global",
+            "PARENT_CODE": null,
+            "VALUE": "Связь",
+          },
+          Object {
+            "EUID": "contactModule_chat",
+            "ICON": null,
+            "PARENT_CODE": "contactModule",
+            "VALUE": "Чат",
+          },
+          Object {
+            "EUID": "contactModule_feedback",
+            "ICON": null,
+            "PARENT_CODE": "contactModule",
+            "VALUE": "Обратная связь",
+          },
+          Object {
+            "EUID": "statisticModule",
+            "ICON": "line-chart",
+            "PARENT_CODE": null,
+            "VALUE": "Статистика",
+          },
+          Object {
+            "EUID": "settingsModule",
+            "ICON": "build",
+            "PARENT_CODE": null,
+            "VALUE": "Настройки",
+          },
+        ]
+      }
+    />
+    <Adapter>
+      <Connect(HeaderView)
+        actionTabs={
+          Array [
+            Object {
+              "DATAKEY": undefined,
+              "EUID": "MainModule",
+              "PARENT_CODE": "MainModule",
+              "VALUE": undefined,
+            },
+          ]
+        }
+        activeTabEUID="MainModule"
+        cbMenuTabHandler={[Function]}
+        dashboardStrem={
+          EventEmitter {
+            "_events": Object {},
+            "_eventsCount": 0,
+            "_maxListeners": undefined,
+          }
+        }
+        logout={[Function]}
+      />
+      <ContentView
+        dashboardStrem={
+          EventEmitter {
+            "_events": Object {},
+            "_eventsCount": 0,
+            "_maxListeners": undefined,
+          }
+        }
+        firebase={Object {}}
+        key="contentView"
+        onErrorRequstAction={[Function]}
+        path="MainModule"
+        setCurrentTab={[Function]}
+        updateLoader={[Function]}
+      />
+    </Adapter>
+  </Adapter>
+</Fragment>
+`;
+
+exports[`<Dashboard /> main page Should render component 3`] = `
+<Fragment>
+  <Adapter
+    className="layout_menu"
+  >
+    <MenuView
+      activeTabEUID="MainModule"
+      cbGoMain={[Function]}
+      cbMenuHandler={[Function]}
+      cbOnCollapse={[Function]}
+      collapsed={false}
+      items={Array []}
+    />
+    <Adapter>
+      <Connect(HeaderView)
+        actionTabs={
+          Array [
+            Object {
+              "DATAKEY": undefined,
+              "EUID": "MainModule",
+              "PARENT_CODE": "MainModule",
+              "VALUE": undefined,
+            },
+          ]
+        }
+        activeTabEUID="MainModule"
+        cbMenuTabHandler={[Function]}
+        dashboardStrem={
+          EventEmitter {
+            "_events": Object {},
+            "_eventsCount": 0,
+            "_maxListeners": undefined,
+          }
+        }
+        logout={[Function]}
+      />
+      <ContentView
+        dashboardStrem={
+          EventEmitter {
+            "_events": Object {},
+            "_eventsCount": 0,
+            "_maxListeners": undefined,
+          }
+        }
+        firebase={Object {}}
+        key="contentView"
+        onErrorRequstAction={[Function]}
+        path="MainModule"
+        setCurrentTab={[Function]}
+        updateLoader={[Function]}
+      />
+    </Adapter>
+  </Adapter>
+</Fragment>
+`;
