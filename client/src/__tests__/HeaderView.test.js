@@ -6,41 +6,44 @@ import toJson from "enzyme-to-json";
 
 import HeaderView from "../Components/HeaderView/index";
 import store from "../Redux/testStore";
-it("HeaderView test", () => {
-    const props = {
-        dashboardStrem: new EventEmitter(),
-        cbMenuTabHandler: () => {},
-        actionTabs: [{ EUID: "mainModule" }],
-        activeTabEUID: "mainModule",
-        logout: () => {},
-    };
 
-    const HeaderViewWrapper = mount(
-        <Provider store={store}>
-            <HeaderView {...props} />
-        </Provider>,
-    );
-    expect(toJson(HeaderViewWrapper)).toMatchSnapshot();
+describe("<HeaderView /> and children", () => {
+    test("Should render", () => {
+        const props = {
+            dashboardStrem: new EventEmitter(),
+            cbMenuTabHandler: () => {},
+            actionTabs: [{ EUID: "mainModule" }],
+            activeTabEUID: "mainModule",
+            logout: () => {},
+        };
 
-    expect(HeaderViewWrapper.find("Updater").simulate("click", []));
-    expect(toJson(HeaderViewWrapper)).toMatchSnapshot();
+        const HeaderViewWrapper = mount(
+            <Provider store={store}>
+                <HeaderView {...props} />
+            </Provider>,
+        );
+        expect(toJson(HeaderViewWrapper)).toMatchSnapshot();
 
-    expect(HeaderViewWrapper.find("Updater").prop("additionalClassName")).toEqual("updaterDefault");
+        expect(HeaderViewWrapper.find("Updater").simulate("click", []));
+        expect(toJson(HeaderViewWrapper)).toMatchSnapshot();
 
-    expect(HeaderViewWrapper.find("Tab").prop("flag")).toEqual(true);
-    expect(HeaderViewWrapper.find("Tab").prop("sizeTab")).toEqual(160);
-    expect(HeaderViewWrapper.find("Tab").prop("active")).toEqual(true);
+        expect(HeaderViewWrapper.find("Updater").prop("additionalClassName")).toEqual("updaterDefault");
 
-    const nextProps = {
-        ...props,
-        actionTabs: [{ EUID: "mainModule1" }],
-    };
+        expect(HeaderViewWrapper.find("Tab").prop("flag")).toEqual(true);
+        expect(HeaderViewWrapper.find("Tab").prop("sizeTab")).toEqual(160);
+        expect(HeaderViewWrapper.find("Tab").prop("active")).toEqual(true);
 
-    const HeaderViewWrapperNewProps = mount(
-        <Provider store={store}>
-            <HeaderView {...nextProps} />
-        </Provider>,
-    );
+        const nextProps = {
+            ...props,
+            actionTabs: [{ EUID: "mainModule1" }],
+        };
 
-    expect(HeaderViewWrapperNewProps.find("Tab").prop("active")).toEqual(false);
+        const HeaderViewWrapperNewProps = mount(
+            <Provider store={store}>
+                <HeaderView {...nextProps} />
+            </Provider>,
+        );
+
+        expect(HeaderViewWrapperNewProps.find("Tab").prop("active")).toEqual(false);
+    });
 });

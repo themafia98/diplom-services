@@ -5,25 +5,27 @@ import config from "../config.json";
 
 import MenuView from "../Components/MenuView/index";
 
-it("MenuView test", () => {
-    const props = {
-        collapsed: true,
-        cbOnCollapse: () => {},
-        items: config.menu,
-        cbMenuHandler: () => {},
-        activeTabEUID: "MainModule",
-        cbGoMain: () => {},
-    };
-    const MenuViewWrapper = shallow(<MenuView {...props} />);
-    expect(toJson(MenuViewWrapper)).toMatchSnapshot();
+describe("<MenuView />", () => {
+    test("Should MenuView render with itemsMenu", () => {
+        const props = {
+            collapsed: true,
+            cbOnCollapse: () => {},
+            items: config.menu,
+            cbMenuHandler: () => {},
+            activeTabEUID: "MainModule",
+            cbGoMain: () => {},
+        };
+        const MenuViewWrapper = shallow(<MenuView {...props} />);
+        expect(toJson(MenuViewWrapper)).toMatchSnapshot();
 
-    MenuViewWrapper.find(".menuItem").forEach(node => {
-        expect(node.hasClass("menuItem")).toEqual(true);
-        expect(node.exists()).toEqual(true);
+        MenuViewWrapper.find(".menuItem").forEach(node => {
+            expect(node.hasClass("menuItem")).toEqual(true);
+            expect(node.exists()).toEqual(true);
+        });
+
+        expect(MenuViewWrapper.find("Menu").prop("defaultSelectedKeys")).toEqual([props.items[0].VALUE]);
+
+        expect(MenuViewWrapper.find("Sider").simulate("click", []));
+        expect(toJson(MenuViewWrapper)).toMatchSnapshot();
     });
-
-    expect(MenuViewWrapper.find("Menu").prop("defaultSelectedKeys")).toEqual([props.items[0].VALUE]);
-
-    expect(MenuViewWrapper.find("Sider").simulate("click", []));
-    expect(toJson(MenuViewWrapper)).toMatchSnapshot();
 });

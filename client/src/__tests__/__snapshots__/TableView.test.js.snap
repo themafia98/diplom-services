@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`TableView test 1`] = `
+exports[`<TableView /> Should TableView render dep on path 1`] = `
 <Provider
   store={
     Object {
@@ -204,7 +204,7 @@ exports[`TableView test 1`] = `
 </Provider>
 `;
 
-exports[`TableView test 2`] = `
+exports[`<TableView /> Should TableView render dep on path 2`] = `
 <Provider
   store={
     Object {

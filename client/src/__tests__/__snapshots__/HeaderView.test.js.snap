@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`HeaderView test 1`] = `
+exports[`<HeaderView /> and children Should render 1`] = `
 <Provider
   store={
     Object {
@@ -740,7 +740,7 @@ exports[`HeaderView test 1`] = `
 </Provider>
 `;
 
-exports[`HeaderView test 2`] = `
+exports[`<HeaderView /> and children Should render 2`] = `
 <Provider
   store={
     Object {

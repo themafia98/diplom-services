@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Comments test 1`] = `
+exports[`<ContentView /> Should render component 1`] = `
 <div
   className="comments"
 >
@@ -63,7 +63,7 @@ exports[`Comments test 1`] = `
 </div>
 `;
 
-exports[`Comments test 2`] = `
+exports[`<ContentView /> Should render component 2`] = `
 <div
   className="comments"
 >
@@ -126,7 +126,7 @@ exports[`Comments test 2`] = `
 </div>
 `;
 
-exports[`Comments test 3`] = `
+exports[`<ContentView /> Should render component 3`] = `
 <div
   className="comments"
 >
@@ -189,7 +189,7 @@ exports[`Comments test 3`] = `
 </div>
 `;
 
-exports[`Comments test 4`] = `
+exports[`<ContentView /> Should render component 4`] = `
 <div
   className="comments"
 >

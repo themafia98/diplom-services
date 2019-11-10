@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`MenuView test 1`] = `
+exports[`<MenuView /> Should MenuView render with itemsMenu 1`] = `
 <Sider
   collapsed={true}
   collapsible={true}
@@ -165,7 +165,7 @@ exports[`MenuView test 1`] = `
 </Sider>
 `;
 
-exports[`MenuView test 2`] = `
+exports[`<MenuView /> Should MenuView render with itemsMenu 2`] = `
 <Sider
   collapsed={true}
   collapsible={true}
