@@ -22,6 +22,7 @@ const MenuView = ({ collapsed, cbOnCollapse, items, cbMenuHandler, activeTabEUID
                 return (
                     <SubMenu
                         key={item.EUID}
+                        className="menuItem"
                         title={
                             <span>
                                 {item.ICON ? <Icon type={item.ICON} /> : null}
@@ -38,7 +39,7 @@ const MenuView = ({ collapsed, cbOnCollapse, items, cbMenuHandler, activeTabEUID
                 );
             } else
                 return (
-                    <Menu.Item onClick={cbMenuHandler} key={item.EUID}>
+                    <Menu.Item className="menuItem" onClick={cbMenuHandler} key={item.EUID}>
                         {item.ICON ? <Icon type={item.ICON} /> : null}
                         <span>{item.VALUE}</span>
                     </Menu.Item>

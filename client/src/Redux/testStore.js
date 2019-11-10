@@ -5,8 +5,23 @@ import firebase from "../delayFirebase/Firebase";
 /** stores for  jest */
 
 const initialState = {
-    tabReducer: {},
-    router: { actionTabs: ["MainModule"] },
+    tabReducer: {
+        parentSize: null,
+        childrenSize: null,
+        flag: false,
+    },
+    publicReducer: {
+        status: "online",
+        prewStatus: "online",
+        requestError: null,
+        caches: {},
+    },
+    router: {
+        currentActionTab: "mainModule",
+        actionTabs: ["MainModule"],
+        routeDataActive: null,
+        routeData: {},
+    },
 };
 
 const middlewares = [thunk.withExtraArgument({ firebase })]; /** test middlewares */

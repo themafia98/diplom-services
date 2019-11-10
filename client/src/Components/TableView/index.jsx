@@ -74,7 +74,7 @@ class TableView extends React.Component {
         if (path === "mainModule__table") {
             return (
                 <Scrollbars>
-                    <table key={uuid()}>
+                    <table key={routePathData + "_table" || "table_basic"}>
                         <thead>
                             <tr>
                                 <td>Статус</td>

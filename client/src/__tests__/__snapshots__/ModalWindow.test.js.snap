@@ -1,0 +1,1503 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ModalWindow test 1`] = `
+<ModalWindow
+  accessStatus={
+    Array [
+      "Открыт",
+      "Выполнен",
+      "Закрыт",
+      "В работе",
+    ]
+  }
+  editableContent=""
+  firebase={Object {}}
+  keyTask=""
+  mode="reg"
+  modeControll=""
+  modeEditContent={false}
+  onCaching={[Function]}
+  onCancelEditModeContent={[Function]}
+  onEdit={[Function]}
+  onRejectEdit={[Function]}
+  onUpdate={[Function]}
+  onUpdateEditable={[Function]}
+  path=""
+  primaryKey=""
+  routeDataActive={Object {}}
+  statusTaskValue="В работе"
+  typeRequst=""
+>
+  <Button
+    block={false}
+    ghost={false}
+    htmlType="button"
+    loading={false}
+    onClick={[Function]}
+    type="primary"
+  >
+    <Wave>
+      <button
+        className="ant-btn ant-btn-primary"
+        onClick={[Function]}
+        type="button"
+      >
+        <span
+          key=".0"
+        >
+          Регистрация
+        </span>
+      </button>
+    </Wave>
+  </Button>
+  <Modal
+    className="modalWindow"
+    confirmLoading={false}
+    maskTransitionName="fade"
+    okType="primary"
+    onCancel={[Function]}
+    onOk={[Function]}
+    title="Регистрация"
+    transitionName="zoom"
+    visible={false}
+    width={520}
+  >
+    <Component
+      className="modalWindow"
+      closeIcon={
+        <span
+          className="ant-modal-close-x"
+        >
+          <Icon
+            className="ant-modal-close-icon"
+            type="close"
+          />
+        </span>
+      }
+      confirmLoading={false}
+      footer={
+        <LocaleReceiver
+          componentName="Modal"
+          defaultLocale={
+            Object {
+              "cancelText": "Cancel",
+              "justOkText": "OK",
+              "okText": "OK",
+            }
+          }
+        >
+          [Function]
+        </LocaleReceiver>
+      }
+      maskTransitionName="fade"
+      okType="primary"
+      onCancel={[Function]}
+      onClose={[Function]}
+      onOk={[Function]}
+      prefixCls="ant-modal"
+      title="Регистрация"
+      transitionName="zoom"
+      visible={false}
+      width={520}
+      wrapClassName=""
+    >
+      <PortalWrapper
+        visible={false}
+      />
+    </Component>
+  </Modal>
+</ModalWindow>
+`;
+
+exports[`ModalWindow test 2`] = `
+<ModalWindow
+  accessStatus={
+    Array [
+      "Открыт",
+      "Выполнен",
+      "Закрыт",
+      "В работе",
+    ]
+  }
+  editableContent=""
+  firebase={Object {}}
+  keyTask=""
+  mode="reg"
+  modeControll=""
+  modeEditContent={false}
+  onCaching={[Function]}
+  onCancelEditModeContent={[Function]}
+  onEdit={[Function]}
+  onRejectEdit={[Function]}
+  onUpdate={[Function]}
+  onUpdateEditable={[Function]}
+  path=""
+  primaryKey=""
+  routeDataActive={Object {}}
+  statusTaskValue="В работе"
+  typeRequst=""
+>
+  <Button
+    block={false}
+    ghost={false}
+    htmlType="button"
+    loading={false}
+    onClick={[Function]}
+    type="primary"
+  >
+    <Wave>
+      <button
+        className="ant-btn ant-btn-primary"
+        onClick={[Function]}
+        type="button"
+      >
+        <span
+          key=".0"
+        >
+          Регистрация
+        </span>
+      </button>
+    </Wave>
+  </Button>
+  <Modal
+    className="modalWindow"
+    confirmLoading={false}
+    maskTransitionName="fade"
+    okType="primary"
+    onCancel={[Function]}
+    onOk={[Function]}
+    title="Регистрация"
+    transitionName="zoom"
+    visible={true}
+    width={520}
+  >
+    <Component
+      className="modalWindow"
+      closeIcon={
+        <span
+          className="ant-modal-close-x"
+        >
+          <Icon
+            className="ant-modal-close-icon"
+            type="close"
+          />
+        </span>
+      }
+      confirmLoading={false}
+      footer={
+        <LocaleReceiver
+          componentName="Modal"
+          defaultLocale={
+            Object {
+              "cancelText": "Cancel",
+              "justOkText": "OK",
+              "okText": "OK",
+            }
+          }
+        >
+          [Function]
+        </LocaleReceiver>
+      }
+      maskTransitionName="fade"
+      okType="primary"
+      onCancel={[Function]}
+      onClose={[Function]}
+      onOk={[Function]}
+      prefixCls="ant-modal"
+      title="Регистрация"
+      transitionName="zoom"
+      visible={true}
+      width={520}
+      wrapClassName=""
+    >
+      <PortalWrapper
+        visible={true}
+      >
+        <Portal
+          getContainer={[Function]}
+        >
+          <Portal
+            containerInfo={
+              <div>
+                <div>
+                  <div
+                    class="ant-modal-mask fade-appear"
+                  />
+                  <div
+                    aria-labelledby="rcDialogTitle0"
+                    class="ant-modal-wrap "
+                    role="dialog"
+                    tabindex="-1"
+                  >
+                    <div
+                      class="ant-modal modalWindow zoom-appear"
+                      role="document"
+                      style="width: 520px;"
+                    >
+                      <div
+                        aria-hidden="true"
+                        style="width: 0px; height: 0px; overflow: hidden;"
+                        tabindex="0"
+                      />
+                      <div
+                        class="ant-modal-content"
+                      >
+                        <button
+                          aria-label="Close"
+                          class="ant-modal-close"
+                          type="button"
+                        >
+                          <span
+                            class="ant-modal-close-x"
+                          >
+                            <i
+                              aria-label="icon: close"
+                              class="anticon anticon-close ant-modal-close-icon"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                class=""
+                                data-icon="close"
+                                fill="currentColor"
+                                focusable="false"
+                                height="1em"
+                                viewBox="64 64 896 896"
+                                width="1em"
+                              >
+                                <path
+                                  d="M563.8 512l262.5-312.9c4.4-5.2.7-13.1-6.1-13.1h-79.8c-4.7 0-9.2 2.1-12.3 5.7L511.6 449.8 295.1 191.7c-3-3.6-7.5-5.7-12.3-5.7H203c-6.8 0-10.5 7.9-6.1 13.1L459.4 512 196.9 824.9A7.95 7.95 0 0 0 203 838h79.8c4.7 0 9.2-2.1 12.3-5.7l216.5-258.1 216.5 258.1c3 3.6 7.5 5.7 12.3 5.7h79.8c6.8 0 10.5-7.9 6.1-13.1L563.8 512z"
+                                />
+                              </svg>
+                            </i>
+                          </span>
+                        </button>
+                        <div
+                          class="ant-modal-header"
+                        >
+                          <div
+                            class="ant-modal-title"
+                            id="rcDialogTitle0"
+                          >
+                            Регистрация
+                          </div>
+                        </div>
+                        <div
+                          class="ant-modal-body"
+                        >
+                          <div>
+                            <input
+                              class="ant-input email"
+                              placeholder="email"
+                              type="text"
+                              value=""
+                            />
+                            <input
+                              class="ant-input password"
+                              placeholder="password"
+                              type="password"
+                              value=""
+                            />
+                            <input
+                              class="ant-input login"
+                              placeholder="login"
+                              type="email"
+                              value=""
+                            />
+                            <input
+                              class="ant-input name"
+                              placeholder="name"
+                              type="text"
+                              value=""
+                            />
+                            <input
+                              class="ant-input surname"
+                              placeholder="surname"
+                              type="text"
+                              value=""
+                            />
+                            <div
+                              class="selectDepartament ant-select ant-select-enabled"
+                            >
+                              <div
+                                aria-autocomplete="list"
+                                aria-controls="test-uuid"
+                                aria-expanded="false"
+                                aria-haspopup="true"
+                                class="ant-select-selection
+            ant-select-selection--single"
+                                role="combobox"
+                                tabindex="0"
+                              >
+                                <div
+                                  class="ant-select-selection__rendered"
+                                >
+                                  <div
+                                    class="ant-select-selection__placeholder"
+                                    style="display: block; user-select: none;"
+                                    unselectable="on"
+                                  >
+                                    Select a departament
+                                  </div>
+                                </div>
+                                <span
+                                  class="ant-select-arrow"
+                                  style="user-select: none;"
+                                  unselectable="on"
+                                >
+                                  <i
+                                    aria-label="icon: down"
+                                    class="anticon anticon-down ant-select-arrow-icon"
+                                  >
+                                    <svg
+                                      aria-hidden="true"
+                                      class=""
+                                      data-icon="down"
+                                      fill="currentColor"
+                                      focusable="false"
+                                      height="1em"
+                                      viewBox="64 64 896 896"
+                                      width="1em"
+                                    >
+                                      <path
+                                        d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                      />
+                                    </svg>
+                                  </i>
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="ant-modal-footer"
+                        >
+                          <div>
+                            <button
+                              class="ant-btn"
+                              type="button"
+                            >
+                              <span>
+                                Cancel
+                              </span>
+                            </button>
+                            <button
+                              class="ant-btn ant-btn-primary"
+                              type="button"
+                            >
+                              <span>
+                                OK
+                              </span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        aria-hidden="true"
+                        style="width: 0px; height: 0px; overflow: hidden;"
+                        tabindex="0"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
+          >
+            <Dialog
+              className="modalWindow"
+              closable={true}
+              closeIcon={
+                <span
+                  className="ant-modal-close-x"
+                >
+                  <Icon
+                    className="ant-modal-close-icon"
+                    type="close"
+                  />
+                </span>
+              }
+              confirmLoading={false}
+              destroyOnClose={false}
+              footer={
+                <LocaleReceiver
+                  componentName="Modal"
+                  defaultLocale={
+                    Object {
+                      "cancelText": "Cancel",
+                      "justOkText": "OK",
+                      "okText": "OK",
+                    }
+                  }
+                >
+                  [Function]
+                </LocaleReceiver>
+              }
+              getContainer={[Function]}
+              getOpenCount={[Function]}
+              keyboard={true}
+              mask={true}
+              maskClosable={true}
+              maskTransitionName="fade"
+              okType="primary"
+              onCancel={[Function]}
+              onClose={[Function]}
+              onOk={[Function]}
+              prefixCls="ant-modal"
+              title="Регистрация"
+              transitionName="zoom"
+              visible={true}
+              width={520}
+              wrapClassName=""
+            >
+              <div>
+                <Animate
+                  animation={Object {}}
+                  component=""
+                  componentProps={Object {}}
+                  key="mask"
+                  onAppear={[Function]}
+                  onEnd={[Function]}
+                  onEnter={[Function]}
+                  onLeave={[Function]}
+                  showProp="visible"
+                  transitionAppear={true}
+                  transitionEnter={true}
+                  transitionLeave={true}
+                  transitionName="fade"
+                >
+                  <AnimateChild
+                    animation={Object {}}
+                    key="mask"
+                    transitionAppear={true}
+                    transitionEnter={true}
+                    transitionLeave={true}
+                    transitionName="fade"
+                  >
+                    <LazyRenderBox
+                      className="ant-modal-mask"
+                      hiddenClassName="ant-modal-mask-hidden"
+                      key="mask"
+                      style={Object {}}
+                      visible={true}
+                    >
+                      <div
+                        className="ant-modal-mask"
+                        style={Object {}}
+                      />
+                    </LazyRenderBox>
+                  </AnimateChild>
+                </Animate>
+                <div
+                  aria-labelledby="rcDialogTitle0"
+                  className="ant-modal-wrap "
+                  onClick={[Function]}
+                  onKeyDown={[Function]}
+                  onMouseUp={[Function]}
+                  role="dialog"
+                  style={
+                    Object {
+                      "display": null,
+                    }
+                  }
+                  tabIndex={-1}
+                >
+                  <Animate
+                    animation={Object {}}
+                    component=""
+                    componentProps={Object {}}
+                    key="dialog"
+                    onAppear={[Function]}
+                    onEnd={[Function]}
+                    onEnter={[Function]}
+                    onLeave={[Function]}
+                    showProp="visible"
+                    transitionAppear={true}
+                    transitionEnter={true}
+                    transitionLeave={true}
+                    transitionName="zoom"
+                  >
+                    <AnimateChild
+                      animation={Object {}}
+                      key="dialog-element"
+                      transitionAppear={true}
+                      transitionEnter={true}
+                      transitionLeave={true}
+                      transitionName="zoom"
+                    >
+                      <LazyRenderBox
+                        className="ant-modal modalWindow"
+                        key="dialog-element"
+                        onMouseDown={[Function]}
+                        role="document"
+                        style={
+                          Object {
+                            "width": 520,
+                          }
+                        }
+                        visible={true}
+                      >
+                        <div
+                          className="ant-modal modalWindow"
+                          onMouseDown={[Function]}
+                          role="document"
+                          style={
+                            Object {
+                              "width": 520,
+                            }
+                          }
+                        >
+                          <div
+                            aria-hidden="true"
+                            style={
+                              Object {
+                                "height": 0,
+                                "overflow": "hidden",
+                                "width": 0,
+                              }
+                            }
+                            tabIndex={0}
+                          />
+                          <div
+                            className="ant-modal-content"
+                          >
+                            <button
+                              aria-label="Close"
+                              className="ant-modal-close"
+                              onClick={[Function]}
+                              type="button"
+                            >
+                              <span
+                                className="ant-modal-close-x"
+                              >
+                                <Icon
+                                  className="ant-modal-close-icon"
+                                  type="close"
+                                >
+                                  <LocaleReceiver
+                                    componentName="Icon"
+                                  >
+                                    <i
+                                      aria-label="icon: close"
+                                      className="anticon anticon-close ant-modal-close-icon"
+                                    >
+                                      <IconReact
+                                        className=""
+                                        type="close-o"
+                                      >
+                                        <svg
+                                          aria-hidden="true"
+                                          className=""
+                                          data-icon="close"
+                                          fill="currentColor"
+                                          focusable="false"
+                                          height="1em"
+                                          key="svg-close"
+                                          viewBox="64 64 896 896"
+                                          width="1em"
+                                        >
+                                          <path
+                                            d="M563.8 512l262.5-312.9c4.4-5.2.7-13.1-6.1-13.1h-79.8c-4.7 0-9.2 2.1-12.3 5.7L511.6 449.8 295.1 191.7c-3-3.6-7.5-5.7-12.3-5.7H203c-6.8 0-10.5 7.9-6.1 13.1L459.4 512 196.9 824.9A7.95 7.95 0 0 0 203 838h79.8c4.7 0 9.2-2.1 12.3-5.7l216.5-258.1 216.5 258.1c3 3.6 7.5 5.7 12.3 5.7h79.8c6.8 0 10.5-7.9 6.1-13.1L563.8 512z"
+                                            key="svg-close-svg-0"
+                                          />
+                                        </svg>
+                                      </IconReact>
+                                    </i>
+                                  </LocaleReceiver>
+                                </Icon>
+                              </span>
+                            </button>
+                            <div
+                              className="ant-modal-header"
+                            >
+                              <div
+                                className="ant-modal-title"
+                                id="rcDialogTitle0"
+                              >
+                                Регистрация
+                              </div>
+                            </div>
+                            <div
+                              className="ant-modal-body"
+                            >
+                              <RegistrationModal
+                                cbOnChange={[Function]}
+                                cbOnChangeSelect={[Function]}
+                              >
+                                <div>
+                                  <Input
+                                    className="email"
+                                    onChange={[Function]}
+                                    placeholder="email"
+                                    size="default"
+                                    type="text"
+                                  >
+                                    <ClearableLabeledInput
+                                      className="email"
+                                      element={
+                                        <input
+                                          className="ant-input email"
+                                          onChange={[Function]}
+                                          onKeyDown={[Function]}
+                                          placeholder="email"
+                                          type="text"
+                                        />
+                                      }
+                                      handleReset={[Function]}
+                                      inputType="input"
+                                      onChange={[Function]}
+                                      placeholder="email"
+                                      prefixCls="ant-input"
+                                      size="default"
+                                      type="text"
+                                      value=""
+                                    >
+                                      <input
+                                        className="ant-input email"
+                                        onChange={[Function]}
+                                        onKeyDown={[Function]}
+                                        placeholder="email"
+                                        type="text"
+                                        value=""
+                                      />
+                                    </ClearableLabeledInput>
+                                  </Input>
+                                  <Input
+                                    className="password"
+                                    onChange={[Function]}
+                                    placeholder="password"
+                                    size="default"
+                                    type="password"
+                                  >
+                                    <ClearableLabeledInput
+                                      className="password"
+                                      element={
+                                        <input
+                                          className="ant-input password"
+                                          onChange={[Function]}
+                                          onKeyDown={[Function]}
+                                          placeholder="password"
+                                          type="password"
+                                        />
+                                      }
+                                      handleReset={[Function]}
+                                      inputType="input"
+                                      onChange={[Function]}
+                                      placeholder="password"
+                                      prefixCls="ant-input"
+                                      size="default"
+                                      type="password"
+                                      value=""
+                                    >
+                                      <input
+                                        className="ant-input password"
+                                        onChange={[Function]}
+                                        onKeyDown={[Function]}
+                                        placeholder="password"
+                                        type="password"
+                                        value=""
+                                      />
+                                    </ClearableLabeledInput>
+                                  </Input>
+                                  <Input
+                                    className="login"
+                                    onChange={[Function]}
+                                    placeholder="login"
+                                    size="default"
+                                    type="email"
+                                  >
+                                    <ClearableLabeledInput
+                                      className="login"
+                                      element={
+                                        <input
+                                          className="ant-input login"
+                                          onChange={[Function]}
+                                          onKeyDown={[Function]}
+                                          placeholder="login"
+                                          type="email"
+                                        />
+                                      }
+                                      handleReset={[Function]}
+                                      inputType="input"
+                                      onChange={[Function]}
+                                      placeholder="login"
+                                      prefixCls="ant-input"
+                                      size="default"
+                                      type="email"
+                                      value=""
+                                    >
+                                      <input
+                                        className="ant-input login"
+                                        onChange={[Function]}
+                                        onKeyDown={[Function]}
+                                        placeholder="login"
+                                        type="email"
+                                        value=""
+                                      />
+                                    </ClearableLabeledInput>
+                                  </Input>
+                                  <Input
+                                    className="name"
+                                    onChange={[Function]}
+                                    placeholder="name"
+                                    size="default"
+                                    type="text"
+                                  >
+                                    <ClearableLabeledInput
+                                      className="name"
+                                      element={
+                                        <input
+                                          className="ant-input name"
+                                          onChange={[Function]}
+                                          onKeyDown={[Function]}
+                                          placeholder="name"
+                                          type="text"
+                                        />
+                                      }
+                                      handleReset={[Function]}
+                                      inputType="input"
+                                      onChange={[Function]}
+                                      placeholder="name"
+                                      prefixCls="ant-input"
+                                      size="default"
+                                      type="text"
+                                      value=""
+                                    >
+                                      <input
+                                        className="ant-input name"
+                                        onChange={[Function]}
+                                        onKeyDown={[Function]}
+                                        placeholder="name"
+                                        type="text"
+                                        value=""
+                                      />
+                                    </ClearableLabeledInput>
+                                  </Input>
+                                  <Input
+                                    className="surname"
+                                    onChange={[Function]}
+                                    placeholder="surname"
+                                    size="default"
+                                    type="text"
+                                  >
+                                    <ClearableLabeledInput
+                                      className="surname"
+                                      element={
+                                        <input
+                                          className="ant-input surname"
+                                          onChange={[Function]}
+                                          onKeyDown={[Function]}
+                                          placeholder="surname"
+                                          type="text"
+                                        />
+                                      }
+                                      handleReset={[Function]}
+                                      inputType="input"
+                                      onChange={[Function]}
+                                      placeholder="surname"
+                                      prefixCls="ant-input"
+                                      size="default"
+                                      type="text"
+                                      value=""
+                                    >
+                                      <input
+                                        className="ant-input surname"
+                                        onChange={[Function]}
+                                        onKeyDown={[Function]}
+                                        placeholder="surname"
+                                        type="text"
+                                        value=""
+                                      />
+                                    </ClearableLabeledInput>
+                                  </Input>
+                                  <Select
+                                    choiceTransitionName="zoom"
+                                    className="selectDepartament"
+                                    onChange={[Function]}
+                                    optionFilterProp="depart"
+                                    placeholder="Select a departament"
+                                    showSearch={false}
+                                    transitionName="slide-up"
+                                  >
+                                    <Select
+                                      allowClear={false}
+                                      autoClearSearchValue={true}
+                                      backfill={false}
+                                      choiceTransitionName="zoom"
+                                      className="selectDepartament"
+                                      clearIcon={
+                                        <Icon
+                                          className="ant-select-clear-icon"
+                                          theme="filled"
+                                          type="close-circle"
+                                        />
+                                      }
+                                      combobox={false}
+                                      defaultActiveFirstOption={true}
+                                      defaultOpen={false}
+                                      dropdownMatchSelectWidth={true}
+                                      dropdownMenuStyle={Object {}}
+                                      dropdownRender={[Function]}
+                                      dropdownStyle={Object {}}
+                                      inputIcon={
+                                        <Icon
+                                          className="ant-select-arrow-icon"
+                                          type="down"
+                                        />
+                                      }
+                                      labelInValue={false}
+                                      menuItemSelectedIcon={
+                                        <Icon
+                                          className="ant-select-selected-icon"
+                                          type="check"
+                                        />
+                                      }
+                                      multiple={false}
+                                      notFoundContent={
+                                        <Context.Consumer>
+                                          [Function]
+                                        </Context.Consumer>
+                                      }
+                                      onBlur={[Function]}
+                                      onChange={[Function]}
+                                      onDeselect={[Function]}
+                                      onFocus={[Function]}
+                                      onInputKeyDown={[Function]}
+                                      onSearch={[Function]}
+                                      onSelect={[Function]}
+                                      optionFilterProp="depart"
+                                      optionLabelProp="children"
+                                      placeholder="Select a departament"
+                                      prefixCls="ant-select"
+                                      removeIcon={
+                                        <Icon
+                                          className="ant-select-remove-icon"
+                                          type="close"
+                                        />
+                                      }
+                                      showAction={
+                                        Array [
+                                          "click",
+                                        ]
+                                      }
+                                      showSearch={false}
+                                      tabIndex={0}
+                                      tags={false}
+                                      tokenSeparators={Array []}
+                                      transitionName="slide-up"
+                                    >
+                                      <SelectTrigger
+                                        ariaId="test-uuid"
+                                        backfillValue=""
+                                        combobox={false}
+                                        defaultActiveFirstOption={true}
+                                        dropdownMatchSelectWidth={true}
+                                        dropdownMenuStyle={Object {}}
+                                        dropdownRender={[Function]}
+                                        dropdownStyle={Object {}}
+                                        empty={false}
+                                        inputValue=""
+                                        menuItemSelectedIcon={
+                                          <Icon
+                                            className="ant-select-selected-icon"
+                                            type="check"
+                                          />
+                                        }
+                                        multiple={false}
+                                        onDropdownVisibleChange={[Function]}
+                                        onMenuDeselect={[Function]}
+                                        onMenuSelect={[Function]}
+                                        onPopupFocus={[Function]}
+                                        options={Array []}
+                                        prefixCls="ant-select"
+                                        showAction={
+                                          Array [
+                                            "click",
+                                          ]
+                                        }
+                                        showSearch={false}
+                                        transitionName="slide-up"
+                                        value={Array []}
+                                        visible={false}
+                                      >
+                                        <Trigger
+                                          action={Array []}
+                                          afterPopupVisibleChange={[Function]}
+                                          ariaId="test-uuid"
+                                          backfillValue=""
+                                          blurDelay={0.15}
+                                          builtinPlacements={
+                                            Object {
+                                              "bottomLeft": Object {
+                                                "offset": Array [
+                                                  0,
+                                                  4,
+                                                ],
+                                                "overflow": Object {
+                                                  "adjustX": 0,
+                                                  "adjustY": 1,
+                                                },
+                                                "points": Array [
+                                                  "tl",
+                                                  "bl",
+                                                ],
+                                              },
+                                              "topLeft": Object {
+                                                "offset": Array [
+                                                  0,
+                                                  -4,
+                                                ],
+                                                "overflow": Object {
+                                                  "adjustX": 0,
+                                                  "adjustY": 1,
+                                                },
+                                                "points": Array [
+                                                  "bl",
+                                                  "tl",
+                                                ],
+                                              },
+                                            }
+                                          }
+                                          combobox={false}
+                                          defaultActiveFirstOption={true}
+                                          defaultPopupVisible={false}
+                                          destroyPopupOnHide={false}
+                                          dropdownMatchSelectWidth={true}
+                                          dropdownMenuStyle={Object {}}
+                                          dropdownRender={[Function]}
+                                          dropdownStyle={Object {}}
+                                          focusDelay={0}
+                                          getDocument={[Function]}
+                                          getPopupClassNameFromAlign={[Function]}
+                                          hideAction={
+                                            Array [
+                                              "click",
+                                            ]
+                                          }
+                                          inputValue=""
+                                          mask={false}
+                                          maskClosable={true}
+                                          menuItemSelectedIcon={
+                                            <Icon
+                                              className="ant-select-selected-icon"
+                                              type="check"
+                                            />
+                                          }
+                                          mouseEnterDelay={0}
+                                          mouseLeaveDelay={0.1}
+                                          multiple={false}
+                                          onDropdownVisibleChange={[Function]}
+                                          onMenuDeselect={[Function]}
+                                          onMenuSelect={[Function]}
+                                          onPopupAlign={[Function]}
+                                          onPopupVisibleChange={[Function]}
+                                          options={Array []}
+                                          popup={
+                                            <DropdownMenu
+                                              ariaId="test-uuid"
+                                              backfillValue=""
+                                              defaultActiveFirstOption={true}
+                                              dropdownMenuStyle={Object {}}
+                                              inputValue=""
+                                              menuItemSelectedIcon={
+                                                <Icon
+                                                  className="ant-select-selected-icon"
+                                                  type="check"
+                                                />
+                                              }
+                                              menuItems={Array []}
+                                              multiple={false}
+                                              onMenuDeselect={[Function]}
+                                              onMenuSelect={[Function]}
+                                              onPopupFocus={[Function]}
+                                              prefixCls="ant-select-dropdown"
+                                              value={Array []}
+                                              visible={false}
+                                            />
+                                          }
+                                          popupAlign={Object {}}
+                                          popupClassName="ant-select-dropdown--single"
+                                          popupPlacement="bottomLeft"
+                                          popupStyle={Object {}}
+                                          popupTransitionName="slide-up"
+                                          popupVisible={false}
+                                          prefixCls="ant-select-dropdown"
+                                          showAction={
+                                            Array [
+                                              "click",
+                                            ]
+                                          }
+                                          showSearch={false}
+                                          transitionName="slide-up"
+                                          value={Array []}
+                                          visible={false}
+                                        >
+                                          <div
+                                            className="selectDepartament ant-select ant-select-enabled"
+                                            key="trigger"
+                                            onBlur={[Function]}
+                                            onClick={[Function]}
+                                            onFocus={[Function]}
+                                            onMouseDown={[Function]}
+                                            onMouseOut={[Function]}
+                                            onMouseUp={[Function]}
+                                            onTouchStart={[Function]}
+                                          >
+                                            <div
+                                              aria-autocomplete="list"
+                                              aria-controls="test-uuid"
+                                              aria-expanded={false}
+                                              aria-haspopup="true"
+                                              className="ant-select-selection
+            ant-select-selection--single"
+                                              key="selection"
+                                              onKeyDown={[Function]}
+                                              role="combobox"
+                                              tabIndex={0}
+                                            >
+                                              <div
+                                                className="ant-select-selection__rendered"
+                                              >
+                                                <div
+                                                  className="ant-select-selection__placeholder"
+                                                  onClick={[Function]}
+                                                  onMouseDown={[Function]}
+                                                  style={
+                                                    Object {
+                                                      "WebkitUserSelect": "none",
+                                                      "display": "block",
+                                                      "userSelect": "none",
+                                                    }
+                                                  }
+                                                  unselectable="on"
+                                                >
+                                                  Select a departament
+                                                </div>
+                                              </div>
+                                              <span
+                                                className="ant-select-arrow"
+                                                key="arrow"
+                                                onClick={[Function]}
+                                                style={
+                                                  Object {
+                                                    "WebkitUserSelect": "none",
+                                                    "userSelect": "none",
+                                                  }
+                                                }
+                                                unselectable="on"
+                                              >
+                                                <Icon
+                                                  className="ant-select-arrow-icon"
+                                                  type="down"
+                                                >
+                                                  <LocaleReceiver
+                                                    componentName="Icon"
+                                                  >
+                                                    <i
+                                                      aria-label="icon: down"
+                                                      className="anticon anticon-down ant-select-arrow-icon"
+                                                    >
+                                                      <IconReact
+                                                        className=""
+                                                        type="down-o"
+                                                      >
+                                                        <svg
+                                                          aria-hidden="true"
+                                                          className=""
+                                                          data-icon="down"
+                                                          fill="currentColor"
+                                                          focusable="false"
+                                                          height="1em"
+                                                          key="svg-down"
+                                                          viewBox="64 64 896 896"
+                                                          width="1em"
+                                                        >
+                                                          <path
+                                                            d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                                            key="svg-down-svg-0"
+                                                          />
+                                                        </svg>
+                                                      </IconReact>
+                                                    </i>
+                                                  </LocaleReceiver>
+                                                </Icon>
+                                              </span>
+                                            </div>
+                                          </div>
+                                        </Trigger>
+                                      </SelectTrigger>
+                                    </Select>
+                                  </Select>
+                                </div>
+                              </RegistrationModal>
+                            </div>
+                            <div
+                              className="ant-modal-footer"
+                            >
+                              <LocaleReceiver
+                                componentName="Modal"
+                                defaultLocale={
+                                  Object {
+                                    "cancelText": "Cancel",
+                                    "justOkText": "OK",
+                                    "okText": "OK",
+                                  }
+                                }
+                              >
+                                <div>
+                                  <Button
+                                    block={false}
+                                    ghost={false}
+                                    htmlType="button"
+                                    loading={false}
+                                    onClick={[Function]}
+                                  >
+                                    <Wave>
+                                      <button
+                                        className="ant-btn"
+                                        onClick={[Function]}
+                                        type="button"
+                                      >
+                                        <span
+                                          key=".0"
+                                        >
+                                          Cancel
+                                        </span>
+                                      </button>
+                                    </Wave>
+                                  </Button>
+                                  <Button
+                                    block={false}
+                                    ghost={false}
+                                    htmlType="button"
+                                    loading={false}
+                                    onClick={[Function]}
+                                    type="primary"
+                                  >
+                                    <Wave>
+                                      <button
+                                        className="ant-btn ant-btn-primary"
+                                        onClick={[Function]}
+                                        type="button"
+                                      >
+                                        <span
+                                          key=".0"
+                                        >
+                                          OK
+                                        </span>
+                                      </button>
+                                    </Wave>
+                                  </Button>
+                                </div>
+                              </LocaleReceiver>
+                            </div>
+                          </div>
+                          <div
+                            aria-hidden="true"
+                            style={
+                              Object {
+                                "height": 0,
+                                "overflow": "hidden",
+                                "width": 0,
+                              }
+                            }
+                            tabIndex={0}
+                          />
+                        </div>
+                      </LazyRenderBox>
+                    </AnimateChild>
+                  </Animate>
+                </div>
+              </div>
+            </Dialog>
+          </Portal>
+        </Portal>
+      </PortalWrapper>
+    </Component>
+  </Modal>
+</ModalWindow>
+`;
+
+exports[`ModalWindow test 3`] = `""`;
+
+exports[`ModalWindow test 4`] = `
+<Fragment>
+  <div
+    className="dropDownWrapper"
+  >
+    <Dropdown
+      mouseEnterDelay={0.15}
+      mouseLeaveDelay={0.1}
+      overlay={
+        <React.Fragment>
+          <Menu>
+            <MenuItem>
+              <p
+                className="jur"
+                onClick={[Function]}
+              >
+                Занести в журнал работы
+              </p>
+            </MenuItem>
+            <MenuItem>
+              <p
+                className="statusTask"
+                onClick={[Function]}
+              >
+                Сменить статус задачи
+              </p>
+            </MenuItem>
+            <MenuItem>
+              <p
+                className="statusTask"
+                onClick={[Function]}
+              >
+                Редактировать задачу
+              </p>
+            </MenuItem>
+          </Menu>
+        </React.Fragment>
+      }
+      placement="bottomLeft"
+    >
+      <p>
+        Управление задачей
+        <Icon
+          type="down"
+        />
+      </p>
+    </Dropdown>
+  </div>
+  <Modal
+    confirmLoading={false}
+    maskTransitionName="fade"
+    okType="primary"
+    transitionName="zoom"
+    visible={false}
+    width={520}
+  />
+</Fragment>
+`;
+
+exports[`ModalWindow test 5`] = `
+<Fragment>
+  <div
+    className="dropDownWrapper"
+  >
+    <Dropdown
+      mouseEnterDelay={0.15}
+      mouseLeaveDelay={0.1}
+      overlay={
+        <React.Fragment>
+          <Menu>
+            <MenuItem>
+              <p
+                className="jur"
+                onClick={[Function]}
+              >
+                Занести в журнал работы
+              </p>
+            </MenuItem>
+            <MenuItem>
+              <p
+                className="statusTask"
+                onClick={[Function]}
+              >
+                Сменить статус задачи
+              </p>
+            </MenuItem>
+            <MenuItem>
+              <p
+                className="statusTask"
+                onClick={[Function]}
+              >
+                Редактировать задачу
+              </p>
+            </MenuItem>
+          </Menu>
+        </React.Fragment>
+      }
+      placement="bottomLeft"
+    >
+      <p>
+        Управление задачей
+        <Icon
+          type="down"
+        />
+      </p>
+    </Dropdown>
+    <p
+      className="modeControllEdit"
+      onClick={[Function]}
+    >
+      Сохранить изменения
+    </p>
+    <p
+      className="modeControllEditReject"
+      onClick={[Function]}
+    >
+      Отмена изменений
+    </p>
+  </div>
+  <Modal
+    className="modalWindow"
+    confirmLoading={false}
+    maskTransitionName="fade"
+    okType="primary"
+    onCancel={[Function]}
+    onOk={[Function]}
+    title="Редактирование"
+    transitionName="zoom"
+    visible={true}
+    width={520}
+  >
+    <TextArea
+      className="editContentDescription"
+      defaultValue=""
+      onChange={[Function]}
+      row={10}
+      value=""
+    />
+  </Modal>
+</Fragment>
+`;
+
+exports[`ModalWindow test 6`] = `
+<Fragment>
+  <div
+    className="dropDownWrapper"
+  >
+    <Dropdown
+      mouseEnterDelay={0.15}
+      mouseLeaveDelay={0.1}
+      overlay={
+        <React.Fragment>
+          <Menu>
+            <MenuItem>
+              <p
+                className="jur"
+                onClick={[Function]}
+              >
+                Занести в журнал работы
+              </p>
+            </MenuItem>
+            <MenuItem>
+              <p
+                className="statusTask"
+                onClick={[Function]}
+              >
+                Сменить статус задачи
+              </p>
+            </MenuItem>
+            <MenuItem>
+              <p
+                className="statusTask"
+                onClick={[Function]}
+              >
+                Редактировать задачу
+              </p>
+            </MenuItem>
+          </Menu>
+        </React.Fragment>
+      }
+      placement="bottomLeft"
+    >
+      <p>
+        Управление задачей
+        <Icon
+          type="down"
+        />
+      </p>
+    </Dropdown>
+    <p
+      className="modeControllEdit"
+      onClick={[Function]}
+    >
+      Сохранить изменения
+    </p>
+    <p
+      className="modeControllEditReject"
+      onClick={[Function]}
+    >
+      Отмена изменений
+    </p>
+  </div>
+  <Modal
+    confirmLoading={false}
+    maskTransitionName="fade"
+    okType="primary"
+    transitionName="zoom"
+    visible={false}
+    width={520}
+  />
+</Fragment>
+`;
+
+exports[`ModalWindow test 7`] = `
+<Fragment>
+  <div
+    className="dropDownWrapper"
+  >
+    <Dropdown
+      mouseEnterDelay={0.15}
+      mouseLeaveDelay={0.1}
+      overlay={
+        <React.Fragment>
+          <Menu>
+            <MenuItem>
+              <p
+                className="jur"
+                onClick={[Function]}
+              >
+                Занести в журнал работы
+              </p>
+            </MenuItem>
+            <MenuItem>
+              <p
+                className="statusTask"
+                onClick={[Function]}
+              >
+                Сменить статус задачи
+              </p>
+            </MenuItem>
+            <MenuItem>
+              <p
+                className="statusTask"
+                onClick={[Function]}
+              >
+                Редактировать задачу
+              </p>
+            </MenuItem>
+          </Menu>
+        </React.Fragment>
+      }
+      placement="bottomLeft"
+    >
+      <p>
+        Управление задачей
+        <Icon
+          type="down"
+        />
+      </p>
+    </Dropdown>
+  </div>
+  <Modal
+    className="modalWindow"
+    confirmLoading={false}
+    maskTransitionName="fade"
+    okType="primary"
+    onCancel={[Function]}
+    onOk={[Function]}
+    title="Редактирование"
+    transitionName="zoom"
+    visible={true}
+    width={520}
+  >
+    <TextArea
+      className="editContentDescription"
+      defaultValue=""
+      onChange={[Function]}
+      row={10}
+      value=""
+    />
+  </Modal>
+</Fragment>
+`;
