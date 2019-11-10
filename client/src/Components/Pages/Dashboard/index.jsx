@@ -37,8 +37,6 @@ class Dashboard extends React.PureComponent {
         publicReducer: PropTypes.object.isRequired,
     };
 
-    dashboardStrem = new EventEmitter();
-
     componentDidUpdate = () => {
         const {
             publicReducer: { requestError = null, status } = {},
@@ -99,6 +97,8 @@ class Dashboard extends React.PureComponent {
             });
         }
     };
+
+    dashboardStrem = new EventEmitter();
 
     onCollapse = collapsed => {
         this.setState({ ...this.state, collapsed });

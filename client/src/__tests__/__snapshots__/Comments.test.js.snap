@@ -1,0 +1,253 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Comments test 1`] = `
+<div
+  className="comments"
+>
+  <div
+    className="commnetsListBox"
+  >
+    <Scrollbars
+      autoHeight={false}
+      autoHeightMax={200}
+      autoHeightMin={0}
+      autoHide={false}
+      autoHideDuration={200}
+      autoHideTimeout={1000}
+      hideTracksWhenNotNeeded={false}
+      renderThumbHorizontal={[Function]}
+      renderThumbVertical={[Function]}
+      renderTrackHorizontal={[Function]}
+      renderTrackVertical={[Function]}
+      renderView={[Function]}
+      tagName="div"
+      thumbMinSize={30}
+      universal={false}
+    >
+      <Comment
+        it={
+          Object {
+            "id": "213123",
+            "message": "sadasdasdas",
+            "time": "DD.MM.YYYY HH:mm",
+            "username": "Павел Петрович",
+          }
+        }
+        key="213123"
+        onDelete={[Function]}
+        rules={true}
+      />
+    </Scrollbars>
+  </div>
+  <div
+    className="comments__controllers"
+  >
+    <TextArea
+      onChange={[Function]}
+      rows={4}
+      value={null}
+    />
+    <Button
+      block={false}
+      className="sendCommentsButton"
+      disabled={false}
+      ghost={false}
+      htmlType="button"
+      loading={false}
+      onClick={[Function]}
+      type="primary"
+    >
+      Опубликовать
+    </Button>
+  </div>
+</div>
+`;
+
+exports[`Comments test 2`] = `
+<div
+  className="comments"
+>
+  <div
+    className="commnetsListBox"
+  >
+    <Scrollbars
+      autoHeight={false}
+      autoHeightMax={200}
+      autoHeightMin={0}
+      autoHide={false}
+      autoHideDuration={200}
+      autoHideTimeout={1000}
+      hideTracksWhenNotNeeded={false}
+      renderThumbHorizontal={[Function]}
+      renderThumbVertical={[Function]}
+      renderTrackHorizontal={[Function]}
+      renderTrackVertical={[Function]}
+      renderView={[Function]}
+      tagName="div"
+      thumbMinSize={30}
+      universal={false}
+    >
+      <Comment
+        it={
+          Object {
+            "id": "213123",
+            "message": "sadasdasdas",
+            "time": "DD.MM.YYYY HH:mm",
+            "username": "Павел Петрович",
+          }
+        }
+        key="213123"
+        onDelete={[Function]}
+        rules={true}
+      />
+    </Scrollbars>
+  </div>
+  <div
+    className="comments__controllers"
+  >
+    <TextArea
+      onChange={[Function]}
+      rows={4}
+      value={null}
+    />
+    <Button
+      block={false}
+      className="sendCommentsButton"
+      disabled={false}
+      ghost={false}
+      htmlType="button"
+      loading={false}
+      onClick={[Function]}
+      type="primary"
+    >
+      Опубликовать
+    </Button>
+  </div>
+</div>
+`;
+
+exports[`Comments test 3`] = `
+<div
+  className="comments"
+>
+  <div
+    className="commnetsListBox"
+  >
+    <Scrollbars
+      autoHeight={false}
+      autoHeightMax={200}
+      autoHeightMin={0}
+      autoHide={false}
+      autoHideDuration={200}
+      autoHideTimeout={1000}
+      hideTracksWhenNotNeeded={false}
+      renderThumbHorizontal={[Function]}
+      renderThumbVertical={[Function]}
+      renderTrackHorizontal={[Function]}
+      renderTrackVertical={[Function]}
+      renderView={[Function]}
+      tagName="div"
+      thumbMinSize={30}
+      universal={false}
+    >
+      <Comment
+        it={
+          Object {
+            "id": "213123",
+            "message": "sadasdasdas",
+            "time": "DD.MM.YYYY HH:mm",
+            "username": "Павел Петрович",
+          }
+        }
+        key="213123"
+        onDelete={[Function]}
+        rules={true}
+      />
+    </Scrollbars>
+  </div>
+  <div
+    className="comments__controllers"
+  >
+    <TextArea
+      onChange={[Function]}
+      rows={4}
+      value={null}
+    />
+    <Button
+      block={false}
+      className="sendCommentsButton"
+      disabled={true}
+      ghost={false}
+      htmlType="button"
+      loading={true}
+      onClick={[Function]}
+      type="primary"
+    >
+      Опубликовать
+    </Button>
+  </div>
+</div>
+`;
+
+exports[`Comments test 4`] = `
+<div
+  className="comments"
+>
+  <div
+    className="commnetsListBox"
+  >
+    <Scrollbars
+      autoHeight={false}
+      autoHeightMax={200}
+      autoHeightMin={0}
+      autoHide={false}
+      autoHideDuration={200}
+      autoHideTimeout={1000}
+      hideTracksWhenNotNeeded={false}
+      renderThumbHorizontal={[Function]}
+      renderThumbVertical={[Function]}
+      renderTrackHorizontal={[Function]}
+      renderTrackVertical={[Function]}
+      renderView={[Function]}
+      tagName="div"
+      thumbMinSize={30}
+      universal={false}
+    >
+      <Comment
+        it={
+          Object {
+            "id": "213123",
+            "message": "sadasdasdas",
+            "time": "DD.MM.YYYY HH:mm",
+            "username": "Павел Петрович",
+          }
+        }
+        key="213123"
+        onDelete={[Function]}
+        rules={true}
+      />
+    </Scrollbars>
+  </div>
+  <div
+    className="comments__controllers"
+  >
+    <TextArea
+      onChange={[Function]}
+      rows={4}
+      value={null}
+    />
+    <Button
+      block={false}
+      className="sendCommentsButton"
+      disabled={false}
+      ghost={false}
+      htmlType="button"
+      loading={false}
+      onClick={[Function]}
+      type="primary"
+    >
+      Опубликовать
+    </Button>
+  </div>
+</div>
+`;
