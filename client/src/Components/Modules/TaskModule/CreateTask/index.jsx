@@ -268,6 +268,7 @@ class CreateTask extends React.PureComponent {
                                     type="date"
                                 />
                                 <Button
+                                    className="submitNewTask"
                                     disabled={this.state.load}
                                     onClick={this.handlerCreateTask}
                                     loading={this.state.load}

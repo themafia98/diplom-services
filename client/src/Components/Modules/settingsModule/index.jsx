@@ -4,9 +4,12 @@ import _ from "lodash";
 import { connect } from "react-redux";
 import { saveComponentStateAction } from "../../../Redux/actions/routerActions";
 import { Collapse, Switch, Input, Button } from "antd";
+
 import ObserverTime from "../../ObserverTime";
 import TitleModule from "../../TitleModule";
+
 const { Panel } = Collapse;
+
 class SettingsModule extends React.PureComponent {
     state = {
         haveChanges: false,
@@ -156,6 +159,7 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
+export { SettingsModule };
 export default connect(
     mapStateToProps,
     mapDispatchToProps,

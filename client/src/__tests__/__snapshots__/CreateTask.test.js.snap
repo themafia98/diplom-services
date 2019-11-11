@@ -1,0 +1,317 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<CreateTask /> template Should be render 1`] = `
+<div
+  className="createTask"
+>
+  <TitleModule
+    additional="Форма создания задачи"
+    classNameTitle="createTaskTitle"
+    title="Новая задача"
+  />
+  <div
+    className="createTask__main"
+  >
+    <div
+      className="col-6 col-task"
+    >
+      <Scrollbars
+        autoHeight={false}
+        autoHeightMax={200}
+        autoHeightMin={0}
+        autoHide={true}
+        autoHideDuration={200}
+        autoHideTimeout={1000}
+        hideTracksWhenNotNeeded={false}
+        renderThumbHorizontal={[Function]}
+        renderThumbVertical={[Function]}
+        renderTrackHorizontal={[Function]}
+        renderTrackVertical={[Function]}
+        renderView={[Function]}
+        tagName="div"
+        thumbMinSize={30}
+        universal={false}
+      >
+        <form
+          className="taskForm"
+          name="taskForm"
+        >
+          <label>
+            Название: 
+          </label>
+          <Input
+            className=""
+            name="name"
+            onChange={[Function]}
+            type="text"
+          />
+          <label>
+            Приоритет: 
+          </label>
+          <Select
+            choiceTransitionName="zoom"
+            className=""
+            defaultValue="Средний"
+            name="priority"
+            onChange={[Function]}
+            showSearch={false}
+            transitionName="slide-up"
+            type="text"
+          >
+            <Option
+              value="Низкий"
+            >
+              Низкий
+            </Option>
+            <Option
+              value="Средний"
+            >
+              Средний
+            </Option>
+            <Option
+              value="Высокий"
+            >
+              Высокий
+            </Option>
+          </Select>
+          <label>
+            Назначить исполнителя/исполнителей:
+          </label>
+          <Select
+            choiceTransitionName="zoom"
+            className=""
+            mode="multiple"
+            name="editor"
+            onChange={[Function]}
+            optionLabelProp="label"
+            placeholder="выберете исполнителя"
+            showSearch={false}
+            transitionName="slide-up"
+          >
+            <Option
+              label="Павел Петрович"
+              value="Павел Петрович"
+            >
+              <span>
+                Павел Петрович
+              </span>
+            </Option>
+            <Option
+              label="Гена Букин"
+              value="Гена Букин"
+            >
+              <span>
+                Гена Букин
+              </span>
+            </Option>
+          </Select>
+          <label>
+            Описание задачи: 
+          </label>
+          <TextArea
+            className=""
+            name="description"
+            onChange={[Function]}
+            rows={8}
+          />
+          <label>
+            Прикрепить файлы: 
+          </label>
+          <File />
+          <label>
+            Срок сдачи: 
+          </label>
+          <PickerWrapper
+            className=""
+            defaultValue={
+              Array [
+                "2019-11-10T21:00:00.000Z",
+                "2019-11-10T21:00:00.000Z",
+              ]
+            }
+            format="DD.MM.YYYY"
+            locale={Object {}}
+            name="date"
+            onChange={[Function]}
+            onOk={[Function]}
+            onOpenChange={[Function]}
+            popupStyle={Object {}}
+            transitionName="slide-up"
+            type="date"
+          />
+          <Button
+            block={false}
+            className="submitNewTask"
+            disabled={false}
+            ghost={false}
+            htmlType="button"
+            loading={false}
+            onClick={[Function]}
+            type="primary"
+          >
+            Создать задачу
+          </Button>
+        </form>
+      </Scrollbars>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`<CreateTask /> template Should be render 2`] = `
+<div
+  className="createTask"
+>
+  <TitleModule
+    additional="Форма создания задачи"
+    classNameTitle="createTaskTitle"
+    title="Новая задача"
+  />
+  <div
+    className="createTask__main"
+  >
+    <div
+      className="col-6 col-task"
+    >
+      <Scrollbars
+        autoHeight={false}
+        autoHeightMax={200}
+        autoHeightMin={0}
+        autoHide={true}
+        autoHideDuration={200}
+        autoHideTimeout={1000}
+        hideTracksWhenNotNeeded={false}
+        renderThumbHorizontal={[Function]}
+        renderThumbVertical={[Function]}
+        renderTrackHorizontal={[Function]}
+        renderTrackVertical={[Function]}
+        renderView={[Function]}
+        tagName="div"
+        thumbMinSize={30}
+        universal={false}
+      >
+        <form
+          className="taskForm"
+          name="taskForm"
+        >
+          <label>
+            Название: 
+          </label>
+          <Input
+            className="isError"
+            name="name"
+            onChange={[Function]}
+            type="text"
+          />
+          <label>
+            Приоритет: 
+          </label>
+          <Select
+            choiceTransitionName="zoom"
+            className=""
+            defaultValue="Средний"
+            name="priority"
+            onChange={[Function]}
+            showSearch={false}
+            transitionName="slide-up"
+            type="text"
+          >
+            <Option
+              value="Низкий"
+            >
+              Низкий
+            </Option>
+            <Option
+              value="Средний"
+            >
+              Средний
+            </Option>
+            <Option
+              value="Высокий"
+            >
+              Высокий
+            </Option>
+          </Select>
+          <label>
+            Назначить исполнителя/исполнителей:
+          </label>
+          <Select
+            choiceTransitionName="zoom"
+            className="isError"
+            mode="multiple"
+            name="editor"
+            onChange={[Function]}
+            optionLabelProp="label"
+            placeholder="выберете исполнителя"
+            showSearch={false}
+            transitionName="slide-up"
+          >
+            <Option
+              label="Павел Петрович"
+              value="Павел Петрович"
+            >
+              <span>
+                Павел Петрович
+              </span>
+            </Option>
+            <Option
+              label="Гена Букин"
+              value="Гена Букин"
+            >
+              <span>
+                Гена Букин
+              </span>
+            </Option>
+          </Select>
+          <label>
+            Описание задачи: 
+          </label>
+          <TextArea
+            className="isError"
+            name="description"
+            onChange={[Function]}
+            rows={8}
+          />
+          <label>
+            Прикрепить файлы: 
+          </label>
+          <File />
+          <label>
+            Срок сдачи: 
+          </label>
+          <PickerWrapper
+            className=""
+            defaultValue={
+              Array [
+                "2019-11-10T21:00:00.000Z",
+                "2019-11-10T21:00:00.000Z",
+              ]
+            }
+            format="DD.MM.YYYY"
+            locale={Object {}}
+            name="date"
+            onChange={[Function]}
+            onOk={[Function]}
+            onOpenChange={[Function]}
+            popupStyle={Object {}}
+            transitionName="slide-up"
+            type="date"
+          />
+          <Button
+            block={false}
+            className="submitNewTask"
+            disabled={true}
+            ghost={false}
+            htmlType="button"
+            loading={true}
+            onClick={[Function]}
+            type="primary"
+          >
+            Создать задачу
+          </Button>
+        </form>
+      </Scrollbars>
+    </div>
+  </div>
+</div>
+`;
