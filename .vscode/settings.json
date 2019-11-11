@@ -1,4 +1,7 @@
 {
+    "git.enableSmartCommit": true,
+    "git.autofetch": true,
+    "git.confirmSync": false,
     "explorer.confirmDelete": true,
     "editor.minimap.enabled": false,
     "editor.formatOnSave": true,
