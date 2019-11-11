@@ -4,11 +4,15 @@ import _ from "lodash";
 import moment from "moment";
 import { Modal, Button, Dropdown, Icon, Menu, Input, DatePicker, message, Select } from "antd";
 import uuid from "uuid/v4";
+
 import { getSchema } from "../../Utils";
 import { TASK_CONTROLL_JURNAL_SCHEMA } from "../../Utils/schema/const";
+
 import RegistrationModal from "./RegistrationModal";
-const { TextArea } = Input;
+import Textarea from "../Textarea";
+
 const { Option } = Select;
+
 class ModalWindow extends React.PureComponent {
     state = {
         login: null,
@@ -21,15 +25,15 @@ class ModalWindow extends React.PureComponent {
         jurnal: {
             timeLost: null,
             date: moment().format("DD.MM.YYYY HH:mm:ss"),
-            description: null,
+            description: null
         },
         description: {
-            value: this.props.editableContent || null,
+            value: this.props.editableContent || null
         },
         error: new Set(),
         loading: false,
         taskStatus: null,
-        type: null,
+        type: null
     };
 
     onMessage = event => {
@@ -44,8 +48,8 @@ class ModalWindow extends React.PureComponent {
                 ...this.state,
                 description: {
                     ...this.state.description,
-                    value: valueTarget,
-                },
+                    value: valueTarget
+                }
             });
     };
 
@@ -62,7 +66,7 @@ class ModalWindow extends React.PureComponent {
             ...this.state,
             modeSetTime: true,
             visible: true,
-            type: type,
+            type: type
         });
     };
 
@@ -79,7 +83,7 @@ class ModalWindow extends React.PureComponent {
             jurnal,
             type: typeValue,
             taskStatus = null,
-            description: { value: valueDescription = "" } = {},
+            description: { value: valueDescription = "" } = {}
         } = this.state;
         const {
             firebase = null,
@@ -90,10 +94,9 @@ class ModalWindow extends React.PureComponent {
             routeDataActive: { key = null } = {},
             primaryKey = null,
             keyTask = null,
-            path = "",
             typeRequst: type = "",
             onCancelEditModeContent,
-            modeEditContent = null,
+            modeEditContent = null
         } = this.props;
 
         if (mode === "reg") {
@@ -111,7 +114,7 @@ class ModalWindow extends React.PureComponent {
                                 email: email,
                                 rules: "false",
                                 position: "Не установлено",
-                                status: "Новый сотрудник",
+                                status: "Новый сотрудник"
                             });
                     })
                     .then(res => {
@@ -124,9 +127,9 @@ class ModalWindow extends React.PureComponent {
                             jurnal: {
                                 timeLost: null,
                                 date: moment().format("DD.MM.YYYY HH:mm:ss"),
-                                description: null,
+                                description: null
                             },
-                            error: new Set(),
+                            error: new Set()
                         });
                     })
                     .catch(error => console.error(error.message));
@@ -140,7 +143,7 @@ class ModalWindow extends React.PureComponent {
                         visible: false,
                         type: null,
                         modeSetTime: false,
-                        loading: false,
+                        loading: false
                     });
                     message.success("Описание изменено.");
                 })
@@ -152,7 +155,7 @@ class ModalWindow extends React.PureComponent {
 
             if (onCaching) {
                 onCaching(data, `${data.id}${primaryKey}`, type, primaryKey, "jurnalWork").then(() =>
-                    this.handleCancel(),
+                    this.handleCancel()
                 );
             }
 
@@ -163,7 +166,7 @@ class ModalWindow extends React.PureComponent {
                 type: null,
                 loading: false,
                 jurnal: { timeLost: null, date: moment().format("DD.MM.YYYY HH:mm:ss"), description: null },
-                error: new Set(),
+                error: new Set()
             });
         } else if (!_.isNull(typeValue) && typeValue === "statusTask") {
             if (_.isNull(taskStatus)) {
@@ -172,7 +175,7 @@ class ModalWindow extends React.PureComponent {
                     visible: false,
                     type: null,
                     modeSetTime: false,
-                    loading: false,
+                    loading: false
                 });
             }
 
@@ -182,7 +185,7 @@ class ModalWindow extends React.PureComponent {
                 visible: false,
                 type: null,
                 modeSetTime: false,
-                loading: false,
+                loading: false
             });
         }
     };
@@ -195,7 +198,7 @@ class ModalWindow extends React.PureComponent {
             modeSetTime: false,
             loading: false,
             jurnal: { timeLost: null, date: moment().format("DD.MM.YYYY HH:mm:ss"), description: null },
-            error: new Set(),
+            error: new Set()
         });
     };
 
@@ -211,27 +214,27 @@ class ModalWindow extends React.PureComponent {
         if (target.className.split(" ")[1] === "surname") {
             this.setState({
                 ...this.state,
-                surname: target.value,
+                surname: target.value
             });
         } else if (target.className.split(" ")[1] === "name") {
             this.setState({
                 ...this.state,
-                name: target.value,
+                name: target.value
             });
         } else if (target.className.split(" ")[1] === "password") {
             this.setState({
                 ...this.state,
-                password: target.value,
+                password: target.value
             });
         } else if (target.className.split(" ")[1] === "login") {
             this.setState({
                 ...this.state,
-                login: target.value,
+                login: target.value
             });
         } else if (target.className.split(" ")[1] === "email") {
             this.setState({
                 ...this.state,
-                email: target.value,
+                email: target.value
             });
         }
     };
@@ -240,7 +243,7 @@ class ModalWindow extends React.PureComponent {
         const {
             jurnal: { timeLost = null, date = moment(), description = null },
             error = [],
-            type: typeState,
+            type: typeState
         } = this.state;
         const { keyTask } = this.props;
 
@@ -272,9 +275,9 @@ class ModalWindow extends React.PureComponent {
                 id: null,
                 editor: "Павел Петрович",
                 date: date,
-                description: description,
+                description: description
             },
-            "no-strict",
+            "no-strict"
         );
         if (validData) return _valid;
         else return false;
@@ -286,11 +289,11 @@ class ModalWindow extends React.PureComponent {
 
         if (target && target.value && target.className.split(" ")[1] === "timeLost") {
             this.setState({
-                jurnal: { ...this.state.jurnal, timeLost: target.value },
+                jurnal: { ...this.state.jurnal, timeLost: target.value }
             });
         } else if (_isValid && event && _isValid) {
             this.setState({
-                jurnal: { ...this.state.jurnal, date: event.toString() },
+                jurnal: { ...this.state.jurnal, date: event.toString() }
             });
         } else if (
             target &&
@@ -298,7 +301,7 @@ class ModalWindow extends React.PureComponent {
             target.className.split(" ")[1] === "description"
         ) {
             this.setState({
-                jurnal: { ...this.state.jurnal, description: target.value },
+                jurnal: { ...this.state.jurnal, description: target.value }
             });
         }
     };
@@ -313,8 +316,7 @@ class ModalWindow extends React.PureComponent {
             onRejectEdit = null,
             modeEditContent = null,
             onCancelEditModeContent = null,
-            editableContent = "",
-            onUpdateEditable,
+            onUpdateEditable
         } = this.props;
 
         const { type: typeState = "", modeSetTime = null, description: { value: valueDesc = "" } = {} } = this.state;
@@ -344,7 +346,7 @@ class ModalWindow extends React.PureComponent {
         } else if (mode === "jur") {
             const {
                 error,
-                jurnal: { description, timeLost },
+                jurnal: { description, timeLost }
             } = this.state;
             moment.locale("ru");
             const menu = (
@@ -408,7 +410,7 @@ class ModalWindow extends React.PureComponent {
                                             <Option key={i + status} value={status}>
                                                 {status}
                                             </Option>
-                                        ),
+                                        )
                                     )}
                                 </Select>
                             </Modal>
@@ -445,7 +447,8 @@ class ModalWindow extends React.PureComponent {
                                     onCancel={onCancelEditModeContent}
                                     title={"Редактирование"}
                                 >
-                                    <TextArea
+                                    <Textarea
+                                        key="textAreaEdit"
                                         className="editContentDescription"
                                         row={10}
                                         onChange={this.onChangeDescription}
@@ -479,11 +482,12 @@ class ModalWindow extends React.PureComponent {
                                         defaultValue={moment()}
                                     />
                                     <span>Кометарии:</span>
-                                    <TextArea
+                                    <Textarea
+                                        key="commentsTextArea"
                                         onChange={this.onChangeTask}
                                         value={description}
                                         className={["description", error.has("description") ? "errorFild" : null].join(
-                                            " ",
+                                            " "
                                         )}
                                         rows={4}
                                     />
@@ -517,7 +521,7 @@ ModalWindow.propTypes = {
     modeEditContent: PropTypes.bool,
     onCancelEditModeContent: PropTypes.func,
     onUpdateEditable: PropTypes.func,
-    statusTaskValue: PropTypes.string,
+    statusTaskValue: PropTypes.string
 };
 
 export default ModalWindow;

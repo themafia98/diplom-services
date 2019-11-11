@@ -16,7 +16,7 @@ import CreateTask from "./CreateTask";
 class TaskModule extends React.PureComponent {
     state = {
         height: null,
-        heightController: null,
+        heightController: null
     };
 
     static propTypes = {
@@ -27,7 +27,7 @@ class TaskModule extends React.PureComponent {
         onOpenPageWithData: PropTypes.func.isRequired,
         onLoadCurrentData: PropTypes.func.isRequired,
         publicReducer: PropTypes.object.isRequired,
-        router: PropTypes.object.isRequired,
+        router: PropTypes.object.isRequired
     };
 
     moduleTask = null;
@@ -47,7 +47,7 @@ class TaskModule extends React.PureComponent {
     handlerNewTask = event => {
         const {
             addTab,
-            router: { currentActionTab },
+            router: { currentActionTab }
         } = this.props;
         if (currentActionTab !== "taskModule_createTask") addTab("taskModule_createTask");
     };
@@ -65,7 +65,12 @@ class TaskModule extends React.PureComponent {
     };
 
     componentDidUpdate = () => {
-        const { onLoadCurrentData, path, router } = this.props;
+        const {
+            onLoadCurrentData,
+            path,
+            router: { shouldUpdate = false, routeData = {} } = {},
+            router = {}
+        } = this.props;
         const { height, heightController } = this.state;
 
         if (!_.isNull(height) && !_.isNull(this.moduleTask)) {
@@ -76,12 +81,15 @@ class TaskModule extends React.PureComponent {
                 this.setState({ ...this.state, height: heightForState, heightController: heightControllerForState });
         }
 
+        const { load = false } = routeData[path.split("_")[0] || path] || {};
+
         if (
-            path.startsWith("taskModule") &&
-            !router.routeData["taskModule"] &&
-            !router.routeData["taskModule_сalendar"]
+            (path.startsWith("taskModule") &&
+                !router.routeData["taskModule"] &&
+                !router.routeData["taskModule_сalendar"]) ||
+            (shouldUpdate && load)
         ) {
-            onLoadCurrentData({ path: "taskModule", storeLoad: "tasks" });
+            onLoadCurrentData({ path: "taskModule", storeLoad: "tasks", shouldUpdate });
         }
     };
 
@@ -95,7 +103,7 @@ class TaskModule extends React.PureComponent {
                 publicReducer: { status = null } = {},
                 onOpenPageWithData,
                 onLoadCurrentData,
-                setCurrentTab,
+                setCurrentTab
             } = this.props;
             return (
                 <React.Fragment>
@@ -168,7 +176,7 @@ class TaskModule extends React.PureComponent {
 const mapStateToProps = state => {
     return {
         publicReducer: state.publicReducer,
-        router: state.router,
+        router: state.router
     };
 };
 
@@ -176,11 +184,9 @@ const mapDispatchToProps = dispatch => {
     return {
         addTab: tab => dispatch(addTabAction(tab)),
         onOpenPageWithData: data => dispatch(openPageWithDataAction(data)),
-        onLoadCurrentData: ({ path, storeLoad }) => dispatch(loadCurrentData({ path, storeLoad })),
+        onLoadCurrentData: ({ path, storeLoad, shouldUpdate }) =>
+            dispatch(loadCurrentData({ path, storeLoad, shouldUpdate }))
     };
 };
 export { TaskModule };
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(TaskModule);
+export default connect(mapStateToProps, mapDispatchToProps)(TaskModule);

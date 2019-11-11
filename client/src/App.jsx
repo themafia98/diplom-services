@@ -20,14 +20,14 @@ import "moment/locale/ru";
 class App extends React.Component {
     state = {
         firebaseLoadState: false,
-        isUser: false,
+        isUser: false
     };
 
     static propTypes = {
         addTab: PropTypes.func.isRequired,
         onSetStatus: PropTypes.func.isRequired,
         router: PropTypes.object.isRequired,
-        publicReducer: PropTypes.object.isRequired,
+        publicReducer: PropTypes.object.isRequired
     };
 
     loadAppSession = () => {
@@ -52,7 +52,7 @@ class App extends React.Component {
             if (!firebaseLoadState) {
                 setTimeout(
                     user ? this.loadAppSession.bind(this) : this.loadApp.bind(this),
-                    Number(config.msTimeoutLoading),
+                    Number(config.msTimeoutLoading)
                 );
             }
         });
@@ -84,18 +84,15 @@ class App extends React.Component {
 const mapStateToProps = state => {
     return {
         router: { ...state.router },
-        publicReducer: { ...state.publicReducer },
+        publicReducer: { ...state.publicReducer }
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
         addTab: async tab => await dispatch(addTabAction(tab)),
-        onSetStatus: status => dispatch(setStatus(status)),
+        onSetStatus: status => dispatch(setStatus({ statusRequst: status }))
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);

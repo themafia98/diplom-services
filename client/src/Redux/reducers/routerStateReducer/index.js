@@ -6,14 +6,16 @@ import {
     OPEN_PAGE_WITH_DATA,
     SAVE_STATE,
     SET_FLAG_LOAD_DATA,
-    UPDATE_ITEM,
+    UPDATE_ITEM
 } from "../../actions/routerActions/const";
+import { SET_STATUS } from "../../actions/publicActions/const";
 
 const initialState = {
     currentActionTab: "mainModule",
     actionTabs: [],
     routeDataActive: null,
     routeData: {},
+    shouldUpdate: false
 };
 
 export default (state = initialState, action) => {
@@ -22,7 +24,7 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 actionTabs: [...state.actionTabs, action.payload],
-                currentActionTab: action.payload,
+                currentActionTab: action.payload
             };
         case OPEN_PAGE_WITH_DATA: {
             const copyRouteData = { ...state.routeData };
@@ -33,7 +35,7 @@ export default (state = initialState, action) => {
                 currentActionTab: action.payload.activePage,
                 actionTabs: [...state.actionTabs, action.payload.activePage],
                 routeDataActive: { ...action.payload.routeDataActive },
-                routeData: copyRouteData,
+                routeData: copyRouteData
             };
         }
         case SAVE_STATE: {
@@ -56,6 +58,7 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 routeData: copyRouteData,
+                shouldUpdate: false
             };
         }
 
@@ -73,8 +76,8 @@ export default (state = initialState, action) => {
                     : null,
                 routeData: {
                     ...state.routeData,
-                    [action.payload.id]: { ...action.payload.updaterItem },
-                },
+                    [action.payload.id]: { ...action.payload.updaterItem }
+                }
             };
         }
         case SET_FLAG_LOAD_DATA: {
@@ -82,7 +85,7 @@ export default (state = initialState, action) => {
             copyRouteData[action.payload.path].load = action.payload.load;
             return {
                 ...state,
-                routeData: copyRouteData,
+                routeData: copyRouteData
             };
         }
         case SET_ACTIVE_TAB: {
@@ -97,6 +100,15 @@ export default (state = initialState, action) => {
                 ...state,
                 currentActionTab: action.payload,
                 routeDataActive: isDataPage ? { ...currentActive } : { ...state.routeDataActive },
+                shouldUpdate: true
+            };
+        }
+        case SET_STATUS: {
+            const { shouldUpdate = false } = action.payload;
+
+            return {
+                ...state,
+                shouldUpdate: shouldUpdate
             };
         }
         case REMOVE_TAB: {
@@ -150,14 +162,14 @@ export default (state = initialState, action) => {
                         : nextTab === state.currentActionTab
                         ? { ...state.routeDataActive }
                         : null,
-                routeData: copyData,
+                routeData: copyData
             };
         }
         case LOGOUT: {
             return {
                 ...state,
                 currentActionTab: "mainModule",
-                actionTabs: [],
+                actionTabs: []
             };
         }
         default:

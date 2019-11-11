@@ -6,7 +6,7 @@ import { TASK_CONTROLL_JURNAL_SCHEMA, USER_SCHEMA, TASK_SCHEMA } from "../../../
 const middlewareCaching = ({ data, primaryKey, type = "GET", pk = null, store = "" }) => (
     dispatch,
     getState,
-    { firebase, getSchema, request, clientDB },
+    { firebase, getSchema, request, clientDB }
 ) => {
     const { requestError, status = "online" } = getState().publicReducer;
     if (status === "online" && store) {
@@ -72,14 +72,14 @@ const middlewareCaching = ({ data, primaryKey, type = "GET", pk = null, store = 
                             data: storeArrayCopy,
                             load: true,
                             primaryKey: primaryKey,
-                            pk: pk ? pk : null,
-                        }),
+                            pk: pk ? pk : null
+                        })
                     );
                 })
                 .catch(error => {
                     if (error.message !== "Network error") return console.error(error.message);
                     if (status === "offline") return;
-                    dispatch(setStatus("offline"));
+                    dispatch(setStatus({ statusRequst: "offline" }));
                     dispatch(errorRequstAction(error.message));
                 });
         }
@@ -87,7 +87,7 @@ const middlewareCaching = ({ data, primaryKey, type = "GET", pk = null, store = 
         const storeItems = clientDB.getAllItems(store);
         storeItems.onsuccess = event => {
             const {
-                target: { result },
+                target: { result }
             } = event;
             const schema =
                 store === "jurnalWork"
@@ -104,8 +104,8 @@ const middlewareCaching = ({ data, primaryKey, type = "GET", pk = null, store = 
                     load: true,
                     pk: pk ? pk : null,
                     primaryKey: primaryKey,
-                    mode: "offline",
-                }),
+                    mode: "offline"
+                })
             );
         };
     }
@@ -120,7 +120,7 @@ const middlewareUpdate = ({
     findStore = "",
     updateStore = findStore,
     multiply = false,
-    limitUpdate = 20,
+    limitUpdate = 20
 }) => (dispatch, getState, { firebase, getSchema, request, clientDB }) => {
     const { status = "online" } = getState().publicReducer;
     const item = itemUpdate.data ? itemUpdate.data : itemUpdate;
@@ -157,14 +157,14 @@ const middlewareUpdate = ({
                                                     ...doc.data(),
                                                     key: id,
                                                     [updateFild]: updateProp,
-                                                    modeAdd: "online",
+                                                    modeAdd: "online"
                                                 };
                                             else {
                                                 updaterItem = {
                                                     ...doc.data(),
                                                     key: id,
                                                     ...updateProp,
-                                                    modeAdd: "online",
+                                                    modeAdd: "online"
                                                 };
                                             }
 
@@ -186,8 +186,8 @@ const middlewareUpdate = ({
                                                     updateItemStateAction({
                                                         updaterItem: updaterItem,
                                                         type: findStore || updateStore,
-                                                        id: id,
-                                                    }),
+                                                        id: id
+                                                    })
                                                 );
 
                                                 clientDB.updateItem(updateStore, updaterItem); // jurnakWork
@@ -196,7 +196,7 @@ const middlewareUpdate = ({
                                         .catch(error => {
                                             if (error.message !== "Network error") return console.error(error.message);
                                             if (status === "offline") return;
-                                            dispatch(setStatus("offline"));
+                                            dispatch(setStatus({ statusRequst: "offline" }));
                                             dispatch(errorRequstAction(error.message));
                                         });
                                 }
@@ -205,7 +205,7 @@ const middlewareUpdate = ({
                     .catch(error => {
                         if (error.message !== "Network error") return console.error(error.message);
                         if (status === "offline") return;
-                        dispatch(setStatus("offline"));
+                        dispatch(setStatus({ statusRequst: "offline" }));
                         dispatch(errorRequstAction(error.message));
                     });
         } else if (updateStore && status === "offline") {
@@ -213,7 +213,7 @@ const middlewareUpdate = ({
             const updater = clientDB.updateItem(findStore || updateStore, updaterItem);
             updater.onsuccess = event => {
                 const {
-                    target: { result },
+                    target: { result }
                 } = event;
                 console.log(`Update item ${result} done.`);
                 const schema =
@@ -233,8 +233,8 @@ const middlewareUpdate = ({
                             updaterItem: updaterItem,
                             type: findStore || updateStore,
                             id: id,
-                            mode: "offline",
-                        }),
+                            mode: "offline"
+                        })
                     );
             };
         }
@@ -273,7 +273,7 @@ const middlewareUpdate = ({
                                                 ...data,
                                                 key: id,
                                                 [updateFild]: newFild,
-                                                modeAdd: "online",
+                                                modeAdd: "online"
                                             };
 
                                         const schema =
@@ -294,8 +294,8 @@ const middlewareUpdate = ({
                                                 updateItemStateAction({
                                                     updaterItem: updaterItem,
                                                     type: findStore || updateStore,
-                                                    id: id,
-                                                }),
+                                                    id: id
+                                                })
                                             );
 
                                             clientDB.updateItem(updateStore, updaterItem);
@@ -304,7 +304,7 @@ const middlewareUpdate = ({
                                     .catch(error => {
                                         if (error.message !== "Network error") return console.error(error.message);
                                         if (status === "offline") return;
-                                        dispatch(setStatus("offline"));
+                                        dispatch(setStatus({ statusRequst: "offline" }));
                                         dispatch(errorRequstAction(error.message));
                                     });
                             }
@@ -321,7 +321,7 @@ const middlewareUpdate = ({
             const updater = clientDB.updateItem(findStore || updateStore, updaterItem);
             updater.onsuccess = event => {
                 const {
-                    target: { result },
+                    target: { result }
                 } = event;
                 console.log(`Update item ${result} done.`);
                 const schema =
@@ -341,8 +341,8 @@ const middlewareUpdate = ({
                             updaterItem: updaterItem,
                             type: findStore || updateStore,
                             id: id,
-                            mode: "offline",
-                        }),
+                            mode: "offline"
+                        })
                     );
             };
         }

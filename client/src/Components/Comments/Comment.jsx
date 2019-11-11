@@ -13,7 +13,7 @@ const Comment = ({ onDelete, rules, it }) => {
         <p className="block-comment">
             {rules ? (
                 <span className="commentControllers">
-                    <span className="editComment icon-edit"></span>
+                    <span style={{ display: "none" }} className="editComment icon-edit"></span>
                     <span onClick={onDeleteEvent} className="deleteComment icon-trash-empty"></span>
                 </span>
             ) : null}
@@ -29,7 +29,7 @@ const Comment = ({ onDelete, rules, it }) => {
 Comment.propTypes = {
     rules: PropTypes.bool.isRequired,
     it: PropTypes.object.isRequired,
-    onDelete: PropTypes.func.isRequired,
+    onDelete: PropTypes.func.isRequired
 };
 
 export default Comment;

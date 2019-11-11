@@ -22,8 +22,7 @@ const RegistrationModal = ({ cbOnChangeSelect, cbOnChange }) => (
 );
 
 RegistrationModal.propTypes = {
-    cbOnChangeSelect: PropTypes.func.isRequired,
-    cbOnChangeSelect: PropTypes.func.isRequired,
+    cbOnChangeSelect: PropTypes.func.isRequired
 };
 
 export default RegistrationModal;

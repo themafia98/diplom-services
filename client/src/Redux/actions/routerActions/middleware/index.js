@@ -8,13 +8,15 @@ export const loadCurrentData = ({
     primaryKey = "uuid",
     storeLoad = "",
     pathValidStart = "_",
-    pathValid = path.startsWith(pathValidStart) ? pathValidStart.split("_")[0] || "" : path.split("__")[0],
+    shouldUpdate = false,
+    pathValid = path.startsWith(pathValidStart) ? pathValidStart.split("_")[0] || "" : path.split("__")[0]
 }) => async (dispatch, getState, { firebase, getSchema, request, clientDB }) => {
     const router = getState().router;
     const { requestError, status = "online" } = getState().publicReducer;
 
-    if (router.routeData && router.routeData[pathValid] && router.routeData[pathValid].load)
+    if (router.routeData && router.routeData[pathValid] && router.routeData[pathValid].load) {
         dispatch(loadFlagAction({ path: pathValid, load: false }));
+    }
     if (status === "online") {
         await firebase.db
             .collection(storeLoad)
@@ -37,14 +39,13 @@ export const loadCurrentData = ({
 
                 cursor.onsuccess = async event => {
                     const {
-                        target: { result: cursor },
+                        target: { result: cursor }
                     } = event;
                     if (!cursor) return await next(true);
 
                     const index = copyStore.findIndex(
                         it =>
-                            (it[primaryKey] || it["key"]) &&
-                            (it[primaryKey] === cursor.key || it["key"] === cursor.key),
+                            (it[primaryKey] || it["key"]) && (it[primaryKey] === cursor.key || it["key"] === cursor.key)
                     );
                     const iEmpty = index === -1;
                     if (copyStore && iEmpty) {
@@ -77,8 +78,13 @@ export const loadCurrentData = ({
                         if (requestError !== null) await dispatch(errorRequstAction(null));
 
                         await dispatch(
-                            saveComponentStateAction({ [storeLoad]: storeCopyValid, load: true, path: pathValid }),
+                            saveComponentStateAction({ [storeLoad]: storeCopyValid, load: true, path: pathValid })
                         );
+
+                        // if (shouldUpdateStore && ) {
+                        //
+                        //     await dispatch(dispatch(setStatus({ shouldUpdate: false })));
+                        // }
                     };
 
                     if (flag && undefiendCopyStore.length) {
@@ -94,26 +100,26 @@ export const loadCurrentData = ({
                 };
             })
             .catch(error => {
-                dispatch(setStatus("offline"));
+                dispatch(setStatus({ statusRequst: "offline" }));
                 dispatch(errorRequstAction(error.message));
                 request.follow(
                     "offline",
                     statusRequst => {
                         if (getState().publicReducer.status !== statusRequst && statusRequst === "online") {
                             request.unfollow();
-                            dispatch(setStatus(statusRequst));
+                            dispatch(setStatus({ statusRequst: "offline" }));
                             dispatch(errorRequstAction(null));
                             dispatch(loadCurrentData({ path, storeLoad }));
                         }
                     },
-                    3000,
+                    3000
                 );
             });
     } else {
         const items = clientDB.getAllItems(storeLoad);
         items.onsuccess = event => {
             const {
-                target: { result },
+                target: { result }
             } = event;
             const schema =
                 storeLoad === "jurnalWork"
@@ -126,7 +132,7 @@ export const loadCurrentData = ({
 
             const itemsCopy = result.map(it => getSchema(schema, it)).filter(Boolean);
             dispatch(
-                saveComponentStateAction({ [storeLoad]: itemsCopy, load: true, path: pathValid, mode: "offline" }),
+                saveComponentStateAction({ [storeLoad]: itemsCopy, load: true, path: pathValid, mode: "offline" })
             );
         };
     }

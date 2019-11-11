@@ -7,6 +7,7 @@ import TitleModule from "../../../TitleModule";
 import moment from "moment";
 import { Button, Input, Select, DatePicker, message } from "antd";
 
+import Textarea from "../../../Textarea";
 import File from "../../../File";
 import uuid from "uuid/v4";
 
@@ -14,7 +15,6 @@ import { getSchema } from "../../../../Utils/index";
 import { TASK_SCHEMA } from "../../../../Utils/schema/const"; // delay
 
 const { Option } = Select;
-const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 
 class CreateTask extends React.PureComponent {
@@ -29,22 +29,22 @@ class CreateTask extends React.PureComponent {
             editor: null,
             description: null,
             comments: [],
-            date: [moment().format("DD.MM.YYYY"), moment().format("DD.MM.YYYY")],
+            date: [moment().format("DD.MM.YYYY"), moment().format("DD.MM.YYYY")]
         },
-        errorBundle: {},
+        errorBundle: {}
     };
 
     static propTypes = {
         height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         onLoadCurrentData: PropTypes.func.isRequired,
         firebase: PropTypes.object,
-        statusApp: PropTypes.string.isRequired,
+        statusApp: PropTypes.string.isRequired
     };
 
     validation = () => {
         const {
             card: { key, status, name, priority, author, editor, description, date },
-            errorBundle: errorBundleState,
+            errorBundle: errorBundleState
         } = this.state;
         let isUpdate = false;
         const copyErrorBundleState = { ...errorBundleState };
@@ -144,7 +144,7 @@ class CreateTask extends React.PureComponent {
         const putAction = clientDB.addItem("tasks", offlineValidHash);
         putAction.onsuccess = event => {
             this.setState({ ...this.state, card: { ...this.state.card, key: uuid() }, load: false }, () =>
-                message.success(`Задача создана.`),
+                message.success(`Задача создана.`)
             );
         };
     };
@@ -176,8 +176,8 @@ class CreateTask extends React.PureComponent {
                         .then(() =>
                             this.setState(
                                 { ...this.state, card: { ...this.state.card, key: uuid() }, load: false },
-                                () => message.success(`Задача создана.`),
-                            ),
+                                () => message.success(`Задача создана.`)
+                            )
                         );
                 })
                 .catch(err => {
@@ -204,7 +204,7 @@ class CreateTask extends React.PureComponent {
                                 <label>Название: </label>
                                 <Input
                                     className={[!_.isEmpty(errorBundle) && errorBundle.name ? "isError" : null].join(
-                                        " ",
+                                        " "
                                     )}
                                     onChange={this.onChangeHandler}
                                     name="name"
@@ -213,7 +213,7 @@ class CreateTask extends React.PureComponent {
                                 <label>Приоритет: </label>
                                 <Select
                                     className={[
-                                        !_.isEmpty(errorBundle) && errorBundle.priority ? "isError" : null,
+                                        !_.isEmpty(errorBundle) && errorBundle.priority ? "isError" : null
                                     ].join(" ")}
                                     onChange={this.onChangeHandlerSelectPriority}
                                     defaultValue="Средний"
@@ -227,7 +227,7 @@ class CreateTask extends React.PureComponent {
                                 <label>Назначить исполнителя/исполнителей:</label>
                                 <Select
                                     className={[!_.isEmpty(errorBundle) && errorBundle.editor ? "isError" : null].join(
-                                        " ",
+                                        " "
                                     )}
                                     onChange={this.onChangeHandlerSelectEditor}
                                     name="editor"
@@ -243,9 +243,10 @@ class CreateTask extends React.PureComponent {
                                     </Option>
                                 </Select>
                                 <label>Описание задачи: </label>
-                                <TextArea
+                                <Textarea
+                                    key="createTextare"
                                     className={[
-                                        !_.isEmpty(errorBundle) && errorBundle.description ? "isError" : null,
+                                        !_.isEmpty(errorBundle) && errorBundle.description ? "isError" : null
                                     ].join(" ")}
                                     name="description"
                                     onChange={this.onChangeHandler}
@@ -256,12 +257,12 @@ class CreateTask extends React.PureComponent {
                                 <label>Срок сдачи: </label>
                                 <RangePicker
                                     className={[!_.isEmpty(errorBundle) && errorBundle.date ? "isError" : null].join(
-                                        " ",
+                                        " "
                                     )}
                                     onChange={this.onChangeHandlerDate}
                                     defaultValue={[
                                         moment(moment().format("DD.MM.YYYY"), dateFormat),
-                                        moment(moment().format("DD.MM.YYYY"), dateFormat),
+                                        moment(moment().format("DD.MM.YYYY"), dateFormat)
                                     ]}
                                     name="date"
                                     format="DD.MM.YYYY"

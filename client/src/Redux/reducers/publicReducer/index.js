@@ -4,7 +4,7 @@ const initialState = {
     status: "online",
     prewStatus: "online",
     requestError: null,
-    caches: {},
+    caches: {}
 };
 
 export default (state = initialState, action) => {
@@ -17,7 +17,7 @@ export default (state = initialState, action) => {
                         ? [...state.requestError, action.payload]
                         : action.payload
                         ? [action.payload]
-                        : null,
+                        : null
             };
         }
         case SET_CACHE: {
@@ -46,7 +46,7 @@ export default (state = initialState, action) => {
 
                 return {
                     ...state,
-                    caches: { ..._items },
+                    caches: { ..._items }
                 };
             } else {
                 keys =
@@ -59,15 +59,16 @@ export default (state = initialState, action) => {
                         : data.key;
                 return {
                     ...state,
-                    caches: { ...state.caches, [keys]: data[0] ? { ...data[0] } : data },
+                    caches: { ...state.caches, [keys]: data[0] ? { ...data[0] } : data }
                 };
             }
         }
         case SET_STATUS: {
+            const { statusRequest = state.status } = action.payload;
             return {
                 ...state,
-                status: action.payload,
-                prewStatus: state.status,
+                status: statusRequest,
+                prewStatus: state.status
             };
         }
         default:

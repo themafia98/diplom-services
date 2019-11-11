@@ -18,7 +18,7 @@ class TableView extends React.Component {
     state = {
         searchText: null,
         sortedInfo: null,
-        isScroll: null,
+        isScroll: null
     };
 
     static propTypes = {
@@ -31,7 +31,7 @@ class TableView extends React.Component {
         flag: PropTypes.bool,
         user: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
         router: PropTypes.object.isRequired,
-        publicReducer: PropTypes.object.isRequired,
+        publicReducer: PropTypes.object.isRequired
     };
 
     componentDidMount = () => {
@@ -52,7 +52,7 @@ class TableView extends React.Component {
     handleFilter = (pagination, filters, sorter) => {
         this.setState({
             filteredInfo: filters,
-            sortedInfo: sorter,
+            sortedInfo: sorter
         });
     };
 
@@ -62,7 +62,7 @@ class TableView extends React.Component {
             flag,
             router,
             publicReducer: { requestError },
-            height: heightProps,
+            height: heightProps
         } = this.props;
         const { routeData } = router;
         const routePathData = router.currentActionTab.split("_")[0];
@@ -74,7 +74,7 @@ class TableView extends React.Component {
         if (path === "mainModule__table") {
             return (
                 <Scrollbars>
-                    <table key={routePathData + "_table" || "table_basic"}>
+                    <table key={uuid()}>
                         <thead>
                             <tr>
                                 <td>Статус</td>
@@ -131,7 +131,7 @@ class TableView extends React.Component {
                             </Output>
                         );
                     },
-                    ...this.getColumnSearchProps("status"),
+                    ...this.getColumnSearchProps("status")
                 },
                 {
                     title: "Наименование",
@@ -144,7 +144,7 @@ class TableView extends React.Component {
                     onFilter: (value, record) => record.name.includes(value),
                     sorter: (a, b) => a.name.length - b.name.length,
                     sortDirections: ["descend", "ascend"],
-                    ...this.getColumnSearchProps("name"),
+                    ...this.getColumnSearchProps("name")
                 },
                 {
                     title: "Приоритет",
@@ -156,7 +156,7 @@ class TableView extends React.Component {
                     },
                     sorter: (a, b) => a.priority.length - b.priority.length,
                     sortDirections: ["descend", "ascend"],
-                    ...this.getColumnSearchProps("priority"),
+                    ...this.getColumnSearchProps("priority")
                 },
                 {
                     title: "Автор",
@@ -168,7 +168,7 @@ class TableView extends React.Component {
                     render: (text, row, index) => {
                         return <Output key={uuid()}>{text}</Output>;
                     },
-                    ...this.getColumnSearchProps("author"),
+                    ...this.getColumnSearchProps("author")
                 },
                 {
                     title: "Исполнитель",
@@ -180,7 +180,7 @@ class TableView extends React.Component {
                     render: (text, row, index) => {
                         return <Output key={uuid()}>{text}</Output>;
                     },
-                    ...this.getColumnSearchProps("editor"),
+                    ...this.getColumnSearchProps("editor")
                 },
                 {
                     title: "Сроки",
@@ -192,8 +192,8 @@ class TableView extends React.Component {
                     render: (text, row, index) => {
                         return <Output key={uuid()}> {text}</Output>;
                     },
-                    ...this.getColumnSearchProps("date"),
-                },
+                    ...this.getColumnSearchProps("date")
+                }
             ];
             let tasksCopy = null;
             if (tasks) tasksCopy = [...tasks];
@@ -213,6 +213,7 @@ class TableView extends React.Component {
             return (
                 <Table
                     pagination={{ pageSize: 14 }}
+                    key={uuid()}
                     size="medium"
                     scroll={{ y: height }}
                     onChange={this.handleFilter}
@@ -224,7 +225,7 @@ class TableView extends React.Component {
                                 const {
                                     onOpenPageWithData,
                                     router: { currentActionTab, actionTabs },
-                                    setCurrentTab,
+                                    setCurrentTab
                                 } = this.props;
                                 const page = `${currentActionTab}__${record.key}`;
                                 const index = actionTabs.findIndex(tab => tab === page);
@@ -232,12 +233,12 @@ class TableView extends React.Component {
                                 if (!isFind) {
                                     onOpenPageWithData({
                                         activePage: page,
-                                        routeDataActive: record,
+                                        routeDataActive: record
                                     });
                                 } else {
                                     setCurrentTab(actionTabs[index]);
                                 }
-                            }, // click row
+                            } // click row
                         };
                     }}
                 />
@@ -317,7 +318,7 @@ class TableView extends React.Component {
                         {_.isArray(text) ? (!isDateString ? text.join(" , ") : text.join(" - ")) : text}
                     </Output>
                 );
-        },
+        }
     });
 
     handleSearch = (selectedKeys, confirm) => {
@@ -363,18 +364,15 @@ class TableView extends React.Component {
 const mapStateToProps = state => {
     return {
         router: state.router,
-        publicReducer: state.publicReducer,
+        publicReducer: state.publicReducer
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
         onOpenPageWithData: data => dispatch(openPageWithDataAction(data)),
-        onLoadCurrentData: ({ path, storeLoad }) => dispatch(loadCurrentData({ path, storeLoad })),
+        onLoadCurrentData: ({ path, storeLoad }) => dispatch(loadCurrentData({ path, storeLoad }))
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(TableView);
+export default connect(mapStateToProps, mapDispatchToProps)(TableView);

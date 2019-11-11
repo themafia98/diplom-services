@@ -4,22 +4,21 @@ import Scrollbars from "react-custom-scrollbars";
 import _ from "lodash";
 import uuid from "uuid/v4";
 import moment from "moment";
-import { Input, Button, Empty, message, notification } from "antd";
+import { Button, Empty, message, notification } from "antd";
 
+import Textarea from "../Textarea";
 import Comment from "./Comment";
-
-const { TextArea } = Input;
 
 class Comments extends React.PureComponent {
     state = {
         onUpdateDisabled: false,
-        value: null,
+        value: null
     };
 
     static propTypes = {
         rules: PropTypes.bool.isRequired,
         onUpdate: PropTypes.func.isRequired,
-        data: PropTypes.object.isRequired,
+        data: PropTypes.object.isRequired
     };
 
     addCommentsDelay = _.debounce(event => {
@@ -31,14 +30,14 @@ class Comments extends React.PureComponent {
                 id: uuid(),
                 time: moment().format("DD.MM.YYYY HH:mm"),
                 username: "Павел Петрович",
-                message: value,
+                message: value
             };
-            this.setState({ ...this.state, onUpdateDisabled: true, value: null });
+            this.setState({ ...this.state, onUpdateDisabled: true, value: "" });
             onUpdate(key, "UPDATE", [...comments, comment], "comments", { ...data }, "tasks").then(() => {
                 message.success("Коментарий добавлен.");
                 return this.setState({
                     ...this.state,
-                    onUpdateDisabled: false,
+                    onUpdateDisabled: false
                 });
             });
         } else return notification.error({ message: "Ошибка", description: "Некоректные данные." });
@@ -61,7 +60,7 @@ class Comments extends React.PureComponent {
         const { target: { value = "" } = {} } = event;
         this.setState({
             ...this.state,
-            value: value,
+            value: value
         });
     };
 
@@ -81,7 +80,7 @@ class Comments extends React.PureComponent {
                     <Scrollbars>{this.renderComments(comments)}</Scrollbars>
                 </div>
                 <div className="comments__controllers">
-                    <TextArea value={value} onChange={this.onChange} rows={4} />
+                    <Textarea key="comments_textarea_fild" value={value} onChange={this.onChange} rows={4} />
                     <Button
                         onClick={this.addComments}
                         disabled={onUpdateDisabled}
