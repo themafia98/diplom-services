@@ -13,7 +13,7 @@ import { SET_STATUS } from "../../actions/publicActions/const";
 const initialState = {
     currentActionTab: "mainModule",
     actionTabs: [],
-    routeDataActive: null,
+    routeDataActive: {},
     routeData: {},
     shouldUpdate: false
 };
@@ -73,7 +73,7 @@ export default (state = initialState, action) => {
                     ? { ...action.payload.updaterItem }
                     : state.routeDataActive
                     ? { ...state.routeDataActive }
-                    : null,
+                    : {},
                 routeData: {
                     ...state.routeData,
                     [action.payload.id]: { ...action.payload.updaterItem }
@@ -161,7 +161,7 @@ export default (state = initialState, action) => {
                         ? { ...state.routeData[uuid] }
                         : nextTab === state.currentActionTab
                         ? { ...state.routeDataActive }
-                        : null,
+                        : {},
                 routeData: copyData
             };
         }

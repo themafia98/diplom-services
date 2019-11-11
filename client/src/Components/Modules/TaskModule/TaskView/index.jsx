@@ -11,6 +11,8 @@ import { TASK_SCHEMA } from "../../../../Utils/schema/const";
 
 import { middlewareCaching, middlewareUpdate } from "../../../../Redux/actions/publicActions/middleware";
 
+import uuid from "uuid/v4";
+
 import ModalWindow from "../../../ModalWindow";
 import Output from "../../../Output";
 import TitleModule from "../../../TitleModule";
@@ -32,11 +34,11 @@ class TaskView extends React.PureComponent {
             author: null,
             editor: null,
             description: null,
-            date: null,
+            date: null
         },
         primaryKey: "___taskViewSetJurnal",
         showModalJur: false,
-        modeEditContent: false,
+        modeEditContent: false
     };
 
     static propTypes = {
@@ -44,7 +46,7 @@ class TaskView extends React.PureComponent {
         onUpdate: PropTypes.func.isRequired,
         height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         onLoadCurrentData: PropTypes.func,
-        data: PropTypes.oneOfType([PropTypes.object, () => null]),
+        data: PropTypes.oneOfType([PropTypes.object, () => null])
     };
 
     static getDerivedStateFromProps = (props, state) => {
@@ -56,7 +58,7 @@ class TaskView extends React.PureComponent {
         const {
             publicReducer: { caches = {} } = {},
             router: { routeDataActive: { key = "" } = {}, routeDataActive = {} },
-            onCaching,
+            onCaching
         } = this.props;
         const { primaryKey: primaryKeyState } = this.state;
         const primaryKey = !_.isEmpty(routeDataActive) && key ? key : "";
@@ -67,13 +69,13 @@ class TaskView extends React.PureComponent {
 
     onEdit = event => {
         const {
-            router: { routeDataActive = {} },
+            router: { routeDataActive = {} }
         } = this.props;
         this.setState({
             ...this.state,
             modeEditContent: false,
             modeControll: "edit",
-            modeControllEdit: { ...routeDataActive },
+            modeControllEdit: { ...routeDataActive }
         });
     };
 
@@ -90,8 +92,8 @@ class TaskView extends React.PureComponent {
                 author: null,
                 editor: null,
                 description: null,
-                date: null,
-            },
+                date: null
+            }
         });
     };
 
@@ -106,8 +108,8 @@ class TaskView extends React.PureComponent {
             modeEditContent: false,
             modeControllEdit: {
                 ...this.state.modeControllEdit,
-                date: newDate,
-            },
+                date: newDate
+            }
         });
     };
 
@@ -121,8 +123,8 @@ class TaskView extends React.PureComponent {
             modeEditContent: false,
             modeControllEdit: {
                 ...this.state.modeControllEdit,
-                date: newDate,
-            },
+                date: newDate
+            }
         });
     };
 
@@ -134,8 +136,8 @@ class TaskView extends React.PureComponent {
                 modeEditContent: false,
                 modeControllEdit: {
                     ...this.state.modeControllEdit,
-                    name: value,
-                },
+                    name: value
+                }
             });
         } else if (_.isObject(event)) {
             if (_.isArray(event)) {
@@ -144,8 +146,8 @@ class TaskView extends React.PureComponent {
                     modeEditContent: false,
                     modeControllEdit: {
                         ...this.state.modeControllEdit,
-                        editor: [...event],
-                    },
+                        editor: [...event]
+                    }
                 });
             }
         } else if (typeof event === "string") {
@@ -156,8 +158,8 @@ class TaskView extends React.PureComponent {
                     modeEditContent: false,
                     modeControllEdit: {
                         ...this.state.modeControllEdit,
-                        status: event,
-                    },
+                        status: event
+                    }
                 });
             } else {
                 return this.setState({
@@ -165,8 +167,8 @@ class TaskView extends React.PureComponent {
                     modeEditContent: false,
                     modeControllEdit: {
                         ...this.state.modeControllEdit,
-                        priority: event,
-                    },
+                        priority: event
+                    }
                 });
             }
         }
@@ -187,7 +189,7 @@ class TaskView extends React.PureComponent {
                 { ...routeDataActive },
                 "tasks",
                 "tasks",
-                true,
+                true
             )
                 .then(() => {
                     this.onRejectEdit(event);
@@ -201,14 +203,14 @@ class TaskView extends React.PureComponent {
     onCancelEditModeContent = event => {
         this.setState({
             ...this.state,
-            modeEditContent: false,
+            modeEditContent: false
         });
     };
 
     onEditContentMode = event => {
         this.setState({
             ...this.state,
-            modeEditContent: true,
+            modeEditContent: true
         });
     };
 
@@ -217,7 +219,7 @@ class TaskView extends React.PureComponent {
             ...this.state,
             mode: "jur",
             showModalJur: true,
-            modeEditContent: false,
+            modeEditContent: false
         });
     };
 
@@ -262,25 +264,23 @@ class TaskView extends React.PureComponent {
 
     render() {
         const {
-            router: {
-                routeDataActive = {},
-                routeDataActive: {
-                    key = "",
-                    status = "",
-                    priority = "",
-                    name = "",
-                    author = "",
-                    editor = [],
-                    date = [],
-                    description = "",
-                } = {},
-            },
+            router: { routeDataActive = {} },
             onCaching,
             onUpdate,
             publicReducer: { caches = null } = {},
-            path,
+            path
         } = this.props;
         const { mode, primaryKey, modeControll, modeEditContent, modeControllEdit } = this.state;
+        const {
+            key = "",
+            status = "",
+            priority = "",
+            name = "",
+            author = "",
+            editor = [],
+            date = [],
+            description = ""
+        } = routeDataActive || {};
         let jurnalDataKeys = null;
         if (caches && primaryKey && routeDataActive && key) {
             const keys = Object.keys(caches);
@@ -293,14 +293,14 @@ class TaskView extends React.PureComponent {
             "Открыт",
             "Выполнен",
             "Закрыт",
-            "В работе",
+            "В работе"
         ]).filter(Boolean);
 
         const accessPriority = _.uniq([
             modeControllEdit.priority ? modeControllEdit.priority : priority ? priority : null,
             "Высокий",
             "Средний",
-            "Низкий",
+            "Низкий"
         ]).filter(Boolean);
         const rulesEdit = true;
 
@@ -325,8 +325,8 @@ class TaskView extends React.PureComponent {
                         mode={mode}
                         path={path}
                         typeRequst={"POST"}
-                        key={key}
-                        keyTask={key}
+                        key={key ? key : uuid()}
+                        keyTask={key ? key : null}
                         accessStatus={accessStatus}
                         onUpdate={onUpdate}
                         onEdit={this.onEdit}
@@ -439,7 +439,7 @@ class TaskView extends React.PureComponent {
                                                         : date[0]
                                                         ? date[0]
                                                         : moment(),
-                                                    "DD.MM.YYYY",
+                                                    "DD.MM.YYYY"
                                                 )}
                                                 className="dateStartEdit"
                                                 onChange={this.onChangeEditableStart}
@@ -459,7 +459,7 @@ class TaskView extends React.PureComponent {
                                                         : date[1]
                                                         ? date[1]
                                                         : moment(),
-                                                    "DD.MM.YYYY",
+                                                    "DD.MM.YYYY"
                                                 )}
                                                 className="dateEndEdit"
                                                 onChange={this.onChangeEditableEnd}
@@ -476,7 +476,7 @@ class TaskView extends React.PureComponent {
                                         className={[
                                             "description",
                                             " descriptionTask__content",
-                                            rulesEdit ? "editable" : null,
+                                            rulesEdit ? "editable" : null
                                         ].join(" ")}
                                     >
                                         {description ? description : "Описания задачи нету."}
@@ -511,7 +511,7 @@ class TaskView extends React.PureComponent {
 const mapStateTopProps = state => {
     return {
         router: state.router,
-        publicReducer: state.publicReducer,
+        publicReducer: state.publicReducer
     };
 };
 
@@ -528,7 +528,7 @@ const mapDispatchToProps = dispatch => {
             findStore,
             updateStore,
             multiply = false,
-            limitUpdate,
+            limitUpdate
         ) =>
             await dispatch(
                 middlewareUpdate({
@@ -540,14 +540,11 @@ const mapDispatchToProps = dispatch => {
                     findStore,
                     updateStore,
                     multiply,
-                    limitUpdate,
-                }),
-            ),
+                    limitUpdate
+                })
+            )
     };
 };
 
 export { TaskView };
-export default connect(
-    mapStateTopProps,
-    mapDispatchToProps,
-)(TaskView);
+export default connect(mapStateTopProps, mapDispatchToProps)(TaskView);

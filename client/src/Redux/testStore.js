@@ -8,20 +8,20 @@ export const initialState = {
     tabReducer: {
         parentSize: null,
         childrenSize: null,
-        flag: false,
+        flag: false
     },
     publicReducer: {
         status: "online",
         prewStatus: "online",
         requestError: null,
-        caches: {},
+        caches: {}
     },
     router: {
         currentActionTab: "mainModule",
         actionTabs: ["MainModule"],
-        routeDataActive: null,
-        routeData: {},
-    },
+        routeDataActive: {},
+        routeData: {}
+    }
 };
 
 const middlewares = [thunk.withExtraArgument({ firebase })]; /** test middlewares */
