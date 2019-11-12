@@ -242,9 +242,10 @@ exports[`<ModalWindow /> Should works with mode 4`] = `
     visible={true}
     width={520}
   >
-    <TextArea
+    <Textarea
       className="editContentDescription"
       defaultValue=""
+      key="textAreaEdit"
       onChange={[Function]}
       row={10}
       value=""
@@ -384,9 +385,10 @@ exports[`<ModalWindow /> Should works with mode 6`] = `
     visible={true}
     width={520}
   >
-    <TextArea
+    <Textarea
       className="editContentDescription"
       defaultValue=""
+      key="textAreaEdit"
       onChange={[Function]}
       row={10}
       value=""

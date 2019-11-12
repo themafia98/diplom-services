@@ -108,8 +108,9 @@ exports[`<CreateTask /> template Should be render 1`] = `
           <label>
             Описание задачи: 
           </label>
-          <TextArea
+          <Textarea
             className=""
+            key="createTextare"
             name="description"
             onChange={[Function]}
             rows={8}
@@ -125,8 +126,8 @@ exports[`<CreateTask /> template Should be render 1`] = `
             className=""
             defaultValue={
               Array [
-                "2019-11-10T21:00:00.000Z",
-                "2019-11-10T21:00:00.000Z",
+                "2019-11-11T21:00:00.000Z",
+                "2019-11-11T21:00:00.000Z",
               ]
             }
             format="DD.MM.YYYY"
@@ -266,8 +267,9 @@ exports[`<CreateTask /> template Should be render 2`] = `
           <label>
             Описание задачи: 
           </label>
-          <TextArea
+          <Textarea
             className="isError"
+            key="createTextare"
             name="description"
             onChange={[Function]}
             rows={8}
@@ -283,8 +285,8 @@ exports[`<CreateTask /> template Should be render 2`] = `
             className=""
             defaultValue={
               Array [
-                "2019-11-10T21:00:00.000Z",
-                "2019-11-10T21:00:00.000Z",
+                "2019-11-11T21:00:00.000Z",
+                "2019-11-11T21:00:00.000Z",
               ]
             }
             format="DD.MM.YYYY"
