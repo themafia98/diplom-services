@@ -82,7 +82,7 @@
         },
         {
             "EUID": "contactModule_chat",
-            "VALUE": "Чат",
+            "VALUE": "Корпоративный чат",
             "ICON": null,
             "PARENT_CODE": "contactModule"
         },

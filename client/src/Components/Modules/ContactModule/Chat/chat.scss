@@ -37,7 +37,7 @@
         .ant-list-items {
             .ant-list-item {
                 &:hover {
-                    background: rgba(199, 201, 240, 0.65);
+                    background: rgba(46, 150, 247, 0.2);
                 }
             }
         }
@@ -45,11 +45,7 @@
         .ant-list-item {
             padding: 0;
             cursor: pointer;
-            .ant-list-item-meta-title {
-                p {
-                    // margin-bottom: 6px;
-                }
-            }
+
             .ant-list-item-meta > * {
                 & > * {
                     cursor: pointer;
