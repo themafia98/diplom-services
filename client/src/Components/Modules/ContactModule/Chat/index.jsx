@@ -72,7 +72,17 @@ class Chat extends React.PureComponent {
                     </div>
                     <div className="col-chat-content">
                         <div className="chat_content">
-                            <div className="chat_content__header">Chat header</div>
+                            <div className="chat_content__header">
+                                <p className="chat_content__header__title">Окно чата</p>
+                                <p
+                                    className={[
+                                        "chat_content__header__statusChat",
+                                        !isLoad ? "isOffline" : "isOnline"
+                                    ].join(" ")}
+                                >
+                                    {!isLoad ? "не активен" : "активен"}
+                                </p>
+                            </div>
                             <div className="chat_content__main">
                                 <p>{!isLoad ? "Loading" : "Chat main"}</p>
                             </div>

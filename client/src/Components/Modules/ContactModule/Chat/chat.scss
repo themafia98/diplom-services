@@ -79,12 +79,24 @@
     .chat_content__header {
         display: flex;
         align-items: center;
+        justify-content: space-between;
         padding: 0 8px;
         height: 50px;
         background-color: $chatHeader;
         border: 1px solid #0439;
         color: white;
         font-weight: bold;
+        p {
+            margin-bottom: 0;
+        }
+    }
+
+    .isOffline {
+        color: red;
+    }
+
+    .isOnline {
+        color: green;
     }
 
     .chat_content__main {
