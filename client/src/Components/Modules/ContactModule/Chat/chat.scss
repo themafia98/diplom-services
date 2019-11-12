@@ -1,0 +1,97 @@
+.chat {
+    .ContactModule__chatTitle {
+        font-size: 30px;
+        font-weight: bold;
+        margin: 0;
+        user-select: none;
+        margin-bottom: 10px;
+    }
+
+    .ant-skeleton {
+        width: 90%;
+        padding: 10px 10px 15px 10px;
+        border-radius: 0;
+    }
+
+    .item-skeleton:not(:last-child) {
+        border-bottom: none;
+    }
+
+    .chat_main__createRoom {
+        margin-top: 4px;
+        width: 90%;
+    }
+
+    .chat__main {
+        display: flex;
+        .ant-menu,
+        .menuLoading-skeleton {
+            width: 90%;
+            height: calc(100vh - 235px);
+            background: #fff;
+            border-radius: 0;
+            border: 1px solid #0439;
+            // border-bottom: none;
+        }
+
+        .ant-list-items {
+            .ant-list-item {
+                &:hover {
+                    background: rgba(199, 201, 240, 0.65);
+                }
+            }
+        }
+
+        .ant-list-item {
+            padding: 0;
+            cursor: pointer;
+            .ant-list-item-meta-title {
+                p {
+                    // margin-bottom: 6px;
+                }
+            }
+            .ant-list-item-meta > * {
+                & > * {
+                    cursor: pointer;
+                    & > * {
+                        cursor: pointer;
+                    }
+                }
+            }
+            .ant-list-item-meta {
+                max-width: 95%;
+                padding: 10px 0 0 10px;
+                .ant-avatar-square {
+                    border-radius: 0;
+                }
+            }
+        }
+
+        .descriptionChatMenu {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+    }
+
+    .chat_content__header {
+        display: flex;
+        align-items: center;
+        padding: 0 8px;
+        height: 50px;
+        background-color: $chatHeader;
+        border: 1px solid #0439;
+        color: white;
+        font-weight: bold;
+    }
+
+    .chat_content__main {
+        height: calc(100vh - 248px);
+        border: 1px solid #0439;
+        border-top: none;
+        background-color: #fff;
+        padding: 0 8px;
+    }
+}

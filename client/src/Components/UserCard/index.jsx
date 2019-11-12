@@ -4,7 +4,7 @@ import { Avatar, Button, Icon, Dropdown, Menu } from "antd";
 
 class UserCard extends React.Component {
     static propTypes = {
-        cbShowModal: PropTypes.func.isRequired,
+        cbShowModal: PropTypes.func
     };
 
     render() {

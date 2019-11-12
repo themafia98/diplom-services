@@ -17,11 +17,11 @@ import MenuView from "../../MenuView";
 
 class Dashboard extends React.PureComponent {
     state = {
-        collapsed: false,
+        collapsed: true,
         status: "online",
         menuItems: config.menu,
         counterError: 0,
-        showLoader: false,
+        showLoader: false
     };
 
     static propTypes = {
@@ -34,14 +34,14 @@ class Dashboard extends React.PureComponent {
         onLogoutAction: PropTypes.func.isRequired,
         router: PropTypes.object.isRequired,
         tabData: PropTypes.object.isRequired,
-        publicReducer: PropTypes.object.isRequired,
+        publicReducer: PropTypes.object.isRequired
     };
 
     componentDidUpdate = () => {
         const {
             publicReducer: { requestError = null, status } = {},
             router,
-            router: { currentActionTab },
+            router: { currentActionTab }
         } = this.props;
         const { showLoader, status: statusState, counterError } = this.state;
 
@@ -59,7 +59,7 @@ class Dashboard extends React.PureComponent {
                 return setTimeout(() => {
                     this.setState({
                         status: status,
-                        showLoader: false,
+                        showLoader: false
                     });
                 }, 500);
             } else if (_.isNull(requestError) && status === "online") {
@@ -67,7 +67,7 @@ class Dashboard extends React.PureComponent {
                     this.setState({
                         counter: 0,
                         status: status,
-                        showLoader: false,
+                        showLoader: false
                     });
                 }, 500);
             }
@@ -75,7 +75,7 @@ class Dashboard extends React.PureComponent {
             return setTimeout(() => {
                 this.setState({
                     status: status,
-                    showLoader: false,
+                    showLoader: false
                 });
             }, 500);
         }
@@ -87,13 +87,13 @@ class Dashboard extends React.PureComponent {
             counterError === 0
         ) {
             this.setState({ counterError: counterError + 1 }, () =>
-                notification.error({ message: "Ошибка", description: "Интернет соединение недоступно." }),
+                notification.error({ message: "Ошибка", description: "Интернет соединение недоступно." })
             );
         }
 
         if (statusState !== status) {
             this.setState({
-                status: status,
+                status: status
             });
         }
     };
@@ -112,7 +112,7 @@ class Dashboard extends React.PureComponent {
     updateLoader = event => {
         const {
             router,
-            router: { currentActionTab },
+            router: { currentActionTab }
         } = this.props;
         const { routeData = {} } = router;
         const copyRouteData = { ...routeData };
@@ -122,7 +122,7 @@ class Dashboard extends React.PureComponent {
 
         if (keys.length) {
             this.setState({
-                showLoader: true,
+                showLoader: true
             });
         }
     };
@@ -159,7 +159,7 @@ class Dashboard extends React.PureComponent {
             removeTab,
             onLoadCurrentData,
             tabData,
-            onSetChildrenSizeAction,
+            onSetChildrenSizeAction
         } = this.props;
         const actionTabsCopy = [...actionTabs];
         const isFind = actionTabsCopy.findIndex(tab => tab === path) !== -1;
@@ -189,7 +189,7 @@ class Dashboard extends React.PureComponent {
             router: { actionTabs = [], currentActionTab } = {},
             firebase,
             onErrorRequstAction,
-            setCurrentTab,
+            setCurrentTab
         } = this.props;
 
         const actionTabsData = this.getActionTabs(actionTabs, menuItems);
@@ -234,7 +234,7 @@ const mapStateToProps = state => {
     return {
         router: { ...state.router },
         tabData: state.tabReducer,
-        publicReducer: state.publicReducer,
+        publicReducer: state.publicReducer
     };
 };
 
@@ -246,12 +246,9 @@ const mapDispatchToProps = dispatch => {
         onSetChildrenSizeAction: (size, flag) => dispatch(setChildrenSizeAction(size, flag)),
         onLoadCurrentData: ({ path, storeLoad }) => dispatch(loadCurrentData({ path, storeLoad })),
         onErrorRequstAction: async error => await errorRequstAction(error),
-        onLogoutAction: async () => await dispatch(logoutAction()),
+        onLogoutAction: async () => await dispatch(logoutAction())
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(Dashboard);
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
 export { Dashboard };

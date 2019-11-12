@@ -19,7 +19,7 @@ const Bar = ({ data }) => (
                     color: "#38bcb2",
                     size: 4,
                     padding: 1,
-                    stagger: true,
+                    stagger: true
                 },
                 {
                     id: "lines",
@@ -28,22 +28,22 @@ const Bar = ({ data }) => (
                     color: "#eed312",
                     rotation: -45,
                     lineWidth: 6,
-                    spacing: 10,
-                },
+                    spacing: 10
+                }
             ]}
             fill={[
                 {
                     match: {
-                        id: "fries",
+                        id: "fries"
                     },
-                    id: "dots",
+                    id: "dots"
                 },
                 {
                     match: {
-                        id: "sandwich",
+                        id: "sandwich"
                     },
-                    id: "lines",
-                },
+                    id: "lines"
+                }
             ]}
             borderColor={{ from: "color", modifiers: [["darker", 1.6]] }}
             axisTop={null}
@@ -54,14 +54,14 @@ const Bar = ({ data }) => (
                 tickRotation: 0,
                 legend: "Статистика количества выполненных задач",
                 legendPosition: "middle",
-                legendOffset: 32,
+                legendOffset: 32
             }}
             axisLeft={{
                 tickSize: 5,
                 tickPadding: 5,
                 tickRotation: 0,
                 legendPosition: "middle",
-                legendOffset: -40,
+                legendOffset: -40
             }}
             labelSkipWidth={12}
             labelSkipHeight={12}
@@ -84,11 +84,11 @@ const Bar = ({ data }) => (
                         {
                             on: "hover",
                             style: {
-                                itemOpacity: 1,
-                            },
-                        },
-                    ],
-                },
+                                itemOpacity: 1
+                            }
+                        }
+                    ]
+                }
             ]}
             animate={false}
             motionStiffness={90}
@@ -98,6 +98,6 @@ const Bar = ({ data }) => (
 );
 
 Bar.propTypes = {
-    data: PropTypes.object.isRequired,
+    data: PropTypes.array.isRequired
 };
 export default Bar;

@@ -26,6 +26,14 @@ body {
     flex: 0 0 33.333%;
 }
 
+.col-chat-menu {
+    flex: 0 0 20%;
+}
+
+.col-chat-content {
+    flex: 0 0 80%;
+}
+
 p,
 span {
     cursor: context-menu;
