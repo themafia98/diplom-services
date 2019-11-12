@@ -105,6 +105,7 @@ class TaskModule extends React.PureComponent {
                 onLoadCurrentData,
                 setCurrentTab
             } = this.props;
+            //
             return (
                 <React.Fragment>
                     {isList ? (
@@ -151,7 +152,7 @@ class TaskModule extends React.PureComponent {
                                 height={heightController ? height - heightController : height}
                                 key={path.split("__")[1]}
                                 onLoadCurrentData={onLoadCurrentData}
-                                data={router.routeData[path]}
+                                data={router.routeData[path.split("__")[1]]}
                             />
                         </Scrollbars>
                     ) : (

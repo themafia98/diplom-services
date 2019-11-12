@@ -23,7 +23,7 @@ const { Option } = Select;
 
 class TaskView extends React.PureComponent {
     state = {
-        uuid: this.props.uuid ? this.props.uuid : null,
+        key: this.props.uuid ? this.props.uuid : null,
         mode: "jur",
         modeControll: "default",
         modeControllEdit: {
@@ -50,7 +50,7 @@ class TaskView extends React.PureComponent {
     };
 
     static getDerivedStateFromProps = (props, state) => {
-        if (props.uuid !== state.uuid) return { ...state, uuid: props.uuid };
+        if (props.key !== state.key) return { ...state, key: props.key };
         else return state;
     };
 
@@ -58,10 +58,11 @@ class TaskView extends React.PureComponent {
         const {
             publicReducer: { caches = {} } = {},
             router: { routeDataActive: { key = "" } = {}, routeDataActive = {} },
-            onCaching
+            onCaching,
+            data: { key: keyProps = "" } = {}
         } = this.props;
         const { primaryKey: primaryKeyState } = this.state;
-        const primaryKey = !_.isEmpty(routeDataActive) && key ? key : "";
+        const primaryKey = !_.isEmpty(routeDataActive) && key ? key : keyProps ? keyProps : "";
         if (_.isEmpty(caches) || (key && !caches[key]) || !key) {
             onCaching(null, primaryKey, "GET", primaryKeyState, "jurnalWork");
         }

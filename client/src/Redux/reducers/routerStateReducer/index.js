@@ -96,6 +96,7 @@ export default (state = initialState, action) => {
                 isDataPage = true;
                 currentActive = state.routeData[content];
             }
+
             return {
                 ...state,
                 currentActionTab: action.payload,
@@ -148,20 +149,29 @@ export default (state = initialState, action) => {
                 typeof nextTab === "string" && action.payload.type === "itemTab" ? nextTab.split("__")[1] : nextTab;
 
             const copyData = routeDataNew;
+
+            const current =
+                copyData[nextTab.split("__")[1]] && copyData[nextTab.split("__")[1]].key === nextTab.split("__")[1]
+                    ? { ...copyData[nextTab.split("__")[1]] }
+                    : state.routeDataActive && deleteKey === state.routeDataActive.key && uuid && !deleteKeyOnce
+                    ? routeDataNew[uuid]
+                    : state.routeDataActive &&
+                      nextTab.split("__")[1] &&
+                      state.routeDataActive.key === nextTab.split("__")[1]
+                    ? { ...state.routeDataActive }
+                    : deleteKeyOnce && uuid
+                    ? { ...state.routeData[uuid] }
+                    : nextTab === state.currentActionTab && uuid
+                    ? { ...state.routeData[uuid] }
+                    : nextTab === state.currentActionTab
+                    ? { ...state.routeDataActive }
+                    : {};
+
             return {
                 ...state,
                 currentActionTab: nextTab || "mainModule",
                 actionTabs: filterArray,
-                routeDataActive:
-                    state.routeDataActive && deleteKey === state.routeDataActive.key && uuid && !deleteKeyOnce
-                        ? routeDataNew[uuid]
-                        : deleteKeyOnce && uuid
-                        ? { ...state.routeData[uuid] }
-                        : nextTab === state.currentActionTab && uuid
-                        ? { ...state.routeData[uuid] }
-                        : nextTab === state.currentActionTab
-                        ? { ...state.routeDataActive }
-                        : {},
+                routeDataActive: current,
                 routeData: copyData
             };
         }
