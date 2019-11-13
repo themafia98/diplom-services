@@ -13,10 +13,10 @@ const Textarea = ({
     name = null
 }) => {
     const valueProps = value || value === "" ? { value } : {};
-
+    console.log(row);
     return (
         <TextArea
-            className={className}
+            className={["defaultTextArea", className].join(" ")}
             row={row}
             onKeyDown={onKeyDown}
             onClick={onClick}

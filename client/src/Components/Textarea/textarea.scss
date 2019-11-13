@@ -1,0 +1,16 @@
+textarea.defaultTextArea {
+    &.ant-input {
+        height: 120px;
+    }
+}
+
+textarea {
+    &::-webkit-scrollbar-thumb {
+        border-radius: 50px;
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+}

@@ -81,8 +81,10 @@
         .descriptionTask__content {
             display: block;
             width: 98%;
+            overflow: hidden;
             min-height: 50px;
             max-height: 150px;
+            height: 150px;
             font-size: 15px;
             padding: 10px;
             word-break: break-word;

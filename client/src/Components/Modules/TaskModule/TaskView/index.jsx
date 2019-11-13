@@ -472,7 +472,7 @@ class TaskView extends React.PureComponent {
                                 </Descriptions>
                                 <div className="descriptionTask">
                                     <p className="descriptionTask__title">Задача</p>
-                                    <p
+                                    <div
                                         onClick={rulesEdit ? this.onEditContentMode : null}
                                         className={[
                                             "description",
@@ -480,11 +480,15 @@ class TaskView extends React.PureComponent {
                                             rulesEdit ? "editable" : null
                                         ].join(" ")}
                                     >
-                                        {description ? description : "Описания задачи нету."}
-                                        <span className="icon-wrapper">
-                                            <i className="icon-pencil"></i>
-                                        </span>
-                                    </p>
+                                        <Scrollbars style={{ height: "150px" }}>
+                                            {description ? description : "Описания задачи нету."}
+
+                                            <span className="icon-wrapper">
+                                                <i className="icon-pencil"></i>
+                                            </span>
+                                        </Scrollbars>
+                                    </div>
+
                                     <p className="task_file">Дополнительные файлы для задачи</p>
                                     <File />
                                     <p className="descriptionTask__comment">Коментарии</p>
