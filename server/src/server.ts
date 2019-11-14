@@ -1,17 +1,25 @@
-import express from "express";
+import express, { Router, Request, Response } from "express";
+import os from "os";
+import { Server } from "http";
+
+const coreCpuCount = os.cpus().length;
+console.log("coreCpuCount:", coreCpuCount);
 
 const app = express();
+app.disabled("X-Powered-By");
 const router = express.Router();
 
 const port: string = process.env.PORT || "3001";
 
 app.set("port", port);
-app.use("/.netlify/functions/server", router); // path must route to lambda
-const server = app.listen(port, () => console.log("server start"));
 
-app.get("/admin", (req, res) => {
-    console.log(req);
-    return res.send(200);
+const server: Server = app.listen(port, () => console.log("server start"));
+
+const rest: Router = app.use("/rest", router);
+
+rest.get("/rest", (request: Request, response: Response) => {
+    console.log(request);
+    return response.send(200);
 });
 
 export { server, app };
