@@ -6,14 +6,17 @@
   "author": "Pavel Petrovich <gaara33377@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "run-p start:**",
-    "start:lambda": "netlify-lambda serve server",
+    "server": "ts-node ./server/src/server.ts",
+    "start": "cross-env NODE_ENV=development nodemon ./server/src/server.ts --pretty",
+    "dev": "run-p start:**",
+    "start:lambda": "netlify-lambda serve server/build",
     "start:app": "cd client && yarn start",
     "build": "run-p build:**",
-    "build:lambda": "netlify-lambda build server",
+    "build:ts": "cd server && tsc",
+    "build:lambda": "netlify-lambda build server/build",
     "build:app": "cd client && yarn build",
     "deploy:draft": "netlify deploy --dir=client/build --functions=functions",
-    "deploy:prod": "yarn build && netlify deploy --dir=client/build --functions=functions --prod"
+    "deploy:prod": "yarn build:ts && yarn build && netlify deploy --dir=client/build && cd ../ && --functions=functions --prod"
   },
   "dependencies": {
     "bcrypt": "^3.0.6",

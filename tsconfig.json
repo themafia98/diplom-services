@@ -1,8 +1,8 @@
 {
     "compilerOptions": {
-        "target": "es2017",
-        "outDir": "./build",
-        "rootDir": "./src",
+        "target": "es2019",
+        "outDir": "./server/build",
+        "rootDir": "./server/src",
         "moduleResolution": "node",
         "module": "commonjs",
         "declaration": true,
@@ -38,9 +38,9 @@
 
         "lib": ["es2017", "dom"],
         "types": ["node"],
-        "typeRoots": ["node_modules/@types", "src/types"]
+        "typeRoots": ["node_modules/@types", "server/src/types"]
     },
-    "include": ["src/**/*.ts"],
+    "include": ["server/src/**/*.ts"],
     "exclude": ["node_modules/**"],
     "compileOnSave": false
 }

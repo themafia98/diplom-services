@@ -7,7 +7,7 @@ class ContactModule extends React.PureComponent {
     static propTypes = {
         onErrorRequstAction: PropTypes.func.isRequired,
         path: PropTypes.string.isRequired,
-        firebase: PropTypes.object.isRequired,
+        firebase: PropTypes.object.isRequired
     };
 
     getContactContentByPath = path => {

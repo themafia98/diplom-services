@@ -30,6 +30,7 @@
     "sentry": "^0.1.2",
     "uuid": "^3.3.3"
   },
+  "proxy": "http://127.0.0.1",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
