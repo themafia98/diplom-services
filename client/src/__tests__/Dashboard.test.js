@@ -19,19 +19,19 @@ describe("<Dashboard /> main page", () => {
                 status: "online",
                 prewStatus: "online",
                 requestError: null,
-                caches: {},
+                caches: {}
             },
             router: {
                 currentActionTab: "MainModule",
                 actionTabs: ["MainModule"],
                 routeDataActive: null,
-                routeData: { MainModule: { name: "MainModule" } },
+                routeData: { MainModule: { name: "MainModule" } }
             },
-            tabData: {},
+            tabData: {}
         };
         const DashboardWrapper = shallow(<Dashboard {...props} />);
 
-        expect(DashboardWrapper.find("MenuView").prop("collapsed")).toEqual(false);
+        expect(DashboardWrapper.find("MenuView").prop("collapsed")).toEqual(true);
         expect(DashboardWrapper.find("ContentView").prop("path")).toEqual(props.router.currentActionTab);
 
         DashboardWrapper.setState({ collapsed: true });

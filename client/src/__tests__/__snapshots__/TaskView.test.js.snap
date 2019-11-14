@@ -164,19 +164,46 @@ exports[`<TaskView /> template Should be render with data 1`] = `
           >
             Задача
           </p>
-          <p
-            className="description  descriptionTask__content editable"
+          <div
+            className="description descriptionTask__content editable"
             onClick={[Function]}
           >
-            asdasd
-            <span
-              className="icon-wrapper"
+            <Scrollbars
+              autoHeight={false}
+              autoHeightMax={200}
+              autoHeightMin={0}
+              autoHide={false}
+              autoHideDuration={200}
+              autoHideTimeout={1000}
+              hideTracksWhenNotNeeded={false}
+              renderThumbHorizontal={[Function]}
+              renderThumbVertical={[Function]}
+              renderTrackHorizontal={[Function]}
+              renderTrackVertical={[Function]}
+              renderView={[Function]}
+              style={
+                Object {
+                  "height": "150px",
+                }
+              }
+              tagName="div"
+              thumbMinSize={30}
+              universal={false}
             >
-              <i
-                className="icon-pencil"
-              />
-            </span>
-          </p>
+              <span
+                className="descriptionContent"
+              >
+                asdasd
+              </span>
+              <span
+                className="icon-wrapper"
+              >
+                <i
+                  className="icon-pencil"
+                />
+              </span>
+            </Scrollbars>
+          </div>
           <p
             className="task_file"
           >

@@ -36,6 +36,27 @@ class ModalWindow extends React.PureComponent {
         type: null
     };
 
+    static propTypes = {
+        firebase: PropTypes.object,
+        onCaching: PropTypes.func,
+        primaryKey: PropTypes.string,
+        routeDataActive: PropTypes.object,
+        mode: PropTypes.string,
+        path: PropTypes.string,
+        typeRequst: PropTypes.string,
+        keyTask: PropTypes.string,
+        accessStatus: PropTypes.array,
+        onUpdate: PropTypes.func,
+        onEdit: PropTypes.func,
+        onRejectEdit: PropTypes.func,
+        modeControll: PropTypes.string,
+        editableContent: PropTypes.string,
+        modeEditContent: PropTypes.bool,
+        onCancelEditModeContent: PropTypes.func,
+        onUpdateEditable: PropTypes.func,
+        statusTaskValue: PropTypes.string
+    };
+
     onMessage = event => {
         message.warning("Вы в режиме редактирования карточки.");
     };
@@ -43,7 +64,8 @@ class ModalWindow extends React.PureComponent {
     onChangeDescription = event => {
         const { currentTarget: { value: valueTarget = "" } = {} } = event;
         const { description: { value = "" } = {} } = this.state;
-        if ((value || value === "") && value !== valueTarget)
+        debugger;
+        if (valueTarget || valueTarget === "")
             this.setState({
                 ...this.state,
                 description: {
@@ -285,6 +307,7 @@ class ModalWindow extends React.PureComponent {
 
     onChangeTask = event => {
         if (!event) return;
+        debugger;
         const { target = {}, _isValid = null } = event;
 
         if (target && target.value && target.className.split(" ")[1] === "timeLost") {
@@ -374,50 +397,51 @@ class ModalWindow extends React.PureComponent {
                 </React.Fragment>
             );
             switch (typeState) {
-                case "statusTask": {
-                    return (
-                        <div className="dropDownWrapper">
-                            <Dropdown overlay={menu}>
-                                <p>
-                                    Управление задачей
-                                    <Icon type="down" />
-                                </p>
-                            </Dropdown>
-                            {modeControll === "edit" ? (
-                                <React.Fragment>
-                                    <p onClick={onUpdateEditable} className="modeControllEdit">
-                                        Сохранить изменения
+                case "statusTask":
+                    {
+                        return (
+                            <div className="dropDownWrapper">
+                                <Dropdown overlay={menu}>
+                                    <p>
+                                        Управление задачей
+                                        <Icon type="down" />
                                     </p>
-                                    <p onClick={onRejectEdit} className="modeControllEditReject">
-                                        Отмена изменений
-                                    </p>
-                                </React.Fragment>
-                            ) : null}
-                            <Modal
-                                className="modalWindow changeStatus"
-                                visible={this.state.visible}
-                                onOk={this.handleOk}
-                                onCancel={this.handleCancel}
-                                title="Смена статуса"
-                            >
-                                <Select onChange={this.onChangeSelect} defaultValue={statusTaskValue}>
-                                    {accessStatus.map((status, i) =>
-                                        i === 0 ? (
-                                            <Option key={i + status} value={statusTaskValue}>
-                                                {statusTaskValue}
-                                            </Option>
-                                        ) : (
-                                            <Option key={i + status} value={status}>
-                                                {status}
-                                            </Option>
-                                        )
-                                    )}
-                                </Select>
-                            </Modal>
-                        </div>
-                    );
-                }
-
+                                </Dropdown>
+                                {modeControll === "edit" ? (
+                                    <React.Fragment>
+                                        <p onClick={onUpdateEditable} className="modeControllEdit">
+                                            Сохранить изменения
+                                        </p>
+                                        <p onClick={onRejectEdit} className="modeControllEditReject">
+                                            Отмена изменений
+                                        </p>
+                                    </React.Fragment>
+                                ) : null}
+                                <Modal
+                                    className="modalWindow changeStatus"
+                                    visible={this.state.visible}
+                                    onOk={this.handleOk}
+                                    onCancel={this.handleCancel}
+                                    title="Смена статуса"
+                                >
+                                    <Select onChange={this.onChangeSelect} defaultValue={statusTaskValue}>
+                                        {accessStatus.map((status, i) =>
+                                            i === 0 ? (
+                                                <Option key={i + status} value={statusTaskValue}>
+                                                    {statusTaskValue}
+                                                </Option>
+                                            ) : (
+                                                <Option key={i + status} value={status}>
+                                                    {status}
+                                                </Option>
+                                            )
+                                        )}
+                                    </Select>
+                                </Modal>
+                            </div>
+                        );
+                    }
+                    const today = moment().format("DD.MM.YYYY");
                 default: {
                     return (
                         <React.Fragment>
@@ -502,26 +526,5 @@ class ModalWindow extends React.PureComponent {
         } else return null;
     }
 }
-
-ModalWindow.propTypes = {
-    firebase: PropTypes.object,
-    onCaching: PropTypes.func,
-    primaryKey: PropTypes.string,
-    routeDataActive: PropTypes.object,
-    mode: PropTypes.string,
-    path: PropTypes.string,
-    typeRequst: PropTypes.string,
-    keyTask: PropTypes.string,
-    accessStatus: PropTypes.array,
-    onUpdate: PropTypes.func,
-    onEdit: PropTypes.func,
-    onRejectEdit: PropTypes.func,
-    modeControll: PropTypes.string,
-    editableContent: PropTypes.string,
-    modeEditContent: PropTypes.bool,
-    onCancelEditModeContent: PropTypes.func,
-    onUpdateEditable: PropTypes.func,
-    statusTaskValue: PropTypes.string
-};
 
 export default ModalWindow;

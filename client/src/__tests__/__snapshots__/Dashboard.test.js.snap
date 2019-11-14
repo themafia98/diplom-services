@@ -87,7 +87,7 @@ exports[`<Dashboard /> main page Should render component 1`] = `
             "EUID": "contactModule_chat",
             "ICON": null,
             "PARENT_CODE": "contactModule",
-            "VALUE": "Чат",
+            "VALUE": "Корпоративный чат",
           },
           Object {
             "EUID": "contactModule_feedback",
@@ -237,7 +237,7 @@ exports[`<Dashboard /> main page Should render component 2`] = `
             "EUID": "contactModule_chat",
             "ICON": null,
             "PARENT_CODE": "contactModule",
-            "VALUE": "Чат",
+            "VALUE": "Корпоративный чат",
           },
           Object {
             "EUID": "contactModule_feedback",

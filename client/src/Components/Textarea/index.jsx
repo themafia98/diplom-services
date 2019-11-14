@@ -13,7 +13,6 @@ const Textarea = ({
     name = null
 }) => {
     const valueProps = value || value === "" ? { value } : {};
-    console.log(row);
     return (
         <TextArea
             className={["defaultTextArea", className].join(" ")}

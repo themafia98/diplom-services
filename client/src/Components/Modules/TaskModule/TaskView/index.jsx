@@ -476,12 +476,14 @@ class TaskView extends React.PureComponent {
                                         onClick={rulesEdit ? this.onEditContentMode : null}
                                         className={[
                                             "description",
-                                            " descriptionTask__content",
+                                            "descriptionTask__content",
                                             rulesEdit ? "editable" : null
                                         ].join(" ")}
                                     >
                                         <Scrollbars style={{ height: "150px" }}>
-                                            {description ? description : "Описания задачи нету."}
+                                            <span className="descriptionContent">
+                                                {description ? description : "Описания задачи нету."}
+                                            </span>
 
                                             <span className="icon-wrapper">
                                                 <i className="icon-pencil"></i>

@@ -15,7 +15,7 @@ describe("<TaskView /> template", () => {
             priority: "Средний",
             author: "Павел Петрович",
             editor: ["Павел Петрович", "Гена Букин"],
-            date: [],
+            date: []
         };
         const props = {
             onCaching: () => {},
@@ -25,7 +25,7 @@ describe("<TaskView /> template", () => {
             onLoadCurrentData: () => {},
 
             ...initialState,
-            router: { ...initialState.router, routeDataActive: { ...card } },
+            router: { ...initialState.router, routeDataActive: { ...card } }
         };
         const TaskViewWrapper = shallow(<TaskView {...props} />);
         expect(toJson(TaskViewWrapper)).toMatchSnapshot();
@@ -34,7 +34,7 @@ describe("<TaskView /> template", () => {
 
         keys.forEach(keyCard => {
             if (keyCard === "description") {
-                expect(TaskViewWrapper.find(`.${keyCard}`).prop("children")[0]).toEqual(card[keyCard]);
+                expect(TaskViewWrapper.find(".descriptionContent").prop("children")).toEqual(card[keyCard]);
             } else if (keyCard === "date") {
                 if (card.date[0]) expect(TaskViewWrapper.find(".startDate").exists()).toBeTruthy();
                 if (card.date[1]) expect(TaskViewWrapper.find(".endDate").exists()).toBeTruthy();
