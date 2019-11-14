@@ -99,7 +99,7 @@ exports[`<TableView /> Should TableView render dep on path 1`] = `
             }
           >
             <table
-              key="885e56c2-0f06-402b-9297-98026c0161a7"
+              key="5709712b-13fa-4bb8-ac48-16edae35a956"
             >
               <thead>
                 <tr>
@@ -357,7 +357,7 @@ exports[`<TableView /> Should TableView render dep on path 2`] = `
           ]
         }
         dataSource={null}
-        key="133d1da9-fc07-4d24-a101-8817d509d3fa"
+        key="f90b1b4f-36cc-4c50-a7d7-9fe661f1f289"
         onChange={[Function]}
         onRow={[Function]}
         pagination={

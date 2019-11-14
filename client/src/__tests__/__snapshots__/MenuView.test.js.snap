@@ -128,7 +128,7 @@ exports[`<MenuView /> Should MenuView render with itemsMenu 1`] = `
         key="contactModule_chat"
         onClick={[Function]}
       >
-        Чат
+        Корпоративный чат
       </MenuItem>
       <MenuItem
         key="contactModule_feedback"
@@ -293,7 +293,7 @@ exports[`<MenuView /> Should MenuView render with itemsMenu 2`] = `
         key="contactModule_chat"
         onClick={[Function]}
       >
-        Чат
+        Корпоративный чат
       </MenuItem>
       <MenuItem
         key="contactModule_feedback"
