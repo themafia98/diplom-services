@@ -230,6 +230,8 @@ class TaskView extends React.PureComponent {
         return _.uniq(jurnalDataKeys)
             .map(key => {
                 const item = caches[key];
+                const date = item && item.date ? moment(item.date).format("DD.MM.YYYY HH:mm:ss") : "Invalid date";
+
                 return (
                     <div key={key} className="jurnalItem">
                         <p>
@@ -238,8 +240,8 @@ class TaskView extends React.PureComponent {
                         </p>
                         <p>
                             <span className="title">Дата:</span>{" "}
-                            {item && item.date
-                                ? moment(item.date).format("DD.MM.YYYY HH:mm:ss")
+                            {item && item.date && date !== "Invalid date"
+                                ? date
                                 : item[0]
                                 ? item[0].date
                                 : "не установлено"}
