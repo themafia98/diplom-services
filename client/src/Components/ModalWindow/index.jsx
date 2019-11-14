@@ -397,51 +397,50 @@ class ModalWindow extends React.PureComponent {
                 </React.Fragment>
             );
             switch (typeState) {
-                case "statusTask":
-                    {
-                        return (
-                            <div className="dropDownWrapper">
-                                <Dropdown overlay={menu}>
-                                    <p>
-                                        Управление задачей
-                                        <Icon type="down" />
+                case "statusTask": {
+                    return (
+                        <div className="dropDownWrapper">
+                            <Dropdown overlay={menu}>
+                                <p>
+                                    Управление задачей
+                                    <Icon type="down" />
+                                </p>
+                            </Dropdown>
+                            {modeControll === "edit" ? (
+                                <React.Fragment>
+                                    <p onClick={onUpdateEditable} className="modeControllEdit">
+                                        Сохранить изменения
                                     </p>
-                                </Dropdown>
-                                {modeControll === "edit" ? (
-                                    <React.Fragment>
-                                        <p onClick={onUpdateEditable} className="modeControllEdit">
-                                            Сохранить изменения
-                                        </p>
-                                        <p onClick={onRejectEdit} className="modeControllEditReject">
-                                            Отмена изменений
-                                        </p>
-                                    </React.Fragment>
-                                ) : null}
-                                <Modal
-                                    className="modalWindow changeStatus"
-                                    visible={this.state.visible}
-                                    onOk={this.handleOk}
-                                    onCancel={this.handleCancel}
-                                    title="Смена статуса"
-                                >
-                                    <Select onChange={this.onChangeSelect} defaultValue={statusTaskValue}>
-                                        {accessStatus.map((status, i) =>
-                                            i === 0 ? (
-                                                <Option key={i + status} value={statusTaskValue}>
-                                                    {statusTaskValue}
-                                                </Option>
-                                            ) : (
-                                                <Option key={i + status} value={status}>
-                                                    {status}
-                                                </Option>
-                                            )
-                                        )}
-                                    </Select>
-                                </Modal>
-                            </div>
-                        );
-                    }
-                    const today = moment().format("DD.MM.YYYY");
+                                    <p onClick={onRejectEdit} className="modeControllEditReject">
+                                        Отмена изменений
+                                    </p>
+                                </React.Fragment>
+                            ) : null}
+                            <Modal
+                                className="modalWindow changeStatus"
+                                visible={this.state.visible}
+                                onOk={this.handleOk}
+                                onCancel={this.handleCancel}
+                                title="Смена статуса"
+                            >
+                                <Select onChange={this.onChangeSelect} defaultValue={statusTaskValue}>
+                                    {accessStatus.map((status, i) =>
+                                        i === 0 ? (
+                                            <Option key={i + status} value={statusTaskValue}>
+                                                {statusTaskValue}
+                                            </Option>
+                                        ) : (
+                                            <Option key={i + status} value={status}>
+                                                {status}
+                                            </Option>
+                                        )
+                                    )}
+                                </Select>
+                            </Modal>
+                        </div>
+                    );
+                }
+
                 default: {
                     return (
                         <React.Fragment>
