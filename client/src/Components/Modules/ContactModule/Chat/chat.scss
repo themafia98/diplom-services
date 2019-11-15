@@ -72,6 +72,12 @@
         }
     }
 
+    .defaultLoader {
+        img {
+            width: 100px;
+        }
+    }
+
     .chat_content__header {
         display: flex;
         align-items: center;
@@ -100,10 +106,38 @@
     }
 
     .chat_content__main {
+        display: flex;
+        flex-direction: column;
+        position: relative;
         height: calc(100vh - 248px);
         border: 1px solid #0439;
         border-top: none;
         background-color: #fff;
         padding: 0 8px;
+        overflow: hidden;
+        .chatRoom {
+            width: 100%;
+            height: calc(100% - 160px);
+            .chatWindow {
+                height: 100%;
+            }
+        }
+
+        .emptyChatRoom {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            .emptyChatRoomMsg {
+                font-weight: bold;
+                color: rgb(128, 128, 128);
+            }
+        }
+    }
+
+    .chat-area {
+        resize: none;
+        margin-bottom: 2px;
     }
 }

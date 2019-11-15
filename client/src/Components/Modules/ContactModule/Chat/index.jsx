@@ -1,13 +1,17 @@
 import React from "react";
 import _ from "lodash";
+import uuid from "uuid/v4";
 import Scrollbars from "react-custom-scrollbars";
 import { Skeleton, List, Avatar, Button } from "antd";
 
+import Loader from "../../../Loader";
 import TitleModule from "../../../TitleModule";
+import ChatRoom from "./ChatRoom";
 
 class Chat extends React.PureComponent {
     state = {
-        isLoad: false
+        isLoad: false,
+        roomToken: null
     };
 
     timer = null;
@@ -18,16 +22,30 @@ class Chat extends React.PureComponent {
                 ...this.state,
                 isLoad: true
             });
-        }, 5000);
+        }, 1500);
     };
 
     componentWillUnmount = () => {
         if (this.timer) clearTimeout(this.timer);
     };
 
+    onSend = event => {};
+
+    setActiveChatRoom = event => {
+        this.setState({
+            ...this.state,
+            roomToken: uuid()
+        });
+    };
+
     render() {
         const demoMenu = _.fill(Array(20), "demo");
-        const { isLoad = false } = this.state;
+        const { isLoad = false, roomToken = null } = this.state;
+        const listdata = [
+            { id: 1, roomToken: roomToken, name: "Павел Петрович", link: "/themafia98", msg: "Привет!" },
+            { id: 2, roomToken: roomToken, name: "Гена Букин", link: "/gena228", msg: "И тебе привет!" }
+        ];
+
         return (
             <div className="chat">
                 <TitleModule classNameTitle="ContactModule__chatTitle" title="Корпоративный чат" />
@@ -36,8 +54,8 @@ class Chat extends React.PureComponent {
                         <div className="menuLoading-skeleton">
                             <Scrollbars>
                                 {!isLoad ? (
-                                    demoMenu.map(it => (
-                                        <div className="item-skeleton" key={it + Math.random()}>
+                                    demoMenu.map((it, i) => (
+                                        <div className="item-skeleton" key={`${it}${i}`}>
                                             <Skeleton loading={true} active avatar paragraph={false}>
                                                 <List.Item.Meta />
                                             </Skeleton>
@@ -47,12 +65,12 @@ class Chat extends React.PureComponent {
                                     <List
                                         key={Math.random()}
                                         dataSource={demoMenu}
-                                        renderItem={it => (
-                                            <List.Item key={it + Math.random()}>
+                                        renderItem={(it, i) => (
+                                            <List.Item onClick={this.setActiveChatRoom} key={(it, i)}>
                                                 <List.Item.Meta
-                                                    key={it + Math.random()}
+                                                    key={`${it}${i}`}
                                                     avatar={<Avatar shape="square" size="large" icon="user" />}
-                                                    title={<p>{it + Math.random()}</p>}
+                                                    title={<p>{`${it}${i}_person`}</p>}
                                                     description={
                                                         <span className="descriptionChatMenu">
                                                             A second stack is created, pulling 3 values from the first
@@ -84,7 +102,15 @@ class Chat extends React.PureComponent {
                                 </p>
                             </div>
                             <div className="chat_content__main">
-                                <p>{!isLoad ? "Loading" : "Chat main"}</p>
+                                {!isLoad ? (
+                                    <Loader />
+                                ) : roomToken ? (
+                                    <ChatRoom roomToken={roomToken} listdata={listdata} onSend={this.onSend} />
+                                ) : (
+                                    <div className="emptyChatRoom">
+                                        <p className="emptyChatRoomMsg">Выберите собеседника</p>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
