@@ -63,7 +63,7 @@ class Chat extends React.PureComponent {
                                     ))
                                 ) : (
                                     <List
-                                        key={Math.random()}
+                                        key="list-chat"
                                         dataSource={demoMenu}
                                         renderItem={(it, i) => (
                                             <List.Item onClick={this.setActiveChatRoom} key={(it, i)}>

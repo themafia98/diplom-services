@@ -37,6 +37,7 @@
         .ant-list-items {
             .ant-list-item {
                 &:hover {
+                    cursor: pointer;
                     background: rgba(46, 150, 247, 0.2);
                 }
             }
