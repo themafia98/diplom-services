@@ -15,11 +15,11 @@ app.set("port", port);
 
 const server: Server = app.listen(port, () => console.log("server start"));
 
-const rest: Router = app.use("/rest", router);
+const route: Router = app.use("/rest", router);
 
-rest.get("/rest", (request: Request, response: Response) => {
+route.get("/", (request: Request, response: Response): void => {
     console.log(request);
-    return response.send(200);
+    response.send(200);
 });
 
 export { server, app };
