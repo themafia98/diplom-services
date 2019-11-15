@@ -171,7 +171,7 @@ export default (state = initialState, action) => {
                         ? { ...state.routeDataActive }
                         : {};
             } catch {
-                current = routeDataNew[nextTab];
+                current = {};
             }
 
             return {

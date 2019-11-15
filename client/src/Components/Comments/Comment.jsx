@@ -18,7 +18,7 @@ const Comment = ({ onDelete, rules, it }) => {
                 </span>
             ) : null}
             <span className="aboutCommentSender">
-                <span className="timeComment">&nbsp;{moment(it.time).format("DD.MM.YYYY HH:mm")}.</span>
+                <span className="timeComment">&nbsp;{it.time}.</span>
                 &nbsp;<span className="sender_name">{`${it.username}`}</span> написал:
             </span>
             <span className="commentContet">{it.message}</span>

@@ -26,9 +26,11 @@ class Comments extends React.PureComponent {
         const { onUpdate, data: { key = "", comments = [] } = {}, data = {} } = this.props;
         if (!value) return message.error("Вы ничего не ввели.");
         else if (key && Array.isArray(comments) && !_.isEmpty(data)) {
+            const date = moment().format("DD.MM.YYYY HH:mm");
+            debugger;
             const comment = {
                 id: uuid(),
-                time: moment().format("DD.MM.YYYY HH:mm"),
+                time: date,
                 username: "Павел Петрович",
                 message: value
             };
