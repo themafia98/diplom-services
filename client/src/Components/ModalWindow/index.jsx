@@ -307,7 +307,7 @@ class ModalWindow extends React.PureComponent {
 
     onChangeTask = event => {
         if (!event) return;
-        debugger;
+
         const { target = {}, _isValid = null } = event;
 
         if (target && target.value && target.className.split(" ")[1] === "timeLost") {

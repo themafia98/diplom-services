@@ -1,8 +1,9 @@
 import React from "react";
+import moment from "moment";
 import _ from "lodash";
 import uuid from "uuid/v4";
 import Scrollbars from "react-custom-scrollbars";
-import { Skeleton, List, Avatar, Button } from "antd";
+import { Skeleton, List, Avatar, Button, notification, message } from "antd";
 
 import Loader from "../../../Loader";
 import TitleModule from "../../../TitleModule";
@@ -11,7 +12,8 @@ import ChatRoom from "./ChatRoom";
 class Chat extends React.PureComponent {
     state = {
         isLoad: false,
-        roomToken: null
+        roomToken: null,
+        listdata: []
     };
 
     timer = null;
@@ -29,22 +31,62 @@ class Chat extends React.PureComponent {
         if (this.timer) clearTimeout(this.timer);
     };
 
-    onSend = event => {};
+    pushMessage = (event, msg) => {
+        const { roomToken = "", listdata = null } = this.state;
+        event.stopPropagation();
+        if (_.isNull(roomToken)) {
+            return notification.error({ message: "Ошибка чата", description: "Данные повреждены." });
+        }
+
+        if (!msg) return message.error("Недопустимые значения или вы ничего не ввели.");
+
+        if (Array.isArray(listdata) && !_.isEmpty(listdata))
+            this.setState({
+                ...this.state,
+                listdata: [
+                    ...listdata,
+                    {
+                        id: listdata[listdata.length - 1].id + 1,
+                        roomToken: roomToken,
+                        name: "Павел Петрович",
+                        link: "/themafia98",
+                        msg: msg,
+                        date: moment()
+                    }
+                ]
+            });
+    };
 
     setActiveChatRoom = event => {
+        const token = uuid();
         this.setState({
             ...this.state,
-            roomToken: uuid()
+            listdata: [
+                ...this.state.listdata,
+                {
+                    id: 1,
+                    roomToken: token,
+                    name: "Павел Петрович",
+                    link: "/themafia98",
+                    msg: "Привет!",
+                    date: moment()
+                },
+                {
+                    id: 2,
+                    roomToken: token,
+                    name: "Гена Букин",
+                    link: "/gena228",
+                    msg: "И тебе привет!",
+                    date: moment()
+                }
+            ],
+            roomToken: token
         });
     };
 
     render() {
-        const demoMenu = _.fill(Array(20), "demo");
-        const { isLoad = false, roomToken = null } = this.state;
-        const listdata = [
-            { id: 1, roomToken: roomToken, name: "Павел Петрович", link: "/themafia98", msg: "Привет!" },
-            { id: 2, roomToken: roomToken, name: "Гена Букин", link: "/gena228", msg: "И тебе привет!" }
-        ];
+        const demoMenu = _.fill(Array(2), "demo");
+        const { isLoad = false, roomToken = null, listdata = [] } = this.state;
 
         return (
             <div className="chat">
@@ -64,7 +106,6 @@ class Chat extends React.PureComponent {
                                 ) : (
                                     <List
                                         key="list-chat"
-                                        s
                                         dataSource={demoMenu}
                                         renderItem={(it, i) => (
                                             <List.Item onClick={this.setActiveChatRoom} key={(it, i)}>
@@ -106,7 +147,12 @@ class Chat extends React.PureComponent {
                                 {!isLoad ? (
                                     <Loader />
                                 ) : roomToken ? (
-                                    <ChatRoom roomToken={roomToken} listdata={listdata} onSend={this.onSend} />
+                                    <ChatRoom
+                                        onKeyDown={this.pushMessage}
+                                        roomToken={roomToken}
+                                        listdata={listdata}
+                                        pushMessage={this.pushMessage}
+                                    />
                                 ) : (
                                     <div className="emptyChatRoom">
                                         <p className="emptyChatRoomMsg">Выберите собеседника</p>
