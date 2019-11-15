@@ -13,7 +13,7 @@ const port: string = process.env.PORT || "3001";
 
 app.set("port", port);
 
-const server: Server = app.listen(port, () => console.log("server start"));
+const server: Server = app.listen(port, () => console.log(`start on ${port}`));
 
 const route: Router = app.use("/rest", router);
 
