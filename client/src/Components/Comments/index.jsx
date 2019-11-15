@@ -46,6 +46,10 @@ class Comments extends React.PureComponent {
     }, 500);
 
     addComments = event => {
+        if ((event.which || event.keyCode) && (event.which || event.keyCode) !== 13) return;
+        if ((event.which || event.keyCode) && (event.which || event.keyCode) === 13) {
+            event.preventDefault();
+        }
         this.addCommentsDelay(event);
     };
 
@@ -82,7 +86,14 @@ class Comments extends React.PureComponent {
                     <Scrollbars>{this.renderComments(comments)}</Scrollbars>
                 </div>
                 <div className="comments__controllers">
-                    <Textarea key="comments_textarea_fild" value={value} onChange={this.onChange} rows={4} />
+                    <Textarea
+                        className="comments_textarea_fild"
+                        onKeyDown={this.addComments}
+                        key="comments_textarea_fild"
+                        value={value}
+                        onChange={this.onChange}
+                        rows={4}
+                    />
                     <Button
                         onClick={this.addComments}
                         disabled={onUpdateDisabled}
