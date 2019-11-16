@@ -70,7 +70,7 @@
         },
         {
             "EUID": "customersModule_reception",
-            "VALUE": "Приемы / встречи",
+            "VALUE": "Обращения",
             "ICON": null,
             "PARENT_CODE": "customersModule"
         },
@@ -81,14 +81,14 @@
             "PARENT_CODE": null
         },
         {
-            "EUID": "contactModule_chat",
-            "VALUE": "Корпоративный чат",
+            "EUID": "contactModule_feedback",
+            "VALUE": "Информация",
             "ICON": null,
             "PARENT_CODE": "contactModule"
         },
         {
-            "EUID": "contactModule_feedback",
-            "VALUE": "Обратная связь",
+            "EUID": "contactModule_chat",
+            "VALUE": "Корпоративный чат",
             "ICON": null,
             "PARENT_CODE": "contactModule"
         },
