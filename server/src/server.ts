@@ -1,25 +1,47 @@
+
 import express, { Router, Request, Response } from "express";
+import cluster from 'cluster';
 import os from "os";
 import { Server } from "http";
 
-const coreCpuCount = os.cpus().length;
-console.log("coreCpuCount:", coreCpuCount);
 
-const app = express();
-app.disabled("X-Powered-By");
-const router = express.Router();
+namespace Entrypoint {
 
-const port: string = process.env.PORT || "3001";
+    const coreCpuCount = os.cpus().length;
 
-app.set("port", port);
+    if (cluster.isMaster) {
 
-const server: Server = app.listen(port, () => console.log(`start on ${port}`));
+        for (let i = 0; i < coreCpuCount; i++) {
+            cluster.fork();
+        }
 
-const route: Router = app.use("/rest", router);
+    } else {
 
-route.get("/", (request: Request, response: Response): void => {
-    console.log(request);
-    response.send(200);
-});
+        const app = express();
+        app.disabled("X-Powered-By");
+        const router = express.Router();
 
-export { server, app };
+        const port: string = process.env.PORT || "3001";
+
+        app.set("port", port);
+
+        const server: Server = app.listen(port, () => {
+            console.log(`Worker ${process.pid} started`);
+            console.log(`Server or worker listen on ${port}.`);
+        });
+
+        const route: Router = app.use("/rest", router);
+
+        route.get("/", (request: Request, response: Response): void => {
+            return void response.sendStatus(200);
+        });
+
+        process.on("SIGTERM", () => {
+            server.close();
+        })
+    }
+}
+
+export default Entrypoint;
+
+
