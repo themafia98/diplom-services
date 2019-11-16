@@ -1,10 +1,12 @@
 import React from "react";
+import { connect } from "react-redux";
 import moment from "moment";
 import _ from "lodash";
 import uuid from "uuid/v4";
 import Scrollbars from "react-custom-scrollbars";
 import { Skeleton, List, Avatar, Button, notification, message } from "antd";
 
+import { setActiveChatToken } from "../../../../Redux/actions/publicActions";
 import Loader from "../../../Loader";
 import TitleModule from "../../../TitleModule";
 import ChatRoom from "./ChatRoom";
@@ -12,14 +14,21 @@ import ChatRoom from "./ChatRoom";
 class Chat extends React.PureComponent {
     state = {
         isLoad: false,
-        roomToken: null,
-        listdata: []
+        demoMessages: [
+            { name: "Вася", id: uuid() },
+            { name: "Гена Букин", id: uuid() }
+        ]
     };
 
     timer = null;
 
     componentDidMount = () => {
+        const { demoMessages = [] } = this.state;
+        const { chat: { chatToken = null } = {}, onSetActiveChatToken } = this.props;
         this.timer = setTimeout(() => {
+            if (demoMessages.every(it => (it.id ? it.id !== chatToken : false))) {
+                onSetActiveChatToken(demoMessages[0].id);
+            }
             this.setState({
                 ...this.state,
                 isLoad: true
@@ -40,29 +49,29 @@ class Chat extends React.PureComponent {
 
         if (!msg) return message.error("Недопустимые значения или вы ничего не ввели.");
 
-        if (Array.isArray(listdata) && !_.isEmpty(listdata))
-            this.setState({
-                ...this.state,
-                listdata: [
-                    ...listdata,
-                    {
-                        id: listdata[listdata.length - 1].id + 1,
-                        roomToken: roomToken,
-                        name: "Павел Петрович",
-                        link: "/themafia98",
-                        msg: msg,
-                        date: moment()
-                    }
-                ]
-            });
+        // if (Array.isArray(listdata) && !_.isEmpty(listdata))
+        //     this.setState({
+        //         ...this.state,
+        //         listdata: [
+        //             ...listdata,
+        //             {
+        //                 id: listdata[listdata.length - 1].id + 1,
+        //                 roomToken: roomToken,
+        //                 name: "Павел Петрович",
+        //                 link: "/themafia98",
+        //                 msg: msg,
+        //                 date: moment()
+        //             }
+        //         ]
+        //     });
     };
 
-    setActiveChatRoom = event => {
-        const token = uuid();
-        this.setState({
-            ...this.state,
-            listdata: [
-                ...this.state.listdata,
+    setActiveChatRoom = (event, id = uuid()) => {
+        const { chat: { chatToken = null } = {}, onSetActiveChatToken } = this.props;
+        const token = id;
+
+        if (chatToken !== id) {
+            const listdata = [
                 {
                     id: 1,
                     roomToken: token,
@@ -79,14 +88,14 @@ class Chat extends React.PureComponent {
                     msg: "И тебе привет!",
                     date: moment()
                 }
-            ],
-            roomToken: token
-        });
+            ];
+            onSetActiveChatToken(id, listdata);
+        } else return;
     };
 
     render() {
-        const demoMenu = _.fill(Array(2), "demo");
-        const { isLoad = false, roomToken = null, listdata = [] } = this.state;
+        const { isLoad = false, demoMessages } = this.state;
+        const { chat: { listdata, chatToken: roomToken = null } = {} } = this.props;
 
         return (
             <div className="chat">
@@ -96,7 +105,7 @@ class Chat extends React.PureComponent {
                         <div className="menuLoading-skeleton">
                             <Scrollbars>
                                 {!isLoad ? (
-                                    demoMenu.map((it, i) => (
+                                    demoMessages.map((it, i) => (
                                         <div className="item-skeleton" key={`${it}${i}`}>
                                             <Skeleton loading={true} active avatar paragraph={false}>
                                                 <List.Item.Meta />
@@ -106,13 +115,13 @@ class Chat extends React.PureComponent {
                                 ) : (
                                     <List
                                         key="list-chat"
-                                        dataSource={demoMenu}
+                                        dataSource={demoMessages}
                                         renderItem={(it, i) => (
-                                            <List.Item onClick={this.setActiveChatRoom} key={(it, i)}>
+                                            <List.Item onClick={e => this.setActiveChatRoom(e, it.id)} key={(it, i)}>
                                                 <List.Item.Meta
                                                     key={`${it}${i}`}
                                                     avatar={<Avatar shape="square" size="large" icon="user" />}
-                                                    title={<p>{`${it}${i}_person`}</p>}
+                                                    title={<p>{`${it.name}`}</p>}
                                                     description={
                                                         <span className="descriptionChatMenu">
                                                             A second stack is created, pulling 3 values from the first
@@ -133,7 +142,9 @@ class Chat extends React.PureComponent {
                     <div className="col-chat-content">
                         <div className="chat_content">
                             <div className="chat_content__header">
-                                <p className="chat_content__header__title">Окно чата</p>
+                                <p className="chat_content__header__title">
+                                    Окно чата{roomToken ? <span> | {roomToken} </span> : null}
+                                </p>
                                 <p
                                     className={[
                                         "chat_content__header__statusChat",
@@ -148,6 +159,7 @@ class Chat extends React.PureComponent {
                                     <Loader />
                                 ) : roomToken ? (
                                     <ChatRoom
+                                        key={roomToken}
                                         onKeyDown={this.pushMessage}
                                         roomToken={roomToken}
                                         listdata={listdata}
@@ -166,4 +178,17 @@ class Chat extends React.PureComponent {
         );
     }
 }
-export default Chat;
+
+const mapStateToProps = state => {
+    return {
+        chat: state.publicReducer.chat
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onSetActiveChatToken: async (token, listdata) => await dispatch(setActiveChatToken({ token, listdata }))
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Chat);

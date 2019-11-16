@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from "react";
 import { animateScroll as scroll, Element, scroller } from "react-scroll";
 import _ from "lodash";
 import { Button, Avatar } from "antd";
-import Scrollbars from "react-custom-scrollbars";
 
 import Textarea from "../../../../Textarea";
 import Message from "./Message";
