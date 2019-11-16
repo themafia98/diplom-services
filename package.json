@@ -10,7 +10,7 @@
     "start:server": "cross-env NODE_ENV=development nodemon ./server/src/server.ts --pretty",
     "start:app": "cd client && yarn start",
     "build": "run-p build:**",
-    "build:ts": "cd server && tsc",
+    "build:ts": "cd api && tsc",
     "build:app": "cd client && yarn build"
   },
   "dependencies": {
