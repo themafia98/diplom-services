@@ -33,7 +33,7 @@ namespace Entrypoint {
         const route: Router = app.use("/rest", router);
 
         route.get("/", (request: Request, response: Response): void => {
-            return void response.send(200);
+            return void response.sendStatus(200);
         });
 
         process.on("SIGTERM", () => {
