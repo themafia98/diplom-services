@@ -26,8 +26,26 @@ class Chat extends React.PureComponent {
         const { demoMessages = [] } = this.state;
         const { chat: { chatToken = null } = {}, onSetActiveChatToken } = this.props;
         this.timer = setTimeout(() => {
-            if (demoMessages.every(it => (it.id ? it.id !== chatToken : false))) {
-                onSetActiveChatToken(demoMessages[0].id);
+            if (!_.isNull(chatToken) && demoMessages.every(it => (it.id ? it.id !== chatToken : false))) {
+                const listdata = [
+                    {
+                        id: 1,
+                        roomToken: demoMessages[0].id,
+                        name: "Павел Петрович",
+                        link: "/themafia98",
+                        msg: "Привет! code: " + Math.random(),
+                        date: moment()
+                    },
+                    {
+                        id: 2,
+                        roomToken: demoMessages[0].id,
+                        name: "Гена Букин",
+                        link: "/gena228",
+                        msg: "И тебе привет! code: " + Math.random(),
+                        date: moment()
+                    }
+                ];
+                onSetActiveChatToken(demoMessages[0].id, listdata);
             }
             this.setState({
                 ...this.state,
@@ -77,7 +95,7 @@ class Chat extends React.PureComponent {
                     roomToken: token,
                     name: "Павел Петрович",
                     link: "/themafia98",
-                    msg: "Привет!",
+                    msg: "Привет! code: " + Math.random(),
                     date: moment()
                 },
                 {
@@ -85,7 +103,7 @@ class Chat extends React.PureComponent {
                     roomToken: token,
                     name: "Гена Букин",
                     link: "/gena228",
-                    msg: "И тебе привет!",
+                    msg: "Привет! code: " + Math.random(),
                     date: moment()
                 }
             ];
@@ -117,7 +135,11 @@ class Chat extends React.PureComponent {
                                         key="list-chat"
                                         dataSource={demoMessages}
                                         renderItem={(it, i) => (
-                                            <List.Item onClick={e => this.setActiveChatRoom(e, it.id)} key={(it, i)}>
+                                            <List.Item
+                                                className={[roomToken === it.id ? "activeChat" : null].join(" ")}
+                                                onClick={e => this.setActiveChatRoom(e, it.id)}
+                                                key={(it, i)}
+                                            >
                                                 <List.Item.Meta
                                                     key={`${it}${i}`}
                                                     avatar={<Avatar shape="square" size="large" icon="user" />}
