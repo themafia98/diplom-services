@@ -22,7 +22,6 @@ export default (state = initialState, action) => {
             };
         }
         case SET_ACTIVE_CHAT_TOKEN: {
-            debugger;
             return {
                 ...state,
                 chat: {

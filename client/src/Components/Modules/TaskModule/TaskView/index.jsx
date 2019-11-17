@@ -333,6 +333,7 @@ class TaskView extends React.PureComponent {
                         accessStatus={accessStatus}
                         onUpdate={onUpdate}
                         onEdit={this.onEdit}
+                        description={description}
                         onRejectEdit={this.onRejectEdit}
                         modeControll={modeControll}
                         editableContent={description}

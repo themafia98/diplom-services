@@ -30,7 +30,7 @@
 
     .settingsModule__main {
         display: flex;
-
+        height: calc(100vh - 180px);
         .configWrapper {
             display: flex;
             align-items: center;

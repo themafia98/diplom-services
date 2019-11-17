@@ -336,6 +336,7 @@ class ModalWindow extends React.PureComponent {
             accessStatus = [],
             onEdit = null,
             modeControll = null,
+            description: descriptionDefault = "",
             onRejectEdit = null,
             modeEditContent = null,
             onCancelEditModeContent = null,
@@ -473,6 +474,7 @@ class ModalWindow extends React.PureComponent {
                                     <Textarea
                                         key="textAreaEdit"
                                         className="editContentDescription"
+                                        editor={true}
                                         row={10}
                                         onChange={this.onChangeDescription}
                                         value={valueDesc ? valueDesc : ""}
@@ -508,6 +510,7 @@ class ModalWindow extends React.PureComponent {
                                     <Textarea
                                         key="commentsTextArea"
                                         onChange={this.onChangeTask}
+                                        defaultValue={descriptionDefault}
                                         value={description}
                                         className={["description", error.has("description") ? "errorFild" : null].join(
                                             " "

@@ -11,13 +11,15 @@ const Textarea = ({
     onClick = null,
     onChange = null,
     editor = false,
+    defaultValue = "",
     name = null
 }) => {
     const valueProps = value || value === "" ? { value } : {};
+
     return (
         <React.Fragment>
             {editor ? (
-                <EditorTextarea />
+                <EditorTextarea defaultValue={defaultValue} onChange={onChange} {...valueProps} />
             ) : (
                 <TextArea
                     className={["defaultTextArea", className].join(" ")}
