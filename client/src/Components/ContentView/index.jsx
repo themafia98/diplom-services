@@ -10,7 +10,7 @@ import MainModule from "../Modules/MainModule";
 import CabinetModule from "../Modules/CabinetModule";
 import TaskModule from "../Modules/TaskModule";
 import StatisticsModule from "../Modules/StatisticsModule";
-import SettingsModule from "../Modules/settingsModule";
+import SettingsModule from "../Modules/SettingsModule";
 import ContactModule from "../Modules/ContactModule";
 import CustomersModule from "../Modules/CustomersModule";
 
@@ -21,7 +21,7 @@ const { Content } = Layout;
 class ContentView extends React.PureComponent {
     state = {
         drawerView: false,
-        key: uuid(),
+        key: uuid()
     };
 
     static propTypes = {
@@ -30,7 +30,7 @@ class ContentView extends React.PureComponent {
         updateLoader: PropTypes.func.isRequired,
         onErrorRequstAction: PropTypes.func.isRequired,
         firebase: PropTypes.object.isRequired,
-        path: PropTypes.string.isRequired,
+        path: PropTypes.string.isRequired
     };
 
     componentDidMount = () => {
@@ -95,8 +95,8 @@ class ContentView extends React.PureComponent {
                         firebase={firebase}
                     />
                 ) : (
-                                                <div>Not found module: ${path}</div>
-                                            )}
+                    <div>Not found module: ${path}</div>
+                )}
             </React.Fragment>
         );
     };
