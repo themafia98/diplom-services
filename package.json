@@ -1,13 +1,14 @@
 {
   "name": "diplom-services",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server.js",
   "repository": "https://github.com/themafia98/diplom-services.git",
   "author": "Pavel Petrovich <gaara33377@gmail.com>",
   "license": "MIT",
   "scripts": {
     "start": "run-p start:**",
-    "start:server": "cross-env NODE_ENV=development nodemon ./server/src/server.ts --pretty",
+    "heroku-postbuild": "cd client && yarn && yarn run build",
+    "start:server": "cross-env NODE_ENV=development nodemon ./server/src/index.ts --pretty",
     "start:app": "cd client && yarn start",
     "build": "run-p build:**",
     "build:ts": "cd server && tsc",

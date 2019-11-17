@@ -1,5 +1,6 @@
 
 import express, { Router, Request, Response } from "express";
+import path from 'path';
 import cluster from 'cluster';
 import os from "os";
 import { Server } from "http";
@@ -7,11 +8,11 @@ import { Server } from "http";
 
 namespace Entrypoint {
 
-    const coreCpuCount = os.cpus().length;
+    const cpuLentgh = os.cpus().length;
 
     if (cluster.isMaster) {
 
-        for (let i = 0; i < coreCpuCount; i++) {
+        for (let i = 0; i < cpuLentgh; i++) {
             cluster.fork();
         }
 
@@ -32,8 +33,8 @@ namespace Entrypoint {
 
         const route: Router = app.use("/rest", router);
 
-        route.get("/", (request: Request, response: Response): void => {
-            return void response.sendStatus(200);
+        route.get('*', (req, res) => {
+            res.sendFile(path.join(__dirname + '/client/build/index.html'));
         });
 
         process.on("SIGTERM", () => {
