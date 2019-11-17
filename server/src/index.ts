@@ -32,11 +32,15 @@ namespace Entrypoint {
             console.log(`Server or worker listen on ${port}.`);
         });
 
-        //const staticRoute: Router = app.use("/", router);
+        const staticRoute: Router = app.use("/", router);
         const route: Router = app.use("/rest", router);
 
-        route.get("/backend", (req: Request, res: Response) => {
+        route.get("/rest", (req: Request, res: Response) => {
             res.sendStatus(200);
+        });
+
+        staticRoute.get("*", (req: Request, res: Response) => {
+            res.sendFile(process.cwd() + "/client/build/index.html");
         });
 
         process.on("SIGTERM", (): void => {
