@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Chat from "./Chat";
-import Feedback from "./Feedback";
+import News from "./News";
 
 class ContactModule extends React.PureComponent {
     static propTypes = {
@@ -13,7 +13,7 @@ class ContactModule extends React.PureComponent {
     getContactContentByPath = path => {
         if (path) {
             if (path === "contactModule_chat") return <Chat />;
-            if (path === "contactModule_feedback") return <Feedback />;
+            if (path === "contactModule_feedback") return <News />;
             else return <div>Not found taskModule</div>;
         }
     };
