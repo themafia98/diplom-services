@@ -6,10 +6,11 @@
   "author": "Pavel Petrovich <gaara33377@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "run-p start:**",
-    "heroku-postbuild": "cd client && yarn && yarn run build",
-    "start:server": "cross-env NODE_ENV=development nodemon ./server/src/index.ts --pretty",
-    "start:app": "cd client && yarn start",
+    "dev": "run-p dev:**",
+    "heroku-postbuild": "yarn install --prefix client && yarn build",
+    "start": "node ./server/build/index.js",
+    "dev:server": "cross-env NODE_ENV=development nodemon ./server/src/index.ts --pretty",
+    "dev:app": "cd client && yarn start",
     "build": "run-p build:**",
     "build:ts": "cd server && tsc",
     "build:app": "cd client && yarn build"

@@ -20,6 +20,8 @@ namespace Entrypoint {
 
         const app = express();
         app.disabled("X-Powered-By");
+        app.use(express.static(process.cwd() + "/client/build"));
+
         const router = express.Router();
 
         const port: string = process.env.PORT || "3001";
@@ -34,7 +36,7 @@ namespace Entrypoint {
         const route: Router = app.use("/rest", router);
 
         route.get('*', (req, res) => {
-            res.sendFile(path.join(__dirname + '/client/build/index.html'));
+            res.sendFile(path.join(process.cwd() + '/client/build/index.html'));
         });
 
         process.on("SIGTERM", () => {
