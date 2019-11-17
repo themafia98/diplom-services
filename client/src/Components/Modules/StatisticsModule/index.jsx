@@ -15,13 +15,13 @@ class StatisticsModule extends React.PureComponent {
 
     render() {
         const { router: { routeData: { taskModule: { tasks = [] } = {} } = {} } = {} } = this.props;
-        console.log(tasks);
+
         return (
             <div className="statisticsModule">
                 <TitleModule classNameTitle="statisticsModuleTitle" title="Статистика" />
                 <div className="statisticsModule__main">
                     <div className="col-6">
-                        <Bar data={tasks} />
+                        <Bar data={tasks} dateList={data.date} />
                     </div>
                 </div>
             </div>

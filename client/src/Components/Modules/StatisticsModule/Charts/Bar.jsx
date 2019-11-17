@@ -1,25 +1,58 @@
 import React from "react";
 import PropTypes from "prop-types";
+
+import moment from "moment";
 import { ResponsiveBar } from "@nivo/bar";
 
-const Bar = ({ data }) => {
-    let counter = 0;
-    const dataBar = data
-        .map((it, i) => {
-            return {
-                counter: "Январь",
-                Выполнено: ++counter,
+const Bar = ({ data, dateList }) => {
+    const buildingBar = () => {
+        const keysData = Object.keys(data);
+        const result = [];
+
+        for (let i = 0; i < dateList.length; i++) {
+            let metadataCounterDone = 0;
+            let metadataCounterFail = 0;
+            for (let j = 0; j < keysData.length; j++) {
+                const key = keysData[j];
+                const it = data[key];
+
+                const dateStart = it.date[0].split(/\./gi)[1];
+                const dateEnd = it.date[1].split(/\./gi)[1];
+
+                const titleMonthStart = moment()
+                    .month(dateStart)
+                    .locale("ru")
+                    .format("MMM");
+                const titleMonthEnd = moment()
+                    .month(dateEnd)
+                    .locale("ru")
+                    .format("MMM");
+
+                if (titleMonthStart !== dateList[i] && titleMonthEnd !== dateList[i]) {
+                    continue;
+                }
+
+                const isDone = it.status === "Закрыт";
+                if (isDone) metadataCounterDone += 1;
+                else metadataCounterFail += 1;
+            }
+
+            result.push({
+                counter: dateList[i],
+                Выполнено: metadataCounterDone,
                 "hot dogColor": "hsl(45, 70%, 50%)",
-                "Не выполнено": ++counter,
+                "Не выполнено": metadataCounterFail,
                 burgerColor: "hsl(126, 70%, 50%)"
-            };
-        })
-        .filter(Boolean);
+            });
+        }
+
+        return result;
+    };
 
     return (
         <div style={{ height: "80vh" }}>
             <ResponsiveBar
-                data={dataBar}
+                data={buildingBar()}
                 keys={["Выполнено", "Не выполнено"]}
                 indexBy="counter"
                 margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
