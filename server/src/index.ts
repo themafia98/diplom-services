@@ -19,7 +19,6 @@ namespace Entrypoint {
 
         const app: Express = express();
         app.disabled("X-Powered-By");
-        app.use(express.static(process.cwd() + "/client/build"));
 
         const router: Router = express.Router();
 
@@ -34,9 +33,16 @@ namespace Entrypoint {
 
         const route: Router = app.use("/rest", router);
 
-        route.get('*', (req: Request, res: Response): void => {
-            res.sendFile(path.join(process.cwd() + '/client/build/index.html'));
+        route.get("/rest", (req: Request, res: Response) => {
+            res.sendStatus(200);
         });
+
+        if (process.env.NODE_ENV === 'production') {
+            app.use(express.static(process.cwd() + "/client/build"));
+            app.get("*", (req: Request, res: Response) => {
+                res.sendFile(process.cwd() + "/client/build/index.html");
+            });
+        }
 
         process.on("SIGTERM", (): void => {
             server.close();
