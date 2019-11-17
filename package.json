@@ -11,7 +11,7 @@
     "start": "node ./server/build/index.js",
     "dev:server": "cross-env NODE_ENV=development nodemon ./server/src/index.ts --pretty",
     "dev:app": "cd client && yarn start",
-    "build:dev": "run-p build:**",
+    "build": "run-p build:**",
     "build:ts": "cd server && tsc",
     "build:app": "cd client && yarn build"
   },
