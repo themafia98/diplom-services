@@ -37,11 +37,12 @@ namespace Entrypoint {
             res.sendStatus(200);
         });
 
-        if (process.env.NODE_ENV === 'production')
+        if (process.env.NODE_ENV === 'production') {
             app.use(express.static(process.cwd() + "/client/build"));
-        app.get("*", (req: Request, res: Response) => {
-            res.sendFile(process.cwd() + "/client/build/index.html");
-        });
+            app.get("*", (req: Request, res: Response) => {
+                res.sendFile(process.cwd() + "/client/build/index.html");
+            });
+        }
 
         process.on("SIGTERM", (): void => {
             server.close();
