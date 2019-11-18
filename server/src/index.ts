@@ -11,8 +11,8 @@ namespace Entrypoint {
             cluster.fork();
         }
     } else {
-        const app: ServerRun = new ServerRunner("3001");
-        app.start();
+        const server: ServerRun = new ServerRunner("3001");
+        server.start();
     }
 }
 
