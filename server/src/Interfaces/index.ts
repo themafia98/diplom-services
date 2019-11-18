@@ -1,7 +1,7 @@
 import { Application, Router as RouteExpress } from "express";
 
 export interface ServerRun {
-    start(port: string): void;
+    start(): void;
 }
 
 export interface Route {

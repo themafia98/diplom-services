@@ -4,7 +4,7 @@ import RouterInstance from "../Router";
 import { Server as HttpServer } from "http";
 import { ServerRun } from "../../Interfaces";
 
-class Server implements ServerRun {
+class ServerRunner implements ServerRun {
     private port: string;
     private application: null | Application = null;
 
@@ -12,23 +12,23 @@ class Server implements ServerRun {
         this.port = port;
     }
 
-    get app(): Application {
+    getApp(): Application {
         return <Application>this.application;
     }
 
-    set app(express: Application) {
+    setApp(express: Application) {
         if (this.application === null) this.application = express;
     }
 
-    start() {
-        this.app = express();
-        this.app.disabled("x-powerd-by");
+    start(): void {
+        this.application = express();
+        this.application.disabled("x-powerd-by");
 
-        this.app.set("port", this.port);
+        this.application.set("port", this.port);
 
-        const instanceRouter: Route = RouterInstance.Router.instance(this.app);
+        const instanceRouter: Route = RouterInstance.Router.instance(this.application);
 
-        const server: HttpServer = this.app.listen(this.port, (): void => {
+        const server: HttpServer = this.application.listen(this.port, (): void => {
             console.log(`Worker ${process.pid} started`);
             console.log(`Server or worker listen on ${this.port}.`);
         });
@@ -47,8 +47,8 @@ class Server implements ServerRun {
         });
 
         if (process.env.NODE_ENV === "production") {
-            this.app.use(express.static(process.cwd() + "/client/build"));
-            this.app.get("*", (req: Request, res: Response) => {
+            this.application.use(express.static(process.cwd() + "/client/build"));
+            this.application.get("*", (req: Request, res: Response) => {
                 res.sendFile(process.cwd() + "/client/build/index.html");
             });
         }
@@ -59,4 +59,4 @@ class Server implements ServerRun {
     }
 }
 
-export default Server;
+export default ServerRunner;

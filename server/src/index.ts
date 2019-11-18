@@ -1,7 +1,7 @@
 import cluster from "cluster";
 import os from "os";
-
-import Server from "./Models/Server";
+import { ServerRun } from "./Interfaces";
+import ServerRunner from "./Models/Server";
 
 namespace Entrypoint {
     const cpuLentgh: number = os.cpus().length;
@@ -11,7 +11,7 @@ namespace Entrypoint {
             cluster.fork();
         }
     } else {
-        const app = new Server("3001");
+        const app: ServerRun = new ServerRunner("3001");
         app.start();
     }
 }
