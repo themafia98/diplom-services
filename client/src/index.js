@@ -34,13 +34,11 @@ ReactDOM.render(
 );
 serviceWorker.register();
 
-fetch("/")
+fetch("/dogs")
     .then(res => {
-        console.log(res);
-        debugger;
-        return res.json();
+        if (res.status === 200) return res.json();
+        else console.log(res);
     })
     .then(res => {
-        debugger;
         console.log(res);
     });
