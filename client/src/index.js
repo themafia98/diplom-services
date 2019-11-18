@@ -34,7 +34,7 @@ ReactDOM.render(
 );
 serviceWorker.register();
 
-fetch("/rest")
+fetch("/")
     .then(res => {
         console.log(res);
         debugger;

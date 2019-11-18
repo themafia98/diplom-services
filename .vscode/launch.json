@@ -8,8 +8,10 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceFolder}\\server\\src\\server.ts",
-            "outFiles": ["${workspaceFolder}\\server\\build\\*.js"]
+            "program": "${workspaceFolder}\\server\\src\\index.ts",
+            "outFiles": [
+                "${workspaceFolder}\\server\\build\\*.js"
+            ]
         }
     ]
 }
