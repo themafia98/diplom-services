@@ -34,3 +34,13 @@ ReactDOM.render(
 );
 serviceWorker.register();
 
+
+fetch("/rest")
+    .then(res => {
+        debugger;
+    });
+
+fetch("/rest/rest")
+    .then(res => {
+        debugger
+    });
