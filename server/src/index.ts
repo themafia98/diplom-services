@@ -26,9 +26,9 @@ namespace Entrypoint {
             console.log(`Server or worker listen on ${port}.`);
         });
 
-        const route: Router = app.use("/rest", router);
+        app.use("/rest", router);
 
-        route.get("/", (req: Request, res: Response) => {
+        router.get("/", (req: Request, res: Response) => {
             res.type("application/json");
             res.json({ content: "HI!" });
         });
