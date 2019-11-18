@@ -45,6 +45,17 @@ class ContentView extends React.PureComponent {
         dashboardStrem.off("EventUpdate", this.updateFunction);
     };
 
+    componentDidUpdate = () => {
+        // if (
+        //     (path.startsWith("taskModule") &&
+        //         !router.routeData["taskModule"] &&
+        //         !router.routeData["taskModule_сalendar"]) ||
+        //     (shouldUpdate && load)
+        // ) {
+        //     onLoadCurrentData({ path: path.startsWith("taskModule") ? "taskModule" : path , storeLoad: "tasks", shouldUpdate });
+        // }
+    };
+
     getComponentByPath = path => {
         if (!path) return null;
 

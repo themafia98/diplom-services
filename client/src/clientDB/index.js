@@ -1,6 +1,6 @@
 import _ from "lodash";
 import config from "../config.json";
-import { TASK_SCHEMA, USER_SCHEMA, TASK_CONTROLL_JURNAL_SCHEMA } from "../Utils/schema/const";
+import { TASK_SCHEMA, USER_SCHEMA, TASK_CONTROLL_JURNAL_SCHEMA, NEWS_SCHEMA } from "../Utils/schema/const";
 import { getValidateSchema } from "../Utils/schema";
 
 class ClientDB {
@@ -11,64 +11,168 @@ class ClientDB {
         this.isInit = false;
     }
 
-    init() {
+    updateStateInit(state) {
+        this.isInit = state;
+    }
+
+    async init() {
         if (this.isInit) return;
         const indexedDatabase = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-        const requestOpen = indexedDatabase.open(this.name, this.version);
+        let requestOpen = indexedDatabase.open(this.name, this.version);
         requestOpen.onsuccess = event => {
             this.db = event.target.result;
+            this.db.onversionchange = function() {
+                this.db.close();
+                alert("Offline data deprecated, please update page for update storage.");
+            };
         };
         requestOpen.onerror = event => {
-            console.error("Error open indexed db");
+            /** clear and reload client db if catch error */
+            const deleteIndexedDbEvent = indexedDatabase.deleteDatabase(this.name);
+            deleteIndexedDbEvent.onerror = event => {
+                alert("Error. Please clear your browser data or update browser.");
+                console.error(event);
+            };
+
+            deleteIndexedDbEvent.onsuccess = event => {
+                if (_.isUndefined(event.result)) {
+                    this.updateStateInit(false);
+                    this.init().then(() => {
+                        console.log("Database sussesfully clear and update after error or rollback");
+                    });
+                } else {
+                    console.error(event);
+                    alert(" Please clear your browser data or update browser.");
+                }
+            };
         };
         requestOpen.onupgradeneeded = event => {
             this.db = event.target.result;
             const { db } = this;
 
-            let objectStoreUsers = db.createObjectStore("users", {
-                unique: true,
-                keyPath: "uuid",
-                autoIncrement: true,
-            });
+            let isUsersObject = false;
+            let isTasksObject = false;
+            let isNewsObject = false;
+            let isJurnalWorkObject = false;
 
-            let objectStoreTasks = db.createObjectStore("tasks", {
-                unique: true,
-                keyPath: "key",
-                autoIncrement: true,
-            });
+            const newVersionUpdate = event.newVersion !== event.oldVersion && event.oldVersion !== 0;
 
-            let objectStoreJurnalWork = db.createObjectStore("jurnalWork", {
-                unique: true,
-                keyPath: "id",
-                autoIncrement: true,
-            });
+            if (db.objectStoreNames.contains("users") && !newVersionUpdate) isUsersObject = true;
+            if (db.objectStoreNames.contains("tasks") && !newVersionUpdate) isTasksObject = true;
+            if (db.objectStoreNames.contains("news") && !newVersionUpdate) isNewsObject = true;
+            if (db.objectStoreNames.contains("jurnalWork") && !newVersionUpdate) isJurnalWorkObject = true;
 
-            const schemaUsers = getValidateSchema(USER_SCHEMA);
-            const keys = Object.keys(schemaUsers);
+            const objectStoreUsers =
+                !isUsersObject && !newVersionUpdate
+                    ? db.createObjectStore("users", {
+                          unique: true,
+                          keyPath: "uuid",
+                          autoIncrement: true
+                      })
+                    : newVersionUpdate
+                    ? requestOpen.transaction.objectStore("users")
+                    : null;
 
-            keys.forEach(key => {
-                objectStoreUsers.createIndex(key, key, {
-                    unique: key === "uuid" || key === "email" ? true : false,
+            if (!isUsersObject) {
+                const schemaUsers = getValidateSchema(USER_SCHEMA);
+                const keysUsers = Object.keys(schemaUsers);
+
+                keysUsers.forEach((key, i) => {
+                    if (newVersionUpdate) {
+                        const keysIndex = Object.keys(objectStoreUsers.indexNames);
+                        const isCanDelete = keysUsers.includes(objectStoreUsers.indexNames[keysIndex[i]]);
+                        if (isCanDelete) objectStoreUsers.deleteIndex(key);
+                    }
+                    objectStoreUsers.createIndex(key, key, {
+                        unique: key === "uuid" || key === "email" ? true : false
+                    });
                 });
-            });
+            }
 
-            const schemaTasks = getValidateSchema(TASK_SCHEMA);
-            const keysTasks = Object.keys(schemaTasks);
+            const objectStoreTasks =
+                !isTasksObject && !newVersionUpdate
+                    ? db.createObjectStore("tasks", {
+                          unique: true,
+                          keyPath: "key",
+                          autoIncrement: true
+                      })
+                    : newVersionUpdate
+                    ? requestOpen.transaction.objectStore("tasks")
+                    : null;
 
-            keysTasks.forEach(key => {
-                objectStoreTasks.createIndex(key, key, {
-                    unique: key === "key" ? true : false,
+            if (!isTasksObject) {
+                const schemaTasks = getValidateSchema(TASK_SCHEMA);
+                const keysTasks = Object.keys(schemaTasks);
+
+                keysTasks.forEach((key, i) => {
+                    if (newVersionUpdate) {
+                        const keysIndex = Object.keys(objectStoreTasks.indexNames);
+                        const isCanDelete = keysTasks.includes(objectStoreTasks.indexNames[keysIndex[i]]);
+                        if (isCanDelete) objectStoreTasks.deleteIndex(key);
+                    }
+                    objectStoreTasks.createIndex(key, key, {
+                        unique: key === "key" ? true : false
+                    });
                 });
-            });
+            }
 
-            const schemaJurnalWork = getValidateSchema(TASK_CONTROLL_JURNAL_SCHEMA);
-            const keysJurnalWork = Object.keys(schemaJurnalWork);
+            const objectStoreNews =
+                !isNewsObject && !newVersionUpdate
+                    ? db.createObjectStore("news", {
+                          unique: true,
+                          keyPath: "key",
+                          autoIncrement: true
+                      })
+                    : newVersionUpdate
+                    ? requestOpen.transaction.objectStore("news")
+                    : null;
 
-            keysJurnalWork.forEach(key => {
-                objectStoreJurnalWork.createIndex(key, key, {
-                    unique: key === "id" ? true : false,
+            if (!isNewsObject) {
+                const schemaNews = getValidateSchema(NEWS_SCHEMA);
+                const keysNews = Object.keys(schemaNews);
+
+                keysNews.forEach((key, i) => {
+                    if (newVersionUpdate) {
+                        const keysIndex = Object.keys(objectStoreNews.indexNames);
+                        const isCanDelete = keysNews.includes(objectStoreNews.indexNames[keysIndex[i]]);
+                        if (isCanDelete) objectStoreNews.deleteIndex(key);
+                    }
+                    objectStoreNews.createIndex(key, key, {
+                        unique: key === "key" ? true : false
+                    });
                 });
-            });
+            }
+
+            const objectStoreJurnalWork =
+                !isJurnalWorkObject && !newVersionUpdate
+                    ? db.createObjectStore("jurnalWork", {
+                          unique: true,
+                          keyPath: "id",
+                          autoIncrement: true
+                      })
+                    : newVersionUpdate
+                    ? requestOpen.transaction.objectStore("jurnalWork")
+                    : null;
+
+            if (!isJurnalWorkObject) {
+                const schemaJurnalWork = getValidateSchema(TASK_CONTROLL_JURNAL_SCHEMA);
+                const keysJurnalWork = Object.keys(schemaJurnalWork);
+
+                keysJurnalWork.forEach((key, i) => {
+                    if (newVersionUpdate) {
+                        const keysIndex = Object.keys(objectStoreJurnalWork.indexNames);
+                        const isCanDelete = keysJurnalWork.includes(objectStoreJurnalWork.indexNames[keysIndex[i]]);
+                        if (isCanDelete) objectStoreJurnalWork.deleteIndex(key);
+                    }
+                    objectStoreJurnalWork.createIndex(key, key, {
+                        unique: key === "id" ? true : false
+                    });
+                });
+            }
+
+            if (newVersionUpdate) {
+                console.log("Database update new version.");
+            }
         };
 
         this.isInit = true;

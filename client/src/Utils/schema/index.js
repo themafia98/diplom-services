@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { TASK_SCHEMA, USER_SCHEMA, TASK_CONTROLL_JURNAL_SCHEMA } from "./const";
+import { TASK_SCHEMA, USER_SCHEMA, TASK_CONTROLL_JURNAL_SCHEMA, NEWS_SCHEMA } from "./const";
 
 export const getValidateSchema = type => {
     switch (type) {
@@ -14,7 +14,7 @@ export const getValidateSchema = type => {
                 description: null,
                 date: null,
                 comments: null, // array [{ id: null, username: null, message: null }]
-                modeAdd: "any",
+                modeAdd: "any"
             };
         case TASK_CONTROLL_JURNAL_SCHEMA:
             return {
@@ -24,7 +24,7 @@ export const getValidateSchema = type => {
                 editor: null,
                 date: null,
                 description: null,
-                modeAdd: "any",
+                modeAdd: "any"
             };
         case USER_SCHEMA:
             return {
@@ -37,7 +37,14 @@ export const getValidateSchema = type => {
                 status: null,
                 surname: null,
                 uuid: null, // delay firebase
-                modeAdd: "any",
+                modeAdd: "any"
+            };
+        case NEWS_SCHEMA:
+            return {
+                key: null,
+                content: null,
+                author: null,
+                date: null
             };
         default:
             return null;
