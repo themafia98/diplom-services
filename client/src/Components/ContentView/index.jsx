@@ -10,7 +10,7 @@ import MainModule from "../Modules/MainModule";
 import CabinetModule from "../Modules/CabinetModule";
 import TaskModule from "../Modules/TaskModule";
 import StatisticsModule from "../Modules/StatisticsModule";
-import SettingsModule from "../Modules/SettingsModule";
+import SettingsModule from "../Modules/settingsModule";
 import ContactModule from "../Modules/ContactModule";
 import CustomersModule from "../Modules/CustomersModule";
 
@@ -106,8 +106,8 @@ class ContentView extends React.PureComponent {
                         firebase={firebase}
                     />
                 ) : (
-                    <div>Not found module: ${path}</div>
-                )}
+                                                <div>Not found module: ${path}</div>
+                                            )}
             </React.Fragment>
         );
     };

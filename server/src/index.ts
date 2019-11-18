@@ -28,7 +28,7 @@ namespace Entrypoint {
 
         const route: Router = app.use("/rest", router);
 
-        app.get("/rest", (req: Request, res: Response) => {
+        route.get("/rest", (req: Request, res: Response) => {
             res.sendStatus(200);
         });
 
