@@ -106,8 +106,8 @@ class ContentView extends React.PureComponent {
                         firebase={firebase}
                     />
                 ) : (
-                                                <div>Not found module: ${path}</div>
-                                            )}
+                    <div>Not found module: ${path}</div>
+                )}
             </React.Fragment>
         );
     };

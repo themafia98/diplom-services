@@ -37,9 +37,10 @@ serviceWorker.register();
 fetch("/rest")
     .then(res => {
         console.log(res);
-        if (res.status === 200) return res.json();
-        else return res;
+        debugger;
+        return res.json();
     })
     .then(res => {
+        debugger;
         console.log(res);
     });
