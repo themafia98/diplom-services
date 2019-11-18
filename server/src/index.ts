@@ -28,8 +28,9 @@ namespace Entrypoint {
 
         const route: Router = app.use("/rest", router);
 
-        route.get("/rest", (req: Request, res: Response) => {
-            res.sendStatus(200);
+        route.get("/", (req: Request, res: Response) => {
+            res.type("application/json");
+            res.json({ content: "HI!" });
         });
 
         if (process.env.NODE_ENV === "production") {

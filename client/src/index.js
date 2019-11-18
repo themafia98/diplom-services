@@ -30,17 +30,16 @@ ReactDOM.render(
             </firebaseContext.Provider>
         </ErrorBoundary>
     </BrowserRouter>,
-    document.getElementById("root"),
+    document.getElementById("root")
 );
 serviceWorker.register();
 
-
 fetch("/rest")
     .then(res => {
-        debugger;
-    });
-
-fetch("/rest/rest")
+        console.log(res);
+        if (res.status === 200) return res.json();
+        else return res;
+    })
     .then(res => {
-        debugger
+        console.log(res);
     });
