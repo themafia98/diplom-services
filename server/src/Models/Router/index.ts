@@ -5,11 +5,20 @@ namespace RouterInstance {
     export let instanceRoute: Route | null = null;
 
     export class Router implements Route {
+        private initialization: boolean = false;
         private entrypoint: Application;
         private restClient: RouteExpress = express.Router();
 
         constructor(app: Application) {
             this.entrypoint = app;
+        }
+
+        get init(): boolean {
+            return this.initialization;
+        }
+
+        set init(value: boolean) {
+            this.initialization = value;
         }
 
         static instance(app: Application): Route {
@@ -29,7 +38,10 @@ namespace RouterInstance {
         }
 
         initInstance(path: string): Application {
-            this.getEntrypoint().use(path, this.restClient);
+            if (this.init === false) {
+                this.getEntrypoint().use(path, this.restClient);
+                this.init = true;
+            }
             return this.getRest();
         }
 
