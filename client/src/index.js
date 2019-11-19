@@ -38,6 +38,7 @@ console.log(process.env.PORT);
 
 fetch("/rest/dogs")
     .then(res => {
+        console.log('/rest/dogs');
         if (res.status === 200) return res.json();
         else console.log(res);
     })
