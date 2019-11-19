@@ -54,7 +54,8 @@ http {
 
         location / {
             # First attempt to serve request as file, then
-            # as directory, then fall back to redirecting to index.html
+            # as directory, then fall back to redirecting to index.
+            root app/client/build;
             try_files $uri $uri/ /index.html;
         }
 
@@ -78,7 +79,7 @@ http {
         }
 
         location /static/ {
-            root /var/www;
+           root app/client/build;
         }
 	 }
 }
