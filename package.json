@@ -12,7 +12,7 @@
         "dev:server": "cross-env NODE_ENV=development nodemon ./server/src/index.ts --pretty",
         "dev:app": "cd client && yarn start",
         "build": "run-p build:**",
-        "buildprod": "cd client && yarn build && cd ../ && cd server && tsc && cd ../ && copyfiles -f -V src/build/**/*.* /var/www",
+        "buildprod": "cd client && yarn build && cd ../ && cd server && tsc",
         "client": "cd client && yarn build",
         "build:ts": "cd server && tsc",
         "build:app": "cd client && yarn build && copyfiles -f -V src/build/**/*.* /var/www"
