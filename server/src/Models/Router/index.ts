@@ -29,8 +29,8 @@ namespace RouterInstance {
             }
         }
 
-        getRest(): any | Application {
-            return this.restClient;
+        getRest(): Application {
+            return <Application>this.restClient;
         }
 
         getEntrypoint(): Application {
@@ -39,7 +39,7 @@ namespace RouterInstance {
 
         initInstance(path: string): Application {
             if (this.init === false) {
-                this.getEntrypoint().use(path, this.restClient);
+                this.getEntrypoint().use(path, this.getRest());
                 this.init = true;
             }
             return this.getRest();
@@ -47,7 +47,7 @@ namespace RouterInstance {
 
         createRoute(path: string, flag?: string): RouteExpress {
             const newRoute: RouteExpress = express.Router();
-            this.restClient.use(path, newRoute);
+            this.getRest().use(path, newRoute);
             return newRoute;
         }
     }
