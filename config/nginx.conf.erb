@@ -27,33 +27,30 @@ http {
 	client_body_timeout 5;
 
     upstream app_server {
-       server localhost:<%= ENV["APP_PORT"] %> fail_timeout=0;
-    }
-
-    upstream app_client {
-        server localhost:<%= ENV["PORT"] %> fail_timeout=0;
+       server localhost:<%= ENV["PORT"] %> fail_timeout=0;
     }
 
 
      server {
 		listen <%= ENV["APP_PORT"] %>;
-		server_name _;
+		server_name localhost;
 		keepalive_timeout 5;
 
 		location /rest/ {
 			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header Host $http_host;
-            proxy_pass http://app_server;
-			proxy_redirect http://app_client;
-        }
-
-        location / {
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 			proxy_set_header Host $http_host;
-            proxy_redirect off;
-            proxy_http_version 1.1;
-			proxy_pass http://app_client;
-         }
+			proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+            proxy_pass http://app_server;
+		}
+		
+		location /socket.io { # listen node.js ws connection
+			proxy_http_version 1.1;
+			proxy_set_header Upgrade $http_upgrade;
+			proxy_set_header Connection "Upgrade";
+			proxy_pass http://app_server;
+		}
 
 	 }
 }

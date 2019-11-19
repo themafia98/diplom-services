@@ -34,6 +34,8 @@ ReactDOM.render(
 );
 serviceWorker.register();
 
+console.log(process.env.PORT);
+
 fetch("/rest/dogs")
     .then(res => {
         if (res.status === 200) return res.json();
