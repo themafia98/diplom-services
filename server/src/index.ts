@@ -4,7 +4,7 @@ import os from "os";
 import { ServerRun } from "./Interfaces";
 import ServerRunner from "./Models/Server";
 
-fs.openSync("/tmp/app-initialized", "w"); //  nginx
+fs.openSync("/tmp/app-initialized", "w"); // nginx
 
 namespace Entrypoint {
     const cpuLentgh: number = os.cpus().length;
