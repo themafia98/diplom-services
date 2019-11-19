@@ -7,16 +7,16 @@ import ServerRunner from "./Models/Server";
 fs.openSync("/tmp/app-initialized", "w"); // nginx
 
 namespace Entrypoint {
-    // const cpuLentgh: number = os.cpus().length;
+    const cpuLentgh: number = os.cpus().length;
 
-    // if (cluster.isMaster) {
-    //     for (let i = 0; i < cpuLentgh; i++) {
-    //         cluster.fork();
-    //     }
-    // } else {
-    const server: ServerRun = new ServerRunner(process.env.PORT || "3001");
-    server.start();
-    // }
+    if (cluster.isMaster) {
+        for (let i = 0; i < cpuLentgh; i++) {
+            cluster.fork();
+        }
+    } else {
+        const server: ServerRun = new ServerRunner(process.env.PORT || "3001");
+        server.start();
+    }
 }
 
 export default Entrypoint;
