@@ -34,7 +34,7 @@ ReactDOM.render(
 );
 serviceWorker.register();
 
-fetch("/dogs")
+fetch("/rest/dogs")
     .then(res => {
         if (res.status === 200) return res.json();
         else console.log(res);

@@ -6,7 +6,7 @@
     },
     "proxies": {
         "/rest/": {
-            "origin": "https://alty-plains-52260.herokuapp.com/rest"
+            "origin": "/rest"
         }
     },
     "headers": {
