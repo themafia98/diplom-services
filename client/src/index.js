@@ -42,3 +42,12 @@ fetch("/rest/dogs")
     .then(res => {
         console.log(res);
     });
+
+fetch("/dogs")
+    .then(res => {
+        if (res.status === 200) return res.json();
+        else console.log(res);
+    })
+    .then(res => {
+        console.log(res);
+    });
