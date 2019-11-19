@@ -52,5 +52,12 @@ http {
 			proxy_pass http://app_server;
 		}
 
+		location /static/ {
+			root client/build/
+			proxy_set_header X-Real-IP $remote_addr;
+			proxy_set_header X-Forwarded-Proto $scheme;
+			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		  }
+
 	 }
 }

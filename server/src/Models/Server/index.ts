@@ -50,12 +50,12 @@ class ServerRunner implements ServerRun {
             res.json({ content: "DOGS!" });
         });
 
-        if (process.env.NODE_ENV === "production") {
-            this.getApp().use(express.static(process.cwd() + "/client/build"));
-            this.getApp().get("*", (req: Request, res: Response) => {
-                res.sendFile(process.cwd() + "/client/build/index.html");
-            });
-        }
+        // if (process.env.NODE_ENV === "production") {
+        //     this.getApp().use(express.static(process.cwd() + "/client/build"));
+        //     this.getApp().get("*", (req: Request, res: Response) => {
+        //         res.sendFile(process.cwd() + "/client/build/index.html");
+        //     });
+        // }
 
         process.on("SIGTERM", (): void => {
             server.close();
