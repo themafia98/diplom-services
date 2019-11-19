@@ -37,7 +37,7 @@ class ServerRunner implements ServerRun {
         const rest = instanceRouter.initInstance("/rest");
         const dogs = instanceRouter.createRoute("/dogs");
 
-        rest.get("/test", (req: Request, res: Response) => {
+        rest.get("/", (req: Request, res: Response) => {
             console.log(`${chalk.red("Requset url:")} ${chalk.blue(req.baseUrl)}`);
             res.type("application/json");
             res.json({ content: "HI!" });

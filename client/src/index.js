@@ -45,8 +45,9 @@ fetch("/rest/dogs")
         console.log(res);
     });
 
-fetch("/dogs")
+fetch("/")
     .then(res => {
+        console.log("/");
         if (res.status === 200) return res.json();
         else console.log(res);
     })
