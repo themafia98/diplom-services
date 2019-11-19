@@ -27,11 +27,11 @@ http {
 	client_body_timeout 5;
 
     upstream app_server {
-        server localhost:<%= ENV["PORT"] %> fail_timeout=0;
+        server localhost:<%= ENV["APP_PORT"] %> fail_timeout=0;
      }
 
 	server {
-		listen <%= ENV["APP_PORT"] %>;
+		listen <%= ENV["PORT] %>;
 		server_name _;
 		keepalive_timeout 5;
 
@@ -40,7 +40,7 @@ http {
             proxy_set_header X-Forwarded-for $proxy_add_x_forwarded_for;
 			proxy_set_header Host $http_host;
 			proxy_redirect off;
-            proxy_pass http://app_server;
+            proxy_pass http://app_server:<%= ENV["APP_PORT"] %>;
 
             proxy_set_header X-Forwarded-Proto $remote_addr;
             proxy_set_header X-Forwarded-Protocol $scheme;
@@ -54,7 +54,7 @@ http {
         }
 
         location / {
-            proxy_pass http://app_server;
+            proxy_pass http://app_server:<%= ENV["PORT"] %>;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-for $proxy_add_x_forwarded_for;
             proxy_set_header X-Forwarded-Proto $remote_addr;
