@@ -1,4 +1,5 @@
 import express, { Request, Response, Application } from "express";
+import helmet from 'helmet';
 import chalk from "chalk";
 import { Route } from "../../Interfaces";
 import RouterInstance from "../Router";
@@ -24,7 +25,7 @@ class ServerRunner implements ServerRun {
     public start(): void {
         this.setApp(express());
         this.getApp().disabled("x-powerd-by");
-
+        this.getApp().use(helmet());
         this.getApp().set("port", this.port);
 
         const instanceRouter: Route = RouterInstance.Router.instance(this.getApp());

@@ -9,9 +9,9 @@ events {
 }
 
 http {
-        gzip on;
-        gzip_comp_level 2;
-        gzip_min_length 512;
+        gzip off;
+        # gzip_comp_level 2;
+        # gzip_min_length 512;
 
 	server_tokens off;
 
@@ -45,7 +45,7 @@ http {
             proxy_pass http://app_server;
 		}
 		
-		location /socket.io { # listen node.js ws connection
+		location /socket.io { # ws connection
 			proxy_http_version 1.1;
 			proxy_set_header Upgrade $http_upgrade;
 			proxy_set_header Connection "Upgrade";
