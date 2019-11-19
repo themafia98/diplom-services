@@ -53,8 +53,7 @@ http {
 		}
 
 		location / {
-            root /client/build
-            try_files $uri /client/build/index.html;
+            try_files $uri /index.html;
 		  }
 
 	 }
