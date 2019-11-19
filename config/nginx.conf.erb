@@ -31,7 +31,7 @@ http {
      }
 
 	server {
-		listen <%= ENV["APP_PORT"] %>;
+		listen <%= ENV["PORT"] %>;
 		server_name _;
 		keepalive_timeout 5;
 
