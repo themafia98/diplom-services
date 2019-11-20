@@ -27,7 +27,7 @@ http {
 	client_body_timeout 5;
 
     upstream app_server {
-		server salty-plains-52260.herokuapp.com:<%= ENV["APP_PORT"] %> fail_timeout=0;
+		server localhost:<%= ENV["APP_PORT"] %> fail_timeout=0;
     }
 
 
@@ -57,10 +57,6 @@ http {
             # as directory, then fall back to redirecting to index.
             root /app/client/build;
             try_files $uri $uri/ /index.html;
-        }
-
-        location /static/ {
-           root /app/client/build;
         }
 	 }
 }
