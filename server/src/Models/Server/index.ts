@@ -36,26 +36,8 @@ class ServerRunner implements ServerRun {
         });
 
         const rest = instanceRouter.initInstance("/rest");
-        const dogs = instanceRouter.createRoute("/dogs");
+        const db = instanceRouter.createRoute("/db");
 
-        rest.get("/", (req: Request, res: Response) => {
-            console.log(`${chalk.red("Requset url:")} ${chalk.blue(req.baseUrl)}`);
-            res.type("application/json");
-            res.json({ content: "HI!" });
-        });
-
-        dogs.get("/", (req: Request, res: Response) => {
-            console.log(`${chalk.red("Requset url:")} ${chalk.blue(req.baseUrl)}`);
-            res.type("application/json");
-            res.json({ content: "DOGS!" });
-        });
-
-        // if (process.env.NODE_ENV === "production") {
-        //     this.getApp().use(express.static(process.cwd() + "/client/build"));
-        //     this.getApp().get("*", (req: Request, res: Response) => {
-        //         res.sendFile(process.cwd() + "/client/build/index.html");
-        //     });
-        // }
 
         process.on("SIGTERM", (): void => {
             server.close();

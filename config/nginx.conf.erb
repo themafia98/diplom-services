@@ -9,9 +9,9 @@ events {
 }
 
 http {
-        gzip off;
-        # gzip_comp_level 2;
-        # gzip_min_length 512;
+    gzip on;
+    gzip_comp_level 2;
+    gzip_min_length 512;
 
 	server_tokens off;
 
@@ -40,17 +40,23 @@ http {
 			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 			proxy_set_header Host $http_host;
 			proxy_http_version 1.1;
-            proxy_set_header Upgrade $http_upgrade;
-            proxy_set_header Connection "upgrade";
             proxy_pass http://app_server;
 		}
 
-		location /socket.io { # ws connection
+		# Requests for socket.io
+		location ~* \.io {
+			proxy_set_header X-Real-IP $remote_addr;
+			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+			proxy_set_header Host $http_host;
+			proxy_set_header X-NginX-Proxy false;
+	  
+			proxy_pass http://app_server;
+			proxy_redirect off;
+	  
 			proxy_http_version 1.1;
 			proxy_set_header Upgrade $http_upgrade;
-			proxy_set_header Connection "Upgrade";
-			proxy_pass http://app_server;
-		}
+			proxy_set_header Connection "upgrade";
+		  }
 
         location / {
             # First attempt to serve request as file, then
