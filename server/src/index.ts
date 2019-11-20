@@ -4,7 +4,7 @@ import os from "os";
 import { ServerRun } from "./Interfaces";
 import ServerRunner from "./Models/Server";
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === "production") {
     fs.openSync("/tmp/app-initialized", "w"); // nginx init
 }
 
@@ -16,7 +16,7 @@ namespace Entrypoint {
             cluster.fork();
         }
     } else {
-        const server: ServerRun = new ServerRunner(process.env.PORT || "3001");
+        const server: ServerRun = new ServerRunner(process.env.APP_PORT || "3001");
         server.start();
     }
 }
