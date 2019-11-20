@@ -1,5 +1,13 @@
 .news {
     .news__main {
         display: flex;
+        .col-fullscreen {
+            display: flex;
+            flex-wrap: wrap;
+        }
+    }
+
+    .pagination-news {
+        margin-left: 10px;
     }
 }

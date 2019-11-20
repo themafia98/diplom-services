@@ -22,7 +22,7 @@ const Textarea = ({
                 <EditorTextarea defaultValue={defaultValue} onChange={onChange} {...valueProps} />
             ) : (
                 <TextArea
-                    className={["defaultTextArea", className].join(" ")}
+                    className={[className, "defaultTextArea"].join(" ")}
                     row={row}
                     onKeyDown={onKeyDown}
                     onClick={onClick}

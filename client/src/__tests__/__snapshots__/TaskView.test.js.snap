@@ -15,6 +15,7 @@ exports[`<TaskView /> template Should be render with data 1`] = `
         "Закрыт",
       ]
     }
+    description="asdasd"
     editableContent="asdasd"
     key="testTask"
     keyTask="testTask"
