@@ -55,12 +55,12 @@ http {
         location / {
             # First attempt to serve request as file, then
             # as directory, then fall back to redirecting to index.
-            root app/client/build;
+            root /app/client/build;
             try_files $uri $uri/ /index.html;
         }
 
         location /static/ {
-           root app/client/build;
+           root /app/client/build;
         }
 	 }
 }
