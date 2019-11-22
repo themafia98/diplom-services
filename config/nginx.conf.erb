@@ -78,6 +78,14 @@ http {
 			add_header Cache-Control "public";
 		  }
 
+		  location ~*\serviceWorker.js {
+			  root /app/client/build
+			  add_header 'Service-Worker-Allowed' '/';
+			  expires off;
+			  add_header Cache-Control no-cache;
+			  access_log off;
+		  }
+
 		  # CSS and Javascript
 		  location ~* \.(?:css|js)$ {
 			root /app/client/build;
@@ -88,7 +96,6 @@ http {
 
         location / {
 			add_header Cache-Control "no-store, no-cache, must-revalidate";
-            proxy_set_header HTTPS YES;
             root /app/client/build;
                 index index.html;
             rewrite ^.*$ /index.html;
