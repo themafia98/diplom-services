@@ -4,10 +4,11 @@ import moment from "moment";
 import _ from "lodash";
 import uuid from "uuid/v4";
 import Scrollbars from "react-custom-scrollbars";
-import { Skeleton, List, Avatar, Button, notification, message } from "antd";
+import { Skeleton, List, Avatar, Button, notification, message, Modal } from "antd";
 
 import { setActiveChatToken } from "../../../../Redux/actions/publicActions";
 import Loader from "../../../Loader";
+import ChatModal from "./ChatRoom/ChatModal";
 import TitleModule from "../../../TitleModule";
 import ChatRoom from "./ChatRoom";
 
@@ -17,7 +18,8 @@ class Chat extends React.PureComponent {
         demoMessages: [
             { name: "Вася", id: uuid() },
             { name: "Гена Букин", id: uuid() }
-        ]
+        ],
+        visible: null
     };
 
     timer = null;
@@ -58,6 +60,13 @@ class Chat extends React.PureComponent {
         if (this.timer) clearTimeout(this.timer);
     };
 
+    onCreateRoom = event => {
+        this.setState({
+            ...this.state,
+            visible: true
+        });
+    };
+
     pushMessage = (event, msg) => {
         const { roomToken = "", listdata = null } = this.state;
         event.stopPropagation();
@@ -66,22 +75,6 @@ class Chat extends React.PureComponent {
         }
 
         if (!msg) return message.error("Недопустимые значения или вы ничего не ввели.");
-
-        // if (Array.isArray(listdata) && !_.isEmpty(listdata))
-        //     this.setState({
-        //         ...this.state,
-        //         listdata: [
-        //             ...listdata,
-        //             {
-        //                 id: listdata[listdata.length - 1].id + 1,
-        //                 roomToken: roomToken,
-        //                 name: "Павел Петрович",
-        //                 link: "/themafia98",
-        //                 msg: msg,
-        //                 date: moment()
-        //             }
-        //         ]
-        //     });
     };
 
     setActiveChatRoom = (event, id = uuid()) => {
@@ -111,13 +104,24 @@ class Chat extends React.PureComponent {
         } else return;
     };
 
-    render() {
-        const { isLoad = false, demoMessages } = this.state;
-        const { chat: { listdata, chatToken: roomToken = null } = {} } = this.props;
+    onVisibleChange = visible => {
+        this.setState({
+            ...this.state,
+            visible: !visible
+        });
+    };
 
+    renderModal = visible => {
+        return <ChatModal onVisibleChange={this.onVisibleChange} visible={visible} />;
+    };
+
+    render() {
+        const { isLoad = false, demoMessages, visible } = this.state;
+        const { chat: { listdata, chatToken: roomToken = null } = {} } = this.props;
         return (
             <div className="chat">
                 <TitleModule classNameTitle="ContactModule__chatTitle" title="Корпоративный чат" />
+                {this.renderModal(visible)}
                 <div className="chat__main">
                     <div className="col-chat-menu">
                         <div className="menuLoading-skeleton">
@@ -157,7 +161,12 @@ class Chat extends React.PureComponent {
                                 )}
                             </Scrollbars>
                         </div>
-                        <Button type="primary" disabled={!isLoad} className="chat_main__createRoom">
+                        <Button
+                            onClick={this.onCreateRoom}
+                            type="primary"
+                            disabled={!isLoad}
+                            className="chat_main__createRoom"
+                        >
                             Создать комнату
                         </Button>
                     </div>

@@ -4,6 +4,7 @@ import { Pagination } from "antd";
 import { middlewareCaching } from "../../../../Redux/actions/publicActions/middleware";
 import NewsCard from "./NewsCard";
 import TitleModule from "../../../TitleModule";
+import { NewsViewPage } from "./NewsViewPage";
 
 /** Dealy data for tests */
 const newsArray = [
@@ -115,7 +116,11 @@ const newsArray = [
 class News extends React.PureComponent {
     state = {
         isLoading: false,
+        IsOpen: false,
+        openKey: null,
+        prewPage: 1,
         currentPage: 1,
+        start: 0,
         newsArray: [...newsArray],
         counter: newsArray.length < 8 ? newsArray.length : 8,
         intialDefault: newsArray.length < 8 ? newsArray.length : 8,
@@ -136,7 +141,25 @@ class News extends React.PureComponent {
         }
     };
 
+    onOpen = key => {
+        debugger;
+        this.setState({
+            ...this.state,
+            openKey: key,
+            IsOpen: true
+        });
+    };
+
+    onClose = key => {
+        this.setState({
+            ...this.state,
+            openKey: null,
+            IsOpen: false
+        });
+    };
+
     renderNewsBlock = currentPage => {
+        const { start } = this.state;
         const {
             path = "",
             storeCache: {
@@ -146,44 +169,47 @@ class News extends React.PureComponent {
             } = {}
         } = this.props;
         const { counter, intialDefault, newsArray = [] } = this.state;
-        const arrayCards = [...newsArray];
-        const normalizeDatalist =
-            currentPage === 1
-                ? arrayCards.slice(0, intialDefault)
-                : arrayCards.slice(
-                      currentPage * 4,
-                      currentPage * 8 > arrayCards.length ? arrayCards.length : currentPage * 8
-                  );
-        return normalizeDatalist
-            .slice(currentPage === 1 ? 0 : 0, currentPage === 1 ? intialDefault : counter)
+        let arrayCards = [...newsArray];
+
+        return arrayCards
+            .slice(start, start + 4 > arrayCards.length ? arrayCards.length : start + 4)
             .map(it => {
-                return <NewsCard className="card" key={it.id} data={it} />;
+                return <NewsCard onClick={this.onOpen.bind(this, it.id)} className="card" key={it.id} data={it} />;
             })
             .filter(Boolean);
     };
 
     onChange = pageNumber => {
-        this.setState({
-            ...this.state,
-            currentPage: pageNumber
-        });
+        const { start, currentPage } = this.state;
+        if (currentPage !== pageNumber)
+            this.setState({
+                ...this.state,
+                currentPage: pageNumber,
+                start: currentPage < pageNumber ? start + 4 : start - 4
+            });
     };
 
     render() {
-        const { currentPage } = this.state;
+        const { currentPage, IsOpen, openKey } = this.state;
         return (
             <div className="news">
                 <TitleModule classNameTitle="mainModuleTitle" title="Информация по предприятию" />
-                <div className="news__main">
-                    <div className="col-fullscreen">{this.renderNewsBlock(currentPage)}</div>
-                </div>
-                <Pagination
-                    className="pagination-news"
-                    onChange={this.onChange}
-                    pageSize={5}
-                    defaultCurrent={currentPage}
-                    total={newsArray.length}
-                />
+                {!IsOpen ? (
+                    <React.Fragment>
+                        <div className="news__main">
+                            <div className="col-fullscreen">{this.renderNewsBlock(currentPage)}</div>
+                        </div>
+                        <Pagination
+                            className="pagination-news"
+                            onChange={this.onChange}
+                            pageSize={~~(newsArray.length / 4)}
+                            defaultCurrent={currentPage}
+                            total={newsArray.length}
+                        />
+                    </React.Fragment>
+                ) : (
+                    <NewsViewPage key={openKey} id={openKey} IsOpen={IsOpen} />
+                )}
             </div>
         );
     }
