@@ -79,7 +79,7 @@ http {
 		  }
 
 		  location ~*\serviceWorker.js {
-			  root /app/client/build
+			  root /app/client/build;
 			  add_header 'Service-Worker-Allowed' '/';
 			  expires off;
 			  add_header Cache-Control no-cache;
