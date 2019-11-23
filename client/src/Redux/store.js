@@ -9,13 +9,13 @@ const request = new Request();
 
 /** For devtools */
 const composeEnhancers =
-    typeof window === "object" && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+    typeof window === "object" && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ && process.env.NODE_ENV !== "production"
         ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({})
         : compose;
 
 const middleware = composeEnhancers(
     /** @Include moddleware */
-    applyMiddleware(thunk.withExtraArgument({ firebase, getSchema, request, clientDB })),
+    applyMiddleware(thunk.withExtraArgument({ firebase, getSchema, request, clientDB }))
 );
 
 const store = createStore(combineReducers, middleware);
