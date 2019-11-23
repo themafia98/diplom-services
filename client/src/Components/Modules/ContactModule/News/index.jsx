@@ -42,11 +42,11 @@ class News extends React.PureComponent {
             router: { routeData = {}, currentActionTab = "", actionTabs = [] } = {},
             setCurrentTab
         } = this.props;
-        const page = `contactModule${primaryKey}`;
+        const page = `contactModule${primaryKey}__${key}`;
 
         onOpenPageWithData({
             activePage: page,
-            routeDataActive: { key: page, activePage: key }
+            routeDataActive: { key, activePage: key }
         });
     };
 

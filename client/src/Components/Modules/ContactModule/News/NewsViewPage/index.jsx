@@ -19,13 +19,33 @@ class NewsViewPage extends React.PureComponent {
             router: { routeDataActive: { activePage = "" } = {} }
         } = this.props;
         const data = newsArray.find(it => activePage === it.id) || {};
-        debugger;
+
         this.setState({
             ...this.state,
+            active: activePage,
             isLoading: !_.isEmpty(data) ? false : true,
             loading: !_.isEmpty(data) ? true : false,
             currentData: { ...data }
         });
+    };
+
+    componentDidUpdate = (prevProps, prevState) => {
+        const {
+            router: { routeDataActive: { activePage = "" } = {} }
+        } = this.props;
+        const { active } = this.state;
+
+        if (activePage !== active) {
+            const data = newsArray.find(it => activePage === it.id) || {};
+
+            this.setState({
+                ...this.state,
+                active: activePage,
+                isLoading: !_.isEmpty(data) ? false : true,
+                loading: !_.isEmpty(data) ? true : false,
+                currentData: { ...data }
+            });
+        }
     };
 
     render() {

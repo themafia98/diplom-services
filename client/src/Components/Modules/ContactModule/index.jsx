@@ -15,7 +15,7 @@ class ContactModule extends React.PureComponent {
         if (path) {
             if (path === "contactModule_chat") return <Chat />;
             if (path === "contactModule_feedback") return <News />;
-            if (path === "contactModule_informationPage") return <NewsViewPage />;
+            if (path.startsWith("contactModule_informationPage")) return <NewsViewPage />;
             else return <div>Not found ContactModule</div>;
         }
     };
