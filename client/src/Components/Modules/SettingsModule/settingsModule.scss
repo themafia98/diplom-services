@@ -1,0 +1,48 @@
+.settingsModule {
+    .settingsModuleTitle {
+        font-size: 30px;
+        font-weight: bold;
+        margin: 0;
+        user-select: none;
+    }
+    .settingsPanel--center-flex {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .flexWrapper {
+        display: flex;
+        width: 70%;
+        justify-content: center;
+        span:first-child {
+            font-weight: bold;
+            flex: 0 0 25%;
+        }
+        input {
+            flex: 0 0 75%;
+            text-align: center;
+        }
+    }
+    .submit {
+        margin: 10px 3px;
+    }
+
+    .settingsModule__main {
+        display: flex;
+        height: calc(100vh - 180px);
+        .configWrapper {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            .configTitle {
+                padding-left: 10px;
+            }
+        }
+        .ant-collapse-content-box {
+            .ant-collapse-item {
+                border: none;
+            }
+        }
+    }
+}

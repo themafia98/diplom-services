@@ -1,32 +1,39 @@
 @import "./Utils/styles/palette.scss";
 @import "./Utils/styles/root.scss";
+
 @import "./Components/MenuView/menuView.scss";
 @import "./Components/ContentView/contentView.scss";
 @import "./Components/HeaderView/header.scss";
 @import "./Components/Loader/loader.scss";
+
 @import "./Components/Pages/LoginPage/loginPage.scss";
-@import "./Components/Pages/Dashboard/dashboard.scss";
-@import "./Components/Modules/MainModule/mainModule.scss";
-@import "./Components/TitleModule/titleModule.scss";
-@import "./Components//StreamBox/streamBox.scss";
-@import "./Components/TableView/tableView.scss";
 @import "./Components/ErrorBoundary/errorPage.scss";
-@import "./Components/ModalWindow/modalWindow.scss";
-@import "./Components/Output/output.scss";
+@import "./Components/ErrorBoundary/errorPage.scss";
+@import "./Components/Pages/Dashboard/dashboard.scss";
+
+@import "./Components/Modules/MainModule/mainModule.scss";
 @import "./Components/Modules/CabinetModule/cabinetModule.scss";
-@import "./Components/UserCard/userCard.scss";
+@import "./Components/TitleModule/titleModule.scss";
 @import "./Components/Modules/TaskModule/TaskModuleList/taskModuleList.scss";
 @import "./Components/Modules/TaskModule/TaskModuleCalendar/taskModuleCalendar.scss";
-@import "./Components/Modules/settingsModule/settingsModule.scss";
-@import "./Components/ObserverTime/observerTime.scss";
 @import "./Components/Modules/StatisticsModule/statisticsModule.scss";
+@import "./Components/Modules/TaskModule/CreateTask/createTask.scss";
+@import "./Components/Modules/ContactModule/Chat/chat.scss";
+@import "./Components/Modules/ContactModule/News/news.scss";
+@import "./Components/Modules/ContactModule/News/NewsViewPage/newsViewPage.scss";
+@import "./Components/Modules/SettingsModule/settingsModule.scss";
+
+@import "./Components//StreamBox/streamBox.scss";
+@import "./Components/TableView/tableView.scss";
+@import "./Components/ModalWindow/modalWindow.scss";
+@import "./Components/Output/output.scss";
+@import "./Components/UserCard/userCard.scss";
+@import "./Components/ObserverTime/observerTime.scss";
+
 @import "./Components/Modules/TaskModule/TaskView/taskView.scss";
 @import "./Components/File/file.scss";
 @import "./Components/Comments/comments.scss";
-@import "./Components/Modules/TaskModule/CreateTask/createTask.scss";
 @import "./Components/Updater/updater.scss";
-@import "./Components/Modules/ContactModule/Chat/chat.scss";
+
 @import "./Components/Textarea/textarea.scss";
-@import "./Components/Modules/ContactModule/News/news.scss";
 @import "./Components/Modules/ContactModule/News/NewsCard/newsCard.scss";
-@import "./Components/Modules/ContactModule/News/NewsViewPage/newsViewPage.scss";
