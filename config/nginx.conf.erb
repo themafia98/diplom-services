@@ -32,7 +32,7 @@ http {
 
 	# handle SNI
     proxy_ssl_server_name on;
-    proxy_ssl_name *.herokuapp.com;
+    proxy_ssl_name localhost;
     # resolver needs to be set because we're using dynamic proxy_pass
     resolver 8.8.8.8;
 
