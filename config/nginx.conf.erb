@@ -30,6 +30,12 @@ http {
 	#Must read the body in 5 seconds.
 	client_body_timeout 5;
 
+	# handle SNI
+    proxy_ssl_server_name on;
+    proxy_ssl_name localhost;
+    # resolver needs to be set because we're using dynamic proxy_pass
+    resolver 8.8.8.8;
+
     upstream app_server {
 		server localhost:<%= ENV["APP_PORT"] %> fail_timeout=0;
     }
