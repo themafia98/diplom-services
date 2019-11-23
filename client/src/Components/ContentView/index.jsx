@@ -10,7 +10,7 @@ import MainModule from "../Modules/MainModule";
 import CabinetModule from "../Modules/CabinetModule";
 import TaskModule from "../Modules/TaskModule";
 import StatisticsModule from "../Modules/StatisticsModule";
-//import SettingsModule from "../Modules/settingsModule/";
+import SettingsModule from "../Modules/SettingsModule";
 import ContactModule from "../Modules/ContactModule";
 import CustomersModule from "../Modules/CustomersModule";
 
@@ -81,14 +81,13 @@ class ContentView extends React.PureComponent {
                         firebase={firebase}
                     />
                 ) : path === "settingsModule" ? (
-                    <div></div>
-                ) : //<SettingsModule
-                //    onErrorRequstAction={onErrorRequstAction}
-                //    key="settings"
-                //    path={path}
-                //   firebase={firebase}
-                ///>
-                path === "statisticModule" ? (
+                    <SettingsModule
+                        onErrorRequstAction={onErrorRequstAction}
+                        key="settings"
+                        path={path}
+                        firebase={firebase}
+                    />
+                ) : path === "statisticModule" ? (
                     <StatisticsModule
                         onErrorRequstAction={onErrorRequstAction}
                         key="statistic"
