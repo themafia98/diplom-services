@@ -81,16 +81,16 @@ class TaskModule extends React.PureComponent {
                 this.setState({ ...this.state, height: heightForState, heightController: heightControllerForState });
         }
 
-        const { load = false } = routeData[path.split("_")[0] || path] || {};
+        // const { load = false } = routeData[path.split("_")[0] || path] || {};
 
-        if (
-            (path.startsWith("taskModule") &&
-                !router.routeData["taskModule"] &&
-                !router.routeData["taskModule_сalendar"]) ||
-            (shouldUpdate && load)
-        ) {
-            onLoadCurrentData({ path: "taskModule", storeLoad: "tasks", shouldUpdate });
-        }
+        // if (
+        //     (path.startsWith("taskModule") &&
+        //         !router.routeData["taskModule"] &&
+        //         !router.routeData["taskModule_сalendar"]) ||
+        //     (shouldUpdate && load)
+        // ) {
+        //     onLoadCurrentData({ path: "taskModule", storeLoad: "tasks", shouldUpdate });
+        // }
     };
 
     getTaskByPath = path => {

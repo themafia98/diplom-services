@@ -10,7 +10,7 @@ import MainModule from "../Modules/MainModule";
 import CabinetModule from "../Modules/CabinetModule";
 import TaskModule from "../Modules/TaskModule";
 import StatisticsModule from "../Modules/StatisticsModule";
-import SettingsModule from "../Modules/settingsModule";
+import SettingsModule from "../Modules/SettingsModule";
 import ContactModule from "../Modules/ContactModule";
 import CustomersModule from "../Modules/CustomersModule";
 
@@ -43,17 +43,6 @@ class ContentView extends React.PureComponent {
         const { dashboardStrem = null } = this.props;
         document.removeEventListener("keydown", this.disableF5);
         dashboardStrem.off("EventUpdate", this.updateFunction);
-    };
-
-    componentDidUpdate = () => {
-        // if (
-        //     (path.startsWith("taskModule") &&
-        //         !router.routeData["taskModule"] &&
-        //         !router.routeData["taskModule_сalendar"]) ||
-        //     (shouldUpdate && load)
-        // ) {
-        //     onLoadCurrentData({ path: path.startsWith("taskModule") ? "taskModule" : path , storeLoad: "tasks", shouldUpdate });
-        // }
     };
 
     getComponentByPath = path => {
@@ -115,7 +104,7 @@ class ContentView extends React.PureComponent {
     updateFunction = _.debounce(() => {
         const { updateLoader } = this.props;
         this.setState({ ...this.state, key: uuid() }, () => updateLoader());
-    }, 500);
+    }, 300);
 
     disableF5 = event => {
         if ((event.which || event.keyCode) === 113) {

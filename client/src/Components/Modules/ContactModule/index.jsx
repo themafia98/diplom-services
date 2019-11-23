@@ -12,12 +12,19 @@ class ContactModule extends React.PureComponent {
     };
 
     getContactContentByPath = path => {
-        if (path) {
-            if (path === "contactModule_chat") return <Chat />;
-            if (path === "contactModule_feedback") return <News />;
-            if (path.startsWith("contactModule_informationPage")) return <NewsViewPage />;
-            else return <div>Not found ContactModule</div>;
-        }
+        return (
+            <React.Fragment>
+                {path === "contactModule_chat" ? (
+                    <Chat key="chatModule" />
+                ) : path === "contactModule_feedback" ? (
+                    <News key="newsModule" />
+                ) : path.startsWith("contactModule_informationPage") ? (
+                    <NewsViewPage key="newViewPageModule" />
+                ) : (
+                    <div>Not found ContactModule</div>
+                )}
+            </React.Fragment>
+        );
     };
     render() {
         const { path } = this.props;

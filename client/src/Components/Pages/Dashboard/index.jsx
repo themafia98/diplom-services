@@ -16,6 +16,7 @@ import ContentView from "../../ContentView";
 import MenuView from "../../MenuView";
 
 class Dashboard extends React.PureComponent {
+    dashboardStrem = new EventEmitter();
     state = {
         collapsed: true,
         status: "online",
@@ -41,7 +42,7 @@ class Dashboard extends React.PureComponent {
         const {
             publicReducer: { requestError = null, status } = {},
             router,
-            router: { currentActionTab }
+            router: { currentActionTab, shouldUpdate = false }
         } = this.props;
         const { showLoader, status: statusState, counterError } = this.state;
 
@@ -92,13 +93,15 @@ class Dashboard extends React.PureComponent {
         }
 
         if (statusState !== status) {
-            this.setState({
+            return this.setState({
                 status: status
             });
         }
-    };
 
-    dashboardStrem = new EventEmitter();
+        if (shouldUpdate) {
+            this.dashboardStrem.emit("EventUpdate");
+        }
+    };
 
     onCollapse = collapsed => {
         this.setState({ ...this.state, collapsed });
@@ -137,7 +140,6 @@ class Dashboard extends React.PureComponent {
                 const dataPage = tabsCopy[i].split("__");
                 const PARENT_CODE = dataPage[0];
                 const DATAKEY = dataPage[1] || dataPage[0];
-                debugger;
                 const VALUE = DATAKEY && routeData[DATAKEY].name ? routeData[DATAKEY].name : DATAKEY;
                 tabItem = { EUID: tabsCopy[i], PARENT_CODE, DATAKEY, VALUE };
             }
