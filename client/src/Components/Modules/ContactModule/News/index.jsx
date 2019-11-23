@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Pagination } from "antd";
-import { addTabAction, openPageWithDataAction } from "../../../../Redux/actions/routerActions";
+import { setActiveTabAction, openPageWithDataAction } from "../../../../Redux/actions/routerActions";
 import { middlewareCaching } from "../../../../Redux/actions/publicActions/middleware";
 import NewsCard from "./NewsCard";
 import TitleModule from "../../../TitleModule";
@@ -43,13 +43,23 @@ class News extends React.PureComponent {
             setCurrentTab
         } = this.props;
 
-        onOpenPageWithData({
-            activePage: routePathNormalise({
-                pathType: "moduleItem",
-                pathData: { page: "contactModule", moduleId: "informationPage", key }
-            }),
-            routeDataActive: { key, activePage: key }
+        const moduleId = "informationPage";
+        const page = "contactModule";
+
+        const routeNormalize = routePathNormalise({
+            pathType: "moduleItem",
+            pathData: { page, moduleId, key }
         });
+
+        const index = actionTabs.findIndex(tab => tab === routeNormalize.path);
+        const isFind = index !== -1;
+
+        if (!isFind) {
+            onOpenPageWithData({
+                activePage: routeNormalize,
+                routeDataActive: { key, activePage: key }
+            });
+        } else setCurrentTab(actionTabs[index]);
     };
 
     renderNewsBlock = currentPage => {
@@ -111,13 +121,15 @@ class News extends React.PureComponent {
 
 const mapStateToProps = state => {
     return {
-        storeCache: state.publicReducer.caches
+        storeCache: state.publicReducer.caches,
+        router: state.router
     };
 };
 
 const mapDispathToProps = dispatch => {
     return {
         onOpenPageWithData: data => dispatch(openPageWithDataAction(data)),
+        setCurrentTab: tab => dispatch(setActiveTabAction(tab)),
         onCaching: async (data, primaryKey, type, pk, store) =>
             await dispatch(middlewareCaching({ data, primaryKey, type, pk, store }))
     };
