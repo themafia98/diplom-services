@@ -7,6 +7,7 @@ import NewsCard from "./NewsCard";
 import TitleModule from "../../../TitleModule";
 import NewsViewPage from "./NewsViewPage";
 
+import { routePathNormalise } from "../../../../Utils";
 import { newsArray } from "./testData";
 
 class News extends React.PureComponent {
@@ -36,16 +37,17 @@ class News extends React.PureComponent {
     };
 
     onOpen = key => {
-        const primaryKey = "_informationPage";
         const {
             onOpenPageWithData,
             router: { routeData = {}, currentActionTab = "", actionTabs = [] } = {},
             setCurrentTab
         } = this.props;
-        const page = `contactModule${primaryKey}__${key}`;
 
         onOpenPageWithData({
-            activePage: page,
+            activePage: routePathNormalise({
+                pathType: "moduleItem",
+                pathData: { page: "contactModule", moduleId: "informationPage", key }
+            }),
             routeDataActive: { key, activePage: key }
         });
     };

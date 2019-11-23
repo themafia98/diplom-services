@@ -9,6 +9,7 @@ import { addTabAction, setActiveTabAction, removeTabAction, logoutAction } from 
 import { loadCurrentData } from "../../../Redux/actions/routerActions/middleware";
 import { errorRequstAction } from "../../../Redux/actions/publicActions";
 import { setChildrenSizeAction } from "../../../Redux/actions/tabActions";
+import { routeParser } from "../../../Utils";
 
 import Loader from "../../Loader";
 import HeaderView from "../../HeaderView";
@@ -164,14 +165,18 @@ class Dashboard extends React.PureComponent {
             tabData,
             onSetChildrenSizeAction
         } = this.props;
+
         const actionTabsCopy = [...actionTabs];
         const isFind = actionTabsCopy.findIndex(tab => tab === path) !== -1;
+
         if (mode === "open") {
             if (!isFind && config.tabsLimit <= actionTabsCopy.length)
                 return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
-            if (!isFind) addTab(path);
+
+            if (!isFind) addTab(routeParser({ path }));
             else if (currentActionTab !== path) {
                 setCurrentTab(path);
+
                 if (path.startsWith("taskModule") && path !== "taskModule_createTask")
                     onLoadCurrentData({ path, storeLoad: "tasks" });
             }

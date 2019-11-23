@@ -10,6 +10,8 @@ import { forceUpdateDetectedInit } from "./Utils";
 import { setStatus } from "./Redux/actions/publicActions";
 import { addTabAction } from "./Redux/actions/routerActions";
 
+import { routeParser } from "./Utils";
+
 import Loader from "./Components/Loader";
 import Recovery from "./Components/Pages/Recovery";
 import LoginPage from "./Components/Pages/LoginPage";
@@ -36,7 +38,8 @@ class App extends React.Component {
             let path = "mainModule";
             const defaultModule = config.menu.find(item => item["SIGN"] === "default");
             if (defaultModule) path = defaultModule.EUID;
-            addTab(path);
+            const routePath = routeParser({ path });
+            addTab(routePath);
         });
     };
 

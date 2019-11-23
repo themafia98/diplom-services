@@ -5,6 +5,8 @@ import { connect } from "react-redux";
 import Scrollbars from "react-custom-scrollbars";
 import { Button } from "antd";
 
+import { routeParser } from "../../../Utils";
+
 import { addTabAction, openPageWithDataAction } from "../../../Redux/actions/routerActions";
 import { loadCurrentData } from "../../../Redux/actions/routerActions/middleware";
 import TaskModuleCalendar from "./TaskModuleCalendar";
@@ -49,7 +51,10 @@ class TaskModule extends React.PureComponent {
             addTab,
             router: { currentActionTab }
         } = this.props;
-        if (currentActionTab !== "taskModule_createTask") addTab("taskModule_createTask");
+
+        if (currentActionTab !== "taskModule_createTask") {
+            addTab(routeParser({ path: "taskModule_createTask" }));
+        }
     };
 
     componentDidMount = () => {

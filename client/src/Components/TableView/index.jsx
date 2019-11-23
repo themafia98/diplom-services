@@ -9,6 +9,7 @@ import Scrollbars from "react-custom-scrollbars";
 import uuid from "uuid/v4";
 import Highlighter from "react-highlight-words";
 
+import { routePathNormalise, routeParser } from "../../Utils";
 import Output from "../Output";
 
 import { openPageWithDataAction } from "../../Redux/actions/routerActions";
@@ -224,15 +225,24 @@ class TableView extends React.Component {
                             onClick: event => {
                                 const {
                                     onOpenPageWithData,
-                                    router: { currentActionTab, actionTabs },
+                                    router: { currentActionTab: path, actionTabs },
                                     setCurrentTab
                                 } = this.props;
-                                const page = `${currentActionTab}__${record.key}`;
+                                debugger;
+                                const { key = "" } = record || {};
+                                if (!key) return;
+
+                                const { moduleId = "", page = "" } = routeParser({ path });
+                                if (!moduleId || !page) return;
+
                                 const index = actionTabs.findIndex(tab => tab === page);
                                 const isFind = index !== -1;
                                 if (!isFind) {
                                     onOpenPageWithData({
-                                        activePage: page,
+                                        activePage: routePathNormalise({
+                                            pathType: "moduleItem",
+                                            pathData: { page, moduleId, key }
+                                        }),
                                         routeDataActive: record
                                     });
                                 } else {

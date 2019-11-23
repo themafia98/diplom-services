@@ -20,21 +20,44 @@ const initialState = {
 
 export default (state = initialState, action) => {
     switch (action.type) {
-        case ADD_TAB:
+        case ADD_TAB: {
+            const isString = typeof action.payload === "string";
+
+            const tab = isString
+                ? action.payload
+                : action.payload.pageType === "module"
+                ? `${action.payload.page}${action.payload.moduleId}`
+                : `${action.payload.path}`;
+
             return {
                 ...state,
-                actionTabs: [...state.actionTabs, action.payload],
-                currentActionTab: action.payload
+                actionTabs: [...state.actionTabs, tab],
+                currentActionTab: tab
             };
+        }
         case OPEN_PAGE_WITH_DATA: {
             const copyRouteData = { ...state.routeData };
+            const { activePage = {} } = action.payload || {};
+
+            if (
+                !activePage ||
+                typeof activePage !== "object" ||
+                activePage === null ||
+                (activePage && activePage.key !== action.payload.routeDataActive.key)
+            ) {
+                return { ...state };
+            }
+
+            const { path = "" } = action.payload.activePage || {};
+            if (!path) return { ...state };
 
             copyRouteData[action.payload.routeDataActive.key || action.payload.routeDataActive] =
                 typeof action.payload.routeDataActive !== "string" ? action.payload.routeDataActive : {};
+
             return {
                 ...state,
-                currentActionTab: action.payload.activePage,
-                actionTabs: [...state.actionTabs, action.payload.activePage],
+                currentActionTab: path,
+                actionTabs: [...state.actionTabs, path],
                 routeDataActive: { ...action.payload.routeDataActive },
                 routeData: copyRouteData
             };

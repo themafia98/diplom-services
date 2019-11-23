@@ -1,42 +1,51 @@
 import React from "react";
+import _ from "lodash";
 import PropTypes from "prop-types";
 import Scrollbars from "react-custom-scrollbars";
 import moment from "moment";
 import TitleModule from "../../../TitleModule";
 import { Calendar, Popover, Button } from "antd";
 
-// setCurrentTab={setCurrentTab}
-// onOpenPageWithData={onOpenPageWithData}
-// height={heightController ? height - heightController : height}
-// router={router}
+import { routePathNormalise } from "../../../../Utils";
 
 class TaskModuleCalendar extends React.PureComponent {
     static propTypes = {
         setCurrentTab: PropTypes.func.isRequired,
         onOpenPageWithData: PropTypes.func.isRequired,
         height: PropTypes.oneOfType([PropTypes.string, PropTypes.number, () => null]),
-        router: PropTypes.object.isRequired,
+        router: PropTypes.object.isRequired
     };
 
     onClick = event => {
         const {
             onOpenPageWithData,
             router: { routeData = {}, currentActionTab = "", actionTabs = [] } = {},
-            setCurrentTab,
+            setCurrentTab
         } = this.props;
         const { tasks = [] } = routeData[currentActionTab] || routeData["taskModule"] || {};
         const { currentTarget } = event;
         const record = currentTarget.className;
 
-        const page = `taskModule_all__${record}`;
-        const index = actionTabs.findIndex(tab => tab === page);
+        const routeNormalize =
+            routePathNormalise({
+                pathType: "moduleItem",
+                pathData: { page: "taskModule", moduleId: "all", key: record }
+            }) || {};
+
+        if (_.isEmpty(routeNormalize)) return;
+
+        const index = actionTabs.findIndex(tab => tab === routeNormalize.page);
         const isFind = index !== -1;
+
         if (!isFind) {
             const item = tasks.find(it => it.key === record);
             if (!item) return;
             onOpenPageWithData({
-                activePage: page,
-                routeDataActive: { ...item },
+                activePage: routePathNormalise({
+                    pathType: "moduleItem",
+                    pathData: { page: "taskModule", moduleId: "all", key: record }
+                }),
+                routeDataActive: { ...item }
             });
         } else {
             setCurrentTab(actionTabs[index]);
@@ -88,7 +97,7 @@ class TaskModuleCalendar extends React.PureComponent {
         let outValues = listData.length ? [...listData] : null;
         if (listData.length) {
             outValues = outValues.reduce((prev, current) =>
-                prev.content ? prev.content + "," + current.content : current.content,
+                prev.content ? prev.content + "," + current.content : current.content
             );
         }
 
