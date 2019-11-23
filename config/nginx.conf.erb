@@ -69,6 +69,7 @@ http {
 		  }
 
 
+
         location / {
 			set $upstream app_server;
             proxy_pass https://$upstream;
@@ -77,8 +78,7 @@ http {
             proxy_set_header Host salty-plains-52260.herokuapp.com;
 			add_header Cache-Control "no-store, no-cache, must-revalidate";
             root /app/client/build;
-            index index.html;
-            try_files $uri $uri/ index.html =404;
+                index index.html;
         }
 	 }
 }
