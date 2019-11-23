@@ -44,7 +44,7 @@ class App extends React.Component {
         return this.setState({ firebaseLoadState: true });
     };
 
-    componentDidMount() {
+    componentDidMount = () => {
         /** load app */
         const { firebase } = this.props;
         const { firebaseLoadState } = this.state;
@@ -60,7 +60,7 @@ class App extends React.Component {
         if (config.forceUpdate === true || process.env.NODE_ENV === "production") forceUpdateDetectedInit();
         //const request = new Request();
         //request.test(statusRequst => (status !== statusRequst ? onSetStatus(statusRequst) : null));
-    }
+    };
 
     render() {
         const { firebase } = this.props;

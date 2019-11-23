@@ -1,123 +1,17 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Pagination } from "antd";
+import { addTabAction, openPageWithDataAction } from "../../../../Redux/actions/routerActions";
 import { middlewareCaching } from "../../../../Redux/actions/publicActions/middleware";
 import NewsCard from "./NewsCard";
 import TitleModule from "../../../TitleModule";
-import { NewsViewPage } from "./NewsViewPage";
+import NewsViewPage from "./NewsViewPage";
 
-/** Dealy data for tests */
-const newsArray = [
-    {
-        id: Math.random(),
-        author: "Павел Петрович",
-        title: "Версия 0.0.1 обновлена.",
-        content: "В список изменении вошли..."
-    },
-    {
-        id: Math.random(),
-        author: "Павел Петрович",
-        title: "Версия 0.0.2 обновлена.",
-        content: "В список изменении вошли..."
-    },
-    {
-        id: Math.random(),
-        author: "Павел Петрович",
-        title: "Версия 0.0.3 обновлена.",
-        content: "В список изменении вошли..."
-    },
-    {
-        id: Math.random(),
-        author: "Павел Петрович",
-        title: "Версия 0.0.4 обновлена.",
-        content: "В список изменении вошли..."
-    },
-    {
-        id: Math.random(),
-        author: "Павел Петрович",
-        title: "Версия 0.0.5 обновлена.",
-        content: "В список изменении вошли..."
-    },
-    {
-        id: Math.random(),
-        author: "Павел Петрович",
-        title: "Версия 0.0.6 обновлена.",
-        content: "В список изменении вошли..."
-    },
-
-    {
-        id: Math.random(),
-        author: "Павел Петрович",
-        title: "Версия 0.0.7 обновлена.",
-        content: "В список изменении вошли..."
-    },
-    {
-        id: Math.random(),
-        author: "Павел Петрович",
-        title: "Версия 0.0.8 обновлена.",
-        content: "В список изменении вошли..."
-    },
-    {
-        id: Math.random(),
-        author: "Павел Петрович",
-        title: "Версия 0.0.9 обновлена.",
-        content: "В список изменении вошли..."
-    },
-    {
-        id: Math.random(),
-        author: "Павел Петрович",
-        title: "Версия 0.0.10 обновлена.",
-        content: "В список изменении вошли..."
-    },
-    {
-        id: Math.random(),
-        author: "Павел Петрович",
-        title: "Версия 0.0.11 обновлена.",
-        content: "В список изменении вошли..."
-    },
-    {
-        id: Math.random(),
-        author: "Павел Петрович",
-        title: "Версия 0.0.12 обновлена.",
-        content: "В список изменении вошли..."
-    },
-    {
-        id: Math.random(),
-        author: "Павел Петрович",
-        title: "Версия 0.0.13 обновлена.",
-        content: "В список изменении вошли..."
-    },
-    {
-        id: Math.random(),
-        author: "Павел Петрович",
-        title: "Версия 0.0.14 обновлена.",
-        content: "В список изменении вошли..."
-    },
-    {
-        id: Math.random(),
-        author: "Павел Петрович",
-        title: "Версия 0.0.15 обновлена.",
-        content: "В список изменении вошли..."
-    },
-    {
-        id: Math.random(),
-        author: "Павел Петрович",
-        title: "Версия 0.0.16 обновлена.",
-        content: "В список изменении вошли..."
-    },
-    {
-        id: Math.random(),
-        author: "Павел Петрович",
-        title: "Версия 0.0.17 обновлена.",
-        content: "В список изменении вошли..."
-    }
-];
+import { newsArray } from "./testData";
 
 class News extends React.PureComponent {
     state = {
         isLoading: false,
-        IsOpen: false,
-        openKey: null,
         prewPage: 1,
         currentPage: 1,
         start: 0,
@@ -142,19 +36,17 @@ class News extends React.PureComponent {
     };
 
     onOpen = key => {
-        debugger;
-        this.setState({
-            ...this.state,
-            openKey: key,
-            IsOpen: true
-        });
-    };
+        const primaryKey = "_informationPage";
+        const {
+            onOpenPageWithData,
+            router: { routeData = {}, currentActionTab = "", actionTabs = [] } = {},
+            setCurrentTab
+        } = this.props;
+        const page = `contactModule${primaryKey}`;
 
-    onClose = key => {
-        this.setState({
-            ...this.state,
-            openKey: null,
-            IsOpen: false
+        onOpenPageWithData({
+            activePage: page,
+            routeDataActive: { key: page, activePage: key }
         });
     };
 
@@ -223,6 +115,7 @@ const mapStateToProps = state => {
 
 const mapDispathToProps = dispatch => {
     return {
+        onOpenPageWithData: data => dispatch(openPageWithDataAction(data)),
         onCaching: async (data, primaryKey, type, pk, store) =>
             await dispatch(middlewareCaching({ data, primaryKey, type, pk, store }))
     };

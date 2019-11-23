@@ -120,7 +120,7 @@ class ModalWindow extends React.PureComponent {
             onCancelEditModeContent,
             modeEditContent = null
         } = this.props;
-        debugger;
+
         if (mode === "reg") {
             if (login && name && password && departament && email && !loading) {
                 firebase
@@ -309,7 +309,7 @@ class ModalWindow extends React.PureComponent {
         if (!event) return;
 
         const { target = {}, _isValid = null } = event;
-        debugger;
+
         if (target && target.value && target.className.split(" ")[1] === "timeLost") {
             this.setState({
                 jurnal: { ...this.state.jurnal, timeLost: target.value }

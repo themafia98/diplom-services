@@ -28,6 +28,7 @@ export default (state = initialState, action) => {
             };
         case OPEN_PAGE_WITH_DATA: {
             const copyRouteData = { ...state.routeData };
+
             copyRouteData[action.payload.routeDataActive.key || action.payload.routeDataActive] =
                 typeof action.payload.routeDataActive !== "string" ? action.payload.routeDataActive : {};
             return {

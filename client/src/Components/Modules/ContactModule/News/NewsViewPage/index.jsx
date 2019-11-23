@@ -1,13 +1,43 @@
 import React from "react";
+import _ from "lodash";
 import { connect } from "react-redux";
 import { openPageWithDataAction } from "../../../../../Redux/actions/routerActions";
 import { loadCurrentData } from "../../../../../Redux/actions/routerActions/middleware";
+import Loader from "../../../../Loader";
+import TitleModule from "../../../../TitleModule";
+
+import { newsArray } from "../testData";
 
 class NewsViewPage extends React.PureComponent {
+    state = {
+        isLoading: true,
+        loading: true,
+        currentData: null
+    };
+    componentDidMount = () => {
+        const {
+            router: { routeDataActive: { activePage = "" } = {} }
+        } = this.props;
+        const data = newsArray.find(it => activePage === it.id) || {};
+        debugger;
+        this.setState({
+            ...this.state,
+            isLoading: !_.isEmpty(data) ? false : true,
+            loading: !_.isEmpty(data) ? true : false,
+            currentData: { ...data }
+        });
+    };
+
     render() {
+        const { isLoading, currentData = {} } = this.state;
+
+        if (isLoading || _.isEmpty(currentData)) return <Loader />;
         return (
             <div className="newsView-page">
-                <div className="newsView-page__main">NewsViewPage</div>
+                <TitleModule classNameTitle="tittle_contactModule_pageNews" title={currentData.title} />
+                <div className="newsView-page__main">
+                    <p>{currentData.content}</p>
+                </div>
             </div>
         );
     }

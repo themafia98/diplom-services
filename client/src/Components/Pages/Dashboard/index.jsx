@@ -136,7 +136,7 @@ class Dashboard extends React.PureComponent {
             if (!tabItem) {
                 const dataPage = tabsCopy[i].split("__");
                 const PARENT_CODE = dataPage[0];
-                const DATAKEY = dataPage[1];
+                const DATAKEY = dataPage[1] || dataPage[0];
                 const VALUE = DATAKEY && routeData[DATAKEY].name ? routeData[DATAKEY].name : DATAKEY;
                 tabItem = { EUID: tabsCopy[i], PARENT_CODE, DATAKEY, VALUE };
             }
