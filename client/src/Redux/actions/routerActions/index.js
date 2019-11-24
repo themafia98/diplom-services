@@ -19,7 +19,6 @@ export const addTabAction = state => {
 };
 
 export const shouldUpdateAction = state => {
-    debugger;
     return {
         type: SET_UPDATE,
         payload: state

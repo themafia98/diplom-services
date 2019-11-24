@@ -18,11 +18,10 @@ import uuid from "uuid/v4";
 
 const { Content } = Layout;
 
-
 class ContentView extends React.PureComponent {
     state = {
         drawerView: false,
-        key: null,
+        key: null
     };
 
     static propTypes = {
@@ -41,15 +40,16 @@ class ContentView extends React.PureComponent {
         dashboardStrem.on("EventUpdate", this.updateFunction);
         if (_.isNull(key)) {
             this.setState({
-                key: uuid(),
+                key: uuid()
             });
         }
     };
 
     componentDidUpdate = () => {
         const { shouldUpdate } = this.props;
+
         if (shouldUpdate) this.updateFunction();
-    }
+    };
 
     componentWillUnmount = () => {
         const { dashboardStrem = null } = this.props;
@@ -107,14 +107,14 @@ class ContentView extends React.PureComponent {
                         firebase={firebase}
                     />
                 ) : (
-                                                <div>Not found module: ${path}</div>
-                                            )}
+                    <div>Not found module: ${path}</div>
+                )}
             </React.Fragment>
         );
     };
 
     updateFunction = _.debounce(() => {
-        const { updateLoader } = this.props;
+        const { updateLoader, shouldUpdate } = this.props;
         this.setState({ ...this.state, key: uuid() }, () => updateLoader());
     }, 300);
 
@@ -135,7 +135,6 @@ class ContentView extends React.PureComponent {
     render() {
         const { path } = this.props;
         const { drawerView, key } = this.state;
-        console.log(key);
         return (
             <React.Fragment>
                 <Content key={key}>{this.getComponentByPath(path)}</Content>

@@ -6,13 +6,13 @@ import { Layout } from "antd";
 
 import { setParentSizeAction, setChildrenSizeAction } from "../../Redux/actions/tabActions";
 import Tab from "./Tab";
-import Updater from "../Updater";
+import RightPanel from "./RightPanel";
 
 const { Header } = Layout;
 
 class HeaderView extends React.PureComponent {
     state = {
-        defaultSizeTab: 160,
+        defaultSizeTab: 160
     };
 
     static propTypes = {
@@ -20,7 +20,7 @@ class HeaderView extends React.PureComponent {
         cbMenuTabHandler: PropTypes.func.isRequired,
         activeTabEUID: PropTypes.string.isRequired,
         actionTabs: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]).isRequired,
-        logout: PropTypes.func.isRequired,
+        logout: PropTypes.func.isRequired
     };
 
     componentDidUpdate = () => {
@@ -82,17 +82,12 @@ class HeaderView extends React.PureComponent {
     };
 
     render() {
-        const { logout = null, actionTabs = ["mainModule"] } = this.props;
+        const { logout = null, actionTabs = ["mainModule"], goCabinet } = this.props;
 
         return (
             <Header>
                 {actionTabs ? this.renderTabs(actionTabs) : null}
-                <div className="headerControllers">
-                    <Updater onClick={this.update} additionalClassName="updaterDefault" />
-                    <div onClick={logout} className="logout">
-                        Выйти
-                    </div>
-                </div>
+                <RightPanel goCabinet={goCabinet} onLogout={this.logout} onUpdate={this.update} />
             </Header>
         );
     }
@@ -101,19 +96,16 @@ class HeaderView extends React.PureComponent {
 const mapStateTopProps = state => {
     return {
         tabReducer: state.tabReducer,
-        tabArray: state.router.actionTabs,
+        tabArray: state.router.actionTabs
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
         onsetParentSizeAction: size => dispatch(setParentSizeAction(size)),
-        onSetChildrenSizeAction: (size, flag) => dispatch(setChildrenSizeAction(size, flag)),
+        onSetChildrenSizeAction: (size, flag) => dispatch(setChildrenSizeAction(size, flag))
     };
 };
 
-export default connect(
-    mapStateTopProps,
-    mapDispatchToProps,
-)(HeaderView);
+export default connect(mapStateTopProps, mapDispatchToProps)(HeaderView);
 export { HeaderView };

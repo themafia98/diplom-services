@@ -80,11 +80,6 @@ export const loadCurrentData = ({
                         await dispatch(
                             saveComponentStateAction({ [storeLoad]: storeCopyValid, load: true, path: pathValid })
                         );
-
-                        // if (shouldUpdateStore && ) {
-                        //
-                        //     await dispatch(dispatch(setStatus({ shouldUpdate: false })));
-                        // }
                     };
 
                     if (flag && undefiendCopyStore.length) {

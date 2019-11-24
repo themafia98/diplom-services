@@ -1,9 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 import _ from "lodash";
+import config from "../../../config.json";
 import { connect } from "react-redux";
 import Scrollbars from "react-custom-scrollbars";
-import { Button } from "antd";
+import { Button, message } from "antd";
 
 import { routeParser } from "../../../Utils";
 
@@ -49,10 +50,13 @@ class TaskModule extends React.PureComponent {
     handlerNewTask = event => {
         const {
             addTab,
-            router: { currentActionTab }
+            router: { currentActionTab, actionTabs }
         } = this.props;
 
         if (currentActionTab !== "taskModule_createTask") {
+            if (config.tabsLimit <= actionTabs.length)
+                return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
+
             addTab(routeParser({ path: "taskModule_createTask" }));
         }
     };

@@ -60,7 +60,6 @@ class Chat extends React.PureComponent {
     };
 
     componentWillUnmount = () => {
-        debugger;
         if (this.timer) clearTimeout(this.timer);
     };
 

@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Switch, Route } from "react-router-dom";
-
+import { message } from "antd";
 import { PrivateRoute } from "./Components/Helpers";
 import config from "./config.json";
 import { forceUpdateDetectedInit } from "./Utils";
@@ -33,13 +33,20 @@ class App extends React.Component {
     };
 
     loadAppSession = () => {
-        const { addTab } = this.props;
+        const { addTab, setCurrentTab, router: { currentActionTab = "", actionTabs = [] } = {} } = this.props;
         return this.setState({ isUser: true, firebaseLoadState: true }, () => {
             let path = "mainModule";
             const defaultModule = config.menu.find(item => item["SIGN"] === "default");
             if (defaultModule) path = defaultModule.EUID;
             const routePath = routeParser({ path });
-            addTab(routePath);
+            const actionTabsCopy = [...actionTabs];
+            const isFind = actionTabsCopy.findIndex(tab => tab === path) !== -1;
+
+            if (!isFind && config.tabsLimit <= actionTabsCopy.length)
+                return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
+
+            if (!isFind) addTab(routeParser({ path }));
+            else if (currentActionTab !== path) setCurrentTab(path);
         });
     };
 

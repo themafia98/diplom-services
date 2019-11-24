@@ -3,7 +3,8 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import moment from "moment";
 import _ from "lodash";
-import { Icon, Empty, Table, Input, Button } from "antd";
+import { Icon, Empty, Table, Input, Button, message } from "antd";
+import config from "../../config.json";
 import Loader from "../Loader";
 import Scrollbars from "react-custom-scrollbars";
 import uuid from "uuid/v4";
@@ -37,7 +38,11 @@ class TableView extends React.Component {
 
     componentDidMount = () => {
         const { path, onLoadCurrentData } = this.props;
-        if (path === "mainModule__table") onLoadCurrentData({ path, storeLoad: "users" });
+        const parsePath = routeParser({ pageType: "moduleItem", path });
+        if (parsePath && parsePath.page === "mainModule" && parsePath.itemId === "table") {
+            const { path: validPath = "" } = parsePath;
+            onLoadCurrentData({ path: validPath ? validPath : "", storeLoad: "users" });
+        }
         window.addEventListener("resize", this.setSizeWindow);
     };
 
@@ -225,18 +230,22 @@ class TableView extends React.Component {
                             onClick: event => {
                                 const {
                                     onOpenPageWithData,
-                                    router: { currentActionTab: path, actionTabs },
+                                    router: { currentActionTab: path, actionTabs = [] },
                                     setCurrentTab
                                 } = this.props;
-                                debugger;
+
                                 const { key = "" } = record || {};
                                 if (!key) return;
+
+                                if (config.tabsLimit <= actionTabs.length)
+                                    return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
 
                                 const { moduleId = "", page = "" } = routeParser({ path });
                                 if (!moduleId || !page) return;
 
-                                const index = actionTabs.findIndex(tab => tab === page);
+                                const index = actionTabs.findIndex(tab => tab.includes(page) && tab.includes(key));
                                 const isFind = index !== -1;
+
                                 if (!isFind) {
                                     onOpenPageWithData({
                                         activePage: routePathNormalise({

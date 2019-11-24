@@ -121,8 +121,7 @@ class Dashboard extends React.PureComponent {
     updateLoader = event => {
         const {
             router,
-            router: { currentActionTab, shouldUpdate },
-            onShoudUpdate
+            router: { currentActionTab }
         } = this.props;
         const { routeData = {} } = router;
         const copyRouteData = { ...routeData };
@@ -130,17 +129,7 @@ class Dashboard extends React.PureComponent {
         let regExp = new RegExp(currentArray[0], "gi");
         let keys = Object.keys(copyRouteData).filter(key => /Module/gi.test(key) && regExp.test(key));
 
-        if (keys.length) {
-            this.setState(
-                {
-                    showLoader: true
-                },
-                () => {
-                    debugger;
-                    if (shouldUpdate) return onShoudUpdate(false);
-                }
-            );
-        }
+        if (keys.length) this.setState({ showLoader: true });
     };
 
     getActionTabs = (tabs = [], menu) => {
@@ -162,8 +151,28 @@ class Dashboard extends React.PureComponent {
     };
 
     goHome = event => {
-        const { setCurrentTab } = this.props;
-        setCurrentTab("mainModule");
+        const { addTab, setCurrentTab, router: { currentActionTab = "", actionTabs = [] } = {} } = this.props;
+        if (currentActionTab === "mainModule") return;
+
+        if (config.tabsLimit <= actionTabs.length)
+            return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
+
+        let tabItem = actionTabs.find(tab => tab === "mainModule");
+        if (!tabItem) addTab("mainModule");
+        else setCurrentTab("mainModule");
+    };
+
+    goCabinet = event => {
+        const { addTab, setCurrentTab, router: { currentActionTab = "", actionTabs = [] } = {} } = this.props;
+
+        if (currentActionTab === "cabinetModule") return;
+
+        if (config.tabsLimit <= actionTabs.length)
+            return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
+
+        let tabItem = actionTabs.find(tab => tab === "cabinetModule");
+        if (!tabItem) addTab("cabinetModule");
+        else setCurrentTab("cabinetModule");
     };
 
     menuHandler = (event, key, mode = "open") => {
@@ -189,8 +198,8 @@ class Dashboard extends React.PureComponent {
             else if (currentActionTab !== path) {
                 setCurrentTab(path);
 
-                if (path.startsWith("taskModule") && path !== "taskModule_createTask")
-                    onLoadCurrentData({ path, storeLoad: "tasks" });
+                // if (path.startsWith("taskModule") && path !== "taskModule_createTask")
+                //     onLoadCurrentData({ path, storeLoad: "tasks" });
             }
         } else if (mode === "close") {
             let size = tabData.parentSize / actionTabsCopy.length;
@@ -209,6 +218,7 @@ class Dashboard extends React.PureComponent {
             router: { actionTabs = [], currentActionTab, shouldUpdate = false } = {},
             firebase,
             onErrorRequstAction,
+            onShoudUpdate,
             setCurrentTab
         } = this.props;
 
@@ -219,7 +229,7 @@ class Dashboard extends React.PureComponent {
                 {showLoader ? <Loader className="mainLoader" /> : null}
                 <Layout className="layout_menu">
                     <MenuView
-                        key='menu'
+                        key="menu"
                         items={menuItems}
                         activeTabEUID={currentActionTab}
                         cbMenuHandler={this.menuHandler}
@@ -227,18 +237,20 @@ class Dashboard extends React.PureComponent {
                         cbOnCollapse={this.onCollapse}
                         cbGoMain={this.goHome}
                     />
-                    <Layout key='main'>
+                    <Layout key="main">
                         <HeaderView
-                            key='header'
+                            key="header"
                             dashboardStrem={this.dashboardStrem}
                             cbMenuTabHandler={this.menuHandler}
                             activeTabEUID={currentActionTab}
                             actionTabs={actionTabsData ? actionTabsData : false}
                             logout={this.logout}
+                            goCabinet={this.goCabinet}
                         />
                         <ContentView
                             dashboardStrem={this.dashboardStrem}
                             shouldUpdate={shouldUpdate}
+                            onShoudUpdate={onShoudUpdate}
                             setCurrentTab={setCurrentTab}
                             updateLoader={this.updateLoader}
                             onErrorRequstAction={onErrorRequstAction}
@@ -269,7 +281,7 @@ const mapDispatchToProps = dispatch => {
         onSetChildrenSizeAction: (size, flag) => dispatch(setChildrenSizeAction(size, flag)),
         onLoadCurrentData: ({ path, storeLoad }) => dispatch(loadCurrentData({ path, storeLoad })),
         onErrorRequstAction: async error => await errorRequstAction(error),
-        onShoudUpdate: update => shouldUpdateAction(update),
+        onShoudUpdate: async update => await shouldUpdateAction(update),
         onLogoutAction: async () => await dispatch(logoutAction())
     };
 };

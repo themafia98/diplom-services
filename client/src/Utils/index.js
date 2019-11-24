@@ -28,6 +28,7 @@ const getSchema = (type, data, mode = "no-strict") => {
 /** @return {string} route path */
 export const routeParser = ({ pageType = "module", path: route = null }) => {
     if (typeof route !== "string") return "";
+
     if (pageType === "moduleItem") {
         const arrayDataRoute = route.split(/__/gi);
 

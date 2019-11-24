@@ -39,7 +39,7 @@ export default (state = initialState, action) => {
 
         case SET_UPDATE: {
             const { payload = {} } = action;
-            debugger;
+
             return { ...state, shouldUpdate: payload };
         }
         case OPEN_PAGE_WITH_DATA: {
@@ -132,7 +132,7 @@ export default (state = initialState, action) => {
                 ...state,
                 currentActionTab: action.payload,
                 routeDataActive: isDataPage ? { ...currentActive } : { ...state.routeDataActive },
-                shouldUpdate: true
+                shouldUpdate: action.payload.includes("chat") ? false : true
             };
         }
         case SET_STATUS: {
