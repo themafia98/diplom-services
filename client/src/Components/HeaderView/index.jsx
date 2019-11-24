@@ -78,25 +78,35 @@ class HeaderView extends React.PureComponent {
 
     update = () => {
         const { dashboardStrem } = this.props;
-        dashboardStrem.emit("EventUpdate");
+        dashboardStrem.emit("EventUpdate", true);
     };
 
     render() {
-        const { logout = null, actionTabs = ["mainModule"], goCabinet } = this.props;
+        const { logout = null, actionTabs = ["mainModule"], goCabinet, status, shouldUpdate } = this.props;
 
         return (
             <Header>
                 {actionTabs ? this.renderTabs(actionTabs) : null}
-                <RightPanel goCabinet={goCabinet} onLogout={this.logout} onUpdate={this.update} />
+                <RightPanel
+                    shouldUpdate={shouldUpdate}
+                    status={status}
+                    goCabinet={goCabinet}
+                    onLogout={this.logout}
+                    onUpdate={this.update}
+                />
             </Header>
         );
     }
 }
 
 const mapStateTopProps = state => {
+    const { status = "online" } = state.publicReducer;
+    const { shouldUpdate = false } = state.router;
     return {
         tabReducer: state.tabReducer,
-        tabArray: state.router.actionTabs
+        tabArray: state.router.actionTabs,
+        shouldUpdate,
+        status
     };
 };
 

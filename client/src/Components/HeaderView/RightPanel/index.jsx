@@ -2,7 +2,8 @@ import React from "react";
 import Updater from "../../Updater";
 import UserPopup from "../../UserPopup";
 import { Icon } from "antd";
-const RightPanel = ({ onUpdate, onLogout, goCabinet }) => {
+import Status from "./Status";
+const RightPanel = ({ onUpdate, onLogout, goCabinet, status, shouldUpdate }) => {
     return (
         <div className="headerControllers rightPanel">
             <UserPopup goCabinet={goCabinet} />
@@ -12,6 +13,7 @@ const RightPanel = ({ onUpdate, onLogout, goCabinet }) => {
                 <div onClick={onLogout} className="logout">
                     Выйти
                 </div>
+                <Status shouldUpdate={shouldUpdate} statusApp={status} />
             </div>
         </div>
     );

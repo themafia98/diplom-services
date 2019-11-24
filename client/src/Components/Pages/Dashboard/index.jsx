@@ -121,15 +121,15 @@ class Dashboard extends React.PureComponent {
     updateLoader = event => {
         const {
             router,
-            router: { currentActionTab }
+            router: { currentActionTab, shouldUpdate }
         } = this.props;
         const { routeData = {} } = router;
         const copyRouteData = { ...routeData };
         let currentArray = currentActionTab.split("_" || "__");
         let regExp = new RegExp(currentArray[0], "gi");
         let keys = Object.keys(copyRouteData).filter(key => /Module/gi.test(key) && regExp.test(key));
-
-        if (keys.length) this.setState({ showLoader: true });
+        debugger;
+        if (keys.length && !shouldUpdate) this.setState({ showLoader: true });
     };
 
     getActionTabs = (tabs = [], menu) => {

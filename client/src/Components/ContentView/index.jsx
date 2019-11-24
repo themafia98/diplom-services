@@ -113,9 +113,13 @@ class ContentView extends React.PureComponent {
         );
     };
 
-    updateFunction = _.debounce(() => {
+    updateFunction = _.debounce(forceUpdate => {
         const { updateLoader, shouldUpdate } = this.props;
-        this.setState({ ...this.state, key: uuid() }, () => updateLoader());
+        this.setState({ ...this.state, key: uuid() }, () => {
+            if (forceUpdate) {
+                updateLoader();
+            }
+        });
     }, 300);
 
     disableF5 = event => {
@@ -124,7 +128,7 @@ class ContentView extends React.PureComponent {
         }
         if ((event.which || event.keyCode) === 116) {
             event.preventDefault();
-            this.updateFunction();
+            this.updateFunction(true);
         }
     };
 
