@@ -18,6 +18,7 @@ export const loadCurrentData = ({
         dispatch(loadFlagAction({ path: pathValid, load: false }));
     }
     if (status === "online") {
+        debugger;
         await firebase.db
             .collection(storeLoad)
             .get()
@@ -95,6 +96,7 @@ export const loadCurrentData = ({
                 };
             })
             .catch(error => {
+                debugger;
                 dispatch(setStatus({ statusRequst: "offline" }));
                 dispatch(errorRequstAction(error.message));
                 request.follow(
@@ -102,6 +104,7 @@ export const loadCurrentData = ({
                     statusRequst => {
                         if (getState().publicReducer.status !== statusRequst && statusRequst === "online") {
                             request.unfollow();
+                            debugger;
                             dispatch(setStatus({ statusRequst: "offline" }));
                             dispatch(errorRequstAction(null));
                             dispatch(loadCurrentData({ path, storeLoad }));
