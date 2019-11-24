@@ -98,10 +98,9 @@ class Dashboard extends React.PureComponent {
                 status: status
             });
         }
-
-        if (shouldUpdate) {
-            this.dashboardStrem.emit("EventUpdate");
-        }
+        // if (shouldUpdate) {
+        //     this.dashboardStrem.emit("EventUpdate");
+        // }
     };
 
     onCollapse = collapsed => {
@@ -194,7 +193,7 @@ class Dashboard extends React.PureComponent {
     render() {
         const { menuItems = null, showLoader } = this.state;
         const {
-            router: { actionTabs = [], currentActionTab } = {},
+            router: { actionTabs = [], currentActionTab, shouldUpdate = false } = {},
             firebase,
             onErrorRequstAction,
             setCurrentTab
@@ -207,6 +206,7 @@ class Dashboard extends React.PureComponent {
                 {showLoader ? <Loader className="mainLoader" /> : null}
                 <Layout className="layout_menu">
                     <MenuView
+                        key='menu'
                         items={menuItems}
                         activeTabEUID={currentActionTab}
                         cbMenuHandler={this.menuHandler}
@@ -214,8 +214,9 @@ class Dashboard extends React.PureComponent {
                         cbOnCollapse={this.onCollapse}
                         cbGoMain={this.goHome}
                     />
-                    <Layout>
+                    <Layout key='main'>
                         <HeaderView
+                            key='header'
                             dashboardStrem={this.dashboardStrem}
                             cbMenuTabHandler={this.menuHandler}
                             activeTabEUID={currentActionTab}
@@ -224,6 +225,7 @@ class Dashboard extends React.PureComponent {
                         />
                         <ContentView
                             dashboardStrem={this.dashboardStrem}
+                            shouldUpdate={shouldUpdate}
                             setCurrentTab={setCurrentTab}
                             updateLoader={this.updateLoader}
                             onErrorRequstAction={onErrorRequstAction}

@@ -18,10 +18,11 @@ import uuid from "uuid/v4";
 
 const { Content } = Layout;
 
+
 class ContentView extends React.PureComponent {
     state = {
         drawerView: false,
-        key: uuid()
+        key: null,
     };
 
     static propTypes = {
@@ -35,9 +36,20 @@ class ContentView extends React.PureComponent {
 
     componentDidMount = () => {
         const { dashboardStrem = null } = this.props;
+        const { key = null } = this.state;
         document.addEventListener("keydown", this.disableF5);
         dashboardStrem.on("EventUpdate", this.updateFunction);
+        if (_.isNull(key)) {
+            this.setState({
+                key: uuid(),
+            });
+        }
     };
+
+    componentDidUpdate = () => {
+        const { shouldUpdate } = this.props;
+        if (shouldUpdate) this.updateFunction();
+    }
 
     componentWillUnmount = () => {
         const { dashboardStrem = null } = this.props;
@@ -95,8 +107,8 @@ class ContentView extends React.PureComponent {
                         firebase={firebase}
                     />
                 ) : (
-                    <div>Not found module: ${path}</div>
-                )}
+                                                <div>Not found module: ${path}</div>
+                                            )}
             </React.Fragment>
         );
     };
@@ -122,10 +134,11 @@ class ContentView extends React.PureComponent {
 
     render() {
         const { path } = this.props;
-        const { drawerView } = this.state;
+        const { drawerView, key } = this.state;
+        console.log(key);
         return (
             <React.Fragment>
-                <Content key={this.state.key}>{this.getComponentByPath(path)}</Content>
+                <Content key={key}>{this.getComponentByPath(path)}</Content>
                 <DrawerViewer onClose={this.onClose} visible={drawerView} />
             </React.Fragment>
         );
