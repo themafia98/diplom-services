@@ -16,6 +16,7 @@ const initialState = {
     actionTabs: [],
     routeDataActive: {},
     routeData: {},
+    load: false,
     shouldUpdate: false
 };
 
@@ -86,9 +87,11 @@ export default (state = initialState, action) => {
             else if (action.payload.mode === "online" && copyRouteData[path].mode === "offlineLoading") {
                 delete copyRouteData[path].mode;
             }
+
             return {
                 ...state,
                 routeData: copyRouteData,
+                load: action.payload.load,
                 shouldUpdate: false
             };
         }
@@ -114,13 +117,16 @@ export default (state = initialState, action) => {
         case SET_FLAG_LOAD_DATA: {
             const copyRouteData = { ...state.routeData };
             copyRouteData[action.payload.path].load = action.payload.load;
+
             return {
                 ...state,
+                load: action.payload.load,
                 routeData: copyRouteData
             };
         }
         case SET_ACTIVE_TAB: {
             const content = action.payload.split("__")[1];
+            const selectModule = action.payload.split("_")[0];
             let currentActive = null;
             let isDataPage = false;
             if (content) {
@@ -132,7 +138,7 @@ export default (state = initialState, action) => {
                 ...state,
                 currentActionTab: action.payload,
                 routeDataActive: isDataPage ? { ...currentActive } : { ...state.routeDataActive },
-                shouldUpdate: action.payload.includes("chat") ? false : true
+                shouldUpdate: !state.routeData[selectModule || action.payload || content] ? false : true
             };
         }
         case SET_STATUS: {
@@ -204,13 +210,15 @@ export default (state = initialState, action) => {
             } catch {
                 current = {};
             }
+            const selectModule = nextTab.split("_")[0] || nextTab.split("__")[1] || nextTab;
 
             return {
                 ...state,
                 currentActionTab: nextTab || "mainModule",
                 actionTabs: filterArray,
                 routeDataActive: current,
-                routeData: copyData
+                routeData: copyData,
+                shouldUpdate: !state.routeData[selectModule] ? false : true
             };
         }
         case LOGOUT: {

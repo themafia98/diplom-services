@@ -1,0 +1,21 @@
+.notificationControllers {
+    display: flex;
+    .notificationCounter {
+        position: absolute;
+        pointer-events: none;
+        top: 5px;
+        transform: translate(15px, 0);
+        sup {
+            padding: 0 2px;
+            font-weight: bold;
+            text-align: center;
+            width: 100%;
+            background-color: #1890ff;
+            font-size: 11px;
+            display: flex;
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+}
