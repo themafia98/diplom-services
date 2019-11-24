@@ -128,7 +128,7 @@ class Dashboard extends React.PureComponent {
         let currentArray = currentActionTab.split("_" || "__");
         let regExp = new RegExp(currentArray[0], "gi");
         let keys = Object.keys(copyRouteData).filter(key => /Module/gi.test(key) && regExp.test(key));
-        debugger;
+
         if (keys.length && !shouldUpdate) this.setState({ showLoader: true });
     };
 
