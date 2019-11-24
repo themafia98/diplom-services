@@ -20,7 +20,7 @@ class NotificationPopup extends React.PureComponent {
     render() {
         const content = (
             <div className="notificationContent">
-                <Scrollbars>
+                <Scrollbars style={{ height: '200px' }}>
                     {this.buildItems([
                         { image: true, content: "Новое сообщение" },
                         { image: false, content: "Изменение в задаче test" },

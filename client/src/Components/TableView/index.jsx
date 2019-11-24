@@ -18,8 +18,8 @@ import { loadCurrentData } from "../../Redux/actions/routerActions/middleware";
 
 class TableView extends React.Component {
     state = {
-        searchText: null,
         sortedInfo: null,
+        searchText: null,
         isScroll: null
     };
 
@@ -56,6 +56,7 @@ class TableView extends React.Component {
     };
 
     handleFilter = (pagination, filters, sorter) => {
+        debugger;
         this.setState({
             filteredInfo: filters,
             sortedInfo: sorter
@@ -92,36 +93,38 @@ class TableView extends React.Component {
                         </thead>
                         <tbody>
                             {currentData &&
-                            ((currentData.users.length && currentData.load && !requestError) ||
-                                (currentData.users.length && !currentData.load && requestError) ||
-                                (currentData.mode && currentData.mode === "offlineLoading")) ? (
-                                this.getRowsTable(currentData.users)
-                            ) : (currentData && currentData.load) ||
-                              (currentData && !currentData.load && requestError) ? (
-                                <tr>
-                                    <td colSpan="5">
-                                        <Empty description={<span>Данных нету</span>} className="emptyTable" />
-                                    </td>
-                                </tr>
-                            ) : (
-                                <tr>
-                                    <td colSpan="5">
-                                        <Loader classNameSpiner="tableLoader" className="wrapperLoaderTable" />
-                                    </td>
-                                </tr>
-                            )}
+                                ((currentData.users.length && currentData.load && !requestError) ||
+                                    (currentData.users.length && !currentData.load && requestError) ||
+                                    (currentData.mode && currentData.mode === "offlineLoading")) ? (
+                                    this.getRowsTable(currentData.users)
+                                ) : (currentData && currentData.load) ||
+                                    (currentData && !currentData.load && requestError) ? (
+                                        <tr>
+                                            <td colSpan="5">
+                                                <Empty description={<span>Данных нету</span>} className="emptyTable" />
+                                            </td>
+                                        </tr>
+                                    ) : (
+                                        <tr>
+                                            <td colSpan="5">
+                                                <Loader classNameSpiner="tableLoader" className="wrapperLoaderTable" />
+                                            </td>
+                                        </tr>
+                                    )}
                         </tbody>
                         <tfoot></tfoot>
                     </table>
                 </Scrollbars>
             );
         } else if (path === "searchTable") {
+            const { sortedInfo = {} } = this.state;
             const columns = [
                 {
                     title: "Статус",
                     className: "status",
                     dataIndex: "status",
                     sorter: (a, b) => a.status.length - b.status.length,
+                    sortOrder: sortedInfo && sortedInfo.columnKey === 'status' && sortedInfo.order,
                     key: "status",
                     render: (text, row, index) => {
                         let className = "";
@@ -132,7 +135,7 @@ class TableView extends React.Component {
                         else className = "";
 
                         return (
-                            <Output className={className} key={uuid()}>
+                            <Output className={className} key={`${text}${row}${index}status`}>
                                 {text}
                             </Output>
                         );
@@ -145,10 +148,11 @@ class TableView extends React.Component {
                     dataIndex: "name",
                     key: "name",
                     render: (text, row, index) => {
-                        return <Output key={uuid()}>{text}</Output>;
+                        return <Output key={`${text}${row}${index}name`}>{text}</Output>;
                     },
                     onFilter: (value, record) => record.name.includes(value),
                     sorter: (a, b) => a.name.length - b.name.length,
+                    sortOrder: sortedInfo && sortedInfo.columnKey === 'name' && sortedInfo.order,
                     sortDirections: ["descend", "ascend"],
                     ...this.getColumnSearchProps("name")
                 },
@@ -158,9 +162,10 @@ class TableView extends React.Component {
                     dataIndex: "priority",
                     key: "priority",
                     render: (text, row, index) => {
-                        return <Output key={uuid()}>{text}</Output>;
+                        return <Output key={`${text}${row}${index}priority`}>{text}</Output>;
                     },
                     sorter: (a, b) => a.priority.length - b.priority.length,
+                    sortOrder: sortedInfo && sortedInfo.columnKey === 'priority' && sortedInfo.order,
                     sortDirections: ["descend", "ascend"],
                     ...this.getColumnSearchProps("priority")
                 },
@@ -170,9 +175,10 @@ class TableView extends React.Component {
                     dataIndex: "author",
                     key: "author",
                     sorter: (a, b) => a.author.length - b.author.length,
+                    sortOrder: sortedInfo && sortedInfo.columnKey === 'author' && sortedInfo.order,
                     sortDirections: ["descend", "ascend"],
                     render: (text, row, index) => {
-                        return <Output key={uuid()}>{text}</Output>;
+                        return <Output key={`${text}${row}${index}author`}>{text}</Output>;
                     },
                     ...this.getColumnSearchProps("author")
                 },
@@ -181,10 +187,11 @@ class TableView extends React.Component {
                     className: "editor",
                     dataIndex: "editor",
                     key: "editor",
-                    sorter: (a, b) => (a.editor && b.editor ? a.editor[0].length - b.editor[0].length : null),
+                    sorter: (a, b) => (a.editor && b.editor ? a.editor[0] - b.editor[0] : null),
+                    sortOrder: sortedInfo && sortedInfo.columnKey === 'editor' && sortedInfo.order,
                     sortDirections: ["descend", "ascend"],
                     render: (text, row, index) => {
-                        return <Output key={uuid()}>{text}</Output>;
+                        return <Output key={`${text}${row}${index}editor`}>{text}</Output>;
                     },
                     ...this.getColumnSearchProps("editor")
                 },
@@ -193,10 +200,17 @@ class TableView extends React.Component {
                     className: "date",
                     dataIndex: "date",
                     key: "date",
-                    sorter: (a, b) => (a.date && b.date ? a.date[0].length - b.date[0].length : null),
+                    sorter: (a, b) => {
+                        if (a.date && b.date) {
+                            const sortA = moment(a.date[0], "DD:MM:YYYY");
+                            const sortB = moment(b.date[0], "DD:MM:YYYY");
+                            return sortA - sortB;
+                        };
+                    },
+                    sortOrder: sortedInfo && sortedInfo.columnKey === 'date' && sortedInfo.order,
                     sortDirections: ["descend", "ascend"],
                     render: (text, row, index) => {
-                        return <Output key={uuid()}> {text}</Output>;
+                        return <Output key={`${text}${row}${index}date`}> {text}</Output>;
                     },
                     ...this.getColumnSearchProps("date")
                 }
@@ -209,17 +223,17 @@ class TableView extends React.Component {
                 data =
                     flag && data.length
                         ? data
-                              .map(it => {
-                                  if (!_.isNull(it.editor) && it.editor.some(editor => editor === user)) return it;
-                                  else return null;
-                              })
-                              .filter(Boolean)
+                            .map(it => {
+                                if (!_.isNull(it.editor) && it.editor.some(editor => editor === user)) return it;
+                                else return null;
+                            })
+                            .filter(Boolean)
                         : data;
 
             return (
                 <Table
                     pagination={{ pageSize: 14 }}
-                    key={uuid()}
+
                     size="medium"
                     scroll={{ y: height }}
                     onChange={this.handleFilter}
@@ -313,12 +327,12 @@ class TableView extends React.Component {
                 text === "В работе"
                     ? "active"
                     : text === "Открыт"
-                    ? ""
-                    : text === "Закрыт"
-                    ? "close"
-                    : text === "Выполнен"
-                    ? "done"
-                    : null;
+                        ? ""
+                        : text === "Закрыт"
+                            ? "close"
+                            : text === "Выполнен"
+                                ? "done"
+                                : null;
 
             if (this.state.searchText)
                 return (
