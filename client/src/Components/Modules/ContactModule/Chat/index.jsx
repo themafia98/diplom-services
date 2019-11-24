@@ -12,13 +12,15 @@ import ChatModal from "./ChatRoom/ChatModal";
 import TitleModule from "../../../TitleModule";
 import ChatRoom from "./ChatRoom";
 
+const demoMessages = [
+    { name: "Вася", id: uuid() },
+    { name: "Гена Букин", id: uuid() }
+];
+
 class Chat extends React.PureComponent {
     state = {
         isLoad: false,
-        demoMessages: [
-            { name: "Вася", id: uuid() },
-            { name: "Гена Букин", id: uuid() }
-        ],
+        demoMessages: demoMessages,
         visible: null
     };
 
@@ -27,6 +29,7 @@ class Chat extends React.PureComponent {
     componentDidMount = () => {
         const { demoMessages = [] } = this.state;
         const { chat: { chatToken = null } = {}, onSetActiveChatToken } = this.props;
+
         this.timer = setTimeout(() => {
             if (!_.isNull(chatToken) && demoMessages.every(it => (it.id ? it.id !== chatToken : false))) {
                 const listdata = [
@@ -57,6 +60,7 @@ class Chat extends React.PureComponent {
     };
 
     componentWillUnmount = () => {
+        debugger;
         if (this.timer) clearTimeout(this.timer);
     };
 

@@ -29,7 +29,11 @@ class ContactModule extends React.PureComponent {
     render() {
         const { path } = this.props;
         const component = this.getContactContentByPath(path);
-        return <div className="contactModule">{component ? component : null}</div>;
+        return (
+            <div key="contactModule" className="contactModule">
+                {component ? component : null}
+            </div>
+        );
     }
 }
 export default ContactModule;

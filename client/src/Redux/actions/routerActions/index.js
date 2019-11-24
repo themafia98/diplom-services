@@ -6,63 +6,72 @@ import {
     OPEN_PAGE_WITH_DATA,
     SAVE_STATE,
     SET_FLAG_LOAD_DATA,
-    UPDATE_ITEM,
+    SET_UPDATE,
+    UPDATE_ITEM
 } from "./const";
 import { setLogoutTabs } from "../tabActions";
 
 export const addTabAction = state => {
     return {
         type: ADD_TAB,
-        payload: state,
+        payload: state
+    };
+};
+
+export const shouldUpdateAction = state => {
+    debugger;
+    return {
+        type: SET_UPDATE,
+        payload: state
     };
 };
 
 export const setActiveTabAction = state => {
     return {
         type: SET_ACTIVE_TAB,
-        payload: state,
+        payload: state
     };
 };
 
 export const openPageWithDataAction = state => {
     return {
         type: OPEN_PAGE_WITH_DATA,
-        payload: state,
+        payload: state
     };
 };
 
 export const removeTabAction = state => {
     return {
         type: REMOVE_TAB,
-        payload: state,
+        payload: state
     };
 };
 
 export const logoutRouterAction = state => {
     return {
         type: LOGOUT,
-        payload: state,
+        payload: state
     };
 };
 
 export const saveComponentStateAction = state => {
     return {
         type: SAVE_STATE,
-        payload: state,
+        payload: state
     };
 };
 
 export const updateItemStateAction = state => {
     return {
         type: UPDATE_ITEM,
-        payload: state,
+        payload: state
     };
 };
 
 export const loadFlagAction = state => {
     return {
         type: SET_FLAG_LOAD_DATA,
-        payload: state,
+        payload: state
     };
 };
 

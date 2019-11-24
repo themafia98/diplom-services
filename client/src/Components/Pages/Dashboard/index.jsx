@@ -5,7 +5,13 @@ import _ from "lodash";
 import config from "../../../config.json";
 import { Layout, message, notification } from "antd";
 import { connect } from "react-redux";
-import { addTabAction, setActiveTabAction, removeTabAction, logoutAction } from "../../../Redux/actions/routerActions";
+import {
+    addTabAction,
+    setActiveTabAction,
+    removeTabAction,
+    logoutAction,
+    shouldUpdateAction
+} from "../../../Redux/actions/routerActions";
 import { loadCurrentData } from "../../../Redux/actions/routerActions/middleware";
 import { errorRequstAction } from "../../../Redux/actions/publicActions";
 import { setChildrenSizeAction } from "../../../Redux/actions/tabActions";
@@ -116,7 +122,8 @@ class Dashboard extends React.PureComponent {
     updateLoader = event => {
         const {
             router,
-            router: { currentActionTab }
+            router: { currentActionTab, shouldUpdate },
+            onShoudUpdate
         } = this.props;
         const { routeData = {} } = router;
         const copyRouteData = { ...routeData };
@@ -125,9 +132,15 @@ class Dashboard extends React.PureComponent {
         let keys = Object.keys(copyRouteData).filter(key => /Module/gi.test(key) && regExp.test(key));
 
         if (keys.length) {
-            this.setState({
-                showLoader: true
-            });
+            this.setState(
+                {
+                    showLoader: true
+                },
+                () => {
+                    debugger;
+                    if (shouldUpdate) return onShoudUpdate(false);
+                }
+            );
         }
     };
 
@@ -254,6 +267,7 @@ const mapDispatchToProps = dispatch => {
         onSetChildrenSizeAction: (size, flag) => dispatch(setChildrenSizeAction(size, flag)),
         onLoadCurrentData: ({ path, storeLoad }) => dispatch(loadCurrentData({ path, storeLoad })),
         onErrorRequstAction: async error => await errorRequstAction(error),
+        onShoudUpdate: update => shouldUpdateAction(update),
         onLogoutAction: async () => await dispatch(logoutAction())
     };
 };

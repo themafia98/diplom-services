@@ -6,7 +6,8 @@ import {
     OPEN_PAGE_WITH_DATA,
     SAVE_STATE,
     SET_FLAG_LOAD_DATA,
-    UPDATE_ITEM
+    UPDATE_ITEM,
+    SET_UPDATE
 } from "../../actions/routerActions/const";
 import { SET_STATUS } from "../../actions/publicActions/const";
 
@@ -34,6 +35,12 @@ export default (state = initialState, action) => {
                 actionTabs: [...state.actionTabs, tab],
                 currentActionTab: tab
             };
+        }
+
+        case SET_UPDATE: {
+            const { payload = {} } = action;
+            debugger;
+            return { ...state, shouldUpdate: payload };
         }
         case OPEN_PAGE_WITH_DATA: {
             const copyRouteData = { ...state.routeData };
