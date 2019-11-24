@@ -2,7 +2,7 @@
     "title": "Controll system",
     "icon": "/img/logo.svg",
     "firebase": {
-        "session": "LOCAL",
+        "session": "SESSION",
         "lowConnection": "false"
     },
     "clientDB": {
