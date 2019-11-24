@@ -1,18 +1,32 @@
 import React from "react";
 import Scrollbars from "react-custom-scrollbars";
 import { Icon, Badge, Popover } from "antd";
-
+import NotificationItem from "./NotificationItem";
 class NotificationPopup extends React.PureComponent {
+    buildItems = items => {
+        return items.map((it, i) => {
+            return (
+                <div key={`wrapper${i}`} className="itemWrapper">
+                    <NotificationItem
+                        key={i}
+                        image={it.image ? it.image : null}
+                        content={it.content ? it.content : ""}
+                    />
+                    <hr />
+                </div>
+            );
+        });
+    };
     render() {
         const content = (
-            <div style={{ height: "100px" }} className="notificationContent">
+            <div className="notificationContent">
                 <Scrollbars>
-                    <p>уведомление 1</p>
-                    <p>уведомление 2</p>
-                    <p>уведомление 3</p>
-                    <p>уведомление 4</p>
-                    <p>уведомление 5</p>
-                    <p>уведомление 6</p>
+                    {this.buildItems([
+                        { image: true, content: "Новое сообщение" },
+                        { image: false, content: "Изменение в задаче test" },
+                        { image: false, content: "Изменение в задаче test2" },
+                        { image: true, content: "Новое сообщение 21231231231" }
+                    ])}
                 </Scrollbars>
             </div>
         );

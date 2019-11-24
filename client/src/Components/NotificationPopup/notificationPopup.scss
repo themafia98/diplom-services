@@ -19,3 +19,24 @@
         }
     }
 }
+
+.itemWrapper {
+    padding: 0 15px;
+}
+
+.notificationContent {
+    max-height: 200px;
+    height: 200px;
+    min-width: 100px;
+    padding-left: 5px;
+    .notificationItem {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        &.centerContent {
+            padding-left: 0;
+            justify-content: center;
+        }
+    }
+}
