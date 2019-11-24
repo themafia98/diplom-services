@@ -75,10 +75,10 @@ export default (state = initialState, action) => {
             }
         }
         case SET_STATUS: {
-            const { statusRequest = state.status } = action.payload;
+            const { statusRequst = state.status } = action.payload;
             return {
                 ...state,
-                status: statusRequest,
+                status: statusRequst,
                 prewStatus: state.status
             };
         }
