@@ -56,7 +56,7 @@ class TableView extends React.Component {
     };
 
     handleFilter = (pagination, filters, sorter) => {
-        debugger;
+
         this.setState({
             filteredInfo: filters,
             sortedInfo: sorter
