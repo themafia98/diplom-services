@@ -100,10 +100,11 @@ export const loadCurrentData = ({
                 request.follow(
                     "offline",
                     statusRequst => {
+                        debugger;
                         if (getState().publicReducer.status !== statusRequst && statusRequst === "online") {
                             request.unfollow();
-
-                            dispatch(setStatus({ statusRequst: "offline" }));
+                            debugger;
+                            dispatch(setStatus({ statusRequst }));
                             dispatch(errorRequstAction(null));
                             dispatch(loadCurrentData({ path, storeLoad }));
                         }
