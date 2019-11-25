@@ -249,6 +249,7 @@ class Dashboard extends React.PureComponent {
                         />
                         <ContentView
                             dashboardStrem={this.dashboardStrem}
+                            actionTabs={actionTabs}
                             shouldUpdate={shouldUpdate}
                             onShoudUpdate={onShoudUpdate}
                             setCurrentTab={setCurrentTab}

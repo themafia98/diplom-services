@@ -33,7 +33,7 @@ class MainModule extends React.PureComponent {
                             <Calendar className="mainModule_calendar" fullscreen={false} />
                         </div>
                         <div className="tableViw__wrapper">
-                            <TableView path="mainModule__table" firebase={firebase} />
+                            <TableView key='mainModule_table' path="mainModule__table" firebase={firebase} />
                         </div>
                     </div>
                 </div>

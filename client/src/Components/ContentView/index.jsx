@@ -5,6 +5,7 @@ import { Layout } from "antd";
 
 import Scrollbars from "react-custom-scrollbars";
 
+import TabContainer from '../TabContainer';
 import DrawerViewer from "../DrawerViewer";
 import MainModule from "../Modules/MainModule";
 import CabinetModule from "../Modules/CabinetModule";
@@ -57,6 +58,11 @@ class ContentView extends React.PureComponent {
         dashboardStrem.off("EventUpdate", this.updateFunction);
     };
 
+    checkBackground = path => {
+        const { actionTabs = [] } = this.props;
+        return actionTabs.some(actionTab => actionTab.startsWith(path) || actionTab === path);
+    }
+
     getComponentByPath = path => {
         if (!path) return null;
 
@@ -64,51 +70,53 @@ class ContentView extends React.PureComponent {
 
         return (
             <React.Fragment>
-                {path === "mainModule" ? (
+                <TabContainer isBackground={this.checkBackground("mainModule")} visible={path === "mainModule"}>
                     <MainModule onErrorRequstAction={onErrorRequstAction} key="mainModule" firebase={firebase} />
-                ) : path === "cabinetModule" ? (
+                </TabContainer>
+                <TabContainer isBackground={this.checkBackground('cabinetModule')} visible={path === 'cabinetModule'}>
                     <CabinetModule onErrorRequstAction={onErrorRequstAction} key="cabinet" firebase={firebase} />
-                ) : path.startsWith("taskModule") ? (
-                    <Scrollbars>
-                        <TaskModule
-                            onErrorRequstAction={onErrorRequstAction}
-                            setCurrentTab={setCurrentTab}
-                            key="taskModule"
-                            path={path}
-                            firebase={firebase}
-                        />
-                    </Scrollbars>
-                ) : path.startsWith("contactModule") ? (
+                </TabContainer>
+                <TabContainer isBackground={this.checkBackground("taskModule")} visible={path.startsWith('taskModule')}>
+                    <TaskModule
+                        onErrorRequstAction={onErrorRequstAction}
+                        setCurrentTab={setCurrentTab}
+                        key="taskModule"
+                        path={path}
+                        firebase={firebase}
+                    />
+                </TabContainer>
+                <TabContainer isBackground={this.checkBackground("contactModule")} visible={path.startsWith("contactModule")}>
                     <ContactModule
                         onErrorRequstAction={onErrorRequstAction}
                         key="contact"
                         path={path}
                         firebase={firebase}
                     />
-                ) : path.startsWith("customersModule") ? (
+                </TabContainer>
+                <TabContainer isBackground={this.checkBackground("customersModule")} visible={path.startsWith("customersModule")}>
                     <CustomersModule
                         onErrorRequstAction={onErrorRequstAction}
                         key="customers"
                         path={path}
                         firebase={firebase}
                     />
-                ) : path === "settingsModule" ? (
+                </TabContainer>
+                <TabContainer isBackground={this.checkBackground("settingsModule")} visible={path === "settingsModule"}>
                     <SettingsModule
                         onErrorRequstAction={onErrorRequstAction}
                         key="settings"
                         path={path}
                         firebase={firebase}
                     />
-                ) : path === "statisticModule" ? (
+                </TabContainer>
+                <TabContainer isBackground={this.checkBackground("statisticModule")} visible={path === "statisticModule"}>
                     <StatisticsModule
                         onErrorRequstAction={onErrorRequstAction}
                         key="statistic"
                         path={path}
                         firebase={firebase}
                     />
-                ) : (
-                    <div>Not found module: ${path}</div>
-                )}
+                </TabContainer>
             </React.Fragment>
         );
     };

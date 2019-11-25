@@ -39,6 +39,7 @@ class TableView extends React.Component {
     componentDidMount = () => {
         const { path, onLoadCurrentData } = this.props;
         const parsePath = routeParser({ pageType: "moduleItem", path });
+        debugger;
         if (parsePath && parsePath.page === "mainModule" && parsePath.itemId === "table") {
             const { path: validPath = "" } = parsePath;
             onLoadCurrentData({ path: validPath ? validPath : "", storeLoad: "users" });
@@ -79,6 +80,7 @@ class TableView extends React.Component {
         const height = heightProps - 250;
 
         if (path === "mainModule__table") {
+            debugger;
             return (
                 <Scrollbars>
                     <table key={uuid()}>
@@ -92,7 +94,7 @@ class TableView extends React.Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {currentData &&
+                            {currentData && currentData.users &&
                                 ((currentData.users.length && currentData.load && !requestError) ||
                                     (currentData.users.length && !currentData.load && requestError) ||
                                     (currentData.mode && currentData.mode === "offlineLoading")) ? (

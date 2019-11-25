@@ -116,7 +116,7 @@ class TaskModule extends React.PureComponent {
             } = this.props;
             //
             return (
-                <React.Fragment>
+                <Scrollbars>
                     {isList ? (
                         <div key="controllers" ref={this.refControllers} className="controllersWrapper">
                             <Button className="newTaskButton" onClick={this.handlerNewTask} type="primary">
@@ -155,7 +155,7 @@ class TaskModule extends React.PureComponent {
                                 statusApp={status}
                             />
                         </Scrollbars>
-                    ) : path.startsWith("taskModule_") ? (
+                    ) : path.startsWith("taskModule") ? (
                         <Scrollbars>
                             <TaskView
                                 height={heightController ? height - heightController : height}
@@ -165,9 +165,9 @@ class TaskModule extends React.PureComponent {
                             />
                         </Scrollbars>
                     ) : (
-                        <div>Not found taskModule</div>
-                    )}
-                </React.Fragment>
+                                            <div>Not found taskModule</div>
+                                        )}
+                </Scrollbars>
             );
         } else return <div>Not found path module</div>;
     };
