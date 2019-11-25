@@ -319,7 +319,7 @@ class TaskView extends React.PureComponent {
 
         if (key) {
             return (
-                <React.Fragment>
+                <Scrollbars>
                     <TitleModule classNameTitle="taskModuleTittle" title="Карточка задачи" />
                     <ModalWindow
                         onCaching={onCaching}
@@ -512,7 +512,7 @@ class TaskView extends React.PureComponent {
                             </Scrollbars>
                         </div>
                     </div>
-                </React.Fragment>
+                </Scrollbars>
             );
         } else return <div>This task not found</div>;
     }

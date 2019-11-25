@@ -195,93 +195,99 @@ class CreateTask extends React.PureComponent {
         const { errorBundle } = this.state;
         // const { height } = this.props;
         return (
-            <div className="createTask">
-                <TitleModule additional="Форма создания задачи" classNameTitle="createTaskTitle" title="Новая задача" />
-                <div className="createTask__main">
-                    <div className="col-6 col-task">
-                        <Scrollbars autoHide>
-                            <form className="taskForm" name="taskForm">
-                                <label>Название: </label>
-                                <Input
-                                    className={[!_.isEmpty(errorBundle) && errorBundle.name ? "isError" : null].join(
-                                        " "
-                                    )}
-                                    onChange={this.onChangeHandler}
-                                    name="name"
-                                    type="text"
-                                />
-                                <label>Приоритет: </label>
-                                <Select
-                                    className={[
-                                        !_.isEmpty(errorBundle) && errorBundle.priority ? "isError" : null
-                                    ].join(" ")}
-                                    onChange={this.onChangeHandlerSelectPriority}
-                                    defaultValue="Средний"
-                                    name="priority"
-                                    type="text"
-                                >
-                                    <Option value="Низкий">Низкий</Option>
-                                    <Option value="Средний">Средний</Option>
-                                    <Option value="Высокий">Высокий</Option>
-                                </Select>
-                                <label>Назначить исполнителя/исполнителей:</label>
-                                <Select
-                                    className={[!_.isEmpty(errorBundle) && errorBundle.editor ? "isError" : null].join(
-                                        " "
-                                    )}
-                                    onChange={this.onChangeHandlerSelectEditor}
-                                    name="editor"
-                                    mode="multiple"
-                                    placeholder="выберете исполнителя"
-                                    optionLabelProp="label"
-                                >
-                                    <Option value="Павел Петрович" label="Павел Петрович">
-                                        <span>Павел Петрович</span>
-                                    </Option>
-                                    <Option value="Гена Букин" label="Гена Букин">
-                                        <span>Гена Букин</span>
-                                    </Option>
-                                </Select>
-                                <label>Описание задачи: </label>
-                                <Textarea
-                                    key="createTextare"
-                                    className={[
-                                        !_.isEmpty(errorBundle) && errorBundle.description ? "isError" : null
-                                    ].join(" ")}
-                                    name="description"
-                                    onChange={this.onChangeHandler}
-                                    rows={8}
-                                />
-                                <label>Прикрепить файлы: </label>
-                                <File />
-                                <label>Срок сдачи: </label>
-                                <RangePicker
-                                    className={[!_.isEmpty(errorBundle) && errorBundle.date ? "isError" : null].join(
-                                        " "
-                                    )}
-                                    onChange={this.onChangeHandlerDate}
-                                    defaultValue={[
-                                        moment(moment().format("DD.MM.YYYY"), dateFormat),
-                                        moment(moment().format("DD.MM.YYYY"), dateFormat)
-                                    ]}
-                                    name="date"
-                                    format="DD.MM.YYYY"
-                                    type="date"
-                                />
-                                <Button
-                                    className="submitNewTask"
-                                    disabled={this.state.load}
-                                    onClick={this.handlerCreateTask}
-                                    loading={this.state.load}
-                                    type="primary"
-                                >
-                                    Создать задачу
-                                </Button>
-                            </form>
-                        </Scrollbars>
+            <Scrollbars>
+                <div className="createTask">
+                    <TitleModule
+                        additional="Форма создания задачи"
+                        classNameTitle="createTaskTitle"
+                        title="Новая задача"
+                    />
+                    <div className="createTask__main">
+                        <div className="col-6 col-task">
+                            <Scrollbars autoHide>
+                                <form className="taskForm" name="taskForm">
+                                    <label>Название: </label>
+                                    <Input
+                                        className={[
+                                            !_.isEmpty(errorBundle) && errorBundle.name ? "isError" : null
+                                        ].join(" ")}
+                                        onChange={this.onChangeHandler}
+                                        name="name"
+                                        type="text"
+                                    />
+                                    <label>Приоритет: </label>
+                                    <Select
+                                        className={[
+                                            !_.isEmpty(errorBundle) && errorBundle.priority ? "isError" : null
+                                        ].join(" ")}
+                                        onChange={this.onChangeHandlerSelectPriority}
+                                        defaultValue="Средний"
+                                        name="priority"
+                                        type="text"
+                                    >
+                                        <Option value="Низкий">Низкий</Option>
+                                        <Option value="Средний">Средний</Option>
+                                        <Option value="Высокий">Высокий</Option>
+                                    </Select>
+                                    <label>Назначить исполнителя/исполнителей:</label>
+                                    <Select
+                                        className={[
+                                            !_.isEmpty(errorBundle) && errorBundle.editor ? "isError" : null
+                                        ].join(" ")}
+                                        onChange={this.onChangeHandlerSelectEditor}
+                                        name="editor"
+                                        mode="multiple"
+                                        placeholder="выберете исполнителя"
+                                        optionLabelProp="label"
+                                    >
+                                        <Option value="Павел Петрович" label="Павел Петрович">
+                                            <span>Павел Петрович</span>
+                                        </Option>
+                                        <Option value="Гена Букин" label="Гена Букин">
+                                            <span>Гена Букин</span>
+                                        </Option>
+                                    </Select>
+                                    <label>Описание задачи: </label>
+                                    <Textarea
+                                        key="createTextare"
+                                        className={[
+                                            !_.isEmpty(errorBundle) && errorBundle.description ? "isError" : null
+                                        ].join(" ")}
+                                        name="description"
+                                        onChange={this.onChangeHandler}
+                                        rows={8}
+                                    />
+                                    <label>Прикрепить файлы: </label>
+                                    <File />
+                                    <label>Срок сдачи: </label>
+                                    <RangePicker
+                                        className={[
+                                            !_.isEmpty(errorBundle) && errorBundle.date ? "isError" : null
+                                        ].join(" ")}
+                                        onChange={this.onChangeHandlerDate}
+                                        defaultValue={[
+                                            moment(moment().format("DD.MM.YYYY"), dateFormat),
+                                            moment(moment().format("DD.MM.YYYY"), dateFormat)
+                                        ]}
+                                        name="date"
+                                        format="DD.MM.YYYY"
+                                        type="date"
+                                    />
+                                    <Button
+                                        className="submitNewTask"
+                                        disabled={this.state.load}
+                                        onClick={this.handlerCreateTask}
+                                        loading={this.state.load}
+                                        type="primary"
+                                    >
+                                        Создать задачу
+                                    </Button>
+                                </form>
+                            </Scrollbars>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </Scrollbars>
         );
     }
 }

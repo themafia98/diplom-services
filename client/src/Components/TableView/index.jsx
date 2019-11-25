@@ -36,11 +36,20 @@ class TableView extends React.Component {
         publicReducer: PropTypes.object.isRequired
     };
 
-    componentDidMount = () => {
+    componentDidUpdate = prevProps => {
         const { path, onLoadCurrentData } = this.props;
+        const { path: validPath = "", page = "", itemId = "" } = routeParser({ pageType: "moduleItem", path });
+
+        if (prevProps.visible !== this.props.visible && page === "mainModule" && itemId === "table") {
+            if (this.props.visible) onLoadCurrentData({ path: validPath ? validPath : "", storeLoad: "users" });
+        }
+    };
+
+    componentDidMount = () => {
+        const { path, onLoadCurrentData, visible } = this.props;
         const parsePath = routeParser({ pageType: "moduleItem", path });
-        debugger;
-        if (parsePath && parsePath.page === "mainModule" && parsePath.itemId === "table") {
+
+        if (visible && parsePath && parsePath.page === "mainModule" && parsePath.itemId === "table") {
             const { path: validPath = "" } = parsePath;
             onLoadCurrentData({ path: validPath ? validPath : "", storeLoad: "users" });
         }
@@ -57,7 +66,6 @@ class TableView extends React.Component {
     };
 
     handleFilter = (pagination, filters, sorter) => {
-
         this.setState({
             filteredInfo: filters,
             sortedInfo: sorter
@@ -70,7 +78,8 @@ class TableView extends React.Component {
             flag,
             router,
             publicReducer: { requestError },
-            height: heightProps
+            height: heightProps,
+            visible
         } = this.props;
         const { routeData } = router;
         const routePathData = router.currentActionTab.split("_")[0];
@@ -79,11 +88,10 @@ class TableView extends React.Component {
 
         const height = heightProps - 250;
 
-        if (path === "mainModule__table") {
-            debugger;
+        if (path === "mainModule__table" && visible) {
             return (
                 <Scrollbars>
-                    <table key={uuid()}>
+                    <table key="mainModule__table">
                         <thead>
                             <tr>
                                 <td>Статус</td>
@@ -94,25 +102,26 @@ class TableView extends React.Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {currentData && currentData.users &&
-                                ((currentData.users.length && currentData.load && !requestError) ||
-                                    (currentData.users.length && !currentData.load && requestError) ||
-                                    (currentData.mode && currentData.mode === "offlineLoading")) ? (
-                                    this.getRowsTable(currentData.users)
-                                ) : (currentData && currentData.load) ||
-                                    (currentData && !currentData.load && requestError) ? (
-                                        <tr>
-                                            <td colSpan="5">
-                                                <Empty description={<span>Данных нету</span>} className="emptyTable" />
-                                            </td>
-                                        </tr>
-                                    ) : (
-                                        <tr>
-                                            <td colSpan="5">
-                                                <Loader classNameSpiner="tableLoader" className="wrapperLoaderTable" />
-                                            </td>
-                                        </tr>
-                                    )}
+                            {currentData &&
+                            currentData.users &&
+                            ((currentData.users.length && currentData.load && !requestError) ||
+                                (currentData.users.length && !currentData.load && requestError) ||
+                                (currentData.mode && currentData.mode === "offlineLoading")) ? (
+                                this.getRowsTable(currentData.users)
+                            ) : (currentData && currentData.load) ||
+                              (currentData && !currentData.load && requestError) ? (
+                                <tr>
+                                    <td colSpan="5">
+                                        <Empty description={<span>Данных нету</span>} className="emptyTable" />
+                                    </td>
+                                </tr>
+                            ) : (
+                                <tr>
+                                    <td colSpan="5">
+                                        <Loader classNameSpiner="tableLoader" className="wrapperLoaderTable" />
+                                    </td>
+                                </tr>
+                            )}
                         </tbody>
                         <tfoot></tfoot>
                     </table>
@@ -126,7 +135,7 @@ class TableView extends React.Component {
                     className: "status",
                     dataIndex: "status",
                     sorter: (a, b) => a.status.length - b.status.length,
-                    sortOrder: sortedInfo && sortedInfo.columnKey === 'status' && sortedInfo.order,
+                    sortOrder: sortedInfo && sortedInfo.columnKey === "status" && sortedInfo.order,
                     key: "status",
                     render: (text, row, index) => {
                         let className = "";
@@ -154,7 +163,7 @@ class TableView extends React.Component {
                     },
                     onFilter: (value, record) => record.name.includes(value),
                     sorter: (a, b) => a.name.length - b.name.length,
-                    sortOrder: sortedInfo && sortedInfo.columnKey === 'name' && sortedInfo.order,
+                    sortOrder: sortedInfo && sortedInfo.columnKey === "name" && sortedInfo.order,
                     sortDirections: ["descend", "ascend"],
                     ...this.getColumnSearchProps("name")
                 },
@@ -167,7 +176,7 @@ class TableView extends React.Component {
                         return <Output key={`${text}${row}${index}priority`}>{text}</Output>;
                     },
                     sorter: (a, b) => a.priority.length - b.priority.length,
-                    sortOrder: sortedInfo && sortedInfo.columnKey === 'priority' && sortedInfo.order,
+                    sortOrder: sortedInfo && sortedInfo.columnKey === "priority" && sortedInfo.order,
                     sortDirections: ["descend", "ascend"],
                     ...this.getColumnSearchProps("priority")
                 },
@@ -177,7 +186,7 @@ class TableView extends React.Component {
                     dataIndex: "author",
                     key: "author",
                     sorter: (a, b) => a.author.length - b.author.length,
-                    sortOrder: sortedInfo && sortedInfo.columnKey === 'author' && sortedInfo.order,
+                    sortOrder: sortedInfo && sortedInfo.columnKey === "author" && sortedInfo.order,
                     sortDirections: ["descend", "ascend"],
                     render: (text, row, index) => {
                         return <Output key={`${text}${row}${index}author`}>{text}</Output>;
@@ -190,7 +199,7 @@ class TableView extends React.Component {
                     dataIndex: "editor",
                     key: "editor",
                     sorter: (a, b) => (a.editor && b.editor ? a.editor[0] - b.editor[0] : null),
-                    sortOrder: sortedInfo && sortedInfo.columnKey === 'editor' && sortedInfo.order,
+                    sortOrder: sortedInfo && sortedInfo.columnKey === "editor" && sortedInfo.order,
                     sortDirections: ["descend", "ascend"],
                     render: (text, row, index) => {
                         return <Output key={`${text}${row}${index}editor`}>{text}</Output>;
@@ -207,9 +216,9 @@ class TableView extends React.Component {
                             const sortA = moment(a.date[0], "DD:MM:YYYY");
                             const sortB = moment(b.date[0], "DD:MM:YYYY");
                             return sortA - sortB;
-                        };
+                        }
                     },
-                    sortOrder: sortedInfo && sortedInfo.columnKey === 'date' && sortedInfo.order,
+                    sortOrder: sortedInfo && sortedInfo.columnKey === "date" && sortedInfo.order,
                     sortDirections: ["descend", "ascend"],
                     render: (text, row, index) => {
                         return <Output key={`${text}${row}${index}date`}> {text}</Output>;
@@ -225,17 +234,16 @@ class TableView extends React.Component {
                 data =
                     flag && data.length
                         ? data
-                            .map(it => {
-                                if (!_.isNull(it.editor) && it.editor.some(editor => editor === user)) return it;
-                                else return null;
-                            })
-                            .filter(Boolean)
+                              .map(it => {
+                                  if (!_.isNull(it.editor) && it.editor.some(editor => editor === user)) return it;
+                                  else return null;
+                              })
+                              .filter(Boolean)
                         : data;
 
             return (
                 <Table
                     pagination={{ pageSize: 14 }}
-
                     size="medium"
                     scroll={{ y: height }}
                     onChange={this.handleFilter}
@@ -329,16 +337,16 @@ class TableView extends React.Component {
                 text === "В работе"
                     ? "active"
                     : text === "Открыт"
-                        ? ""
-                        : text === "Закрыт"
-                            ? "close"
-                            : text === "Выполнен"
-                                ? "done"
-                                : null;
+                    ? ""
+                    : text === "Закрыт"
+                    ? "close"
+                    : text === "Выполнен"
+                    ? "done"
+                    : null;
 
             if (this.state.searchText)
                 return (
-                    <Output className={className} key={uuid()}>
+                    <Output className={className} key={(text = "search" + isDateString + className)}>
                         <Highlighter
                             highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
                             searchWords={[this.state.searchText]}
@@ -367,17 +375,21 @@ class TableView extends React.Component {
     };
 
     getRowsTable = arrayData => {
-        return arrayData.map(it => {
+        return arrayData.map((it, id) => {
             return (
-                <tr className="contentTr" key={uuid()}>
-                    <Output key={uuid()} type="table" className="status">
+                <tr className="contentTr" key={`${id}contentTr`}>
+                    <Output key={`${id}${it.status}status`} type="table" className="status">
                         {it.status}
                     </Output>
-                    <Output key={uuid()} type="table" className="nameSurname">{`${it.name} ${it.surname}`}</Output>
-                    <Output key={uuid()} type="table" className="departament">
+                    <Output
+                        key={`${id}${it.surname}}nameSurname`}
+                        type="table"
+                        className="nameSurname"
+                    >{`${it.name} ${it.surname}`}</Output>
+                    <Output key={`${id}${it.departament}departament`} type="table" className="departament">
                         {it.departament}
                     </Output>
-                    <Output key={uuid()} type="table" className="departament">
+                    <Output key={`${id}departament`} type="table" className="departament">
                         {it.position}
                     </Output>
                     {it.email ? (

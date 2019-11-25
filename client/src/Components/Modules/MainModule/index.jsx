@@ -8,17 +8,13 @@ import StreamBox from "../../StreamBox";
 import TitleModule from "../../TitleModule";
 
 class MainModule extends React.PureComponent {
-    state = {
-        date: new Date(),
-    };
-
     static propTypes = {
         onErrorRequstAction: PropTypes.func.isRequired,
-        firebase: PropTypes.object.isRequired,
+        firebase: PropTypes.object.isRequired
     };
 
     render() {
-        const { firebase } = this.props;
+        const { firebase, visible } = this.props;
         return (
             <div className="mainModule">
                 <TitleModule additional="Общая информация" classNameTitle="mainModuleTitle" title="Главная страница" />
@@ -33,7 +29,12 @@ class MainModule extends React.PureComponent {
                             <Calendar className="mainModule_calendar" fullscreen={false} />
                         </div>
                         <div className="tableViw__wrapper">
-                            <TableView key='mainModule_table' path="mainModule__table" firebase={firebase} />
+                            <TableView
+                                visible={visible}
+                                key="mainModule_table"
+                                path="mainModule__table"
+                                firebase={firebase}
+                            />
                         </div>
                     </div>
                 </div>

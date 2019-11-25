@@ -8,6 +8,7 @@ import { Button, message } from "antd";
 
 import { routeParser } from "../../../Utils";
 
+import TabContainer from "../../TabContainer";
 import { addTabAction, openPageWithDataAction } from "../../../Redux/actions/routerActions";
 import { loadCurrentData } from "../../../Redux/actions/routerActions/middleware";
 import TaskModuleCalendar from "./TaskModuleCalendar";
@@ -33,56 +34,29 @@ class TaskModule extends React.PureComponent {
         router: PropTypes.object.isRequired
     };
 
-    moduleTask = null;
-    controller = null;
-    refModuleTask = node => (this.moduleTask = node);
-    refControllers = node => (this.controller = node);
-
     componentDidMount = () => {
+        const { onLoadCurrentData, path, visible } = this.props;
         const { height } = this.state;
-        if (_.isNull(height) && !_.isNull(this.moduleTask)) {
+
+        if (_.isNull(height) && !_.isNull(this.moduleTask) && visible) {
             const heightControllerForState = this.controller ? this.controller.getBoundingClientRect().height : null;
             const heightForState = this.moduleTask.getBoundingClientRect().height;
             this.setState({ ...this.state, height: heightForState, heightController: heightControllerForState });
         }
+
+        if (visible) onLoadCurrentData({ path, storeLoad: "tasks" });
     };
 
-    handlerNewTask = event => {
+    componentDidUpdate = prevProps => {
         const {
-            addTab,
-            router: { currentActionTab, actionTabs }
-        } = this.props;
-
-        if (currentActionTab !== "taskModule_createTask") {
-            if (config.tabsLimit <= actionTabs.length)
-                return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
-
-            addTab(routeParser({ path: "taskModule_createTask" }));
-        }
-    };
-
-    componentDidMount = () => {
-        const { onLoadCurrentData, path } = this.props;
-        const { height } = this.state;
-
-        if (_.isNull(height) && !_.isNull(this.moduleTask)) {
-            const heightControllerForState = this.controller ? this.controller.getBoundingClientRect().height : null;
-            const heightForState = this.moduleTask.getBoundingClientRect().height;
-            this.setState({ ...this.state, height: heightForState, heightController: heightControllerForState });
-        }
-        onLoadCurrentData({ path, storeLoad: "tasks" });
-    };
-
-    componentDidUpdate = () => {
-        const {
+            visible,
             onLoadCurrentData,
             path,
-            router: { shouldUpdate = false, routeData = {} } = {},
-            router = {}
+            router: { shouldUpdate = false }
         } = this.props;
         const { height, heightController } = this.state;
 
-        if (!_.isNull(height) && !_.isNull(this.moduleTask)) {
+        if (!_.isNull(height) && !_.isNull(this.moduleTask) && visible) {
             const heightControllerForState = this.controller ? this.controller.getBoundingClientRect().height : null;
             const heightForState = this.moduleTask.getBoundingClientRect().height;
 
@@ -90,16 +64,35 @@ class TaskModule extends React.PureComponent {
                 this.setState({ ...this.state, height: heightForState, heightController: heightControllerForState });
         }
 
-        // const { load = false } = routeData[path.split("_")[0] || path] || {};
+        if (shouldUpdate && visible) onLoadCurrentData({ path, storeLoad: "tasks" });
+    };
 
-        // if (
-        //     (path.startsWith("taskModule") &&
-        //         !router.routeData["taskModule"] &&
-        //         !router.routeData["taskModule_сalendar"]) ||
-        //     (shouldUpdate && load)
-        // ) {
-        //     onLoadCurrentData({ path: "taskModule", storeLoad: "tasks", shouldUpdate });
-        // }
+    moduleTask = null;
+    controller = null;
+    refModuleTask = node => (this.moduleTask = node);
+    refControllers = node => (this.controller = node);
+
+    handlerNewTask = event => {
+        const {
+            addTab,
+            setCurrentTab,
+            router: { currentActionTab, actionTabs }
+        } = this.props;
+
+        if (currentActionTab !== "taskModule_createTask") {
+            if (config.tabsLimit <= actionTabs.length)
+                return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
+            const path = "taskModule_createTask";
+            const isFind = actionTabs.findIndex(tab => tab === path) !== -1;
+
+            if (!isFind) addTab(routeParser({ path }));
+            else if (currentActionTab !== path) setCurrentTab(path);
+        }
+    };
+
+    checkBackground = (path, mode = "default") => {
+        const { actionTabs = [] } = this.props;
+        if (mode === "default") return actionTabs.some(actionTab => actionTab === path);
     };
 
     getTaskByPath = path => {
@@ -114,7 +107,17 @@ class TaskModule extends React.PureComponent {
                 onLoadCurrentData,
                 setCurrentTab
             } = this.props;
-            //
+
+            const isViewTask = path.startsWith("taskModule") && /__/gi.test(path);
+
+            const isBackgroundTaskModuleAll = this.checkBackground("taskModule_all");
+            const isBackgroundTaskModuleMyTasks = this.checkBackground("taskModule_myTasks");
+            const isBackgroundTaskModuleCalendar = this.checkBackground("taskModule_сalendar");
+            const isBackgroundTaskModuleCreateTask = this.checkBackground("taskModule_createTask");
+
+            const route = routeParser({ pageType: "moduleItem", path });
+            const isBackgroundTaskViewModule = _.isObject(route) && !_.isNull(route);
+
             return (
                 <Scrollbars>
                     {isList ? (
@@ -124,49 +127,80 @@ class TaskModule extends React.PureComponent {
                             </Button>
                         </div>
                     ) : null}
-                    {path === "taskModule_all" ? (
+                    <TabContainer
+                        className="validateStyleWrapper"
+                        isBackground={isBackgroundTaskModuleAll}
+                        visible={path === "taskModule_all"}
+                    >
                         <TaskModuleList
+                            key="taskList"
+                            isBackground={isBackgroundTaskModuleAll}
+                            visible={path === "taskModule_all"}
                             setCurrentTab={setCurrentTab}
                             height={heightController ? height - heightController : height}
                             data={router.routeData[path]}
                         />
-                    ) : path === "taskModule_myTasks" ? (
+                    </TabContainer>
+                    <TabContainer
+                        className="validateStyleWrapper"
+                        isBackground={isBackgroundTaskModuleMyTasks}
+                        visible={path === "taskModule_myTasks"}
+                    >
                         <TaskModuleMyList
+                            key="myListTask"
+                            isBackground={isBackgroundTaskModuleMyTasks}
+                            visible={path === "taskModule_myTasks"}
                             setCurrentTab={setCurrentTab}
                             height={height}
                             data={router.routeData[path]}
                             user="Павел Петрович"
                         />
-                    ) : path === "taskModule_сalendar" ? (
-                        <Scrollbars>
-                            <TaskModuleCalendar
-                                setCurrentTab={setCurrentTab}
-                                onOpenPageWithData={onOpenPageWithData}
-                                height={heightController ? height - heightController : height}
-                                router={router}
-                            />
-                        </Scrollbars>
-                    ) : path === "taskModule_createTask" ? (
-                        <Scrollbars>
-                            <CreateTask
-                                height={heightController ? height - heightController : height}
-                                onLoadCurrentData={onLoadCurrentData}
-                                firebase={firebase}
-                                statusApp={status}
-                            />
-                        </Scrollbars>
-                    ) : path.startsWith("taskModule") ? (
-                        <Scrollbars>
-                            <TaskView
-                                height={heightController ? height - heightController : height}
-                                key={path.split("__")[1]}
-                                onLoadCurrentData={onLoadCurrentData}
-                                data={router.routeData[path.split("__")[1]]}
-                            />
-                        </Scrollbars>
-                    ) : (
-                                            <div>Not found taskModule</div>
-                                        )}
+                    </TabContainer>
+                    <TabContainer
+                        className="validateStyleWrapper"
+                        isBackground={isBackgroundTaskModuleCalendar}
+                        visible={path === "taskModule_сalendar"}
+                    >
+                        <TaskModuleCalendar
+                            key="calendarTaskModule"
+                            isBackground={isBackgroundTaskModuleCalendar}
+                            visible={path === "taskModule_сalendar"}
+                            setCurrentTab={setCurrentTab}
+                            onOpenPageWithData={onOpenPageWithData}
+                            height={heightController ? height - heightController : height}
+                            router={router}
+                        />
+                    </TabContainer>
+                    <TabContainer
+                        className="validateStyleWrapper"
+                        isBackground={isBackgroundTaskModuleCreateTask}
+                        visible={path === "taskModule_createTask"}
+                    >
+                        <CreateTask
+                            key="createTask_module"
+                            isBackground={isBackgroundTaskModuleCreateTask}
+                            visible={path === "taskModule_createTask"}
+                            height={heightController ? height - heightController : height}
+                            onLoadCurrentData={onLoadCurrentData}
+                            firebase={firebase}
+                            statusApp={status}
+                        />
+                    </TabContainer>
+                    <TabContainer
+                        className="validateStyleWrapper"
+                        isBackground={isBackgroundTaskViewModule}
+                        visible={isViewTask}
+                    >
+                        <TaskView
+                            key="taskView_module"
+                            isBackground={isBackgroundTaskViewModule}
+                            visible={isViewTask}
+                            height={heightController ? height - heightController : height}
+                            key={path.split("__")[1]}
+                            onLoadCurrentData={onLoadCurrentData}
+                            data={router.routeData[path.split("__")[1]]}
+                        />
+                    </TabContainer>
                 </Scrollbars>
             );
         } else return <div>Not found path module</div>;
@@ -174,6 +208,7 @@ class TaskModule extends React.PureComponent {
 
     render() {
         const { path } = this.props;
+
         const component = this.getTaskByPath(path);
         return (
             <div key="taskModule" ref={this.refModuleTask} className="taskModule">

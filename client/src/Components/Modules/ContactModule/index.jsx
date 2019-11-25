@@ -1,5 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
+
+import TabContainer from "../../TabContainer";
 import Chat from "./Chat";
 import News from "./News";
 import NewsViewPage from "./News/NewsViewPage";
@@ -11,18 +13,31 @@ class ContactModule extends React.PureComponent {
         firebase: PropTypes.object.isRequired
     };
 
+    checkBackground = path => {
+        const { actionTabs = [] } = this.props;
+        return actionTabs.some(actionTab => actionTab.startsWith(path) || actionTab === path);
+    };
+
     getContactContentByPath = path => {
+        const isBackgroundChat = this.checkBackground("contactModule_chat");
+        const isBackgrounNews = this.checkBackground("contactModule_feedback");
+        const isBackgroundInfoPage = this.checkBackground("contactModule_informationPage");
+
         return (
             <React.Fragment>
-                {path === "contactModule_chat" ? (
-                    <Chat key="chatModule" />
-                ) : path === "contactModule_feedback" ? (
-                    <News key="newsModule" />
-                ) : path.startsWith("contactModule_informationPage") ? (
-                    <NewsViewPage key="newViewPageModule" />
-                ) : (
-                    <div>Not found ContactModule</div>
-                )}
+                <TabContainer isBackground={isBackgroundChat} visible={path === "contactModule_chat"}>
+                    <Chat key="chatModule" isBackground={isBackgroundChat} visible={path === "contactModule_chat"} />
+                </TabContainer>
+                <TabContainer isBackground={isBackgrounNews} visible={path === "contactModule_feedback"}>
+                    <News key="newsModule" isBackground={isBackgrounNews} visible={path === "contactModule_feedback"} />
+                </TabContainer>
+                <TabContainer isBackground={isBackgroundInfoPage} visible={path === "contactModule_informationPage"}>
+                    <NewsViewPage
+                        key="newViewPageModule"
+                        isBackground={isBackgroundInfoPage}
+                        visible={path === "contactModule_informationPage"}
+                    />
+                </TabContainer>
             </React.Fragment>
         );
     };

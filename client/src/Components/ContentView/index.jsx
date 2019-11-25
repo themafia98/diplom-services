@@ -5,7 +5,7 @@ import { Layout } from "antd";
 
 import Scrollbars from "react-custom-scrollbars";
 
-import TabContainer from '../TabContainer';
+import TabContainer from "../TabContainer";
 import DrawerViewer from "../DrawerViewer";
 import MainModule from "../Modules/MainModule";
 import CabinetModule from "../Modules/CabinetModule";
@@ -19,7 +19,7 @@ import uuid from "uuid/v4";
 
 const { Content } = Layout;
 
-class ContentView extends React.PureComponent {
+class ContentView extends React.Component {
     state = {
         drawerView: false,
         key: null
@@ -46,10 +46,10 @@ class ContentView extends React.PureComponent {
         }
     };
 
-    componentDidUpdate = () => {
-        const { shouldUpdate } = this.props;
-
-        if (shouldUpdate) this.updateFunction();
+    shouldComponentUpdate = (nextProps, nextState) => {
+        if (nextProps.path !== this.props.path || nextState.key !== this.state.key) {
+            return true;
+        } else return false;
     };
 
     componentWillUnmount = () => {
@@ -61,64 +61,6 @@ class ContentView extends React.PureComponent {
     checkBackground = path => {
         const { actionTabs = [] } = this.props;
         return actionTabs.some(actionTab => actionTab.startsWith(path) || actionTab === path);
-    }
-
-    getComponentByPath = path => {
-        if (!path) return null;
-
-        const { firebase, onErrorRequstAction, setCurrentTab } = this.props;
-
-        return (
-            <React.Fragment>
-                <TabContainer isBackground={this.checkBackground("mainModule")} visible={path === "mainModule"}>
-                    <MainModule onErrorRequstAction={onErrorRequstAction} key="mainModule" firebase={firebase} />
-                </TabContainer>
-                <TabContainer isBackground={this.checkBackground('cabinetModule')} visible={path === 'cabinetModule'}>
-                    <CabinetModule onErrorRequstAction={onErrorRequstAction} key="cabinet" firebase={firebase} />
-                </TabContainer>
-                <TabContainer isBackground={this.checkBackground("taskModule")} visible={path.startsWith('taskModule')}>
-                    <TaskModule
-                        onErrorRequstAction={onErrorRequstAction}
-                        setCurrentTab={setCurrentTab}
-                        key="taskModule"
-                        path={path}
-                        firebase={firebase}
-                    />
-                </TabContainer>
-                <TabContainer isBackground={this.checkBackground("contactModule")} visible={path.startsWith("contactModule")}>
-                    <ContactModule
-                        onErrorRequstAction={onErrorRequstAction}
-                        key="contact"
-                        path={path}
-                        firebase={firebase}
-                    />
-                </TabContainer>
-                <TabContainer isBackground={this.checkBackground("customersModule")} visible={path.startsWith("customersModule")}>
-                    <CustomersModule
-                        onErrorRequstAction={onErrorRequstAction}
-                        key="customers"
-                        path={path}
-                        firebase={firebase}
-                    />
-                </TabContainer>
-                <TabContainer isBackground={this.checkBackground("settingsModule")} visible={path === "settingsModule"}>
-                    <SettingsModule
-                        onErrorRequstAction={onErrorRequstAction}
-                        key="settings"
-                        path={path}
-                        firebase={firebase}
-                    />
-                </TabContainer>
-                <TabContainer isBackground={this.checkBackground("statisticModule")} visible={path === "statisticModule"}>
-                    <StatisticsModule
-                        onErrorRequstAction={onErrorRequstAction}
-                        key="statistic"
-                        path={path}
-                        firebase={firebase}
-                    />
-                </TabContainer>
-            </React.Fragment>
-        );
     };
 
     updateFunction = _.debounce(forceUpdate => {
@@ -145,11 +87,104 @@ class ContentView extends React.PureComponent {
     };
 
     render() {
-        const { path } = this.props;
+        const { path, firebase, onErrorRequstAction, setCurrentTab, actionTabs } = this.props;
         const { drawerView, key } = this.state;
+
+        const isBackgroundMainModule = this.checkBackground("mainModule");
+        const isBackgroundCabinetModule = this.checkBackground("cabinetModule");
+        const isBackgroundTaskModule = this.checkBackground("taskModule");
+        const isBackgroundContactModule = this.checkBackground("contactModule");
+        const isBackgroundCustomersModule = this.checkBackground("customersModule");
+        const isBackgroundSettingsModule = this.checkBackground("settingsModule");
+        const isStatisticModule = this.checkBackground("statisticModule");
+
         return (
             <React.Fragment>
-                <Content key={key}>{this.getComponentByPath(path)}</Content>
+                <Content key={key}>
+                    <TabContainer isBackground={isBackgroundMainModule} visible={path === "mainModule"}>
+                        <MainModule
+                            visible={path === "mainModule"}
+                            isBackground={isBackgroundMainModule}
+                            onErrorRequstAction={onErrorRequstAction}
+                            key="mainModule"
+                            firebase={firebase}
+                        />
+                    </TabContainer>
+                    <TabContainer
+                        key="cabinet"
+                        isBackground={isBackgroundCabinetModule}
+                        visible={path === "cabinetModule"}
+                    >
+                        <CabinetModule
+                            visible={path === "cabinetModule"}
+                            isBackground={isBackgroundCabinetModule}
+                            onErrorRequstAction={onErrorRequstAction}
+                            key="cabinet"
+                            firebase={firebase}
+                        />
+                    </TabContainer>
+                    <TabContainer
+                        path={"taskModule"}
+                        key="taskModule"
+                        isBackground={isBackgroundTaskModule}
+                        visible={path.startsWith("taskModule")}
+                    >
+                        <TaskModule
+                            visible={path.startsWith("taskModule")}
+                            isBackground={isBackgroundTaskModule}
+                            onErrorRequstAction={onErrorRequstAction}
+                            setCurrentTab={setCurrentTab}
+                            key="taskModule"
+                            path={path}
+                            firebase={firebase}
+                        />
+                    </TabContainer>
+                    <TabContainer isBackground={isBackgroundContactModule} visible={path.startsWith("contactModule")}>
+                        <ContactModule
+                            visible={path.startsWith("contactModule")}
+                            actionTabs={actionTabs}
+                            isBackground={isBackgroundContactModule}
+                            onErrorRequstAction={onErrorRequstAction}
+                            key="contact"
+                            path={path}
+                            firebase={firebase}
+                        />
+                    </TabContainer>
+                    <TabContainer
+                        isBackground={isBackgroundCustomersModule}
+                        visible={path.startsWith("customersModule")}
+                    >
+                        <CustomersModule
+                            visible={path.startsWith("customersModule")}
+                            isBackground={isBackgroundCustomersModule}
+                            onErrorRequstAction={onErrorRequstAction}
+                            actionTabs={actionTabs}
+                            key="customers"
+                            path={path}
+                            firebase={firebase}
+                        />
+                    </TabContainer>
+                    <TabContainer isBackground={isBackgroundSettingsModule} visible={path === "settingsModule"}>
+                        <SettingsModule
+                            visible={path === "settingsModule"}
+                            isBackground={isBackgroundSettingsModule}
+                            onErrorRequstAction={onErrorRequstAction}
+                            key="settings"
+                            path={path}
+                            firebase={firebase}
+                        />
+                    </TabContainer>
+                    <TabContainer isBackground={isStatisticModule} visible={path === "statisticModule"}>
+                        <StatisticsModule
+                            visible={path === "statisticModule"}
+                            isBackground={isStatisticModule}
+                            onErrorRequstAction={onErrorRequstAction}
+                            key="statistic"
+                            path={path}
+                            firebase={firebase}
+                        />
+                    </TabContainer>
+                </Content>
                 <DrawerViewer onClose={this.onClose} visible={drawerView} />
             </React.Fragment>
         );
