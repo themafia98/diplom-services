@@ -13,14 +13,6 @@ namespace RouterInstance {
             this.entrypoint = app;
         }
 
-        get init(): boolean {
-            return this.initialization;
-        }
-
-        set init(value: boolean) {
-            this.initialization = value;
-        }
-
         static instance(app: Application): Route {
             if (instanceRoute !== null) return <Route>instanceRoute;
             else {
@@ -29,15 +21,23 @@ namespace RouterInstance {
             }
         }
 
-        getRest(): Application {
+        get init(): boolean {
+            return this.initialization;
+        }
+
+        set init(value: boolean) {
+            this.initialization = value;
+        }
+
+        public getRest(): Application {
             return <Application>this.restClient;
         }
 
-        getEntrypoint(): Application {
+        public getEntrypoint(): Application {
             return this.entrypoint;
         }
 
-        initInstance(path: string): Application {
+        public initInstance(path: string): Application {
             if (this.init === false) {
                 this.getEntrypoint().use(path, this.getRest());
                 this.init = true;
@@ -45,7 +45,7 @@ namespace RouterInstance {
             return this.getRest();
         }
 
-        createRoute(path: string, flag?: string): RouteExpress {
+        public createRoute(path: string, flag?: string): RouteExpress {
             const newRoute: RouteExpress = express.Router();
             this.getRest().use(path, newRoute);
             return newRoute;

@@ -1,5 +1,5 @@
-import express, { Request, Response, Application } from "express";
-import helmet from 'helmet';
+import express, { Request, Response, Application, Router as RouteExpress } from "express";
+import helmet from "helmet";
 import chalk from "chalk";
 import { Route } from "../../Interfaces";
 import RouterInstance from "../Router";
@@ -18,7 +18,7 @@ class ServerRunner implements ServerRun {
         return <Application>this.application;
     }
 
-    public setApp(express: Application) {
+    public setApp(express: Application): void {
         if (this.application === null) this.application = express;
     }
 
@@ -35,9 +35,8 @@ class ServerRunner implements ServerRun {
             console.log(`Server or worker listen on ${chalk.blue.bold(this.port)}.`);
         });
 
-        const rest = instanceRouter.initInstance("/rest");
-        const db = instanceRouter.createRoute("/db");
-
+        const rest: Application = instanceRouter.initInstance("/rest");
+        const db: RouteExpress = instanceRouter.createRoute("/db");
 
         process.on("SIGTERM", (): void => {
             server.close();
