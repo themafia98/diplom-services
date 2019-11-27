@@ -1,11 +1,13 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Pagination } from "antd";
+import { Pagination, Button } from "antd";
+
 import { setActiveTabAction, openPageWithDataAction } from "../../../../Redux/actions/routerActions";
 import { middlewareCaching } from "../../../../Redux/actions/publicActions/middleware";
+
+import TabContainer from "../../../TabContainer";
 import NewsCard from "./NewsCard";
 import TitleModule from "../../../TitleModule";
-import NewsViewPage from "./NewsViewPage";
 
 import { routePathNormalise } from "../../../../Utils";
 import { newsArray } from "./testData";
@@ -13,6 +15,7 @@ import { newsArray } from "./testData";
 class News extends React.PureComponent {
     state = {
         isLoading: false,
+        isOpen: false,
         prewPage: 1,
         currentPage: 1,
         start: 0,
@@ -20,10 +23,6 @@ class News extends React.PureComponent {
         counter: newsArray.length < 8 ? newsArray.length : 8,
         intialDefault: newsArray.length < 8 ? newsArray.length : 8,
         load: false
-    };
-
-    componentDidMount = () => {
-        const { storeCache = null } = this.props;
     };
 
     componentDidUpdate = () => {
@@ -37,12 +36,8 @@ class News extends React.PureComponent {
     };
 
     onOpen = key => {
-        const {
-            onOpenPageWithData,
-            router: { routeData = {}, currentActionTab = "", actionTabs = [] } = {},
-            setCurrentTab
-        } = this.props;
-
+        const { onOpenPageWithData, router: { actionTabs = [] } = {}, setCurrentTab } = this.props;
+        const { newsArray = [] } = this.state;
         const moduleId = "informationPage";
         const page = "contactModule";
 
@@ -52,27 +47,21 @@ class News extends React.PureComponent {
         });
 
         const index = actionTabs.findIndex(tab => tab === routeNormalize.path);
+        const data = newsArray.find(it => it.id === key);
         const isFind = index !== -1;
 
         if (!isFind) {
             onOpenPageWithData({
                 activePage: routeNormalize,
-                routeDataActive: { key, activePage: key }
+                routeDataActive: { key, listdata: data ? { ...data } : {} }
             });
         } else setCurrentTab(actionTabs[index]);
     };
 
     renderNewsBlock = currentPage => {
-        const { start } = this.state;
-        const {
-            path = "",
-            storeCache: {
-                [path]: {
-                    /** newsArray = [] */
-                } = {}
-            } = {}
-        } = this.props;
-        const { counter, intialDefault, newsArray = [] } = this.state;
+        const { newsArray = [] } = this.state;
+
+        const start = currentPage > 1 ? currentPage * 4 - 4 : 0;
         let arrayCards = [...newsArray];
 
         return arrayCards
@@ -84,36 +73,33 @@ class News extends React.PureComponent {
     };
 
     onChange = pageNumber => {
-        const { start, currentPage } = this.state;
+        const { currentPage } = this.state;
         if (currentPage !== pageNumber)
             this.setState({
                 ...this.state,
-                currentPage: pageNumber,
-                start: currentPage < pageNumber ? start + 4 : start - 4
+                currentPage: pageNumber
             });
     };
 
     render() {
-        const { currentPage, IsOpen, openKey } = this.state;
+        const { currentPage, isOpen } = this.state;
+        const rules = true;
         return (
             <div className="news">
-                <TitleModule classNameTitle="mainModuleTitle" title="Информация по предприятию" />
-                {!IsOpen ? (
-                    <React.Fragment>
-                        <div className="news__main">
-                            <div className="col-fullscreen">{this.renderNewsBlock(currentPage)}</div>
-                        </div>
-                        <Pagination
-                            className="pagination-news"
-                            onChange={this.onChange}
-                            pageSize={~~(newsArray.length / 4)}
-                            defaultCurrent={currentPage}
-                            total={newsArray.length}
-                        />
-                    </React.Fragment>
-                ) : (
-                    <NewsViewPage key={openKey} id={openKey} IsOpen={IsOpen} />
-                )}
+                <TitleModule classNameTitle="mainModuleTitle" title="Информация" />
+                {rules ? <Button type="primary">Создать новость</Button> : null}
+                <TabContainer visible={!isOpen}>
+                    <div className="news__main">
+                        <div className="col-fullscreen">{this.renderNewsBlock(currentPage)}</div>
+                    </div>
+                    <Pagination
+                        className="pagination-news"
+                        onChange={this.onChange}
+                        pageSize={(newsArray.length / 4) | 0}
+                        defaultCurrent={currentPage}
+                        total={newsArray.length}
+                    />
+                </TabContainer>
             </div>
         );
     }

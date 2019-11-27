@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from "react";
-import { animateScroll as scroll, Element, scroller } from "react-scroll";
+import React, { useState, useRef } from "react";
+import { Element, scroller } from "react-scroll";
 import _ from "lodash";
 import { Button, Avatar } from "antd";
 

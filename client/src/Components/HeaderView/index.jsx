@@ -82,7 +82,7 @@ class HeaderView extends React.PureComponent {
     };
 
     render() {
-        const { logout = null, actionTabs = ["mainModule"], goCabinet, status, shouldUpdate } = this.props;
+        const { actionTabs = ["mainModule"], goCabinet, status, shouldUpdate } = this.props;
 
         return (
             <Header>

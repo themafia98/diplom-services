@@ -49,7 +49,7 @@ class Dashboard extends React.PureComponent {
         const {
             publicReducer: { requestError = null, status } = {},
             router,
-            router: { currentActionTab, shouldUpdate = false }
+            router: { currentActionTab = "" }
         } = this.props;
         const { showLoader, status: statusState, counterError } = this.state;
 
@@ -104,9 +104,6 @@ class Dashboard extends React.PureComponent {
                 status: status
             });
         }
-        // if (shouldUpdate) {
-        //     this.dashboardStrem.emit("EventUpdate");
-        // }
     };
 
     onCollapse = collapsed => {
@@ -139,11 +136,14 @@ class Dashboard extends React.PureComponent {
         for (let i = 0; i < tabsCopy.length; i++) {
             let tabItem = menu.find(tab => tab.EUID === tabsCopy[i]);
             if (!tabItem) {
-                const dataPage = tabsCopy[i].split("__");
-                const PARENT_CODE = dataPage[0];
-                const DATAKEY = dataPage[1] || dataPage[0];
-                const VALUE = DATAKEY && routeData[DATAKEY].name ? routeData[DATAKEY].name : DATAKEY;
-                tabItem = { EUID: tabsCopy[i], PARENT_CODE, DATAKEY, VALUE };
+                const PAGEDATA = routeParser({ pageType: "page", path: tabsCopy[i] });
+                const PARENT_CODE = PAGEDATA["page"];
+                const DATAKEY = PAGEDATA["pageChild"] || PAGEDATA["page"] || "";
+                const { listdata: { title: titleListdata = "" } = {}, title = "", name = "" } =
+                    routeData[DATAKEY] || {};
+
+                const VALUE = DATAKEY && name ? name : title ? title : titleListdata ? titleListdata : DATAKEY;
+                tabItem = { EUID: PAGEDATA["path"] || tabsCopy[i], PARENT_CODE, DATAKEY, VALUE };
             }
             if (tabItem) tabsArray.push({ ...tabItem });
         }
@@ -182,7 +182,6 @@ class Dashboard extends React.PureComponent {
             addTab,
             setCurrentTab,
             removeTab,
-            onLoadCurrentData,
             tabData,
             onSetChildrenSizeAction
         } = this.props;
@@ -197,9 +196,6 @@ class Dashboard extends React.PureComponent {
             if (!isFind) addTab(routeParser({ path }));
             else if (currentActionTab !== path) {
                 setCurrentTab(path);
-
-                // if (path.startsWith("taskModule") && path !== "taskModule_createTask")
-                //     onLoadCurrentData({ path, storeLoad: "tasks" });
             }
         } else if (mode === "close") {
             let size = tabData.parentSize / actionTabsCopy.length;
@@ -216,6 +212,7 @@ class Dashboard extends React.PureComponent {
         const { menuItems = null, showLoader } = this.state;
         const {
             router: { actionTabs = [], currentActionTab, shouldUpdate = false } = {},
+            router = {},
             firebase,
             onErrorRequstAction,
             onShoudUpdate,
@@ -251,6 +248,7 @@ class Dashboard extends React.PureComponent {
                             dashboardStrem={this.dashboardStrem}
                             actionTabs={actionTabs}
                             shouldUpdate={shouldUpdate}
+                            router={router}
                             onShoudUpdate={onShoudUpdate}
                             setCurrentTab={setCurrentTab}
                             updateLoader={this.updateLoader}

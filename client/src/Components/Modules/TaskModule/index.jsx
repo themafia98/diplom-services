@@ -118,6 +118,8 @@ class TaskModule extends React.PureComponent {
             const route = routeParser({ pageType: "moduleItem", path });
             const isBackgroundTaskViewModule = _.isObject(route) && !_.isNull(route);
 
+            const key = path.split("__")[1];
+
             return (
                 <Scrollbars>
                     {isList ? (
@@ -192,13 +194,12 @@ class TaskModule extends React.PureComponent {
                         visible={isViewTask}
                     >
                         <TaskView
-                            key="taskView_module"
+                            key={key}
                             isBackground={isBackgroundTaskViewModule}
                             visible={isViewTask}
                             height={heightController ? height - heightController : height}
-                            key={path.split("__")[1]}
                             onLoadCurrentData={onLoadCurrentData}
-                            data={router.routeData[path.split("__")[1]]}
+                            data={router.routeData[key]}
                         />
                     </TabContainer>
                 </Scrollbars>

@@ -16,14 +16,14 @@ class NewsViewPage extends React.PureComponent {
     };
     componentDidMount = () => {
         const {
-            router: { routeDataActive: { activePage = "" } = {} }
+            router: { routeDataActive: { key = "" } = {} }
         } = this.props;
 
-        const data = newsArray.find(it => activePage === it.id) || {};
+        const data = newsArray.find(it => key === it.id) || {};
 
         this.setState({
             ...this.state,
-            active: activePage,
+            active: key,
             isLoading: !_.isEmpty(data) ? false : true,
             loading: !_.isEmpty(data) ? true : false,
             currentData: { ...data }
@@ -32,16 +32,16 @@ class NewsViewPage extends React.PureComponent {
 
     componentDidUpdate = (prevProps, prevState) => {
         const {
-            router: { routeDataActive: { activePage = "" } = {} }
+            router: { routeDataActive: { key = "" } = {} }
         } = this.props;
         const { active } = this.state;
 
-        if (activePage !== active) {
-            const data = newsArray.find(it => activePage === it.id) || {};
+        if (key !== active) {
+            const data = newsArray.find(it => key === it.id) || {};
 
             this.setState({
                 ...this.state,
-                active: activePage,
+                active: key,
                 isLoading: !_.isEmpty(data) ? false : true,
                 loading: !_.isEmpty(data) ? true : false,
                 currentData: { ...data }

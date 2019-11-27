@@ -29,7 +29,12 @@ const getSchema = (type, data, mode = "no-strict") => {
 export const routeParser = ({ pageType = "module", path: route = null }) => {
     if (typeof route !== "string") return "";
 
-    if (pageType === "moduleItem") {
+    if (pageType === "page") {
+        const arrayDataRoute = route.split(/__/gi);
+        const page = arrayDataRoute[0];
+        const pageChild = arrayDataRoute[1] ? arrayDataRoute[1] : null;
+        return { page, pageChild, path: route };
+    } else if (pageType === "moduleItem") {
         const arrayDataRoute = route.split(/__/gi);
 
         if (arrayDataRoute.length < 2 || arrayDataRoute.length > 3) return route;
