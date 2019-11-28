@@ -45,7 +45,11 @@ class ContentView extends React.Component {
     };
 
     shouldComponentUpdate = (nextProps, nextState) => {
-        if (nextProps.path !== this.props.path || nextState.key !== this.state.key) {
+        if (
+            nextProps.path !== this.props.path ||
+            nextState.key !== this.state.key ||
+            nextState.drawerView !== this.state.drawerView
+        ) {
             return true;
         } else return false;
     };

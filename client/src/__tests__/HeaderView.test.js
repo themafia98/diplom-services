@@ -14,22 +14,17 @@ describe("<HeaderView /> and children", () => {
             cbMenuTabHandler: () => {},
             actionTabs: [{ EUID: "mainModule" }],
             activeTabEUID: "mainModule",
-            logout: () => {},
+            logout: () => {}
         };
 
         const HeaderViewWrapper = shallow(<HeaderView {...props} />);
         expect(toJson(HeaderViewWrapper)).toMatchSnapshot();
 
-        expect(HeaderViewWrapper.find("Updater").simulate("click", []));
-        expect(toJson(HeaderViewWrapper)).toMatchSnapshot();
-
-        expect(HeaderViewWrapper.find("Updater").prop("additionalClassName")).toEqual("updaterDefault");
         expect(HeaderViewWrapper.find(".tabsMenu").exists()).toBeTruthy();
-        expect(HeaderViewWrapper.find(".logout").simulate("click", [])).toBeTruthy();
 
         const nextProps = {
             ...props,
-            actionTabs: [{ EUID: "mainModule1" }],
+            actionTabs: [{ EUID: "mainModule1" }]
         };
 
         const HeaderViewWrapperNewProps = shallow(<HeaderView {...nextProps} />);

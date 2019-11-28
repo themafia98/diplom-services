@@ -13,15 +13,16 @@ describe("<ContentView />", () => {
             updateLoader: () => {},
             onErrorRequstAction: () => {},
             firebase: {},
-            path: "mainModule",
+            path: "mainModule"
         };
         const ContentViewWrapper = shallow(<ContentView {...props} />);
 
         toJson(ContentViewWrapper);
         expect(ContentViewWrapper.find("MainModule").prop("firebase")).toEqual(props.firebase);
 
-        ContentViewWrapper.setState({ drawerView: true });
-        expect(ContentViewWrapper.find("DrawerViewer").prop("visible")).toBeTruthy();
+        ContentViewWrapper.setState({ drawerView: true }, () => {
+            expect(ContentViewWrapper.find("DrawerViewer").prop("visible")).toEqual(true);
+        });
 
         ContentViewWrapper.setState({ drawerView: false });
         expect(ContentViewWrapper.find("DrawerViewer").prop("visible")).toEqual(false);

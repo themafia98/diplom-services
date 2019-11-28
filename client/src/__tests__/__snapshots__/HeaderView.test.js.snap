@@ -14,55 +14,13 @@ exports[`<HeaderView /> and children Should render 1`] = `
       sizeTab={160}
     />
   </ul>
-  <div
-    className="headerControllers"
-  >
-    <Updater
-      additionalClassName="updaterDefault"
-      onClick={[Function]}
-    />
-    <div
-      className="logout"
-      onClick={[Function]}
-    >
-      Выйти
-    </div>
-  </div>
+  <RightPanel
+    onUpdate={[Function]}
+  />
 </Adapter>
 `;
 
 exports[`<HeaderView /> and children Should render 2`] = `
-<Adapter>
-  <ul
-    className="tabsMenu"
-  >
-    <Connect(Tab)
-      active={true}
-      flag={true}
-      hendlerTab={[Function]}
-      itemKey="mainModule"
-      key="mainModule"
-      sizeTab={160}
-    />
-  </ul>
-  <div
-    className="headerControllers"
-  >
-    <Updater
-      additionalClassName="updaterDefault"
-      onClick={[Function]}
-    />
-    <div
-      className="logout"
-      onClick={[Function]}
-    >
-      Выйти
-    </div>
-  </div>
-</Adapter>
-`;
-
-exports[`<HeaderView /> and children Should render 3`] = `
 <Adapter>
   <ul
     className="tabsMenu"
@@ -76,19 +34,8 @@ exports[`<HeaderView /> and children Should render 3`] = `
       sizeTab={160}
     />
   </ul>
-  <div
-    className="headerControllers"
-  >
-    <Updater
-      additionalClassName="updaterDefault"
-      onClick={[Function]}
-    />
-    <div
-      className="logout"
-      onClick={[Function]}
-    >
-      Выйти
-    </div>
-  </div>
+  <RightPanel
+    onUpdate={[Function]}
+  />
 </Adapter>
 `;

@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<RightPanel /> template should be render 1`] = `
+<div
+  className="headerControllers rightPanel"
+>
+  <UserPopup />
+  <div
+    className="groupControllers"
+  >
+    <NotificationPopup />
+    <Updater
+      additionalClassName="updaterDefault"
+    />
+    <div
+      className="logout"
+    >
+      Выйти
+    </div>
+    <Status />
+  </div>
+</div>
+`;

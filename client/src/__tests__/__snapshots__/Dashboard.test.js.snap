@@ -109,16 +109,19 @@ exports[`<Dashboard /> main page Should render component 1`] = `
           },
         ]
       }
+      key="menu"
     />
-    <Adapter>
+    <Adapter
+      key="main"
+    >
       <Connect(HeaderView)
         actionTabs={
           Array [
             Object {
-              "DATAKEY": undefined,
+              "DATAKEY": "MainModule",
               "EUID": "MainModule",
               "PARENT_CODE": "MainModule",
-              "VALUE": undefined,
+              "VALUE": "MainModule",
             },
           ]
         }
@@ -131,9 +134,16 @@ exports[`<Dashboard /> main page Should render component 1`] = `
             "_maxListeners": undefined,
           }
         }
+        goCabinet={[Function]}
+        key="header"
         logout={[Function]}
       />
       <ContentView
+        actionTabs={
+          Array [
+            "MainModule",
+          ]
+        }
         dashboardStrem={
           EventEmitter {
             "_events": Object {},
@@ -145,7 +155,22 @@ exports[`<Dashboard /> main page Should render component 1`] = `
         key="contentView"
         onErrorRequstAction={[Function]}
         path="MainModule"
+        router={
+          Object {
+            "actionTabs": Array [
+              "MainModule",
+            ],
+            "currentActionTab": "MainModule",
+            "routeData": Object {
+              "MainModule": Object {
+                "name": "MainModule",
+              },
+            },
+            "routeDataActive": null,
+          }
+        }
         setCurrentTab={[Function]}
+        shouldUpdate={false}
         updateLoader={[Function]}
       />
     </Adapter>
@@ -259,16 +284,19 @@ exports[`<Dashboard /> main page Should render component 2`] = `
           },
         ]
       }
+      key="menu"
     />
-    <Adapter>
+    <Adapter
+      key="main"
+    >
       <Connect(HeaderView)
         actionTabs={
           Array [
             Object {
-              "DATAKEY": undefined,
+              "DATAKEY": "MainModule",
               "EUID": "MainModule",
               "PARENT_CODE": "MainModule",
-              "VALUE": undefined,
+              "VALUE": "MainModule",
             },
           ]
         }
@@ -281,9 +309,16 @@ exports[`<Dashboard /> main page Should render component 2`] = `
             "_maxListeners": undefined,
           }
         }
+        goCabinet={[Function]}
+        key="header"
         logout={[Function]}
       />
       <ContentView
+        actionTabs={
+          Array [
+            "MainModule",
+          ]
+        }
         dashboardStrem={
           EventEmitter {
             "_events": Object {},
@@ -295,7 +330,22 @@ exports[`<Dashboard /> main page Should render component 2`] = `
         key="contentView"
         onErrorRequstAction={[Function]}
         path="MainModule"
+        router={
+          Object {
+            "actionTabs": Array [
+              "MainModule",
+            ],
+            "currentActionTab": "MainModule",
+            "routeData": Object {
+              "MainModule": Object {
+                "name": "MainModule",
+              },
+            },
+            "routeDataActive": null,
+          }
+        }
         setCurrentTab={[Function]}
+        shouldUpdate={false}
         updateLoader={[Function]}
       />
     </Adapter>
@@ -315,16 +365,19 @@ exports[`<Dashboard /> main page Should render component 3`] = `
       cbOnCollapse={[Function]}
       collapsed={false}
       items={Array []}
+      key="menu"
     />
-    <Adapter>
+    <Adapter
+      key="main"
+    >
       <Connect(HeaderView)
         actionTabs={
           Array [
             Object {
-              "DATAKEY": undefined,
+              "DATAKEY": "MainModule",
               "EUID": "MainModule",
               "PARENT_CODE": "MainModule",
-              "VALUE": undefined,
+              "VALUE": "MainModule",
             },
           ]
         }
@@ -337,9 +390,16 @@ exports[`<Dashboard /> main page Should render component 3`] = `
             "_maxListeners": undefined,
           }
         }
+        goCabinet={[Function]}
+        key="header"
         logout={[Function]}
       />
       <ContentView
+        actionTabs={
+          Array [
+            "MainModule",
+          ]
+        }
         dashboardStrem={
           EventEmitter {
             "_events": Object {},
@@ -351,7 +411,22 @@ exports[`<Dashboard /> main page Should render component 3`] = `
         key="contentView"
         onErrorRequstAction={[Function]}
         path="MainModule"
+        router={
+          Object {
+            "actionTabs": Array [
+              "MainModule",
+            ],
+            "currentActionTab": "MainModule",
+            "routeData": Object {
+              "MainModule": Object {
+                "name": "MainModule",
+              },
+            },
+            "routeDataActive": null,
+          }
+        }
         setCurrentTab={[Function]}
+        shouldUpdate={false}
         updateLoader={[Function]}
       />
     </Adapter>
