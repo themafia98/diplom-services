@@ -15,6 +15,7 @@ exports[`<HeaderView /> and children Should render 1`] = `
     />
   </ul>
   <RightPanel
+    onLogout={[Function]}
     onUpdate={[Function]}
   />
 </Adapter>
@@ -35,6 +36,7 @@ exports[`<HeaderView /> and children Should render 2`] = `
     />
   </ul>
   <RightPanel
+    onLogout={[Function]}
     onUpdate={[Function]}
   />
 </Adapter>

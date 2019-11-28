@@ -11,6 +11,7 @@ exports[`<RightPanel /> template should be render 1`] = `
     <NotificationPopup />
     <Updater
       additionalClassName="updaterDefault"
+      onClick={[Function]}
     />
     <div
       className="logout"

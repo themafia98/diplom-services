@@ -5,7 +5,11 @@ import toJson from "enzyme-to-json";
 
 describe("<RightPanel /> template", () => {
     test("should be render", () => {
-        const RightPanelWrapper = shallow(<RightPanel onClick={() => {}} />);
+        const props = {
+            onUpdate: () => {},
+            onClick: () => {}
+        };
+        const RightPanelWrapper = shallow(<RightPanel {...props} />);
         expect(RightPanelWrapper.find("Updater").prop("additionalClassName")).toEqual("updaterDefault");
         expect(toJson(RightPanelWrapper)).toMatchSnapshot();
 
