@@ -1,6 +1,10 @@
 .taskModule {
     width: 100%;
     height: 100%;
+    .tabList {
+        height: calc(100% - 65px);
+        min-height:  calc(100% - 65px);
+    }
     .taskModuleTittle {
         font-size: 30px;
         font-weight: bold;

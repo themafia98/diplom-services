@@ -128,7 +128,7 @@ class TaskModule extends React.PureComponent {
                         </div>
                     ) : null}
                     <TabContainer
-                        className="validateStyleWrapper"
+                        className="tabList"
                         isBackground={isBackgroundTaskModuleAll}
                         visible={path === "taskModule_all"}
                     >
@@ -142,7 +142,7 @@ class TaskModule extends React.PureComponent {
                         />
                     </TabContainer>
                     <TabContainer
-                        className="validateStyleWrapper"
+                        className="tabList"
                         isBackground={isBackgroundTaskModuleMyTasks}
                         visible={path === "taskModule_myTasks"}
                     >
