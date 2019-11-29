@@ -10,7 +10,7 @@ describe("<CreateTask /> template", () => {
             height: 800,
             onLoadCurrentData: () => {},
             firebase: {},
-            statusApp: "online",
+            statusApp: "online"
         };
 
         const CreateTaskWrapper = shallow(<CreateTask {...props} />);
@@ -27,8 +27,9 @@ describe("<CreateTask /> template", () => {
         expect(CreateTaskWrapper.find(".submitNewTask").prop("disabled")).toEqual(CreateTaskWrapper.state().load);
 
         expect(CreateTaskWrapper.find(".submitNewTask").simulate("click", [])).toBeTruthy();
-        expect(CreateTaskWrapper.find("PickerWrapper").simulate("click", [])).toBeTruthy();
 
         expect(toJson(CreateTaskWrapper)).toMatchSnapshot();
+
+        expect(CreateTaskWrapper.find("PickerWrapper").simulate("click", [])).toBeTruthy();
     });
 });
