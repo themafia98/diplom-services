@@ -103,7 +103,7 @@ class SettingsModule extends React.PureComponent {
     refColumnFunc = node => (this.refColumn = node);
 
     render() {
-        const { emailValue, telValue, haveChanges, showScrollbar } = this.state;
+        const { emailValue, telValue, haveChanges } = this.state;
         const text = ` A dog is a type of domesticated animal.
         A dog is a type of domesticated animal. A dog is a type of domesticated animal.
         A dog is a type of domesticated animal. A dog is a type of domesticated animal.

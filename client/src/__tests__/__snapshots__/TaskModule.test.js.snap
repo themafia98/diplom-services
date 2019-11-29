@@ -5,26 +5,120 @@ exports[`<TaskModule /> template Should be render 1`] = `
   className="taskModule"
   key="taskModule"
 >
-  <div
-    className="controllersWrapper"
-    key="controllers"
+  <Scrollbars
+    autoHeight={false}
+    autoHeightMax={200}
+    autoHeightMin={0}
+    autoHide={false}
+    autoHideDuration={200}
+    autoHideTimeout={1000}
+    hideTracksWhenNotNeeded={false}
+    renderThumbHorizontal={[Function]}
+    renderThumbVertical={[Function]}
+    renderTrackHorizontal={[Function]}
+    renderTrackVertical={[Function]}
+    renderView={[Function]}
+    tagName="div"
+    thumbMinSize={30}
+    universal={false}
   >
-    <Button
-      block={false}
-      className="newTaskButton"
-      ghost={false}
-      htmlType="button"
-      loading={false}
-      onClick={[Function]}
-      type="primary"
+    <div
+      className="controllersWrapper"
+      key="controllers"
     >
-      Создать новую задачу
-    </Button>
-  </div>
-  <TaskModuleList
-    height={null}
-    setCurrentTab={[Function]}
-  />
+      <Button
+        block={false}
+        className="newTaskButton"
+        ghost={false}
+        htmlType="button"
+        loading={false}
+        onClick={[Function]}
+        type="primary"
+      >
+        Создать новую задачу
+      </Button>
+    </div>
+    <TabContainer
+      className="validateStyleWrapper"
+      isBackground={false}
+      visible={true}
+    >
+      <TaskModuleList
+        height={null}
+        isBackground={false}
+        key="taskList"
+        setCurrentTab={[Function]}
+        visible={true}
+      />
+    </TabContainer>
+    <TabContainer
+      className="validateStyleWrapper"
+      isBackground={false}
+      visible={false}
+    >
+      <TaskModuleMyList
+        height={null}
+        isBackground={false}
+        key="myListTask"
+        setCurrentTab={[Function]}
+        user="Павел Петрович"
+        visible={false}
+      />
+    </TabContainer>
+    <TabContainer
+      className="validateStyleWrapper"
+      isBackground={false}
+      visible={false}
+    >
+      <TaskModuleCalendar
+        height={null}
+        isBackground={false}
+        key="calendarTaskModule"
+        onOpenPageWithData={[Function]}
+        router={
+          Object {
+            "actionTabs": Array [
+              "MainModule",
+            ],
+            "currentActionTab": "mainModule",
+            "routeData": Object {
+              "taskModule__all": Object {},
+            },
+            "routeDataActive": Object {},
+          }
+        }
+        setCurrentTab={[Function]}
+        visible={false}
+      />
+    </TabContainer>
+    <TabContainer
+      className="validateStyleWrapper"
+      isBackground={false}
+      visible={false}
+    >
+      <CreateTask
+        firebase={Object {}}
+        height={null}
+        isBackground={false}
+        key="createTask_module"
+        onLoadCurrentData={[Function]}
+        statusApp="online"
+        visible={false}
+      />
+    </TabContainer>
+    <TabContainer
+      className="validateStyleWrapper"
+      isBackground={false}
+      visible={false}
+    >
+      <Connect(TaskView)
+        height={null}
+        isBackground={false}
+        onLoadCurrentData={[Function]}
+        visible={false}
+      />
+    </TabContainer>
+  </Scrollbars>
 </div>
 `;
 

@@ -4,7 +4,7 @@ import moment from "moment";
 import _ from "lodash";
 import uuid from "uuid/v4";
 import Scrollbars from "react-custom-scrollbars";
-import { Skeleton, List, Avatar, Button, notification, message, Modal } from "antd";
+import { Skeleton, List, Avatar, Button, notification, message } from "antd";
 
 import { setActiveChatToken } from "../../../../Redux/actions/publicActions";
 import Loader from "../../../Loader";
@@ -71,7 +71,7 @@ class Chat extends React.PureComponent {
     };
 
     pushMessage = (event, msg) => {
-        const { roomToken = "", listdata = null } = this.state;
+        const { roomToken = "" } = this.state;
         event.stopPropagation();
         if (_.isNull(roomToken)) {
             return notification.error({ message: "Ошибка чата", description: "Данные повреждены." });

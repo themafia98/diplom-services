@@ -8,9 +8,7 @@ const NotificationItem = ({ image = false, content = "" }) => {
                     <Avatar shape="circle" type="small" icon="user" />
                 </div>
             ) : null}
-            <span className={[image ? "left" : null].join(" ")} className="notificationItem__content">
-                {content}
-            </span>
+            <span className={["notificationItem__content", image ? "left" : null].join(" ")}>{content}</span>
         </div>
     );
 };

@@ -20,7 +20,7 @@ class NotificationPopup extends React.PureComponent {
     render() {
         const content = (
             <div className="notificationContent">
-                <Scrollbars style={{ height: '200px' }}>
+                <Scrollbars style={{ height: "200px" }}>
                     {this.buildItems([
                         { image: true, content: "Новое сообщение" },
                         { image: false, content: "Изменение в задаче test" },
@@ -36,6 +36,7 @@ class NotificationPopup extends React.PureComponent {
                 <div className="notificationControllers">
                     <Badge className="notificationCounter" count={counter} />
                     <Popover
+                        className="notificationBox"
                         placement="bottom"
                         title={`Непрочитано уведомлений: ${counter}.`}
                         content={content}

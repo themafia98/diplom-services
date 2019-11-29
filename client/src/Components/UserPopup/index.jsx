@@ -8,9 +8,7 @@ class UserPopup extends React.PureComponent {
             <div className="userPopup">
                 <div onClick={goCabinet} className="userPopupMain">
                     <Avatar shape="square" type="small" icon="user" />
-                    <a className="ant-dropdown-link" href="#">
-                        Павел П.
-                    </a>
+                    <p className="userName_link">Павел П.</p>
                 </div>
             </div>
         );

@@ -17,7 +17,7 @@ class ChatModal extends React.PureComponent {
     };
 
     render() {
-        const { confirmLoading, ModalText } = this.state;
+        const { confirmLoading } = this.state;
         const { visible } = this.props;
         return (
             <Modal

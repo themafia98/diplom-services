@@ -3,8 +3,6 @@ import PropTypes from "prop-types";
 import _ from "lodash";
 import { Layout } from "antd";
 
-import Scrollbars from "react-custom-scrollbars";
-
 import TabContainer from "../TabContainer";
 import DrawerViewer from "../DrawerViewer";
 import MainModule from "../Modules/MainModule";
@@ -47,7 +45,11 @@ class ContentView extends React.Component {
     };
 
     shouldComponentUpdate = (nextProps, nextState) => {
-        if (nextProps.path !== this.props.path || nextState.key !== this.state.key) {
+        if (
+            nextProps.path !== this.props.path ||
+            nextState.key !== this.state.key ||
+            nextState.drawerView !== this.state.drawerView
+        ) {
             return true;
         } else return false;
     };
@@ -64,7 +66,7 @@ class ContentView extends React.Component {
     };
 
     updateFunction = _.debounce(forceUpdate => {
-        const { updateLoader, shouldUpdate } = this.props;
+        const { updateLoader } = this.props;
         this.setState({ ...this.state, key: uuid() }, () => {
             if (forceUpdate) {
                 updateLoader();
@@ -87,7 +89,7 @@ class ContentView extends React.Component {
     };
 
     render() {
-        const { path, firebase, onErrorRequstAction, setCurrentTab, actionTabs } = this.props;
+        const { path, firebase, onErrorRequstAction, setCurrentTab, actionTabs, router } = this.props;
         const { drawerView, key } = this.state;
 
         const isBackgroundMainModule = this.checkBackground("mainModule");
@@ -143,6 +145,7 @@ class ContentView extends React.Component {
                         <ContactModule
                             visible={path.startsWith("contactModule")}
                             actionTabs={actionTabs}
+                            router={router}
                             isBackground={isBackgroundContactModule}
                             onErrorRequstAction={onErrorRequstAction}
                             key="contact"

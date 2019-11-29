@@ -35,7 +35,7 @@ class ServerRunner implements ServerRun {
             console.log(`Server or worker listen on ${chalk.blue.bold(this.port)}.`);
         });
 
-        const rest: Application = instanceRouter.initInstance("/rest");
+        const rest: RouteExpress = instanceRouter.initInstance("/rest");
         const db: RouteExpress = instanceRouter.createRoute("/db");
 
         process.on("SIGTERM", (): void => {

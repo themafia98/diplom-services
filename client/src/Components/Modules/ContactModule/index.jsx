@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
+import { routeParser } from "../../../Utils";
 import TabContainer from "../../TabContainer";
 import Chat from "./Chat";
 import News from "./News";
@@ -11,6 +12,30 @@ class ContactModule extends React.PureComponent {
         onErrorRequstAction: PropTypes.func.isRequired,
         path: PropTypes.string.isRequired,
         firebase: PropTypes.object.isRequired
+    };
+
+    renderNewsView = () => {
+        const { router: { currentActionTab } = {}, actionTabs = [] } = this.props;
+
+        const filterActionTab = actionTabs.filter(tab => tab.includes("_informationPage__"));
+        const itemsKeys = filterActionTab
+            .map(it => {
+                const route = routeParser({ pageType: "moduleItem", path: it });
+                if (typeof route !== "string" && route.itemId) {
+                    return route.itemId;
+                } else return null;
+            })
+            .filter(Boolean);
+
+        return itemsKeys.map(key => {
+            const route = routeParser({ pageType: "moduleItem", path: currentActionTab });
+
+            return (
+                <TabContainer visible={route.itemId === key && currentActionTab.includes(key)}>
+                    <NewsViewPage key={key} id={key} />
+                </TabContainer>
+            );
+        });
     };
 
     checkBackground = path => {
@@ -38,6 +63,7 @@ class ContactModule extends React.PureComponent {
                         visible={path === "contactModule_informationPage"}
                     />
                 </TabContainer>
+                {this.renderNewsView()}
             </React.Fragment>
         );
     };

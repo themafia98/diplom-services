@@ -38,7 +38,7 @@ class App extends React.Component {
             let path = "mainModule";
             const defaultModule = config.menu.find(item => item["SIGN"] === "default");
             if (defaultModule) path = defaultModule.EUID;
-            const routePath = routeParser({ path });
+
             const actionTabsCopy = [...actionTabs];
             const isFind = actionTabsCopy.findIndex(tab => tab === path) !== -1;
 

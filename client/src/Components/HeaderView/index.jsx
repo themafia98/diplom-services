@@ -82,7 +82,7 @@ class HeaderView extends React.PureComponent {
     };
 
     render() {
-        const { logout = null, actionTabs = ["mainModule"], goCabinet, status, shouldUpdate } = this.props;
+        const { actionTabs = ["mainModule"], goCabinet, status, shouldUpdate, logout } = this.props;
 
         return (
             <Header>
@@ -91,7 +91,7 @@ class HeaderView extends React.PureComponent {
                     shouldUpdate={shouldUpdate}
                     status={status}
                     goCabinet={goCabinet}
-                    onLogout={this.logout}
+                    onLogout={logout}
                     onUpdate={this.update}
                 />
             </Header>

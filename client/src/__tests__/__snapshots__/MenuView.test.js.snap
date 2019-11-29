@@ -107,7 +107,7 @@ exports[`<MenuView /> Should MenuView render with itemsMenu 1`] = `
         key="customersModule_reception"
         onClick={[Function]}
       >
-        Приемы / встречи
+        Обращения
       </MenuItem>
     </SubMenu>
     <SubMenu
@@ -116,7 +116,7 @@ exports[`<MenuView /> Should MenuView render with itemsMenu 1`] = `
       title={
         <span>
           <Icon
-            type="global"
+            type="wechat"
           />
           <span>
             Связь
@@ -125,16 +125,16 @@ exports[`<MenuView /> Should MenuView render with itemsMenu 1`] = `
       }
     >
       <MenuItem
+        key="contactModule_feedback"
+        onClick={[Function]}
+      >
+        Информация
+      </MenuItem>
+      <MenuItem
         key="contactModule_chat"
         onClick={[Function]}
       >
         Корпоративный чат
-      </MenuItem>
-      <MenuItem
-        key="contactModule_feedback"
-        onClick={[Function]}
-      >
-        Обратная связь
       </MenuItem>
     </SubMenu>
     <MenuItem
@@ -272,7 +272,7 @@ exports[`<MenuView /> Should MenuView render with itemsMenu 2`] = `
         key="customersModule_reception"
         onClick={[Function]}
       >
-        Приемы / встречи
+        Обращения
       </MenuItem>
     </SubMenu>
     <SubMenu
@@ -281,7 +281,7 @@ exports[`<MenuView /> Should MenuView render with itemsMenu 2`] = `
       title={
         <span>
           <Icon
-            type="global"
+            type="wechat"
           />
           <span>
             Связь
@@ -290,16 +290,16 @@ exports[`<MenuView /> Should MenuView render with itemsMenu 2`] = `
       }
     >
       <MenuItem
+        key="contactModule_feedback"
+        onClick={[Function]}
+      >
+        Информация
+      </MenuItem>
+      <MenuItem
         key="contactModule_chat"
         onClick={[Function]}
       >
         Корпоративный чат
-      </MenuItem>
-      <MenuItem
-        key="contactModule_feedback"
-        onClick={[Function]}
-      >
-        Обратная связь
       </MenuItem>
     </SubMenu>
     <MenuItem

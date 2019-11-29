@@ -1,7 +1,7 @@
 import React from "react";
 import { EditorState, convertToRaw, ContentState } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
-import { markdownToDraft } from "markdown-draft-js";
+// import { markdownToDraft } from "markdown-draft-js";
 import draftToMarkdown from "draftjs-to-markdown";
 
 import "../../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
@@ -12,7 +12,7 @@ class EditorTextarea extends React.Component {
     };
 
     componentDidUpdate = () => {
-        const { contentState, editorState } = this.state;
+        const { editorState } = this.state;
         if (editorState) {
             const rawContentState = convertToRaw(editorState.getCurrentContent());
             const markup = draftToMarkdown(rawContentState);
@@ -32,7 +32,7 @@ class EditorTextarea extends React.Component {
     };
 
     render() {
-        const { editorState } = this.state;
+        // const { editorState } = this.state;
         return (
             <Editor
                 wrapperClassName="editor-wrapper"

@@ -1,0 +1,19 @@
+.userPopup {
+    .userPopupMain {
+        .userName_link {
+            color: #1890ff;
+            transition: color 0.3s;
+            background-color: transparent;
+            touch-action: manipulation;
+            text-decoration: none;
+            outline: 0;
+            font-weight: bold;
+            line-height: 64px;
+            margin: 0;
+            padding-left: 1px;
+            &:hover {
+                color: #40a9ff;
+            }
+        }
+    }
+}

@@ -5,7 +5,8 @@ import { ServerRun } from "./Interfaces";
 import ServerRunner from "./Models/Server";
 
 if (process.env.NODE_ENV === "production") {
-    fs.openSync("/tmp/app-initialized", "w"); // nginx init
+    /** @nginx init */
+    fs.openSync("/tmp/app-initialized", "w");
 }
 
 namespace Entrypoint {

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import moment from "moment";
+//import moment from "moment";
 
 const Comment = ({ onDelete, rules, it }) => {
     const [key] = useState(it.id ? it.id : Math.random());
