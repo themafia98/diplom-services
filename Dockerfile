@@ -1,6 +1,6 @@
 FROM nginx:alpine
 LABEL author="Pavel Petrovich"
-COPY ./build /var/www
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY ./server/build ./server/src
+COPY nginx.conf /app/nginx/nginx.conf
 EXPOSE 80
 ENTRYPOINT ["nginx","-g","daemon off;"]
