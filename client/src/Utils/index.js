@@ -9,7 +9,11 @@ const forceUpdateDetectedInit = () => {
     });
 };
 
-/** @return {object} valid schema object or null */
+/** @return {Object} valid schema object or null
+ * @param {string} type string
+ * @param {Object} data string
+ * @param {string} mode string
+ */
 const getSchema = (type, data, mode = "no-strict") => {
     if (!_.isObject(data)) return null;
     if (!_.isString(type)) return null;
@@ -25,7 +29,10 @@ const getSchema = (type, data, mode = "no-strict") => {
     else return null;
 };
 
-/** @return {string} route path */
+/** @return {string} route path string
+ *  @param {string} pageType string
+ *  @param {string | null} path string or null
+ */
 export const routeParser = ({ pageType = "module", path: route = null }) => {
     if (typeof route !== "string") return "";
 
@@ -55,7 +62,13 @@ export const routeParser = ({ pageType = "module", path: route = null }) => {
     } else return route;
 };
 
-/** @return {object} object with normalize path */
+/** @return {object} object with normalize path
+ *  @param {string} pathType string
+ *  @param {Object} pathData Object
+ *  @param {string} page string (pathData)
+ *  @param {string} moduleId string (pathData)
+ *  @param {string} key string (pathData)
+ */
 export const routePathNormalise = ({ pathType = "module", pathData: { page = "", moduleId = "", key = "" } = {} }) => {
     if (!page && !moduleId && !key) return "";
     if (typeof page !== "string" || typeof moduleId !== "string" || typeof key !== "string") return "";
