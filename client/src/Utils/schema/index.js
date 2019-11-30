@@ -1,6 +1,11 @@
 import _ from "lodash";
 import { TASK_SCHEMA, USER_SCHEMA, TASK_CONTROLL_JURNAL_SCHEMA, NEWS_SCHEMA } from "./const";
 
+/**
+ * Schema
+ * @param {string} type
+ * @return {Object} Object
+ */
 export const getValidateSchema = type => {
     switch (type) {
         case TASK_SCHEMA:
@@ -51,6 +56,13 @@ export const getValidateSchema = type => {
     }
 };
 
+/**
+ * Schema
+ * @param {Array<string>} data
+ * @param {Array<null>} schema
+ * @param {string} mode
+ * @return {boolean}
+ */
 export const validateSchema = (data, schema, mode = "no-strict") => {
     if (!_.isArray(data) || !_.isArray(schema)) return false;
 
