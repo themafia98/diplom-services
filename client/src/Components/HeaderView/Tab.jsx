@@ -14,7 +14,7 @@ class Tab extends React.PureComponent {
         itemKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number, () => null]),
         value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, () => null]),
         sizeTab: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-        flag: PropTypes.bool,
+        flag: PropTypes.bool
     };
 
     componentDidMount = () => {
@@ -47,7 +47,11 @@ class Tab extends React.PureComponent {
         const { flag, value, active, hendlerTab: callbackHendlerTab, itemKey, sizeTab = 10 } = this.props;
         return (
             <li
-                style={{ width: `${sizeTab}px`, maxWidth: `${sizeTab}px`, minWidth: flag ? `${sizeTab}px` : null }}
+                style={{
+                    width: `${sizeTab - sizeTab * 0.1}px`,
+                    maxWidth: `${sizeTab - sizeTab * 0.1}px`,
+                    minWidth: flag ? `${sizeTab - sizeTab * 0.1}px` : null
+                }}
                 onClick={callbackHendlerTab ? this.eventHandler : null}
                 className={[active ? "active" : null].join(" ")}
                 key={itemKey}
@@ -69,17 +73,14 @@ class Tab extends React.PureComponent {
 
 const mapStateToProps = state => {
     return {
-        tabData: state.tabReducer,
+        tabData: state.tabReducer
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        onSetChildrenSizeAction: size => dispatch(setChildrenSizeAction(size)),
+        onSetChildrenSizeAction: size => dispatch(setChildrenSizeAction(size))
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(Tab);
+export default connect(mapStateToProps, mapDispatchToProps)(Tab);

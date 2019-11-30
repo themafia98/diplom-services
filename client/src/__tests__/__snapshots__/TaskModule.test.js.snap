@@ -39,7 +39,7 @@ exports[`<TaskModule /> template Should be render 1`] = `
       </Button>
     </div>
     <TabContainer
-      className="validateStyleWrapper"
+      className="tabList"
       isBackground={false}
       visible={true}
     >
@@ -52,7 +52,7 @@ exports[`<TaskModule /> template Should be render 1`] = `
       />
     </TabContainer>
     <TabContainer
-      className="validateStyleWrapper"
+      className="tabList"
       isBackground={false}
       visible={false}
     >

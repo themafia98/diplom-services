@@ -116,43 +116,57 @@ header {
     }
 }
 
-@media screen and (max-width: 1351px){
+@media screen and (max-width: 1351px) {
     header {
-        .headerControllers { 
+        .headerControllers {
             &.rightPanel {
-            width: 35%;
-        } 
-    }
+                width: 35%;
+            }
+        }
     }
 }
 
-@media screen and (max-width: 914px){
-    
+@media screen and (max-width: 914px) {
     header {
-        .headerControllers { 
+        .headerControllers {
             &.rightPanel {
-            width: 45%;
-        } 
-    }
+                width: 45%;
+            }
+        }
     }
 }
 
 @media screen and (max-width: 820px) {
     header {
-        .headerControllers { 
+        .headerControllers {
             &.rightPanel {
-            width: 60%;
-        } 
-    }
+                width: 60%;
+            }
+        }
     }
 }
 
 @media screen and (max-width: 680px) {
     header {
-        .headerControllers { 
+        .headerControllers {
             &.rightPanel {
-            width: 70%;
-        } 
+                .userPopup {
+                    display: none;
+                }
+                width: 35%;
+            }
+        }
     }
+}
+
+@media screen and (max-width: 420px) {
+    header {
+        .headerControllers {
+            &.rightPanel {
+                .notificationControllers {
+                    display: none;
+                }
+            }
+        }
     }
 }

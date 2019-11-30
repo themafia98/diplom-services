@@ -2,6 +2,7 @@ import React from "react";
 import Updater from "../../Updater";
 import UserPopup from "../../UserPopup";
 
+import Scrollbars from "react-custom-scrollbars";
 import NotificationPopup from "../../NotificationPopup";
 import Status from "./Status";
 

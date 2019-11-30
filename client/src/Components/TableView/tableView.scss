@@ -142,3 +142,9 @@
         background: #555;
     }
 }
+
+@media screen and (max-height: 655px) {
+    .tableViw__wrapper {
+        top: 65%;
+    }
+}
