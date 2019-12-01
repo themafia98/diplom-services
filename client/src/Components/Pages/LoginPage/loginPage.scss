@@ -68,7 +68,7 @@
     .loginPage {
         .loginPage__loginContainer {
             height: 95%;
-            overflow-y: scroll;
+            overflow-y: auto;
             max-height: 560px;
             .loginContainer__loginForm {
                 width: 85%;
