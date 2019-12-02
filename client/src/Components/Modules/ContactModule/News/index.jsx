@@ -1,7 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Pagination, Button } from "antd";
+import { Pagination, Button, message } from "antd";
 
+import config from '../../../../config.json';
+import Scrollbars from 'react-custom-scrollbars';
 import { setActiveTabAction, openPageWithDataAction } from "../../../../Redux/actions/routerActions";
 import { middlewareCaching } from "../../../../Redux/actions/publicActions/middleware";
 
@@ -51,6 +53,10 @@ class News extends React.PureComponent {
         const isFind = index !== -1;
 
         if (!isFind) {
+
+            if (config.tabsLimit <= actionTabs.length)
+                return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
+
             onOpenPageWithData({
                 activePage: routeNormalize,
                 routeDataActive: { key, listdata: data ? { ...data } : {} }
@@ -86,20 +92,22 @@ class News extends React.PureComponent {
         const rules = true;
         return (
             <div className="news">
-                <TitleModule classNameTitle="mainModuleTitle" title="Информация" />
-                {rules ? <Button type="primary">Создать новость</Button> : null}
-                <TabContainer visible={!isOpen}>
-                    <div className="news__main">
-                        <div className="col-fullscreen">{this.renderNewsBlock(currentPage)}</div>
-                    </div>
-                    <Pagination
-                        className="pagination-news"
-                        onChange={this.onChange}
-                        pageSize={(newsArray.length / 4) | 0}
-                        defaultCurrent={currentPage}
-                        total={newsArray.length}
-                    />
-                </TabContainer>
+                <Scrollbars>
+                    <TitleModule classNameTitle="mainModuleTitle" title="Информация" />
+                    {rules ? <Button type="primary">Создать новость</Button> : null}
+                    <TabContainer visible={!isOpen}>
+                        <div className="news__main">
+                            <div className="col-fullscreen">{this.renderNewsBlock(currentPage)}</div>
+                        </div>
+                        <Pagination
+                            className="pagination-news"
+                            onChange={this.onChange}
+                            pageSize={(newsArray.length / 4) | 0}
+                            defaultCurrent={currentPage}
+                            total={newsArray.length}
+                        />
+                    </TabContainer>
+                </Scrollbars>
             </div>
         );
     }

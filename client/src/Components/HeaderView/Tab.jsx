@@ -45,12 +45,14 @@ class Tab extends React.PureComponent {
 
     render() {
         const { flag, value, active, hendlerTab: callbackHendlerTab, itemKey, sizeTab = 10 } = this.props;
+        const recalcSize = sizeTab > 55 ? sizeTab - sizeTab * 0.15 :
+            sizeTab > 43 ? sizeTab - sizeTab * 0.2 : sizeTab - sizeTab * 0.3;
         return (
             <li
                 style={{
-                    width: `${sizeTab - sizeTab * 0.1}px`,
-                    maxWidth: `${sizeTab - sizeTab * 0.1}px`,
-                    minWidth: flag ? `${sizeTab - sizeTab * 0.1}px` : null
+                    width: `${recalcSize}px`,
+                    maxWidth: `${recalcSize}px`,
+                    minWidth: flag ? `${recalcSize}px` : null
                 }}
                 onClick={callbackHendlerTab ? this.eventHandler : null}
                 className={[active ? "active" : null].join(" ")}

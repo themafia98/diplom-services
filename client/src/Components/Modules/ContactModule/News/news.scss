@@ -1,5 +1,7 @@
 .news {
+    height: calc(100vh - 100px);
     .news__main {
+        height: calc(100% - 145px);
         display: flex;
         .col-fullscreen {
             display: flex;
