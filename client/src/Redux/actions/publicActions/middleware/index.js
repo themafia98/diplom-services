@@ -48,7 +48,6 @@ const middlewareCaching = ({ data, primaryKey, type = "GET", pk = null, store = 
                         });
                     if (storeArray.length) return storeArray;
                     else if (fromCache && !storeArray.length) throw new Error("Network error");
-                    else throw new Error("Bad requst or no data");
                 })
                 .then(array => {
                     const schema =

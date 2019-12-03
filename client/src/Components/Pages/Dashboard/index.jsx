@@ -35,12 +35,10 @@ class Dashboard extends React.PureComponent {
         addTab: PropTypes.func.isRequired,
         removeTab: PropTypes.func.isRequired,
         setCurrentTab: PropTypes.func.isRequired,
-        onSetChildrenSizeAction: PropTypes.func.isRequired,
         onLoadCurrentData: PropTypes.func.isRequired,
         onErrorRequstAction: PropTypes.func.isRequired,
         onLogoutAction: PropTypes.func.isRequired,
         router: PropTypes.object.isRequired,
-        tabData: PropTypes.object.isRequired,
         publicReducer: PropTypes.object.isRequired
     };
 
@@ -255,7 +253,6 @@ class Dashboard extends React.PureComponent {
 const mapStateToProps = state => {
     return {
         router: { ...state.router },
-        tabData: state.tabReducer,
         publicReducer: state.publicReducer
     };
 };

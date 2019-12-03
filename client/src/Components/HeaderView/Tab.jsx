@@ -5,13 +5,11 @@ import { Icon } from "antd";
 
 class Tab extends React.PureComponent {
     static propTypes = {
-        tabData: PropTypes.object.isRequired,
         hendlerTab: PropTypes.func.isRequired,
         active: PropTypes.bool.isRequired,
         itemKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number, () => null]),
         value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, () => null]),
-        sizeTab: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-        flag: PropTypes.bool
+        sizeTab: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     };
 
     eventHandler = event => {

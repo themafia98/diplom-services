@@ -30,7 +30,6 @@ export const loadCurrentData = ({
 
                 if (storeArray.length) return storeArray.filter(it => !_.isEmpty(it));
                 else if (fromCache && !storeArray.length) throw new Error("Network error");
-                else throw new Error("Bad requst or no data");
             })
             .then(items => {
                 const copyStore = [...items];

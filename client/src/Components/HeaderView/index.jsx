@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import _ from "lodash";
 import { Layout } from "antd";
-
+import Scrollbars from "react-custom-scrollbars";
 import Tab from "./Tab";
 import RightPanel from "./RightPanel";
 
@@ -51,24 +51,25 @@ class HeaderView extends React.PureComponent {
 
     renderTabs = items => {
         const { size = 160 } = this.state;
-        const { activeTabEUID = "mainModule", cbMenuTabHandler, tabReducer = {} } = this.props;
+        const { activeTabEUID = "mainModule", cbMenuTabHandler } = this.props;
 
         return (
-            <ul ref={this.refWrapper} className="tabsMenu">
-                {items.map(item => {
-                    return (
-                        <Tab
-                            hendlerTab={cbMenuTabHandler}
-                            tabData={tabReducer}
-                            active={activeTabEUID === item.EUID}
-                            key={item.EUID}
-                            itemKey={item.EUID}
-                            value={item.VALUE}
-                            sizeTab={size}
-                        />
-                    );
-                })}
-            </ul>
+            <Scrollbars>
+                <ul ref={this.refWrapper} className="tabsMenu">
+                    {items.map(item => {
+                        return (
+                            <Tab
+                                hendlerTab={cbMenuTabHandler}
+                                active={activeTabEUID === item.EUID}
+                                key={item.EUID}
+                                itemKey={item.EUID}
+                                value={item.VALUE}
+                                sizeTab={size}
+                            />
+                        );
+                    })}
+                </ul>
+            </Scrollbars>
         );
     };
 
@@ -99,7 +100,6 @@ const mapStateTopProps = state => {
     const { status = "online" } = state.publicReducer;
     const { shouldUpdate = false } = state.router;
     return {
-        tabReducer: state.tabReducer,
         tabArray: state.router.actionTabs,
         shouldUpdate,
         status

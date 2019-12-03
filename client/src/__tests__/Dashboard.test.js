@@ -11,7 +11,6 @@ describe("<Dashboard /> main page", () => {
             addTab: () => {},
             removeTab: () => {},
             setCurrentTab: () => {},
-            onSetChildrenSizeAction: () => {},
             onLoadCurrentData: () => {},
             onErrorRequstAction: () => {},
             onLogoutAction: () => {},
