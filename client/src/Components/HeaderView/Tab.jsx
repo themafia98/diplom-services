@@ -38,7 +38,7 @@ class Tab extends React.PureComponent {
                 style={{
                     width: `${recalcSize}px`,
                     maxWidth: `${recalcSize}px`,
-                    minWidth: flag ? `${recalcSize}px` : null
+                    minWidth: `${recalcSize}px`
                 }}
                 onClick={callbackHendlerTab ? this.eventHandler : null}
                 className={[active ? "active" : null].join(" ")}
