@@ -1,6 +1,7 @@
 .userPopup {
     .userPopupMain {
         .userName_link {
+            white-space: nowrap;
             color: #1890ff;
             transition: color 0.3s;
             background-color: transparent;
