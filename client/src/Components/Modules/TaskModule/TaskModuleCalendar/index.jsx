@@ -34,7 +34,7 @@ class TaskModuleCalendar extends React.PureComponent {
 
         if (_.isEmpty(routeNormalize)) return;
 
-        const index = actionTabs.findIndex(tab => tab === routeNormalize.page);
+        const index = actionTabs.findIndex(tab => tab === routeNormalize.page || tab === routeNormalize.path);
         const isFind = index !== -1;
 
         if (!isFind) {
