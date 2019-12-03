@@ -14,7 +14,6 @@ import {
 } from "../../../Redux/actions/routerActions";
 import { loadCurrentData } from "../../../Redux/actions/routerActions/middleware";
 import { errorRequstAction } from "../../../Redux/actions/publicActions";
-import { setChildrenSizeAction } from "../../../Redux/actions/tabActions";
 import { routeParser } from "../../../Utils";
 
 import Loader from "../../Loader";
@@ -177,14 +176,7 @@ class Dashboard extends React.PureComponent {
 
     menuHandler = (event, key, mode = "open") => {
         const path = event["key"] ? event["key"] : key;
-        const {
-            router: { currentActionTab, actionTabs = [] } = {},
-            addTab,
-            setCurrentTab,
-            removeTab,
-            tabData,
-            onSetChildrenSizeAction
-        } = this.props;
+        const { router: { currentActionTab, actionTabs = [] } = {}, addTab, setCurrentTab, removeTab } = this.props;
 
         const actionTabsCopy = [...actionTabs];
         const isFind = actionTabsCopy.findIndex(tab => tab === path) !== -1;
@@ -198,13 +190,9 @@ class Dashboard extends React.PureComponent {
                 setCurrentTab(path);
             }
         } else if (mode === "close") {
-            let size = tabData.parentSize / actionTabsCopy.length;
-            if (size > 160) size = 160;
-
             let type = "deafult";
             if (path.split("__")[1]) type = "itemTab";
             if (isFind) removeTab({ path: path, type: type });
-            if (size !== tabData.childrenSize) onSetChildrenSizeAction(size, true);
         }
     };
 
@@ -277,7 +265,6 @@ const mapDispatchToProps = dispatch => {
         addTab: tab => dispatch(addTabAction(tab)),
         removeTab: tab => dispatch(removeTabAction(tab)),
         setCurrentTab: tab => dispatch(setActiveTabAction(tab)),
-        onSetChildrenSizeAction: (size, flag) => dispatch(setChildrenSizeAction(size, flag)),
         onLoadCurrentData: ({ path, storeLoad }) => dispatch(loadCurrentData({ path, storeLoad })),
         onErrorRequstAction: async error => await errorRequstAction(error),
         onShoudUpdate: async update => await shouldUpdateAction(update),

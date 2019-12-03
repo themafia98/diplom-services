@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import _ from "lodash";
 import { Layout } from "antd";
 
-import { setParentSizeAction, setChildrenSizeAction } from "../../Redux/actions/tabActions";
 import Tab from "./Tab";
 import RightPanel from "./RightPanel";
 
@@ -12,7 +11,9 @@ const { Header } = Layout;
 
 class HeaderView extends React.PureComponent {
     state = {
-        defaultSizeTab: 160
+        length: 1,
+        size: 160,
+        sizeParent: null
     };
 
     static propTypes = {
@@ -24,24 +25,24 @@ class HeaderView extends React.PureComponent {
     };
 
     componentDidUpdate = () => {
-        const { tabArray = [], tabReducer = {}, onSetChildrenSizeAction, onsetParentSizeAction } = this.props;
-        let sizeTab = !tabReducer.flag ? this.state.defaultSizeTab : tabReducer.childrenSize;
-        if (!_.isNull(this.wrapper) && !_.isNull(tabReducer) && _.isNull(tabReducer.parentSize)) {
-            const newSize = this.wrapper.getBoundingClientRect().width;
-            if (tabReducer.parentSize !== newSize) onsetParentSizeAction(newSize);
+        const { sizeParent, size, length } = this.state;
+        const { tabArray = [] } = this.props;
+
+        const sizes = sizeParent / tabArray.length;
+        const counter = ~~(sizeParent / size);
+
+        if (_.isNull(sizeParent) && this.wrapper) {
+            this.setState({
+                length: tabArray.length,
+                sizeParent: this.wrapper.getBoundingClientRect().width
+            });
         }
 
-        if (
-            !_.isNull(tabReducer) &&
-            !_.isNull(tabReducer.childrenSize) &&
-            !_.isNull(tabReducer.parentSize) &&
-            tabArray.length > 1
-        ) {
-            const length = tabReducer.childrenSize * tabArray.length;
-            if (tabReducer.parentSize < length + sizeTab) {
-                const size = tabReducer.parentSize / tabArray.length;
-                if (size !== tabReducer.childrenSize) onSetChildrenSizeAction(size, true);
-            }
+        if ((tabArray.length >= counter && !_.isNull(sizeParent)) || (tabArray.length < length && size < 160)) {
+            this.setState({
+                length: tabArray.length,
+                size: sizes
+            });
         }
     };
 
@@ -49,13 +50,8 @@ class HeaderView extends React.PureComponent {
     refWrapper = node => (this.wrapper = node);
 
     renderTabs = items => {
-        const { activeTabEUID = "mainModule", cbMenuTabHandler, tabArray = [], tabReducer = {} } = this.props;
-        let sizeTab = !tabReducer.flag ? this.state.defaultSizeTab : tabReducer.childrenSize;
-        let flag = false;
-        const length = sizeTab * tabArray.length;
-        if (sizeTab > tabReducer.childrenSize && tabReducer.parentSize < length + sizeTab) {
-            flag = true;
-        }
+        const { size = 160 } = this.state;
+        const { activeTabEUID = "mainModule", cbMenuTabHandler, tabReducer = {} } = this.props;
 
         return (
             <ul ref={this.refWrapper} className="tabsMenu">
@@ -63,12 +59,12 @@ class HeaderView extends React.PureComponent {
                     return (
                         <Tab
                             hendlerTab={cbMenuTabHandler}
+                            tabData={tabReducer}
                             active={activeTabEUID === item.EUID}
                             key={item.EUID}
                             itemKey={item.EUID}
                             value={item.VALUE}
-                            sizeTab={sizeTab}
-                            flag={flag}
+                            sizeTab={size}
                         />
                     );
                 })}
@@ -110,12 +106,5 @@ const mapStateTopProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => {
-    return {
-        onsetParentSizeAction: size => dispatch(setParentSizeAction(size)),
-        onSetChildrenSizeAction: (size, flag) => dispatch(setChildrenSizeAction(size, flag))
-    };
-};
-
-export default connect(mapStateTopProps, mapDispatchToProps)(HeaderView);
+export default connect(mapStateTopProps)(HeaderView);
 export { HeaderView };

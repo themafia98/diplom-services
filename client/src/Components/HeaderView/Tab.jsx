@@ -1,10 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import _ from "lodash";
-import { Icon } from "antd";
 
-import { setChildrenSizeAction } from "../../Redux/actions/tabActions";
+import { Icon } from "antd";
 
 class Tab extends React.PureComponent {
     static propTypes = {
@@ -15,15 +12,6 @@ class Tab extends React.PureComponent {
         value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, () => null]),
         sizeTab: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         flag: PropTypes.bool
-    };
-
-    componentDidMount = () => {
-        const { tabData, onSetChildrenSizeAction } = this.props;
-
-        if (!_.isNull(this.tab) && !_.isNull(tabData) && _.isNull(tabData.childrenSize)) {
-            const tabSize = this.tab.getBoundingClientRect().width;
-            if (tabSize !== tabData.childrenSize) onSetChildrenSizeAction(tabSize);
-        }
     };
 
     eventHandler = event => {
@@ -45,8 +33,8 @@ class Tab extends React.PureComponent {
 
     render() {
         const { flag, value, active, hendlerTab: callbackHendlerTab, itemKey, sizeTab = 10 } = this.props;
-        const recalcSize = sizeTab > 55 ? sizeTab - sizeTab * 0.15 :
-            sizeTab > 43 ? sizeTab - sizeTab * 0.2 : sizeTab - sizeTab * 0.3;
+        const recalcSize =
+            sizeTab > 55 ? sizeTab - sizeTab * 0.15 : sizeTab > 43 ? sizeTab - sizeTab * 0.2 : sizeTab - sizeTab * 0.3;
         return (
             <li
                 style={{
@@ -73,16 +61,4 @@ class Tab extends React.PureComponent {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        tabData: state.tabReducer
-    };
-};
-
-const mapDispatchToProps = dispatch => {
-    return {
-        onSetChildrenSizeAction: size => dispatch(setChildrenSizeAction(size))
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Tab);
+export default Tab;
