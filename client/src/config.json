@@ -11,7 +11,7 @@
     },
     "forceUpdate": false,
     "msTimeoutLoading": 0,
-    "tabsLimit": 15,
+    "tabsLimit": 20,
     "menu": [
         {
             "EUID": "mainModule",
