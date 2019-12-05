@@ -38,7 +38,12 @@ class NotificationPopup extends React.PureComponent {
                     <Popover
                         className="notificationBox"
                         placement="bottom"
-                        title={`Непрочитано уведомлений: ${counter}.`}
+                        title={
+                            <div className="headerPopover">
+                                <span className="title">Уведомления</span>
+                                <span className="counter">{`Непрочитано уведомлений: ${counter}`}</span>
+                            </div>
+                        }
                         content={content}
                         trigger="click"
                     >
