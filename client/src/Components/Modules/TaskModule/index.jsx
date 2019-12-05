@@ -43,7 +43,6 @@ class TaskModule extends React.PureComponent {
             const heightForState = this.moduleTask.getBoundingClientRect().height;
             this.setState({ ...this.state, height: heightForState, heightController: heightControllerForState });
         }
-
         if (visible) onLoadCurrentData({ path, storeLoad: "tasks" });
     };
 

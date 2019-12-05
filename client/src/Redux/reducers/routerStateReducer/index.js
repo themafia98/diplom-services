@@ -133,12 +133,17 @@ export default (state = initialState, action) => {
                 isDataPage = true;
                 currentActive = state.routeData[content];
             }
+            const searchPathContent = selectModule || action.payload || content;
 
             return {
                 ...state,
                 currentActionTab: action.payload,
                 routeDataActive: isDataPage ? { ...currentActive } : { ...state.routeDataActive },
-                shouldUpdate: !state.routeData[selectModule || action.payload || content] ? false : true
+                shouldUpdate: !state.routeData[
+                    searchPathContent === "statisticModule" ? "taskModule" : searchPathContent
+                ]
+                    ? false
+                    : true
             };
         }
         case SET_STATUS: {
@@ -188,25 +193,24 @@ export default (state = initialState, action) => {
             const copyData = routeDataNew;
             let current = null;
             try {
-                current =
-                    typeof nextTab === "string" &&
-                    copyData[nextTab.split("__")[1]] &&
-                    copyData[nextTab.split("__")[1]].key === nextTab.split("__")[1]
-                        ? { ...copyData[nextTab.split("__")[1]] }
-                        : state.routeDataActive && deleteKey === state.routeDataActive.key && uuid && !deleteKeyOnce
-                        ? routeDataNew[uuid]
-                        : typeof nextTab === "string" &&
-                          state.routeDataActive &&
-                          nextTab.split("__")[1] &&
-                          state.routeDataActive.key === nextTab.split("__")[1]
-                        ? { ...state.routeDataActive }
-                        : deleteKeyOnce && uuid
-                        ? { ...state.routeData[uuid] }
-                        : nextTab === state.currentActionTab && uuid
-                        ? { ...state.routeData[uuid] }
-                        : nextTab === state.currentActionTab
-                        ? { ...state.routeDataActive }
-                        : {};
+                const isSimple =
+                    copyData[nextTab.split("__")[1]] && copyData[nextTab.split("__")[1]].key === nextTab.split("__")[1];
+
+                const isDelete =
+                    state.routeDataActive && deleteKey === state.routeDataActive.key && uuid && !deleteKeyOnce;
+
+                const isNext =
+                    state.routeDataActive &&
+                    nextTab.split("__")[1] &&
+                    state.routeDataActive.key === nextTab.split("__")[1];
+
+                current = isSimple
+                    ? { ...copyData[nextTab.split("__")[1]] }
+                    : isDelete
+                    ? routeDataNew[uuid]
+                    : isNext
+                    ? { ...state.routeDataActive }
+                    : {};
             } catch {
                 current = {};
             }

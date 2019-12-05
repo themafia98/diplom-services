@@ -7,8 +7,6 @@ import { Icon, Empty, Table, Input, Button, message } from "antd";
 import config from "../../config.json";
 import Loader from "../Loader";
 import Scrollbars from "react-custom-scrollbars";
-import uuid from "uuid/v4";
-import Highlighter from "react-highlight-words";
 
 import { routePathNormalise, routeParser } from "../../Utils";
 import Output from "../Output";
@@ -187,7 +185,6 @@ class TableView extends React.Component {
                     dataIndex: "author",
                     key: "author",
                     onFilter: (value, record) => {
-                        debugger;
                         return record.author.includes(value);
                     },
                     sorter: (a, b) => a.author.length - b.author.length,
@@ -230,7 +227,6 @@ class TableView extends React.Component {
                     sortOrder: sortedInfo && sortedInfo.columnKey === "date" && sortedInfo.order,
                     sortDirections: ["descend", "ascend"],
                     render: (text, row, index) => {
-                        debugger;
                         return <Output key={`${text}${row}${index}date`}> {text}</Output>;
                     },
                     ...this.getColumnSearchProps("date")
@@ -250,7 +246,6 @@ class TableView extends React.Component {
                               })
                               .filter(Boolean)
                         : data;
-            debugger;
             return (
                 <Table
                     pagination={{ pageSize: 14 }}
@@ -354,7 +349,6 @@ class TableView extends React.Component {
                     : text === "Выполнен"
                     ? "done"
                     : null;
-            console.log(text);
 
             return (
                 <Output className={className}>

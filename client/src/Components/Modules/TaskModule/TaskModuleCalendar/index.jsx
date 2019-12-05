@@ -4,8 +4,8 @@ import PropTypes from "prop-types";
 import Scrollbars from "react-custom-scrollbars";
 import moment from "moment";
 import TitleModule from "../../../TitleModule";
-import { Calendar, Popover, Button } from "antd";
-
+import { Calendar, Popover, Button, message } from "antd";
+import config from "../../../../config.json";
 import { routePathNormalise } from "../../../../Utils";
 
 class TaskModuleCalendar extends React.PureComponent {
@@ -40,6 +40,10 @@ class TaskModuleCalendar extends React.PureComponent {
         if (!isFind) {
             const item = tasks.find(it => it.key === record);
             if (!item) return;
+
+            if (config.tabsLimit <= actionTabs.length)
+                return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
+
             onOpenPageWithData({
                 activePage: routePathNormalise({
                     pathType: "moduleItem",

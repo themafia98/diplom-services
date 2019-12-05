@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import data from "./data.json";
-
+import { loadCurrentData } from "../../../Redux/actions/routerActions/middleware";
 import Bar from "./Charts/Bar";
 import TitleModule from "../../TitleModule";
 
@@ -11,6 +11,20 @@ class StatisticsModule extends React.PureComponent {
         onErrorRequstAction: PropTypes.func.isRequired,
         path: PropTypes.string.isRequired,
         firebase: PropTypes.object.isRequired
+    };
+
+    componentDidMount = () => {
+        const { onLoadCurrentData, visible } = this.props;
+        if (visible) onLoadCurrentData({ path: "taskModule", storeLoad: "tasks" });
+    };
+
+    componentDidUpdate = () => {
+        const {
+            onLoadCurrentData,
+            visible,
+            router: { shouldUpdate = false }
+        } = this.props;
+        if (shouldUpdate && visible) onLoadCurrentData({ path: "taskModule", storeLoad: "tasks" });
     };
 
     render() {
@@ -34,7 +48,10 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-    return {};
+    return {
+        onLoadCurrentData: ({ path, storeLoad, shouldUpdate }) =>
+            dispatch(loadCurrentData({ path, storeLoad, shouldUpdate }))
+    };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(StatisticsModule);
