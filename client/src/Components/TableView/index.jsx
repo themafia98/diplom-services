@@ -172,6 +172,7 @@ class TableView extends React.Component {
                     className: "priority",
                     dataIndex: "priority",
                     key: "priority",
+                    onFilter: (value, record) => record.priority.includes(value),
                     render: (text, row, index) => {
                         return <Output key={`${text}${row}${index}priority`}>{text}</Output>;
                     },
@@ -185,6 +186,10 @@ class TableView extends React.Component {
                     className: "author",
                     dataIndex: "author",
                     key: "author",
+                    onFilter: (value, record) => {
+                        debugger;
+                        return record.author.includes(value);
+                    },
                     sorter: (a, b) => a.author.length - b.author.length,
                     sortOrder: sortedInfo && sortedInfo.columnKey === "author" && sortedInfo.order,
                     sortDirections: ["descend", "ascend"],
@@ -198,6 +203,9 @@ class TableView extends React.Component {
                     className: "editor",
                     dataIndex: "editor",
                     key: "editor",
+                    onFilter: (value, record) => {
+                        return record.editor.includes(value);
+                    },
                     sorter: (a, b) => (a.editor && b.editor ? a.editor[0] - b.editor[0] : null),
                     sortOrder: sortedInfo && sortedInfo.columnKey === "editor" && sortedInfo.order,
                     sortDirections: ["descend", "ascend"],
@@ -211,6 +219,7 @@ class TableView extends React.Component {
                     className: "date",
                     dataIndex: "date",
                     key: "date",
+                    onFilter: (value, record) => record.date.includes(value),
                     sorter: (a, b) => {
                         if (a.date && b.date) {
                             const sortA = moment(a.date[0], "DD:MM:YYYY");
@@ -221,6 +230,7 @@ class TableView extends React.Component {
                     sortOrder: sortedInfo && sortedInfo.columnKey === "date" && sortedInfo.order,
                     sortDirections: ["descend", "ascend"],
                     render: (text, row, index) => {
+                        debugger;
                         return <Output key={`${text}${row}${index}date`}> {text}</Output>;
                     },
                     ...this.getColumnSearchProps("date")
@@ -240,7 +250,7 @@ class TableView extends React.Component {
                               })
                               .filter(Boolean)
                         : data;
-
+            debugger;
             return (
                 <Table
                     pagination={{ pageSize: 14 }}
@@ -305,7 +315,7 @@ class TableView extends React.Component {
                     />
                     <Button
                         type="primary"
-                        onClick={() => this.handleSearch(selectedKeys, confirm)}
+                        onClick={() => this.handleSearch(selectedKeys, confirm, dataIndex)}
                         icon="search"
                         size="small"
                         style={{ width: 90, marginRight: 8 }}
@@ -333,6 +343,7 @@ class TableView extends React.Component {
         },
         render: text => {
             const isDateString = _.isArray(text) && moment(text[0], "DD.MM.YYYY")._isValid;
+            const isArrayEditors = _.isArray(text) && !isDateString;
             const className =
                 text === "В работе"
                     ? "active"
@@ -343,30 +354,19 @@ class TableView extends React.Component {
                     : text === "Выполнен"
                     ? "done"
                     : null;
+            console.log(text);
 
-            if (this.state.searchText)
-                return (
-                    <Output className={className} key={(text = "search" + isDateString + className)}>
-                        <Highlighter
-                            highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
-                            searchWords={[this.state.searchText]}
-                            autoEscape
-                            textToHighlight={typeof text === "string" && text ? text : text ? text.toString() : null}
-                        />
-                    </Output>
-                );
-            else
-                return (
-                    <Output className={className} key={uuid()}>
-                        {_.isArray(text) ? (!isDateString ? text.join(" , ") : text.join(" - ")) : text}
-                    </Output>
-                );
+            return (
+                <Output className={className}>
+                    {isArrayEditors ? text.join(" , ") : isDateString ? text.join(" - ") : text}
+                </Output>
+            );
         }
     });
 
-    handleSearch = (selectedKeys, confirm) => {
+    handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
-        this.setState({ searchText: selectedKeys[0] });
+        this.setState({ searchText: selectedKeys[0], searchedColumn: dataIndex });
     };
 
     handleReset = clearFilters => {

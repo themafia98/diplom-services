@@ -79,6 +79,7 @@ http {
 		  location ~* \.(?:jpg|jpeg|gif|png|ico|cur|gz|svg|svgz|mp4|ogg|ogv|webm|htc)$ {
 			root /app/client/build;
 			expires 1y;
+            proxy_pass https://app_server;
 			access_log off;
 			add_header Cache-Control "public, must-revalidate";
 		  }
@@ -87,6 +88,7 @@ http {
 			  root /app/client/build;
 			  add_header 'Service-Worker-Allowed' '/';
 			  expires off;
+              proxy_pass https://app_server;
 			  add_header Cache-Control no-cache;
 			  access_log off;
 		  }
@@ -95,6 +97,7 @@ http {
 		  location ~* \.(?:css|js)$ {
 			root /app/client/build;
 			expires 1y;
+            proxy_pass https://app_server;
 			access_log off;
 			add_header Cache-Control "public, must-revalidate";
 		  }
@@ -103,6 +106,7 @@ http {
 			add_header Cache-Control "no-store, no-cache, must-revalidate";
             root /app/client/build;
             index index.html;
+            proxy_pass https://app_server;
             rewrite ^.*$ /index.html;
             try_files $uri $uri/ index.html =404;
         }
