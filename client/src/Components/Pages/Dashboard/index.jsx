@@ -22,6 +22,8 @@ import HeaderView from "../../HeaderView";
 import ContentView from "../../ContentView";
 import MenuView from "../../MenuView";
 
+let deferredPrompt = null;
+
 class Dashboard extends React.PureComponent {
     dashboardStrem = new EventEmitter();
     deferredPrompt = null;
@@ -48,21 +50,11 @@ class Dashboard extends React.PureComponent {
     };
 
     componentDidMount = () => {
-        // window.addEventListener("beforeinstallprompt", e => {
-        //     debugger;
-        //     // Prevent Chrome 67 and earlier from automatically showing the prompt
-        //     e.preventDefault();
-        //     // Stash the event so it can be triggered later.
-        //     this.deferredPrompt = e;
-        //     console.log("install");
-        //     this.setState({
-        //         visibleInstallApp: true
-        //     });
-        // });
-
-        window.addEventListener("appinstalled", evt => {
-            console.log("appinstalled fired", evt);
-        });
+        if (!deferredPrompt) {
+            this.setState({
+                visibleInstallApp: true
+            });
+        }
     };
 
     componentDidUpdate = () => {
@@ -231,23 +223,38 @@ class Dashboard extends React.PureComponent {
         }
     };
 
+    randomNotification = () => {
+        let notifTitle = "System Controll";
+        let notifBody = "Hello from System Controll";
+        let options = {
+            body: notifBody
+        };
+        let notif = new Notification(notifTitle, options);
+    };
+
     installApp = event => {
-        if (!this.deferredPrompt) {
+        Notification.requestPermission().then(function(result) {
+            if (result === "granted") {
+                this.randomNotification();
+            }
+        });
+
+        if (!deferredPrompt) {
             return notification.error({
                 message: "Ошибка",
                 description: "Невозможно скачать приложение, возможно ваш браузер устарел."
             });
         }
-        this.deferredPrompt.prompt();
+        deferredPrompt.prompt();
 
-        this.deferredPrompt.userChoice.then(choiceResult => {
+        deferredPrompt.userChoice.then(choiceResult => {
             if (choiceResult.outcome === "accepted") {
                 console.log("PWA setup accepted");
                 // hide our user interface that shows our A2HS button
             } else {
                 console.log("PWA setup rejected");
             }
-            this.deferredPrompt = null;
+            deferredPrompt = null;
         });
     };
 
@@ -348,6 +355,18 @@ const mapDispatchToProps = dispatch => {
         onLogoutAction: async () => await dispatch(logoutAction())
     };
 };
+
+window.addEventListener("beforeinstallprompt", e => {
+    // Prevent Chrome 67 and earlier from automatically showing the prompt
+    e.preventDefault();
+    // Stash the event so it can be triggered later.
+    deferredPrompt = e;
+    console.log("install");
+});
+
+window.addEventListener("appinstalled", evt => {
+    console.log("appinstalled fired", evt);
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
 export { Dashboard };
