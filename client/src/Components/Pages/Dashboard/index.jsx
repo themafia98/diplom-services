@@ -49,7 +49,7 @@ class Dashboard extends React.PureComponent {
     };
 
     componentDidMount = () => {
-        if (!deferredPrompt) {
+        if (deferredPrompt) {
             this.setState({
                 visibleInstallApp: true
             });
