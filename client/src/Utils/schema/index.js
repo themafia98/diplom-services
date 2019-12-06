@@ -6,6 +6,24 @@ import { TASK_SCHEMA, USER_SCHEMA, TASK_CONTROLL_JURNAL_SCHEMA, NEWS_SCHEMA } fr
  * @param {string} type
  * @return {Object} Object
  */
+
+export const getEditorJSON = () => {
+    return {
+        entityMap: {},
+        blocks: [
+            {
+                key: "637gr",
+                text: "Initialized from content state.",
+                type: "unstyled",
+                depth: 0,
+                inlineStyleRanges: [],
+                entityRanges: [],
+                data: {}
+            }
+        ]
+    };
+};
+
 export const getValidateSchema = type => {
     switch (type) {
         case TASK_SCHEMA:

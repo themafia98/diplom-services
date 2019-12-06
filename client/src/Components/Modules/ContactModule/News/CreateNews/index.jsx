@@ -17,7 +17,7 @@ class CreateNews extends React.PureComponent {
             <div className="createNews">
                 <TitleModule classNameTitle="createNewsTittle" title="Создание новой новости" />
                 <div className="createNews__main">
-                    <EditorTextarea defaultValue="Новая новость" />
+                    <EditorTextarea mode="createNewsEdit" defaultValue="Новая новость" />
                 </div>
             </div>
         );

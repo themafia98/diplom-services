@@ -46,7 +46,7 @@ export default (state = initialState, action) => {
         case OPEN_PAGE_WITH_DATA: {
             const copyRouteData = { ...state.routeData };
             const { activePage = {} } = action.payload || {};
-            debugger;
+
             if (
                 !activePage ||
                 typeof activePage !== "object" ||

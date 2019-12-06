@@ -1,43 +1,50 @@
 import React from "react";
-import { EditorState, convertToRaw, ContentState } from "draft-js";
+import { EditorState, convertToRaw, convertFromRaw } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
-// import { markdownToDraft } from "markdown-draft-js";
-import draftToMarkdown from "draftjs-to-markdown";
-
+import { getEditorJSON } from "../../../Utils/schema";
 import "../../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import { Button } from "antd";
 
 class EditorTextarea extends React.Component {
     state = {
-        editorState: EditorState.createWithContent(ContentState.createFromText(this.props.defaultValue))
+        contentState: null
     };
 
-    componentDidUpdate = () => {
-        const { editorState } = this.state;
-        // if (editorState) {
-        //     const rawContentState = convertToRaw(editorState.getCurrentContent());
-        //     const markup = draftToMarkdown(rawContentState);
-        // }
+    componentDidMount = () => {
+        const { mode = "", contentEditor: contentProps = null } = this.props;
+        const { contentState } = this.state;
+        if (mode === "createNewsEdit" && contentState) {
+            this.setState({
+                contentState: convertFromRaw(contentProps ? contentProps : getEditorJSON())
+            });
+        }
     };
 
-    onEditorStateChange = editorState => {
-        const { onChange } = this.props;
-
-        // const rawContentState = convertToRaw(editorState.getCurrentContent());
-        // const markup = draftToMarkdown(rawContentState);
-        // onChange({ currentTarget: { value: markup } });
-        // this.setState({
-        //     editorState: editorState
-        // });
+    onContentStateChange = contentState => {
+        this.setState({
+            contentState: contentState
+        });
     };
 
     render() {
-        // const { editorState } = this.state;
+        const { readOnly = false } = this.state;
+        const { mode = "" } = this.props;
+
         return (
-            <Editor
-                wrapperClassName="editor-wrapper"
-                editorClassName="editor"
-                onEditorStateChange={this.onEditorStateChange}
-            />
+            <React.Fragment>
+                <Editor
+                    readOnly={readOnly}
+                    localization={{ locale: "ru" }}
+                    wrapperClassName="editor-wrapper"
+                    editorClassName="editor"
+                    onContentStateChange={this.onContentStateChange}
+                />
+                {mode === "createNewsEdit" ? (
+                    <Button className="createNews-button" type="primary">
+                        Опубликовать
+                    </Button>
+                ) : null}
+            </React.Fragment>
         );
     }
 }

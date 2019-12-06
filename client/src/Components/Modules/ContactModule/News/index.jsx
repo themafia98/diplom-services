@@ -37,15 +37,38 @@ class News extends React.PureComponent {
         }
     };
 
+    onOpenCreateNews = event => {
+        const { onOpenPageWithData, router: { actionTabs = [] } = {}, setCurrentTab } = this.props;
+        const { newsArray = [] } = this.state;
+        const moduleId = "createNews";
+        const page = "contactModule";
+
+        const routeNormalize = routePathNormalise({
+            pathData: { page, moduleId }
+        });
+
+        const index = actionTabs.findIndex(tab => tab === routeNormalize.path);
+        const isFind = index !== -1;
+
+        if (!isFind) {
+            if (config.tabsLimit <= actionTabs.length)
+                return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
+            onOpenPageWithData({
+                activePage: routeNormalize,
+                routeDataActive: { key: routeNormalize.path, title: "Создание новой новости" }
+            });
+        } else setCurrentTab(actionTabs[index]);
+    };
+
     onOpen = key => {
         const { onOpenPageWithData, router: { actionTabs = [] } = {}, setCurrentTab } = this.props;
         const { newsArray = [] } = this.state;
-        const moduleId = key === "createNews" ? key : "informationPage";
+        const moduleId = "informationPage";
         const page = "contactModule";
-        const pathDataValidate = key === "createNews" ? { page, moduleId } : { page, moduleId, key };
+
         const routeNormalize = routePathNormalise({
-            pathType: key === "createNews" ? "module" : "moduleItem",
-            pathData: pathDataValidate
+            pathType: "moduleItem",
+            pathData: { page, moduleId, key }
         });
 
         const index = actionTabs.findIndex(tab => tab === routeNormalize.path);
@@ -56,10 +79,9 @@ class News extends React.PureComponent {
         if (!isFind) {
             if (config.tabsLimit <= actionTabs.length)
                 return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
-            const keyValidate = key === "createNews" ? null : key;
             onOpenPageWithData({
                 activePage: routeNormalize,
-                routeDataActive: { key: keyValidate, listdata: data ? { ...data } : {} }
+                routeDataActive: { key, listdata: data ? { ...data } : {} }
             });
         } else setCurrentTab(actionTabs[index]);
     };
@@ -95,7 +117,7 @@ class News extends React.PureComponent {
                 <Scrollbars>
                     <TitleModule classNameTitle="mainModuleTitle" title="Информация" />
                     {rules ? (
-                        <Button onClick={this.onOpen.bind(this, "createNews")} type="primary">
+                        <Button onClick={this.onOpenCreateNews} type="primary">
                             Создать новость
                         </Button>
                     ) : null}
