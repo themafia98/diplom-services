@@ -92,5 +92,10 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
+window.addEventListener("beforeinstallprompt", e => {
+    console.log(e);
+    console.log("install");
+});
+
 export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);
 export { LoginPage };

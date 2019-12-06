@@ -48,17 +48,17 @@ class Dashboard extends React.PureComponent {
     };
 
     componentDidMount = () => {
-        window.addEventListener("beforeinstallprompt", e => {
-            debugger;
-            // Prevent Chrome 67 and earlier from automatically showing the prompt
-            e.preventDefault();
-            // Stash the event so it can be triggered later.
-            this.deferredPrompt = e;
-            console.log("install");
-            this.setState({
-                visibleInstallApp: true
-            });
-        });
+        // window.addEventListener("beforeinstallprompt", e => {
+        //     debugger;
+        //     // Prevent Chrome 67 and earlier from automatically showing the prompt
+        //     e.preventDefault();
+        //     // Stash the event so it can be triggered later.
+        //     this.deferredPrompt = e;
+        //     console.log("install");
+        //     this.setState({
+        //         visibleInstallApp: true
+        //     });
+        // });
 
         window.addEventListener("appinstalled", evt => {
             console.log("appinstalled fired", evt);
