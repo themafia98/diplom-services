@@ -28,6 +28,7 @@ class Dashboard extends React.PureComponent {
     state = {
         collapsed: true,
         guideVisible: true,
+        visibleInstallApp: false,
         redirect: false,
         status: "online",
         menuItems: config.menu,
@@ -48,10 +49,14 @@ class Dashboard extends React.PureComponent {
 
     componentDidMount = () => {
         window.addEventListener("beforeinstallprompt", e => {
+            debugger;
             // Prevent Chrome 67 and earlier from automatically showing the prompt
             e.preventDefault();
             // Stash the event so it can be triggered later.
             this.deferredPrompt = e;
+            this.setState({
+                visibleInstallApp: true
+            });
         });
 
         window.addEventListener("appinstalled", evt => {
@@ -246,7 +251,7 @@ class Dashboard extends React.PureComponent {
     };
 
     render() {
-        const { menuItems = null, showLoader, redirect, guideVisible } = this.state;
+        const { menuItems = null, showLoader, redirect, guideVisible, visibleInstallApp = false } = this.state;
         const {
             router: { actionTabs = [], currentActionTab, shouldUpdate = false } = {},
             router = {},
@@ -304,9 +309,11 @@ class Dashboard extends React.PureComponent {
                             visible={guideVisible && firstConnect}
                             onOk={this.closeGuild}
                         >
-                            <Button onClick={this.installApp} className="setupButton">
-                                Установить приложение
-                            </Button>
+                            {visibleInstallApp ? (
+                                <Button onClick={this.installApp} className="setupButton">
+                                    Установить приложение
+                                </Button>
+                            ) : null}
                         </Modal>
                     </Layout>
                 </Layout>
