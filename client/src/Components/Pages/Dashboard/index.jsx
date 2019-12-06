@@ -54,6 +54,7 @@ class Dashboard extends React.PureComponent {
             e.preventDefault();
             // Stash the event so it can be triggered later.
             this.deferredPrompt = e;
+            console.log("install");
             this.setState({
                 visibleInstallApp: true
             });
