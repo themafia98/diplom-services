@@ -26,7 +26,6 @@ let deferredPrompt = null;
 
 class Dashboard extends React.PureComponent {
     dashboardStrem = new EventEmitter();
-    deferredPrompt = null;
     state = {
         collapsed: true,
         guideVisible: true,
