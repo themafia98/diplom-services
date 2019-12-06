@@ -5,6 +5,7 @@ import { Layout } from "antd";
 
 import TabContainer from "../TabContainer";
 import DrawerViewer from "../DrawerViewer";
+
 import MainModule from "../Modules/MainModule";
 import CabinetModule from "../Modules/CabinetModule";
 import TaskModule from "../Modules/TaskModule";
@@ -12,6 +13,7 @@ import StatisticsModule from "../Modules/StatisticsModule";
 import SettingsModule from "../Modules/SettingsModule";
 import ContactModule from "../Modules/ContactModule";
 import CustomersModule from "../Modules/CustomersModule";
+import DocumentModule from "../Modules/DocumentModule";
 
 import uuid from "uuid/v4";
 
@@ -99,6 +101,7 @@ class ContentView extends React.Component {
         const isBackgroundCustomersModule = this.checkBackground("customersModule");
         const isBackgroundSettingsModule = this.checkBackground("settingsModule");
         const isStatisticModule = this.checkBackground("statisticModule");
+        const isDocumentModule = this.checkBackground("documentModule");
 
         return (
             <React.Fragment>
@@ -137,6 +140,16 @@ class ContentView extends React.Component {
                             onErrorRequstAction={onErrorRequstAction}
                             setCurrentTab={setCurrentTab}
                             key="taskModule"
+                            path={path}
+                            firebase={firebase}
+                        />
+                    </TabContainer>
+                    <TabContainer isBackground={isDocumentModule} visible={path === "documentModule"}>
+                        <DocumentModule
+                            visible={path === "documentModule"}
+                            isBackground={isDocumentModule}
+                            onErrorRequstAction={onErrorRequstAction}
+                            key="documentModule"
                             path={path}
                             firebase={firebase}
                         />
