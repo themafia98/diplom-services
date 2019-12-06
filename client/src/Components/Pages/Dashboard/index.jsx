@@ -309,10 +309,15 @@ class Dashboard extends React.PureComponent {
                             visible={guideVisible && firstConnect}
                             onOk={this.closeGuild}
                         >
+                            <p>Спасибо что выбрали {config.title ? `${config.title}` : "нашу систему!"}</p>
                             {visibleInstallApp ? (
-                                <Button onClick={this.installApp} className="setupButton">
-                                    Установить приложение
-                                </Button>
+                                <React.Fragment>
+                                    <p>Вы можете установить приложение на ваш компьютер</p>
+
+                                    <Button onClick={this.installApp} className="setupButton">
+                                        Установить приложение
+                                    </Button>
+                                </React.Fragment>
                             ) : null}
                         </Modal>
                     </Layout>

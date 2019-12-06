@@ -31,4 +31,13 @@ footer {
             }
         }
     }
+
+    .ant-modal-body {
+        min-height: 275px;
+        text-align: center;
+        font-weight: bold;
+        background-image: url("/img/guide.png");
+        background-repeat: no-repeat;
+        background-size: auto;
+    }
 }
