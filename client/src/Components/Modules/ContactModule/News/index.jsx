@@ -2,8 +2,8 @@ import React from "react";
 import { connect } from "react-redux";
 import { Pagination, Button, message } from "antd";
 
-import config from '../../../../config.json';
-import Scrollbars from 'react-custom-scrollbars';
+import config from "../../../../config.json";
+import Scrollbars from "react-custom-scrollbars";
 import { setActiveTabAction, openPageWithDataAction } from "../../../../Redux/actions/routerActions";
 import { middlewareCaching } from "../../../../Redux/actions/publicActions/middleware";
 
@@ -40,26 +40,26 @@ class News extends React.PureComponent {
     onOpen = key => {
         const { onOpenPageWithData, router: { actionTabs = [] } = {}, setCurrentTab } = this.props;
         const { newsArray = [] } = this.state;
-        const moduleId = "informationPage";
+        const moduleId = key === "createNews" ? key : "informationPage";
         const page = "contactModule";
-
+        const pathDataValidate = key === "createNews" ? { page, moduleId } : { page, moduleId, key };
         const routeNormalize = routePathNormalise({
-            pathType: "moduleItem",
-            pathData: { page, moduleId, key }
+            pathType: key === "createNews" ? "module" : "moduleItem",
+            pathData: pathDataValidate
         });
 
         const index = actionTabs.findIndex(tab => tab === routeNormalize.path);
-        const data = newsArray.find(it => it.id === key);
+        const findItem = newsArray.find(it => it.id === key);
+        const data = findItem ? { ...findItem } : {};
         const isFind = index !== -1;
 
         if (!isFind) {
-
             if (config.tabsLimit <= actionTabs.length)
                 return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
-
+            const keyValidate = key === "createNews" ? null : key;
             onOpenPageWithData({
                 activePage: routeNormalize,
-                routeDataActive: { key, listdata: data ? { ...data } : {} }
+                routeDataActive: { key: keyValidate, listdata: data ? { ...data } : {} }
             });
         } else setCurrentTab(actionTabs[index]);
     };
@@ -94,7 +94,11 @@ class News extends React.PureComponent {
             <div className="news">
                 <Scrollbars>
                     <TitleModule classNameTitle="mainModuleTitle" title="Информация" />
-                    {rules ? <Button type="primary">Создать новость</Button> : null}
+                    {rules ? (
+                        <Button onClick={this.onOpen.bind(this, "createNews")} type="primary">
+                            Создать новость
+                        </Button>
+                    ) : null}
                     <TabContainer visible={!isOpen}>
                         <div className="news__main">
                             <div className="col-fullscreen">{this.renderNewsBlock(currentPage)}</div>

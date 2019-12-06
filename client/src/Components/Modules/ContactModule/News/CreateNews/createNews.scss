@@ -1,0 +1,14 @@
+.createNews {
+    .createNewsTittle {
+        font-size: 30px;
+        font-weight: bold;
+        margin: 0;
+        user-select: none;
+    }
+    .createNews__main {
+        .editor-wrapper {
+            height: calc(100vh - 234px);
+            background-color: #fff;
+        }
+    }
+}

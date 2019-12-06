@@ -13,22 +13,21 @@ class EditorTextarea extends React.Component {
 
     componentDidUpdate = () => {
         const { editorState } = this.state;
-        if (editorState) {
-            const rawContentState = convertToRaw(editorState.getCurrentContent());
-            const markup = draftToMarkdown(rawContentState);
-            console.log(markup);
-        }
+        // if (editorState) {
+        //     const rawContentState = convertToRaw(editorState.getCurrentContent());
+        //     const markup = draftToMarkdown(rawContentState);
+        // }
     };
 
     onEditorStateChange = editorState => {
         const { onChange } = this.props;
 
-        const rawContentState = convertToRaw(editorState.getCurrentContent());
-        const markup = draftToMarkdown(rawContentState);
-        onChange({ currentTarget: { value: markup } });
-        this.setState({
-            editorState: editorState
-        });
+        // const rawContentState = convertToRaw(editorState.getCurrentContent());
+        // const markup = draftToMarkdown(rawContentState);
+        // onChange({ currentTarget: { value: markup } });
+        // this.setState({
+        //     editorState: editorState
+        // });
     };
 
     render() {

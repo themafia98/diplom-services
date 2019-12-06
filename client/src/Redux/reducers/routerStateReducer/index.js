@@ -46,12 +46,16 @@ export default (state = initialState, action) => {
         case OPEN_PAGE_WITH_DATA: {
             const copyRouteData = { ...state.routeData };
             const { activePage = {} } = action.payload || {};
-
+            debugger;
             if (
                 !activePage ||
                 typeof activePage !== "object" ||
                 activePage === null ||
-                (activePage && activePage.key !== action.payload.routeDataActive.key)
+                (activePage &&
+                    activePage.key !== action.payload.routeDataActive.key &&
+                    activePage &&
+                    activePage["moduleId"] &&
+                    activePage["moduleId"] !== "createNews")
             ) {
                 return { ...state };
             }

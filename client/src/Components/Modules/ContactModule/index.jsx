@@ -6,6 +6,7 @@ import TabContainer from "../../TabContainer";
 import Chat from "./Chat";
 import News from "./News";
 import NewsViewPage from "./News/NewsViewPage";
+import CreateNews from "./News/CreateNews";
 
 class ContactModule extends React.PureComponent {
     static propTypes = {
@@ -47,6 +48,7 @@ class ContactModule extends React.PureComponent {
         const isBackgroundChat = this.checkBackground("contactModule_chat");
         const isBackgrounNews = this.checkBackground("contactModule_feedback");
         const isBackgroundInfoPage = this.checkBackground("contactModule_informationPage");
+        const isBackgroundCreateNews = this.checkBackground("contactModule_createNews");
 
         return (
             <React.Fragment>
@@ -61,6 +63,13 @@ class ContactModule extends React.PureComponent {
                         key="newViewPageModule"
                         isBackground={isBackgroundInfoPage}
                         visible={path === "contactModule_informationPage"}
+                    />
+                </TabContainer>
+                <TabContainer isBackground={isBackgroundCreateNews} visible={path === "contactModule_createNews"}>
+                    <CreateNews
+                        key="createNews"
+                        isBackground={isBackgroundInfoPage}
+                        visible={path === "contactModule_createNews"}
                     />
                 </TabContainer>
                 {this.renderNewsView()}
