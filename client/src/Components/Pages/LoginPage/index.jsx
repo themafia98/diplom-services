@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { Redirect, NavLink } from "react-router-dom";
 import { Button, Input } from "antd";
 import { connect } from "react-redux";
+import { showGuile } from "../../../Redux/actions/publicActions";
 import { addTabAction } from "../../../Redux/actions/routerActions";
 import config from "../../../config.json";
 
@@ -13,15 +14,16 @@ class LoginPage extends React.Component {
     state = {
         loading: false,
         redirect: false,
-        errorMessage: null,
+        errorMessage: null
     };
 
     static propTypes = {
         addTab: PropTypes.func.isRequired,
-        router: PropTypes.object.isRequired,
+        router: PropTypes.object.isRequired
     };
 
     enterLoading = event => {
+        const { onShowGuide = null } = this.props;
         const { state: { value: login = "" } = {} } = this.login || {};
         const { state: { value: password = "" } = {} } = this.password || {};
 
@@ -31,6 +33,7 @@ class LoginPage extends React.Component {
                 .login(login, password)
                 .then(res => {
                     if (res) {
+                        if (onShowGuide) onShowGuide(true);
                         this.props.history.push("/dashboard");
                     } else throw new Error("Error enter");
                 })
@@ -78,18 +81,16 @@ class LoginPage extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        router: { ...state.router },
+        router: { ...state.router }
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
         addTab: tab => dispatch(addTabAction(tab)),
+        onShowGuide: show => dispatch(showGuile(show))
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(LoginPage);
+export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);
 export { LoginPage };

@@ -4,7 +4,7 @@ import { Redirect } from "react-router-dom";
 import { EventEmitter } from "events";
 import _ from "lodash";
 import config from "../../../config.json";
-import { Layout, message, notification } from "antd";
+import { Layout, message, notification, Modal, Button } from "antd";
 import { connect } from "react-redux";
 import {
     addTabAction,
@@ -24,8 +24,10 @@ import MenuView from "../../MenuView";
 
 class Dashboard extends React.PureComponent {
     dashboardStrem = new EventEmitter();
+    deferredPrompt = null;
     state = {
         collapsed: true,
+        guideVisible: true,
         redirect: false,
         status: "online",
         menuItems: config.menu,
@@ -42,6 +44,19 @@ class Dashboard extends React.PureComponent {
         onLogoutAction: PropTypes.func.isRequired,
         router: PropTypes.object.isRequired,
         publicReducer: PropTypes.object.isRequired
+    };
+
+    componentDidMount = () => {
+        window.addEventListener("beforeinstallprompt", e => {
+            // Prevent Chrome 67 and earlier from automatically showing the prompt
+            e.preventDefault();
+            // Stash the event so it can be triggered later.
+            this.deferredPrompt = e;
+        });
+
+        window.addEventListener("appinstalled", evt => {
+            console.log("appinstalled fired", evt);
+        });
     };
 
     componentDidUpdate = () => {
@@ -120,6 +135,12 @@ class Dashboard extends React.PureComponent {
     logout = event => {
         const { firebase, onLogoutAction } = this.props;
         if (firebase) firebase.signOut().then(() => onLogoutAction().then(() => this.props.history.push("/")));
+    };
+
+    closeGuild = event => {
+        this.setState({
+            guideVisible: false
+        });
     };
 
     updateLoader = event => {
@@ -204,14 +225,35 @@ class Dashboard extends React.PureComponent {
         }
     };
 
+    installApp = event => {
+        if (!this.deferredPrompt) {
+            return notification.error({
+                message: "Ошибка",
+                description: "Невозможно скачать приложение, возможно ваш браузер устарел."
+            });
+        }
+        this.deferredPrompt.prompt();
+
+        this.deferredPrompt.userChoice.then(choiceResult => {
+            if (choiceResult.outcome === "accepted") {
+                console.log("PWA setup accepted");
+                // hide our user interface that shows our A2HS button
+            } else {
+                console.log("PWA setup rejected");
+            }
+            this.deferredPrompt = null;
+        });
+    };
+
     render() {
-        const { menuItems = null, showLoader, redirect } = this.state;
+        const { menuItems = null, showLoader, redirect, guideVisible } = this.state;
         const {
             router: { actionTabs = [], currentActionTab, shouldUpdate = false } = {},
             router = {},
             firebase,
             onErrorRequstAction,
             onShoudUpdate,
+            firstConnect = false,
             setCurrentTab
         } = this.props;
 
@@ -255,6 +297,17 @@ class Dashboard extends React.PureComponent {
                             key="contentView"
                             path={currentActionTab}
                         />
+                        <Modal
+                            className="guideModal"
+                            okText="Закрыть"
+                            title="Добро пожаловать в систему."
+                            visible={guideVisible && firstConnect}
+                            onOk={this.closeGuild}
+                        >
+                            <Button onClick={this.installApp} className="setupButton">
+                                Установить приложение
+                            </Button>
+                        </Modal>
                     </Layout>
                 </Layout>
             </React.Fragment>
@@ -263,9 +316,11 @@ class Dashboard extends React.PureComponent {
 }
 
 const mapStateToProps = state => {
+    const { firstConnect = false } = state.publicReducer;
     return {
         router: { ...state.router },
-        publicReducer: state.publicReducer
+        publicReducer: state.publicReducer,
+        firstConnect
     };
 };
 

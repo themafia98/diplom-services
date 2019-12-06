@@ -1,46 +1,38 @@
 {
-  "short_name": "Controll system",
-  "name": "Controll system",
-  "description": "Controll system for company.",
-  "categories": [
-    "system",
-    "controll"
-  ],
-  "icons": [
-    {
-      "src": "favicon.ico",
-      "sizes": "144x144 64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
-    },
-    {
-      "src": "img/icon.png",
-      "sizes": "144x144",
-      "type": "image/png"
-    },
-    {
-      "src": "img/loader.gif",
-      "sizes": "256x256",
-      "type": "image/gif"
-    },
-    {
-      "src": "img/icon-512.gif",
-      "sizes": "512x512",
-      "type": "image/png"
-    },
-    {
-      "src": "img/logo.svg",
-      "sizes": "any",
-      "type": "image/svg"
-    }
-  ],
-  "related_applications": [
-    {
-      "platform": "windows",
-      "url": "https://play.google.com/store/apps/details?id=controllSystem"
-    }
-  ],
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+    "short_name": "Controll system",
+    "name": "Controll system",
+    "description": "Controll system for company.",
+    "categories": ["system", "controll"],
+    "icons": [
+        {
+            "src": "favicon.ico",
+            "sizes": "144x144 64x64 32x32 24x24 16x16",
+            "type": "image/x-icon"
+        },
+        {
+            "src": "img/icon.png",
+            "sizes": "144x144",
+            "type": "image/png"
+        },
+        {
+            "src": "img/loader.gif",
+            "sizes": "256x256",
+            "type": "image/gif"
+        },
+        {
+            "src": "img/icon-512.gif",
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "img/logo.svg",
+            "sizes": "any",
+            "type": "image/svg"
+        }
+    ],
+    "prefer_related_applications": false,
+    "start_url": ".",
+    "display": "standalone",
+    "theme_color": "#000000",
+    "background_color": "#ffffff"
 }

@@ -22,3 +22,13 @@ footer {
         top: 50%;
     }
 }
+
+.guideModal {
+    .ant-modal-footer {
+        div {
+            .ant-btn:first-child {
+                display: none;
+            }
+        }
+    }
+}

@@ -1,8 +1,9 @@
-import { SET_ERROR, SET_CACHE, SET_STATUS, SET_ACTIVE_CHAT_TOKEN } from "../../actions/publicActions/const";
+import { SET_ERROR, SET_CACHE, SET_STATUS, SET_ACTIVE_CHAT_TOKEN, SHOW_GUIDE } from "../../actions/publicActions/const";
 
 const initialState = {
     status: "online",
     prewStatus: "online",
+    firstConnect: false,
     requestError: null,
     chat: { chatToken: null },
     caches: {}
@@ -21,6 +22,14 @@ export default (state = initialState, action) => {
                         : null
             };
         }
+
+        case SHOW_GUIDE: {
+            return {
+                ...state,
+                firstConnect: action.payload
+            };
+        }
+
         case SET_ACTIVE_CHAT_TOKEN: {
             return {
                 ...state,
