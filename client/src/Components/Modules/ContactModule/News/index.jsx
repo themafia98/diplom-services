@@ -113,13 +113,13 @@ class News extends React.PureComponent {
         const rules = true;
         return (
             <div className="news">
+                <TitleModule classNameTitle="mainModuleTitle" title="Информация" />
+                {rules ? (
+                    <Button onClick={this.onOpenCreateNews} type="primary">
+                        Создать новость
+                    </Button>
+                ) : null}
                 <Scrollbars>
-                    <TitleModule classNameTitle="mainModuleTitle" title="Информация" />
-                    {rules ? (
-                        <Button onClick={this.onOpenCreateNews} type="primary">
-                            Создать новость
-                        </Button>
-                    ) : null}
                     <TabContainer visible={!isOpen}>
                         <div className="news__main">
                             <div className="col-fullscreen">{this.renderNewsBlock(currentPage)}</div>
