@@ -39,7 +39,6 @@ class News extends React.PureComponent {
 
     onOpenCreateNews = event => {
         const { onOpenPageWithData, router: { actionTabs = [] } = {}, setCurrentTab } = this.props;
-        const { newsArray = [] } = this.state;
         const moduleId = "createNews";
         const page = "contactModule";
 

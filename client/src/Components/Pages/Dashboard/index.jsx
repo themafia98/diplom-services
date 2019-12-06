@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Redirect } from "react-router-dom";
 import { EventEmitter } from "events";
 import _ from "lodash";
 import config from "../../../config.json";
@@ -25,6 +26,7 @@ class Dashboard extends React.PureComponent {
     dashboardStrem = new EventEmitter();
     state = {
         collapsed: true,
+        redirect: false,
         status: "online",
         menuItems: config.menu,
         counterError: 0,
@@ -46,9 +48,17 @@ class Dashboard extends React.PureComponent {
         const {
             publicReducer: { requestError = null, status } = {},
             router,
+            firebase,
             router: { currentActionTab = "" }
         } = this.props;
-        const { showLoader, status: statusState, counterError } = this.state;
+        const { showLoader, status: statusState, counterError, redirect = false } = this.state;
+
+        if (redirect) return;
+        if (!firebase.getCurrentUser()) {
+            return this.setState({
+                redirect: true
+            });
+        }
 
         if (!showLoader && statusState !== status && status === "online")
             notification.success({ message: "Удачно", description: "Интернет соединение восстановлено." });
@@ -195,7 +205,7 @@ class Dashboard extends React.PureComponent {
     };
 
     render() {
-        const { menuItems = null, showLoader } = this.state;
+        const { menuItems = null, showLoader, redirect } = this.state;
         const {
             router: { actionTabs = [], currentActionTab, shouldUpdate = false } = {},
             router = {},
@@ -204,6 +214,8 @@ class Dashboard extends React.PureComponent {
             onShoudUpdate,
             setCurrentTab
         } = this.props;
+
+        if (redirect) return <Redirect to={{ pathname: "/" }} />;
 
         const actionTabsData = this.getActionTabs(actionTabs, menuItems);
 
