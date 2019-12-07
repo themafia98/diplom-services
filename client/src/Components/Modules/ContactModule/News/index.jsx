@@ -136,7 +136,7 @@ class News extends React.PureComponent {
                             onChange={this.onChange}
                             pageSize={listdata.length > 4 ? (listdata.length / 4) | 0 : 1}
                             defaultCurrent={currentPage}
-                            total={listdata.length > 4 ? (listdata.length / 4) | 0 : 1}
+                            total={Math.ceil(listdata.length / 4)}
                         />
                     </TabContainer>
                 </Scrollbars>
