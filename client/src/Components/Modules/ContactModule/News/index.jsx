@@ -117,8 +117,13 @@ class News extends React.PureComponent {
         const { currentPage, isOpen } = this.state;
         const { data = {} } = this.props;
         let listdata = data && data.news && Array.isArray(data.news) ? [...data.news] : [];
-
+        console.log(listdata);
         const rules = true;
+
+        const total = Math.ceil(listdata.length / 4);
+        const pageSize = listdata.length > 4 ? (listdata.length / 4) | 0 : 1;
+        console.log(total);
+        console.log("pageSize:" + pageSize);
         return (
             <div className="news">
                 <TitleModule classNameTitle="mainModuleTitle" title="Информация" />
@@ -135,9 +140,9 @@ class News extends React.PureComponent {
                         <Pagination
                             className="pagination-news"
                             onChange={this.onChange}
-                            pageSize={listdata.length > 4 ? (listdata.length / 4) | 0 : 1}
+                            pageSize={pageSize}
                             defaultCurrent={currentPage}
-                            total={Math.ceil(listdata.length / 4)}
+                            total={total}
                         />
                     </TabContainer>
                 </Scrollbars>

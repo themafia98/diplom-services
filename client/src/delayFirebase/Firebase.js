@@ -1,8 +1,9 @@
 import firebase from "firebase/app";
+import auth from "firebase/auth";
+import firestore from "firebase/firestore";
 import firebaseConfig from "./firebaseConfig";
 import config from "../config.json";
-const auth = require("firebase/auth");
-const firestore = require("firebase/firestore");
+
 class Firebase {
     constructor(firebaseConfig) {
         /** @Init firebase */
@@ -54,4 +55,3 @@ let firebaseInterface = new Firebase(firebaseConfig);
 if (process.env.NODE_ENV !== "test") firebaseInterface.saveSession(config.firebase.session);
 
 export default firebaseInterface;
-export { auth, firestore };
