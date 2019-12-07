@@ -74,7 +74,7 @@ class Comments extends React.PureComponent {
         const { rules } = this.props;
         if (commentsArray.length && Array.isArray(commentsArray))
             return commentsArray.map(it => <Comment key={it.id} rules={rules} it={it} onDelete={this.onDelete} />);
-        else return <Empty />;
+        else return <Empty description={<span>Данных нету</span>} />;
     }
     render() {
         const { data: { comments = [] } = {} } = this.props;

@@ -31,7 +31,7 @@ exports[`<Dashboard /> main page Should render component 1`] = `
           },
           Object {
             "EUID": "taskModule",
-            "ICON": "file-done",
+            "ICON": "project",
             "PARENT_CODE": null,
             "VALUE": "Задачи",
           },
@@ -58,6 +58,12 @@ exports[`<Dashboard /> main page Should render component 1`] = `
             "ICON": null,
             "SIGN": "freedom",
             "VALUE": "Новая задача",
+          },
+          Object {
+            "EUID": "documentModule",
+            "ICON": "file-sync",
+            "PARENT_CODE": null,
+            "VALUE": "Документы",
           },
           Object {
             "EUID": "customersModule",
@@ -151,7 +157,11 @@ exports[`<Dashboard /> main page Should render component 1`] = `
             "_maxListeners": undefined,
           }
         }
-        firebase={Object {}}
+        firebase={
+          Object {
+            "getCurrentUser": [Function],
+          }
+        }
         key="contentView"
         onErrorRequstAction={[Function]}
         path="MainModule"
@@ -171,8 +181,26 @@ exports[`<Dashboard /> main page Should render component 1`] = `
         }
         setCurrentTab={[Function]}
         shouldUpdate={false}
+        statusApp="online"
         updateLoader={[Function]}
       />
+      <Modal
+        className="guideModal"
+        confirmLoading={false}
+        maskTransitionName="fade"
+        okText="Закрыть"
+        okType="primary"
+        onOk={[Function]}
+        title="Добро пожаловать в систему."
+        transitionName="zoom"
+        visible={false}
+        width={520}
+      >
+        <p>
+          Спасибо что выбрали 
+          Controll system
+        </p>
+      </Modal>
     </Adapter>
   </Adapter>
 </Fragment>
@@ -206,7 +234,7 @@ exports[`<Dashboard /> main page Should render component 2`] = `
           },
           Object {
             "EUID": "taskModule",
-            "ICON": "file-done",
+            "ICON": "project",
             "PARENT_CODE": null,
             "VALUE": "Задачи",
           },
@@ -233,6 +261,12 @@ exports[`<Dashboard /> main page Should render component 2`] = `
             "ICON": null,
             "SIGN": "freedom",
             "VALUE": "Новая задача",
+          },
+          Object {
+            "EUID": "documentModule",
+            "ICON": "file-sync",
+            "PARENT_CODE": null,
+            "VALUE": "Документы",
           },
           Object {
             "EUID": "customersModule",
@@ -326,7 +360,11 @@ exports[`<Dashboard /> main page Should render component 2`] = `
             "_maxListeners": undefined,
           }
         }
-        firebase={Object {}}
+        firebase={
+          Object {
+            "getCurrentUser": [Function],
+          }
+        }
         key="contentView"
         onErrorRequstAction={[Function]}
         path="MainModule"
@@ -346,8 +384,26 @@ exports[`<Dashboard /> main page Should render component 2`] = `
         }
         setCurrentTab={[Function]}
         shouldUpdate={false}
+        statusApp="online"
         updateLoader={[Function]}
       />
+      <Modal
+        className="guideModal"
+        confirmLoading={false}
+        maskTransitionName="fade"
+        okText="Закрыть"
+        okType="primary"
+        onOk={[Function]}
+        title="Добро пожаловать в систему."
+        transitionName="zoom"
+        visible={false}
+        width={520}
+      >
+        <p>
+          Спасибо что выбрали 
+          Controll system
+        </p>
+      </Modal>
     </Adapter>
   </Adapter>
 </Fragment>
@@ -407,7 +463,11 @@ exports[`<Dashboard /> main page Should render component 3`] = `
             "_maxListeners": undefined,
           }
         }
-        firebase={Object {}}
+        firebase={
+          Object {
+            "getCurrentUser": [Function],
+          }
+        }
         key="contentView"
         onErrorRequstAction={[Function]}
         path="MainModule"
@@ -427,8 +487,26 @@ exports[`<Dashboard /> main page Should render component 3`] = `
         }
         setCurrentTab={[Function]}
         shouldUpdate={false}
+        statusApp="online"
         updateLoader={[Function]}
       />
+      <Modal
+        className="guideModal"
+        confirmLoading={false}
+        maskTransitionName="fade"
+        okText="Закрыть"
+        okType="primary"
+        onOk={[Function]}
+        title="Добро пожаловать в систему."
+        transitionName="zoom"
+        visible={false}
+        width={520}
+      >
+        <p>
+          Спасибо что выбрали 
+          Controll system
+        </p>
+      </Modal>
     </Adapter>
   </Adapter>
 </Fragment>

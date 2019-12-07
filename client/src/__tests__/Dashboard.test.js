@@ -7,7 +7,7 @@ import { Dashboard } from "../Components/Pages/Dashboard";
 describe("<Dashboard /> main page", () => {
     test("Should render component", () => {
         const props = {
-            firebase: {},
+            firebase: { getCurrentUser: () => true },
             addTab: () => {},
             removeTab: () => {},
             setCurrentTab: () => {},
