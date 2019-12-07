@@ -65,13 +65,27 @@ class LoginPage extends React.Component {
                         <div className="notificationWrapper">
                             {errorMessage ? <p className="errorMessage">{errorMessage}</p> : null}
                         </div>
-                        <Input size="large" placeholder="login" ref={refLogin} />
-                        <Input type="password" size="large" placeholder="password" ref={refPassword} />
-                        <Button className="enterSystem" type="primary" loading={loading} onClick={enterLoading}>
+                        <Input aria-label="login" size="large" placeholder="login" ref={refLogin} />
+                        <Input
+                            aria-label="password"
+                            type="password"
+                            size="large"
+                            placeholder="password"
+                            ref={refPassword}
+                        />
+                        <Button
+                            aria-label="login-button"
+                            className="enterSystem"
+                            type="primary"
+                            loading={loading}
+                            onClick={enterLoading}
+                        >
                             Войти
                         </Button>
                         <ModalWindow firebase={firebase} mode="reg" />
-                        <NavLink to="/recovory">Восстановление доступа</NavLink>
+                        <NavLink aria-label="recovory-link" className="recovory-link" to="/recovory">
+                            Восстановление доступа
+                        </NavLink>
                     </form>
                 </div>
             </div>

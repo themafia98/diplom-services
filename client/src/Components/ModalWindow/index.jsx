@@ -348,7 +348,7 @@ class ModalWindow extends React.PureComponent {
             return (
                 <React.Fragment>
                     {mode === "reg" ? (
-                        <Button type="primary" onClick={this.showModal}>
+                        <Button aria-label="reg-button" type="primary" onClick={this.showModal}>
                             Регистрация
                         </Button>
                     ) : null}
