@@ -11,18 +11,16 @@ class EditorTextarea extends React.Component {
     };
 
     componentDidMount = () => {
-        const { mode = "", contentEditor: contentProps = null } = this.props;
-        const { contentState } = this.state;
-        if (mode === "createNewsEdit" && contentState) {
-            this.setState({
-                contentState: convertFromRaw(contentProps ? contentProps : getEditorJSON())
-            });
-        }
+        const { mode = "", contentEditor: contentState = null } = this.props;
+
+        this.setState({
+            contentState: convertFromRaw(contentState ? contentState : getEditorJSON())
+        });
     };
 
     componentDidUpdate = () => {
-        const { clear = false, clearStatus = null } = this.props;
-        if (clear) {
+        const { clear = false, clearStatus = null, readOnly = false } = this.props;
+        if (clear && !readOnly) {
             this.setState(
                 {
                     contentState: convertFromRaw(getEditorJSON())
@@ -35,30 +33,46 @@ class EditorTextarea extends React.Component {
     };
 
     onContentStateChange = contentState => {
+        const { test } = this.props;
+
         this.setState({
             contentState: contentState
         });
+        if (test) test(contentState);
     };
 
     render() {
-        const { readOnly = false, contentState = null } = this.state;
-        const { mode = "", onPublish = null, clear = false } = this.props;
+        const { contentState = null } = this.state;
+        const { mode = "", onPublish = null, clear = false, readOnly = false } = this.props;
+
+        const readOnlyProps =
+            readOnly && contentState
+                ? {
+                      contentState
+                  }
+                : {};
 
         return (
-            <React.Fragment>
+            <div className={["content", readOnly ? "readOnly" : null].join(" ")}>
                 <Editor
                     readOnly={readOnly}
+                    toolbarHidden={readOnly}
                     localization={{ locale: "ru" }}
                     wrapperClassName="editor-wrapper"
                     editorClassName="editor"
+                    {...readOnlyProps}
                     onContentStateChange={this.onContentStateChange}
                 />
-                {mode === "createNewsEdit" ? (
-                    <Button onClick={onPublish.bind(this, contentState)} className="createNews-button" type="primary">
+                {mode === "createNewsEdit" && !readOnly ? (
+                    <Button
+                        onClick={onPublish ? onPublish.bind(this, contentState) : null}
+                        className="createNews-button"
+                        type="primary"
+                    >
                         Опубликовать
                     </Button>
                 ) : null}
-            </React.Fragment>
+            </div>
         );
     }
 }

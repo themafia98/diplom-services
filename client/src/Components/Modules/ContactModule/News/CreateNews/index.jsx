@@ -19,6 +19,7 @@ class CreateNews extends React.PureComponent {
                 clear: false
             });
     };
+
     onPublish = contentState => {
         const { firebase = null, statusApp = "" } = this.props;
         if (!contentState) {
@@ -53,7 +54,6 @@ class CreateNews extends React.PureComponent {
                         clear={clear}
                         onPublish={this.onPublish}
                         mode="createNewsEdit"
-                        defaultValue="Новая новость"
                     />
                 </div>
             </div>

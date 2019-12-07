@@ -22,3 +22,17 @@ textarea {
 .createNews-button {
     margin-top: 5px;
 }
+
+.content {
+    &.readOnly {
+        .editor-wrapper {
+            &.rdw-editor-wrapper {
+                .editor {
+                    &.rdw-editor-main {
+                        background-color: inherit;
+                    }
+                }
+            }
+        }
+    }
+}

@@ -20,7 +20,7 @@ class ContactModule extends React.PureComponent {
 
     componentDidMount = () => {
         const { onLoadCurrentData, path: pathProps } = this.props;
-        debugger;
+
         if (pathProps === "contactModule_feedback")
             onLoadCurrentData({ path: "contactModule_feedback", storeLoad: "news" });
     };
