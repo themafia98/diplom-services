@@ -83,7 +83,9 @@ class App extends React.Component {
             return (
                 <React.Fragment>
                     <RenderInBrowser ie only>
-                        <div>Ugh, our super duper animation won't work in IE</div>
+                        <div className="ie-only">
+                            IE не поддерживается нашим приложением, предлагаем установить более современные браузеры.
+                        </div>
                     </RenderInBrowser>
                     <RenderInBrowser except ie>
                         <Switch>
