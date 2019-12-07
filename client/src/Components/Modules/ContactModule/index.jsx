@@ -26,6 +26,14 @@ class ContactModule extends React.PureComponent {
             onLoadCurrentData({ path: "contactModule_feedback", storeLoad: "news" });
     };
 
+    componentDidUpdate = () => {
+        const { router: { shouldUpdate = false } = {}, path: pathProps, onLoadCurrentData } = this.props;
+
+        if (pathProps === "contactModule_feedback" && shouldUpdate) {
+            onLoadCurrentData({ path: "contactModule_feedback", storeLoad: "news" });
+        }
+    };
+
     renderNewsView = () => {
         const { router: { currentActionTab, routeData } = {}, actionTabs = [] } = this.props;
         const data = routeData["contactModule_feedback"];
@@ -45,7 +53,7 @@ class ContactModule extends React.PureComponent {
             .map(key => {
                 const data = listdata.find(it => it._id === key);
                 const route = routeParser({ pageType: "moduleItem", path: currentActionTab });
-                debugger;
+
                 if (data)
                     return (
                         <TabContainer key={key} visible={route.itemId === key && currentActionTab.includes(key)}>
