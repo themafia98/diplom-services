@@ -2,18 +2,35 @@
 
 exports[`<HeaderView /> and children Should render 1`] = `
 <Adapter>
-  <ul
-    className="tabsMenu"
+  <Scrollbars
+    autoHeight={false}
+    autoHeightMax={200}
+    autoHeightMin={0}
+    autoHide={false}
+    autoHideDuration={200}
+    autoHideTimeout={1000}
+    hideTracksWhenNotNeeded={false}
+    renderThumbHorizontal={[Function]}
+    renderThumbVertical={[Function]}
+    renderTrackHorizontal={[Function]}
+    renderTrackVertical={[Function]}
+    renderView={[Function]}
+    tagName="div"
+    thumbMinSize={30}
+    universal={false}
   >
-    <Connect(Tab)
-      active={true}
-      flag={true}
-      hendlerTab={[Function]}
-      itemKey="mainModule"
-      key="mainModule"
-      sizeTab={160}
-    />
-  </ul>
+    <ul
+      className="tabsMenu"
+    >
+      <Tab
+        active={true}
+        hendlerTab={[Function]}
+        itemKey="mainModule"
+        key="mainModule"
+        sizeTab={160}
+      />
+    </ul>
+  </Scrollbars>
   <RightPanel
     onLogout={[Function]}
     onUpdate={[Function]}
@@ -23,18 +40,35 @@ exports[`<HeaderView /> and children Should render 1`] = `
 
 exports[`<HeaderView /> and children Should render 2`] = `
 <Adapter>
-  <ul
-    className="tabsMenu"
+  <Scrollbars
+    autoHeight={false}
+    autoHeightMax={200}
+    autoHeightMin={0}
+    autoHide={false}
+    autoHideDuration={200}
+    autoHideTimeout={1000}
+    hideTracksWhenNotNeeded={false}
+    renderThumbHorizontal={[Function]}
+    renderThumbVertical={[Function]}
+    renderTrackHorizontal={[Function]}
+    renderTrackVertical={[Function]}
+    renderView={[Function]}
+    tagName="div"
+    thumbMinSize={30}
+    universal={false}
   >
-    <Connect(Tab)
-      active={false}
-      flag={true}
-      hendlerTab={[Function]}
-      itemKey="mainModule1"
-      key="mainModule1"
-      sizeTab={160}
-    />
-  </ul>
+    <ul
+      className="tabsMenu"
+    >
+      <Tab
+        active={false}
+        hendlerTab={[Function]}
+        itemKey="mainModule1"
+        key="mainModule1"
+        sizeTab={160}
+      />
+    </ul>
+  </Scrollbars>
   <RightPanel
     onLogout={[Function]}
     onUpdate={[Function]}
