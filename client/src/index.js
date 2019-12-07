@@ -4,6 +4,7 @@ import "core-js/es/promise";
 import "core-js/es/set";
 import "core-js/es/symbol";
 import "core-js/es/array/includes";
+import "core-js/es/array/from";
 import "core-js/es/array/find";
 import "core-js/es/string/includes";
 import "core-js/es/object/assign";
