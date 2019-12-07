@@ -1,6 +1,7 @@
 import React from "react";
 import { EditorState, convertToRaw, convertFromRaw } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
+import _ from "lodash";
 import { getEditorJSON } from "../../../Utils/schema";
 import "../../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { Button } from "antd";
@@ -11,11 +12,12 @@ class EditorTextarea extends React.Component {
     };
 
     componentDidMount = () => {
-        const { mode = "", contentEditor: contentState = null } = this.props;
-
-        this.setState({
-            contentState: convertFromRaw(contentState ? contentState : getEditorJSON())
-        });
+        const { mode = "", contentState = null } = this.props;
+        if (contentState && !_.isEmpty(contentState)) {
+            this.setState({
+                contentState: contentState
+            });
+        }
     };
 
     componentDidUpdate = () => {
@@ -33,12 +35,9 @@ class EditorTextarea extends React.Component {
     };
 
     onContentStateChange = contentState => {
-        const { test } = this.props;
-
         this.setState({
             contentState: contentState
         });
-        if (test) test(contentState);
     };
 
     render() {

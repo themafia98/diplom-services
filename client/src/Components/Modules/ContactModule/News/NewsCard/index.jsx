@@ -7,7 +7,7 @@ const NewsCard = ({ onClick = null, className = null, data = {} }) => {
         return (
             <Card
                 className={["news-card", className ? className : null].join(" ")}
-                title={data.title ? data.title : null}
+                title={data.title ? data.title : data._id ? data._id : null}
                 extra={
                     <Button onClick={onClick} type="primary">
                         Читать

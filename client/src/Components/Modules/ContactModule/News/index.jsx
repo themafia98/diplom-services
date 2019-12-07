@@ -12,7 +12,6 @@ import NewsCard from "./NewsCard";
 import TitleModule from "../../../TitleModule";
 
 import { routePathNormalise } from "../../../../Utils";
-import { newsArray } from "./testData";
 
 class News extends React.PureComponent {
     state = {
@@ -21,9 +20,7 @@ class News extends React.PureComponent {
         prewPage: 1,
         currentPage: 1,
         start: 0,
-        newsArray: [...newsArray],
-        counter: newsArray.length < 8 ? newsArray.length : 8,
-        intialDefault: newsArray.length < 8 ? newsArray.length : 8,
+
         load: false
     };
 
@@ -60,8 +57,8 @@ class News extends React.PureComponent {
     };
 
     onOpen = key => {
-        const { onOpenPageWithData, router: { actionTabs = [] } = {}, setCurrentTab } = this.props;
-        const { newsArray = [] } = this.state;
+        const { onOpenPageWithData, router: { actionTabs = [] } = {}, setCurrentTab, data = {} } = this.props;
+        let listdata = data && data.news && Array.isArray(data.news) ? [...data.news] : [];
         const moduleId = "informationPage";
         const page = "contactModule";
 
@@ -71,8 +68,8 @@ class News extends React.PureComponent {
         });
 
         const index = actionTabs.findIndex(tab => tab === routeNormalize.path);
-        const findItem = newsArray.find(it => it.id === key);
-        const data = findItem ? { ...findItem } : {};
+        const findItem = listdata.find(it => it.id === key);
+        const dataFind = findItem ? { ...findItem } : {};
         const isFind = index !== -1;
 
         if (!isFind) {
@@ -80,21 +77,28 @@ class News extends React.PureComponent {
                 return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
             onOpenPageWithData({
                 activePage: routeNormalize,
-                routeDataActive: { key, listdata: data ? { ...data } : {} }
+                routeDataActive: { key, listdata: dataFind ? { ...dataFind } : {} }
             });
         } else setCurrentTab(actionTabs[index]);
     };
 
     renderNewsBlock = currentPage => {
-        const { newsArray = [] } = this.state;
+        const { data = {} } = this.props;
 
         const start = currentPage > 1 ? currentPage * 4 - 4 : 0;
-        let arrayCards = [...newsArray];
+        let listdata = data && data.news && Array.isArray(data.news) ? [...data.news] : [];
 
-        return arrayCards
-            .slice(start, start + 4 > arrayCards.length ? arrayCards.length : start + 4)
-            .map(it => {
-                return <NewsCard onClick={this.onOpen.bind(this, it.id)} className="card" key={it.id} data={it} />;
+        return listdata
+            .slice(start, start + 4 > listdata.length ? listdata.length : start + 4)
+            .map((it, index) => {
+                return (
+                    <NewsCard
+                        key={it._id || Math.random()}
+                        onClick={this.onOpen.bind(this, it._id)}
+                        className="card"
+                        data={it}
+                    />
+                );
             })
             .filter(Boolean);
     };
@@ -110,6 +114,9 @@ class News extends React.PureComponent {
 
     render() {
         const { currentPage, isOpen } = this.state;
+        const { data = {} } = this.props;
+        let listdata = data && data.news && Array.isArray(data.news) ? [...data.news] : [];
+
         const rules = true;
         return (
             <div className="news">
@@ -127,9 +134,9 @@ class News extends React.PureComponent {
                         <Pagination
                             className="pagination-news"
                             onChange={this.onChange}
-                            pageSize={(newsArray.length / 4) | 0}
+                            pageSize={listdata.length > 4 ? (listdata.length / 4) | 0 : 1}
                             defaultCurrent={currentPage}
-                            total={newsArray.length}
+                            total={listdata.length > 4 ? (listdata.length / 4) | 0 : 1}
                         />
                     </TabContainer>
                 </Scrollbars>

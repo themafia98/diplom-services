@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import _ from "lodash";
 
 import { loadCurrentData } from "../../../Redux/actions/routerActions/middleware";
 
@@ -26,7 +27,9 @@ class ContactModule extends React.PureComponent {
     };
 
     renderNewsView = () => {
-        const { router: { currentActionTab } = {}, actionTabs = [] } = this.props;
+        const { router: { currentActionTab, routeData } = {}, actionTabs = [] } = this.props;
+        const data = routeData["contactModule_feedback"];
+        const listdata = data && !_.isEmpty(data) && data.news && Array.isArray(data.news) ? [...data.news] : [];
 
         const filterActionTab = actionTabs.filter(tab => tab.includes("_informationPage__"));
         const itemsKeys = filterActionTab
@@ -38,15 +41,19 @@ class ContactModule extends React.PureComponent {
             })
             .filter(Boolean);
 
-        return itemsKeys.map(key => {
-            const route = routeParser({ pageType: "moduleItem", path: currentActionTab });
-
-            return (
-                <TabContainer visible={route.itemId === key && currentActionTab.includes(key)}>
-                    <NewsViewPage key={key} id={key} />
-                </TabContainer>
-            );
-        });
+        return itemsKeys
+            .map(key => {
+                const data = listdata.find(it => it._id === key);
+                const route = routeParser({ pageType: "moduleItem", path: currentActionTab });
+                debugger;
+                if (data)
+                    return (
+                        <TabContainer key={key} visible={route.itemId === key && currentActionTab.includes(key)}>
+                            <NewsViewPage listdata={data} key={key} />
+                        </TabContainer>
+                    );
+            })
+            .filter(Boolean);
     };
 
     checkBackground = path => {
@@ -59,14 +66,21 @@ class ContactModule extends React.PureComponent {
         const isBackgrounNews = this.checkBackground("contactModule_feedback");
         const isBackgroundInfoPage = this.checkBackground("contactModule_informationPage");
         const isBackgroundCreateNews = this.checkBackground("contactModule_createNews");
-        const { firebase = null, statusApp = "" } = this.props;
+        const { firebase = null, statusApp = "", router: { routeData = {} } = {} } = this.props;
+        const data = routeData[path];
+
         return (
             <React.Fragment>
                 <TabContainer isBackground={isBackgroundChat} visible={path === "contactModule_chat"}>
                     <Chat key="chatModule" isBackground={isBackgroundChat} visible={path === "contactModule_chat"} />
                 </TabContainer>
                 <TabContainer isBackground={isBackgrounNews} visible={path === "contactModule_feedback"}>
-                    <News key="newsModule" isBackground={isBackgrounNews} visible={path === "contactModule_feedback"} />
+                    <News
+                        data={data}
+                        key="newsModule"
+                        isBackground={isBackgrounNews}
+                        visible={path === "contactModule_feedback"}
+                    />
                 </TabContainer>
                 <TabContainer isBackground={isBackgroundInfoPage} visible={path === "contactModule_informationPage"}>
                     <NewsViewPage

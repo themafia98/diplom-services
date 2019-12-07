@@ -5,59 +5,29 @@ import { openPageWithDataAction } from "../../../../../Redux/actions/routerActio
 import { loadCurrentData } from "../../../../../Redux/actions/routerActions/middleware";
 import Loader from "../../../../Loader";
 import TitleModule from "../../../../TitleModule";
-
-import { newsArray } from "../testData";
+import EditorTextarea from "../../../../Textarea/EditorTextarea";
 
 class NewsViewPage extends React.PureComponent {
     state = {
         isLoading: true,
-        loading: true,
-        currentData: null
-    };
-    componentDidMount = () => {
-        const {
-            router: { routeDataActive: { key = "" } = {} }
-        } = this.props;
-
-        const data = newsArray.find(it => key === it.id) || {};
-
-        this.setState({
-            ...this.state,
-            active: key,
-            isLoading: !_.isEmpty(data) ? false : true,
-            loading: !_.isEmpty(data) ? true : false,
-            currentData: { ...data }
-        });
-    };
-
-    componentDidUpdate = (prevProps, prevState) => {
-        const {
-            router: { routeDataActive: { key = "" } = {} }
-        } = this.props;
-        const { active } = this.state;
-
-        if (key !== active) {
-            const data = newsArray.find(it => key === it.id) || {};
-
-            this.setState({
-                ...this.state,
-                active: key,
-                isLoading: !_.isEmpty(data) ? false : true,
-                loading: !_.isEmpty(data) ? true : false,
-                currentData: { ...data }
-            });
-        }
+        loading: true
     };
 
     render() {
-        const { isLoading, currentData = {} } = this.state;
+        const { listdata = null } = this.props;
 
-        if (isLoading || _.isEmpty(currentData)) return <Loader />;
         return (
             <div className="newsView-page">
-                <TitleModule classNameTitle="tittle_contactModule_pageNews" title={currentData.title} />
+                <TitleModule
+                    classNameTitle="tittle_contactModule_pageNews"
+                    title={listdata && listdata._id ? listdata._id : "Новость"}
+                />
                 <div className="newsView-page__main">
-                    <p>{currentData.content}</p>
+                    <EditorTextarea
+                        key={listdata ? listdata._id : null}
+                        readOnly={true}
+                        contentState={listdata ? listdata : null}
+                    />
                 </div>
             </div>
         );

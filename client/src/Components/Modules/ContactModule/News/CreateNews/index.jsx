@@ -2,6 +2,7 @@ import React from "react";
 import TitleModule from "../../../../TitleModule";
 import EditorTextarea from "../../../../Textarea/EditorTextarea";
 import { message, notification } from "antd";
+import uuid from "uuid/v4";
 class CreateNews extends React.PureComponent {
     state = {
         clear: false
@@ -30,16 +31,8 @@ class CreateNews extends React.PureComponent {
             firebase.db
                 .collection("news")
                 .doc()
-                .get()
-                .then(res => {
-                    firebase.db
-                        .collection("news")
-                        .doc()
-                        .set({ _id: "test", ...contentState })
-                        .then(() =>
-                            this.setState({ ...this.state, clear: true }, () => message.success(`Новость создана.`))
-                        );
-                })
+                .set({ _id: uuid(), ...contentState })
+                .then(() => this.setState({ ...this.state, clear: true }, () => message.success(`Новость создана.`)))
                 .catch(error => console.error(error));
         } else return notification.error({ message: "Ошибка сети", description: "Интернет соединение отсутствует" });
     };
