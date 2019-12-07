@@ -6,6 +6,9 @@
         .col-fullscreen {
             display: flex;
             flex-wrap: wrap;
+            .ant-empty {
+                width: 100%;
+            }
         }
     }
 

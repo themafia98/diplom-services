@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Pagination, Button, message } from "antd";
+import { Pagination, Button, message, Empty } from "antd";
 
 import config from "../../../../config.json";
 import Scrollbars from "react-custom-scrollbars";
@@ -87,20 +87,21 @@ class News extends React.PureComponent {
 
         const start = currentPage > 1 ? currentPage * 4 - 4 : 0;
         let listdata = data && data.news && Array.isArray(data.news) ? [...data.news] : [];
-
-        return listdata
-            .slice(start, start + 4 > listdata.length ? listdata.length : start + 4)
-            .map((it, index) => {
-                return (
-                    <NewsCard
-                        key={it._id || Math.random()}
-                        onClick={this.onOpen.bind(this, it._id)}
-                        className="card"
-                        data={it}
-                    />
-                );
-            })
-            .filter(Boolean);
+        if (listdata.length)
+            return listdata
+                .slice(start, start + 4 > listdata.length ? listdata.length : start + 4)
+                .map((it, index) => {
+                    return (
+                        <NewsCard
+                            key={it._id || Math.random()}
+                            onClick={this.onOpen.bind(this, it._id)}
+                            className="card"
+                            data={it}
+                        />
+                    );
+                })
+                .filter(Boolean);
+        else return <Empty description={<span>Данных нету</span>} />;
     };
 
     onChange = pageNumber => {
