@@ -14,7 +14,7 @@ import * as serviceWorker from "./serviceWorker";
 import * as Sentry from "@sentry/browser";
 
 import firebase from "./delayFirebase/Firebase";
-import firebaseContext from "./delayFirebase/firebaseContext";
+// import firebaseContext from "./delayFirebase/firebaseContext";
 import ErrorBoundary from "./Components/ErrorBoundary";
 
 import store from "./Redux/store";
@@ -24,17 +24,12 @@ Sentry.init({ dsn: process.env.REACT_APP_LOGGER_DSN });
 ReactDOM.render(
     <BrowserRouter basename={"/"}>
         <ErrorBoundary>
-            <firebaseContext.Provider value={firebase}>
-                <Provider store={store}>
-                    <firebaseContext.Consumer>
-                        {firebase => (
-                            <IntlProvider locale={"ru"}>
-                                <App firebase={firebase} />
-                            </IntlProvider>
-                        )}
-                    </firebaseContext.Consumer>
-                </Provider>
-            </firebaseContext.Provider>
+            <Provider store={store}>
+                <IntlProvider locale={"ru"}>
+                    <App firebase={firebase} />
+                </IntlProvider>
+                )}
+            </Provider>
         </ErrorBoundary>
     </BrowserRouter>,
     document.getElementById("root")
