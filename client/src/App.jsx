@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import RenderInBrowser from "react-render-in-browser";
 import { Switch, Route } from "react-router-dom";
 import { message } from "antd";
 import { PrivateRoute } from "./Components/Helpers";
@@ -80,15 +81,26 @@ class App extends React.Component {
         const { firebaseLoadState, isUser } = this.state;
         if (firebaseLoadState) {
             return (
-                <Switch>
-                    <Route
-                        exact
-                        path="/"
-                        render={props => <LoginPage {...props} isUser={isUser} firebase={firebase} />}
-                    />
-                    <Route exact path="/recovory" render={props => <Recovery {...props} firebase={firebase} />} />
-                    <PrivateRoute exact path="/dashboard" component={Dashboard} firebase={firebase} />
-                </Switch>
+                <React.Fragment>
+                    <RenderInBrowser ie only>
+                        <div>Ugh, our super duper animation won't work in IE</div>
+                    </RenderInBrowser>
+                    <RenderInBrowser except ie>
+                        <Switch>
+                            <Route
+                                exact
+                                path="/"
+                                render={props => <LoginPage {...props} isUser={isUser} firebase={firebase} />}
+                            />
+                            <Route
+                                exact
+                                path="/recovory"
+                                render={props => <Recovery {...props} firebase={firebase} />}
+                            />
+                            <PrivateRoute exact path="/dashboard" component={Dashboard} firebase={firebase} />
+                        </Switch>
+                    </RenderInBrowser>
+                </React.Fragment>
             );
         } else return <Loader />;
     }
