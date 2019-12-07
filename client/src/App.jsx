@@ -7,6 +7,8 @@ import { PrivateRoute } from "./Components/Helpers";
 import config from "./config.json";
 import { forceUpdateDetectedInit } from "./Utils";
 
+import * as Sentry from "@sentry/browser";
+
 import { setStatus } from "./Redux/actions/publicActions";
 import { addTabAction } from "./Redux/actions/routerActions";
 
@@ -58,6 +60,7 @@ class App extends React.Component {
         /** load app */
         const { firebase } = this.props;
         const { firebaseLoadState } = this.state;
+        Sentry.init({ dsn: process.env.REACT_APP_LOGGER_DSN });
         firebase.auth.onAuthStateChanged(user => {
             if (!firebaseLoadState) {
                 setTimeout(
