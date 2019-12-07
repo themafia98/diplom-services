@@ -1,5 +1,5 @@
 import React from "react";
-import { EditorState, convertToRaw, convertFromRaw } from "draft-js";
+import { convertFromRaw } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import _ from "lodash";
 import { getEditorJSON } from "../../../Utils/schema";
@@ -12,7 +12,7 @@ class EditorTextarea extends React.Component {
     };
 
     componentDidMount = () => {
-        const { mode = "", contentState = null } = this.props;
+        const { contentState = null } = this.props;
         if (contentState && !_.isEmpty(contentState)) {
             this.setState({
                 contentState: contentState
@@ -42,7 +42,7 @@ class EditorTextarea extends React.Component {
 
     render() {
         const { contentState = null } = this.state;
-        const { mode = "", onPublish = null, clear = false, readOnly = false } = this.props;
+        const { mode = "", onPublish = null, readOnly = false } = this.props;
 
         const readOnlyProps =
             readOnly && contentState

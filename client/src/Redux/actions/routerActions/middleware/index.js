@@ -8,7 +8,6 @@ export const loadCurrentData = ({
     primaryKey = "uuid",
     storeLoad = "",
     pathValidStart = "_",
-    shouldUpdate = false,
     noCorsClient = false,
     pathValid = path.startsWith(pathValidStart) ? pathValidStart.split("_")[0] || "" : path.split("__")[0]
 }) => async (dispatch, getState, { firebase, getSchema, request, clientDB }) => {

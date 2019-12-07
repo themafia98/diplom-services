@@ -223,12 +223,12 @@ class Dashboard extends React.PureComponent {
     };
 
     randomNotification = () => {
-        let notifTitle = "System Controll";
-        let notifBody = "Hello from System Controll";
-        let options = {
-            body: notifBody
-        };
-        let notif = new Notification(notifTitle, options);
+        // let notifTitle = "System Controll";
+        // let notifBody = "Hello from System Controll";
+        // let options = {
+        //     body: notifBody
+        // };
+        //let notif = new Notification(notifTitle, options);
     };
 
     installApp = event => {

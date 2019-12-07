@@ -59,6 +59,7 @@ class ContactModule extends React.PureComponent {
                             <NewsViewPage listdata={data} key={key} />
                         </TabContainer>
                     );
+                else return null;
             })
             .filter(Boolean);
     };

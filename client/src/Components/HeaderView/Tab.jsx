@@ -30,7 +30,7 @@ class Tab extends React.PureComponent {
     tabRef = node => (this.tab = node);
 
     render() {
-        const { flag, value, active, hendlerTab: callbackHendlerTab, itemKey, sizeTab = 10 } = this.props;
+        const { value, active, hendlerTab: callbackHendlerTab, itemKey, sizeTab = 10 } = this.props;
         const recalcSize =
             sizeTab > 55 ? sizeTab - sizeTab * 0.15 : sizeTab > 43 ? sizeTab - sizeTab * 0.2 : sizeTab - sizeTab * 0.3;
         return (
