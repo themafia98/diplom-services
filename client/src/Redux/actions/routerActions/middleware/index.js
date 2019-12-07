@@ -12,6 +12,7 @@ export const loadCurrentData = ({
     pathValid = path.startsWith(pathValidStart) ? pathValidStart.split("_")[0] || "" : path.split("__")[0]
 }) => async (dispatch, getState, { firebase, getSchema, request, clientDB }) => {
     const router = getState().router;
+
     const { requestError, status = "online" } = getState().publicReducer;
 
     if (router.routeData && router.routeData[pathValid] && router.routeData[pathValid].load) {
@@ -34,6 +35,9 @@ export const loadCurrentData = ({
             .then(items => {
                 const copyStore = [...items];
                 const undefiendCopyStore = [];
+                if (storeLoad === "news") {
+                    return dispatch(saveComponentStateAction({ [storeLoad]: copyStore, load: true, path: pathValid }));
+                }
                 const cursor = clientDB.getCursor(storeLoad);
 
                 cursor.onsuccess = async event => {

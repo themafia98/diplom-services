@@ -1,5 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
+
+import { loadCurrentData } from "../../../Redux/actions/routerActions/middleware";
 
 import { routeParser } from "../../../Utils";
 import TabContainer from "../../TabContainer";
@@ -13,6 +16,13 @@ class ContactModule extends React.PureComponent {
         onErrorRequstAction: PropTypes.func.isRequired,
         path: PropTypes.string.isRequired,
         firebase: PropTypes.object.isRequired
+    };
+
+    componentDidMount = () => {
+        const { onLoadCurrentData, path: pathProps } = this.props;
+        debugger;
+        if (pathProps === "contactModule_feedback")
+            onLoadCurrentData({ path: "contactModule_feedback", storeLoad: "news" });
     };
 
     renderNewsView = () => {
@@ -49,7 +59,7 @@ class ContactModule extends React.PureComponent {
         const isBackgrounNews = this.checkBackground("contactModule_feedback");
         const isBackgroundInfoPage = this.checkBackground("contactModule_informationPage");
         const isBackgroundCreateNews = this.checkBackground("contactModule_createNews");
-
+        const { firebase = null, statusApp = "" } = this.props;
         return (
             <React.Fragment>
                 <TabContainer isBackground={isBackgroundChat} visible={path === "contactModule_chat"}>
@@ -68,6 +78,8 @@ class ContactModule extends React.PureComponent {
                 <TabContainer isBackground={isBackgroundCreateNews} visible={path === "contactModule_createNews"}>
                     <CreateNews
                         key="createNews"
+                        statusApp={statusApp}
+                        firebase={firebase}
                         isBackground={isBackgroundInfoPage}
                         visible={path === "contactModule_createNews"}
                     />
@@ -86,4 +98,16 @@ class ContactModule extends React.PureComponent {
         );
     }
 }
-export default ContactModule;
+
+const mapStateToProps = state => {
+    return { router: state.router };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onLoadCurrentData: ({ path, storeLoad, shouldUpdate }) =>
+            dispatch(loadCurrentData({ path, storeLoad, shouldUpdate }))
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ContactModule);

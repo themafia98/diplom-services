@@ -91,7 +91,7 @@ class ContentView extends React.Component {
     };
 
     render() {
-        const { path, firebase, onErrorRequstAction, setCurrentTab, actionTabs, router } = this.props;
+        const { path, firebase, onErrorRequstAction, setCurrentTab, actionTabs, router, statusApp } = this.props;
         const { drawerView, key } = this.state;
 
         const isBackgroundMainModule = this.checkBackground("mainModule");
@@ -151,6 +151,7 @@ class ContentView extends React.Component {
                             onErrorRequstAction={onErrorRequstAction}
                             key="documentModule"
                             path={path}
+                            statusApp={statusApp}
                             firebase={firebase}
                         />
                     </TabContainer>
@@ -158,6 +159,7 @@ class ContentView extends React.Component {
                         <ContactModule
                             visible={path.startsWith("contactModule")}
                             actionTabs={actionTabs}
+                            statusApp={statusApp}
                             router={router}
                             isBackground={isBackgroundContactModule}
                             onErrorRequstAction={onErrorRequstAction}

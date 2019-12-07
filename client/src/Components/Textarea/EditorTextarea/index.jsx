@@ -20,6 +20,20 @@ class EditorTextarea extends React.Component {
         }
     };
 
+    componentDidUpdate = () => {
+        const { clear = false, clearStatus = null } = this.props;
+        if (clear) {
+            this.setState(
+                {
+                    contentState: convertFromRaw(getEditorJSON())
+                },
+                () => {
+                    if (clearStatus) clearStatus(false);
+                }
+            );
+        }
+    };
+
     onContentStateChange = contentState => {
         this.setState({
             contentState: contentState
@@ -27,8 +41,8 @@ class EditorTextarea extends React.Component {
     };
 
     render() {
-        const { readOnly = false } = this.state;
-        const { mode = "" } = this.props;
+        const { readOnly = false, contentState = null } = this.state;
+        const { mode = "", onPublish = null, clear = false } = this.props;
 
         return (
             <React.Fragment>
@@ -40,7 +54,7 @@ class EditorTextarea extends React.Component {
                     onContentStateChange={this.onContentStateChange}
                 />
                 {mode === "createNewsEdit" ? (
-                    <Button className="createNews-button" type="primary">
+                    <Button onClick={onPublish.bind(this, contentState)} className="createNews-button" type="primary">
                         Опубликовать
                     </Button>
                 ) : null}

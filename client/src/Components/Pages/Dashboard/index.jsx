@@ -265,6 +265,7 @@ class Dashboard extends React.PureComponent {
             firebase,
             onErrorRequstAction,
             onShoudUpdate,
+            publicReducer = {},
             firstConnect = false,
             setCurrentTab
         } = this.props;
@@ -301,6 +302,7 @@ class Dashboard extends React.PureComponent {
                             actionTabs={actionTabs}
                             shouldUpdate={shouldUpdate}
                             router={router}
+                            statusApp={publicReducer.status}
                             onShoudUpdate={onShoudUpdate}
                             setCurrentTab={setCurrentTab}
                             updateLoader={this.updateLoader}
