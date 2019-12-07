@@ -9,6 +9,7 @@ export const loadCurrentData = ({
     storeLoad = "",
     pathValidStart = "_",
     shouldUpdate = false,
+    noCorsClient = false,
     pathValid = path.startsWith(pathValidStart) ? pathValidStart.split("_")[0] || "" : path.split("__")[0]
 }) => async (dispatch, getState, { firebase, getSchema, request, clientDB }) => {
     const router = getState().router;
@@ -35,7 +36,8 @@ export const loadCurrentData = ({
             .then(items => {
                 const copyStore = [...items];
                 const undefiendCopyStore = [];
-                if (storeLoad === "news") {
+                if (!noCorsClient) {
+                    if (requestError !== null) dispatch(errorRequstAction(null));
                     return dispatch(saveComponentStateAction({ [storeLoad]: copyStore, load: true, path: pathValid }));
                 }
                 const cursor = clientDB.getCursor(storeLoad);
@@ -115,6 +117,8 @@ export const loadCurrentData = ({
                 );
             });
     } else {
+        if (!noCorsClient) return;
+
         const items = clientDB.getAllItems(storeLoad);
         items.onsuccess = event => {
             const {
