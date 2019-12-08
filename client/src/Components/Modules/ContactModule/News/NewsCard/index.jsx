@@ -1,6 +1,7 @@
 import React from "react";
 import _ from "lodash";
 import { Card, Button } from "antd";
+
 const NewsCard = ({ onClick = null, className = null, data = {} }) => {
     if (!data || _.isEmpty(data)) return null;
     else
