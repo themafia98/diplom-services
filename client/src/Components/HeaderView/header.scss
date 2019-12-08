@@ -116,11 +116,31 @@ header {
     }
 }
 
+@media screen and (max-width: 1456px){
+    header {
+        .headerControllers {
+            &.rightPanel {
+                width: 30%;
+            }
+        }
+    }
+}
+
 @media screen and (max-width: 1351px) {
     header {
         .headerControllers {
             &.rightPanel {
-                width: 35%;
+                width: 50%;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 956px) {
+    header {
+        .headerControllers {
+            &.rightPanel {
+                width: 55%;
             }
         }
     }
@@ -130,7 +150,7 @@ header {
     header {
         .headerControllers {
             &.rightPanel {
-                width: 45%;
+                width: 67%;
             }
         }
     }
@@ -140,20 +160,20 @@ header {
     header {
         .headerControllers {
             &.rightPanel {
-                width: 60%;
+                width: 82%;
             }
         }
     }
 }
 
-@media screen and (max-width: 680px) {
+@media screen and (max-width: 760px) {
     header {
         .headerControllers {
             &.rightPanel {
                 .userPopup {
                     display: none;
                 }
-                width: 35%;
+                width: 55%;
             }
         }
     }

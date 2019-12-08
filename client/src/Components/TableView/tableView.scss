@@ -143,8 +143,25 @@
     }
 }
 
+@media screen and (max-width: 960px){
+    .tableViw__wrapper { 
+        table { 
+            .contentTr {
+                td {
+                    i {
+                        font-size: 14px;
+                    }
+                }
+            } 
+        } 
+    }
+}
+
 @media screen and (max-height: 655px) {
     .tableViw__wrapper {
         top: 65%;
     }
+
 }
+
+

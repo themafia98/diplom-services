@@ -16,10 +16,10 @@ const middlewareCaching = ({ data, primaryKey, type = "GET", pk = null, store = 
                 store === "jurnalWork"
                     ? TASK_CONTROLL_JURNAL_SCHEMA
                     : store === "users"
-                    ? USER_SCHEMA
-                    : store === "tasks"
-                    ? TASK_SCHEMA
-                    : null;
+                        ? USER_SCHEMA
+                        : store === "tasks"
+                            ? TASK_SCHEMA
+                            : null;
 
             const validHash = validHashCopy.map(it => getSchema(schema, it, "no-strict")).filter(Boolean)[0];
 
@@ -32,7 +32,7 @@ const middlewareCaching = ({ data, primaryKey, type = "GET", pk = null, store = 
                         clientDB.addItem(store, validHash);
                         dispatch(сachingAction({ data: validHash, load: true, primaryKey: primaryKey }));
                     })
-                    .catch(error => {});
+                    .catch(error => { });
         } else if (type === "GET") {
             firebase.db
                 .collection(store)
@@ -54,10 +54,10 @@ const middlewareCaching = ({ data, primaryKey, type = "GET", pk = null, store = 
                         store === "jurnalWork"
                             ? TASK_CONTROLL_JURNAL_SCHEMA
                             : store === "users"
-                            ? USER_SCHEMA
-                            : store === "tasks"
-                            ? TASK_SCHEMA
-                            : null;
+                                ? USER_SCHEMA
+                                : store === "tasks"
+                                    ? TASK_SCHEMA
+                                    : null;
 
                     const storeArrayCopy = array.map(it => getSchema(schema, it)).filter(Boolean);
 
@@ -92,10 +92,10 @@ const middlewareCaching = ({ data, primaryKey, type = "GET", pk = null, store = 
                 store === "jurnalWork"
                     ? TASK_CONTROLL_JURNAL_SCHEMA
                     : store === "users"
-                    ? USER_SCHEMA
-                    : store === "tasks"
-                    ? TASK_SCHEMA
-                    : null;
+                        ? USER_SCHEMA
+                        : store === "tasks"
+                            ? TASK_SCHEMA
+                            : null;
             const storeArrayCopy = result.map(it => getSchema(schema, it)).filter(Boolean);
             dispatch(
                 сachingAction({
@@ -171,10 +171,10 @@ const middlewareUpdate = ({
                                                 updateStore === "jurnalWork"
                                                     ? TASK_CONTROLL_JURNAL_SCHEMA
                                                     : updateStore === "users"
-                                                    ? USER_SCHEMA
-                                                    : updateStore === "tasks"
-                                                    ? TASK_SCHEMA
-                                                    : null;
+                                                        ? USER_SCHEMA
+                                                        : updateStore === "tasks"
+                                                            ? TASK_SCHEMA
+                                                            : null;
 
                                             const storeCopy = [updaterItem]
                                                 .map(it => getSchema(schema, it, "no-strict"))
@@ -211,18 +211,16 @@ const middlewareUpdate = ({
             const updaterItem = { ...item, key: id, [updateFild]: updateProp, modeAdd: "offline" };
             const updater = clientDB.updateItem(findStore || updateStore, updaterItem);
             updater.onsuccess = event => {
-                const {
-                    target: { result }
-                } = event;
-                console.log(`Update item ${result} done.`);
+
+
                 const schema =
                     updateStore === "jurnalWork"
                         ? TASK_CONTROLL_JURNAL_SCHEMA
                         : updateStore === "users"
-                        ? USER_SCHEMA
-                        : updateStore === "tasks"
-                        ? TASK_SCHEMA
-                        : null;
+                            ? USER_SCHEMA
+                            : updateStore === "tasks"
+                                ? TASK_SCHEMA
+                                : null;
 
                 const tasksCopy = [updaterItem].map(it => getSchema(schema, it, "no-strict")).filter(Boolean);
 
@@ -260,8 +258,8 @@ const middlewareUpdate = ({
                                 const newFild = Array.isArray(data[updateFild])
                                     ? [...data[updateFild]].filter(it => it.id !== deleteId)
                                     : _.isObject(data[updateFild])
-                                    ? { ...data[updateFild] }
-                                    : data[updateFild];
+                                        ? { ...data[updateFild] }
+                                        : data[updateFild];
 
                                 await updater(doc, newFild)
                                     .then(() => {
@@ -279,10 +277,10 @@ const middlewareUpdate = ({
                                             updateStore === "jurnalWork"
                                                 ? TASK_CONTROLL_JURNAL_SCHEMA
                                                 : updateStore === "users"
-                                                ? USER_SCHEMA
-                                                : updateStore === "tasks"
-                                                ? TASK_SCHEMA
-                                                : null;
+                                                    ? USER_SCHEMA
+                                                    : updateStore === "tasks"
+                                                        ? TASK_SCHEMA
+                                                        : null;
 
                                         const storeCopy = [updaterItem]
                                             .map(it => getSchema(schema, it, "no-strict"))
@@ -313,8 +311,8 @@ const middlewareUpdate = ({
             const newFild = Array.isArray(item[updateFild])
                 ? [...item[updateFild]].filter(it => it.id !== deleteId)
                 : _.isObject(item[updateFild])
-                ? { ...item[updateFild] }
-                : item[updateFild];
+                    ? { ...item[updateFild] }
+                    : item[updateFild];
 
             const updaterItem = { ...item, key: id, [updateFild]: newFild, modeAdd: "offline" };
             const updater = clientDB.updateItem(findStore || updateStore, updaterItem);
@@ -322,15 +320,15 @@ const middlewareUpdate = ({
                 const {
                     target: { result }
                 } = event;
-                console.log(`Update item ${result} done.`);
+
                 const schema =
                     updateStore === "jurnalWork"
                         ? TASK_CONTROLL_JURNAL_SCHEMA
                         : updateStore === "users"
-                        ? USER_SCHEMA
-                        : updateStore === "tasks"
-                        ? TASK_SCHEMA
-                        : null;
+                            ? USER_SCHEMA
+                            : updateStore === "tasks"
+                                ? TASK_SCHEMA
+                                : null;
 
                 const tasksCopy = [updaterItem].map(it => getSchema(schema, it, "no-strict")).filter(Boolean);
 
