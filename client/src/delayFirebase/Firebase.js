@@ -4,10 +4,12 @@ import firestore from "firebase/firestore";
 import firebaseConfig from "./firebaseConfig";
 import config from "../config.json";
 
+/**
+ * constructor
+ * @param {Object} firebaseConfig config firebase
+ */
 class Firebase {
     constructor(firebaseConfig) {
-        /** @Init firebase */
-
         firebase.initializeApp(firebaseConfig);
         this.auth = firebase.auth();
         this.db = firebase.firestore();
@@ -19,13 +21,17 @@ class Firebase {
                 .catch(er => console.error(er)); /** if user use low internet @connection */
     }
 
+    /** @return {Object} Object type session */
     saveSession(rules) {
-        /** @Set firebase type session */
         return this.auth.setPersistence(firebase.auth.Auth.Persistence[rules]);
     }
 
+    /**
+     * Auth
+     * @param {string} email
+     * @param {string} password
+     */
     login(email, password) {
-        /** @login firebase */
         try {
             return this.auth.signInWithEmailAndPassword(email, password);
         } catch (error) {
@@ -34,18 +40,28 @@ class Firebase {
         }
     }
 
+    /**
+     * Registration with email and password
+     * @param {string} email
+     * @param {string} password
+     */
     registration(email, password) {
-        /** @create new user */
         return this.auth.createUserWithEmailAndPassword(email, password);
     }
 
+    /**
+     * Destroy session
+     * @return {Object} Object  with empty session data
+     */
     signOut() {
-        /** @destroy session */
         return this.auth.signOut();
     }
 
+    /**
+     * User data
+     * @return {Object} Object with user data
+     */
     getCurrentUser() {
-        /** @get current user */
         return this.auth.currentUser;
     }
 }
