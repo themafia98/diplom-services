@@ -98,8 +98,7 @@ class App extends React.Component {
                     <RenderInBrowser ie only>
                         <div className="ie-only">
                             <p>
-                                >Приложение не поддерживает браузер IE, предлагаем установить более современные
-                                браузеры.
+                                Приложение не поддерживает браузер IE, предлагаем установить более современные браузеры.
                             </p>
                         </div>
                     </RenderInBrowser>
