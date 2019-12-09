@@ -115,7 +115,7 @@ class News extends React.PureComponent {
 
     render() {
         const { currentPage, isOpen } = this.state;
-        const { data = {} } = this.props;
+        const { data = {}, statusApp } = this.props;
         let listdata = data && data.news && Array.isArray(data.news) ? [...data.news] : [];
         const rules = true;
 
@@ -126,7 +126,7 @@ class News extends React.PureComponent {
             <div className="news">
                 <TitleModule classNameTitle="mainModuleTitle" title="Информация" />
                 {rules ? (
-                    <Button onClick={this.onOpenCreateNews} type="primary">
+                    <Button disabled={statusApp === "offline"} onClick={this.onOpenCreateNews} type="primary">
                         Создать новость
                     </Button>
                 ) : null}
@@ -150,9 +150,10 @@ class News extends React.PureComponent {
 }
 
 const mapStateToProps = state => {
+    const { publicReducer: { status: statusApp = "" } = {}, router = {} } = state;
     return {
-        storeCache: state.publicReducer.caches,
-        router: state.router
+        router,
+        statusApp
     };
 };
 

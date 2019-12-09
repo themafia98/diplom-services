@@ -4,7 +4,7 @@ import { Editor } from "react-draft-wysiwyg";
 import _ from "lodash";
 import { getEditorJSON } from "../../../Utils/schema";
 import "../../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import { Button } from "antd";
+import { Button, notification } from "antd";
 
 class EditorTextarea extends React.Component {
     state = {
@@ -42,7 +42,7 @@ class EditorTextarea extends React.Component {
 
     render() {
         const { contentState = null } = this.state;
-        const { mode = "", onPublish = null, readOnly = false } = this.props;
+        const { mode = "", onPublish = null, readOnly = false, disabled = false } = this.props;
 
         const readOnlyProps =
             readOnly && contentState
@@ -54,7 +54,7 @@ class EditorTextarea extends React.Component {
         return (
             <div className={["content", readOnly ? "readOnly" : null].join(" ")}>
                 <Editor
-                    readOnly={readOnly}
+                    readOnly={disabled || readOnly}
                     toolbarHidden={readOnly}
                     localization={{ locale: "ru" }}
                     wrapperClassName="editor-wrapper"
@@ -64,6 +64,7 @@ class EditorTextarea extends React.Component {
                 />
                 {mode === "createNewsEdit" && !readOnly ? (
                     <Button
+                        disabled={disabled}
                         onClick={onPublish ? onPublish.bind(this, contentState) : null}
                         className="createNews-button"
                         type="primary"

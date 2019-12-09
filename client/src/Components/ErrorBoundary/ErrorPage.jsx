@@ -8,7 +8,9 @@ const ErrorPage = ({ error, logger, update }) => {
             <p style={{ display: "none" }} className="messageError">
                 {error.message}
             </p>
-            <button onClick={logger}>Report error</button>
+            <button disabled={true} onClick={logger}>
+                Report error
+            </button>
             <button onClick={update}>Update app</button>
         </div>
     );
@@ -16,6 +18,6 @@ const ErrorPage = ({ error, logger, update }) => {
 ErrorPage.propTypes = {
     error: PropTypes.object.isRequired,
     logger: PropTypes.func.isRequired,
-    update: PropTypes.func.isRequired,
+    update: PropTypes.func.isRequired
 };
 export default ErrorPage;

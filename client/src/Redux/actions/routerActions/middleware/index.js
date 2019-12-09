@@ -35,7 +35,8 @@ export const loadCurrentData = ({
             .then(items => {
                 const copyStore = [...items];
                 const undefiendCopyStore = [];
-                if (!noCorsClient) {
+
+                if (noCorsClient) {
                     if (requestError !== null) dispatch(errorRequstAction(null));
                     return dispatch(saveComponentStateAction({ [storeLoad]: copyStore, load: true, path: pathValid }));
                 }

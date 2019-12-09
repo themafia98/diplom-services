@@ -9,6 +9,8 @@ const Bar = ({ data, dateList }) => {
         const keysData = Object.keys(data);
         const result = [];
 
+        if (!data.length) return [];
+
         for (let i = 0; i < dateList.length; i++) {
             let metadataCounterDone = 0;
             let metadataCounterFail = 0;
@@ -16,8 +18,8 @@ const Bar = ({ data, dateList }) => {
                 const key = keysData[j];
                 const it = data[key];
 
-                const dateStart = it.date[0].split(/\./gi)[1];
-                const dateEnd = it.date[1].split(/\./gi)[1];
+                const dateStart = it.date[0].split(/\./gi)[1] - 1;
+                const dateEnd = it.date[1].split(/\./gi)[1] - 1;
 
                 const titleMonthStart = moment()
                     .month(dateStart)

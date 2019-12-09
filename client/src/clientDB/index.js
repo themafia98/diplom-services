@@ -64,14 +64,18 @@ class ClientDB {
 
                 let isUsersObject = false;
                 let isTasksObject = false;
-                let isNewsObject = false;
                 let isJurnalWorkObject = false;
 
                 const newVersionUpdate = event.newVersion !== event.oldVersion && event.oldVersion !== 0;
 
+                if (newVersionUpdate) {
+                    debugger;
+                    indexedDB.deleteDatabase(this.db);
+                    return void this.init();
+                }
+
                 if (db.objectStoreNames.contains("users") && !newVersionUpdate) isUsersObject = true;
                 if (db.objectStoreNames.contains("tasks") && !newVersionUpdate) isTasksObject = true;
-                if (db.objectStoreNames.contains("news") && !newVersionUpdate) isNewsObject = true;
                 if (db.objectStoreNames.contains("jurnalWork") && !newVersionUpdate) isJurnalWorkObject = true;
 
                 const objectStoreUsers =
@@ -123,33 +127,6 @@ class ClientDB {
                             if (isCanDelete) objectStoreTasks.deleteIndex(key);
                         }
                         objectStoreTasks.createIndex(key, key, {
-                            unique: key === "key" ? true : false
-                        });
-                    });
-                }
-
-                const objectStoreNews =
-                    !isNewsObject && !newVersionUpdate
-                        ? db.createObjectStore("news", {
-                              unique: true,
-                              keyPath: "key",
-                              autoIncrement: true
-                          })
-                        : newVersionUpdate
-                        ? requestOpen.transaction.objectStore("news")
-                        : null;
-
-                if (!isNewsObject) {
-                    const schemaNews = getValidateSchema(NEWS_SCHEMA);
-                    const keysNews = Object.keys(schemaNews);
-
-                    keysNews.forEach((key, i) => {
-                        if (newVersionUpdate) {
-                            const keysIndex = Object.keys(objectStoreNews.indexNames);
-                            const isCanDelete = keysNews.includes(objectStoreNews.indexNames[keysIndex[i]]);
-                            if (isCanDelete) objectStoreNews.deleteIndex(key);
-                        }
-                        objectStoreNews.createIndex(key, key, {
                             unique: key === "key" ? true : false
                         });
                     });

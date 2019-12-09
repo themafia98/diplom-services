@@ -99,6 +99,7 @@ class ContactModule extends React.PureComponent {
                 </TabContainer>
                 <TabContainer isBackground={isBackgroundCreateNews} visible={path === "contactModule_createNews"}>
                     <CreateNews
+                        readOnly={statusApp === "offline"}
                         key="createNews"
                         statusApp={statusApp}
                         firebase={firebase}
@@ -122,7 +123,8 @@ class ContactModule extends React.PureComponent {
 }
 
 const mapStateToProps = state => {
-    return { router: state.router };
+    const { router = {} } = state;
+    return { router };
 };
 
 const mapDispatchToProps = dispatch => {

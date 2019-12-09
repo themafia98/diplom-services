@@ -7,7 +7,7 @@
     },
     "clientDB": {
         "name": "controllSystemDB",
-        "version": 1
+        "version": 2
     },
     "forceUpdate": false,
     "msTimeoutLoading": 0,
