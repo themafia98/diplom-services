@@ -1,10 +1,18 @@
-import { SET_ERROR, SET_CACHE, SET_STATUS, SET_ACTIVE_CHAT_TOKEN, SHOW_GUIDE } from "../../actions/publicActions/const";
+import {
+    SET_ERROR,
+    SET_CACHE,
+    SET_STATUS,
+    SET_ACTIVE_CHAT_TOKEN,
+    SHOW_GUIDE,
+    UDATA_LOAD
+} from "../../actions/publicActions/const";
 
 const initialState = {
     status: "online",
     prewStatus: "online",
     firstConnect: false,
     requestError: null,
+    udata: {},
     chat: { chatToken: null },
     caches: {}
 };
@@ -20,6 +28,17 @@ export default (state = initialState, action) => {
                         : action.payload
                         ? [action.payload]
                         : null
+            };
+        }
+
+        case UDATA_LOAD: {
+            const { payload = {} } = action;
+            const metadata = {
+                ...payload.providerData[0]
+            };
+            return {
+                ...state,
+                udata: metadata
             };
         }
 

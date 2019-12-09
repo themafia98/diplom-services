@@ -69,7 +69,6 @@ class ClientDB {
                 const newVersionUpdate = event.newVersion !== event.oldVersion && event.oldVersion !== 0;
 
                 if (newVersionUpdate) {
-                    debugger;
                     indexedDB.deleteDatabase(this.db);
                     return void this.init();
                 }

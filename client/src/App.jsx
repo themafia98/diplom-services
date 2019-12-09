@@ -10,7 +10,7 @@ import { forceUpdateDetectedInit } from "./Utils";
 
 //import * as Sentry from "@sentry/browser";
 
-import { setStatus } from "./Redux/actions/publicActions";
+import { setStatus, loadUdata } from "./Redux/actions/publicActions";
 import { addTabAction } from "./Redux/actions/routerActions";
 
 import { routeParser } from "./Utils";
@@ -36,7 +36,13 @@ class App extends React.Component {
     };
 
     loadAppSession = () => {
-        const { addTab, setCurrentTab, router: { currentActionTab = "", actionTabs = [] } = {} } = this.props;
+        const {
+            addTab,
+            setCurrentTab,
+            router: { currentActionTab = "", actionTabs = [] } = {},
+            firebase = {},
+            onLoadUdata
+        } = this.props;
         return this.setState({ isUser: true, firebaseLoadState: true }, () => {
             let path = "mainModule";
             const defaultModule = config.menu.find(item => item["SIGN"] === "default");
@@ -48,8 +54,15 @@ class App extends React.Component {
             if (!isFind && config.tabsLimit <= actionTabsCopy.length)
                 return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
 
-            if (!isFind) addTab(routeParser({ path }));
-            else if (currentActionTab !== path) setCurrentTab(path);
+            const udata = firebase.getCurrentUser();
+
+            if (!isFind && udata) {
+                if (udata) onLoadUdata(udata).then(() => addTab(routeParser({ path })));
+                else setCurrentTab(path);
+            } else if (currentActionTab !== path) {
+                if (udata) onLoadUdata(udata).then(() => setCurrentTab(path));
+                else setCurrentTab(path);
+            }
         });
     };
 
@@ -118,7 +131,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         addTab: async tab => await dispatch(addTabAction(tab)),
-        onSetStatus: status => dispatch(setStatus({ statusRequst: status }))
+        onSetStatus: status => dispatch(setStatus({ statusRequst: status })),
+        onLoadUdata: async udata => await dispatch(loadUdata(udata))
     };
 };
 

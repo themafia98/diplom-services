@@ -18,5 +18,5 @@ export const PrivateRoute = ({ component: Component, firebase, ...routeProps }) 
 
 PrivateRoute.propTypes = {
     component: PropTypes.object.isRequired,
-    firebase: PropTypes.object.isRequired,
+    firebase: PropTypes.object.isRequired
 };

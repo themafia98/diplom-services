@@ -10,5 +10,35 @@
     .statisticsModule__main {
         overflow: hidden;
         height: calc(100% - 100px);
+        .col-6 {
+            height: 100%;
+            .barWrapper {
+                height: calc(80vh - 50px);
+            }
+        }
+    }
+}
+
+@media screen and (max-height: 840px) {
+    .statisticsModule {
+        .statisticsModule__main {
+            .col-6 {
+                .barWrapper {
+                    height: calc(80vh - 60px);
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-height: 630px) {
+    .statisticsModule {
+        .statisticsModule__main {
+            .col-6 {
+                .barWrapper {
+                    height: calc(80vh - 80px);
+                }
+            }
+        }
     }
 }

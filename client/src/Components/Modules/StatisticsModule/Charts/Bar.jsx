@@ -52,7 +52,7 @@ const Bar = ({ data, dateList }) => {
     };
 
     return (
-        <div style={{ height: "80vh" }}>
+        <div className="barWrapper">
             <ResponsiveBar
                 data={buildingBar()}
                 keys={["Выполнено", "Не выполнено"]}
