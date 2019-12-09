@@ -97,7 +97,10 @@ class App extends React.Component {
                 <React.Fragment>
                     <RenderInBrowser ie only>
                         <div className="ie-only">
-                            IE не поддерживается нашим приложением, предлагаем установить более современные браузеры.
+                            <p>
+                                >Приложение не поддерживает браузер IE, предлагаем установить более современные
+                                браузеры.
+                            </p>
                         </div>
                     </RenderInBrowser>
                     <RenderInBrowser except ie>
