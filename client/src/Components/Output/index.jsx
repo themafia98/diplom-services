@@ -7,7 +7,7 @@ class Output extends React.PureComponent {
     state = {
         showTooltip: false,
         widthChild: null,
-        widthParent: null,
+        widthParent: null
     };
 
     child = null;
@@ -24,8 +24,24 @@ class Output extends React.PureComponent {
                 ...this.state,
                 showTooltip: childW > parentW,
                 widthChild: childW,
-                widthParent: parentW,
+                widthParent: parentW
             });
+        }
+    };
+
+    componentDidUpdate = () => {
+        const { showTooltip, widthChild, widthParent } = this.state;
+        if (!_.isNull(widthChild) && !_.isNull(widthParent) && this.child && this.parent) {
+            const childW = this.child.getBoundingClientRect().width;
+            const parentW = this.parent.getBoundingClientRect().width;
+            const showTooltipUpdate = childW > parentW;
+            if (showTooltipUpdate !== showTooltip) {
+                return this.setState({
+                    showTooltip: showTooltipUpdate,
+                    widthChild: childW,
+                    widthParent: parentW
+                });
+            }
         }
     };
 
@@ -71,7 +87,7 @@ class Output extends React.PureComponent {
 Output.propTypes = {
     className: PropTypes.string,
     children: PropTypes.oneOfType([PropTypes.object, PropTypes.string, () => null]),
-    type: PropTypes.string,
+    type: PropTypes.string
 };
 
 export default Output;
