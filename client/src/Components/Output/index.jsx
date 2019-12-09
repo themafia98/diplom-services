@@ -37,6 +37,7 @@ class Output extends React.PureComponent {
             const showTooltipUpdate = childW > parentW;
             if (showTooltipUpdate !== showTooltip) {
                 return this.setState({
+                    ...this.state,
                     showTooltip: showTooltipUpdate,
                     widthChild: childW,
                     widthParent: parentW
