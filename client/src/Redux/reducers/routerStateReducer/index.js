@@ -77,8 +77,8 @@ export default (state = initialState, action) => {
         case SAVE_STATE: {
             const copyRouteData = { ...state.routeData };
             let path = action.payload.path;
+            const update = action.shouldUpdate || false;
             let pathParse = path.split("_");
-
             if (
                 pathParse[0] === "taskModule" &&
                 pathParse[1] &&
@@ -96,7 +96,7 @@ export default (state = initialState, action) => {
                 ...state,
                 routeData: copyRouteData,
                 load: action.payload.load,
-                shouldUpdate: false
+                shouldUpdate: update
             };
         }
 
