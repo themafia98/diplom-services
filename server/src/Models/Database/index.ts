@@ -23,27 +23,23 @@ namespace Database {
         private operations(name: string): collectionOperations {
             return {
                 get: async (param: MetadataConfig = {}): Promise<Dbms> => {
-                    const getData = _.isEmpty(param) ? this.getData({ name }) : this.getData({ name, param });
-                    this.setResponseParams(getData);
+                    const data = _.isEmpty(param) ? { name } : { name, param };
+                    this.setResponseParams({ get: data });
                     return this;
                 },
                 put: async (param: MetadataConfig = {}): Promise<Dbms> => {
-                    const putData = _.isEmpty(param) ? this.putData({ name }) : await this.putData({ name, param });
-                    this.setResponseParams(putData);
+                    const data = _.isEmpty(param) ? { name } : { name, param };
+                    this.setResponseParams({ put: data });
                     return this;
                 },
                 delete: async (param: MetadataConfig = {}): Promise<Dbms> => {
-                    const deleteData = _.isEmpty(param)
-                        ? await this.updateData({ name })
-                        : await this.updateData({ name, param });
-                    this.setResponseParams(deleteData);
+                    const data = _.isEmpty(param) ? { name } : { name, param };
+                    this.setResponseParams({ delete: data });
                     return this;
                 },
                 update: async (param: MetadataConfig = {}): Promise<Dbms> => {
-                    const updateData = _.isEmpty(param)
-                        ? await this.deleteData({ name })
-                        : await this.deleteData({ name, param });
-                    this.setResponseParams({ name, param });
+                    const data = _.isEmpty(param) ? { name } : { name, param };
+                    this.setResponseParams({ update: data });
                     return this;
                 },
                 start: async () => {
@@ -87,7 +83,9 @@ namespace Database {
         }
 
         public setResponseParams(param: Object | string): void {
-            this.responseParams[<string>param] = param;
+            const key = Object.keys(param);
+            if (!key) return;
+            this.responseParams[<string>key[0]] = param;
         }
 
         public clearResponseParams(): Dbms {
@@ -97,22 +95,6 @@ namespace Database {
 
         public collection(name: string): collectionOperations {
             return this.operations(name);
-        }
-
-        private async getData(config: MetadataConfig): Promise<Metadata> {
-            return {};
-        }
-
-        private async putData(config: MetadataConfig): Promise<boolean> {
-            return true;
-        }
-
-        private async deleteData(config: MetadataConfig): Promise<boolean> {
-            return true;
-        }
-
-        private async updateData(config: MetadataConfig): Promise<boolean> {
-            return true;
         }
     }
 }
