@@ -22,32 +22,30 @@ namespace Database {
 
         private operations(name: string): collectionOperations {
             return {
-                get: async (param: MetadataConfig = {}): Promise<Dbms> => {
+                get: (param: MetadataConfig = {}): collectionOperations => {
                     const data = _.isEmpty(param) ? { name } : { name, param };
                     this.setResponseParams({ get: data });
-                    return this;
+                    return this.operations(name);
                 },
-                put: async (param: MetadataConfig = {}): Promise<Dbms> => {
+                put: (param: MetadataConfig = {}): collectionOperations => {
                     const data = _.isEmpty(param) ? { name } : { name, param };
                     this.setResponseParams({ put: data });
-                    return this;
+                    return this.operations(name);
                 },
-                delete: async (param: MetadataConfig = {}): Promise<Dbms> => {
+                delete: (param: MetadataConfig = {}): collectionOperations => {
                     const data = _.isEmpty(param) ? { name } : { name, param };
                     this.setResponseParams({ delete: data });
-                    return this;
+                    return this.operations(name);
                 },
-                update: async (param: MetadataConfig = {}): Promise<Dbms> => {
+                update: (param: MetadataConfig = {}): collectionOperations => {
                     const data = _.isEmpty(param) ? { name } : { name, param };
                     this.setResponseParams({ update: data });
-                    return this;
+                    return this.operations(name);
                 },
                 start: async () => {
-                    const body = this.getResponseParams() || {};
-                    const operationsKeys = Object.keys(body);
-                    operationsKeys.forEach(
-                        async operation => await DatabaseActions.routeDatabaseActions(body[operation])
-                    );
+                    const body =
+                        Object.keys(this.getResponseParams()).map(param => this.getResponseParams()[param]) || [];
+                    body.forEach(async operation => await DatabaseActions.routeDatabaseActions(operation));
                 }
             };
         }
@@ -85,7 +83,7 @@ namespace Database {
         public setResponseParams(param: Object | string): void {
             const key = Object.keys(param);
             if (!key) return;
-            this.responseParams[<string>key[0]] = param;
+            this.responseParams[<string>key[0]] = Object.assign(param, {});
         }
 
         public clearResponseParams(): Dbms {
