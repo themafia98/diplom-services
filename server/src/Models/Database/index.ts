@@ -44,12 +44,12 @@ namespace Database {
             return this.responseParams;
         }
 
-        public setResponse(config: Object = {}): Dbms {
-            this.responseParams = config;
+        public setResponse(config: Object): Dbms {
+            this.responseParams = config || {};
             return this;
         }
 
-        public setResponseParams(key: string, param: Object | string) {
+        public setResponseParams(key: string, param: Object | string): void {
             this.responseParams[key] = param;
         }
 

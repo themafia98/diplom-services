@@ -17,8 +17,14 @@ export interface Route {
 }
 
 export interface Dbms {
+    db: string;
     getConnect(): Mongoose | null;
     connection(): Promise<void | Mongoose>;
+    disconnect(): Promise<null | Mongoose>;
+    getResponseParams(): ResponseMetadata;
+    setResponse(config: Object): Dbms;
+    setResponseParams(key: string, param: Object | string): void;
+    clearResponseParams(): Dbms;
     collection(name: string): collectionOperations;
 }
 
