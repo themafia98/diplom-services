@@ -1,5 +1,5 @@
 import express, { Application, Router as RouteExpress } from "express";
-import { Route } from "../../Interfaces";
+import { Route } from "../../Utils/Interfaces";
 
 namespace RouterInstance {
     export let instanceRoute: Route | null = null;

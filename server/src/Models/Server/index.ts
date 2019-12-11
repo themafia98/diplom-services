@@ -1,10 +1,10 @@
 import express, { Request, Response, Application, Router as RouteExpress } from "express";
 import helmet from "helmet";
 import chalk from "chalk";
-import { Route } from "../../Interfaces";
+import { Route } from "../../Utils/Interfaces";
 import RouterInstance from "../Router";
 import { Server as HttpServer } from "http";
-import { ServerRun } from "../../Interfaces";
+import { ServerRun } from "../../Utils/Interfaces";
 
 class ServerRunner implements ServerRun {
     private port: string;

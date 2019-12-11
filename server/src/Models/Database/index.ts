@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { Dbms } from "../../Interfaces";
+import { Dbms } from "../../Utils/Interfaces";
 
 namespace Database {
     class ManagmentDatabase implements Dbms {

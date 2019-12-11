@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { CryptoSecurity } from "../../Interfaces";
+import { CryptoSecurity } from "../../Utils/Interfaces";
 
 namespace Security {
     class Crypto implements CryptoSecurity {
