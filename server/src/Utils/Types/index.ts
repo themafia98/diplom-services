@@ -5,5 +5,6 @@ export type collectionOperations = {
     put: Function;
     delete: Function;
     update: Function;
+    start: Function;
 };
 export type FileTransportInstance = winston.transports.FileTransportInstance;

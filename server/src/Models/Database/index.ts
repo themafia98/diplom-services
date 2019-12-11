@@ -1,6 +1,7 @@
 import mongoose, { Mongoose } from "mongoose";
 import dotenv from "dotenv";
 import _ from "lodash";
+import DatabaseActions from "./actions";
 import { collectionOperations } from "../../Utils/Types";
 import { Dbms, ResponseMetadata, Metadata, MetadataConfig } from "../../Utils/Interfaces";
 
@@ -17,6 +18,44 @@ namespace Database {
 
         public get db() {
             return this.dbClient;
+        }
+
+        private operations(): collectionOperations {
+            return {
+                get: async (param: MetadataConfig = {}): Promise<Dbms> => {
+                    const getData = _.isEmpty(param)
+                        ? await this.getData({ name })
+                        : await this.getData({ name, param });
+                    this.setResponseParams(getData);
+                    return this;
+                },
+                put: async (param: MetadataConfig = {}): Promise<Dbms> => {
+                    const putData = _.isEmpty(param)
+                        ? await this.putData({ name })
+                        : await this.putData({ name, param });
+                    this.setResponseParams(putData);
+                    return this;
+                },
+                delete: async (param: MetadataConfig = {}): Promise<Dbms> => {
+                    const deleteData = _.isEmpty(param)
+                        ? await this.deleteData({ name })
+                        : await this.deleteData({ name, param });
+                    this.setResponseParams(deleteData);
+                    return this;
+                },
+                update: async (param: MetadataConfig = {}): Promise<Dbms> => {
+                    const updateData = _.isEmpty(param)
+                        ? await this.updateData({ name })
+                        : await this.updateData({ name, param });
+                    this.setResponseParams(updateData);
+                    return this;
+                },
+                start: async () => {
+                    const body = this.getResponseParams() || {};
+                    const operationsKeys = Object.keys(body);
+                    operationsKeys.forEach(async operation => await DatabaseActions.routeDatabaseActions(operation));
+                }
+            };
         }
 
         public async connection(): Promise<void | Mongoose> {
@@ -49,8 +88,8 @@ namespace Database {
             return this;
         }
 
-        public setResponseParams(key: string, param: Object | string): void {
-            this.responseParams[key] = param;
+        public setResponseParams(param: Object | string): void {
+            this.responseParams[<string>param] = param;
         }
 
         public clearResponseParams(): Dbms {
@@ -59,28 +98,7 @@ namespace Database {
         }
 
         public collection(name: string): collectionOperations {
-            return {
-                get: async (param: MetadataConfig = {}): Promise<Dbms> => {
-                    const data = _.isEmpty(param) ? await this.getData({ name }) : await this.getData({ name, param });
-                    return this;
-                },
-                put: async (param: MetadataConfig = {}): Promise<Dbms> => {
-                    const data = _.isEmpty(param) ? await this.putData({ name }) : await this.putData({ name, param });
-                    return this;
-                },
-                delete: async (param: MetadataConfig = {}): Promise<Dbms> => {
-                    const data = _.isEmpty(param)
-                        ? await this.deleteData({ name })
-                        : await this.deleteData({ name, param });
-                    return this;
-                },
-                update: async (param: MetadataConfig = {}): Promise<Dbms> => {
-                    const data = _.isEmpty(param)
-                        ? await this.updateData({ name })
-                        : await this.updateData({ name, param });
-                    return this;
-                }
-            };
+            return this.operations();
         }
 
         private async getData(config: MetadataConfig): Promise<Metadata> {
