@@ -13,3 +13,13 @@ export interface Route {
     initInstance(path: string): Application;
     createRoute(path: string, flag?: string): RouteExpress;
 }
+
+export interface Dbms {
+    getConnect(): string;
+    getData(config: Object): Object;
+    putData(config: Object): boolean;
+    deleteData(config: Object): boolean;
+    updateData(config: Object): boolean;
+}
+
+export interface CryptoSecurity {}

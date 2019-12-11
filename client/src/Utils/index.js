@@ -2,14 +2,17 @@ import _ from "lodash";
 import Request from "./xhr";
 import { getValidateSchema, validateSchema } from "./schema";
 
-/** @return {void} void */
+/**
+ * @return {void} void
+ */
 const forceUpdateDetectedInit = () => {
     window.addEventListener("beforeunload", event => {
         event.returnValue = `Are you sure you want to leave?`;
     });
 };
 
-/** @return {Object} valid schema object or null
+/**
+ * @return {Object} valid schema object or null
  * @param {string} type string
  * @param {Object} data string
  * @param {string} mode string
@@ -29,7 +32,8 @@ const getSchema = (type, data, mode = "no-strict") => {
     else return null;
 };
 
-/** @return {string} route path string
+/**
+ * @return {string} route path string
  *  @param {string} pageType string
  *  @param {string | null} path string or null
  */
@@ -62,7 +66,8 @@ export const routeParser = ({ pageType = "module", path: route = null }) => {
     } else return route;
 };
 
-/** @return {object} object with normalize path
+/**
+ *  @return {object} object with normalize path
  *  @param {string} pathType string
  *  @param {Object} pathData Object
  *  @param {string} page string (pathData)
