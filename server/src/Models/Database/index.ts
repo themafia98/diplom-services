@@ -1,9 +1,12 @@
 import mongoose from "mongoose";
-import { Dbms } from "../../Utils/Interfaces";
+import _ from "lodash";
+import { collectionOperations } from "../../Utils/Types";
+import { Dbms, ResponseMetadata } from "../../Utils/Interfaces";
 
 namespace Database {
     class ManagmentDatabase implements Dbms {
         private connect: string;
+        private responseParams: ResponseMetadata = {};
 
         constructor(connectionString: string) {
             this.connect = connectionString;
@@ -13,19 +16,57 @@ namespace Database {
             return this.connect;
         }
 
-        public getData(config: Object): Object {
+        public getResponseParams(): ResponseMetadata {
+            return this.responseParams;
+        }
+
+        public setResponseParams(key: string, param: Object | string) {
+            this.responseParams[key] = param;
+        }
+
+        public clearResponseParams(): Dbms {
+            this.responseParams = {};
+            return this;
+        }
+
+        public collection(name: string): collectionOperations {
+            return {
+                get: async (param?: Object): Promise<Dbms> => {
+                    const data = _.isEmpty(param) ? await this.getData({ name }) : await this.getData({ name, param });
+                    return this;
+                },
+                put: async (param?: Object): Promise<Dbms> => {
+                    const data = _.isEmpty(param) ? await this.putData({ name }) : await this.putData({ name, param });
+                    return this;
+                },
+                delete: async (param?: Object): Promise<Dbms> => {
+                    const data = _.isEmpty(param)
+                        ? await this.deleteData({ name })
+                        : await this.deleteData({ name, param });
+                    return this;
+                },
+                update: async (param?: Object): Promise<Dbms> => {
+                    const data = _.isEmpty(param)
+                        ? await this.updateData({ name })
+                        : await this.updateData({ name, param });
+                    return this;
+                }
+            };
+        }
+
+        private async getData(config: Object): Promise<Object> {
             return {};
         }
 
-        public putData(config: Object): boolean {
+        private async putData(config: Object): Promise<boolean> {
             return true;
         }
 
-        public deleteData(config: Object): boolean {
+        private async deleteData(config: Object): Promise<boolean> {
             return true;
         }
 
-        public updateData(config: Object): boolean {
+        private async updateData(config: Object): Promise<boolean> {
             return true;
         }
     }

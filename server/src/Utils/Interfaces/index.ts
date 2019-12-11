@@ -1,4 +1,5 @@
 import { Application, Router as RouteExpress } from "express";
+import { collectionOperations } from "../Types";
 
 export interface ServerRun {
     setApp(express: Application): void;
@@ -16,10 +17,11 @@ export interface Route {
 
 export interface Dbms {
     getConnect(): string;
-    getData(config: Object): Object;
-    putData(config: Object): boolean;
-    deleteData(config: Object): boolean;
-    updateData(config: Object): boolean;
+    collection(name: string): collectionOperations;
+}
+
+export interface ResponseMetadata {
+    [key: string]: any;
 }
 
 export interface CryptoSecurity {}

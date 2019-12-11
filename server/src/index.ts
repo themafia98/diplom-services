@@ -5,7 +5,7 @@ import { ServerRun } from "./Utils/Interfaces";
 import ServerRunner from "./Models/Server";
 
 if (process.env.NODE_ENV === "production") {
-    /** @nginx init */
+    /** nginx init */
     fs.openSync("/tmp/app-initialized", "w");
 }
 
