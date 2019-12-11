@@ -1,19 +1,43 @@
-import mongoose from "mongoose";
+import mongoose, { Mongoose } from "mongoose";
+import dotenv from "dotenv";
 import _ from "lodash";
 import { collectionOperations } from "../../Utils/Types";
-import { Dbms, ResponseMetadata } from "../../Utils/Interfaces";
+import { Dbms, ResponseMetadata, Metadata, MetadataConfig } from "../../Utils/Interfaces";
 
 namespace Database {
-    class ManagmentDatabase implements Dbms {
-        private connect: string;
+    dotenv.config();
+    export class ManagmentDatabase implements Dbms {
+        private dbClient: string;
+        private connect: Mongoose | undefined;
         private responseParams: ResponseMetadata = {};
 
-        constructor(connectionString: string) {
-            this.connect = connectionString;
+        constructor(db: string) {
+            this.dbClient = db;
         }
 
-        public getConnect() {
-            return this.connect;
+        public get db() {
+            return this.dbClient;
+        }
+
+        public async connection(): Promise<void | Mongoose> {
+            if (this.getConnect() || !process.env.MONGODB_URI) return <Mongoose>this.getConnect();
+            this.connect = await mongoose.connect(<string>process.env.MONGODB_URI, {
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+                connectTimeoutMS: 1000
+            });
+        }
+
+        public async disconnect(): Promise<null | Mongoose> {
+            if (this.getConnect()) {
+                await mongoose.disconnect();
+                return <Mongoose>this.getConnect();
+            } else return null;
+        }
+
+        public getConnect(): Mongoose | null {
+            if (this.connect as Mongoose) return <Mongoose>this.connect;
+            else return null;
         }
 
         public getResponseParams(): ResponseMetadata {
@@ -31,21 +55,21 @@ namespace Database {
 
         public collection(name: string): collectionOperations {
             return {
-                get: async (param?: Object): Promise<Dbms> => {
+                get: async (param: MetadataConfig = {}): Promise<Dbms> => {
                     const data = _.isEmpty(param) ? await this.getData({ name }) : await this.getData({ name, param });
                     return this;
                 },
-                put: async (param?: Object): Promise<Dbms> => {
+                put: async (param: MetadataConfig = {}): Promise<Dbms> => {
                     const data = _.isEmpty(param) ? await this.putData({ name }) : await this.putData({ name, param });
                     return this;
                 },
-                delete: async (param?: Object): Promise<Dbms> => {
+                delete: async (param: MetadataConfig = {}): Promise<Dbms> => {
                     const data = _.isEmpty(param)
                         ? await this.deleteData({ name })
                         : await this.deleteData({ name, param });
                     return this;
                 },
-                update: async (param?: Object): Promise<Dbms> => {
+                update: async (param: MetadataConfig = {}): Promise<Dbms> => {
                     const data = _.isEmpty(param)
                         ? await this.updateData({ name })
                         : await this.updateData({ name, param });
@@ -54,19 +78,19 @@ namespace Database {
             };
         }
 
-        private async getData(config: Object): Promise<Object> {
+        private async getData(config: MetadataConfig): Promise<Metadata> {
             return {};
         }
 
-        private async putData(config: Object): Promise<boolean> {
+        private async putData(config: MetadataConfig): Promise<boolean> {
             return true;
         }
 
-        private async deleteData(config: Object): Promise<boolean> {
+        private async deleteData(config: MetadataConfig): Promise<boolean> {
             return true;
         }
 
-        private async updateData(config: Object): Promise<boolean> {
+        private async updateData(config: MetadataConfig): Promise<boolean> {
             return true;
         }
     }

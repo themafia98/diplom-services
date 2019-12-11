@@ -1,5 +1,6 @@
 import { Application, Router as RouteExpress } from "express";
 import { collectionOperations } from "../Types";
+import { Mongoose } from "mongoose";
 
 export interface ServerRun {
     setApp(express: Application): void;
@@ -16,12 +17,16 @@ export interface Route {
 }
 
 export interface Dbms {
-    getConnect(): string;
+    getConnect(): Mongoose | null;
+    connection(): Promise<void | Mongoose>;
     collection(name: string): collectionOperations;
 }
 
 export interface ResponseMetadata {
     [key: string]: any;
 }
+
+export interface Metadata {}
+export interface MetadataConfig {}
 
 export interface CryptoSecurity {}

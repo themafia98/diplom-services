@@ -6,6 +6,8 @@ import RouterInstance from "../Router";
 import { Server as HttpServer } from "http";
 import { ServerRun } from "../../Utils/Interfaces";
 
+import Database from "../Database";
+
 class ServerRunner implements ServerRun {
     private port: string;
     private application: null | Application = null;
@@ -37,6 +39,8 @@ class ServerRunner implements ServerRun {
 
         const rest: RouteExpress = instanceRouter.initInstance("/rest");
         const db: RouteExpress = instanceRouter.createRoute("/db");
+
+        const dbtest = new Database.ManagmentDatabase("controllSystem");
 
         process.on("SIGTERM", (): void => {
             server.close();
