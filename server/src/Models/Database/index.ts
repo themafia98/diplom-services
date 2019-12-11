@@ -20,40 +20,38 @@ namespace Database {
             return this.dbClient;
         }
 
-        private operations(): collectionOperations {
+        private operations(name: string): collectionOperations {
             return {
                 get: async (param: MetadataConfig = {}): Promise<Dbms> => {
-                    const getData = _.isEmpty(param)
-                        ? await this.getData({ name })
-                        : await this.getData({ name, param });
+                    const getData = _.isEmpty(param) ? this.getData({ name }) : this.getData({ name, param });
                     this.setResponseParams(getData);
                     return this;
                 },
                 put: async (param: MetadataConfig = {}): Promise<Dbms> => {
-                    const putData = _.isEmpty(param)
-                        ? await this.putData({ name })
-                        : await this.putData({ name, param });
+                    const putData = _.isEmpty(param) ? this.putData({ name }) : await this.putData({ name, param });
                     this.setResponseParams(putData);
                     return this;
                 },
                 delete: async (param: MetadataConfig = {}): Promise<Dbms> => {
                     const deleteData = _.isEmpty(param)
-                        ? await this.deleteData({ name })
-                        : await this.deleteData({ name, param });
+                        ? await this.updateData({ name })
+                        : await this.updateData({ name, param });
                     this.setResponseParams(deleteData);
                     return this;
                 },
                 update: async (param: MetadataConfig = {}): Promise<Dbms> => {
                     const updateData = _.isEmpty(param)
-                        ? await this.updateData({ name })
-                        : await this.updateData({ name, param });
-                    this.setResponseParams(updateData);
+                        ? await this.deleteData({ name })
+                        : await this.deleteData({ name, param });
+                    this.setResponseParams({ name, param });
                     return this;
                 },
                 start: async () => {
                     const body = this.getResponseParams() || {};
                     const operationsKeys = Object.keys(body);
-                    operationsKeys.forEach(async operation => await DatabaseActions.routeDatabaseActions(operation));
+                    operationsKeys.forEach(
+                        async operation => await DatabaseActions.routeDatabaseActions(body[operation])
+                    );
                 }
             };
         }
@@ -98,7 +96,7 @@ namespace Database {
         }
 
         public collection(name: string): collectionOperations {
-            return this.operations();
+            return this.operations(name);
         }
 
         private async getData(config: MetadataConfig): Promise<Metadata> {
