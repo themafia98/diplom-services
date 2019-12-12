@@ -1,4 +1,4 @@
-import mongoose, { Mongoose } from "mongoose";
+import mongoose, { Mongoose, Schema } from "mongoose";
 import dotenv from "dotenv";
 import _ from "lodash";
 import DatabaseActions from "./actions";
@@ -47,17 +47,18 @@ namespace Database {
                     this.setResponseParams({ UPDATE: data });
                     return this.operations(collection);
                 },
-                start: async () => {
+                start: async (schema: Schema, callback: Function): Promise<void> => {
                     Object.keys(this.getResponseParams()).forEach(async param => {
+                        const method = Object.keys(this.getResponseParams()[param])[0];
+
                         await DatabaseActions.routeDatabaseActions(
-                            Object.assign(this.getResponseParams()[param][param], {
-                                method: Object.keys(this.getResponseParams()[param])[0]
-                            })
-                        );
+                            this.getResponseParams()[param][param],
+                            schema, callback);
                     });
                 }
-            };
-        }
+            }
+        };
+
 
         public async connection(): Promise<void | Mongoose> {
             if (this.getConnect() || !process.env.MONGODB_URI) return <Mongoose>this.getConnect();
@@ -69,6 +70,7 @@ namespace Database {
             } catch (err) {
                 console.log(err);
             }
+
         }
 
         public async disconnect(): Promise<null | Mongoose> {
@@ -108,5 +110,6 @@ namespace Database {
         }
     }
 }
+
 
 export default Database;

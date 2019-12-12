@@ -38,12 +38,8 @@ class ServerRunner implements ServerRun {
         });
 
         const rest: RouteExpress = instanceRouter.initInstance("/rest");
-        const db: RouteExpress = instanceRouter.createRoute("/db");
 
-        const dbtest = new Database.ManagmentDatabase("controllSystem");
-        dbtest.connection();
-        const a = dbtest.collection("tasks");
-        a.get({ action: "ALL" }).start();
+        this.getApp().locals.dbm = new Database.ManagmentDatabase("controllSystem");
 
         process.on("SIGTERM", (): void => {
             server.close();

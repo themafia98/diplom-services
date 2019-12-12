@@ -1,6 +1,6 @@
 import { Application, Router as RouteExpress } from "express";
 import { collectionOperations } from "../Types";
-import { Mongoose } from "mongoose";
+import { Mongoose, Schema } from "mongoose";
 
 export interface ServerRun {
     setApp(express: Application): void;
@@ -32,7 +32,7 @@ export interface ResponseMetadata {
     [key: string]: any;
 }
 
-export interface Metadata {}
-export interface MetadataConfig {}
+export interface Metadata { }
+export interface MetadataConfig { }
 
-export interface CryptoSecurity {}
+export interface CryptoSecurity { }

@@ -13,4 +13,8 @@ export type actionGet = {
     collection: string;
     param: Object;
 };
+
+export type paramAction = {
+    metadataSearch?: Object
+}
 export type FileTransportInstance = winston.transports.FileTransportInstance;

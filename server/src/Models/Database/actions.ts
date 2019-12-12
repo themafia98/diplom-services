@@ -1,29 +1,25 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, DocumentQuery, Document } from "mongoose";
 import _ from "lodash";
-import { actionGet } from "../../Utils/Types";
+import { actionGet, paramAction } from "../../Utils/Types";
 namespace DatabaseActions {
-    const Schema = mongoose.Schema;
 
-    export const routeDatabaseActions = async (operation: Object) => {
-        const GET = ({ collection = "", param = {} }) => {
-            console.log(collection);
-            const scheme = new Schema({ test: String }, { versionKey: false });
-            const allModel = mongoose.model(collection, scheme);
+    export const routeDatabaseActions = async (operation: Object, schema: Schema, callback: Function) => {
+        const GET = ({ collection = "", param = {}, method = "" }): DocumentQuery<any, Document> | null => {
 
-            allModel.find({}, function(err, docs) {
-                if (err) return console.log(err);
+            const { metadataSearch = {} } = (<paramAction>param);
+            const collectionModel = mongoose.model(collection, schema);
 
-                console.log(docs);
-            });
+            switch (method) {
+                case "all":
+                    return collectionModel.find(metadataSearch, callback);
+                default: return null;
+            }
         };
 
         if (!_.isObject(operation) && !(<any>operation).method) return;
 
         switch ((<any>operation).method) {
-            case "GET": {
-                GET(<actionGet>operation);
-                break;
-            }
+            case "GET": return GET(<actionGet>operation);
 
             case "PUT": {
                 break;
