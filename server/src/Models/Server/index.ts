@@ -39,7 +39,7 @@ class ServerRunner implements ServerRun {
 
         const rest: RouteExpress = instanceRouter.initInstance("/rest");
 
-        this.getApp().locals.dbm = new Database.ManagmentDatabase("controllSystem");
+        this.getApp().locals.dbm = new Database.ManagmentDatabase("controllSystem", <string>process.env.MONGODB_URI);
 
         process.on("SIGTERM", (): void => {
             server.close();

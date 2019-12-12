@@ -9,15 +9,13 @@ namespace Database {
     dotenv.config();
     export class ManagmentDatabase implements Dbms {
         private dbClient: string;
+        private connectionString: string;
         private connect: Mongoose | undefined;
         private responseParams: ResponseMetadata = {};
 
-        constructor(db: string) {
+        constructor(db: string, connectionString: string) {
             this.dbClient = db;
-        }
-
-        public get db() {
-            return this.dbClient;
+            this.connectionString = connectionString;
         }
 
         private operations(collection: string): collectionOperations {
@@ -59,11 +57,19 @@ namespace Database {
             }
         };
 
+        public get db() {
+            return this.dbClient;
+        }
+
+        public getConnectionString(): string {
+            return this.connectionString;
+        }
+
 
         public async connection(): Promise<void | Mongoose> {
-            if (this.getConnect() || !process.env.MONGODB_URI) return <Mongoose>this.getConnect();
+            if (this.getConnect() || !this.getConnectionString()) return <Mongoose>this.getConnect();
             try {
-                this.connect = await mongoose.connect(<string>process.env.MONGODB_URI, {
+                this.connect = await mongoose.connect(this.getConnectionString(), {
                     useNewUrlParser: true,
                     useUnifiedTopology: true
                 });
