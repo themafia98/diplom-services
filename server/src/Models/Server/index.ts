@@ -1,4 +1,5 @@
 import express, { Request, Response, Application, Router as RouteExpress } from "express";
+import _ from 'lodash';
 import helmet from "helmet";
 import chalk from "chalk";
 import { Route } from "../../Utils/Interfaces";
@@ -21,7 +22,7 @@ class ServerRunner implements ServerRun {
     }
 
     public setApp(express: Application): void {
-        if (this.application === null) this.application = express;
+        if (_.isNull(this.application)) this.application = express;
     }
 
     public start(): void {
