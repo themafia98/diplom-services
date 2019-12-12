@@ -20,43 +20,55 @@ namespace Database {
             return this.dbClient;
         }
 
-        private operations(name: string): collectionOperations {
+        private operations(collection: string): collectionOperations {
             return {
                 get: (param: MetadataConfig = {}): collectionOperations => {
-                    const data = _.isEmpty(param) ? { name } : { name, param };
-                    this.setResponseParams({ get: data });
-                    return this.operations(name);
+                    const data = _.isEmpty(param) ? { collection } : { collection, param };
+                    this.setResponseParams({ GET: data });
+                    return this.operations(collection);
+                },
+                post: (param: MetadataConfig = {}): collectionOperations => {
+                    const data = _.isEmpty(param) ? { collection } : { collection, param };
+                    this.setResponseParams({ POST: data });
+                    return this.operations(collection);
                 },
                 put: (param: MetadataConfig = {}): collectionOperations => {
-                    const data = _.isEmpty(param) ? { name } : { name, param };
-                    this.setResponseParams({ put: data });
-                    return this.operations(name);
+                    const data = _.isEmpty(param) ? { collection } : { collection, param };
+                    this.setResponseParams({ PUT: data });
+                    return this.operations(collection);
                 },
                 delete: (param: MetadataConfig = {}): collectionOperations => {
-                    const data = _.isEmpty(param) ? { name } : { name, param };
-                    this.setResponseParams({ delete: data });
-                    return this.operations(name);
+                    const data = _.isEmpty(param) ? { collection } : { collection, param };
+                    this.setResponseParams({ DELETE: data });
+                    return this.operations(collection);
                 },
                 update: (param: MetadataConfig = {}): collectionOperations => {
-                    const data = _.isEmpty(param) ? { name } : { name, param };
-                    this.setResponseParams({ update: data });
-                    return this.operations(name);
+                    const data = _.isEmpty(param) ? { collection } : { collection, param };
+                    this.setResponseParams({ UPDATE: data });
+                    return this.operations(collection);
                 },
                 start: async () => {
-                    const body =
-                        Object.keys(this.getResponseParams()).map(param => this.getResponseParams()[param]) || [];
-                    body.forEach(async operation => await DatabaseActions.routeDatabaseActions(operation));
+                    Object.keys(this.getResponseParams()).forEach(async param => {
+                        await DatabaseActions.routeDatabaseActions(
+                            Object.assign(this.getResponseParams()[param][param], {
+                                method: Object.keys(this.getResponseParams()[param])[0]
+                            })
+                        );
+                    });
                 }
             };
         }
 
         public async connection(): Promise<void | Mongoose> {
             if (this.getConnect() || !process.env.MONGODB_URI) return <Mongoose>this.getConnect();
-            this.connect = await mongoose.connect(<string>process.env.MONGODB_URI, {
-                useNewUrlParser: true,
-                useUnifiedTopology: true,
-                connectTimeoutMS: 1000
-            });
+            try {
+                this.connect = await mongoose.connect(<string>process.env.MONGODB_URI, {
+                    useNewUrlParser: true,
+                    useUnifiedTopology: true
+                });
+            } catch (err) {
+                console.log(err);
+            }
         }
 
         public async disconnect(): Promise<null | Mongoose> {

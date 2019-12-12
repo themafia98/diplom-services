@@ -1,6 +1,5 @@
 import winston from "winston";
-
-export type collectionOperations = {
+export declare type collectionOperations = {
     get: Function;
     post: Function;
     put: Function;
@@ -8,9 +7,8 @@ export type collectionOperations = {
     update: Function;
     start: Function;
 };
-
-export type actionGet = {
+export declare type actionGet = {
     collection: string;
     param: Object;
 };
-export type FileTransportInstance = winston.transports.FileTransportInstance;
+export declare type FileTransportInstance = winston.transports.FileTransportInstance;
