@@ -25,10 +25,12 @@ namespace Entrypoint {
         }
     } else {
         try {
-            const server: ServerRun = new ServerRunner(process.env.APP_PORT || "3001");
-            server.start();
+            const app: ServerRun = new ServerRunner(process.env.APP_PORT || "3001");
+            app.start();
+
         } catch (err) {
-            console.log(err);
+            console.error(err);
+            process.kill(process.ppid); // delay
         }
     }
 }

@@ -1,8 +1,8 @@
-import mongoose, { Mongoose, Schema } from "mongoose";
+import mongoose, { Mongoose, Schema, DocumentQuery, Document } from "mongoose";
 import dotenv from "dotenv";
 import _ from "lodash";
 import DatabaseActions from "./actions";
-import { collectionOperations } from "../../Utils/Types";
+import { collectionOperations } from "../../Utils/types";
 import { Dbms, ResponseMetadata, Metadata, MetadataConfig } from "../../Utils/Interfaces";
 
 namespace Database {
@@ -45,13 +45,11 @@ namespace Database {
                     this.setResponseParams({ UPDATE: data });
                     return this.operations(collection);
                 },
-                start: async (schema: Schema, callback: Function): Promise<void> => {
-                    Object.keys(this.getResponseParams()).forEach(async param => {
-                        const method = Object.keys(this.getResponseParams()[param])[0];
-
-                        await DatabaseActions.routeDatabaseActions(
-                            this.getResponseParams()[param][param],
-                            schema, callback);
+                start: async (schema: Schema, callback: Function): Promise<DocumentQuery<any, Document> | null> => {
+                    Object.keys(this.getResponseParams()).forEach(async method => {
+                        const operation = this.getResponseParams()[method][method];
+                        return await DatabaseActions.routeDatabaseActions(
+                            operation, method, schema, callback);
                     });
                 }
             }
