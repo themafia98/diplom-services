@@ -1,5 +1,5 @@
 import winston from "winston";
-import { FileTransportInstance } from "../Utils/Types";
+import { FileTransportInstance } from "./types";
 
 namespace Utils {
     export const getLoggerTransports = (level: string): Array<FileTransportInstance> | FileTransportInstance => {
