@@ -64,10 +64,8 @@ export const getValidateSchema = type => {
             };
         case NEWS_SCHEMA:
             return {
-                key: null,
-                content: null,
-                author: null,
-                date: null
+                entityMap: null,
+                blocks: null,
             };
         default:
             return null;

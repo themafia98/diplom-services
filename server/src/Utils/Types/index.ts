@@ -18,4 +18,10 @@ export type paramAction = {
     metadataSearch?: Object,
     methodQuery?: string,
 }
+
+export type schemaConfig = {
+    name: string,
+    schemaType: string,
+}
+
 export type FileTransportInstance = winston.transports.FileTransportInstance;

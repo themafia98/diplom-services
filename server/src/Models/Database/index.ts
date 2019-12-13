@@ -2,7 +2,7 @@ import mongoose, { Mongoose, Schema, DocumentQuery, Document } from "mongoose";
 import dotenv from "dotenv";
 import _ from "lodash";
 import DatabaseActions from "./actions";
-import { collectionOperations } from "../../Utils/types";
+import { collectionOperations, schemaConfig } from "../../Utils/types";
 import { Dbms, ResponseMetadata, Metadata, MetadataConfig } from "../../Utils/Interfaces";
 
 namespace Database {
@@ -45,11 +45,11 @@ namespace Database {
                     this.setResponseParams({ UPDATE: data });
                     return this.operations(collection);
                 },
-                start: async (schema: Schema, callback: Function): Promise<DocumentQuery<any, Document> | null> => {
+                start: async (configSchema: schemaConfig, callback: Function): Promise<DocumentQuery<any, Document> | null> => {
                     Object.keys(this.getResponseParams()).forEach(async method => {
                         const operation = this.getResponseParams()[method][method];
                         return await DatabaseActions.routeDatabaseActions(
-                            operation, method, schema, callback);
+                            operation, method, configSchema, callback);
                     });
                 }
             }
@@ -70,9 +70,10 @@ namespace Database {
                 this.connect = await mongoose.connect(this.getConnectionString(), {
                     useNewUrlParser: true,
                     useUnifiedTopology: true
-                });
+                })
+                console.log(this.connect);
             } catch (err) {
-                console.log(err);
+                console.error(err);
             }
 
         }
