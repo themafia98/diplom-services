@@ -37,7 +37,7 @@ ReactDOM.render(
     document.getElementById("root")
 );
 
-fetch("/tasks/list")
+fetch("/rest/tasks/list")
     .then(res => {
         console.log(res.status);
         return res;
