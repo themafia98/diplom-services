@@ -37,11 +37,4 @@ ReactDOM.render(
     document.getElementById("root")
 );
 
-fetch("/rest/tasks/list")
-    .then(res => {
-        console.log(res.status);
-        return res;
-    }).then(res => res.text()).then(res => console.log(res))
-    .catch(error => console.error(error));
-
 serviceWorker.register();
