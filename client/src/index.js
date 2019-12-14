@@ -37,12 +37,17 @@ ReactDOM.render(
     document.getElementById("root")
 );
 
-fetch("/tasks/list")
+fetch("/rest/tasks/list")
     .then(res => {
-        console.log(res);
-        if (res.status === 200) {
-            return res;
-        } else throw new Error("bag");
+        console.log(res.status);
+        return res;
+    }).then(res => res.json()).then(res => console.log(res))
+    .catch(error => console.error(error));
+
+fetch("/rest/rest/tasks/list")
+    .then(res => {
+        console.log(res.status + 'x');
+        return res;
     }).then(res => res.json()).then(res => console.log(res))
     .catch(error => console.error(error));
 serviceWorker.register();
