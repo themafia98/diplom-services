@@ -13,7 +13,7 @@ namespace Tasks {
                     service.dbm.collection("tasks").get({ methodQuery: "all" }).start({ name: "tasks", schemaType: "task" },
                         async (err: Error, data: Object): Promise<void> => {
                             let response = data;
-
+                            console.log(response);
                             if (err) {
                                 response = { message: err.message };
                                 return void res.json({ action: err.name, response });
