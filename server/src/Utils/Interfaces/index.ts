@@ -1,5 +1,5 @@
 import { Application, Router as RouteExpress } from "express";
-import { collectionOperations } from "../types";
+import { collectionOperations } from "../Types";
 import { Mongoose, Schema } from "mongoose";
 
 export interface ServerRun {

@@ -1,7 +1,7 @@
 import winston from "winston";
 import { model, Schema, Model } from 'mongoose';
 import { getSchemaByName } from '../Models/Database/Schema';
-import { FileTransportInstance, schemaConfig } from "./types";
+import { FileTransportInstance, schemaConfig } from "./Types";
 
 namespace Utils {
     export const getLoggerTransports = (level: string): Array<FileTransportInstance> | FileTransportInstance => {

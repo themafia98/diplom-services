@@ -1,7 +1,7 @@
 import mongoose, { Schema, DocumentQuery, Document } from "mongoose";
 import _ from "lodash";
 
-import { actionGet, paramAction, schemaConfig } from "../../Utils/types";
+import { actionGet, paramAction, schemaConfig } from "../../Utils/Types";
 import Utils from '../../Utils';
 
 namespace DatabaseActions {

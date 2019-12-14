@@ -2,7 +2,7 @@ import mongoose, { Mongoose, Schema, DocumentQuery, Document } from "mongoose";
 import dotenv from "dotenv";
 import _ from "lodash";
 import DatabaseActions from "./actions";
-import { collectionOperations, schemaConfig } from "../../Utils/types";
+import { collectionOperations, schemaConfig } from "../../Utils/Types";
 import { Dbms, ResponseMetadata, Metadata, MetadataConfig } from "../../Utils/Interfaces";
 
 namespace Database {
