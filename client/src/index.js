@@ -37,7 +37,12 @@ ReactDOM.render(
     document.getElementById("root")
 );
 
-fetch("/rest/tasks/list")
-    .then(res => console.log(res))
+fetch("/tasks/list")
+    .then(res => {
+        console.log(res);
+        if (res.status === 200) {
+            return res;
+        } else throw new Error("bag");
+    }).then(res => res.json()).then(res => console.log(res))
     .catch(error => console.error(error));
 serviceWorker.register();
