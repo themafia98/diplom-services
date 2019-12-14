@@ -1,14 +1,16 @@
 import { Mongoose } from "mongoose";
-import { collectionOperations } from "../../Utils/Types";
+import { collectionOperations } from "../../Utils/types";
 import { Dbms, ResponseMetadata } from "../../Utils/Interfaces";
 declare namespace Database {
     class ManagmentDatabase implements Dbms {
         private dbClient;
+        private connectionString;
         private connect;
         private responseParams;
-        constructor(db: string);
-        readonly db: string;
+        constructor(db: string, connectionString: string);
         private operations;
+        readonly db: string;
+        getConnectionString(): string;
         connection(): Promise<void | Mongoose>;
         disconnect(): Promise<null | Mongoose>;
         getConnect(): Mongoose | null;

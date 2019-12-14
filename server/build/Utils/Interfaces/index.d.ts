@@ -1,5 +1,5 @@
 import { Application, Router as RouteExpress } from "express";
-import { collectionOperations } from "../Types";
+import { collectionOperations } from "../types";
 import { Mongoose } from "mongoose";
 export interface ServerRun {
     setApp(express: Application): void;
@@ -24,12 +24,19 @@ export interface Dbms {
     clearResponseParams(): Dbms;
     collection(name: string): collectionOperations;
 }
+export interface CryptoSecurity {
+    getMode(): string;
+    hashing(password: string, salt: number, callback: Function): Promise<void>;
+    verify(password: string, hash: any, callback: Function): Promise<void>;
+}
+export interface App extends Application {
+    dbm: Dbms;
+    hash: CryptoSecurity;
+}
 export interface ResponseMetadata {
     [key: string]: any;
 }
 export interface Metadata {
 }
 export interface MetadataConfig {
-}
-export interface CryptoSecurity {
 }

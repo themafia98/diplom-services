@@ -4,6 +4,7 @@ declare class ServerRunner implements ServerRun {
     private port;
     private application;
     constructor(port: string);
+    getPort(): string;
     getApp(): Application;
     setApp(express: Application): void;
     start(): void;

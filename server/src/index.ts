@@ -25,7 +25,6 @@ namespace Entrypoint {
             });
         }
     } else {
-        throw "sdas";
         try {
             const app: ServerRun = new ServerRunner(process.env.APP_PORT || "3001");
             app.start();

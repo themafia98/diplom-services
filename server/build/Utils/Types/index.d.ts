@@ -11,4 +11,12 @@ export declare type actionGet = {
     collection: string;
     param: Object;
 };
+export declare type paramAction = {
+    metadataSearch?: Object;
+    methodQuery?: string;
+};
+export declare type schemaConfig = {
+    name: string;
+    schemaType: string;
+};
 export declare type FileTransportInstance = winston.transports.FileTransportInstance;

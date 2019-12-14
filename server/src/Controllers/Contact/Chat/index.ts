@@ -1,7 +1,8 @@
 import express, { Router as RouteExpress } from 'express';
-
+import socket from 'socket.io';
+import { App } from '../../../Utils/Interfaces';
 namespace Chat {
-    export const module = (app: ServerRun, socket: any): null | void => {
+    export const module = (app: App, socket: any): null | void => {
         if (!app) return null;
 
     }

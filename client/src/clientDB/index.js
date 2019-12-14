@@ -1,6 +1,6 @@
 import _ from "lodash";
 import config from "../config.json";
-import { TASK_SCHEMA, USER_SCHEMA, TASK_CONTROLL_JURNAL_SCHEMA, NEWS_SCHEMA } from "../Utils/schema/const";
+import { TASK_SCHEMA, USER_SCHEMA, TASK_CONTROLL_JURNAL_SCHEMA } from "../Utils/schema/const";
 import { getValidateSchema } from "../Utils/schema";
 
 class ClientDB {

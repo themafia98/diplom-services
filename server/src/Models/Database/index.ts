@@ -71,7 +71,7 @@ namespace Database {
                     useNewUrlParser: true,
                     useUnifiedTopology: true
                 })
-                console.log(this.connect);
+
             } catch (err) {
                 console.error(err);
             }

@@ -46,6 +46,7 @@
         "@types/mongoose": "^5.5.34",
         "@types/node": "^12.12.7",
         "@types/nodemailer": "^6.2.2",
+        "@types/socket.io": "^2.1.4",
         "@types/winston": "^2.4.4",
         "copyfiles": "^2.1.1",
         "cross-env": "^6.0.3",
