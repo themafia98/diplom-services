@@ -11,8 +11,7 @@ namespace Tasks {
             try {
                 service.dbm.connection().then(() => {
                     service.dbm.collection("tasks").get({ methodQuery: "all" }).start({ name: "tasks", schemaType: "task" },
-                        (err: Error, data: Object): void => {
-                            service.dbm.disconnect();
+                        async (err: Error, data: Object): Promise<void> => {
                             let response = data;
 
                             if (err) {

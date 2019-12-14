@@ -12,7 +12,6 @@ namespace DatabaseActions {
             const { metadataSearch = {}, methodQuery = "" } = (<paramAction>param);
             const collectionModel = configSchema && !_.isEmpty(configSchema) ?
                 Utils.getModelByName(<string>configSchema['name'], <string>configSchema['schemaType']) : null;
-
             switch (methodQuery) {
                 case "all":
                     return collectionModel && !_.isNull(collectionModel) ? collectionModel.find({}, callback) :

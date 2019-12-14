@@ -80,14 +80,13 @@ namespace Database {
 
         public async disconnect(): Promise<null | Mongoose> {
             if (this.getConnect()) {
-                await mongoose.disconnect();
+                await this.getConnect().disconnect();
                 return <Mongoose>this.getConnect();
             } else return null;
         }
 
-        public getConnect(): Mongoose | null {
-            if (this.connect as Mongoose) return <Mongoose>this.connect;
-            else return null;
+        public getConnect(): Mongoose {
+            return <Mongoose>this.connect;
         }
 
         public getResponseParams(): ResponseMetadata {
