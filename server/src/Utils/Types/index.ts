@@ -1,4 +1,4 @@
-import winston from "./node_modules/winston";
+import winston from "winston";
 
 export type collectionOperations = {
     get: Function;
