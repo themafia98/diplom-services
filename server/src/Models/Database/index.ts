@@ -46,11 +46,13 @@ namespace Database {
                     return this.operations(collection);
                 },
                 start: async (configSchema: schemaConfig, callback: Function): Promise<DocumentQuery<any, Document> | null> => {
-                    Object.keys(this.getResponseParams()).forEach(async method => {
-                        console.log(this.getResponseParams());
+                    const responseKeys = Object.keys(this.getResponseParams());
+                    const initResponseBuilder = DatabaseActions.routeDatabaseActions();
+                    responseKeys.forEach(async (method, index) => {
+
                         const operation = this.getResponseParams()[method][method];
-                        return await DatabaseActions.routeDatabaseActions(
-                            operation, method, configSchema, callback);
+                        return await initResponseBuilder(
+                            operation, method, configSchema, callback, index === responseKeys.length - 1);
                     });
                 }
             }
