@@ -15,6 +15,10 @@ namespace Utils {
         if (Schema) return model(name, <Schema>schema);
         else return null;
     }
+
+    export const responseTime = (start: Date) => {
+        return <any>new Date() - <any>start;
+    }
 }
 
 export default Utils;

@@ -1,5 +1,5 @@
 import { Request, Response, Router as RouteExpress } from 'express';
-
+import Utils from '../../Utils';
 import { App } from '../../Utils/Interfaces';
 
 namespace Tasks {
@@ -12,13 +12,24 @@ namespace Tasks {
                 service.dbm.connection().then(() => {
                     service.dbm.collection("tasks").get({ methodQuery: "all" }).start({ name: "tasks", schemaType: "task" },
                         async (err: Error, data: Object): Promise<void> => {
-                            let response = data;
-                            console.log(response);
+
                             if (err) {
-                                response = { message: err.message };
-                                return void res.json({ action: err.name, response });
+                                return void res.json({
+                                    action: err.name,
+                                    response: { from: "tasks", methodQuery: "all", metadata: err.message },
+                                    uptime: process.uptime(),
+                                    responseTime: Utils.responseTime((<any>req).start),
+                                    work: process.connected
+                                });
                             }
-                            res.json({ action: "done", response });
+
+                            return void res.json({
+                                action: "done",
+                                response: { from: "tasks", methodQuery: "all", metadata: data },
+                                uptime: process.uptime(),
+                                responseTime: Utils.responseTime((<any>req).start),
+                                work: process.connected
+                            });
                         });
 
                 });

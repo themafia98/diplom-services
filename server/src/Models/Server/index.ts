@@ -1,4 +1,4 @@
-import express, { Application } from "express";
+import express, { Application, Request, Response, NextFunction, Router } from "express";
 import _ from 'lodash';
 import helmet from "helmet";
 import chalk from "chalk";
@@ -31,6 +31,11 @@ class ServerRunner implements ServerRun {
         if (_.isNull(this.application)) this.application = express;
     }
 
+    public startResponse(req: Request, res: Response, next: NextFunction) {
+        (<any>req).start = new Date();
+        next();
+    }
+
     public start(): void {
 
         this.setApp(express());
@@ -51,7 +56,11 @@ class ServerRunner implements ServerRun {
         this.getApp().locals.hash = new Security.Crypto();
         this.getApp().locals.dbm = new Database.ManagmentDatabase("controllSystem", <string>process.env.MONGODB_URI);
 
-        Tasks.module(<App>this.getApp(), instanceRouter.createRoute("/tasks"));
+        const tasksRoute: Router = instanceRouter.createRoute("/tasks");
+
+        tasksRoute.use(this.startResponse);
+
+        Tasks.module(<App>this.getApp(), tasksRoute);
 
         process.on("SIGTERM", (): void => {
             console.log("SIGTERM, uptime:", process.uptime());
