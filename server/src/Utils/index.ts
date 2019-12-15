@@ -11,9 +11,14 @@ namespace Utils {
     };
 
     export const getModelByName = (name: string, schemaType: string): Model<any, any> | null => {
-        const schema: Schema | null = getSchemaByName(schemaType);
-        if (Schema) return model(name, <Schema>schema);
-        else return null;
+        try {
+            const schema: Schema | null = getSchemaByName(schemaType);
+            if (Schema) return model(name, <Schema>schema);
+            else return null;
+        } catch (err) {
+            console.log(err);
+            return null;
+        }
     }
 
     export const responseTime = (start: Date) => {
