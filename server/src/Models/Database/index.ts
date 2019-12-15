@@ -47,6 +47,7 @@ namespace Database {
                 },
                 start: async (configSchema: schemaConfig, callback: Function): Promise<DocumentQuery<any, Document> | null> => {
                     Object.keys(this.getResponseParams()).forEach(async method => {
+                        console.log(this.getResponseParams());
                         const operation = this.getResponseParams()[method][method];
                         return await DatabaseActions.routeDatabaseActions(
                             operation, method, configSchema, callback);

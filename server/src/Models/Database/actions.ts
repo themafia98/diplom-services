@@ -7,15 +7,20 @@ import Utils from '../../Utils';
 namespace DatabaseActions {
 
     export const routeDatabaseActions = async (operation: Object, method: string, configSchema: schemaConfig, callback: Function) => {
-        const GET = ({ collection = "", param = {} }): DocumentQuery<any, Document> | null | void => {
+        const GET = ({ collection = "", param = {} }, method = ""): DocumentQuery<any, Document> | null | void => {
 
-            const { metadataSearch = {}, methodQuery = "" } = (<paramAction>param);
+            const { methodQuery = "" } = (<paramAction>param);
             const collectionModel = configSchema && !_.isEmpty(configSchema) ?
                 Utils.getModelByName(<string>configSchema['name'], <string>configSchema['schemaType']) : null;
+
+            (<any>param).from = collection;
+            (<any>param).method = method;
+
             switch (methodQuery) {
                 case "all":
-                    return collectionModel && !_.isNull(collectionModel) ? collectionModel.find({}, callback) :
-                        callback(new Error(`Invalid. methodQuery: ${methodQuery}.`), { status: "Invalid" });
+                    return collectionModel && !_.isNull(collectionModel) ? collectionModel.find({},
+                        (err: Error, data: Object) => callback(err, data, param)) :
+                        callback(new Error(`Invalid. methodQuery: ${methodQuery}.`), { status: "Invalid" }, param);
                 default: return null;
             }
         };
@@ -23,15 +28,13 @@ namespace DatabaseActions {
         if (!_.isObject(operation) && !method) return;
 
         switch (method) {
-            case "GET": return GET(<actionGet>operation);
+            case "GET": return GET(<actionGet>operation, 'GET');
 
             case "PUT": {
                 break;
             }
 
-            case "DELETE": {
-                break;
-            }
+            case "DELETE": return GET(<actionGet>operation, 'DELETE');
 
             case "UPDATE": {
                 break;
