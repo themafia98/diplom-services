@@ -1,9 +1,10 @@
-import { Application, Router as RouteExpress } from "express";
+import { Application, Router as RouteExpress, Request, Response, NextFunction } from "express";
 import { collectionOperations } from "../Types";
 import { Mongoose, Schema } from "mongoose";
 
 export interface ServerRun {
     setApp(express: Application): void;
+    startResponse(req: Request, res: Response, next: NextFunction): void;
     getApp(): Application;
     start(): void;
 }

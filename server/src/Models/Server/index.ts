@@ -31,7 +31,7 @@ class ServerRunner implements ServerRun {
         if (_.isNull(this.application)) this.application = express;
     }
 
-    public startResponse(req: Request, res: Response, next: NextFunction) {
+    public startResponse(req: Request, res: Response, next: NextFunction): void {
         (<any>req).start = new Date();
         next();
     }
