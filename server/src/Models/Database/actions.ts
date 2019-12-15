@@ -7,7 +7,7 @@ import Utils from '../../Utils';
 namespace DatabaseActions {
 
     export const routeDatabaseActions = () => {
-        const responseCollection = {};
+        const responseCollection: Object = {};
         return async (operation: Object, method: string, configSchema: schemaConfig, callback: Function, ready: boolean) => {
             const builderResponse = ({ collection = "", param = {} }): DocumentQuery<any, Document> | null | void => {
 
