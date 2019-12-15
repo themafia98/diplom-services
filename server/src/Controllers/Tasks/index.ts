@@ -10,7 +10,7 @@ namespace Tasks {
         route.get("/list", (req: Request, res: Response) => {
             try {
                 service.dbm.connection().then(() => {
-                    service.dbm.collection("tasks").get({ methodQuery: "all" }).delete({ methodQuery: "all" }).start({ name: "tasks", schemaType: "task" },
+                    service.dbm.collection("tasks").get({ methodQuery: "all" }).delete({ methodQuery: "delete_all" }).start({ name: "tasks", schemaType: "task" },
                         async (err: Error, data: Object, param: Object): Promise<void> => {
 
                             if (err) {

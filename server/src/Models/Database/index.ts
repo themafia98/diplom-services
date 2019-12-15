@@ -51,6 +51,7 @@ namespace Database {
                     responseKeys.forEach(async (method, index) => {
 
                         const operation = this.getResponseParams()[method][method];
+                        console.log("Response operation: ", operation);
                         return await initResponseBuilder(
                             operation, method, configSchema, callback, index === responseKeys.length - 1);
                     });

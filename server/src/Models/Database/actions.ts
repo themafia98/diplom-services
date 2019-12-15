@@ -34,7 +34,7 @@ namespace DatabaseActions {
                     }
                 } else if (method.toLocaleUpperCase().trim() === 'DELETE') {
                     switch (methodQuery) {
-                        case "all": {
+                        case "delete_all": {
                             if (collectionModel && !_.isNull(collectionModel)) {
                                 return collectionModel.find({},
                                     (err: Error, data: Object) => {
