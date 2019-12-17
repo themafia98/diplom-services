@@ -13,6 +13,8 @@ namespace Database {
         private connect: Mongoose | undefined;
         private responseParams: ResponseMetadata = {};
 
+        public status:any = null;
+
         constructor(db: string, connectionString: string) {
             mongoose.set("debug", true);
             mongoose.set("useCreateIndex", true);
@@ -70,15 +72,15 @@ namespace Database {
         }
 
         public async connection(): Promise<void | Mongoose> {
-            console.log(this.getConnectionString());
-            if (this.getConnect() || !this.getConnectionString()) return <Mongoose>this.getConnect();
+            if (!this.getConnectionString()) return <Mongoose>this.getConnect();
             try {
                 this.connect = await mongoose.connect(this.getConnectionString(), {
                     useNewUrlParser: true,
                     useUnifiedTopology: true
                 });
+                return this.connect;
             } catch (err) {
-                console.error(err);
+                return void console.error(err);
             }
         }
 

@@ -11,25 +11,14 @@ namespace General {
     export const module = (app: App, route: RouteExpress): null | void => {
         if (!app) return null;
 
-        route.use("/api", async (req: Request, res: Response, next: Function) => {
+        route.use("/dashboard", async (req: Request, res: Response, next: Function) => {
             try {
-                await passport.authenticate("jwt", (err: Error, user: any) => {
-                    if (err || !user) {
-                        if (req.session) {
-                            req.session.destroy(function() {
-                                res.clearCookie("jwtsecret");
-                                res.redirect("/");
-                            });
-                        } else res.redirect("/");
-                    } else next();
-                });
-            } catch (err) {
-                if (req.session) {
-                    req.session.destroy(function() {
-                        res.clearCookie("jwtsecret");
-                        res.redirect("/");
-                    });
+                if (req.isAuthenticated()) {
+                    next();
                 } else res.redirect("/");
+            } catch (err) {
+                console.error(err);
+                res.sendStatus(404);
             }
         });
 
@@ -58,23 +47,11 @@ namespace General {
 
         route.post(
             "/login",
-            async (req: Request, res: Response): Promise<void> => {
-                try {
-                    if (!req.body) throw new Error("Invalid auth data");
-                    await passport.authenticate("local", function(err, user) {
-                        const payload = {
-                            id: user.id,
-                            email: user.email,
-                            displayName: user.displayName
-                        };
-
-                        const token = jwt.sign(payload, "jwtsecret");
-                        res.json({ user: user.displayName, token: "JWT " + token });
-                    })(req.body);
-                } catch (err) {
-                    res.status(400).json(err);
-                }
-            }
+            passport.authenticate("local", {
+                successRedirect: "/dashboard",
+                failureRedirect: "/",
+                failureFlash: false
+            })
         );
 
         route.get("/logout", (req: Request, res: Response) => {

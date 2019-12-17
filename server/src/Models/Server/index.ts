@@ -53,20 +53,33 @@ class ServerRunner implements ServerRun {
         this.getApp().set("port", this.getPort());
         this.getApp().use(session({ secret: "jwtsecret", saveUninitialized: false, resave: false }));
         this.getApp().use(passport.session());
+
+        this.getApp().locals.hash = new Security.Crypto();
+        const dbm = new Database.ManagmentDatabase("controllSystem", <string>process.env.MONGODB_URI);
+        this.getApp().locals.dbm = dbm;
+
         passport.use(
             new LocalStrategy(
                 {
                     usernameField: "email",
-                    passwordField: "password",
-                    session: true
+                    passwordField: "password"
                 },
-                (email: string, password: string, done: Function) => {
-                    UserModel.findOne({ email }, (err: Error, user: any) => {
+                async (email: string, password: string, done: Function) => {
+                 
+                    await dbm.connection();
+                    UserModel.findOne({ email }, async (err: Error, user: any) => {
+                       
+                        await dbm.disconnect();
                         if (err) return done(err);
+                      
                         else if (!user || !user.checkPassword(password)) {
-                            return done(null, false, { message: "Нет такого пользователя или пароль неверен." });
+                            return done(null, false, {
+                                message: "Нет такого пользователя или пароль неверен."
+                            });
+                        } else {
+                 
+                             return done(null, user);
                         }
-                        return done(null, user);
                     });
                 }
             )
@@ -78,9 +91,11 @@ class ServerRunner implements ServerRun {
         };
 
         passport.use(
-            new jwt.Strategy(jwtOptions, function(payload: any, done: Function) {
-                console.log(payload);
-                UserModel.findOne(payload.id, (err: Error, user: any) => {
+            new jwt.Strategy(jwtOptions, async function(payload: any, done: Function) {
+               await dbm.connection();
+                UserModel.findOne(payload.id, async (err: Error, user: any) => {
+                     await dbm.disconnect();
+                    
                     if (err) {
                         return done(err);
                     }
@@ -112,10 +127,6 @@ class ServerRunner implements ServerRun {
 
         /** initial entrypoint route */
         const rest = instanceRouter.initInstance("/rest");
-
-        this.getApp().locals.hash = new Security.Crypto();
-        this.getApp().locals.dbm = new Database.ManagmentDatabase("controllSystem", <string>process.env.MONGODB_URI);
-
         const tasksRoute: Router = instanceRouter.createRoute("/tasks");
 
         General.module(<App>this.getApp(), rest);

@@ -20,8 +20,8 @@ namespace Entrypoint {
             cluster.on("exit", (worker: Worker, code: number, signal: string) => {
                 console.log(`${chalk.yellow("worker")} ${chalk.red(worker.process.pid)} exit.`);
 
-                const child = cluster.fork();
-                console.log(`New ${chalk.yellow("worker")} ${chalk.red(child.process.pid)} born.`);
+                // const child = cluster.fork();
+                // console.log(`New ${chalk.yellow("worker")} ${chalk.red(child.process.pid)} born.`);
             });
         }
     } else {

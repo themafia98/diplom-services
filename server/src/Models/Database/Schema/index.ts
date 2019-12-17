@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+import bcrypt from 'bcrypt';
 import Security from "../../Security";
 
 const userSchema = new Schema(
@@ -17,23 +18,26 @@ const userSchema = new Schema(
     },
     { timestamps: true }
 );
-let passwordHash: null | string = null;
+
 userSchema
     .virtual("password")
-    .set(async (password: string) => {
-        console.log(password);
-        passwordHash = password;
-        await Security.globalSecuiriy.hashing(<string>password, 10);
+    .set(async function(password: string){
+       
+         this._plainPassword = password;
+         console.log("password:", password);
+          if (password) {
+           this.passwordHash = bcrypt.hashSync(<string>password, 10);
+          } else {
+    this.passwordHash = undefined;
+  }
     })
-    .get(function(this: typeof userSchema) {
-        return <string>passwordHash;
+    .get(function() {
+        return <any>this._plainPassword;
     });
 
-userSchema.methods.checkPassword = function(password: string) {
-    if (!password) return;
-    if (!this.password) return;
-
-    return Security.globalSecuiriy.verify(<string>password, (<any>this).password);
+userSchema.methods.checkPassword = function(password: string):boolean {
+    if (!password) return false;
+    return bcrypt.compareSync(password, this.passwordHash);
 };
 
 export const task = new Schema({
