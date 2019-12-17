@@ -12,8 +12,8 @@ namespace Security {
             return this.mode;
         }
 
-        public async hashing(password: string, salt: number, callback: Function): Promise<void> {
-            if (this.getMode() === 'default') {
+        public async hashing(password: string, salt: number, callback?: Function): Promise<void> {
+            if (this.getMode() === "default") {
                 bcrypt.hash(password, salt, (err: Error, hash: any): void => {
                     if (err) return void console.error(err);
 
@@ -23,19 +23,19 @@ namespace Security {
             }
         }
 
-        public async verify(password: string, hash: any, callback: Function): Promise<void> {
-            if (this.getMode() === 'default') {
+        public async verify(password: string, hash: any, callback?: Function): Promise<void> {
+            if (this.getMode() === "default") {
                 bcrypt.compare(password, hash, (err: Error, valid: boolean): void => {
                     if (err) return void console.error(err);
                     if (valid) {
-
                     } else {
-
                     }
                 });
             }
         }
     }
+
+    export const globalSecuiriy = new Security.Crypto("Default");
 }
 
 export default Security;

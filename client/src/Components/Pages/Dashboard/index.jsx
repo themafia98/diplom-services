@@ -120,7 +120,7 @@ class Dashboard extends React.PureComponent {
 
         if (statusState !== status) {
             return this.setState({
-                status: status
+                status
             });
         }
     };
@@ -262,7 +262,6 @@ class Dashboard extends React.PureComponent {
         const {
             router: { actionTabs = [], currentActionTab, shouldUpdate = false } = {},
             router = {},
-            firebase,
             onErrorRequstAction,
             onShoudUpdate,
             publicReducer = {},
@@ -307,7 +306,6 @@ class Dashboard extends React.PureComponent {
                             setCurrentTab={setCurrentTab}
                             updateLoader={this.updateLoader}
                             onErrorRequstAction={onErrorRequstAction}
-                            firebase={firebase}
                             key="contentView"
                             path={currentActionTab}
                         />

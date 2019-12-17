@@ -1,5 +1,7 @@
 import express, { Application, Request, Response, NextFunction, Router } from "express";
-import _ from 'lodash';
+import session from "express-session";
+import passport from "passport";
+import _ from "lodash";
 import helmet from "helmet";
 import chalk from "chalk";
 import { Route } from "../../Utils/Interfaces";
@@ -7,9 +9,14 @@ import RouterInstance from "../Router";
 import { Server as HttpServer } from "http";
 import { ServerRun, App } from "../../Utils/Interfaces";
 
-import Tasks from '../../Controllers/Tasks';
+import General from "../../Controllers/General";
+import Tasks from "../../Controllers/Tasks";
 import Database from "../Database";
 import Security from "../Security";
+import { UserModel } from "../Database/Schema";
+
+const jwt = require("passport-jwt");
+const LocalStrategy = require("passport-local");
 
 class ServerRunner implements ServerRun {
     private port: string;
@@ -37,11 +44,64 @@ class ServerRunner implements ServerRun {
     }
 
     public start(): void {
-
         this.setApp(express());
+        this.getApp().use(passport.initialize());
         this.getApp().disabled("x-powerd-by");
         this.getApp().use(helmet());
+        this.getApp().use(express.urlencoded({ extended: true }));
+        this.getApp().use(express.json());
         this.getApp().set("port", this.getPort());
+        this.getApp().use(session({ secret: "jwtsecret", saveUninitialized: false, resave: false }));
+        this.getApp().use(passport.session());
+        passport.use(
+            new LocalStrategy(
+                {
+                    usernameField: "email",
+                    passwordField: "password",
+                    session: true
+                },
+                (email: string, password: string, done: Function) => {
+                    UserModel.findOne({ email }, (err: Error, user: any) => {
+                        if (err) return done(err);
+                        else if (!user || !user.checkPassword(password)) {
+                            return done(null, false, { message: "Нет такого пользователя или пароль неверен." });
+                        }
+                        return done(null, user);
+                    });
+                }
+            )
+        );
+
+        const jwtOptions = {
+            jwtFromRequest: jwt.ExtractJwt.fromAuthHeaderWithScheme("jwt"),
+            secretOrKey: "jwtsecret"
+        };
+
+        passport.use(
+            new jwt.Strategy(jwtOptions, function(payload: any, done: Function) {
+                console.log(payload);
+                UserModel.findOne(payload.id, (err: Error, user: any) => {
+                    if (err) {
+                        return done(err);
+                    }
+                    if (user) {
+                        done(null, user);
+                    } else {
+                        done(null, false);
+                    }
+                });
+            })
+        );
+
+        passport.serializeUser(function(user: any, done) {
+            done(null, user.id);
+        });
+
+        passport.deserializeUser(function(id, done) {
+            UserModel.findById(id, function(err, user: any) {
+                done(err, user);
+            });
+        });
 
         const instanceRouter: Route = RouterInstance.Router.instance(this.getApp());
 
@@ -51,13 +111,14 @@ class ServerRunner implements ServerRun {
         });
 
         /** initial entrypoint route */
-        instanceRouter.initInstance("/rest");
+        const rest = instanceRouter.initInstance("/rest");
 
         this.getApp().locals.hash = new Security.Crypto();
         this.getApp().locals.dbm = new Database.ManagmentDatabase("controllSystem", <string>process.env.MONGODB_URI);
 
         const tasksRoute: Router = instanceRouter.createRoute("/tasks");
 
+        General.module(<App>this.getApp(), rest);
         tasksRoute.use(this.startResponse);
 
         Tasks.module(<App>this.getApp(), tasksRoute);

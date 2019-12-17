@@ -26,7 +26,6 @@ class TaskModule extends React.PureComponent {
     static propTypes = {
         onErrorRequstAction: PropTypes.func.isRequired,
         path: PropTypes.string.isRequired,
-        firebase: PropTypes.object.isRequired,
         addTab: PropTypes.func.isRequired,
         onOpenPageWithData: PropTypes.func.isRequired,
         onLoadCurrentData: PropTypes.func.isRequired,
@@ -100,7 +99,6 @@ class TaskModule extends React.PureComponent {
             const isList = path === "taskModule_myTasks" || path === "taskModule_all";
             const {
                 router,
-                firebase,
                 publicReducer: { status = null } = {},
                 onOpenPageWithData,
                 onLoadCurrentData,
@@ -183,7 +181,6 @@ class TaskModule extends React.PureComponent {
                             visible={path === "taskModule_createTask"}
                             height={heightController ? height - heightController : height}
                             onLoadCurrentData={onLoadCurrentData}
-                            firebase={firebase}
                             statusApp={status}
                         />
                     </TabContainer>

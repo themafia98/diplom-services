@@ -30,7 +30,7 @@ class ContentView extends React.Component {
         setCurrentTab: PropTypes.func.isRequired,
         updateLoader: PropTypes.func.isRequired,
         onErrorRequstAction: PropTypes.func.isRequired,
-        firebase: PropTypes.object.isRequired,
+
         path: PropTypes.string.isRequired
     };
 
@@ -91,7 +91,7 @@ class ContentView extends React.Component {
     };
 
     render() {
-        const { path, firebase, onErrorRequstAction, setCurrentTab, actionTabs, router, statusApp } = this.props;
+        const { path, onErrorRequstAction, setCurrentTab, actionTabs, router, statusApp } = this.props;
         const { drawerView, key } = this.state;
 
         const isBackgroundMainModule = this.checkBackground("mainModule");
@@ -112,7 +112,6 @@ class ContentView extends React.Component {
                             isBackground={isBackgroundMainModule}
                             onErrorRequstAction={onErrorRequstAction}
                             key="mainModule"
-                            firebase={firebase}
                         />
                     </TabContainer>
                     <TabContainer
@@ -125,7 +124,6 @@ class ContentView extends React.Component {
                             isBackground={isBackgroundCabinetModule}
                             onErrorRequstAction={onErrorRequstAction}
                             key="cabinet"
-                            firebase={firebase}
                         />
                     </TabContainer>
                     <TabContainer
@@ -141,7 +139,6 @@ class ContentView extends React.Component {
                             setCurrentTab={setCurrentTab}
                             key="taskModule"
                             path={path}
-                            firebase={firebase}
                         />
                     </TabContainer>
                     <TabContainer isBackground={isDocumentModule} visible={path === "documentModule"}>
@@ -152,7 +149,6 @@ class ContentView extends React.Component {
                             key="documentModule"
                             path={path}
                             statusApp={statusApp}
-                            firebase={firebase}
                         />
                     </TabContainer>
                     <TabContainer isBackground={isBackgroundContactModule} visible={path.startsWith("contactModule")}>
@@ -165,7 +161,6 @@ class ContentView extends React.Component {
                             onErrorRequstAction={onErrorRequstAction}
                             key="contact"
                             path={path}
-                            firebase={firebase}
                         />
                     </TabContainer>
                     <TabContainer
@@ -179,7 +174,6 @@ class ContentView extends React.Component {
                             actionTabs={actionTabs}
                             key="customers"
                             path={path}
-                            firebase={firebase}
                         />
                     </TabContainer>
                     <TabContainer isBackground={isBackgroundSettingsModule} visible={path === "settingsModule"}>
@@ -189,7 +183,6 @@ class ContentView extends React.Component {
                             onErrorRequstAction={onErrorRequstAction}
                             key="settings"
                             path={path}
-                            firebase={firebase}
                         />
                     </TabContainer>
                     <TabContainer isBackground={isStatisticModule} visible={path === "statisticModule"}>
@@ -199,7 +192,6 @@ class ContentView extends React.Component {
                             onErrorRequstAction={onErrorRequstAction}
                             key="statistic"
                             path={path}
-                            firebase={firebase}
                         />
                     </TabContainer>
                 </Content>

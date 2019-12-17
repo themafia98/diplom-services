@@ -24,7 +24,7 @@ class SettingsModule extends React.PureComponent {
     static propTypes = {
         onErrorRequstAction: PropTypes.func.isRequired,
         path: PropTypes.string.isRequired,
-        firebase: PropTypes.object.isRequired,
+
         onSaveComponentState: PropTypes.func.isRequired,
         router: PropTypes.object.isRequired
     };

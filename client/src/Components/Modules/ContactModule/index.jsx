@@ -15,8 +15,7 @@ import CreateNews from "./News/CreateNews";
 class ContactModule extends React.PureComponent {
     static propTypes = {
         onErrorRequstAction: PropTypes.func.isRequired,
-        path: PropTypes.string.isRequired,
-        firebase: PropTypes.object.isRequired
+        path: PropTypes.string.isRequired
     };
 
     componentDidMount = () => {
@@ -74,7 +73,7 @@ class ContactModule extends React.PureComponent {
         const isBackgrounNews = this.checkBackground("contactModule_feedback");
         const isBackgroundInfoPage = this.checkBackground("contactModule_informationPage");
         const isBackgroundCreateNews = this.checkBackground("contactModule_createNews");
-        const { firebase = null, statusApp = "", router: { routeData = {} } = {} } = this.props;
+        const { statusApp = "", router: { routeData = {} } = {} } = this.props;
         const data = routeData[path];
 
         return (
@@ -102,7 +101,6 @@ class ContactModule extends React.PureComponent {
                         readOnly={statusApp === "offline"}
                         key="createNews"
                         statusApp={statusApp}
-                        firebase={firebase}
                         isBackground={isBackgroundInfoPage}
                         visible={path === "contactModule_createNews"}
                     />

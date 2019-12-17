@@ -24,7 +24,7 @@ import "moment/locale/ru";
 
 class App extends React.Component {
     state = {
-        firebaseLoadState: false,
+        loadState: false,
         isUser: false
     };
 
@@ -40,10 +40,9 @@ class App extends React.Component {
             addTab,
             setCurrentTab,
             router: { currentActionTab = "", actionTabs = [] } = {},
-            firebase = {},
             onLoadUdata
         } = this.props;
-        return this.setState({ isUser: true, firebaseLoadState: true }, () => {
+        return this.setState({ isUser: true, loadState: true }, () => {
             let path = "mainModule";
             const defaultModule = config.menu.find(item => item["SIGN"] === "default");
             if (defaultModule) path = defaultModule.EUID;
@@ -54,7 +53,7 @@ class App extends React.Component {
             if (!isFind && config.tabsLimit <= actionTabsCopy.length)
                 return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
 
-            const udata = firebase.getCurrentUser();
+            const udata = null;
 
             if (!isFind && udata) {
                 if (udata) onLoadUdata(udata).then(() => addTab(routeParser({ path })));
@@ -67,32 +66,17 @@ class App extends React.Component {
     };
 
     loadApp = () => {
-        return this.setState({ firebaseLoadState: true });
+        return this.setState({ loadState: true });
     };
 
     componentDidMount = () => {
-        /** load app */
-        const { firebase } = this.props;
-        const { firebaseLoadState } = this.state;
-        // Sentry.init({ dsn: process.env.REACT_APP_LOGGER_DSN });
-        firebase.auth.onAuthStateChanged(user => {
-            if (!firebaseLoadState) {
-                setTimeout(
-                    user ? this.loadAppSession.bind(this) : this.loadApp.bind(this),
-                    Number(config.msTimeoutLoading)
-                );
-            }
-        });
-
+        this.loadApp();
         if (config.forceUpdate === true || process.env.NODE_ENV === "production") forceUpdateDetectedInit();
-        //const request = new Request();
-        //request.test(statusRequst => (status !== statusRequst ? onSetStatus(statusRequst) : null));
     };
 
     render() {
-        const { firebase } = this.props;
-        const { firebaseLoadState, isUser } = this.state;
-        if (firebaseLoadState) {
+        const { loadState, isUser } = this.state;
+        if (loadState) {
             return (
                 <React.Fragment>
                     <RenderInBrowser ie only>
@@ -104,17 +88,9 @@ class App extends React.Component {
                     </RenderInBrowser>
                     <RenderInBrowser except ie>
                         <Switch>
-                            <Route
-                                exact
-                                path="/"
-                                render={props => <LoginPage {...props} isUser={isUser} firebase={firebase} />}
-                            />
-                            <Route
-                                exact
-                                path="/recovory"
-                                render={props => <Recovery {...props} firebase={firebase} />}
-                            />
-                            <PrivateRoute exact path="/dashboard" component={Dashboard} firebase={firebase} />
+                            <Route exact path="/" render={props => <LoginPage {...props} isUser={isUser} />} />
+                            <Route exact path="/recovory" render={props => <Recovery {...props} />} />
+                            <PrivateRoute exact path="/dashboard" component={Dashboard} />
                         </Switch>
                     </RenderInBrowser>
                 </React.Fragment>

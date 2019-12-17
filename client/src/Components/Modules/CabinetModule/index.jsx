@@ -11,12 +11,11 @@ class CabinetModule extends React.PureComponent {
     state = {
         imageUrl: null,
         loading: false,
-        disabled: false,
+        disabled: false
     };
 
     static propTypes = {
-        onErrorRequstAction: PropTypes.func.isRequired,
-        firebase: PropTypes.object.isRequired,
+        onErrorRequstAction: PropTypes.func.isRequired
     };
 
     showModal = event => {
@@ -50,7 +49,7 @@ class CabinetModule extends React.PureComponent {
     setFile = imageUrl => {
         this.setState({
             imageUrl,
-            loading: false,
+            loading: false
         });
     };
 
@@ -77,7 +76,7 @@ class CabinetModule extends React.PureComponent {
         const { visible, imageUrl } = this.state;
 
         const props = {
-            action: "https://www.mocky.io/v2/5cc8019d300000980a055e76",
+            action: "https://www.mocky.io/v2/5cc8019d300000980a055e76"
         };
 
         const uploadButton = (

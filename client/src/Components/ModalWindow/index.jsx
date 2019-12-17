@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import axios from "axios";
 import _ from "lodash";
 import moment from "moment";
 import { Modal, Button, Dropdown, Icon, Menu, Input, DatePicker, message, Select } from "antd";
@@ -15,7 +16,6 @@ const { Option } = Select;
 
 class ModalWindow extends React.PureComponent {
     state = {
-        login: null,
         visible: false,
         name: null,
         password: null,
@@ -37,7 +37,6 @@ class ModalWindow extends React.PureComponent {
     };
 
     static propTypes = {
-        firebase: PropTypes.object,
         onCaching: PropTypes.func,
         primaryKey: PropTypes.string,
         routeDataActive: PropTypes.object,
@@ -94,7 +93,6 @@ class ModalWindow extends React.PureComponent {
 
     handleOk = event => {
         const {
-            login,
             name,
             password,
             departament,
@@ -122,39 +120,52 @@ class ModalWindow extends React.PureComponent {
         } = this.props;
 
         if (mode === "reg") {
-            if (login && name && password && departament && email && !loading) {
-                firebase
-                    .registration(email, password)
-                    .then(res => {
-                        if (res.additionalUserInfo.isNewUser)
-                            firebase.db.collection("users").add({
-                                uuid: uuid(),
-                                login: login,
-                                name: name,
-                                surname: surname,
-                                departament: departament,
-                                email: email,
-                                rules: "false",
-                                position: "Не установлено",
-                                status: "Новый сотрудник"
-                            });
+            if (name && password && departament && email && !loading) {
+                axios
+                    .post("/rest/rest/reg", {
+                        email,
+                        password,
+                        displayName: `${name} ${surname}`,
+                        departament,
+                        position: "Master",
+                        rules: "full",
+                        accept: true
                     })
                     .then(res => {
-                        this.setState({
-                            ...this.state,
-                            uuid: uuid(),
-                            type: null,
-                            visible: false,
-                            loading: false,
-                            jurnal: {
-                                timeLost: null,
-                                date: moment().format("DD.MM.YYYY HH:mm:ss"),
-                                description: null
-                            },
-                            error: new Set()
-                        });
-                    })
-                    .catch(error => console.error(error.message));
+                        console.log(res);
+                    });
+                // firebase
+                //     .registration(email, password)
+                //     .then(res => {
+                //         if (res.additionalUserInfo.isNewUser)
+                //             firebase.db.collection("users").add({
+                //                 uuid: uuid(),
+                //                 login: login,
+                //                 name: name,
+                //                 surname: surname,
+                //                 departament: departament,
+                //                 email: email,
+                //                 rules: "false",
+                //                 position: "Не установлено",
+                //                 status: "Новый сотрудник"
+                //             });
+                //     })
+                //     .then(res => {
+                //         this.setState({
+                //             ...this.state,
+                //             uuid: uuid(),
+                //             type: null,
+                //             visible: false,
+                //             loading: false,
+                //             jurnal: {
+                //                 timeLost: null,
+                //                 date: moment().format("DD.MM.YYYY HH:mm:ss"),
+                //                 description: null
+                //             },
+                //             error: new Set()
+                //         });
+                //     })
+                //     .catch(error => console.error(error.message));
             }
         } else if (mode === "jur" && modeEditContent) {
             onUpdate(key, "UPDATE", valueDescription, "description", { ...routeDataActive }, "tasks")
@@ -247,11 +258,6 @@ class ModalWindow extends React.PureComponent {
             this.setState({
                 ...this.state,
                 password: target.value
-            });
-        } else if (target.className.split(" ")[1] === "login") {
-            this.setState({
-                ...this.state,
-                login: target.value
             });
         } else if (target.className.split(" ")[1] === "email") {
             this.setState({

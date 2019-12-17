@@ -37,7 +37,7 @@ class CreateTask extends React.PureComponent {
     static propTypes = {
         height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         onLoadCurrentData: PropTypes.func.isRequired,
-        firebase: PropTypes.object,
+
         statusApp: PropTypes.string.isRequired
     };
 

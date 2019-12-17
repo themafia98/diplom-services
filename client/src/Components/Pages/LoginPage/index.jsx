@@ -82,7 +82,7 @@ class LoginPage extends React.Component {
                         >
                             Войти
                         </Button>
-                        <ModalWindow firebase={firebase} mode="reg" />
+                        <ModalWindow mode="reg" />
                         <NavLink aria-label="recovory-link" className="recovory-link" to="/recovory">
                             Восстановление доступа
                         </NavLink>

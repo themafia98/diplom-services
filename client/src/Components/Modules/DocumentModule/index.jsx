@@ -8,16 +8,14 @@ import TitleModule from "../../TitleModule";
 const { TreeNode, DirectoryTree } = Tree;
 
 class DocumentModule extends React.PureComponent {
-
     static propTypes = {
         onErrorRequstAction: PropTypes.func.isRequired,
-        path: PropTypes.string.isRequired,
-        firebase: PropTypes.object.isRequired
+        path: PropTypes.string.isRequired
     };
 
     state = {
-        isLoading: false,
-    }
+        isLoading: false
+    };
 
     onSelect = (keys, event) => {
         console.log("Trigger Select", keys, event);

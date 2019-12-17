@@ -8,8 +8,7 @@ import Reception from "./Reception";
 class CustomersModule extends React.PureComponent {
     static propTypes = {
         onErrorRequstAction: PropTypes.func.isRequired,
-        path: PropTypes.string.isRequired,
-        firebase: PropTypes.object.isRequired
+        path: PropTypes.string.isRequired
     };
 
     checkBackground = path => {

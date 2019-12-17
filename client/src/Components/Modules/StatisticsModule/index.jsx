@@ -9,8 +9,7 @@ import TitleModule from "../../TitleModule";
 class StatisticsModule extends React.PureComponent {
     static propTypes = {
         onErrorRequstAction: PropTypes.func.isRequired,
-        path: PropTypes.string.isRequired,
-        firebase: PropTypes.object.isRequired
+        path: PropTypes.string.isRequired
     };
 
     componentDidMount = () => {

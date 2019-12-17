@@ -4,11 +4,24 @@ import { Input, Select } from "antd";
 const { Option } = Select;
 const RegistrationModal = ({ cbOnChangeSelect, cbOnChange }) => (
     <div>
-        <Input onChange={cbOnChange} className="email" type="text" size="default" placeholder="email" />
-        <Input onChange={cbOnChange} className="password" type="password" size="default" placeholder="password" />
-        <Input onChange={cbOnChange} className="login" type="email" size="default" placeholder="login" />
-        <Input onChange={cbOnChange} className="name" type="text" size="default" placeholder="name" />
-        <Input onChange={cbOnChange} className="surname" type="text" size="default" placeholder="surname" />
+        <Input name="email" onChange={cbOnChange} className="email" type="text" size="default" placeholder="email" />
+        <Input
+            name="password"
+            onChange={cbOnChange}
+            className="password"
+            type="password"
+            size="default"
+            placeholder="password"
+        />
+        <Input name="name" onChange={cbOnChange} className="name" type="text" size="default" placeholder="name" />
+        <Input
+            name="surname"
+            onChange={cbOnChange}
+            className="surname"
+            type="text"
+            size="default"
+            placeholder="surname"
+        />
         <Select
             onChange={cbOnChangeSelect}
             className="selectDepartament"

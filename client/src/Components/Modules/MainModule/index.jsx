@@ -9,12 +9,11 @@ import TitleModule from "../../TitleModule";
 
 class MainModule extends React.PureComponent {
     static propTypes = {
-        onErrorRequstAction: PropTypes.func.isRequired,
-        firebase: PropTypes.object.isRequired
+        onErrorRequstAction: PropTypes.func.isRequired
     };
 
     render() {
-        const { firebase, visible } = this.props;
+        const { visible } = this.props;
         return (
             <div className="mainModule">
                 <TitleModule additional="Общая информация" classNameTitle="mainModuleTitle" title="Главная страница" />
@@ -29,12 +28,7 @@ class MainModule extends React.PureComponent {
                             <Calendar className="mainModule_calendar" fullscreen={false} />
                         </div>
                         <div className="tableViw__wrapper">
-                            <TableView
-                                visible={visible}
-                                key="mainModule_table"
-                                path="mainModule__table"
-                                firebase={firebase}
-                            />
+                            <TableView visible={visible} key="mainModule_table" path="mainModule__table" />
                         </div>
                     </div>
                 </div>
