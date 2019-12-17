@@ -19,6 +19,7 @@ export const loadCurrentData = ({
         dispatch(loadFlagAction({ path: pathValid, load: false }));
     }
     if (status === "online") {
+        if (firebase)
         await firebase.db
             .collection(storeLoad)
             .get()
@@ -88,6 +89,7 @@ export const loadCurrentData = ({
                     };
 
                     if (flag && undefiendCopyStore.length) {
+                         if (firebase){
                         const items = firebase.db.collection(storeLoad);
                         const batch = firebase.db.batch();
                         _.uniqBy(undefiendCopyStore, "key" || "uuid").forEach(it => {
@@ -95,6 +97,7 @@ export const loadCurrentData = ({
                             batch.set(itRef, it);
                         });
                         await batch.commit();
+                         }
                         await onAction();
                     } else await onAction();
                 };

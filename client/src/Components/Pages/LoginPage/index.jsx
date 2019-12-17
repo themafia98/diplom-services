@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import axios from "axios";
 import { Redirect, NavLink } from "react-router-dom";
 import { Button, Input } from "antd";
 import { connect } from "react-redux";
@@ -29,14 +30,12 @@ class LoginPage extends React.Component {
 
         if (login && password) {
             this.setState({ errorMessage: null, loading: true });
-            this.props.firebase
-                .login(login, password)
-                .then(res => {
-                    if (res) {
-                        if (onShowGuide) onShowGuide(true);
-                        this.props.history.push("/dashboard");
-                    } else throw new Error("Error enter");
+            axios
+                .post("/rest/rest/login", {
+                    email: login,
+                    password
                 })
+                .catch(err => console.log(err))
                 .catch(error => {
                     this.setState({ errorMessage: error.message, loading: false });
                 });
@@ -54,21 +53,27 @@ class LoginPage extends React.Component {
         const { isUser, firebase } = this.props;
         const { loading, errorMessage } = this.state;
 
-        if (isUser && firebase.getCurrentUser()) return <Redirect to="/dashboard" />;
+        if (firebase && isUser && firebase.getCurrentUser()) return <Redirect to="/dashboard" />;
 
         return (
             <div className="loginPage">
                 <div className="loginPage__loginContainer">
                     <h1 className="loginContainer__title">{config["title"]}</h1>
                     <Logo />
-                    <form name="loginForm" className="loginContainer__loginForm">
+                    <form
+                        method="POST"
+                        action="/rest/rest/login"
+                        name="loginForm"
+                        className="loginContainer__loginForm"
+                    >
                         <div className="notificationWrapper">
                             {errorMessage ? <p className="errorMessage">{errorMessage}</p> : null}
                         </div>
-                        <Input aria-label="login" size="large" placeholder="login" ref={refLogin} />
+                        <Input name="email" aria-label="login" size="large" placeholder="login" ref={refLogin} />
                         <Input
                             aria-label="password"
                             type="password"
+                            name="password"
                             size="large"
                             placeholder="password"
                             ref={refPassword}
@@ -77,8 +82,9 @@ class LoginPage extends React.Component {
                             aria-label="login-button"
                             className="enterSystem"
                             type="primary"
+                            htmlType="submit"
                             loading={loading}
-                            onClick={enterLoading}
+                            // onClick={enterLoading}
                         >
                             Войти
                         </Button>

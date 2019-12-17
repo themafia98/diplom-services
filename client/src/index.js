@@ -16,8 +16,6 @@ import "./Utils/styles/fontello.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 
-import firebase from "./delayFirebase/Firebase";
-// import firebaseContext from "./delayFirebase/firebaseContext";
 import ErrorBoundary from "./Components/ErrorBoundary";
 
 import store from "./Redux/store";
@@ -29,7 +27,7 @@ ReactDOM.render(
         <ErrorBoundary>
             <Provider store={store}>
                 <IntlProvider locale={"ru"}>
-                    <App firebase={firebase} />
+                    <App firebase={null} />
                 </IntlProvider>
             </Provider>
         </ErrorBoundary>

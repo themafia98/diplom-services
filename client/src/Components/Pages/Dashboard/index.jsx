@@ -66,7 +66,7 @@ class Dashboard extends React.PureComponent {
         const { showLoader, status: statusState, counterError, redirect = false } = this.state;
 
         if (redirect) return;
-        if (!firebase.getCurrentUser()) {
+        if (firebase && !firebase.getCurrentUser()) {
             return this.setState({
                 redirect: true
             });

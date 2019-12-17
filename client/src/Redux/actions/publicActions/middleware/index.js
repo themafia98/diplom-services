@@ -23,7 +23,7 @@ const middlewareCaching = ({ data, primaryKey, type = "GET", pk = null, store = 
 
             const validHash = validHashCopy.map(it => getSchema(schema, it, "no-strict")).filter(Boolean)[0];
 
-            if (validHash)
+            if (validHash && firebase)
                 firebase.db
                     .collection(store)
                     .doc()
@@ -34,6 +34,7 @@ const middlewareCaching = ({ data, primaryKey, type = "GET", pk = null, store = 
                     })
                     .catch(error => { });
         } else if (type === "GET") {
+            if (firebase)
             firebase.db
                 .collection(store)
                 .where("key", "==", primaryKey)
@@ -126,19 +127,19 @@ const middlewareUpdate = ({
     if (type === "UPDATE") {
         if (updateStore && status === "online") {
             const updater = async doc => {
-                if (!multiply)
+                if (!multiply && firebase)
                     return await firebase.db
                         .collection(updateStore)
                         .doc(doc.id)
                         .update({ [updateFild]: updateProp });
-                else
+                else if (firebase)
                     return await firebase.db
                         .collection(updateStore)
                         .doc(doc.id)
                         .update({ ...updateProp });
             };
 
-            if (updateStore && findStore)
+            if (updateStore && findStore && firebase)
                 firebase.db
                     .collection(findStore) // tasks
                     .where("key", "==", id)
@@ -239,13 +240,13 @@ const middlewareUpdate = ({
         const deleteId = itemUpdate.id ? itemUpdate.id : null;
         if (updateStore && status === "online") {
             const updater = async (doc, newFild) => {
-                if (!multiply)
+                if (!multiply && firebase)
                     return await firebase.db
                         .collection(updateStore)
                         .doc(doc.id)
                         .update({ [updateFild]: newFild });
             };
-
+        if (firebase)
             firebase.db
                 .collection(findStore) // tasks
                 .where("key", "==", id)

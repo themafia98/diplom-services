@@ -131,9 +131,7 @@ class ModalWindow extends React.PureComponent {
                         rules: "full",
                         accept: true
                     })
-                    .then(res => {
-                        console.log(res);
-                    });
+                    .catch(err => console.log(err));
                 // firebase
                 //     .registration(email, password)
                 //     .then(res => {

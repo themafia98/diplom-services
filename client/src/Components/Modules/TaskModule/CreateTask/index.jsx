@@ -164,6 +164,7 @@ class CreateTask extends React.PureComponent {
         this.setState({ ...this.state, load: true });
 
         if (statusApp === "online") {
+            if (firebase)
             firebase.db
                 .collection("tasks")
                 .doc()

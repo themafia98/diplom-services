@@ -28,6 +28,7 @@ class CreateNews extends React.PureComponent {
         }
 
         if (statusApp === "online") {
+            if (firebase)
             firebase.db
                 .collection("news")
                 .doc()
