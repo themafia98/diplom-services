@@ -14,6 +14,7 @@ import ModalWindow from "../../ModalWindow";
 class LoginPage extends React.Component {
     state = {
         loading: false,
+        user: null,
         redirect: false,
         errorMessage: null
     };
@@ -35,12 +36,24 @@ class LoginPage extends React.Component {
                     email: login,
                     password
                 })
-                .catch(err => console.log(err))
+                .then((res) => {
+                    if (res.status === 200){
+                        localStorage.setItem("user", JSON.stringify(res.data));
+                        this.setState({
+                            user: res.data,
+                        })
+                    } else throw new Error(res.statusText);
+                })
                 .catch(error => {
-                    this.setState({ errorMessage: error.message, loading: false });
+                    console.log(error);
+                    this.setState({ errorMessage: error.response.data, loading: false });
                 });
         }
     };
+
+    getCurrentUser = () => {
+        return this.state.user;
+    }
 
     login = null;
     password = null;
@@ -53,7 +66,7 @@ class LoginPage extends React.Component {
         const { isUser, firebase } = this.props;
         const { loading, errorMessage } = this.state;
 
-        if (firebase && isUser && firebase.getCurrentUser()) return <Redirect to="/dashboard" />;
+        if (this.getCurrentUser()) return <Redirect to="/dashboard" />;
 
         return (
             <div className="loginPage">
@@ -62,7 +75,7 @@ class LoginPage extends React.Component {
                     <Logo />
                     <form
                         method="POST"
-                        action="/rest/rest/login"
+                        // action="/rest/rest/login"
                         name="loginForm"
                         className="loginContainer__loginForm"
                     >
@@ -82,9 +95,9 @@ class LoginPage extends React.Component {
                             aria-label="login-button"
                             className="enterSystem"
                             type="primary"
-                            htmlType="submit"
+                
                             loading={loading}
-                            // onClick={enterLoading}
+                            onClick={enterLoading}
                         >
                             Войти
                         </Button>

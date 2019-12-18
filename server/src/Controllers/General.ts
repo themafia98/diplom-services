@@ -4,6 +4,8 @@ import passport from "passport";
 import multer from "multer";
 import { UserModel } from "../Models/Database/Schema";
 import { App } from "../Utils/Interfaces";
+import Auth from '../Models/Auth';
+
 import jwt from "jsonwebtoken";
 
 namespace General {
@@ -11,7 +13,7 @@ namespace General {
     export const module = (app: App, route: RouteExpress): null | void => {
         if (!app) return null;
 
-        route.use("/dashboard", async (req: Request, res: Response, next: Function) => {
+        route.use("/api", async (req: Request, res: Response, next: Function) => {
             try {
                 if (req.isAuthenticated()) {
                     next();
@@ -46,12 +48,21 @@ namespace General {
         );
 
         route.post(
-            "/login",
-            passport.authenticate("local", {
-                successRedirect: "/dashboard",
-                failureRedirect: "/",
-                failureFlash: false
-            })
+            "/login",Auth.config.optional, async (req:Request, res:Response, next):Promise<any> => {
+                const { body = {} } = req;
+                console.log(body);
+                if (!body || body && _.isEmpty(body)) return void res.sendStatus(503);
+                return await passport.authenticate('local', function (err:Error, user:any):any {
+                    console.log(user);
+                    if (!user){
+                        return void res.sendStatus(401);
+                    } else {
+                      
+                      user.token = user.generateJWT();
+                      return res.json({ user: user.toAuthJSON() });
+                    }
+                })(req, res, next);
+            }
         );
 
         route.get("/logout", (req: Request, res: Response) => {

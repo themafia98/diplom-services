@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
+import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import Security from "../../Security";
 
 const userSchema = new Schema(
     {
@@ -21,12 +21,12 @@ const userSchema = new Schema(
 
 userSchema
     .virtual("password")
-    .set(async function(password: string){
+    .set(async function(password: string):Promise<void>{
        
          this._plainPassword = password;
          console.log("password:", password);
           if (password) {
-           this.passwordHash = bcrypt.hashSync(<string>password, 10);
+            this.passwordHash = await bcrypt.hashSync(<string>password, 10);
           } else {
     this.passwordHash = undefined;
   }
@@ -35,9 +35,34 @@ userSchema
         return <any>this._plainPassword;
     });
 
-userSchema.methods.checkPassword = function(password: string):boolean {
+userSchema.methods.checkPassword = async function(password: string):Promise<boolean> {
+    console.log(password);
     if (!password) return false;
-    return bcrypt.compareSync(password, this.passwordHash);
+    return await bcrypt.compareSync(password, this.passwordHash);
+};
+
+userSchema.methods.generateJWT = function():any {
+  const today = new Date();
+  const expirationDate = new Date(today);
+  expirationDate.setDate(today.getDate() + 60);
+
+  return jwt.sign({
+    email: this.email,
+    id: this._id,
+    exp: expirationDate.getTime() / 1000,
+  }, 'jwtsecret');
+}
+
+userSchema.methods.toAuthJSON = function() {
+  return {
+    _id: this._id,
+    email: this.email,
+    position: this.posotion,
+    departament: this.departament,
+    rules: this.rules,
+    accept: this.accept,
+    token: this.generateJWT(),
+  };
 };
 
 export const task = new Schema({

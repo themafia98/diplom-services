@@ -12,7 +12,7 @@ import { ServerRun, App } from "../../Utils/Interfaces";
 import General from "../../Controllers/General";
 import Tasks from "../../Controllers/Tasks";
 import Database from "../Database";
-import Security from "../Security";
+
 import { UserModel } from "../Database/Schema";
 
 const jwt = require("passport-jwt");
@@ -54,10 +54,9 @@ class ServerRunner implements ServerRun {
         this.getApp().use(session({ secret: "jwtsecret", saveUninitialized: false, resave: false }));
         this.getApp().use(passport.session());
 
-        this.getApp().locals.hash = new Security.Crypto();
         const dbm = new Database.ManagmentDatabase("controllSystem", <string>process.env.MONGODB_URI);
         this.getApp().locals.dbm = dbm;
-
+   
         passport.use(
             new LocalStrategy(
                 {
@@ -65,10 +64,10 @@ class ServerRunner implements ServerRun {
                     passwordField: "password"
                 },
                 async (email: string, password: string, done: Function) => {
-                 
+                    console.log(password);
                     await dbm.connection();
                     UserModel.findOne({ email }, async (err: Error, user: any) => {
-                       
+                      
                         await dbm.disconnect();
                         if (err) return done(err);
                       
@@ -93,6 +92,7 @@ class ServerRunner implements ServerRun {
         passport.use(
             new jwt.Strategy(jwtOptions, async function(payload: any, done: Function) {
                await dbm.connection();
+               console.log("jwt");
                 UserModel.findOne(payload.id, async (err: Error, user: any) => {
                      await dbm.disconnect();
                     
@@ -112,8 +112,11 @@ class ServerRunner implements ServerRun {
             done(null, user.id);
         });
 
-        passport.deserializeUser(function(id, done) {
-            UserModel.findById(id, function(err, user: any) {
+        passport.deserializeUser(async function(id, done) {
+            console.log(id);
+             await dbm.connection();
+            UserModel.findById(id, async function(err, user: any) {
+                  await dbm.disconnect();
                 done(err, user);
             });
         });
@@ -127,7 +130,7 @@ class ServerRunner implements ServerRun {
 
         /** initial entrypoint route */
         const rest = instanceRouter.initInstance("/rest");
-        const tasksRoute: Router = instanceRouter.createRoute("/tasks");
+        const tasksRoute: Router = instanceRouter.createRoute("/api/tasks");
 
         General.module(<App>this.getApp(), rest);
         tasksRoute.use(this.startResponse);
