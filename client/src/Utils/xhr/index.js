@@ -100,8 +100,14 @@ class Request {
     }
 
     sendRequest(url, method, body, auth = false, customHeaders = {}){
+        const { user = null } =  localStorage.getItem("user") || {};
+
+        if (auth && !user || user && !user.token) {
+            return false;
+        }
+
         const token = localStorage["user"] && auth ? `Token ${JSON.parse(localStorage.getItem("user"))["user"].token}` : null;
-        console.log(token);
+
         const props =  auth && body ? {
                 headers: { 
                     Authorization: token
