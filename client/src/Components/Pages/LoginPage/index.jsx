@@ -25,17 +25,16 @@ class LoginPage extends React.Component {
     };
 
     enterLoading = event => {
-        const { onShowGuide = null } = this.props;
+        const { onShowGuide = null, rest } = this.props;
         const { state: { value: login = "" } = {} } = this.login || {};
         const { state: { value: password = "" } = {} } = this.password || {};
 
         if (login && password) {
             this.setState({ errorMessage: null, loading: true });
-            axios
-                .post("/rest/rest/login", {
+            rest.sendRequest("/rest/rest/login", "POST", {
                     email: login,
                     password
-                })
+                }, false)
                 .then((res) => {
                     if (res.status === 200){
                         localStorage.setItem("user", JSON.stringify(res.data));

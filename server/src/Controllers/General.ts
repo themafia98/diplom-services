@@ -13,17 +13,6 @@ namespace General {
     export const module = (app: App, route: RouteExpress): null | void => {
         if (!app) return null;
 
-        route.use("/api", async (req: Request, res: Response, next: Function) => {
-            try {
-                if (req.isAuthenticated()) {
-                    next();
-                } else res.redirect("/");
-            } catch (err) {
-                console.error(err);
-                res.sendStatus(404);
-            }
-        });
-
         route.post(
             "/reg",
             upload.any(),
@@ -50,7 +39,6 @@ namespace General {
         route.post(
             "/login",Auth.config.optional, async (req:Request, res:Response, next):Promise<any> => {
                 const { body = {} } = req;
-                console.log(body);
                 if (!body || body && _.isEmpty(body)) return void res.sendStatus(503);
                 return await passport.authenticate('local', function (err:Error, user:any):any {
                     console.log(user);

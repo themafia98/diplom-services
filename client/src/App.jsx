@@ -39,6 +39,7 @@ class App extends React.Component {
         const {
             addTab,
             setCurrentTab,
+            rest,
             router: { currentActionTab = "", actionTabs = [] } = {},
             onLoadUdata
         } = this.props;
@@ -76,6 +77,7 @@ class App extends React.Component {
 
     render() {
         const { loadState, isUser } = this.state;
+        const { rest } = this.props;
         if (loadState) {
             return (
                 <React.Fragment>
@@ -88,7 +90,7 @@ class App extends React.Component {
                     </RenderInBrowser>
                     <RenderInBrowser except ie>
                         <Switch>
-                            <Route exact path="/" render={props => <LoginPage {...props} isUser={isUser} />} />
+                            <Route exact path="/" render={props => <LoginPage rest = {rest} {...props} isUser={isUser} />} />
                             <Route exact path="/recovory" render={props => <Recovery {...props} />} />
                             <PrivateRoute exact path="/dashboard" component={Dashboard} />
                         </Switch>

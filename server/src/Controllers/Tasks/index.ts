@@ -2,12 +2,14 @@ import { Request, Response, Router as RouteExpress } from 'express';
 import Utils from '../../Utils';
 import { App } from '../../Utils/Interfaces';
 
+import Auth from '../../Models/Auth';
+
 namespace Tasks {
     export const module = (app: App, route: RouteExpress): null | void => {
         if (!app) return null;
         const service = app.locals;
 
-        route.get("/list", (req: Request, res: Response) => {
+        route.get("/list",Auth.config.required, (req: Request, res: Response) => {
             try {
                 service.dbm.connection().then(() => {
                     service.dbm.collection("tasks")

@@ -15,10 +15,10 @@ import "./Utils/styles/fontello.css";
 
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-
 import ErrorBoundary from "./Components/ErrorBoundary";
-
 import store from "./Redux/store";
+
+import Request from './Utils/xhr';
 
 require("es6-promise").polyfill();
 
@@ -27,7 +27,7 @@ ReactDOM.render(
         <ErrorBoundary>
             <Provider store={store}>
                 <IntlProvider locale={"ru"}>
-                    <App firebase={null} />
+                    <App rest = {new Request()} />
                 </IntlProvider>
             </Provider>
         </ErrorBoundary>

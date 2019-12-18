@@ -1,4 +1,5 @@
 import _ from "lodash";
+import axios from 'axios';
 
 class Request {
     constructor(prop) {
@@ -97,6 +98,29 @@ class Request {
             if (callback) callback(error);
         }
     }
+
+    sendRequest(url, method, body, auth = false, customHeaders = {}){
+        const token = localStorage["user"] && auth ? `Token ${JSON.parse(localStorage.getItem("user"))["user"].token}` : null;
+        console.log(token);
+        const props =  auth && body ? {
+                headers: { 
+                    Authorization: token
+                },
+                data: body,
+        } : {
+            headers: {
+                ...customHeaders
+            },
+            data: body ? body : null
+        };
+
+        return axios({
+            method,
+            url,
+            ...props,
+        })
+    }
+
 }
 
 export default Request;

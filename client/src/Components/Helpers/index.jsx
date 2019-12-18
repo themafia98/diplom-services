@@ -7,13 +7,12 @@ export const PrivateRoute = ({ component: Component, ...routeProps }) => (
         exact
         {...routeProps}
         render={
-            props => (
-                // firebase.getCurrentUser() ? (
-                <Component {...props} />
-            )
-            // ) : (
-            //  <Redirect to={{ pathname: "/", state: { from: props.location } }} />
-            // )
+            props => {
+              return  localStorage.getItem("user") ? (
+                <Component {...props} />            
+                ) : <Redirect to={{ pathname: "/", state: { from: props.location } }} />
+            
+            }
         }
     />
 );
