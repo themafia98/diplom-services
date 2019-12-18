@@ -122,7 +122,7 @@ class ModalWindow extends React.PureComponent {
         if (mode === "reg") {
             if (name && password && departament && email && !loading) {
                 axios
-                    .post("/rest/rest/reg", {
+                    .post("/rest/reg", {
                         email,
                         password,
                         displayName: `${name} ${surname}`,

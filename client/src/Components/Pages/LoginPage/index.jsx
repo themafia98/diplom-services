@@ -31,7 +31,7 @@ class LoginPage extends React.Component {
 
         if (login && password) {
             this.setState({ errorMessage: null, loading: true });
-            rest.sendRequest("/rest/rest/login", "POST", {
+            rest.sendRequest("/rest/login", "POST", {
                     email: login,
                     password
                 }, false)
@@ -74,7 +74,7 @@ class LoginPage extends React.Component {
                     <Logo />
                     <form
                         method="POST"
-                        // action="/rest/rest/login"
+                        // action="/rest/login"
                         name="loginForm"
                         className="loginContainer__loginForm"
                     >
