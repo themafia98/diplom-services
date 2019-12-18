@@ -32,11 +32,11 @@ class LoginPage extends React.Component {
         if (login && password) {
             this.setState({ errorMessage: null, loading: true });
             rest.sendRequest("/rest/login", "POST", {
-                    email: login,
-                    password
-                }, false)
+                email: login,
+                password
+            }, false)
                 .then((res) => {
-                    if (res.status === 200){
+                    if (res.status === 200) {
                         localStorage.setItem("user", JSON.stringify(res.data));
                         this.setState({
                             user: res.data,
@@ -94,7 +94,7 @@ class LoginPage extends React.Component {
                             aria-label="login-button"
                             className="enterSystem"
                             type="primary"
-                
+
                             loading={loading}
                             onClick={enterLoading}
                         >

@@ -1,4 +1,4 @@
-import { Router as RouteExpress, Request, Response } from "express";
+import { Router as RouteExpress, Request, Response, NextFunction } from "express";
 import _ from "lodash";
 import passport from "passport";
 import multer from "multer";
@@ -6,12 +6,19 @@ import { UserModel } from "../Models/Database/Schema";
 import { App } from "../Utils/Interfaces";
 import Auth from '../Models/Auth';
 
-import jwt from "jsonwebtoken";
 
 namespace General {
     const upload = multer(); // form-data
     export const module = (app: App, route: RouteExpress): null | void => {
         if (!app) return null;
+
+        route.get("/auth", (req: Request, res: Response, next: NextFunction) => {
+            if ((<any>req).headers.authorization.includes("Token")) {
+                res.sendStatus(200);
+            } else {
+                res.sendStatus(404);
+            }
+        });
 
         route.post(
             "/reg",
@@ -37,29 +44,26 @@ namespace General {
         );
 
         route.post(
-            "/login",Auth.config.optional, async (req:Request, res:Response, next):Promise<any> => {
+            "/login", Auth.config.optional, async (req: Request, res: Response, next): Promise<any> => {
                 const { body = {} } = req;
                 if (!body || body && _.isEmpty(body)) return void res.sendStatus(503);
-                return await passport.authenticate('local', function (err:Error, user:any):any {
+                return await passport.authenticate('local', function (err: Error, user: any): any {
                     console.log(user);
-                    if (!user){
+                    if (!user) {
                         return void res.sendStatus(401);
                     } else {
-                      
-                      user.token = user.generateJWT();
-                      return res.json({ user: user.toAuthJSON() });
+
+                        user.token = user.generateJWT();
+                        return res.json({ user: user.toAuthJSON() });
                     }
                 })(req, res, next);
             }
         );
 
         route.get("/logout", (req: Request, res: Response) => {
-            if (req.session) {
-                req.session.destroy(function() {
-                    res.clearCookie("jwtsecret");
-                    res.redirect("/");
-                });
-            } else res.redirect("/");
+            (<any>req).logout();
+            (<any>res).redirect("/");
+
         });
     };
 }

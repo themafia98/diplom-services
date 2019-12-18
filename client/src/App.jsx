@@ -90,9 +90,9 @@ class App extends React.Component {
                     </RenderInBrowser>
                     <RenderInBrowser except ie>
                         <Switch>
-                            <Route exact path="/" render={props => <LoginPage rest = {rest} {...props} isUser={isUser} />} />
+                            <Route exact path="/" render={props => <LoginPage rest={rest} {...props} isUser={isUser} />} />
                             <Route exact path="/recovory" render={props => <Recovery {...props} />} />
-                            <PrivateRoute exact path="/dashboard" component={Dashboard} />
+                            <PrivateRoute exact path="/dashboard" rest={rest} component={Dashboard} />
                         </Switch>
                     </RenderInBrowser>
                 </React.Fragment>

@@ -129,9 +129,12 @@ class Dashboard extends React.PureComponent {
         this.setState({ ...this.state, collapsed });
     };
 
-    logout = event => {
-        const { firebase, onLogoutAction } = this.props;
-        if (firebase) firebase.signOut().then(() => onLogoutAction().then(() => this.props.history.push("/")));
+    logout = async event => {
+        const { rest, onLogoutAction } = this.props;
+        if (rest) {
+            await rest.signOut()
+            await onLogoutAction();
+        }
     };
 
     closeGuild = event => {
@@ -232,7 +235,7 @@ class Dashboard extends React.PureComponent {
     };
 
     installApp = event => {
-        Notification.requestPermission().then(function(result) {
+        Notification.requestPermission().then(function (result) {
             if (result === "granted") {
                 this.randomNotification();
             }

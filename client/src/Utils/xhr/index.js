@@ -82,7 +82,7 @@ class Request {
                 const testRequst = new XMLHttpRequest();
                 const api = this.getTestAPI(true);
                 testRequst.open("GET", api);
-                testRequst.onload = function() {
+                testRequst.onload = function () {
                     if (this.status === 200 || this.status === 204) {
                         resolve("online");
                     } else {
@@ -99,33 +99,54 @@ class Request {
         }
     }
 
-    sendRequest(url, method, body, auth = false, customHeaders = {}){
-        const userJSON =  localStorage.getItem("user") || {};
-        const { user = null } = userJSON ? JSON.parse(userJSON) : {};
+    async authCheck() {
+        const auth = true;
+        const userJSON = localStorage.getItem("user") || {};
+        const { user = null } = auth && !_.isEmpty(userJSON) ? JSON.parse(userJSON) : {};
+        const token = user && auth ? `Token ${user.token}` : null;
 
-        if (auth && !user || user && !user.token) {
+        if (auth && !user || auth && user && !user.token) {
+            return false;
+        }
+
+        return await fetch("/rest/auth", {
+            headers: {
+                Authorization: token
+            },
+        });
+    }
+
+    sendRequest(url, method, body, auth = false, customHeaders = {}) {
+        const userJSON = localStorage.getItem("user") || {};
+        const { user = null } = auth && !_.isEmpty(userJSON) ? JSON.parse(userJSON) : {};
+
+        if (auth && !user || auth && user && !user.token) {
             return false;
         }
 
         const token = user && auth ? `Token ${user.token}` : null;
 
-        const props =  auth && body ? {
-                headers: { 
-                    Authorization: token
-                },
-                data: body,
-        } : {
+        const props = auth && body ? {
             headers: {
-                ...customHeaders
+                Authorization: token
             },
-            data: body ? body : null
-        };
+            data: body,
+        } : {
+                headers: {
+                    ...customHeaders
+                },
+                data: body ? body : null
+            };
 
         return axios({
             method,
             url,
             ...props,
         })
+    }
+
+    signOut = async () => {
+        return await axios("/rest/logout")
     }
 
 }
