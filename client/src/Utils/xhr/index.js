@@ -100,13 +100,14 @@ class Request {
     }
 
     sendRequest(url, method, body, auth = false, customHeaders = {}){
-        const { user = null } =  localStorage.getItem("user") || {};
+        const userJSON =  localStorage.getItem("user") || {};
+        const { user = null } = userJSON ? JSON.parse(userJSON) : {};
 
         if (auth && !user || user && !user.token) {
             return false;
         }
 
-        const token = localStorage["user"] && auth ? `Token ${JSON.parse(localStorage.getItem("user"))["user"].token}` : null;
+        const token = user && auth ? `Token ${user.token}` : null;
 
         const props =  auth && body ? {
                 headers: { 
