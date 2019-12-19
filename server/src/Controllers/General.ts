@@ -12,12 +12,9 @@ namespace General {
     export const module = (app: App, route: RouteExpress): null | void => {
         if (!app) return null;
 
-        route.get("/auth", (req: Request, res: Response, next: NextFunction) => {
-            if ((<any>req).headers.authorization.includes("Token")) {
-                res.sendStatus(200);
-            } else {
-                res.sendStatus(404);
-            }
+        route.get("/auth", Auth.config.required, (req: Request, res: Response, next: NextFunction) => {
+
+            res.sendStatus(200);
         });
 
         route.post(
@@ -60,9 +57,18 @@ namespace General {
             }
         );
 
-        route.get("/logout", (req: Request, res: Response) => {
+        route.post("/logout", (req: Request, res: Response) => {
+            // Get rid of the session token. Then call `logout`; it does no harm.
+            console.log("logout");
             (<any>req).logout();
-            (<any>res).redirect("/");
+            console.log((<any>req).user);
+            delete (<any>req).user;
+            req.session.destroy(function (err) {
+                if (err) { return res.sendStatus(400); }
+                res.clearCookie("sid");
+                // The response should indicate that the user is no longer authenticated.
+                return res.redirect("/");
+            });
 
         });
     };

@@ -1,5 +1,6 @@
 import express, { Application, Request, Response, NextFunction, Router } from "express";
-import session from "express-session";
+import session, { SessionOptions } from "express-session";
+import MongoStore from 'connect-mongo';
 import passport from "passport";
 import _ from "lodash";
 import helmet from "helmet";
@@ -51,12 +52,22 @@ class ServerRunner implements ServerRun {
         this.getApp().use(express.urlencoded({ extended: true }));
         this.getApp().use(express.json());
         this.getApp().set("port", this.getPort());
-        this.getApp().use(session({ secret: "jwtsecret", saveUninitialized: false, resave: false }));
+        const SessionStore = MongoStore(session);
+
+        this.getApp().use(session({
+            secret: "jwtsecret",
+            saveUninitialized: true,
+            resave: true,
+            store: new SessionStore({
+                url: process.env.MONGODB_URI,
+                collection: 'sessions'
+            })
+        }));
         this.getApp().use(passport.session());
 
         const dbm = new Database.ManagmentDatabase("controllSystem", <string>process.env.MONGODB_URI);
         this.getApp().locals.dbm = dbm;
-   
+
         passport.use(
             new LocalStrategy(
                 {
@@ -67,17 +78,17 @@ class ServerRunner implements ServerRun {
                     console.log(password);
                     await dbm.connection();
                     UserModel.findOne({ email }, async (err: Error, user: any) => {
-                      
+
                         await dbm.disconnect();
                         if (err) return done(err);
-                      
+
                         else if (!user || !user.checkPassword(password)) {
                             return done(null, false, {
                                 message: "Нет такого пользователя или пароль неверен."
                             });
                         } else {
-                 
-                             return done(null, user);
+
+                            return done(null, user);
                         }
                     });
                 }
@@ -90,12 +101,12 @@ class ServerRunner implements ServerRun {
         };
 
         passport.use(
-            new jwt.Strategy(jwtOptions, async function(payload: any, done: Function) {
-               await dbm.connection();
-               console.log("jwt");
+            new jwt.Strategy(jwtOptions, async function (payload: any, done: Function) {
+                await dbm.connection();
+                console.log("jwt");
                 UserModel.findOne(payload.id, async (err: Error, user: any) => {
-                     await dbm.disconnect();
-                    
+                    await dbm.disconnect();
+
                     if (err) {
                         return done(err);
                     }
@@ -108,15 +119,15 @@ class ServerRunner implements ServerRun {
             })
         );
 
-        passport.serializeUser(function(user: any, done) {
+        passport.serializeUser(function (user: any, done) {
             done(null, user.id);
         });
 
-        passport.deserializeUser(async function(id, done) {
+        passport.deserializeUser(async function (id, done) {
             console.log(id);
-             await dbm.connection();
-            UserModel.findById(id, async function(err, user: any) {
-                  await dbm.disconnect();
+            await dbm.connection();
+            UserModel.findById(id, async function (err, user: any) {
+                await dbm.disconnect();
                 done(err, user);
             });
         });

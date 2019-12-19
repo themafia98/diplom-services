@@ -113,6 +113,7 @@ class Request {
             headers: {
                 Authorization: token
             },
+            credentials: 'include',
         });
     }
 
@@ -146,7 +147,9 @@ class Request {
     }
 
     signOut = async () => {
-        return await axios("/rest/logout")
+        const result = await fetch("/rest/logout", { method: "POST", credentials: 'include', });
+        console.log(result);
+
     }
 
 }

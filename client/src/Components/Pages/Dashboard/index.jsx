@@ -132,8 +132,7 @@ class Dashboard extends React.PureComponent {
     logout = async event => {
         const { rest, onLogoutAction } = this.props;
         if (rest) {
-            await rest.signOut()
-            await onLogoutAction();
+            await rest.signOut();
         }
     };
 

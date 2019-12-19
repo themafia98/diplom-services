@@ -21,48 +21,48 @@ const userSchema = new Schema(
 
 userSchema
     .virtual("password")
-    .set(async function(password: string):Promise<void>{
-       
-         this._plainPassword = password;
-         console.log("password:", password);
-          if (password) {
+    .set(async function (password: string): Promise<void> {
+
+        this._plainPassword = password;
+        console.log("password:", password);
+        if (password) {
             this.passwordHash = await bcrypt.hashSync(<string>password, 10);
-          } else {
-    this.passwordHash = undefined;
-  }
+        } else {
+            this.passwordHash = undefined;
+        }
     })
-    .get(function() {
+    .get(function () {
         return <any>this._plainPassword;
     });
 
-userSchema.methods.checkPassword = async function(password: string):Promise<boolean> {
+userSchema.methods.checkPassword = async function (password: string): Promise<boolean> {
     console.log(password);
     if (!password) return false;
     return await bcrypt.compareSync(password, this.passwordHash);
 };
 
-userSchema.methods.generateJWT = function():any {
-  const today = new Date();
-  const expirationDate = new Date(today);
-  expirationDate.setDate(today.getDate() + 60);
+userSchema.methods.generateJWT = function (): any {
+    const today = new Date();
+    const expirationDate = new Date(<any>today);
+    expirationDate.setDate(today.getDate() + 30);
 
-  return jwt.sign({
-    email: this.email,
-    id: this._id,
-    exp: expirationDate.getTime() / 1000,
-  }, 'jwtsecret');
+    return jwt.sign({
+        email: this.email,
+        id: this._id,
+        exp: expirationDate.getTime() / 1000,
+    }, 'jwtsecret');
 }
 
-userSchema.methods.toAuthJSON = function() {
-  return {
-    _id: this._id,
-    email: this.email,
-    position: this.posotion,
-    departament: this.departament,
-    rules: this.rules,
-    accept: this.accept,
-    token: this.generateJWT(),
-  };
+userSchema.methods.toAuthJSON = function () {
+    return {
+        _id: this._id,
+        email: this.email,
+        position: this.posotion,
+        departament: this.departament,
+        rules: this.rules,
+        accept: this.accept,
+        token: this.generateJWT(),
+    };
 };
 
 export const task = new Schema({

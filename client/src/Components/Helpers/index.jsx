@@ -32,7 +32,7 @@ export const PrivateRoute = ({ component: Component, rest, ...routeProps }) => {
         }
         const timer = setInterval(() => {
             getRouters();
-        }, 20000);
+        }, 15000);
         return () => clearInterval(timer);
     }, [""]);
     return (
