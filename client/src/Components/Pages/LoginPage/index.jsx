@@ -14,7 +14,7 @@ import ModalWindow from "../../ModalWindow";
 class LoginPage extends React.Component {
     state = {
         loading: false,
-        user: null,
+        loginAuth: null,
         redirect: false,
         errorMessage: null
     };
@@ -37,9 +37,9 @@ class LoginPage extends React.Component {
             }, false)
                 .then((res) => {
                     if (res.status === 200) {
-                        localStorage.setItem("user", JSON.stringify(res.data));
+                        sessionStorage.setItem("user", JSON.stringify(res.data));
                         this.setState({
-                            user: res.data,
+                            loginAuth: true,
                         })
                     } else throw new Error(res.statusText);
                 })
@@ -54,6 +54,7 @@ class LoginPage extends React.Component {
         return this.state.user;
     }
 
+
     login = null;
     password = null;
 
@@ -62,10 +63,10 @@ class LoginPage extends React.Component {
 
     render() {
         const { refLogin, refPassword, enterLoading } = this;
-        const { isUser, firebase } = this.props;
-        const { loading, errorMessage } = this.state;
+        const { authLoad = false } = this.props;
+        const { loading, errorMessage, loginAuth } = this.state;
 
-        if (this.getCurrentUser()) return <Redirect to="/dashboard" />;
+        if (authLoad || loginAuth) return <Redirect to="/dashboard" />;
 
         return (
             <div className="loginPage">

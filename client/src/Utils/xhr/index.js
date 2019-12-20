@@ -101,7 +101,7 @@ class Request {
 
     async authCheck() {
         const auth = true;
-        const userJSON = localStorage.getItem("user") || {};
+        const userJSON = sessionStorage.getItem("user") || {};
         const { user = null } = auth && !_.isEmpty(userJSON) ? JSON.parse(userJSON) : {};
         const token = user && auth ? `Token ${user.token}` : null;
 
@@ -118,7 +118,7 @@ class Request {
     }
 
     sendRequest(url, method, body, auth = false, customHeaders = {}) {
-        const userJSON = localStorage.getItem("user") || {};
+        const userJSON = sessionStorage.getItem("user") || {};
         const { user = null } = auth && !_.isEmpty(userJSON) ? JSON.parse(userJSON) : {};
 
         if (auth && !user || auth && user && !user.token) {
@@ -147,9 +147,7 @@ class Request {
     }
 
     signOut = async () => {
-        const result = await fetch("/rest/logout", { method: "POST", credentials: 'include', });
-        console.log(result);
-
+        await fetch("/rest/logout", { method: "POST", credentials: 'include', });
     }
 
 }

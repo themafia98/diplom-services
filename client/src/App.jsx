@@ -43,7 +43,7 @@ class App extends React.Component {
             router: { currentActionTab = "", actionTabs = [] } = {},
             onLoadUdata
         } = this.props;
-        return this.setState({ isUser: true, loadState: true }, () => {
+        return this.setState({ authLoad: true, loadState: true }, () => {
             let path = "mainModule";
             const defaultModule = config.menu.find(item => item["SIGN"] === "default");
             if (defaultModule) path = defaultModule.EUID;
@@ -71,12 +71,22 @@ class App extends React.Component {
     };
 
     componentDidMount = () => {
-        this.loadApp();
+        const { rest } = this.props;
+        rest.authCheck().then(res => {
+            if (res.status === 200) {
+                this.loadAppSession();
+            } else {
+                throw new Error(res.message);
+            }
+        }).catch(err => {
+            console.error(err);
+            this.loadApp();
+        })
         if (config.forceUpdate === true || process.env.NODE_ENV === "production") forceUpdateDetectedInit();
     };
 
     render() {
-        const { loadState, isUser } = this.state;
+        const { loadState, authLoad } = this.state;
         const { rest } = this.props;
         if (loadState) {
             return (
@@ -90,7 +100,7 @@ class App extends React.Component {
                     </RenderInBrowser>
                     <RenderInBrowser except ie>
                         <Switch>
-                            <Route exact path="/" render={props => <LoginPage rest={rest} {...props} isUser={isUser} />} />
+                            <Route exact path="/" render={props => <LoginPage rest={rest} {...props} authLoad={authLoad} />} />
                             <Route exact path="/recovory" render={props => <Recovery {...props} />} />
                             <PrivateRoute exact path="/dashboard" rest={rest} component={Dashboard} />
                         </Switch>
