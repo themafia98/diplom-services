@@ -60,7 +60,6 @@ class ServerRunner implements ServerRun {
             store: new SessionStore({
                 url: process.env.MONGODB_URI,
                 collection: "sessions",
-                clear_interval: 3600,
             })
         }));
         this.getApp().use(passport.initialize());
