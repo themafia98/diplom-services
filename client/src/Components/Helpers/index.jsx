@@ -25,7 +25,7 @@ export const PrivateRoute = ({ component: Component, rest, ...routeProps }) => {
 
             }
         }).catch(err => {
-            console.error(err);
+
             clearInterval(timer);
             setRoute(<Redirect to={"/"} />);
             setStatus("error");

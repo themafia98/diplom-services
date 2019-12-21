@@ -14,7 +14,9 @@ namespace General {
         if (req.isAuthenticated()) {
             return next();
         }
-        else return res.sendStatus(302);
+        else {
+            return res.sendStatus(404);
+        }
     };
 
     export const module = (app: App, route: RouteExpress): null | void => {
@@ -67,9 +69,12 @@ namespace General {
 
         route.post("/logout", isPrivateRoute,
             (req: Request, res: Response, next: NextFunction) => {
-                (<any>req.logOut());
-                res.clearCookie("connect.sid");
-                return res.redirect("/");
+                req.session.destroy((err: Error) => {
+                    if (err) console.error(err);
+                    (<any>req.logOut()); // passportjs logout
+                    res.clearCookie("connect.sid");
+                    return res.redirect("/");
+                });
             });
     };
 }
