@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
+import _ from 'lodash'
 import PropTypes from "prop-types";
 import { Route, Redirect } from "react-router-dom";
-import axios from "axios";
+import Loader from '../Loader';
 
 export const PrivateRoute = ({ component: Component, rest, ...routeProps }) => {
-
-    const [route, setRoute] = useState(null);
+    let timer = null;
+    const [route, setRoute] = useState(<Loader />);
     const [status, setStatus] = useState(null);
     const [init, setInit] = useState(null);
 
@@ -17,22 +18,32 @@ export const PrivateRoute = ({ component: Component, rest, ...routeProps }) => {
                     setStatus(res.status);
                 }
             } else {
-                if (res.status !== status) {
-                    setRoute(<Redirect to={"/"} />);
-                    setStatus(res.status);
-                }
+
+                clearInterval(timer);
+                setRoute(<Redirect to={"/"} />);
+                setStatus(res.status);
+
             }
-        })
+        }).catch(err => {
+            console.error(err);
+            clearInterval(timer);
+            setRoute(<Redirect to={"/"} />);
+            setStatus("error");
+        });
     };
+
+    const debounceGetRouters = _.debounce(getRouters, 1000);
 
     useEffect(() => {
         if (!init) {
             setInit(true);
-            getRouters();
+            debounceGetRouters();
         }
-        const timer = setInterval(() => {
-            getRouters();
-        }, 15000);
+        if (status !== 'error') {
+            timer = setInterval(() => {
+                debounceGetRouters();
+            }, 15000);
+        }
         return () => clearInterval(timer);
     }, [""]);
     return (

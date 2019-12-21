@@ -46,7 +46,6 @@ class ServerRunner implements ServerRun {
 
     public start(): void {
         this.setApp(express());
-        this.getApp().use(passport.initialize());
         this.getApp().disabled("x-powerd-by");
         this.getApp().use(helmet());
         this.getApp().use(express.urlencoded({ extended: true }));
@@ -58,12 +57,10 @@ class ServerRunner implements ServerRun {
             secret: "jwtsecret",
             saveUninitialized: true,
             resave: true,
-            store: new SessionStore({
-                url: process.env.MONGODB_URI,
-                collection: 'sessions'
-            })
         }));
+        this.getApp().use(passport.initialize());
         this.getApp().use(passport.session());
+
 
         const dbm = new Database.ManagmentDatabase("controllSystem", <string>process.env.MONGODB_URI);
         this.getApp().locals.dbm = dbm;
@@ -75,10 +72,8 @@ class ServerRunner implements ServerRun {
                     passwordField: "password"
                 },
                 async (email: string, password: string, done: Function) => {
-                    console.log(password);
                     await dbm.connection();
                     UserModel.findOne({ email }, async (err: Error, user: any) => {
-
                         await dbm.disconnect();
                         if (err) return done(err);
 
@@ -103,7 +98,6 @@ class ServerRunner implements ServerRun {
         passport.use(
             new jwt.Strategy(jwtOptions, async function (payload: any, done: Function) {
                 await dbm.connection();
-                console.log("jwt");
                 UserModel.findOne(payload.id, async (err: Error, user: any) => {
                     await dbm.disconnect();
 
@@ -124,7 +118,6 @@ class ServerRunner implements ServerRun {
         });
 
         passport.deserializeUser(async function (id, done) {
-            console.log(id);
             await dbm.connection();
             UserModel.findById(id, async function (err, user: any) {
                 await dbm.disconnect();

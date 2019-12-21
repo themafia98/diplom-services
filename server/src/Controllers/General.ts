@@ -9,11 +9,19 @@ import Auth from '../Models/Auth';
 
 namespace General {
     const upload = multer(); // form-data
+
+    export const isPrivateRoute = (req: Request, res: Response, next: NextFunction) => {
+        if (req.isAuthenticated()) {
+            return next();
+        }
+        else return res.sendStatus(302);
+    };
+
     export const module = (app: App, route: RouteExpress): null | void => {
         if (!app) return null;
 
-        route.get("/auth", Auth.config.required, (req: Request, res: Response, next: NextFunction) => {
-            res.sendStatus(200);
+        route.post("/auth", isPrivateRoute, (req: Request, res: Response, next: NextFunction): void => {
+            return void res.sendStatus(200);
         });
 
         route.post(
@@ -21,15 +29,13 @@ namespace General {
             upload.any(),
             async (req: Request, res: Response): Promise<void> => {
                 try {
-                    console.log(req.body);
                     if (!req.body || (req.body && _.isEmpty(req.body))) throw new Error("Invalid auth data");
                     const service = app.locals;
                     service.dbm.connection().then(async () => {
-                        console.log("connect");
                         await UserModel.create({ ...req.body, accept: true, rules: "full" }, async (err: Error) => {
-                            console.log(err);
-                            if (err) return void res.sendStatus(400);
                             await service.dbm.disconnect();
+                            console.error(err);
+                            if (err) return void res.sendStatus(400);
                             return void res.sendStatus(200);
                         });
                     });
@@ -44,7 +50,7 @@ namespace General {
                 const { body = {} } = req;
                 if (!body || body && _.isEmpty(body)) return void res.sendStatus(503);
                 return await passport.authenticate('local', function (err: Error, user: any): any {
-                    console.log(user);
+
                     if (!user) {
                         return void res.sendStatus(401);
                     } else {
@@ -59,13 +65,12 @@ namespace General {
             }
         );
 
-        route.post("/logout", (req: Request, res: Response) => {
-            req.session.destroy(function () {
-                res.clearCookie('sid');
-                (<any>req).logout();
-                res.redirect('/');
+        route.post("/logout", isPrivateRoute,
+            (req: Request, res: Response, next: NextFunction) => {
+                (<any>req.logOut());
+                res.clearCookie("connect.sid");
+                return res.redirect("/");
             });
-        });
     };
 }
 

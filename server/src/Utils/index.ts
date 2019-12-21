@@ -16,7 +16,7 @@ namespace Utils {
             if (Schema) return model(name, <Schema>schema);
             else return null;
         } catch (err) {
-            console.log(err);
+            console.error(err);
             return null;
         }
     }

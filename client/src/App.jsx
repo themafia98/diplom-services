@@ -73,13 +73,13 @@ class App extends React.Component {
     componentDidMount = () => {
         const { rest } = this.props;
         rest.authCheck().then(res => {
+
             if (res.status === 200) {
                 this.loadAppSession();
             } else {
                 throw new Error(res.message);
             }
         }).catch(err => {
-            console.error(err);
             this.loadApp();
         })
         if (config.forceUpdate === true || process.env.NODE_ENV === "production") forceUpdateDetectedInit();

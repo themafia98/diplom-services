@@ -100,36 +100,19 @@ class Request {
     }
 
     async authCheck() {
-        const auth = true;
-        const userJSON = sessionStorage.getItem("user") || {};
-        const { user = null } = auth && !_.isEmpty(userJSON) ? JSON.parse(userJSON) : {};
-        const token = user && auth ? `Token ${user.token}` : null;
-
-        if (auth && !user || auth && user && !user.token) {
-            return false;
-        }
-
         return await fetch("/rest/auth", {
+            method: "POST",
             headers: {
-                Authorization: token
+                Authorization: this.getToken(true)
             },
             credentials: 'include',
         });
     }
 
     sendRequest(url, method, body, auth = false, customHeaders = {}) {
-        const userJSON = sessionStorage.getItem("user") || {};
-        const { user = null } = auth && !_.isEmpty(userJSON) ? JSON.parse(userJSON) : {};
-
-        if (auth && !user || auth && user && !user.token) {
-            return false;
-        }
-
-        const token = user && auth ? `Token ${user.token}` : null;
-
         const props = auth && body ? {
             headers: {
-                Authorization: token
+                Authorization: this.getToken(auth)
             },
             data: body,
         } : {
@@ -146,8 +129,29 @@ class Request {
         })
     }
 
+    getToken(auth) {
+        const userJSON = sessionStorage.getItem("user") || {};
+        const { user = null } = auth && !_.isEmpty(userJSON) ? JSON.parse(userJSON) : {};
+        const token = user && auth ? `Token ${user.token}` : null;
+        if (auth && !user || auth && user && !user.token || !token) {
+            return null;
+        }
+        return token;
+    }
+
     signOut = async () => {
-        await fetch("/rest/logout", { method: "POST", credentials: 'include', });
+        await fetch("/rest/logout", {
+            method: "POST", headers: {
+                Authorization: this.getToken(true)
+            },
+            credentials: 'include',
+        }).then(res => {
+
+            if (res.ok) {
+                sessionStorage.clear();
+                window.location.assign("/");
+            }
+        }).catch(error => console.error(error));
     }
 
 }

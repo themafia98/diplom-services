@@ -24,9 +24,9 @@ userSchema
     .set(async function (password: string): Promise<void> {
 
         this._plainPassword = password;
-        console.log("password:", password);
+
         if (password) {
-            this.passwordHash = await bcrypt.hashSync(<string>password, 10);
+            this.passwordHash = await bcrypt.hash(<string>password, 10);
         } else {
             this.passwordHash = undefined;
         }
@@ -36,9 +36,8 @@ userSchema
     });
 
 userSchema.methods.checkPassword = async function (password: string): Promise<boolean> {
-    console.log(password);
     if (!password) return false;
-    return await bcrypt.compareSync(password, this.passwordHash);
+    return await bcrypt.compare(password, this.passwordHash);
 };
 
 userSchema.methods.generateJWT = function (): any {
