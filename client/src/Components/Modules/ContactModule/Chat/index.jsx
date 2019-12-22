@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import moment from "moment";
 import _ from "lodash";
+import io from 'socket.io-client';
 import uuid from "uuid/v4";
 import Scrollbars from "react-custom-scrollbars";
 import { Skeleton, List, Avatar, Button, notification, message } from "antd";
@@ -24,33 +25,47 @@ class Chat extends React.PureComponent {
         visible: null
     };
 
+    socket = io("/");
+
     timer = null;
 
     componentDidMount = () => {
         const { demoMessages = [] } = this.state;
         const { chat: { chatToken = null } = {}, onSetActiveChatToken } = this.props;
 
+        this.socket.on("reconnect_attempt", () => {
+            this.socket.io.opts.transports = ["websocket", "polling"];
+        });
+
+        this.socket.on("wsTest", (event) => {
+            console.log(event);
+        });
+
+        this.socket.on("error", () => {
+            console.log("there was an error");
+        });
+
         this.timer = setTimeout(() => {
             if (!_.isNull(chatToken) && demoMessages.every(it => (it.id ? it.id !== chatToken : false))) {
-                const listdata = [
-                    {
-                        id: 1,
-                        roomToken: demoMessages[0].id,
-                        name: "Павел Петрович",
-                        link: "/themafia98",
-                        msg: "Привет! code: " + Math.random(),
-                        date: moment()
-                    },
-                    {
-                        id: 2,
-                        roomToken: demoMessages[0].id,
-                        name: "Гена Букин",
-                        link: "/gena228",
-                        msg: "И тебе привет! code: " + Math.random(),
-                        date: moment()
-                    }
-                ];
-                onSetActiveChatToken(demoMessages[0].id, listdata);
+                //     const listdata = [
+                //         {
+                //             id: 1,
+                //             roomToken: demoMessages[0].id,
+                //             name: "Павел Петрович",
+                //             link: "/themafia98",
+                //             msg: "Привет! code: " + Math.random(),
+                //             date: moment()
+                //         },
+                //         {
+                //             id: 2,
+                //             roomToken: demoMessages[0].id,
+                //             name: "Гена Букин",
+                //             link: "/gena228",
+                //             msg: "И тебе привет! code: " + Math.random(),
+                //             date: moment()
+                //         }
+                //     ];
+                //     onSetActiveChatToken(demoMessages[0].id, listdata);
             }
             this.setState({
                 ...this.state,
@@ -138,30 +153,30 @@ class Chat extends React.PureComponent {
                                         </div>
                                     ))
                                 ) : (
-                                    <List
-                                        key="list-chat"
-                                        dataSource={demoMessages}
-                                        renderItem={(it, i) => (
-                                            <List.Item
-                                                className={[roomToken === it.id ? "activeChat" : null].join(" ")}
-                                                onClick={e => this.setActiveChatRoom(e, it.id)}
-                                                key={(it, i)}
-                                            >
-                                                <List.Item.Meta
-                                                    key={`${it}${i}`}
-                                                    avatar={<Avatar shape="square" size="large" icon="user" />}
-                                                    title={<p>{`${it.name}`}</p>}
-                                                    description={
-                                                        <span className="descriptionChatMenu">
-                                                            A second stack is created, pulling 3 values from the first
-                                                            stack.
+                                        <List
+                                            key="list-chat"
+                                            dataSource={demoMessages}
+                                            renderItem={(it, i) => (
+                                                <List.Item
+                                                    className={[roomToken === it.id ? "activeChat" : null].join(" ")}
+                                                    onClick={e => this.setActiveChatRoom(e, it.id)}
+                                                    key={(it, i)}
+                                                >
+                                                    <List.Item.Meta
+                                                        key={`${it}${i}`}
+                                                        avatar={<Avatar shape="square" size="large" icon="user" />}
+                                                        title={<p>{`${it.name}`}</p>}
+                                                        description={
+                                                            <span className="descriptionChatMenu">
+                                                                A second stack is created, pulling 3 values from the first
+                                                                stack.
                                                         </span>
-                                                    }
-                                                />
-                                            </List.Item>
-                                        )}
-                                    />
-                                )}
+                                                        }
+                                                    />
+                                                </List.Item>
+                                            )}
+                                        />
+                                    )}
                             </Scrollbars>
                         </div>
                         <Button
@@ -200,10 +215,10 @@ class Chat extends React.PureComponent {
                                         pushMessage={this.pushMessage}
                                     />
                                 ) : (
-                                    <div className="emptyChatRoom">
-                                        <p className="emptyChatRoomMsg">Выберите собеседника</p>
-                                    </div>
-                                )}
+                                            <div className="emptyChatRoom">
+                                                <p className="emptyChatRoomMsg">Выберите собеседника</p>
+                                            </div>
+                                        )}
                             </div>
                         </div>
                     </div>

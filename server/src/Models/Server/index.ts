@@ -1,6 +1,7 @@
 import express, { Application, Request, Response, NextFunction, Router } from "express";
 import session, { SessionOptions } from "express-session";
 import MongoStore from 'connect-mongo';
+import redis from 'redis';
 import passport from "passport";
 import _ from "lodash";
 import helmet from "helmet";
@@ -11,6 +12,7 @@ import { Server as HttpServer } from "http";
 import { ServerRun, App } from "../../Utils/Interfaces";
 
 import General from "../../Controllers/General";
+import Chat from '../../Controllers/Contact/Chat';
 import Tasks from "../../Controllers/Tasks";
 import Database from "../Database";
 
@@ -52,6 +54,19 @@ class ServerRunner implements ServerRun {
         this.getApp().use(express.json());
         this.getApp().set("port", this.getPort());
         const SessionStore = MongoStore(session);
+
+        const redisClient = redis.createClient({
+            url: process.env.REDISTOGO_URL
+        });
+        this.getApp().locals.redis = redisClient;
+
+        redisClient.on("connect", () => {
+            console.log("redis start");
+        });
+
+        redisClient.on("error", (err: Error) => {
+            console.error(err);
+        });
 
         this.getApp().use(session({
             secret: "jwtsecret",
@@ -144,6 +159,7 @@ class ServerRunner implements ServerRun {
         tasksRoute.use(this.startResponse);
 
         Tasks.module(<App>this.getApp(), tasksRoute);
+        Chat.module(<App>this.getApp(), server);
 
         process.on("SIGTERM", (): void => {
             console.log("SIGTERM, uptime:", process.uptime());
