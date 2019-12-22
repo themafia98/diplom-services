@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Element, scroller } from "react-scroll";
 import _ from "lodash";
 import { Button, Avatar } from "antd";
@@ -11,6 +11,7 @@ const ChatRoom = ({ onSend = null, listdata = [], roomToken = "", onKeyDown = nu
     const [showTooltip, setStateTooltip] = useState(false);
     const [showTooltipID, setIdTooltip] = useState(null);
     const [msg, setMsg] = useState("");
+    const [messages, setMessages] = useState(listdata);
 
     const refWrapper = useRef(null);
 
@@ -33,6 +34,13 @@ const ChatRoom = ({ onSend = null, listdata = [], roomToken = "", onKeyDown = nu
             });
         }
     };
+
+    useEffect(() => {
+        if (messages.length !== listdata.length) {
+            setMessages([...listdata]);
+            resetScrollEffect();
+        }
+    });
 
     const onChange = event => {
         const { currentTarget: { value = "" } = {} } = event;
@@ -65,9 +73,11 @@ const ChatRoom = ({ onSend = null, listdata = [], roomToken = "", onKeyDown = nu
     const renderChat = listdata => {
         return listdata.map((it, i) => {
             const item = (
-                <div ref={refWrapper} key={it.id + i} className={[i, "message"].join(" ")}>
-                    <Message showTooltip={showTooltip && showTooltipID === it.id} it={it} key={`${it.id}_message`}>
-                        <span
+                <div ref={refWrapper} key={it} className={[i, "message"].join(" ")}>
+                    <Message it={it} key={`${it}_message`}>
+                        {/* showTooltip={showTooltip && showTooltipID === it.id}  */}
+                        <p className="wrapper_msg">{it}</p>
+                        {/* <span
                             onMouseLeave={e => onMouseLeave(e, it.id)}
                             onMouseEnter={e => onMouseEnter(e, it.id)}
                             onClick={event => redirectUserProfile(event, it.link)}
@@ -76,7 +86,7 @@ const ChatRoom = ({ onSend = null, listdata = [], roomToken = "", onKeyDown = nu
                             <Avatar size="small" /> {it.name}.
                         </span>
                         <span className="msg_date">{it.date.format("DD.MM.YYYY HH:mm:ss")}.</span>
-                        <p className="wrapper_msg">{it.msg}</p>
+                        <p className="wrapper_msg">{it.msg}</p> */}
                     </Message>
                 </div>
             );
@@ -94,7 +104,7 @@ const ChatRoom = ({ onSend = null, listdata = [], roomToken = "", onKeyDown = nu
     return (
         <div key={token} className="chatRoom">
             <div className="chatWindow">
-                <div id="containerChat">{renderChat(listdata)}</div>
+                <div id="containerChat">{renderChat(messages)}</div>
             </div>
             <Textarea value={msg} onChange={onChange} onKeyDown={e => _onSubmit(e)} className="chat-area" />
             <Button onClick={e => _onSubmit(e, msg)} type="primary">

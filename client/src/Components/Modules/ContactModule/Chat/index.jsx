@@ -37,8 +37,12 @@ class Chat extends React.PureComponent {
 
         });
 
-        this.socket.on("message", event => {
-            console.log(event);
+        this.socket.on("message", msg => {
+            this.setState({
+                messages: [...this.state.messages, msg]
+            }, () => {
+
+            });
         });
 
         this.socket.on("error", () => {
@@ -191,6 +195,7 @@ class Chat extends React.PureComponent {
                                         roomToken={roomToken}
                                         listdata={listdata}
                                         pushMessage={this.pushMessage}
+                                        listdata={this.state.messages}
                                     />
                                 ) : (
                                             <div className="emptyChatRoom">

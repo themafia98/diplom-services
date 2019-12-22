@@ -82,7 +82,7 @@ class App extends React.Component {
         }).catch(err => {
             this.loadApp();
         })
-        if (config.forceUpdate === true || process.env.NODE_ENV === "production") forceUpdateDetectedInit();
+        if (config.forceUpdate === true || config.forceUpdate === "true") forceUpdateDetectedInit();
     };
 
     render() {

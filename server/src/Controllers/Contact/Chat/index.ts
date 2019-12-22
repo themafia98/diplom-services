@@ -9,18 +9,16 @@ namespace Chat {
         const workerId = cluster.worker.id;
         wsWorkers[workerId] = socketio(server);
 
-        wsWorkers[workerId].on('connection', (socket) => {
+        wsWorkers[workerId].on('connection', socket => {
             console.log("ws connection");
+            socket.on("newMessage", msg => {
+                wsWorkers[workerId].emit("message", msg);
+            });
         });
 
         wsWorkers[workerId].on('disconnect', () => {
             console.log('user disconnected');
 
-        });
-
-        wsWorkers[workerId].on("newMessage", msg => {
-            console.log(msg);
-            wsWorkers[workerId].emit("message", msg);
         });
     }
 }
