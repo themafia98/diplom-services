@@ -107,7 +107,7 @@ class Chat extends React.PureComponent {
     };
 
     render() {
-        const { isLoad = false, demoMessages, visible } = this.state;
+        const { isLoad = false, messages = [], visible } = this.state;
         const { chat: { listdata, chatToken: roomToken = null } = {} } = this.props;
         return (
             <div className="chat">
@@ -118,7 +118,7 @@ class Chat extends React.PureComponent {
                         <div className="menuLoading-skeleton">
                             <Scrollbars>
                                 {!isLoad ? (
-                                    demoMessages.map((it, i) => (
+                                    messages.map((it, i) => (
                                         <div className="item-skeleton" key={`${it}${i}`}>
                                             <Skeleton loading={true} active avatar paragraph={false}>
                                                 <List.Item.Meta />
@@ -128,7 +128,7 @@ class Chat extends React.PureComponent {
                                 ) : (
                                         <List
                                             key="list-chat"
-                                            dataSource={demoMessages}
+                                            dataSource={messages}
                                             renderItem={(it, i) => (
                                                 <List.Item
                                                     className={[roomToken === it.id ? "activeChat" : null].join(" ")}
