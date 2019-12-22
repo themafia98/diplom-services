@@ -13,10 +13,6 @@ import ChatModal from "./ChatRoom/ChatModal";
 import TitleModule from "../../../TitleModule";
 import ChatRoom from "./ChatRoom";
 
-const demoMessages = [
-    { name: "Вася", id: uuid() },
-    { name: "Гена Букин", id: uuid() }
-];
 
 class Chat extends React.PureComponent {
     state = {
@@ -37,7 +33,9 @@ class Chat extends React.PureComponent {
             this.socket.io.opts.transports = ["websocket", "polling"];
         });
 
-        this.socket.on("wsTest", (event) => {
+        this.socket.on("connec")
+
+        this.socket.on("message", (event) => {
             console.log(event);
         });
 
@@ -45,33 +43,8 @@ class Chat extends React.PureComponent {
             console.log("there was an error");
         });
 
-        this.timer = setTimeout(() => {
-            if (!_.isNull(chatToken) && demoMessages.every(it => (it.id ? it.id !== chatToken : false))) {
-                //     const listdata = [
-                //         {
-                //             id: 1,
-                //             roomToken: demoMessages[0].id,
-                //             name: "Павел Петрович",
-                //             link: "/themafia98",
-                //             msg: "Привет! code: " + Math.random(),
-                //             date: moment()
-                //         },
-                //         {
-                //             id: 2,
-                //             roomToken: demoMessages[0].id,
-                //             name: "Гена Букин",
-                //             link: "/gena228",
-                //             msg: "И тебе привет! code: " + Math.random(),
-                //             date: moment()
-                //         }
-                //     ];
-                //     onSetActiveChatToken(demoMessages[0].id, listdata);
-            }
-            this.setState({
-                ...this.state,
-                isLoad: true
-            });
-        }, 1500);
+        if (!_.isNull(chatToken))
+            onSetActiveChatToken(123, []);
     };
 
     componentWillUnmount = () => {

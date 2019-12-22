@@ -1,7 +1,7 @@
 import express, { Application, Request, Response, NextFunction, Router } from "express";
 import session, { SessionOptions } from "express-session";
 import MongoStore from 'connect-mongo';
-import redis from 'redis';
+
 import passport from "passport";
 import _ from "lodash";
 import helmet from "helmet";
@@ -54,19 +54,6 @@ class ServerRunner implements ServerRun {
         this.getApp().use(express.json());
         this.getApp().set("port", this.getPort());
         const SessionStore = MongoStore(session);
-
-        const redisClient = redis.createClient({
-            url: process.env.REDISTOGO_URL
-        });
-        this.getApp().locals.redis = redisClient;
-
-        redisClient.on("connect", () => {
-            console.log("redis start");
-        });
-
-        redisClient.on("error", (err: Error) => {
-            console.error(err);
-        });
 
         this.getApp().use(session({
             secret: "jwtsecret",

@@ -17,7 +17,7 @@ namespace Entrypoint {
     const cpuLentgh: number = os.cpus().length;
 
 
-    const callbackExit =_.debounce((worker: Worker, code: number, signal: string) => {
+    const callbackExit = _.debounce((worker: Worker, code: number, signal: string) => {
         console.log(`${chalk.yellow("worker")} ${chalk.red(worker.process.pid)} exit.`);
 
         const child = cluster.fork();
@@ -33,7 +33,7 @@ namespace Entrypoint {
         try {
             const app: ServerRun = new ServerRunner(process.env.APP_PORT || "3001");
             app.start();
-       
+
         } catch (err) {
             console.error(err);
             process.kill(process.ppid);
