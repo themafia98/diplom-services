@@ -17,7 +17,7 @@ import ChatRoom from "./ChatRoom";
 class Chat extends React.PureComponent {
     state = {
         isLoad: false,
-        demoMessages: demoMessages,
+        messages: [],
         visible: null
     };
 
@@ -26,7 +26,7 @@ class Chat extends React.PureComponent {
     timer = null;
 
     componentDidMount = () => {
-        const { demoMessages = [] } = this.state;
+        const { messages = [] } = this.state;
         const { chat: { chatToken = null } = {}, onSetActiveChatToken } = this.props;
 
         this.socket.on("reconnect_attempt", () => {
