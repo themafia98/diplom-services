@@ -15,6 +15,7 @@ if (process.env.NODE_ENV === "production") {
 
 namespace Entrypoint {
     const cpuLentgh: number = os.cpus().length;
+    export const wsWorkers = [];
 
 
     const callbackExit = _.debounce((worker: Worker, code: number, signal: string) => {

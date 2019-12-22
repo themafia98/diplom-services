@@ -16,7 +16,7 @@ import ChatRoom from "./ChatRoom";
 
 class Chat extends React.PureComponent {
     state = {
-        isLoad: false,
+        isLoad: true,
         messages: [],
         visible: null
     };
@@ -33,9 +33,11 @@ class Chat extends React.PureComponent {
             this.socket.io.opts.transports = ["websocket", "polling"];
         });
 
-        this.socket.on("connec")
+        this.socket.on("connection", socket => {
 
-        this.socket.on("message", (event) => {
+        });
+
+        this.socket.on("message", event => {
             console.log(event);
         });
 
@@ -60,12 +62,15 @@ class Chat extends React.PureComponent {
 
     pushMessage = (event, msg) => {
         const { roomToken = "" } = this.state;
-        event.stopPropagation();
+
+        console.log("push");
         if (_.isNull(roomToken)) {
             return notification.error({ message: "Ошибка чата", description: "Данные повреждены." });
         }
 
         if (!msg) return message.error("Недопустимые значения или вы ничего не ввели.");
+
+        this.socket.emit("newMessage", msg);
     };
 
     setActiveChatRoom = (event, id = uuid()) => {
@@ -179,7 +184,7 @@ class Chat extends React.PureComponent {
                             <div className="chat_content__main">
                                 {!isLoad ? (
                                     <Loader />
-                                ) : roomToken ? (
+                                ) : true ? (
                                     <ChatRoom
                                         key={roomToken}
                                         onKeyDown={this.pushMessage}
