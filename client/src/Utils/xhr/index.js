@@ -130,13 +130,11 @@ class Request {
     }
 
     getToken(auth) {
-        const userJSON = sessionStorage.getItem("user") || {};
-        const { user = null } = auth && !_.isEmpty(userJSON) ? JSON.parse(userJSON) : {};
-        const token = user && auth && user.token ? `Token ${user.token}` : null;
-        if (auth && !user || auth && user && !user.token || !token) {
+        const token = sessionStorage.getItem("token") || "";
+        if (auth && !token || !token) {
             return null;
         }
-        return token;
+        return `Token ${token}`;
     }
 
     signOut = async () => {

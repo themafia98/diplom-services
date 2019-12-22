@@ -36,8 +36,8 @@ class LoginPage extends React.Component {
                 password
             }, false)
                 .then((res) => {
-                    if (res.status === 200) {
-                        sessionStorage.setItem("user", JSON.stringify(res.data));
+                    if (res.status === 200 && res.data && res.data.token) {
+                        sessionStorage.setItem("token", JSON.stringify(res.data.token));
                         this.setState({
                             loginAuth: true,
                         })
