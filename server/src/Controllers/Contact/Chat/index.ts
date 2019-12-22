@@ -15,6 +15,7 @@ namespace Chat {
 
         ws.on('connection', function (socket) {
             console.log("ws connection");
+            socket.emit("message", `hello ws connection!,${Date.now()}`)
         });
 
         ws.on('disconnect', function () {
