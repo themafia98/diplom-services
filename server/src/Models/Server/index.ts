@@ -143,6 +143,12 @@ class ServerRunner implements ServerRun {
             console.log(`Server or worker listen on ${chalk.blue.bold(this.port)}.`);
         });
 
+        server.on("clientError", (err, socket) => {
+            console.log("clientError");
+            console.error(err);
+            socket.destroy();
+        });
+
         /** initial entrypoint route */
         const rest = instanceRouter.initInstance("/rest");
         const tasksRoute: Router = instanceRouter.createRoute("/api/tasks");
