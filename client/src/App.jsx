@@ -47,7 +47,7 @@ class App extends React.Component {
         } = this.props;
 
         return this.setState({ authLoad: true, loadState: true }, () => {
-            rest.sendRequest("/userload", "GET", null, true)
+            rest.sendRequest("/userload", "POST", null, true)
                 .then(res => {
                     let path = "mainModule";
                     const defaultModule = config.menu.find(item => item["SIGN"] === "default");

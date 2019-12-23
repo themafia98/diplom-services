@@ -21,9 +21,13 @@ export const PrivateRoute = ({ component: Component, rest, onLogoutAction, ...ro
                         setRoute(<Component rest={rest} />);
                         setStatus(res.status);
                     }
-                } else rest.restartApp();
+                } else {
+                    rest.restartApp();
+                }
             })
-            .catch(err => rest.restartApp());
+            .catch(err => {
+                rest.restartApp();
+            });
     };
 
     const debounceGetRouters = _.debounce(getRouters, 1000);
