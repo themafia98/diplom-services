@@ -234,7 +234,7 @@ class Dashboard extends React.PureComponent {
     };
 
     installApp = event => {
-        Notification.requestPermission().then(function (result) {
+        Notification.requestPermission().then(function(result) {
             if (result === "granted") {
                 this.randomNotification();
             }

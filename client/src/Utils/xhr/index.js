@@ -1,5 +1,5 @@
 import _ from "lodash";
-import axios from 'axios';
+import axios from "axios";
 
 class Request {
     constructor(prop) {
@@ -82,7 +82,7 @@ class Request {
                 const testRequst = new XMLHttpRequest();
                 const api = this.getTestAPI(true);
                 testRequst.open("GET", api);
-                testRequst.onload = function () {
+                testRequst.onload = function() {
                     if (this.status === 200 || this.status === 204) {
                         resolve("online");
                     } else {
@@ -105,33 +105,41 @@ class Request {
             headers: {
                 Authorization: this.getToken(true)
             },
-            credentials: 'include',
+            credentials: "include"
         });
     }
 
     sendRequest(url, method, body, auth = false, customHeaders = {}) {
-        const props = auth && body ? {
-            headers: {
-                Authorization: this.getToken(auth)
-            },
-            data: body,
-        } : {
-                headers: {
-                    ...customHeaders
-                },
-                data: body ? body : null
-            };
+        const props =
+            auth && body
+                ? {
+                      headers: {
+                          Authorization: this.getToken(auth)
+                      },
+                      data: body
+                  }
+                : {
+                      headers: {
+                          ...customHeaders
+                      },
+                      data: body ? body : null
+                  };
 
         return axios({
             method,
             url,
-            ...props,
-        })
+            ...props
+        });
+    }
+
+    restartApp() {
+        sessionStorage.clear();
+        window.location.assign("/");
     }
 
     getToken(auth) {
         const token = sessionStorage.getItem("token") || "";
-        if (auth && !token || !token) {
+        if ((auth && !token) || !token) {
             return null;
         }
         return `Token ${token}`;
@@ -139,19 +147,17 @@ class Request {
 
     signOut = async () => {
         await fetch("/rest/logout", {
-            method: "POST", headers: {
+            method: "POST",
+            headers: {
                 Authorization: this.getToken(true)
             },
-            credentials: 'include',
-        }).then(res => {
-
-            if (res.ok) {
-                sessionStorage.clear();
-                window.location.assign("/");
-            }
-        }).catch(error => console.error(error));
-    }
-
+            credentials: "include"
+        })
+            .then(res => {
+                if (res.ok) this.restartApp();
+            })
+            .catch(error => console.error(error));
+    };
 }
 
 export default Request;
