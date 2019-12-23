@@ -69,6 +69,20 @@ class ServerRunner implements ServerRun {
         this.getApp().use(passport.initialize());
         this.getApp().use(passport.session());
 
+        this.getApp().use((err: Error, req: Request, res: Response, next: NextFunction): void => {
+            // set locals, only providing error in development
+            const today = new Date();
+            const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+            const day = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
+            console.error(err.name);
+            if (!err.name) next();
+            else {
+                console.error(err.name);
+                next();
+            }
+            // if (err.name) console.error(`${err.name} / ${day}/${time}`);
+        });
+
         const dbm = new Database.ManagmentDatabase("controllSystem", <string>process.env.MONGODB_URI);
         this.getApp().locals.dbm = dbm;
 
@@ -162,6 +176,14 @@ class ServerRunner implements ServerRun {
         process.on("SIGTERM", (): void => {
             console.log("SIGTERM, uptime:", process.uptime());
             server.close();
+        });
+
+        process.on("uncaughtException", function(err) {
+            // handle the error safely
+            if (err.name === "MongoNetworkError") {
+                console.log("uncaughtException");
+                console.log(err);
+            } else process.exit(1);
         });
     }
 }
