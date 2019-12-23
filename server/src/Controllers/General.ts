@@ -13,6 +13,7 @@ namespace General {
         if (req.isAuthenticated()) {
             return next();
         } else {
+            res.clearCookie("connect.sid");
             return res.sendStatus(404);
         }
     };
