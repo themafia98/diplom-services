@@ -72,7 +72,7 @@ namespace General {
             if (req.user) return res.json({ user: (<any>req).user.toAuthJSON() });
             else {
                 res.clearCookie("connect.sid");
-                return res.sendStatus(404);
+                return res.sendStatus(302);
             }
         });
 

@@ -121,7 +121,7 @@ class Request {
 
     sendRequest(url, method, body, auth = false, customHeaders = {}) {
         const props =
-            (auth && body) || (auth && !body && method === "GET")
+            (auth && method === "POST") || (auth && !body && method === "GET")
                 ? {
                       headers: {
                           Authorization: this.getToken(auth)
@@ -135,7 +135,7 @@ class Request {
                       data: body ? body : null
                   };
         if (_.isNull(props.headers.Authorization) && auth) {
-            return this.restartApp();
+            return this.signOut();
         }
         return axios({
             method,
