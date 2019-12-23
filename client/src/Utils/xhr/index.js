@@ -100,8 +100,7 @@ class Request {
     }
 
     async authCheck() {
-        return await fetch("/rest/auth", {
-            method: "POST",
+        return await axios.post("/rest/auth", {
             headers: {
                 Authorization: this.getToken(true)
             },
@@ -146,15 +145,17 @@ class Request {
     }
 
     signOut = async () => {
-        await fetch("/rest/logout", {
-            method: "POST",
-            headers: {
-                Authorization: this.getToken(true)
-            },
-            credentials: "include"
-        })
+        await axios
+            .delete("/rest/logout", {
+                headers: {
+                    Authorization: this.getToken(true)
+                },
+                credentials: "include"
+            })
             .then(res => {
-                if (res.ok) this.restartApp();
+                console.log(res);
+                if (res.status === 200) this.restartApp();
+                else throw new Error("invalid logout");
             })
             .catch(error => console.error(error));
     };

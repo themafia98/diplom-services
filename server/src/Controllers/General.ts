@@ -4,8 +4,7 @@ import passport from "passport";
 import multer from "multer";
 import { UserModel } from "../Models/Database/Schema";
 import { App } from "../Utils/Interfaces";
-import Auth from '../Models/Auth';
-
+import Auth from "../Models/Auth";
 
 namespace General {
     const upload = multer(); // form-data
@@ -13,8 +12,7 @@ namespace General {
     export const isPrivateRoute = (req: Request, res: Response, next: NextFunction) => {
         if (req.isAuthenticated()) {
             return next();
-        }
-        else {
+        } else {
             return res.sendStatus(404);
         }
     };
@@ -48,18 +46,20 @@ namespace General {
         );
 
         route.post(
-            "/login", Auth.config.optional, async (req: Request, res: Response, next): Promise<any> => {
+            "/login",
+            Auth.config.optional,
+            async (req: Request, res: Response, next): Promise<any> => {
                 const { body = {} } = req;
-                if (!body || body && _.isEmpty(body)) return void res.sendStatus(503);
-                return await passport.authenticate('local', function (err: Error, user: any): any {
-
+                if (!body || (body && _.isEmpty(body))) return void res.sendStatus(503);
+                return await passport.authenticate("local", function(err: Error, user: any): any {
                     if (!user) {
                         return void res.sendStatus(401);
                     } else {
-
                         user.token = user.generateJWT();
                         req.login(user, (err: Error) => {
-                            if (err) { return next(err); }
+                            if (err) {
+                                return next(err);
+                            }
                             return res.json({ user: user.toAuthJSON() });
                         });
                     }
@@ -67,15 +67,14 @@ namespace General {
             }
         );
 
-        route.post("/logout", isPrivateRoute,
-            (req: Request, res: Response, next: NextFunction) => {
-                req.session.destroy((err: Error) => {
-                    if (err) console.error(err);
-                    (<any>req.logOut()); // passportjs logout
-                    res.clearCookie("connect.sid");
-                    return res.redirect("/");
-                });
+        route.delete("/logout", isPrivateRoute, (req: Request, res: Response, next: NextFunction) => {
+            req.session.destroy((err: Error) => {
+                if (err) console.error(err);
+                <any>req.logOut(); // passportjs logout
+                res.clearCookie("connect.sid");
+                return res.sendStatus(200);
             });
+        });
     };
 }
 
