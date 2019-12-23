@@ -153,7 +153,6 @@ class Request {
                 credentials: "include"
             })
             .then(res => {
-                console.log(res);
                 if (res.status === 200) this.restartApp();
                 else throw new Error("invalid logout");
             })
