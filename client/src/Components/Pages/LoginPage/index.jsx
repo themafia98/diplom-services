@@ -39,7 +39,7 @@ class LoginPage extends React.Component {
         if (login && password) {
             this.setState({ errorMessage: null, loading: true });
             rest.sendRequest(
-                "/rest/login",
+                "/login",
                 "POST",
                 {
                     email: login,
@@ -99,12 +99,7 @@ class LoginPage extends React.Component {
                 <div className="loginPage__loginContainer">
                     <h1 className="loginContainer__title">{config["title"]}</h1>
                     <Logo />
-                    <form
-                        method="POST"
-                        // action="/rest/login"
-                        name="loginForm"
-                        className="loginContainer__loginForm"
-                    >
+                    <form method="POST" name="loginForm" className="loginContainer__loginForm">
                         <div className="notificationWrapper">
                             {errorMessage ? <p className="errorMessage">{errorMessage}</p> : null}
                         </div>

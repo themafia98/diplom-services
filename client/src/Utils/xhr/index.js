@@ -9,6 +9,9 @@ class Request {
         /** @private {string} */
         this.testAPI = "/favicon.ico?_=";
 
+        /** @private {string} */
+        this.api = "/rest";
+
         /** @type {function} */
         this.followObserver = null;
 
@@ -25,6 +28,14 @@ class Request {
     getTestAPI(flag = null) {
         if (flag) return this.testAPI + new Date().getTime();
         else return this.testAPI.split("_")[0];
+    }
+
+    /**
+     * @public
+     * @return {string} entrypoint
+     */
+    getApi() {
+        return this.api;
     }
 
     /** @public
@@ -100,7 +111,7 @@ class Request {
     }
 
     async authCheck() {
-        return await axios.post("/rest/auth", {
+        return await axios.post(this.getApi() + "/auth", {
             headers: {
                 Authorization: this.getToken(true)
             },
@@ -110,7 +121,7 @@ class Request {
 
     sendRequest(url, method, body, auth = false, customHeaders = {}) {
         const props =
-            auth && body
+            (auth && body) || (auth && !body && method === "GET")
                 ? {
                       headers: {
                           Authorization: this.getToken(auth)
@@ -123,10 +134,12 @@ class Request {
                       },
                       data: body ? body : null
                   };
-
+        if (_.isNull(props.headers.Authorization) && auth) {
+            return this.restartApp();
+        }
         return axios({
             method,
-            url,
+            url: this.getApi() + url,
             ...props
         });
     }
@@ -146,7 +159,7 @@ class Request {
 
     signOut = async () => {
         await axios
-            .delete("/rest/logout", {
+            .delete(this.getApi() + "/logout", {
                 headers: {
                     Authorization: this.getToken(true)
                 },

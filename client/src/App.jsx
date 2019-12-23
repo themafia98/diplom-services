@@ -47,23 +47,35 @@ class App extends React.Component {
         } = this.props;
 
         return this.setState({ authLoad: true, loadState: true }, () => {
-            let path = "mainModule";
-            const defaultModule = config.menu.find(item => item["SIGN"] === "default");
-            if (defaultModule) path = defaultModule.EUID;
+            rest.sendRequest("/userload", "GET", null, true)
+                .then(res => {
+                    let path = "mainModule";
+                    const defaultModule = config.menu.find(item => item["SIGN"] === "default");
+                    if (defaultModule) path = defaultModule.EUID;
 
-            const actionTabsCopy = [...actionTabs];
-            const isFind = actionTabsCopy.findIndex(tab => tab === path) !== -1;
+                    const actionTabsCopy = [...actionTabs];
+                    const isFind = actionTabsCopy.findIndex(tab => tab === path) !== -1;
 
-            if (!isFind && config.tabsLimit <= actionTabsCopy.length)
-                return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
-            const isUserData = udata && !_.isEmpty(udata);
-            if (!isFind) {
-                if (isUserData) onLoadUdata(udata).then(() => addTab(routeParser({ path })));
-                else addTab(routeParser({ path }));
-            } else if (currentActionTab !== path) {
-                if (isUserData) onLoadUdata(udata).then(() => setCurrentTab(path));
-                else setCurrentTab(path);
-            }
+                    const udata = Object.keys(res.data["user"]).reduce((accumulator, key) => {
+                        if (key !== "token") {
+                            accumulator[key] = res.data["user"][key];
+                        }
+                        return accumulator || {};
+                    }, {});
+                    if (!isFind && config.tabsLimit <= actionTabsCopy.length)
+                        return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
+                    const isUserData = udata && !_.isEmpty(udata);
+                    if (!isFind) {
+                        if (isUserData) onLoadUdata(udata).then(() => addTab(routeParser({ path })));
+                        else rest.signOut();
+                    } else if (currentActionTab !== path) {
+                        if (isUserData) onLoadUdata(udata).then(() => setCurrentTab(path));
+                        else rest.signOut();
+                    }
+                })
+                .catch(err => {
+                    rest.signOut();
+                });
         });
     };
 

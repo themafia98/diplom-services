@@ -67,6 +67,11 @@ namespace General {
             }
         );
 
+        route.get("/userload", isPrivateRoute, (req: Request, res: Response, next: NextFunction) => {
+            if (req.user) return res.json({ user: (<any>req).user.toAuthJSON() });
+            else return res.sendStatus(404);
+        });
+
         route.delete("/logout", isPrivateRoute, (req: Request, res: Response, next: NextFunction) => {
             req.session.destroy((err: Error) => {
                 if (err) console.error(err);
