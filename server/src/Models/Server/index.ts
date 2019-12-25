@@ -1,6 +1,6 @@
 import express, { Application, Response, NextFunction, Router } from "express";
 import session, { SessionOptions } from "express-session";
-import MongoStore from 'connect-mongo';
+import MongoStore from "connect-mongo";
 
 import passport from "passport";
 import _ from "lodash";
@@ -12,7 +12,7 @@ import { Server as HttpServer } from "http";
 import { ServerRun, App, Request } from "../../Utils/Interfaces";
 
 import General from "../../Controllers/General";
-import Chat from '../../Controllers/Contact/Chat';
+import Chat from "../../Controllers/Contact/Chat";
 import Tasks from "../../Controllers/Tasks";
 import Database from "../Database";
 
@@ -67,6 +67,19 @@ class ServerRunner implements ServerRun {
         this.getApp().use(passport.initialize());
         this.getApp().use(passport.session());
 
+        this.getApp().use((err: Error, req: Request, res: Response, next: NextFunction): void => {
+            // set locals, only providing error in development
+            const today = new Date();
+            const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+            const day = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
+            console.error(err.name);
+            if (!err.name) next();
+            else {
+                console.error(err.name);
+                next();
+            }
+            // if (err.name) console.error(`${err.name} / ${day}/${time}`);
+        });
 
         const dbm = new Database.ManagmentDatabase("controllSystem", <string>process.env.MONGODB_URI);
         this.getApp().locals.dbm = dbm;
@@ -82,13 +95,11 @@ class ServerRunner implements ServerRun {
                     UserModel.findOne({ email }, async (err: Error, user: any) => {
                         await dbm.disconnect();
                         if (err) return done(err);
-
                         else if (!user || !user.checkPassword(password)) {
                             return done(null, false, {
                                 message: "Нет такого пользователя или пароль неверен."
                             });
                         } else {
-
                             return done(null, user);
                         }
                     });
@@ -119,15 +130,21 @@ class ServerRunner implements ServerRun {
             })
         );
 
-        passport.serializeUser(function (user: any, done) {
+        passport.serializeUser((user: any, done: Function) => {
             done(null, user.id);
         });
 
-        passport.deserializeUser(async function (id, done) {
+        passport.deserializeUser(async (id: string | number, done: Function) => {
             await dbm.connection();
-            UserModel.findById(id, async function (err, user: any) {
+            await UserModel.findById(id, async (err: Error, user: any) => {
+                if (err) {
+                    console.log(err);
+                    console.log(user);
+                }
                 await dbm.disconnect();
                 done(err, user);
+            }).catch(err => {
+                done(err, null);
             });
         });
 
@@ -136,6 +153,12 @@ class ServerRunner implements ServerRun {
         const server: HttpServer = this.getApp().listen(this.getPort(), (): void => {
             console.log(`${chalk.yellow(`Worker ${process.pid}`)} ${chalk.green("started")}`);
             console.log(`Server or worker listen on ${chalk.blue.bold(this.port)}.`);
+        });
+
+        server.on("clientError", (err, socket) => {
+            console.log("clientError");
+            console.error(err);
+            socket.destroy();
         });
 
         /** initial entrypoint route */
@@ -151,6 +174,14 @@ class ServerRunner implements ServerRun {
         process.on("SIGTERM", (): void => {
             console.log("SIGTERM, uptime:", process.uptime());
             server.close();
+        });
+
+        process.on("uncaughtException", function (err) {
+            // handle the error safely
+            if (err.name === "MongoNetworkError") {
+                console.log("uncaughtException");
+                console.log(err);
+            } else process.exit(1);
         });
     }
 }

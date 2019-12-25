@@ -4,8 +4,8 @@ import axios from "axios";
 import { Redirect, NavLink } from "react-router-dom";
 import { Button, Input } from "antd";
 import { connect } from "react-redux";
-import { showGuile } from "../../../Redux/actions/publicActions";
-import { addTabAction } from "../../../Redux/actions/routerActions";
+import { showGuile, loadUdata } from "../../../Redux/actions/publicActions";
+import { addTabAction, setActiveTabAction } from "../../../Redux/actions/routerActions";
 import config from "../../../config.json";
 
 import Logo from "../../Logo";
@@ -25,35 +25,61 @@ class LoginPage extends React.Component {
     };
 
     enterLoading = event => {
-        const { onShowGuide = null, rest } = this.props;
+        const {
+            onShowGuide = null,
+            addTab,
+            rest,
+            router: { currentActionTab = "" } = {},
+            onLoadUdata,
+            setCurrentTab
+        } = this.props;
         const { state: { value: login = "" } = {} } = this.login || {};
         const { state: { value: password = "" } = {} } = this.password || {};
 
         if (login && password) {
             this.setState({ errorMessage: null, loading: true });
-            rest.sendRequest("/rest/login", "POST", {
-                email: login,
-                password
-            }, false)
-                .then((res) => {
-                    if (res.status === 200 && res.data && res.data.token) {
-                        sessionStorage.setItem("token", JSON.stringify(res.data.token));
+            rest.sendRequest(
+                "/login",
+                "POST",
+                {
+                    email: login,
+                    password
+                },
+                false
+            )
+                .then(res => {
+                    console.log(res);
+                    if (res.status === 200 && res.data && res.data["user"].token) {
+                        sessionStorage.setItem("token", JSON.stringify(res.data["user"].token));
                         this.setState({
-                            loginAuth: true,
-                        })
+                            loginAuth: true
+                        });
+                        const udataObj = Object.keys(res.data["user"]).reduce((accumulator, key) => {
+                            if (key !== "token") {
+                                accumulator[key] = res.data["user"][key];
+                            }
+                            return accumulator || {};
+                        }, {});
+
+                        let path = "mainModule";
+                        const defaultModule = config.menu.find(item => item["SIGN"] === "default");
+                        if (defaultModule) path = defaultModule.EUID;
+
+                        onLoadUdata(udataObj);
+
+                        addTab(path);
                     } else throw new Error(res.statusText);
                 })
                 .catch(error => {
                     console.log(error);
-                    this.setState({ errorMessage: error.response.data, loading: false });
+                    this.setState({ errorMessage: error.message, loading: false });
                 });
         }
     };
 
     getCurrentUser = () => {
         return this.state.user;
-    }
-
+    };
 
     login = null;
     password = null;
@@ -73,12 +99,7 @@ class LoginPage extends React.Component {
                 <div className="loginPage__loginContainer">
                     <h1 className="loginContainer__title">{config["title"]}</h1>
                     <Logo />
-                    <form
-                        method="POST"
-                        // action="/rest/login"
-                        name="loginForm"
-                        className="loginContainer__loginForm"
-                    >
+                    <form method="POST" name="loginForm" className="loginContainer__loginForm">
                         <div className="notificationWrapper">
                             {errorMessage ? <p className="errorMessage">{errorMessage}</p> : null}
                         </div>
@@ -95,7 +116,6 @@ class LoginPage extends React.Component {
                             aria-label="login-button"
                             className="enterSystem"
                             type="primary"
-
                             loading={loading}
                             onClick={enterLoading}
                         >
@@ -113,15 +133,19 @@ class LoginPage extends React.Component {
 }
 
 const mapStateToProps = state => {
+    const { udata = {} } = state.publicReducer || {};
     return {
-        router: { ...state.router }
+        router: { ...state.router },
+        udata
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
         addTab: tab => dispatch(addTabAction(tab)),
-        onShowGuide: show => dispatch(showGuile(show))
+        onShowGuide: show => dispatch(showGuile(show)),
+        setCurrentTab: tab => dispatch(setActiveTabAction(tab)),
+        onLoadUdata: async udata => await dispatch(loadUdata(udata))
     };
 };
 

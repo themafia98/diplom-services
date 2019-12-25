@@ -1,5 +1,5 @@
 import _ from "lodash";
-import axios from 'axios';
+import axios from "axios";
 
 class Request {
     constructor(prop) {
@@ -8,6 +8,9 @@ class Request {
 
         /** @private {string} */
         this.testAPI = "/favicon.ico?_=";
+
+        /** @private {string} */
+        this.api = "/rest";
 
         /** @type {function} */
         this.followObserver = null;
@@ -25,6 +28,14 @@ class Request {
     getTestAPI(flag = null) {
         if (flag) return this.testAPI + new Date().getTime();
         else return this.testAPI.split("_")[0];
+    }
+
+    /**
+     * @public
+     * @return {string} entrypoint
+     */
+    getApi() {
+        return this.api;
     }
 
     /** @public
@@ -82,7 +93,7 @@ class Request {
                 const testRequst = new XMLHttpRequest();
                 const api = this.getTestAPI(true);
                 testRequst.open("GET", api);
-                testRequst.onload = function () {
+                testRequst.onload = function() {
                     if (this.status === 200 || this.status === 204) {
                         resolve("online");
                     } else {
@@ -100,58 +111,66 @@ class Request {
     }
 
     async authCheck() {
-        return await fetch("/rest/auth", {
-            method: "POST",
+        return await axios.post(this.getApi() + "/auth", {
             headers: {
                 Authorization: this.getToken(true)
             },
-            credentials: 'include',
+            credentials: "include"
         });
     }
 
     sendRequest(url, method, body, auth = false, customHeaders = {}) {
-        const props = auth && body ? {
-            headers: {
-                Authorization: this.getToken(auth)
-            },
-            data: body,
-        } : {
-                headers: {
-                    ...customHeaders
-                },
-                data: body ? body : null
-            };
-
+        const props =
+            (auth && method === "POST") || (auth && !body && method === "GET")
+                ? {
+                      headers: {
+                          Authorization: this.getToken(auth)
+                      },
+                      data: body
+                  }
+                : {
+                      headers: {
+                          ...customHeaders
+                      },
+                      data: body ? body : null
+                  };
+        if (_.isNull(props.headers.Authorization) && auth) {
+            return this.signOut();
+        }
         return axios({
             method,
-            url,
-            ...props,
-        })
+            url: this.getApi() + url,
+            ...props
+        });
+    }
+
+    restartApp() {
+        sessionStorage.clear();
+        window.location.assign("/");
     }
 
     getToken(auth) {
         const token = sessionStorage.getItem("token") || "";
-        if (auth && !token || !token) {
+        if ((auth && !token) || !token) {
             return null;
         }
         return `Token ${token}`;
     }
 
     signOut = async () => {
-        await fetch("/rest/logout", {
-            method: "POST", headers: {
-                Authorization: this.getToken(true)
-            },
-            credentials: 'include',
-        }).then(res => {
-
-            if (res.ok) {
-                sessionStorage.clear();
-                window.location.assign("/");
-            }
-        }).catch(error => console.error(error));
-    }
-
+        await axios
+            .delete(this.getApi() + "/logout", {
+                headers: {
+                    Authorization: this.getToken(true)
+                },
+                credentials: "include"
+            })
+            .then(res => {
+                if (res.status === 200) this.restartApp();
+                else throw new Error("invalid logout");
+            })
+            .catch(error => console.error(error));
+    };
 }
 
 export default Request;

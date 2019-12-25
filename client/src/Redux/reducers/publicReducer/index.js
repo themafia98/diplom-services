@@ -33,12 +33,9 @@ export default (state = initialState, action) => {
 
         case UDATA_LOAD: {
             const { payload = {} } = action;
-            const metadata = {
-                ...payload.providerData[0]
-            };
             return {
                 ...state,
-                udata: metadata
+                udata: { ...payload }
             };
         }
 

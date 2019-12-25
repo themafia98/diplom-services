@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import _ from "lodash";
 import { connect } from "react-redux";
 import RenderInBrowser from "react-render-in-browser";
 import { Switch, Route } from "react-router-dom";
@@ -11,7 +12,7 @@ import { forceUpdateDetectedInit } from "./Utils";
 //import * as Sentry from "@sentry/browser";
 
 import { setStatus, loadUdata } from "./Redux/actions/publicActions";
-import { addTabAction } from "./Redux/actions/routerActions";
+import { addTabAction, setActiveTabAction, logoutAction } from "./Redux/actions/routerActions";
 
 import { routeParser } from "./Utils";
 
@@ -41,28 +42,40 @@ class App extends React.Component {
             setCurrentTab,
             rest,
             router: { currentActionTab = "", actionTabs = [] } = {},
+            udata,
             onLoadUdata
         } = this.props;
+
         return this.setState({ authLoad: true, loadState: true }, () => {
-            let path = "mainModule";
-            const defaultModule = config.menu.find(item => item["SIGN"] === "default");
-            if (defaultModule) path = defaultModule.EUID;
+            rest.sendRequest("/userload", "POST", null, true)
+                .then(res => {
+                    let path = "mainModule";
+                    const defaultModule = config.menu.find(item => item["SIGN"] === "default");
+                    if (defaultModule) path = defaultModule.EUID;
 
-            const actionTabsCopy = [...actionTabs];
-            const isFind = actionTabsCopy.findIndex(tab => tab === path) !== -1;
+                    const actionTabsCopy = [...actionTabs];
+                    const isFind = actionTabsCopy.findIndex(tab => tab === path) !== -1;
 
-            if (!isFind && config.tabsLimit <= actionTabsCopy.length)
-                return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
-
-            const udata = null;
-
-            if (!isFind && udata) {
-                if (udata) onLoadUdata(udata).then(() => addTab(routeParser({ path })));
-                else setCurrentTab(path);
-            } else if (currentActionTab !== path) {
-                if (udata) onLoadUdata(udata).then(() => setCurrentTab(path));
-                else setCurrentTab(path);
-            }
+                    const udata = Object.keys(res.data["user"]).reduce((accumulator, key) => {
+                        if (key !== "token") {
+                            accumulator[key] = res.data["user"][key];
+                        }
+                        return accumulator || {};
+                    }, {});
+                    if (!isFind && config.tabsLimit <= actionTabsCopy.length)
+                        return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
+                    const isUserData = udata && !_.isEmpty(udata);
+                    if (!isFind) {
+                        if (isUserData) onLoadUdata(udata).then(() => addTab(routeParser({ path })));
+                        else rest.signOut();
+                    } else if (currentActionTab !== path) {
+                        if (isUserData) onLoadUdata(udata).then(() => setCurrentTab(path));
+                        else rest.signOut();
+                    }
+                })
+                .catch(err => {
+                    rest.signOut();
+                });
         });
     };
 
@@ -72,22 +85,23 @@ class App extends React.Component {
 
     componentDidMount = () => {
         const { rest } = this.props;
-        rest.authCheck().then(res => {
-
-            if (res.status === 200) {
-                this.loadAppSession();
-            } else {
-                throw new Error(res.message);
-            }
-        }).catch(err => {
-            this.loadApp();
-        })
+        rest.authCheck()
+            .then(res => {
+                if (res.status === 200) {
+                    this.loadAppSession();
+                } else {
+                    throw new Error(res.message);
+                }
+            })
+            .catch(err => {
+                this.loadApp();
+            });
         if (config.forceUpdate === true || config.forceUpdate === "true") forceUpdateDetectedInit();
     };
 
     render() {
         const { loadState, authLoad } = this.state;
-        const { rest } = this.props;
+        const { rest, onLogoutAction } = this.props;
         if (loadState) {
             return (
                 <React.Fragment>
@@ -100,9 +114,19 @@ class App extends React.Component {
                     </RenderInBrowser>
                     <RenderInBrowser except ie>
                         <Switch>
-                            <Route exact path="/" render={props => <LoginPage rest={rest} {...props} authLoad={authLoad} />} />
+                            <Route
+                                exact
+                                path="/"
+                                render={props => <LoginPage rest={rest} {...props} authLoad={authLoad} />}
+                            />
                             <Route exact path="/recovory" render={props => <Recovery {...props} />} />
-                            <PrivateRoute exact path="/dashboard" rest={rest} component={Dashboard} />
+                            <PrivateRoute
+                                exact
+                                path="/dashboard"
+                                rest={rest}
+                                onLogoutAction={onLogoutAction}
+                                component={Dashboard}
+                            />
                         </Switch>
                     </RenderInBrowser>
                 </React.Fragment>
@@ -112,9 +136,11 @@ class App extends React.Component {
 }
 
 const mapStateToProps = state => {
+    const { udata = {} } = state.publicReducer || {};
     return {
         router: { ...state.router },
-        publicReducer: { ...state.publicReducer }
+        publicReducer: { ...state.publicReducer },
+        udata
     };
 };
 
@@ -122,6 +148,8 @@ const mapDispatchToProps = dispatch => {
     return {
         addTab: async tab => await dispatch(addTabAction(tab)),
         onSetStatus: status => dispatch(setStatus({ statusRequst: status })),
+        setCurrentTab: tab => dispatch(setActiveTabAction(tab)),
+        onLogoutAction: async () => await dispatch(logoutAction()),
         onLoadUdata: async udata => await dispatch(loadUdata(udata))
     };
 };
