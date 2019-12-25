@@ -1,5 +1,5 @@
 import winston from "winston";
-import { model, Schema, Model } from 'mongoose';
+import { model, Schema, Model, Document } from 'mongoose';
 import { getSchemaByName } from '../Models/Database/Schema';
 import { FileTransportInstance, schemaConfig } from "./Types";
 
@@ -10,7 +10,7 @@ namespace Utils {
         } else return new winston.transports.File({ filename: "error.log", level: "error" });
     };
 
-    export const getModelByName = (name: string, schemaType: string): Model<any, any> | null => {
+    export const getModelByName = (name: string, schemaType: string): Model<Document, Object> | null => {
         try {
             const schema: Schema | null = getSchemaByName(schemaType);
             if (Schema) return model(name, <Schema>schema);

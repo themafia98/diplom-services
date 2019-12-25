@@ -1,14 +1,14 @@
 import { Router as RouteExpress, Response, NextFunction } from "express";
 import _ from "lodash";
 import passport from "passport";
-import multer from "multer";
+//import multer from "multer";
 import { UserModel } from "../Models/Database/Schema";
 import { App, Request } from "../Utils/Interfaces";
 import Auth from '../Models/Auth';
 
 
 namespace General {
-    const upload = multer(); // form-data
+    // const upload = multer(); // form-data
 
     export const isPrivateRoute = (req: Request, res: Response, next: NextFunction) => {
         if (req.isAuthenticated()) {
@@ -22,7 +22,7 @@ namespace General {
     export const module = (app: App, route: RouteExpress): null | void => {
         if (!app) return null;
 
-        route.post("/auth", <any>isPrivateRoute, (req: any, res: Response, next: NextFunction): void => {
+        route.post("/auth", isPrivateRoute, (req: Request, res: Response, next: NextFunction): void => {
             return void res.sendStatus(200);
         });
 
@@ -47,7 +47,7 @@ namespace General {
         );
 
         route.post(
-            "/login", Auth.config.optional, async (req: any, res: Response, next): Promise<any> => {
+            "/login", Auth.config.optional, async (req: Request, res: Response, next): Promise<any> => {
                 const { body = {} } = req;
                 if (!body || body && _.isEmpty(body)) return void res.sendStatus(503);
                 return await passport.authenticate('local', function (err: Error, user: any): any {
@@ -67,7 +67,7 @@ namespace General {
         );
 
         route.post("/logout", <any>isPrivateRoute,
-            (req: any, res: Response, next: NextFunction) => {
+            (req: Request, res: Response, next: NextFunction): void => {
                 req.session.destroy((err: Error) => {
                     if (err) console.error(err);
                     (<any>req.logOut()); // passportjs logout

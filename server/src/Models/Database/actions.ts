@@ -22,7 +22,7 @@ namespace DatabaseActions {
                         case "all": {
                             if (collectionModel && !_.isNull(collectionModel)) {
                                 try {
-                                    return await collectionModel.find({},
+                                    return await <any>collectionModel.find({},
                                         (err: Error, data: Object) => {
                                             counter += 1;
                                             if (err) {
@@ -48,7 +48,7 @@ namespace DatabaseActions {
                         case "delete_all": {
                             if (collectionModel && !_.isNull(collectionModel)) {
                                 try {
-                                    return await collectionModel.find({},
+                                    return await <any>collectionModel.find({},
                                         (err: Error, data: Object) => {
                                             counter += 1;
                                             if (err) {

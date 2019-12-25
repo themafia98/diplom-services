@@ -1,5 +1,5 @@
-import cluster, { Worker } from 'cluster';
-import socketio from 'socket.io';
+import cluster from 'cluster';
+import socketio, { Socket } from 'socket.io';
 import { App } from '../../../Utils/Interfaces';
 import Entrypoint from '../../../';
 namespace Chat {
@@ -9,16 +9,16 @@ namespace Chat {
         const workerId = cluster.worker.id;
         wsWorkers[workerId] = socketio(server);
 
-        wsWorkers[workerId].on('connection', socket => {
+        wsWorkers[workerId].on('connection', (socket: Socket) => {
             console.log("ws connection");
             socket.on("newMessage", msg => {
                 wsWorkers[workerId].emit("message", msg);
             });
         });
 
-        wsWorkers[workerId].on('disconnect', () => {
+        wsWorkers[workerId].on('disconnect', (socket: Socket) => {
+            console.log(socket.eventNames);
             console.log('user disconnected');
-
         });
     }
 }
