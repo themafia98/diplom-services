@@ -1,4 +1,4 @@
-import { Application, Router as RouteExpress, Request, Response, NextFunction } from "express";
+import { Application, Router as RouteExpress, Request as RequestExpress, Response, NextFunction } from "express";
 import { collectionOperations } from "../Types";
 import { Mongoose, Schema } from "mongoose";
 
@@ -43,6 +43,14 @@ export interface App extends Application {
 export interface ResponseMetadata {
     [key: string]: any;
 }
+
+export interface Request extends RequestExpress {
+    start?: Date,
+    body: Object,
+    session?: any,
+    isAuthenticated(): boolean
+}
+
 
 export interface Metadata { }
 export interface MetadataConfig { }

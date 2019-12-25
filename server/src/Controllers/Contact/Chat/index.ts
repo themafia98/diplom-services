@@ -1,4 +1,4 @@
-import cluster from 'cluster';
+import cluster, { Worker } from 'cluster';
 import socketio from 'socket.io';
 import { App } from '../../../Utils/Interfaces';
 import Entrypoint from '../../../';

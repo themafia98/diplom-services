@@ -1,4 +1,4 @@
-import express, { Application, Request, Response, NextFunction, Router } from "express";
+import express, { Application, Response, NextFunction, Router } from "express";
 import session, { SessionOptions } from "express-session";
 import MongoStore from 'connect-mongo';
 
@@ -9,7 +9,7 @@ import chalk from "chalk";
 import { Route } from "../../Utils/Interfaces";
 import RouterInstance from "../Router";
 import { Server as HttpServer } from "http";
-import { ServerRun, App } from "../../Utils/Interfaces";
+import { ServerRun, App, Request } from "../../Utils/Interfaces";
 
 import General from "../../Controllers/General";
 import Chat from '../../Controllers/Contact/Chat';
@@ -42,7 +42,7 @@ class ServerRunner implements ServerRun {
     }
 
     public startResponse(req: Request, res: Response, next: NextFunction): void {
-        (<any>req).start = new Date();
+        req.start = new Date();
         next();
     }
 
@@ -60,7 +60,7 @@ class ServerRunner implements ServerRun {
             saveUninitialized: true,
             resave: true,
             store: new SessionStore({
-                url: process.env.MONGODB_URI,
+                url: <string>process.env.MONGODB_URI,
                 collection: "sessions",
             })
         }));
@@ -143,7 +143,7 @@ class ServerRunner implements ServerRun {
         const tasksRoute: Router = instanceRouter.createRoute("/api/tasks");
 
         General.module(<App>this.getApp(), rest);
-        tasksRoute.use(this.startResponse);
+        tasksRoute.use(<any>this.startResponse);
 
         Tasks.module(<App>this.getApp(), tasksRoute);
         Chat.module(<App>this.getApp(), server);
