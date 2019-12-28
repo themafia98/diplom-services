@@ -10,7 +10,7 @@ import { Route } from "../../Utils/Interfaces";
 import RouterInstance from "../Router";
 import { Server as HttpServer } from "http";
 import { ServerRun, App, Request, RouteDefinition } from "../../Utils/Interfaces";
-
+import Utils from '../../Utils';
 import General from "../../Controllers/General";
 import Chat from "../../Controllers/Contact/Chat";
 import Tasks from "../../Controllers/Tasks";
@@ -20,9 +20,10 @@ import { UserModel } from "../Database/Schema";
 
 const jwt = require("passport-jwt");
 const LocalStrategy = require("passport-local");
-const Test = General.Test;
+
 class ServerRunner implements ServerRun {
     private port: string;
+    private rest: Application | undefined;
     private application: null | Application = null;
 
     constructor(port: string) {
@@ -31,6 +32,16 @@ class ServerRunner implements ServerRun {
 
     public getPort(): string {
         return this.port;
+    }
+
+    public getRest(): Application {
+        return <Application>this.rest;
+    }
+
+    public setRest(route: Application): void {
+        if (!this.rest) {
+            this.rest = route;
+        }
     }
 
     public getApp(): Application {
@@ -45,6 +56,15 @@ class ServerRunner implements ServerRun {
         req.start = new Date();
         next();
     }
+
+    public isPrivateRoute(req: Request, res: Response, next: NextFunction): Response | void {
+        if (req.isAuthenticated()) {
+            return next();
+        } else {
+            res.clearCookie("connect.sid");
+            return res.sendStatus(404);
+        }
+    };
 
     public start(): void {
         this.setApp(express());
@@ -115,7 +135,7 @@ class ServerRunner implements ServerRun {
         };
 
         passport.use(
-            new jwt.Strategy(jwtOptions, async function(payload: any, done: Function) {
+            new jwt.Strategy(jwtOptions, async function (payload: any, done: Function) {
                 await dbm.connection();
                 UserModel.findOne(payload.id, async (err: Error, user: any) => {
                     await dbm.disconnect();
@@ -164,36 +184,20 @@ class ServerRunner implements ServerRun {
         });
 
         /** initial entrypoint route */
-        const rest = instanceRouter.initInstance("/rest");
+        this.setRest(instanceRouter.initInstance("/rest"));
         const tasksRoute: Router = instanceRouter.createRoute("/api/tasks");
 
-        General.module(<App>this.getApp(), rest);
         tasksRoute.use(<any>this.startResponse);
 
         Tasks.module(<App>this.getApp(), tasksRoute);
         Chat.module(<App>this.getApp(), server);
 
-        [
-            Test
-        ].forEach(controller => {
-            // This is our instantiated class
-            const instance: any = new controller();
-            // The prefix saved to our controller
-            const prefix = Reflect.getMetadata('prefix', controller);
-            // Our `routes` array containing all our routes for this controller
-            const routes: Array<RouteDefinition> = Reflect.getMetadata('routes', controller);
-
-            // Iterate over all routes and register them to our express application 
-            routes.forEach(route => {
-                // It would be a good idea at this point to substitute the `app[route.requestMethod]` with a `switch/case` statement
-                // since we can't be sure about the availability of methods on our `app` object. But for the sake of simplicity
-                // this should be enough for now.
-                this.getApp()[route.requestMethod](prefix + route.path, (req: express.Request, res: express.Response) => {
-                    // Execute our method for this path and pass our express request and response object.
-                    instance[route.methodName](req, res);
-                });
-            });
-        });
+        Utils.initControllers(
+            [
+                General.Main
+            ],
+            this.getApp.bind(this), this.getRest.bind(this), this.isPrivateRoute.bind(this)
+        );
 
         process.on("SIGTERM", (): void => {
             console.log("SIGTERM, uptime:", process.uptime());

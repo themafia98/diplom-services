@@ -58,7 +58,14 @@ export interface RouteDefinition {
     requestMethod: 'get' | 'post' | 'delete' | 'options' | 'put';
     // Method name within our class responsible for this route
     methodName: string;
+    private?: boolean;
 }
+
+export interface DecoratorConfig extends Object {
+    path: string,
+    private: boolean,
+}
+
 
 
 export interface Metadata { }
