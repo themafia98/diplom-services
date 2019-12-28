@@ -6,6 +6,9 @@ import { UserModel } from "../Models/Database/Schema";
 import { App, Request } from "../Utils/Interfaces";
 import Auth from '../Models/Auth';
 
+import Decorators from '../Decorators';
+const Get = Decorators.Get;
+const Controller = Decorators.Controller;
 
 namespace General {
     // const upload = multer(); // form-data
@@ -18,6 +21,14 @@ namespace General {
             return res.sendStatus(404);
         }
     };
+
+    @Controller("/rest")
+    export class Test {
+        @Get("/test")
+        public test(req: Request, res: Response) {
+            return res.send("test");
+        }
+    }
 
     export const module = (app: App, route: RouteExpress): null | void => {
         if (!app) return null;

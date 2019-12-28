@@ -1,4 +1,5 @@
 import cluster, { Worker } from "cluster";
+import "reflect-metadata";
 import { Server as WebSocketServer } from 'socket.io';
 import chalk from "chalk";
 import fs from "fs";

@@ -15,7 +15,7 @@ export type actionGet = {
 };
 
 export type paramAction = {
-    metadataSearch?: Object,
+    metadataSearch?: object,
     methodQuery?: string,
 }
 
@@ -23,5 +23,7 @@ export type schemaConfig = {
     name: string,
     schemaType: string,
 }
+
+export type Decorator = <Function extends ClassDecorator>(target: object, propKey?: string) => void;
 
 export type FileTransportInstance = winston.transports.FileTransportInstance;

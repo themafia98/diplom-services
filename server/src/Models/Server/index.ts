@@ -9,7 +9,7 @@ import chalk from "chalk";
 import { Route } from "../../Utils/Interfaces";
 import RouterInstance from "../Router";
 import { Server as HttpServer } from "http";
-import { ServerRun, App, Request } from "../../Utils/Interfaces";
+import { ServerRun, App, Request, RouteDefinition } from "../../Utils/Interfaces";
 
 import General from "../../Controllers/General";
 import Chat from "../../Controllers/Contact/Chat";
@@ -20,7 +20,7 @@ import { UserModel } from "../Database/Schema";
 
 const jwt = require("passport-jwt");
 const LocalStrategy = require("passport-local");
-
+const Test = General.Test;
 class ServerRunner implements ServerRun {
     private port: string;
     private application: null | Application = null;
@@ -170,6 +170,28 @@ class ServerRunner implements ServerRun {
 
         Tasks.module(<App>this.getApp(), tasksRoute);
         Chat.module(<App>this.getApp(), server);
+
+        [
+            Test
+        ].forEach(controller => {
+            // This is our instantiated class
+            const instance: any = new controller();
+            // The prefix saved to our controller
+            const prefix = Reflect.getMetadata('prefix', controller);
+            // Our `routes` array containing all our routes for this controller
+            const routes: Array<RouteDefinition> = Reflect.getMetadata('routes', controller);
+
+            // Iterate over all routes and register them to our express application 
+            routes.forEach(route => {
+                // It would be a good idea at this point to substitute the `app[route.requestMethod]` with a `switch/case` statement
+                // since we can't be sure about the availability of methods on our `app` object. But for the sake of simplicity
+                // this should be enough for now.
+                this.getApp()[route.requestMethod](prefix + route.path, (req: express.Request, res: express.Response) => {
+                    // Execute our method for this path and pass our express request and response object.
+                    instance[route.methodName](req, res);
+                });
+            });
+        });
 
         process.on("SIGTERM", (): void => {
             console.log("SIGTERM, uptime:", process.uptime());
