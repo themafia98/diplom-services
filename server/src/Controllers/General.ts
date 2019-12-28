@@ -1,10 +1,8 @@
-import { Router as RouteExpress, Response, NextFunction, Application } from "express";
+import { Response, NextFunction, Application } from "express";
 import _ from "lodash";
 import passport from "passport";
-//import multer from "multer";
 import { UserModel } from "../Models/Database/Schema";
-import { App, Request } from "../Utils/Interfaces";
-import Auth from '../Models/Auth';
+import { Request } from "../Utils/Interfaces";
 
 import Decorators from '../Decorators';
 
@@ -20,10 +18,10 @@ namespace General {
         }
 
         @Post({ path: "/reg", private: false })
-        public async reg(req: Request, res: Response, next: NextFunction, app: Application): Promise<void> {
+        public async reg(req: Request, res: Response, next: NextFunction, server: Application): Promise<void> {
             try {
                 if (!req.body || (req.body && _.isEmpty(req.body))) throw new Error("Invalid auth data");
-                const service = app.locals;
+                const service = server.locals;
                 service.dbm.connection().then(async () => {
                     await UserModel.create({ ...req.body, accept: true, rules: "full" }, async (err: Error) => {
                         await service.dbm.disconnect();

@@ -186,15 +186,13 @@ class ServerRunner implements ServerRun {
         /** initial entrypoint route */
         this.setRest(instanceRouter.initInstance("/rest"));
         const tasksRoute: Router = instanceRouter.createRoute("/api/tasks");
-
         tasksRoute.use(<any>this.startResponse);
 
-        Tasks.module(<App>this.getApp(), tasksRoute);
         Chat.module(<App>this.getApp(), server);
 
         Utils.initControllers(
             [
-                General.Main
+                General.Main, Tasks.TasksController
             ],
             this.getApp.bind(this), this.getRest.bind(this), this.isPrivateRoute.bind(this)
         );

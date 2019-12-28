@@ -1,16 +1,17 @@
-import { Request, Response, Router as RouteExpress } from 'express';
+import { Request, Response, Router as RouteExpress, NextFunction, Application } from 'express';
 import Utils from '../../Utils';
 import { App } from '../../Utils/Interfaces';
-
+import Decorators from '../../Decorators';
 import Auth from '../../Models/Auth';
 
 namespace Tasks {
-    export const module = (app: App, route: RouteExpress): null | void => {
-        if (!app) return null;
-        const service = app.locals;
-
-        route.get("/list", Auth.config.required, async (req: Request, res: Response): Promise<void> => {
+    const Controller = Decorators.Controller;
+    const Get = Decorators.Get;
+    export class TasksController {
+        @Get({ path: "/list", private: true })
+        public async getList(req: Request, res: Response, next: NextFunction, server: Application): Promise<void> {
             try {
+                const service = server.locals;
                 await service.dbm.connection();
                 service.dbm.collection("tasks")
                     .get({ methodQuery: "all" })
@@ -40,7 +41,7 @@ namespace Tasks {
             } catch (err) {
                 console.error(err);
             }
-        });
+        }
     }
 }
 
