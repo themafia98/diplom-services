@@ -57,7 +57,7 @@ namespace General {
         };
 
         @Post({ path: "/userload", private: true })
-        async userload(req: Request, res: Response, next: NextFunction) {
+        public async userload(req: Request, res: Response, next: NextFunction) {
             if (req.user) return res.json({ user: (<any>req).user.toAuthJSON() });
             else {
                 res.clearCookie("connect.sid");
@@ -66,7 +66,7 @@ namespace General {
         };
 
         @Delete({ path: "/logout", private: true })
-        async logout(req: Request, res: Response, next: NextFunction): Promise<void> {
+        public async logout(req: Request, res: Response, next: NextFunction): Promise<void> {
             req.session.destroy((err: Error) => {
                 if (err) console.error(err);
                 <any>req.logOut(); // passportjs logout
