@@ -55,15 +55,17 @@ class ServerRunner implements ServerRun {
         this.getApp().set("port", this.getPort());
         const SessionStore = MongoStore(session);
 
-        this.getApp().use(session({
-            secret: "jwtsecret",
-            saveUninitialized: true,
-            resave: true,
-            store: new SessionStore({
-                url: <string>process.env.MONGODB_URI,
-                collection: "sessions",
+        this.getApp().use(
+            session({
+                secret: "jwtsecret",
+                saveUninitialized: true,
+                resave: true,
+                store: new SessionStore({
+                    url: <string>process.env.MONGODB_URI,
+                    collection: "sessions"
+                })
             })
-        }));
+        );
         this.getApp().use(passport.initialize());
         this.getApp().use(passport.session());
 
@@ -113,7 +115,7 @@ class ServerRunner implements ServerRun {
         };
 
         passport.use(
-            new jwt.Strategy(jwtOptions, async function (payload: any, done: Function) {
+            new jwt.Strategy(jwtOptions, async function(payload: any, done: Function) {
                 await dbm.connection();
                 UserModel.findOne(payload.id, async (err: Error, user: any) => {
                     await dbm.disconnect();
@@ -198,9 +200,10 @@ class ServerRunner implements ServerRun {
             server.close();
         });
 
-        process.on("uncaughtException", function (err) {
+        process.on("uncaughtException", (err: Error) => {
             // handle the error safely
             if (err.name === "MongoNetworkError") {
+                dbm.disconnect();
                 console.log("uncaughtException");
                 console.log(err);
             } else process.exit(1);
