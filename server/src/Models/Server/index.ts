@@ -67,6 +67,10 @@ class ServerRunner implements ServerRun {
     };
 
     public start(): void {
+
+        const Main = General.Main;
+        const TasksController = Tasks.TasksController;
+
         this.setApp(express());
         this.getApp().disabled("x-powerd-by");
         this.getApp().use(helmet());
@@ -191,7 +195,7 @@ class ServerRunner implements ServerRun {
 
         Utils.initControllers(
             [
-                General.Main, Tasks.TasksController
+                Main, TasksController
             ],
             this.getApp.bind(this), this.getRest.bind(this), this.isPrivateRoute.bind(this)
         );
