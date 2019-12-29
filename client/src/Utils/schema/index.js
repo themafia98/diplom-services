@@ -51,21 +51,19 @@ export const getValidateSchema = type => {
             };
         case USER_SCHEMA:
             return {
-                departament: null,
+                _id: null,
                 email: null,
-                login: null, // delay firebase
-                name: null,
+                displayName: null,
+                departament: null,
                 position: null,
-                rules: null, // delay firebase
-                status: null,
-                surname: null,
-                uuid: null, // delay firebase
+                rules: null,
+                accept: null,
                 modeAdd: "any"
             };
         case NEWS_SCHEMA:
             return {
                 entityMap: null,
-                blocks: null,
+                blocks: null
             };
         default:
             return null;

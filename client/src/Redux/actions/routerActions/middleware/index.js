@@ -29,9 +29,9 @@ export const loadCurrentData = ({
             : `/${typeReq}${xhrPath}`.trim().replace("//", "/");
         await request
             .sendRequest(normalizeReqPath, methodRequst, { methodQuery }, true)
-            .then(response => {
-                const method = response.config && response.config.method ? response.config.method.toUpperCase() : "GET";
-                const { data: { response: { [method]: { metadata = [], fromCache = false } } = {} } = {} } = response;
+            .then(res => {
+                const method = res.config && res.config.method ? res.config.method.toUpperCase() : "GET";
+                const { data: { response: { [method]: { metadata = [], fromCache = false } } = {} } = {} } = res || {};
                 const storeArray = [];
                 metadata.forEach((doc, index) => {
                     if (_.isNumber(index)) storeArray.push(doc);
@@ -48,45 +48,45 @@ export const loadCurrentData = ({
                     if (requestError !== null) dispatch(errorRequstAction(null));
                     return dispatch(saveComponentStateAction({ [storeLoad]: copyStore, load: true, path: pathValid }));
                 }
-                // const cursor = clientDB.getCursor(storeLoad);
 
-                dispatch(saveComponentStateAction({ [storeLoad]: copyStore, load: true, path: pathValid }));
-                // cursor.onsuccess = async event => {
-                //     const {
-                //         target: { result: cursor }
-                //     } = event;
-                //     if (!cursor) return await next(true);
+                const cursor = clientDB.getCursor(storeLoad);
 
-                // const index = copyStore.findIndex(
-                //     it =>
-                //         (it[primaryKey] || it["key"]) && (it[primaryKey] === cursor.key || it["key"] === cursor.key)
-                // );
-                // const iEmpty = index === -1;
-                // if (copyStore && iEmpty) {
-                //     if (cursor.value.modeAdd === "offline") {
-                //         const copy = { ...cursor.value, modeAdd: "online" };
-                //         cursor.value.modeAdd = "online";
-                //         undefiendCopyStore.push({ ...copy });
-                //     }
-                // }
-                // cursor.continue();
-                //});
+                cursor.onsuccess = async event => {
+                    const {
+                        target: { result: cursor }
+                    } = event;
+                    if (!cursor) return await next(true);
+
+                    const index = copyStore.findIndex(
+                        it =>
+                            (it[primaryKey] || it["key"]) && (it[primaryKey] === cursor.key || it["key"] === cursor.key)
+                    );
+                    const iEmpty = index === -1;
+                    if (copyStore && iEmpty) {
+                        if (cursor.value.modeAdd === "offline") {
+                            const copy = { ...cursor.value, modeAdd: "online" };
+                            cursor.value.modeAdd = "online";
+                            undefiendCopyStore.push({ ...copy });
+                        }
+                    }
+                    cursor.continue();
+                };
 
                 const next = async (flag = false) => {
-                    // const schema =
-                    //     storeLoad === "jurnalWork"
-                    //         ? TASK_CONTROLL_JURNAL_SCHEMA
-                    //         : storeLoad === "users"
-                    //         ? USER_SCHEMA
-                    //         : storeLoad === "tasks"
-                    //         ? TASK_SCHEMA
-                    //         : null;
+                    const schema =
+                        storeLoad === "jurnalWork"
+                            ? TASK_CONTROLL_JURNAL_SCHEMA
+                            : storeLoad === "users"
+                            ? USER_SCHEMA
+                            : storeLoad === "tasks"
+                            ? TASK_SCHEMA
+                            : null;
 
-                    // let storeCopyValid = copyStore.map(it => getSchema(schema, it)).filter(Boolean);
+                    let storeCopyValid = copyStore.map(it => getSchema(schema, it)).filter(Boolean);
 
-                    // storeCopyValid.forEach(it => {
-                    //     clientDB.updateItem(storeLoad, it);
-                    // });
+                    storeCopyValid.forEach(it => {
+                        clientDB.updateItem(storeLoad, it);
+                    });
 
                     const onAction = async () => {
                         if (requestError !== null) await dispatch(errorRequstAction(null));

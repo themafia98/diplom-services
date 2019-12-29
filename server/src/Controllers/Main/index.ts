@@ -1,5 +1,5 @@
 import { NextFunction, Response, Request } from "express";
-import { App } from "../../Utils/Interfaces";
+import { App, Metadata, MetadataMongo, ResponseMetadata } from "../../Utils/Interfaces";
 import Utils from "../../Utils";
 import Decorators from "../../Decorators";
 
@@ -19,8 +19,8 @@ namespace System {
                     .get({ methodQuery: "all" })
                     .start(
                         { name: "users", schemaType: "users" },
-                        async (err: Error, data: any, param: Object): Promise<Response> => {
-                            const dataCopy = { ...data };
+                        async (err: Error, data: Metadata, param: Object): Promise<Response> => {
+                            const dataCopy: Metadata = <Metadata>{ ...data } || {};
                             await service.dbm.disconnect();
                             if (err) {
                                 return res.json({
@@ -32,16 +32,18 @@ namespace System {
                                 });
                             }
 
-                            if (Array.isArray(dataCopy["GET"]["metadata"]))
-                                dataCopy["GET"]["metadata"] = dataCopy["GET"]["metadata"].map((it: any) => {
-                                    const item = it["_doc"] || it;
-                                    return Object.keys(item).reduce((obj: any, key: string) => {
-                                        if (!key.includes("password") && !key.includes("At")) {
+                            if (dataCopy.GET && dataCopy.GET.metadata && Array.isArray(dataCopy.GET.metadata)) {
+                                const metadata: Array<Metadata> = dataCopy.GET.metadata;
+                                dataCopy.GET.metadata = metadata.map((it: MetadataMongo) => {
+                                    const item: ResponseMetadata = it["_doc"] || it;
+                                    return Object.keys(item).reduce((obj: ResponseMetadata, key: string): object => {
+                                        if (!key.includes("password") && !key.includes("At") && !key.includes("__v")) {
                                             obj[key] = item[key];
                                         }
                                         return obj;
                                     }, {});
                                 });
+                            }
 
                             return res.json({
                                 action: "done",

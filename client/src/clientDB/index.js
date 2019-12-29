@@ -81,7 +81,7 @@ class ClientDB {
                     !isUsersObject && !newVersionUpdate
                         ? db.createObjectStore("users", {
                               unique: true,
-                              keyPath: "uuid",
+                              keyPath: "_id",
                               autoIncrement: true
                           })
                         : newVersionUpdate
@@ -99,7 +99,7 @@ class ClientDB {
                             if (isCanDelete) objectStoreUsers.deleteIndex(key);
                         }
                         objectStoreUsers.createIndex(key, key, {
-                            unique: key === "uuid" || key === "email" ? true : false
+                            unique: key === "_id" || key === "email" ? true : false
                         });
                     });
                 }

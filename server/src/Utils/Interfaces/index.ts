@@ -71,9 +71,30 @@ export interface DecoratorConfig extends Object {
     private: boolean;
 }
 
+export interface methodParam extends Object {
+    metadata: Array<any>;
+}
+
 export interface Metadata extends Object {
     /** Mongo db data object */
+    GET: methodParam;
 }
+
+export interface User extends Object {
+    _id: string;
+    email: string;
+    displayName: string;
+    departament: string;
+    position: string;
+    rules: string;
+    accept: boolean;
+}
+
+export interface MetadataMongo extends Metadata {
+    _doc?: Array<object>;
+    [key: string]: MetadataMongo | any;
+}
+
 export interface MetadataConfig {
     methodQuery: string;
     body?: object;
