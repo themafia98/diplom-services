@@ -127,8 +127,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onLoadCurrentData: ({ path, storeLoad, shouldUpdate, noCorsClient }) =>
-            dispatch(loadCurrentData({ path, storeLoad, shouldUpdate, noCorsClient }))
+        onLoadCurrentData: props => dispatch(loadCurrentData({ ...props }))
     };
 };
 

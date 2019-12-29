@@ -28,15 +28,16 @@ export const getValidateSchema = type => {
     switch (type) {
         case TASK_SCHEMA:
             return {
+                editor: null,
+                date: null,
+                comments: null, // array [{ id: null, username: null, message: null }]
+                _id: null,
                 key: null,
                 status: null,
                 name: null,
                 priority: null,
                 author: null,
-                editor: null,
                 description: null,
-                date: null,
-                comments: null, // array [{ id: null, username: null, message: null }]
                 modeAdd: "any"
             };
         case TASK_CONTROLL_JURNAL_SCHEMA:

@@ -5,15 +5,15 @@ import Decorators from "../../Decorators";
 
 namespace Tasks {
     const Controller = Decorators.Controller;
-    const Post = Decorators.Post;
+    const Get = Decorators.Get;
 
     @Controller("/tasks")
     export class TasksController {
-        @Post({ path: "/list", private: true })
-        public async getList(req: Request, res: Response, next: NextFunction, server: App): Promise<Response> {
+        @Get({ path: "/list", private: true })
+        public async getList(req: Request, res: Response, next: NextFunction, server: App): Promise<void> {
             try {
                 const { methodQuery = "all" } = req.body;
-
+                console.log(req.body);
                 const service = server.locals;
                 await service.dbm.connection();
                 service.dbm
@@ -32,7 +32,7 @@ namespace Tasks {
                                     work: process.connected
                                 });
                             }
-
+                            console.log(data);
                             return res.json({
                                 action: "done",
                                 response: { param, ...data },
@@ -42,11 +42,8 @@ namespace Tasks {
                             });
                         }
                     );
-
-                return res.sendStatus(503);
             } catch (err) {
                 console.error(err);
-                return res.sendStatus(503);
             }
         }
     }

@@ -112,7 +112,7 @@ export const loadCurrentData = ({
                 };
             })
             .catch(error => {
-                if (error.status !== 404) {
+                if (error.status === 400) {
                     dispatch(setStatus({ statusRequst: "offline" }));
                     dispatch(errorRequstAction(error.message));
                     request.follow(
