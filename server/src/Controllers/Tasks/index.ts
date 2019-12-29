@@ -7,6 +7,8 @@ import Auth from '../../Models/Auth';
 namespace Tasks {
     const Controller = Decorators.Controller;
     const Get = Decorators.Get;
+
+    @Controller("/tasks")
     export class TasksController {
         @Get({ path: "/list", private: true })
         public async getList(req: Request, res: Response, next: NextFunction, server: Application): Promise<void> {

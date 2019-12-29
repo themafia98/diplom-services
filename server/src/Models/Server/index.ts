@@ -185,8 +185,7 @@ class ServerRunner implements ServerRun {
 
         /** initial entrypoint route */
         this.setRest(instanceRouter.initInstance("/rest"));
-        const tasksRoute: Router = instanceRouter.createRoute("/api/tasks");
-        tasksRoute.use(<any>this.startResponse);
+        this.getRest().use(<any>this.startResponse);
 
         Chat.module(<App>this.getApp(), server);
 
@@ -208,7 +207,11 @@ class ServerRunner implements ServerRun {
                 dbm.disconnect();
                 console.log("uncaughtException");
                 console.log(err);
-            } else process.exit(1);
+            } else {
+                console.log(err);
+                console.log("exit error");
+                process.exit(1);
+            }
         });
     }
 }
