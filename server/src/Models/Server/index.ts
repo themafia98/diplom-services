@@ -68,8 +68,8 @@ class ServerRunner implements ServerRun {
 
     public start(): void {
 
-        const Main = General.Main;
-        const TasksController = Tasks.TasksController;
+        const Main: Readonly<Function> = General.Main;
+        const TasksController: Readonly<Function> = Tasks.TasksController;
 
         this.setApp(express());
         this.getApp().disabled("x-powerd-by");
@@ -95,9 +95,9 @@ class ServerRunner implements ServerRun {
 
         this.getApp().use((err: Error, req: Request, res: Response, next: NextFunction): void => {
             // set locals, only providing error in development
-            const today = new Date();
-            const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-            const day = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
+            const today: Readonly<Date> = new Date();
+            const time: Readonly<string> = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+            const day: Readonly<string> = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
             console.error(err.name);
             if (!err.name) next();
             else {
@@ -107,7 +107,10 @@ class ServerRunner implements ServerRun {
             // if (err.name) console.error(`${err.name} / ${day}/${time}`);
         });
 
-        const dbm = new Database.ManagmentDatabase("controllSystem", <string>process.env.MONGODB_URI);
+        const dbm: Readonly<Database.ManagmentDatabase> = new Database.ManagmentDatabase(
+            "controllSystem", <string>process.env.MONGODB_URI
+        );
+
         this.getApp().locals.dbm = dbm;
 
         passport.use(
@@ -133,7 +136,7 @@ class ServerRunner implements ServerRun {
             )
         );
 
-        const jwtOptions = {
+        const jwtOptions: Readonly<object> = {
             jwtFromRequest: jwt.ExtractJwt.fromAuthHeaderWithScheme("jwt"),
             secretOrKey: "jwtsecret"
         };
