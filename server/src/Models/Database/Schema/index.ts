@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 
 const userSchema = new Schema(
     {
@@ -21,8 +21,7 @@ const userSchema = new Schema(
 
 userSchema
     .virtual("password")
-    .set(async function (password: string): Promise<void> {
-
+    .set(async function(password: string): Promise<void> {
         this._plainPassword = password;
 
         if (password) {
@@ -31,28 +30,31 @@ userSchema
             this.passwordHash = undefined;
         }
     })
-    .get(function () {
+    .get(function() {
         return <any>this._plainPassword;
     });
 
-userSchema.methods.checkPassword = async function (password: string): Promise<boolean> {
+userSchema.methods.checkPassword = async function(password: string): Promise<boolean> {
     if (!password) return false;
     return await bcrypt.compare(password, this.passwordHash);
 };
 
-userSchema.methods.generateJWT = function (): any {
+userSchema.methods.generateJWT = function(): any {
     const today = new Date();
     const expirationDate = new Date(<any>today);
     expirationDate.setDate(today.getDate() + 30);
 
-    return jwt.sign({
-        email: this.email,
-        id: this._id,
-        exp: expirationDate.getTime() / 1000,
-    }, 'jwtsecret');
-}
+    return jwt.sign(
+        {
+            email: this.email,
+            id: this._id,
+            exp: expirationDate.getTime() / 1000
+        },
+        "jwtsecret"
+    );
+};
 
-userSchema.methods.toAuthJSON = function () {
+userSchema.methods.toAuthJSON = function() {
     return {
         _id: this._id,
         email: this.email,
@@ -60,7 +62,7 @@ userSchema.methods.toAuthJSON = function () {
         departament: this.departament,
         rules: this.rules,
         accept: this.accept,
-        token: this.generateJWT(),
+        token: this.generateJWT()
     };
 };
 

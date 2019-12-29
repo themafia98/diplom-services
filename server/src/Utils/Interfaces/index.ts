@@ -49,9 +49,14 @@ export interface ResponseMetadata {
 
 export interface Request extends RequestExpress {
     start?: Date;
-    body: Object;
+    body: BodyLogin;
     session?: any;
     isAuthenticated(): boolean;
+}
+
+export interface BodyLogin {
+    email?: string;
+    password?: string;
 }
 
 export interface RouteDefinition {

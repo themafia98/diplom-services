@@ -2,7 +2,7 @@ import { Response, NextFunction, Application } from "express";
 import _ from "lodash";
 import passport from "passport";
 import { UserModel } from "../Models/Database/Schema";
-import { Request, App } from "../Utils/Interfaces";
+import { Request, App, BodyLogin } from "../Utils/Interfaces";
 
 import Decorators from "../Decorators";
 
@@ -37,20 +37,27 @@ namespace General {
 
         @Post({ path: "/login", private: false })
         public async login(req: Request, res: Response, next: NextFunction) {
-            const { body = {} } = req;
+            const body: BodyLogin = req.body;
             if (!body || (body && _.isEmpty(body))) return void res.sendStatus(503);
-            return await passport.authenticate("local", function(err: Error, user: any): any {
+            return await passport.authenticate("local", async function(
+                err: Error,
+                user: any
+            ): Promise<Response | void> {
                 if (!user) {
-                    return void res.sendStatus(401);
-                } else {
-                    user.token = user.generateJWT();
-                    req.login(user, (err: Error) => {
-                        if (err) {
-                            return next(err);
-                        }
-                        return res.json({ user: user.toAuthJSON() });
-                    });
+                    return void res.status(401).send("Пользователь не найден, проверьте введеные данные.");
                 }
+                const { password = "" } = body;
+                const isValidPassword = await user.checkPassword(password);
+                if (!isValidPassword) {
+                    return void res.status(401).send("Неверные данные для авторизации.");
+                }
+                user.token = user.generateJWT();
+                req.login(user, (err: Error) => {
+                    if (err) {
+                        return next(err);
+                    }
+                    return res.json({ user: user.toAuthJSON() });
+                });
             })(req, res, next);
         }
 
