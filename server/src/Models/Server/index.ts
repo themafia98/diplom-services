@@ -11,6 +11,7 @@ import RouterInstance from "../Router";
 import { Server as HttpServer } from "http";
 import { ServerRun, App, Request, RouteDefinition } from "../../Utils/Interfaces";
 import Utils from "../../Utils";
+import System from "../../Controllers/Main";
 import General from "../../Controllers/General";
 import Chat from "../../Controllers/Contact/Chat";
 import Tasks from "../../Controllers/Tasks";
@@ -175,7 +176,7 @@ class ServerRunner implements ServerRun {
     public start(): void {
         const Main: Readonly<Function> = General.Main;
         const TasksController: Readonly<Function> = Tasks.TasksController;
-
+        const SystemData: Readonly<Function> = System.SystemData;
         this.setApp(express());
         this.getApp().disabled("x-powerd-by");
         this.getApp().use(helmet());
@@ -221,7 +222,7 @@ class ServerRunner implements ServerRun {
         Chat.module(<App>this.getApp(), server);
 
         Utils.initControllers(
-            [Main, TasksController],
+            [Main, TasksController, SystemData],
             this.getApp.bind(this),
             this.getRest.bind(this),
             this.isPrivateRoute.bind(this)

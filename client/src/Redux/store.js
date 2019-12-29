@@ -5,7 +5,6 @@ import thunk from "redux-thunk";
 import combineReducers from "./reducers";
 
 const request = new Request();
-const firebase = null;
 /** For devtools */
 const composeEnhancers =
     typeof window === "object" && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ && process.env.NODE_ENV !== "production"
@@ -14,7 +13,7 @@ const composeEnhancers =
 
 const middleware = composeEnhancers(
     /** @Include moddleware */
-    applyMiddleware(thunk.withExtraArgument({ firebase, getSchema, request, clientDB }))
+    applyMiddleware(thunk.withExtraArgument({ getSchema, request, clientDB }))
 );
 
 const store = createStore(combineReducers, middleware);

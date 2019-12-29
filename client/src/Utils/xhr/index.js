@@ -120,23 +120,23 @@ class Request {
     }
 
     sendRequest(url, method, body, auth = false, customHeaders = {}) {
-        const props =
-            (auth && method === "POST") || (auth && !body && method === "GET")
-                ? {
-                      headers: {
-                          Authorization: this.getToken(auth)
-                      },
-                      data: body
-                  }
-                : {
-                      headers: {
-                          ...customHeaders
-                      },
-                      data: body ? body : null
-                  };
-        if (_.isNull(props.headers.Authorization) && auth) {
+        const props = auth
+            ? {
+                  headers: {
+                      Authorization: this.getToken(auth)
+                  },
+                  data: body
+              }
+            : {
+                  headers: {
+                      ...customHeaders
+                  },
+                  data: body ? body : null
+              };
+        if ((_.isNull(props.headers.Authorization) && auth) || (!props.headers.Authorization && auth)) {
             return this.signOut();
         }
+
         return axios({
             method,
             url: this.getApi() + url,

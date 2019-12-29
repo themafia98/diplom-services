@@ -39,25 +39,23 @@ namespace General {
         public async login(req: Request, res: Response, next: NextFunction) {
             const body: BodyLogin = req.body;
             if (!body || (body && _.isEmpty(body))) return void res.sendStatus(503);
-            return await passport.authenticate("local", async function(
-                err: Error,
-                user: any
-            ): Promise<Response | void> {
+            return await passport.authenticate("local", async function(err: Error, user: any): Promise<Response> {
                 if (!user) {
-                    return void res.status(401).send("Пользователь не найден, проверьте введеные данные.");
+                    return res.status(401).send("Пользователь не найден, проверьте введеные данные.");
                 }
                 const { password = "" } = body;
                 const isValidPassword = await user.checkPassword(password);
                 if (!isValidPassword) {
-                    return void res.status(401).send("Неверные данные для авторизации.");
+                    return res.status(401).send("Неверные данные для авторизации.");
                 }
                 user.token = user.generateJWT();
                 req.login(user, (err: Error) => {
                     if (err) {
-                        return next(err);
+                        res.status(404).send(err.message);
                     }
                     return res.json({ user: user.toAuthJSON() });
                 });
+                return res.status(503);
             })(req, res, next);
         }
 

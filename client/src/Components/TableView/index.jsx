@@ -39,7 +39,15 @@ class TableView extends React.Component {
         const { path: validPath = "", page = "", itemId = "" } = routeParser({ pageType: "moduleItem", path });
 
         if (prevProps.visible !== this.props.visible && page === "mainModule" && itemId === "table") {
-            if (this.props.visible) onLoadCurrentData({ path: validPath ? validPath : "", storeLoad: "users" });
+            if (this.props.visible)
+                onLoadCurrentData({
+                    path: validPath ? validPath : "",
+
+                    xhrPath: "/userList",
+                    typeReq: "system",
+                    storeLoad: "users",
+                    methodRequst: "GET"
+                });
         }
     };
 
@@ -49,7 +57,13 @@ class TableView extends React.Component {
 
         if (visible && parsePath && parsePath.page === "mainModule" && parsePath.itemId === "table") {
             const { path: validPath = "" } = parsePath;
-            onLoadCurrentData({ path: validPath ? validPath : "", storeLoad: "users" });
+            onLoadCurrentData({
+                path: validPath ? validPath : "",
+                typeReq: "system",
+                xhrPath: "/userList",
+                storeLoad: "users",
+                methodRequst: "GET"
+            });
         }
         window.addEventListener("resize", this.setSizeWindow);
     };
@@ -373,13 +387,11 @@ class TableView extends React.Component {
             return (
                 <tr className="contentTr" key={`${id}contentTr`}>
                     <Output key={`${id}${it.status}status`} type="table" className="status">
-                        {it.status}
+                        {it.status || "Скрыт"}
                     </Output>
-                    <Output
-                        key={`${id}${it.surname}}nameSurname`}
-                        type="table"
-                        className="nameSurname"
-                    >{`${it.name} ${it.surname}`}</Output>
+                    <Output key={`${id}${it.displayName}}nameSurname`} type="table" className="nameSurname">
+                        {`${it.displayName}`}
+                    </Output>
                     <Output key={`${id}${it.departament}departament`} type="table" className="departament">
                         {it.departament}
                     </Output>
@@ -412,7 +424,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onOpenPageWithData: data => dispatch(openPageWithDataAction(data)),
-        onLoadCurrentData: ({ path, storeLoad }) => dispatch(loadCurrentData({ path, storeLoad }))
+        onLoadCurrentData: props => dispatch(loadCurrentData({ ...props }))
     };
 };
 

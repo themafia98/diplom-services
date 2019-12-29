@@ -100,6 +100,8 @@ export const getSchemaByName = (name: string): Schema | null => {
     switch (name) {
         case "task":
             return task;
+        case "users":
+            return userSchema;
         case "jurnalItem":
             return jurnalItem;
         case "newsItem":
