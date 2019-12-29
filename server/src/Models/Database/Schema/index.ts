@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import { NextFunction } from "connect";
 
 const userSchema = new Schema(
     {
@@ -9,7 +10,7 @@ const userSchema = new Schema(
             required: "Укажите e-mail",
             dropDups: true
         },
-        passwordHash: String,
+        passwordHash: { type: String, default: "" },
         departament: String,
         displayName: String,
         position: String,
@@ -22,10 +23,12 @@ const userSchema = new Schema(
 userSchema
     .virtual("password")
     .set(async function(password: string): Promise<void> {
+        console.log("virtual");
         this._plainPassword = password;
-
+        console.log(password);
         if (password) {
-            this.passwordHash = await bcrypt.hash(<string>password, 10);
+            this.passwordHash = bcrypt.hashSync(<string>password, 10);
+            console.log(this.passwordHash);
         } else {
             this.passwordHash = undefined;
         }
@@ -36,6 +39,7 @@ userSchema
 
 userSchema.methods.checkPassword = async function(password: string): Promise<boolean> {
     if (!password) return false;
+
     return await bcrypt.compare(password, this.passwordHash);
 };
 
