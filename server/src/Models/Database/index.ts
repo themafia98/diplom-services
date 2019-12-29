@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import _ from "lodash";
 import DatabaseActions from "./actions";
 import { collectionOperations, schemaConfig } from "../../Utils/Types";
-import { Dbms, ResponseMetadata, Metadata, MetadataConfig } from "../../Utils/Interfaces";
+import { Dbms, ResponseMetadata, MetadataConfig } from "../../Utils/Interfaces";
 
 namespace Database {
     dotenv.config();
@@ -24,27 +24,27 @@ namespace Database {
 
         private operations(collection: string): collectionOperations {
             return {
-                get: (param: MetadataConfig = {}): collectionOperations => {
+                get: (param: MetadataConfig = { methodQuery: "all" }): collectionOperations => {
                     const data = _.isEmpty(param) ? { collection } : { collection, param };
                     this.setResponseParams({ GET: data });
                     return this.operations(collection);
                 },
-                post: (param: MetadataConfig = {}): collectionOperations => {
+                post: (param: MetadataConfig = { methodQuery: "all" }): collectionOperations => {
                     const data = _.isEmpty(param) ? { collection } : { collection, param };
                     this.setResponseParams({ POST: data });
                     return this.operations(collection);
                 },
-                put: (param: MetadataConfig = {}): collectionOperations => {
+                put: (param: MetadataConfig = { methodQuery: "all" }): collectionOperations => {
                     const data = _.isEmpty(param) ? { collection } : { collection, param };
                     this.setResponseParams({ PUT: data });
                     return this.operations(collection);
                 },
-                delete: (param: MetadataConfig = {}): collectionOperations => {
+                delete: (param: MetadataConfig = { methodQuery: "all" }): collectionOperations => {
                     const data = _.isEmpty(param) ? { collection } : { collection, param };
                     this.setResponseParams({ DELETE: data });
                     return this.operations(collection);
                 },
-                update: (param: MetadataConfig = {}): collectionOperations => {
+                update: (param: MetadataConfig = { methodQuery: "all" }): collectionOperations => {
                     const data = _.isEmpty(param) ? { collection } : { collection, param };
                     this.setResponseParams({ UPDATE: data });
                     return this.operations(collection);

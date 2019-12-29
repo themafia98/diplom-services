@@ -3,9 +3,12 @@ import { collectionOperations } from "../Types";
 import { Mongoose } from "mongoose";
 
 export interface ServerRun {
-    setApp(express: Application): void;
+    isPrivateRoute(req: Request, res: Response, next: NextFunction): Response | void;
     startResponse(req: Request, res: Response, next: NextFunction): void;
     getApp(): Application;
+    getRest(): Application;
+    setRest(route: Application): void;
+    setApp(express: Application): void;
     start(): void;
 }
 
@@ -45,28 +48,28 @@ export interface ResponseMetadata {
 }
 
 export interface Request extends RequestExpress {
-    start?: Date,
-    body: Object,
-    session?: any,
-    isAuthenticated(): boolean
+    start?: Date;
+    body: Object;
+    session?: any;
+    isAuthenticated(): boolean;
 }
 
 export interface RouteDefinition {
-    // Path to our route
     path: string;
-    // HTTP Request method (get, post, ...)
-    requestMethod: 'get' | 'post' | 'delete' | 'options' | 'put';
-    // Method name within our class responsible for this route
+    requestMethod: "get" | "post" | "delete" | "options" | "put";
     methodName: string;
     private?: boolean;
 }
 
 export interface DecoratorConfig extends Object {
-    path: string,
-    private: boolean,
+    path: string;
+    private: boolean;
 }
 
-
-
-export interface Metadata { }
-export interface MetadataConfig { }
+export interface Metadata extends Object {
+    /** Mongo db data object */
+}
+export interface MetadataConfig {
+    methodQuery: string;
+    body?: object;
+}

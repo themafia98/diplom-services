@@ -1,8 +1,7 @@
-import { Request, Response, Router as RouteExpress, NextFunction, Application } from 'express';
-import Utils from '../../Utils';
-import { App } from '../../Utils/Interfaces';
-import Decorators from '../../Decorators';
-import Auth from '../../Models/Auth';
+import { Request, Response, NextFunction } from "express";
+import Utils from "../../Utils";
+import { App } from "../../Utils/Interfaces";
+import Decorators from "../../Decorators";
 
 namespace Tasks {
     const Controller = Decorators.Controller;
@@ -11,14 +10,16 @@ namespace Tasks {
     @Controller("/tasks")
     export class TasksController {
         @Get({ path: "/list", private: true })
-        public async getList(req: Request, res: Response, next: NextFunction, server: Application): Promise<void> {
+        public async getList(req: Request, res: Response, next: NextFunction, server: App): Promise<void> {
             try {
                 const service = server.locals;
                 await service.dbm.connection();
-                service.dbm.collection("tasks")
+                service.dbm
+                    .collection("tasks")
                     .get({ methodQuery: "all" })
                     .delete({ methodQuery: "delete_all" })
-                    .start({ name: "tasks", schemaType: "task" },
+                    .start(
+                        { name: "tasks", schemaType: "task" },
                         async (err: Error, data: Object, param: Object): Promise<void> => {
                             await service.dbm.disconnect();
                             if (err) {
@@ -38,8 +39,8 @@ namespace Tasks {
                                 responseTime: Utils.responseTime((<any>req).start),
                                 work: process.connected
                             });
-                        });
-
+                        }
+                    );
             } catch (err) {
                 console.error(err);
             }

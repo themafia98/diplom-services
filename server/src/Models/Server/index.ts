@@ -10,7 +10,7 @@ import { Route } from "../../Utils/Interfaces";
 import RouterInstance from "../Router";
 import { Server as HttpServer } from "http";
 import { ServerRun, App, Request, RouteDefinition } from "../../Utils/Interfaces";
-import Utils from '../../Utils';
+import Utils from "../../Utils";
 import General from "../../Controllers/General";
 import Chat from "../../Controllers/Contact/Chat";
 import Tasks from "../../Controllers/Tasks";
@@ -64,55 +64,49 @@ class ServerRunner implements ServerRun {
             res.clearCookie("connect.sid");
             return res.sendStatus(404);
         }
-    };
+    }
 
-    public start(): void {
-
-        const Main: Readonly<Function> = General.Main;
-        const TasksController: Readonly<Function> = Tasks.TasksController;
-
-        this.setApp(express());
-        this.getApp().disabled("x-powerd-by");
-        this.getApp().use(helmet());
-        this.getApp().use(express.urlencoded({ extended: true }));
-        this.getApp().use(express.json());
-        this.getApp().set("port", this.getPort());
-        const SessionStore = MongoStore(session);
-
-        this.getApp().use(
-            session({
-                secret: "jwtsecret",
-                saveUninitialized: true,
-                resave: true,
-                store: new SessionStore({
-                    url: <string>process.env.MONGODB_URI,
-                    collection: "sessions"
-                })
-            })
-        );
-        this.getApp().use(passport.initialize());
-        this.getApp().use(passport.session());
-
-        this.getApp().use((err: Error, req: Request, res: Response, next: NextFunction): void => {
-            // set locals, only providing error in development
-            const today: Readonly<Date> = new Date();
-            const time: Readonly<string> = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-            const day: Readonly<string> = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
-            console.error(err.name);
-            if (!err.name) next();
-            else {
-                console.error(err.name);
-                next();
-            }
-            // if (err.name) console.error(`${err.name} / ${day}/${time}`);
+    public initErrorHandler(server: HttpServer, dbm: Readonly<Database.ManagmentDatabase>): void {
+        server.on("clientError", (err, socket) => {
+            console.log("clientError");
+            console.error(err);
+            socket.destroy();
         });
 
-        const dbm: Readonly<Database.ManagmentDatabase> = new Database.ManagmentDatabase(
-            "controllSystem", <string>process.env.MONGODB_URI
-        );
+        process.on("SIGTERM", (): void => {
+            console.log("SIGTERM, uptime:", process.uptime());
+            server.close();
+        });
 
-        this.getApp().locals.dbm = dbm;
+        process.on("uncaughtException", (err: Error) => {
+            // handle the error safely
+            if (err.name === "MongoNetworkError") {
+                dbm.disconnect();
+                console.log("uncaughtException. uptime:", process.uptime());
+                console.log(err);
+            } else {
+                console.log(err);
+                console.log("exit error, uptime:", process.uptime());
+                process.exit(1);
+            }
+        });
+    }
 
+    public errorLogger(err: Error, req: Request, res: Response, next: NextFunction): void {
+        // set locals, only providing error in development
+        const today: Readonly<Date> = new Date();
+        const time: Readonly<string> = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+        const day: Readonly<string> = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
+        console.error(err.name);
+        if (!err.name) next();
+        else {
+            console.error(err.name);
+            next();
+        }
+        // if (err.name) console.error(`${err.name} / ${day}/${time}`);
+    }
+
+    public initJWT(dbm: Readonly<Database.ManagmentDatabase>): void {
         passport.use(
             new LocalStrategy(
                 {
@@ -142,7 +136,7 @@ class ServerRunner implements ServerRun {
         };
 
         passport.use(
-            new jwt.Strategy(jwtOptions, async function (payload: any, done: Function) {
+            new jwt.Strategy(jwtOptions, async function(payload: any, done: Function) {
                 await dbm.connection();
                 UserModel.findOne(payload.id, async (err: Error, user: any) => {
                     await dbm.disconnect();
@@ -176,18 +170,48 @@ class ServerRunner implements ServerRun {
                 done(err, null);
             });
         });
+    }
+
+    public start(): void {
+        const Main: Readonly<Function> = General.Main;
+        const TasksController: Readonly<Function> = Tasks.TasksController;
+
+        this.setApp(express());
+        this.getApp().disabled("x-powerd-by");
+        this.getApp().use(helmet());
+        this.getApp().use(express.urlencoded({ extended: true }));
+        this.getApp().use(express.json());
+        this.getApp().set("port", this.getPort());
+        const SessionStore = MongoStore(session);
+
+        this.getApp().use(
+            session({
+                secret: "jwtsecret",
+                saveUninitialized: true,
+                resave: true,
+                store: new SessionStore({
+                    url: <string>process.env.MONGODB_URI,
+                    collection: "sessions"
+                })
+            })
+        );
+        this.getApp().use(passport.initialize());
+        this.getApp().use(passport.session());
+        this.getApp().use(this.errorLogger);
+
+        const dbm: Readonly<Database.ManagmentDatabase> = new Database.ManagmentDatabase(
+            "controllSystem",
+            <string>process.env.MONGODB_URI
+        );
+
+        this.getApp().locals.dbm = dbm;
+        this.initJWT(dbm);
 
         const instanceRouter: Route = RouterInstance.Router.instance(this.getApp());
 
         const server: HttpServer = this.getApp().listen(this.getPort(), (): void => {
             console.log(`${chalk.yellow(`Worker ${process.pid}`)} ${chalk.green("started")}`);
             console.log(`Server or worker listen on ${chalk.blue.bold(this.port)}.`);
-        });
-
-        server.on("clientError", (err, socket) => {
-            console.log("clientError");
-            console.error(err);
-            socket.destroy();
         });
 
         /** initial entrypoint route */
@@ -197,29 +221,13 @@ class ServerRunner implements ServerRun {
         Chat.module(<App>this.getApp(), server);
 
         Utils.initControllers(
-            [
-                Main, TasksController
-            ],
-            this.getApp.bind(this), this.getRest.bind(this), this.isPrivateRoute.bind(this)
+            [Main, TasksController],
+            this.getApp.bind(this),
+            this.getRest.bind(this),
+            this.isPrivateRoute.bind(this)
         );
 
-        process.on("SIGTERM", (): void => {
-            console.log("SIGTERM, uptime:", process.uptime());
-            server.close();
-        });
-
-        process.on("uncaughtException", (err: Error) => {
-            // handle the error safely
-            if (err.name === "MongoNetworkError") {
-                dbm.disconnect();
-                console.log("uncaughtException");
-                console.log(err);
-            } else {
-                console.log(err);
-                console.log("exit error");
-                process.exit(1);
-            }
-        });
+        this.initErrorHandler(server, dbm);
     }
 }
 
