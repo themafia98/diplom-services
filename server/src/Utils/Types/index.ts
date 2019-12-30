@@ -3,7 +3,7 @@ import winston from "winston";
 export type collectionOperations = {
     get: Function;
     post: Function;
-    put: Function;
+    set: Function;
     delete: Function;
     update: Function;
     start: Function;
@@ -16,6 +16,7 @@ export type actionGet = {
 
 export type paramAction = {
     metadataSearch?: object,
+    body?: object,
     methodQuery?: string,
 }
 

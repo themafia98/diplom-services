@@ -103,6 +103,7 @@ class TaskModule extends React.PureComponent {
                 publicReducer: { status = null } = {},
                 onOpenPageWithData,
                 onLoadCurrentData,
+                rest,
                 setCurrentTab
             } = this.props;
 
@@ -135,6 +136,7 @@ class TaskModule extends React.PureComponent {
                         <TaskModuleList
                             key="taskList"
                             isBackground={isBackgroundTaskModuleAll}
+                            rest={rest}
                             visible={path === "taskModule_all"}
                             setCurrentTab={setCurrentTab}
                             height={heightController ? height - heightController : height}
@@ -148,6 +150,7 @@ class TaskModule extends React.PureComponent {
                     >
                         <TaskModuleMyList
                             key="myListTask"
+                            rest={rest}
                             isBackground={isBackgroundTaskModuleMyTasks}
                             visible={path === "taskModule_myTasks"}
                             setCurrentTab={setCurrentTab}
@@ -163,6 +166,7 @@ class TaskModule extends React.PureComponent {
                     >
                         <TaskModuleCalendar
                             key="calendarTaskModule"
+                            rest={rest}
                             isBackground={isBackgroundTaskModuleCalendar}
                             visible={path === "taskModule_сalendar"}
                             setCurrentTab={setCurrentTab}
@@ -178,6 +182,7 @@ class TaskModule extends React.PureComponent {
                     >
                         <CreateTask
                             key="createTask_module"
+                            rest={rest}
                             isBackground={isBackgroundTaskModuleCreateTask}
                             visible={path === "taskModule_createTask"}
                             height={heightController ? height - heightController : height}
@@ -192,6 +197,7 @@ class TaskModule extends React.PureComponent {
                     >
                         <TaskView
                             key={key}
+                            rest={rest}
                             isBackground={isBackgroundTaskViewModule}
                             visible={isViewTask}
                             height={heightController ? height - heightController : height}

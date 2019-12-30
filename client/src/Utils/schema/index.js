@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { TASK_SCHEMA, USER_SCHEMA, TASK_CONTROLL_JURNAL_SCHEMA, NEWS_SCHEMA } from "./const";
+import { TASK_SCHEMA, USER_SCHEMA, TASK_CONTROLL_JURNAL_SCHEMA, NEWS_SCHEMA, CREATE_TASK_SCHEMA } from "./const";
 
 /**
  * Schema
@@ -40,6 +40,19 @@ export const getValidateSchema = type => {
                 description: null,
                 modeAdd: "any"
             };
+        case CREATE_TASK_SCHEMA:
+            return {
+                editor: null,
+                date: null,
+                comments: null,
+                key: null,
+                status: null,
+                name: null,
+                priority: null,
+                author: null,
+                description: null,
+                modeAdd: "any"
+            }
         case TASK_CONTROLL_JURNAL_SCHEMA:
             return {
                 key: null,

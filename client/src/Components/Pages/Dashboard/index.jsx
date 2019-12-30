@@ -234,7 +234,7 @@ class Dashboard extends React.PureComponent {
     };
 
     installApp = event => {
-        Notification.requestPermission().then(function(result) {
+        Notification.requestPermission().then(function (result) {
             if (result === "granted") {
                 this.randomNotification();
             }
@@ -264,6 +264,7 @@ class Dashboard extends React.PureComponent {
         const {
             router: { actionTabs = [], currentActionTab, shouldUpdate = false } = {},
             router = {},
+            rest,
             onErrorRequstAction,
             onShoudUpdate,
             publicReducer = {},
@@ -309,6 +310,7 @@ class Dashboard extends React.PureComponent {
                             updateLoader={this.updateLoader}
                             onErrorRequstAction={onErrorRequstAction}
                             key="contentView"
+                            rest={rest}
                             path={currentActionTab}
                         />
                         <Modal

@@ -34,9 +34,9 @@ namespace Database {
                     this.setResponseParams({ POST: data });
                     return this.operations(collection);
                 },
-                put: (param: MetadataConfig = { methodQuery: "all" }): collectionOperations => {
+                set: (param: MetadataConfig = { methodQuery: "set_single" }): collectionOperations => {
                     const data = _.isEmpty(param) ? { collection } : { collection, param };
-                    this.setResponseParams({ PUT: data });
+                    this.setResponseParams({ SET: data });
                     return this.operations(collection);
                 },
                 delete: (param: MetadataConfig = { methodQuery: "all" }): collectionOperations => {

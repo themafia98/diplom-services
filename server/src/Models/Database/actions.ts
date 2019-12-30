@@ -104,6 +104,42 @@ namespace DatabaseActions {
                         default:
                             return null;
                     }
+                } else if (method && method.toLocaleUpperCase().trim() === "SET") {
+                    switch (methodQuery) {
+                        case "set_single": {
+                            if (collectionModel && !_.isEmpty(collectionModel)) {
+                                try {
+                                    const { body = {} } = <paramAction>param;;
+                                    return await (<any>collectionModel.create(body, (err: Error, data: Metadata) => {
+                                        counter += 1;
+                                        if (err) {
+                                            (<any>responseCollection)[method] = {
+                                                param,
+                                                metadata: null,
+                                                isError: true
+                                            };
+                                            if (counter === lengthActions) {
+                                                callback(
+                                                    new Error(`Invalid query. methodQuery: ${methodQuery}.`),
+                                                    null,
+                                                    param
+                                                );
+                                            }
+                                        } else (<any>responseCollection)[method] = { metadata: data, isCreate: true, param };
+
+                                        if (counter === lengthActions) callback(err, responseCollection);
+                                    }));
+                                } catch (err) {
+                                    if (counter === lengthActions) callback(err, null, param);
+                                }
+                            } else
+                                return void callback(
+                                    new Error(`Invalid model. methodQuery: ${methodQuery}.`),
+                                    null,
+                                    param
+                                );
+                        }
+                    }
                 } else return void callback(new Error(`Invalid method. methodQuery: ${methodQuery}.`), null, param);
             };
 

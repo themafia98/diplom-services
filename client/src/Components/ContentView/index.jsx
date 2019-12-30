@@ -91,7 +91,7 @@ class ContentView extends React.Component {
     };
 
     render() {
-        const { path, onErrorRequstAction, setCurrentTab, actionTabs, router, statusApp } = this.props;
+        const { path, onErrorRequstAction, setCurrentTab, actionTabs, router, statusApp, rest } = this.props;
         const { drawerView, key } = this.state;
 
         const isBackgroundMainModule = this.checkBackground("mainModule");
@@ -109,6 +109,7 @@ class ContentView extends React.Component {
                     <TabContainer isBackground={isBackgroundMainModule} visible={path === "mainModule"}>
                         <MainModule
                             visible={path === "mainModule"}
+                            rest={rest}
                             isBackground={isBackgroundMainModule}
                             onErrorRequstAction={onErrorRequstAction}
                             key="mainModule"
@@ -122,6 +123,7 @@ class ContentView extends React.Component {
                         <CabinetModule
                             visible={path === "cabinetModule"}
                             isBackground={isBackgroundCabinetModule}
+                            rest={rest}
                             onErrorRequstAction={onErrorRequstAction}
                             key="cabinet"
                         />
@@ -138,6 +140,7 @@ class ContentView extends React.Component {
                             onErrorRequstAction={onErrorRequstAction}
                             setCurrentTab={setCurrentTab}
                             key="taskModule"
+                            rest={rest}
                             path={path}
                         />
                     </TabContainer>
@@ -148,6 +151,7 @@ class ContentView extends React.Component {
                             onErrorRequstAction={onErrorRequstAction}
                             key="documentModule"
                             path={path}
+                            rest={rest}
                             statusApp={statusApp}
                         />
                     </TabContainer>
@@ -157,6 +161,7 @@ class ContentView extends React.Component {
                             actionTabs={actionTabs}
                             statusApp={statusApp}
                             router={router}
+                            rest={rest}
                             isBackground={isBackgroundContactModule}
                             onErrorRequstAction={onErrorRequstAction}
                             key="contact"
@@ -172,6 +177,7 @@ class ContentView extends React.Component {
                             isBackground={isBackgroundCustomersModule}
                             onErrorRequstAction={onErrorRequstAction}
                             actionTabs={actionTabs}
+                            rest={rest}
                             key="customers"
                             path={path}
                         />
@@ -182,6 +188,7 @@ class ContentView extends React.Component {
                             isBackground={isBackgroundSettingsModule}
                             onErrorRequstAction={onErrorRequstAction}
                             key="settings"
+                            rest={rest}
                             path={path}
                         />
                     </TabContainer>
@@ -191,6 +198,7 @@ class ContentView extends React.Component {
                             isBackground={isStatisticModule}
                             onErrorRequstAction={onErrorRequstAction}
                             key="statistic"
+                            rest={rest}
                             path={path}
                         />
                     </TabContainer>

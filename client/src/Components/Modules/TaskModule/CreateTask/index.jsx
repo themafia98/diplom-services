@@ -12,7 +12,7 @@ import File from "../../../File";
 import uuid from "uuid/v4";
 
 import { getSchema } from "../../../../Utils/index";
-import { TASK_SCHEMA } from "../../../../Utils/schema/const"; // delay
+import { CREATE_TASK_SCHEMA } from "../../../../Utils/schema/const";
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -150,12 +150,12 @@ class CreateTask extends React.PureComponent {
     };
 
     handlerCreateTask = event => {
-        const { firebase, statusApp = "", onLoadCurrentData } = this.props;
+        const { rest, statusApp = "", onLoadCurrentData } = this.props;
         if (!this.validation()) return;
         let keys = Object.keys(this.state.card);
         if (keys.every(key => _.isNull(this.state.card[key]))) return;
         const validHashCopy = [{ ...this.state.card }];
-        const validHash = validHashCopy.map(it => getSchema(TASK_SCHEMA, it, "no-strict")).filter(Boolean)[0];
+        const validHash = validHashCopy.map(it => getSchema(CREATE_TASK_SCHEMA, it, "no-strict")).filter(Boolean)[0];
         if (!validHash) return message.error("Не валидные данные.");
         const parseDateArray = [];
 
@@ -164,30 +164,20 @@ class CreateTask extends React.PureComponent {
         this.setState({ ...this.state, load: true });
 
         if (statusApp === "online") {
-            if (firebase)
-            firebase.db
-                .collection("tasks")
-                .doc()
-                .get()
-                .then(res => {
-                    firebase.db
-                        .collection("tasks")
-                        .doc()
-                        .set(validHash)
-                        .then(() =>
-                            this.setState(
-                                { ...this.state, card: { ...this.state.card, key: uuid() }, load: false },
-                                () => message.success(`Задача создана.`)
-                            )
-                        );
-                })
-                .catch(err => {
-                    if (/offline/gi.test(err.message)) {
-                        onLoadCurrentData({ path: "taskModule", storeLoad: "tasks" }).then(() => {
-                            this.offlineMode(validHash);
-                        });
-                    }
-                });
+            if (rest)
+                rest.sendRequest("/tasks/createTask", "POST", validHash, true)
+                    .then(() =>
+                        this.setState(
+                            { ...this.state, card: { ...this.state.card, key: uuid() }, load: false },
+                            () => message.success(`Задача создана.`))
+                    )
+                    .catch(err => {
+                        if (/offline/gi.test(err.message)) {
+                            onLoadCurrentData({ path: "taskModule", storeLoad: "tasks" }).then(() => {
+                                this.offlineMode(validHash);
+                            });
+                        }
+                    });
         } else if (statusApp === "offline") this.offlineMode(validHash);
     };
 
