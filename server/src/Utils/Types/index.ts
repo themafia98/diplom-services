@@ -1,4 +1,5 @@
 import winston from "winston";
+import { Response } from "express";
 
 export type collectionOperations = {
     get: Function;
@@ -15,15 +16,17 @@ export type actionGet = {
 };
 
 export type paramAction = {
-    metadataSearch?: object,
-    body?: object,
-    methodQuery?: string,
-}
+    metadataSearch?: object;
+    body?: object;
+    methodQuery?: string;
+};
 
 export type schemaConfig = {
-    name: string,
-    schemaType: string,
-}
+    name: string;
+    schemaType: string;
+};
+
+export type ResRequest = Promise<Response | void>;
 
 export type Decorator = <Function extends ClassDecorator>(target: object, propKey?: string) => void;
 
