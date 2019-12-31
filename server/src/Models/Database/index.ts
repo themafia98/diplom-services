@@ -55,9 +55,17 @@ namespace Database {
                 ): Promise<DocumentQuery<any, Document> | null> => {
                     const responseKeys = Object.keys(this.getResponseParams());
                     const responseBuilder = DatabaseActions.routeDatabaseActions();
+                    console.log("LENGTH:", responseKeys.length);
                     responseKeys.forEach(async method => {
                         const operation = this.getResponseParams()[method][method];
-                        await responseBuilder(operation, method, configSchema, callback, responseKeys.length);
+                        await responseBuilder(
+                            operation,
+                            method,
+                            configSchema,
+                            callback,
+                            responseKeys.length,
+                            this.clearResponseParams.bind(this)
+                        );
                     });
                 }
             };

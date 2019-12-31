@@ -99,3 +99,8 @@ export interface MetadataConfig {
     methodQuery: string;
     body?: object;
 }
+
+export interface Builder {
+    collection: string;
+    param: ResponseMetadata;
+}
