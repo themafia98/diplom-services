@@ -21,7 +21,7 @@ namespace DatabaseActions {
                 param = {}
             }): Promise<DocumentQuery<any, Document> | null | void> => {
                 const { methodQuery = "" } = <paramAction>param;
-                const collectionModel =
+                const collectionModel: any =
                     configSchema && !_.isEmpty(configSchema)
                         ? Utils.getModelByName(<string>configSchema["name"], <string>configSchema["schemaType"])
                         : null;
@@ -33,7 +33,7 @@ namespace DatabaseActions {
                         case "all": {
                             if (collectionModel && !_.isNull(collectionModel)) {
                                 try {
-                                    return await (<any>collectionModel.find({}, (err: Error, data: Metadata) => {
+                                    return await collectionModel.find({}, (err: Error, data: Metadata) => {
                                         counter += 1;
                                         if (err) {
                                             (<any>responseCollection)[method] = {
@@ -41,7 +41,7 @@ namespace DatabaseActions {
                                                 metadata: null,
                                                 isError: true
                                             };
-                                            if (counter === lengthActions) {
+                                            if (counter === lengthActions || lengthActions === 1) {
                                                 callback(
                                                     new Error(`Invalid query. methodQuery: ${methodQuery}.`),
                                                     null,
@@ -50,10 +50,14 @@ namespace DatabaseActions {
                                             }
                                         } else (<any>responseCollection)[method] = { metadata: data, param };
 
-                                        if (counter === lengthActions) callback(err, responseCollection);
-                                    }));
+                                        if (counter === lengthActions || lengthActions === 1) {
+                                            callback(err, responseCollection);
+                                        }
+                                    });
                                 } catch (err) {
-                                    if (counter === lengthActions) return void callback(err, null, param);
+                                    if (counter === lengthActions || lengthActions === 1) {
+                                        return void callback(err, null, param);
+                                    }
                                 }
                             } else
                                 return void callback(
@@ -71,7 +75,7 @@ namespace DatabaseActions {
                         case "delete_all": {
                             if (collectionModel && !_.isNull(collectionModel)) {
                                 try {
-                                    return await (<any>collectionModel.find({}, (err: Error, data: Metadata) => {
+                                    return await collectionModel.find({}, (err: Error, data: Metadata) => {
                                         counter += 1;
                                         if (err) {
                                             (<any>responseCollection)[method] = {
@@ -79,7 +83,7 @@ namespace DatabaseActions {
                                                 metadata: null,
                                                 isError: true
                                             };
-                                            if (counter === lengthActions) {
+                                            if (counter === lengthActions || lengthActions === 1) {
                                                 callback(
                                                     new Error(`Invalid query. methodQuery: ${methodQuery}.`),
                                                     null,
@@ -88,10 +92,14 @@ namespace DatabaseActions {
                                             }
                                         } else (<any>responseCollection)[method] = { metadata: data, param };
 
-                                        if (counter === lengthActions) callback(err, responseCollection);
-                                    }));
+                                        if (counter === lengthActions || lengthActions === 1) {
+                                            callback(err, responseCollection);
+                                        }
+                                    });
                                 } catch (err) {
-                                    if (counter === lengthActions) callback(err, null, param);
+                                    if (counter === lengthActions || lengthActions === 1) {
+                                        callback(err, null, param);
+                                    }
                                 }
                             } else
                                 return void callback(
@@ -110,7 +118,7 @@ namespace DatabaseActions {
                             if (collectionModel && !_.isEmpty(collectionModel)) {
                                 try {
                                     const { body = {} } = <paramAction>param;;
-                                    return await (<any>collectionModel.create(body, (err: Error, data: Metadata) => {
+                                    return await collectionModel.save(body, (err: Error) => {
                                         counter += 1;
                                         if (err) {
                                             (<any>responseCollection)[method] = {
@@ -118,17 +126,17 @@ namespace DatabaseActions {
                                                 metadata: null,
                                                 isError: true
                                             };
-                                            if (counter === lengthActions) {
+                                            if (counter === lengthActions || lengthActions === 1) {
                                                 callback(
                                                     new Error(`Invalid query. methodQuery: ${methodQuery}.`),
                                                     null,
                                                     param
                                                 );
                                             }
-                                        } else (<any>responseCollection)[method] = { metadata: data, isCreate: true, param };
+                                        } else (<any>responseCollection)[method] = { metadata: null, isCreate: true, param };
 
-                                        if (counter === lengthActions) callback(err, responseCollection);
-                                    }));
+                                        if (counter === lengthActions || lengthActions === 1) callback(err, responseCollection);
+                                    });
                                 } catch (err) {
                                     if (counter === lengthActions) callback(err, null, param);
                                 }
