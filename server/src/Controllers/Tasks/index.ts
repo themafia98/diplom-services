@@ -63,7 +63,8 @@ namespace Tasks {
             try {
                 const dbm = server.locals.dbm;
 
-                if (req.body && !_.isEmpty(req.body))
+                if (req.body && !_.isEmpty(req.body)) {
+                    await dbm.connection().catch((err: Error) => console.error(err));
                     dbm.collection("tasks")
                         .set({ methodQuery: "set_single", body: req.body })
                         .start(
@@ -92,6 +93,15 @@ namespace Tasks {
                                 });
                             }
                         );
+                } else if (!res.headersSent) {
+                    return res.json({
+                        action: "error",
+                        response: "Body empty",
+                        uptime: process.uptime(),
+                        responseTime: Utils.responseTime((<any>req).start),
+                        work: process.connected
+                    });
+                }
             } catch (err) {
                 console.log(err.message);
                 if (!res.headersSent) {
