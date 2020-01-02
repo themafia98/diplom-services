@@ -20,8 +20,10 @@ namespace System {
                     .start(
                         { name: "users", schemaType: "users" },
                         async (err: Error, data: Metadata, param: Object): Promise<Response> => {
+
                             const dataCopy: Metadata = <Metadata>{ ...data } || {};
                             await service.dbm.disconnect();
+
                             if (err) {
                                 return res.json({
                                     action: err.name,

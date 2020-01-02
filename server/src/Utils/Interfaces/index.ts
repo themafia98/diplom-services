@@ -100,8 +100,7 @@ export interface MetadataConfig {
     body?: object;
 }
 
-export interface BuilderData {
-    exitData: object,
+export interface BuilderData extends ResponseMetadata {
     err: object | null,
     data: object | null,
     param: object | null,

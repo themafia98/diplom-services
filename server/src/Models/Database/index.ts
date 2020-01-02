@@ -55,16 +55,16 @@ namespace Database {
                 ): Promise<DocumentQuery<any, Document> | null> => {
                     const responseKeys: Array<string> = Object.keys(this.getResponseParams());
                     const responseBuilder: Function = DatabaseActions.routeDatabaseActions();
-                    responseKeys.forEach(async (method, index) => {
+                    const paramsArray: Array<object> = [];
+                    responseKeys.forEach(async (method: any, index: number) => {
                         const operation: ResponseMetadata = this.getResponseParams()[method][method];
-
                         const build: BuilderData = await responseBuilder(operation, method, configSchema);
-                        const { exitData: { err = null, data = {}, param = {} } = {} } = <any>build || {};
-                        console.log("build:");
-                        console.log(build);
-                        if (responseKeys.length !== index + 1 && !_.isEmpty(build)) {
+                        const response = !_.isEmpty(build) ? build[method] || {} : {};
+                        const { err = null, param = {} } = response;
+                        if (responseKeys.length > 1) paramsArray[method] = param;
+                        if (responseKeys.length === index + 1) {
                             this.clearResponseParams();
-                            callback(err, data, param);
+                            callback(err, build, paramsArray.length ? paramsArray : param);
                         }
                     });
                 }

@@ -4,15 +4,13 @@ import _ from "lodash";
 import { actionGet, paramAction, schemaConfig, BuilderResponse } from "../../Utils/Types";
 import { Metadata, Builder, ResponseMetadata } from "../../Utils/Interfaces";
 import Utils from "../../Utils";
+import { response } from "express";
 
 namespace DatabaseActions {
     export const routeDatabaseActions = () => {
         const responseCollection: ResponseMetadata = {};
         return async (operation: Object, method: string, configSchema: schemaConfig): Promise<BuilderResponse | null> => {
-            const builderResponse = async ({ collection = "", param, exit = false, exitData }: Builder): BuilderResponse => {
-                console.log(exitData);
-                console.log(" <- exitdata");
-                if (exit) return { exitData, exit: true };
+            const builderResponse = async ({ collection = "", param }: Builder): BuilderResponse => {
 
                 const { methodQuery = "" } = <paramAction>param;
                 const collectionModel: any = configSchema && !_.isEmpty(configSchema)
@@ -23,110 +21,41 @@ namespace DatabaseActions {
                 (<paramAction>param).from = collection;
                 (<paramAction>param).method = method;
 
-                /** callbacks for mongodb response */
-                const createCallback = async (err: Error, doc: Document | null): BuilderResponse => {
-                    if (err) {
-                        console.error(err);
-                        responseCollection[method] = {
-                            param,
-                            metadata: null,
-                            isError: true
-                        };
-                        return builderResponse({
-                            exit: true,
-                            exitData: {
-                                err: new Error(`Invalid query. methodQuery: ${methodQuery}.`),
-                                data: null,
-                                param
-                            }
-                        });
-                    } else {
-                        responseCollection[method] = {
-                            metadata: doc,
-                            isCreate: true,
-                            param
-                        };
-                        return builderResponse({
-                            exit: true,
-                            exitData: {
-                                err,
-                                data: responseCollection,
-                                param,
-                            }
-                        });
-                    };
-                };
-
-                const findCallback = async (err: Error, data: Metadata | null): BuilderResponse => {
-                    if (err) {
-                        responseCollection[method] = {
-                            param,
-                            metadata: null,
-                            isError: true
-                        };
-
-                        return await builderResponse({
-                            exit: true,
-                            exitData: {
-                                err: new Error(`Invalid query. methodQuery: ${methodQuery}.`),
-                                data: null,
-                                param
-                            }
-                        });
-                    } else {
-                        responseCollection[method] = { metadata: data, param };
-                        return await builderResponse({
-                            exit: true,
-                            exitData: {
-                                err,
-                                data: responseCollection,
-                                param
-                            }
-                        });
-                    }
-                };
-
-                const deleteFindCallback = async (err: Error, data: Metadata | null) => {
-                    if (err) {
-                        responseCollection[method] = {
-                            param,
-                            metadata: null,
-                            isError: true
-                        };
-                        return await builderResponse({
-                            exit: true,
-                            exitData: {
-                                err: new Error(`Invalid query. methodQuery: ${methodQuery}.`),
-                                data: null,
-                                param
-                            }
-                        });
-
-                    } else {
-                        responseCollection[method] = { metadata: data, param };
-                        return await builderResponse({
-                            exit: true,
-                            exitData: {
-                                err,
-                                data: responseCollection,
-                                param
-                            }
-                        })
-                    }
-                };
-
-                /** ------------------------ */
                 if (method && method.toLocaleUpperCase().trim() === "GET") {
                     switch (methodQuery) {
                         case "all": {
                             if (collectionModel && !_.isNull(collectionModel)) {
                                 try {
-                                    return await collectionModel.find({}, findCallback);
+                                    let isError = false;
+                                    const data = await collectionModel.find({})
+                                        .catch((err: Error) => {
+                                            responseCollection[method] = { metadata: data, param, err };
+                                            isError = true;
+                                        });
+                                    if (!isError) responseCollection[method] = { metadata: data, param };
+                                    if (!data) {
+                                        responseCollection[method] = {
+                                            param,
+                                            metadata: null,
+                                            err: new Error(`Invalid query. methodQuery: ${methodQuery}.`),
+                                            isError: true
+                                        };
+                                    }
+
+                                    return responseCollection;
                                 } catch (err) {
-                                    return await findCallback(err, null);
+                                    responseCollection[method] = { metadata: null, param, err };
+                                    return responseCollection;
                                 }
-                            } else
-                                return await findCallback(new Error(`Invalid model. methodQuery: ${methodQuery}.`), null)
+                            } else {
+                                responseCollection[method] = {
+                                    param,
+                                    metadata: null,
+                                    err: new Error(`Invalid query. methodQuery: ${methodQuery}.`),
+                                    isError: true
+                                };
+                                return responseCollection;
+                            }
                         }
                         default:
                             return null;
@@ -136,12 +65,38 @@ namespace DatabaseActions {
                         case "delete_all": {
                             if (collectionModel && !_.isNull(collectionModel)) {
                                 try {
-                                    return await collectionModel.find({}, deleteFindCallback);
+                                    let isError = false;
+                                    const data = await collectionModel.find({})
+                                        .catch((err: Error) => {
+                                            responseCollection[method] = { metadata: data, param, err };
+                                            isError = true;
+                                        });
+                                    if (!data) {
+                                        console.error("No data for delete:", data);
+                                        responseCollection[method] = {
+                                            param,
+                                            metadata: null,
+                                            err: new Error(`Invalid query. methodQuery: ${methodQuery}.`),
+                                            isError: true
+                                        };
+                                    }
+
+                                    if (!isError) responseCollection[method] = { metadata: data, param };
+
+                                    return responseCollection;
                                 } catch (err) {
-                                    return await deleteFindCallback(err, null);
+                                    responseCollection[method] = { metadata: null, param, err };
+                                    return responseCollection;
                                 }
-                            } else
-                                return await deleteFindCallback(new Error(`Invalid model. methodQuery: ${methodQuery}.`), null);
+                            } else {
+                                responseCollection[method] = {
+                                    param,
+                                    metadata: null,
+                                    err: new Error(`Invalid query. methodQuery: ${methodQuery}.`),
+                                    isError: true
+                                };
+                                return responseCollection;
+                            }
                         }
                         default:
                             return null;
@@ -151,13 +106,40 @@ namespace DatabaseActions {
                         case "set_single": {
                             if (collectionModel && !_.isEmpty(collectionModel)) {
                                 try {
+                                    let isError = false;
                                     const { body = {} } = <paramAction>param;
-                                    return await collectionModel.create(body, createCallback);
+                                    const data = await collectionModel.create(body)
+                                        .catch((err: Error) => {
+                                            responseCollection[method] = { metadata: data, param, err };
+                                            isError = true;
+                                        });
+
+                                    if (!data) {
+                                        console.error("No data:", body);
+                                        responseCollection[method] = {
+                                            param,
+                                            metadata: null,
+                                            err: new Error(`Invalid query. methodQuery: ${methodQuery}.`),
+                                            isError: true
+                                        };
+                                    }
+
+                                    if (!isError) responseCollection[method] = { metadata: data, param };
+
+                                    return responseCollection;
                                 } catch (err) {
-                                    return await createCallback(err, null);
+                                    responseCollection[method] = { metadata: null, param, err };
+                                    return responseCollection;
                                 }
-                            } else
-                                return await createCallback(new Error(`Invalid model. methodQuery: ${methodQuery}.`), null);
+                            } else {
+                                responseCollection[method] = {
+                                    param,
+                                    metadata: null,
+                                    err: new Error(`Invalid query. methodQuery: ${methodQuery}.`),
+                                    isError: true
+                                };
+                                return responseCollection;
+                            }
                         }
                     }
                 }
