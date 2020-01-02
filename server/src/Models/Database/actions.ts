@@ -1,41 +1,30 @@
-import mongoose, { Schema, DocumentQuery, Document, Error } from "mongoose";
+import mongoose, { Model, DocumentQuery, Document, Error } from "mongoose";
 import _ from "lodash";
 
-import { actionGet, paramAction, schemaConfig } from "../../Utils/Types";
+import { actionGet, paramAction, schemaConfig, BuilderResponse } from "../../Utils/Types";
 import { Metadata, Builder, ResponseMetadata } from "../../Utils/Interfaces";
 import Utils from "../../Utils";
 
 namespace DatabaseActions {
     export const routeDatabaseActions = () => {
         const responseCollection: ResponseMetadata = {};
-        let counter = 0;
-        return async (
-            operation: Object,
-            method: string,
-            configSchema: schemaConfig,
-            callback: Function,
-            lengthActions: number,
-            clear: Function
-        ) => {
-            const builderResponse = async ({
-                collection = "",
-                param
-            }: Builder): Promise<DocumentQuery<any, Document> | null | void> => {
+        return async (operation: Object, method: string, configSchema: schemaConfig): Promise<BuilderResponse | null> => {
+            const builderResponse = async ({ collection = "", param, exit = false, exitData }: Builder): BuilderResponse => {
+                console.log(exitData);
+                console.log(" <- exitdata");
+                if (exit) return { exitData, exit: true };
+
                 const { methodQuery = "" } = <paramAction>param;
-                const collectionModel: any =
-                    configSchema && !_.isEmpty(configSchema)
-                        ? Utils.getModelByName(<string>configSchema["name"], <string>configSchema["schemaType"])
-                        : null;
+                const collectionModel: any = configSchema && !_.isEmpty(configSchema)
+                    ? Utils.getModelByName(<string>configSchema["name"], <string>configSchema["schemaType"])
+                    : null;
 
-                param.from = collection;
-                param.method = method;
+                /** response info */
+                (<paramAction>param).from = collection;
+                (<paramAction>param).method = method;
 
-                const createCallback = (err: Error, doc: Document) => {
-                    console.log("create mongodb");
-                    counter += 1;
-
-                    if (counter === lengthActions || lengthActions === 1) clear();
-
+                /** callbacks for mongodb response */
+                const createCallback = async (err: Error, doc: Document | null): BuilderResponse => {
                     if (err) {
                         console.error(err);
                         responseCollection[method] = {
@@ -43,24 +32,32 @@ namespace DatabaseActions {
                             metadata: null,
                             isError: true
                         };
-                        if (counter === lengthActions || lengthActions === 1) {
-                            callback(new Error(`Invalid query. methodQuery: ${methodQuery}.`), null, param);
-                        }
-                    } else
+                        return builderResponse({
+                            exit: true,
+                            exitData: {
+                                err: new Error(`Invalid query. methodQuery: ${methodQuery}.`),
+                                data: null,
+                                param
+                            }
+                        });
+                    } else {
                         responseCollection[method] = {
                             metadata: doc,
                             isCreate: true,
                             param
                         };
-
-                    if (counter === lengthActions || lengthActions === 1) callback(err, responseCollection);
+                        return builderResponse({
+                            exit: true,
+                            exitData: {
+                                err,
+                                data: responseCollection,
+                                param,
+                            }
+                        });
+                    };
                 };
 
-                const findCallback = (err: Error, data: Metadata) => {
-                    counter += 1;
-
-                    if (counter === lengthActions || lengthActions === 1) clear();
-
+                const findCallback = async (err: Error, data: Metadata | null): BuilderResponse => {
                     if (err) {
                         responseCollection[method] = {
                             param,
@@ -68,57 +65,68 @@ namespace DatabaseActions {
                             isError: true
                         };
 
-                        if (counter === lengthActions || lengthActions === 1) {
-                            callback(new Error(`Invalid query. methodQuery: ${methodQuery}.`), null, param);
-                        }
-                    } else responseCollection[method] = { metadata: data, param };
-
-                    if (counter === lengthActions || lengthActions === 1) {
-                        callback(err, responseCollection);
+                        return await builderResponse({
+                            exit: true,
+                            exitData: {
+                                err: new Error(`Invalid query. methodQuery: ${methodQuery}.`),
+                                data: null,
+                                param
+                            }
+                        });
+                    } else {
+                        responseCollection[method] = { metadata: data, param };
+                        return await builderResponse({
+                            exit: true,
+                            exitData: {
+                                err,
+                                data: responseCollection,
+                                param
+                            }
+                        });
                     }
                 };
 
-                const deleteFindCallback = (err: Error, data: Metadata) => {
-                    counter += 1;
-
-                    if (counter === lengthActions || lengthActions === 1) clear();
-
+                const deleteFindCallback = async (err: Error, data: Metadata | null) => {
                     if (err) {
                         responseCollection[method] = {
                             param,
                             metadata: null,
                             isError: true
                         };
-                        if (counter === lengthActions || lengthActions === 1) {
-                            callback(new Error(`Invalid query. methodQuery: ${methodQuery}.`), null, param);
-                        }
-                    } else responseCollection[method] = { metadata: data, param };
+                        return await builderResponse({
+                            exit: true,
+                            exitData: {
+                                err: new Error(`Invalid query. methodQuery: ${methodQuery}.`),
+                                data: null,
+                                param
+                            }
+                        });
 
-                    if (counter === lengthActions || lengthActions === 1) {
-                        callback(err, responseCollection);
+                    } else {
+                        responseCollection[method] = { metadata: data, param };
+                        return await builderResponse({
+                            exit: true,
+                            exitData: {
+                                err,
+                                data: responseCollection,
+                                param
+                            }
+                        })
                     }
                 };
 
                 /** ------------------------ */
-
                 if (method && method.toLocaleUpperCase().trim() === "GET") {
                     switch (methodQuery) {
                         case "all": {
                             if (collectionModel && !_.isNull(collectionModel)) {
                                 try {
-                                    if (counter !== lengthActions) return await collectionModel.find({}, findCallback);
+                                    return await collectionModel.find({}, findCallback);
                                 } catch (err) {
-                                    if (counter === lengthActions || lengthActions === 1) {
-                                        return void callback(err, null, param);
-                                    }
+                                    return await findCallback(err, null);
                                 }
                             } else
-                                return void callback(
-                                    new Error(`Invalid model. methodQuery: ${methodQuery}.`),
-                                    null,
-                                    param
-                                );
-                            break;
+                                return await findCallback(new Error(`Invalid model. methodQuery: ${methodQuery}.`), null)
                         }
                         default:
                             return null;
@@ -128,20 +136,12 @@ namespace DatabaseActions {
                         case "delete_all": {
                             if (collectionModel && !_.isNull(collectionModel)) {
                                 try {
-                                    if (counter !== lengthActions)
-                                        return await collectionModel.find({}, deleteFindCallback);
+                                    return await collectionModel.find({}, deleteFindCallback);
                                 } catch (err) {
-                                    if (counter === lengthActions || lengthActions === 1) {
-                                        callback(err, null, param);
-                                    }
+                                    return await deleteFindCallback(err, null);
                                 }
                             } else
-                                return void callback(
-                                    new Error(`Invalid model. methodQuery: ${methodQuery}.`),
-                                    null,
-                                    param
-                                );
-                            break;
+                                return await deleteFindCallback(new Error(`Invalid model. methodQuery: ${methodQuery}.`), null);
                         }
                         default:
                             return null;
@@ -152,24 +152,20 @@ namespace DatabaseActions {
                             if (collectionModel && !_.isEmpty(collectionModel)) {
                                 try {
                                     const { body = {} } = <paramAction>param;
-                                    if (counter !== lengthActions)
-                                        return await collectionModel.create(body, createCallback);
+                                    return await collectionModel.create(body, createCallback);
                                 } catch (err) {
-                                    if (counter === lengthActions || lengthActions === 1) callback(err, null, param);
+                                    return await createCallback(err, null);
                                 }
                             } else
-                                return void callback(
-                                    new Error(`Invalid model. methodQuery: ${methodQuery}.`),
-                                    null,
-                                    param
-                                );
+                                return await createCallback(new Error(`Invalid model. methodQuery: ${methodQuery}.`), null);
                         }
                     }
-                } else return void callback(new Error(`Invalid method. methodQuery: ${methodQuery}.`), null, param);
+                }
+                else return { err: new Error(`Invalid method. methodQuery: ${methodQuery}.`), param };
             };
 
             if (!_.isObject(operation) && !method) return null;
-            return builderResponse(<actionGet>operation);
+            return await builderResponse(<actionGet>operation);
         };
     };
 }

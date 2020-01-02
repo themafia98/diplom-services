@@ -100,7 +100,16 @@ export interface MetadataConfig {
     body?: object;
 }
 
+export interface BuilderData {
+    exitData: object,
+    err: object | null,
+    data: object | null,
+    param: object | null,
+}
+
 export interface Builder {
-    collection: string;
-    param: ResponseMetadata;
+    collection?: string;
+    exit?: boolean;
+    exitData?: object;
+    param?: ResponseMetadata;
 }

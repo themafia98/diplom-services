@@ -1,9 +1,9 @@
-import mongoose, { Mongoose, Schema, DocumentQuery, Document } from "mongoose";
+import mongoose, { Mongoose, DocumentQuery, Document } from "mongoose";
 import dotenv from "dotenv";
 import _ from "lodash";
 import DatabaseActions from "./actions";
 import { collectionOperations, schemaConfig } from "../../Utils/Types";
-import { Dbms, ResponseMetadata, MetadataConfig } from "../../Utils/Interfaces";
+import { Dbms, ResponseMetadata, MetadataConfig, BuilderData } from "../../Utils/Interfaces";
 
 namespace Database {
     dotenv.config();
@@ -53,22 +53,22 @@ namespace Database {
                     configSchema: schemaConfig,
                     callback: Function
                 ): Promise<DocumentQuery<any, Document> | null> => {
-                    const responseKeys = Object.keys(this.getResponseParams());
-                    const responseBuilder = DatabaseActions.routeDatabaseActions();
-                    console.log("LENGTH:", responseKeys.length);
-                    responseKeys.forEach(async method => {
-                        const operation = this.getResponseParams()[method][method];
-                        await responseBuilder(
-                            operation,
-                            method,
-                            configSchema,
-                            callback,
-                            responseKeys.length,
-                            this.clearResponseParams.bind(this)
-                        );
+                    const responseKeys: Array<string> = Object.keys(this.getResponseParams());
+                    const responseBuilder: Function = DatabaseActions.routeDatabaseActions();
+                    responseKeys.forEach(async (method, index) => {
+                        const operation: ResponseMetadata = this.getResponseParams()[method][method];
+
+                        const build: BuilderData = await responseBuilder(operation, method, configSchema);
+                        const { exitData: { err = null, data = {}, param = {} } = {} } = <any>build || {};
+                        console.log("build:");
+                        console.log(build);
+                        if (responseKeys.length !== index + 1 && !_.isEmpty(build)) {
+                            this.clearResponseParams();
+                            callback(err, data, param);
+                        }
                     });
                 }
-            };
+            }
         }
 
         public get db() {
