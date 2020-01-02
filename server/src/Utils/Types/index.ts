@@ -4,7 +4,6 @@ import { Response } from "express";
 
 export type collectionOperations = {
     get: Function;
-    post: Function;
     set: Function;
     delete: Function;
     update: Function;

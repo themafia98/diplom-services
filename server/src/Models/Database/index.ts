@@ -29,11 +29,6 @@ namespace Database {
                     this.setResponseParams({ GET: data });
                     return this.operations(collection);
                 },
-                post: (param: MetadataConfig = { methodQuery: "all" }): collectionOperations => {
-                    const data = _.isEmpty(param) ? { collection } : { collection, param };
-                    this.setResponseParams({ POST: data });
-                    return this.operations(collection);
-                },
                 set: (param: MetadataConfig = { methodQuery: "set_single" }): collectionOperations => {
                     const data = _.isEmpty(param) ? { collection } : { collection, param };
                     this.setResponseParams({ SET: data });
