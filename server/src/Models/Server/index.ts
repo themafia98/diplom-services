@@ -82,11 +82,11 @@ class ServerRunner implements ServerRun {
         process.on("uncaughtException", (err: Error) => {
             // handle the error safely
             if (err.name === "MongoNetworkError") {
-                dbm.disconnect();
+                dbm.disconnect().catch((err: Error) => console.error(err));
                 console.log("uncaughtException. uptime:", process.uptime());
-                console.log(err);
+                console.error(err);
             } else {
-                console.log(err);
+                console.error(err);
                 console.log("exit error, uptime:", process.uptime());
                 process.exit(1);
             }
@@ -117,7 +117,7 @@ class ServerRunner implements ServerRun {
                 async (email: string, password: string, done: Function) => {
                     await dbm.connection();
                     UserModel.findOne({ email }, async (err: Error, user: any) => {
-                        await dbm.disconnect();
+                        await dbm.disconnect().catch((err: Error) => console.error(err));
                         if (err) return done(err);
                         else if (!user || !user.checkPassword(password)) {
                             return done(null, false, {
@@ -137,10 +137,10 @@ class ServerRunner implements ServerRun {
         };
 
         passport.use(
-            new jwt.Strategy(jwtOptions, async function(payload: any, done: Function) {
+            new jwt.Strategy(jwtOptions, async function (payload: any, done: Function) {
                 await dbm.connection();
                 UserModel.findOne(payload.id, async (err: Error, user: any) => {
-                    await dbm.disconnect();
+                    await dbm.disconnect().catch((err: Error) => console.error(err));
 
                     if (err) {
                         return done(err);
@@ -165,7 +165,7 @@ class ServerRunner implements ServerRun {
                     console.log(err);
                     console.log(user);
                 }
-                await dbm.disconnect();
+                await dbm.disconnect().catch((err: Error) => console.error(err));
                 done(err, user);
             }).catch(err => {
                 done(err, null);

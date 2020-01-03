@@ -81,6 +81,7 @@ namespace Database {
                     this.getConnectionString(),
                     {
                         useNewUrlParser: true,
+                        useCreateIndex: true,
                         useUnifiedTopology: true
                     },
                     err => {

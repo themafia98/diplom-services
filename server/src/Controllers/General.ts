@@ -24,14 +24,18 @@ namespace General {
                 const service = server.locals;
                 service.dbm.connection().then(async () => {
                     await UserModel.create({ ...req.body, accept: true, rules: "full" }, async (err: Error) => {
-                        await service.dbm.disconnect();
-                        console.error(err);
-                        if (err) return void res.sendStatus(400);
+                        await service.dbm.disconnect().catch((err: Error) => console.error(err));
+                        if (err) {
+                            console.error(err);
+                            return void res.sendStatus(400);
+                        }
+
                         return void res.sendStatus(200);
                     });
                 });
             } catch (err) {
-                return void res.sendStatus(400);
+                console.error(err);
+                if (!res.headersSent) return void res.sendStatus(400);
             }
         }
 
@@ -52,6 +56,9 @@ namespace General {
                             console.error(err);
                             return res.status(503).send("Ошибка авторизации.");
                         });
+
+                        if (res.headersSent) return;
+
                         if (!isValidPassword) {
                             return res.status(401).send("Неверные данные для авторизации.");
                         }
@@ -64,14 +71,15 @@ namespace General {
                         });
                     } catch (err) {
                         console.error(err);
-                        return res.status(503).send("Ошибка авторизации.");
+                        if (!res.headersSent)
+                            return res.status(503).send("Ошибка авторизации.");
                     }
                 }
             )(req, res, next);
         }
 
         @Post({ path: "/userload", private: true })
-        public async userload(req: Request, res: Response) {
+        public async userload(req: Request, res: Response): Promise<Response> {
             if (req.user) return res.json({ user: (<any>req).user.toAuthJSON() });
             else {
                 res.clearCookie("connect.sid");
@@ -80,8 +88,8 @@ namespace General {
         }
 
         @Delete({ path: "/logout", private: true })
-        public async logout(req: Request, res: Response): Promise<void> {
-            req.session.destroy((err: Error) => {
+        public async logout(req: Request, res: Response): Promise<Response> {
+            return await req.session.destroy((err: Error): Response => {
                 if (err) console.error(err);
                 <any>req.logOut(); // passportjs logout
                 res.clearCookie("connect.sid");

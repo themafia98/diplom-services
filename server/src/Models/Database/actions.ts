@@ -1,10 +1,9 @@
-import mongoose, { Model, DocumentQuery, Document, Error } from "mongoose";
+import { Error } from "mongoose";
 import _ from "lodash";
 
 import { actionGet, paramAction, schemaConfig, BuilderResponse } from "../../Utils/Types";
-import { Metadata, Builder, ResponseMetadata } from "../../Utils/Interfaces";
+import { Builder, ResponseMetadata } from "../../Utils/Interfaces";
 import Utils from "../../Utils";
-import { response } from "express";
 
 namespace DatabaseActions {
     export const routeDatabaseActions = () => {

@@ -22,7 +22,7 @@ namespace System {
                         async (err: Error, data: Metadata, param: Object): Promise<Response> => {
 
                             const dataCopy: Metadata = <Metadata>{ ...data } || {};
-                            await service.dbm.disconnect();
+                            await service.dbm.disconnect().catch((err: Error) => console.error(err));
 
                             if (err) {
                                 return res.json({

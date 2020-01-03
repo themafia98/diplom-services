@@ -23,9 +23,7 @@ namespace Tasks {
                     .start(
                         { name: "tasks", schemaType: "task" },
                         async (err: Error, data: any, param: object): Promise<Response> => {
-                            await service.dbm.disconnect().catch((err: Error) => {
-                                console.error(err);
-                            });
+                            await service.dbm.disconnect().catch((err: Error) => console.error(err));
                             if (err) {
                                 return res.json({
                                     action: err.name,
@@ -71,9 +69,7 @@ namespace Tasks {
                         .start(
                             { name: "tasks", schemaType: "task" },
                             async (err: Error, data: any, param: object): Promise<Response> => {
-                                await dbm.disconnect().catch((err: Error) => {
-                                    console.error(err);
-                                });
+                                await dbm.disconnect().catch((err: Error) => console.error(err));
                                 if (err) {
                                     return res.json({
                                         action: err.name,
@@ -129,9 +125,7 @@ namespace Tasks {
                         .start(
                             { name: "tasks", schemaType: "task" },
                             async (err: Error, data: any, param: object): Promise<Response> => {
-                                await dbm.disconnect().catch((err: Error) => {
-                                    console.error(err);
-                                });
+                                await dbm.disconnect().catch((err: Error) => console.error(err));
                                 if (err) {
                                     return res.json({
                                         action: err.name,
