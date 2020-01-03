@@ -1,7 +1,8 @@
-import { Response, NextFunction, Application } from "express";
+import { Response, NextFunction } from "express";
 import _ from "lodash";
 import passport from "passport";
 import { UserModel } from "../Models/Database/Schema";
+import { ResRequest } from '../Utils/Types';
 import { Request, App, BodyLogin } from "../Utils/Interfaces";
 
 import Decorators from "../Decorators";
@@ -18,24 +19,28 @@ namespace General {
         }
 
         @Post({ path: "/reg", private: false })
-        public async reg(req: Request, res: Response, next: NextFunction, server: App): Promise<void> {
+        public async reg(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
             try {
                 if (!req.body || (req.body && _.isEmpty(req.body))) throw new Error("Invalid auth data");
                 const service = server.locals;
-                service.dbm.connection().then(async () => {
-                    await UserModel.create({ ...req.body, accept: true, rules: "full" }, async (err: Error) => {
+                await service.dbm.connection().catch((err: Error): void | Response => {
+                    console.error(err);
+                    if (!res.headersSent) return res.sendStatus(503);
+                });
+                if (!res.headersSent)
+                    await UserModel.create({ ...req.body, accept: true, rules: "full" }, async (err: Error): ResRequest => {
                         await service.dbm.disconnect().catch((err: Error) => console.error(err));
                         if (err) {
                             console.error(err);
-                            return void res.sendStatus(400);
+                            return res.sendStatus(400);
                         }
-
-                        return void res.sendStatus(200);
+                        if (!res.headersSent)
+                            return res.sendStatus(200);
                     });
-                });
+
             } catch (err) {
                 console.error(err);
-                if (!res.headersSent) return void res.sendStatus(400);
+                if (!res.headersSent) return res.sendStatus(400);
             }
         }
 
@@ -45,14 +50,14 @@ namespace General {
             if (!body || (body && _.isEmpty(body))) return void res.sendStatus(503);
             return await passport.authenticate(
                 "local",
-                async (err: Error, user: any): Promise<Response | void> => {
+                async (err: Error, user: any): ResRequest => {
                     try {
                         if (!user || err) {
                             return res.status(401).send("Пользователь не найден, проверьте введеные данные.");
                         }
                         const { password = "" } = body;
 
-                        const isValidPassword = await user.checkPassword(password).catch((err: Error) => {
+                        const isValidPassword = await user.checkPassword(password).catch((err: Error): Response => {
                             console.error(err);
                             return res.status(503).send("Ошибка авторизации.");
                         });
@@ -63,7 +68,7 @@ namespace General {
                             return res.status(401).send("Неверные данные для авторизации.");
                         }
                         user.token = user.generateJWT();
-                        req.login(user, (err: Error) => {
+                        req.login(user, (err: Error): Response => {
                             if (err) {
                                 res.status(404).send(err.message);
                             }
