@@ -18,6 +18,8 @@ export type actionGet = {
 export type paramAction = {
     from?: string;
     method?: string;
+    updateField?: object | undefined;
+    id?: object | undefined;
     metadataSearch?: object;
     body?: object;
     methodQuery?: string;

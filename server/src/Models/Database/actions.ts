@@ -141,6 +141,58 @@ namespace DatabaseActions {
                             }
                         }
                     }
+                } else if (method && method.toLocaleUpperCase().trim() === "UPDATE") {
+                    switch (methodQuery) {
+                        case "set_single": {
+                            if (collectionModel && !_.isEmpty(collectionModel)) {
+                                try {
+                                    let isError = false;
+                                    const { body } = <paramAction>param;
+                                    const isDescription = body && (<any>body).updateField ?
+                                        (<any>body).updateField['type'] === "description" : null;
+                                    const query = body && (<any>body).id ? (<any>body).id : null;
+                                    if (!isDescription) throw new Error("Types erro task action");
+
+                                    const conifgUpdate = isDescription ? {
+                                        description: (<any>body).updateField["description"]
+                                    } : null;
+
+                                    const data = await collectionModel.update(query, {
+                                        conifgUpdate
+                                    })
+                                        .catch((err: Error) => {
+                                            responseCollection[method] = { metadata: data, param, err };
+                                            isError = true;
+                                        });
+
+                                    if (!data) {
+                                        console.error("No data update:", body);
+                                        responseCollection[method] = {
+                                            param,
+                                            metadata: null,
+                                            err: new Error(`Invalid query. methodQuery: ${methodQuery}.`),
+                                            isError: true
+                                        };
+                                    }
+
+                                    if (!isError) responseCollection[method] = { metadata: data, param };
+
+                                    return responseCollection;
+                                } catch (err) {
+                                    responseCollection[method] = { metadata: null, param, err };
+                                    return responseCollection;
+                                }
+                            } else {
+                                responseCollection[method] = {
+                                    param,
+                                    metadata: null,
+                                    err: new Error(`Invalid query. methodQuery: ${methodQuery}.`),
+                                    isError: true
+                                };
+                                return responseCollection;
+                            }
+                        }
+                    }
                 }
                 else return { err: new Error(`Invalid method. methodQuery: ${methodQuery}.`), param };
             };

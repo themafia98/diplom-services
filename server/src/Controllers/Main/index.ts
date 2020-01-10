@@ -13,14 +13,15 @@ namespace System {
         async getUsersList(req: Request, res: Response, next: NextFunction, server: App): Promise<Response | void> {
             try {
                 const service = server.locals;
-                await service.dbm.connection();
+                const connect = await service.dbm.connection();
+                if (!connect) throw new Error("Bad connect");
                 service.dbm
                     .collection("users")
                     .get({ methodQuery: "all" })
                     .start(
                         { name: "users", schemaType: "users" },
                         async (err: Error, data: Metadata, param: Object): Promise<Response> => {
-
+                            if (!data) throw new Error("No data");
                             const dataCopy: Metadata = <Metadata>{ ...data } || {};
                             await service.dbm.disconnect().catch((err: Error) => console.error(err));
 
@@ -58,6 +59,15 @@ namespace System {
                     );
             } catch (err) {
                 console.error(err);
+                if (!res.headersSent) {
+                    return res.json({
+                        action: err.name,
+                        response: null,
+                        uptime: process.uptime(),
+                        responseTime: Utils.responseTime((<any>req).start),
+                        work: process.connected
+                    });
+                }
             }
         }
     }

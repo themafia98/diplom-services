@@ -16,15 +16,37 @@ namespace Tasks {
         public async getList(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
             try {
                 const service = server.locals;
-                await service.dbm.connection();
+                const connect = await service.dbm.connection();
+                if (!connect) throw new Error("Bad connect");
+
                 service.dbm
                     .collection("tasks")
                     .get({ methodQuery: "all" })
                     .start(
                         { name: "tasks", schemaType: "task" },
                         async (err: Error, data: any, param: object): Promise<Response> => {
-                            await service.dbm.disconnect().catch((err: Error) => console.error(err));
-                            if (err) {
+                            try {
+                                const connect = await service.dbm.disconnect();
+                                if (!connect) throw new Error("Bad connect");
+                                if (err) {
+                                    return res.json({
+                                        action: err.name,
+                                        response: { param, metadata: err.message },
+                                        uptime: process.uptime(),
+                                        responseTime: Utils.responseTime((<any>req).start),
+                                        work: process.connected
+                                    });
+                                }
+
+                                return res.json({
+                                    action: "done",
+                                    response: { param, ...data },
+                                    uptime: process.uptime(),
+                                    responseTime: Utils.responseTime((<any>req).start),
+                                    work: process.connected
+                                });
+                            } catch (err) {
+                                console.error(err);
                                 return res.json({
                                     action: err.name,
                                     response: { param, metadata: err.message },
@@ -33,14 +55,6 @@ namespace Tasks {
                                     work: process.connected
                                 });
                             }
-
-                            return res.json({
-                                action: "done",
-                                response: { param, ...data },
-                                uptime: process.uptime(),
-                                responseTime: Utils.responseTime((<any>req).start),
-                                work: process.connected
-                            });
                         }
                     );
             } catch (err) {
@@ -113,15 +127,20 @@ namespace Tasks {
             }
         }
 
-        @Post({ path: "/editTask", private: true })
+        @Post({ path: "/editTask/description", private: true })
         public async editTask(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
             try {
                 const dbm = server.locals.dbm;
 
                 if (req.body && !_.isEmpty(req.body)) {
+                    const { idTask: id = null, description = "" } = req.body;
                     await dbm.connection().catch((err: Error) => console.error(err));
                     dbm.collection("tasks")
-                        .update({ methodQuery: "update_single", body: req.body })
+                        .update({
+                            methodQuery: "update_single", body: {
+                                updateField: { type: "description", description }, id
+                            }
+                        })
                         .start(
                             { name: "tasks", schemaType: "task" },
                             async (err: Error, data: any, param: object): Promise<Response> => {

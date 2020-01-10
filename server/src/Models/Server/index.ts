@@ -115,18 +115,24 @@ class ServerRunner implements ServerRun {
                     passwordField: "password"
                 },
                 async (email: string, password: string, done: Function) => {
-                    await dbm.connection();
-                    UserModel.findOne({ email }, async (err: Error, user: any) => {
-                        await dbm.disconnect().catch((err: Error) => console.error(err));
-                        if (err) return done(err);
-                        else if (!user || !user.checkPassword(password)) {
-                            return done(null, false, {
-                                message: "Нет такого пользователя или пароль неверен."
-                            });
-                        } else {
-                            return done(null, user);
-                        }
-                    });
+                    try {
+                        const connect = await dbm.connection();
+                        if (!connect) throw new Error("Bad connect");
+                        UserModel.findOne({ email }, async (err: Error, user: any) => {
+                            await dbm.disconnect().catch((err: Error) => console.error(err));
+                            if (err) return done(err);
+                            else if (!user || !user.checkPassword(password)) {
+                                return done(null, false, {
+                                    message: "Нет такого пользователя или пароль неверен."
+                                });
+                            } else {
+                                return done(null, user);
+                            }
+                        });
+                    } catch (err) {
+                        console.error(err);
+                        return done(err);
+                    }
                 }
             )
         );
@@ -138,19 +144,24 @@ class ServerRunner implements ServerRun {
 
         passport.use(
             new jwt.Strategy(jwtOptions, async function (payload: any, done: Function) {
-                await dbm.connection();
-                UserModel.findOne(payload.id, async (err: Error, user: any) => {
-                    await dbm.disconnect().catch((err: Error) => console.error(err));
+                try {
+                    const connect = await dbm.connection();
+                    if (!connect) throw new Error("bad connection");
+                    UserModel.findOne(payload.id, async (err: Error, user: any) => {
+                        await dbm.disconnect().catch((err: Error) => console.error(err));
 
-                    if (err) {
-                        return done(err);
-                    }
-                    if (user) {
-                        done(null, user);
-                    } else {
-                        done(null, false);
-                    }
-                });
+                        if (err) {
+                            return done(err);
+                        }
+                        if (user) {
+                            done(null, user);
+                        } else {
+                            done(null, false);
+                        }
+                    });
+                } catch (err) {
+                    return done(err);
+                }
             })
         );
 
@@ -159,17 +170,23 @@ class ServerRunner implements ServerRun {
         });
 
         passport.deserializeUser(async (id: string | number, done: Function) => {
-            await dbm.connection();
-            await UserModel.findById(id, async (err: Error, user: any) => {
-                if (err) {
-                    console.log(err);
-                    console.log(user);
-                }
-                await dbm.disconnect().catch((err: Error) => console.error(err));
-                done(err, user);
-            }).catch(err => {
-                done(err, null);
-            });
+            try {
+                const connect = await dbm.connection();
+                if (!connect) throw new Error("Bad connect");
+                await UserModel.findById(id, async (err: Error, user: any) => {
+                    if (err) {
+                        console.log(err);
+                        console.log(user);
+                    }
+                    await dbm.disconnect().catch((err: Error) => console.error(err));
+                    done(err, user);
+                }).catch(err => {
+                    done(err, null);
+                });
+            } catch (err) {
+                console.error(err);
+                return done(err);
+            }
         });
     }
 
