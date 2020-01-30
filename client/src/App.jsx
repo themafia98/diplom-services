@@ -55,7 +55,7 @@ class App extends React.Component {
 
                     const actionTabsCopy = [...actionTabs];
                     const isFind = actionTabsCopy.findIndex(tab => tab === path) !== -1;
-
+                    debugger;
                     const udata = Object.keys(res.data["user"]).reduce((accumulator, key) => {
                         if (key !== "token") {
                             accumulator[key] = res.data["user"][key];

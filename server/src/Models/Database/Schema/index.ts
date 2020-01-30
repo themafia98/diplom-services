@@ -11,6 +11,8 @@ const userSchema = new Schema(
             dropDups: true
         },
         passwordHash: { type: String, default: "" },
+        summary: { type: String, default: "" },
+        phone: { type: String, default: "" },
         departament: String,
         displayName: String,
         position: String,
@@ -61,7 +63,9 @@ userSchema.methods.toAuthJSON = function () {
         _id: this._id,
         email: this.email,
         position: this.posotion,
+        displayName: this.displayName,
         departament: this.departament,
+        phone: this.phone,
         rules: this.rules,
         accept: this.accept,
         token: this.generateJWT()
