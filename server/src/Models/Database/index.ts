@@ -1,4 +1,4 @@
-import mongoose, { Mongoose, mongo } from "mongoose";
+import mongoose, { Mongoose, Connection } from "mongoose";
 import dotenv from "dotenv";
 import _ from "lodash";
 
@@ -9,7 +9,7 @@ namespace Database {
     export class ManagmentDatabase implements Dbms {
         private dbClient: string;
         private connectionString: string;
-        private connect: Mongoose | undefined;
+        private connect: Promise<typeof mongoose>;
 
         public status: any = null;
 
@@ -19,7 +19,7 @@ namespace Database {
             this.dbClient = db;
             this.connectionString = connectionString;
 
-            mongoose.connect(
+            this.connect = mongoose.connect(
                 connectionString,
                 {
                     useNewUrlParser: true,
@@ -41,27 +41,29 @@ namespace Database {
             return this.connectionString;
         }
 
-        public async connection(): Promise<any> {
+        public async connection(): Promise<Connection | typeof mongoose> {
             try {
                 const status = mongoose.connection.readyState;
                 console.log("status mongoose connect:", status);
                 return mongoose.connection;
-
-                return this.connect;
             } catch (err) {
                 return this.connect;
             }
         }
 
-        public async disconnect(): Promise<null | Mongoose> {
-            if (this.getConnect()) {
-                await this.getConnect().disconnect();
-                return <Mongoose>this.getConnect();
-            } else return null;
+        public async disconnect(): Promise<typeof mongoose | null> {
+            try {
+                const connect = this.getConnect();
+                (await connect).disconnect();
+                return this.getConnect();
+            } catch (err) {
+                console.error("Disconnect error:", err);
+                return null;
+            }
         }
 
-        public getConnect(): Mongoose {
-            return <Mongoose>this.connect;
+        public getConnect(): Promise<typeof mongoose> {
+            return this.connect;
         }
 
     }

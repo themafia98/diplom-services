@@ -1,6 +1,6 @@
 import { Application, Router as RouteExpress, Request as RequestExpress, Response, NextFunction } from "express";
 import { collectionOperations } from "../Types";
-import { Mongoose } from "mongoose";
+import mongoose, { Mongoose, Connection } from "mongoose";
 
 export interface ServerRun {
     isPrivateRoute(req: Request, res: Response, next: NextFunction): Response | void;
@@ -25,8 +25,8 @@ export interface Route {
 
 export interface Dbms {
     db: string;
-    getConnect(): Mongoose | null;
-    connection(): Promise<void | Mongoose>;
+    getConnect(): Promise<typeof mongoose | null>;
+    connection(): Promise<Connection | typeof mongoose>;
     disconnect(): Promise<null | Mongoose>;
 }
 
