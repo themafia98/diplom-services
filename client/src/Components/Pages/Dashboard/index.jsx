@@ -269,6 +269,7 @@ class Dashboard extends React.PureComponent {
             onShoudUpdate,
             publicReducer = {},
             firstConnect = false,
+            udata = {},
             setCurrentTab
         } = this.props;
 
@@ -302,6 +303,7 @@ class Dashboard extends React.PureComponent {
                         <ContentView
                             dashboardStrem={this.dashboardStrem}
                             actionTabs={actionTabs}
+                            udata={udata}
                             shouldUpdate={shouldUpdate}
                             router={router}
                             statusApp={publicReducer.status}
@@ -339,11 +341,12 @@ class Dashboard extends React.PureComponent {
 }
 
 const mapStateToProps = state => {
-    const { firstConnect = false } = state.publicReducer;
+    const { firstConnect = false, udata = {} } = state.publicReducer;
     return {
         router: { ...state.router },
         publicReducer: state.publicReducer,
-        firstConnect
+        firstConnect,
+        udata
     };
 };
 

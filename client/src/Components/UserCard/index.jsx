@@ -8,7 +8,7 @@ class UserCard extends React.Component {
     };
 
     render() {
-        const data = { mail: true, online: true, email: "admin@admin.com", phone: "+37529554433" };
+        const { udata = {} } = this.props;
         const isMine = true;
         const { cdShowModal } = this.props;
         const menu = (
@@ -28,29 +28,47 @@ class UserCard extends React.Component {
                                 <Avatar className="userLogo" size={84} icon="user" />
                             </Dropdown>
                         ) : (
-                            <Avatar className="userLogo" size={84} icon="user" />
-                        )}
+                                <Avatar className="userLogo" size={84} icon="user" />
+                            )}
                         <div className="mainInformUser">
-                            <p className="name">Павел Петрович</p>
-                            <p className="position">Разработчик</p>
-                            {data.mail ? <Button className="controller" type="primary" icon="mail"></Button> : null}
-                            {data.online ? <Button className="controller" type="primary" icon="wechat"></Button> : null}
+                            <div className="mainInformUser__main">
+                                <p className="name">{udata.displayName ? udata.displayName : "Unknown"}</p>
+                                <p className="position">{udata.departament ? udata.departament : ""}</p>
+                            </div>
+                            <div className="mainInformUser__controllers">
+                                {udata.email ? (
+                                    <Button
+                                        title={udata.email}
+                                        className="controller"
+                                        type="primary"
+                                        icon="mail"
+                                    >
+                                    </Button>
+                                ) : null}
+                                {udata.isOnline ? (
+                                    <Button
+                                        className="controller"
+                                        type="primary"
+                                        icon="wechat"
+                                    >
+                                    </Button>
+                                ) : null}
+                            </div>
                         </div>
                     </div>
-                    <div className="col-6">
+                    <div className="col-6 summary_wrapper">
                         <p className="summary">
-                            My name Pavel Petrovich and I'm Frontend developer. I looking for job. I looking for job. I
-                            looking for job. I looking for job. I looking for job. I looking for job. I looking for job.
+                            {udata.summary ? udata.summary : ""}
                         </p>
                         <div className="contact">
-                            {data.mail ? (
+                            {udata.email ? (
                                 <div className="email">
-                                    <Icon type="mail" /> <span>{data.email}</span>
+                                    <Icon type="mail" /> <span>{udata.email}</span>
                                 </div>
                             ) : null}
-                            {data.phone ? (
+                            {udata.phone ? (
                                 <div className="phone">
-                                    <Icon type="phone" /> <span>{data.phone}</span>
+                                    <Icon type="phone" /> <span>{udata.phone}</span>
                                 </div>
                             ) : null}
                         </div>

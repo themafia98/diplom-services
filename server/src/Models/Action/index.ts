@@ -88,6 +88,16 @@ namespace Action {
                             }
                         }
 
+                        if (this.getActionType() === "update_single") {
+
+                            const model: Model<Document> | null = getModelByName("users", "user");
+                            console.log("Model:", model);
+                            if (!model) return;
+
+                            console.log("update:", actionParam);
+                            return await model.updateOne(actionParam, { $set: { isOnline: true } });
+                        }
+
                         break;
                     }
 

@@ -26,6 +26,9 @@
         }
 
         .mainInformUser {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             padding-top: 25px;
             padding-bottom: 20px;
             .name {
@@ -45,15 +48,22 @@
             }
         }
 
-        .summary {
-            font-size: 17px;
-            padding-top: 29px;
-            padding-right: 12px;
-            display: -webkit-box;
-            -webkit-line-clamp: 4;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            line-height: 1.2;
+        .summary_wrapper {
+            flex-direction: column;
+            display: flex;
+            word-break: break-word;
+            
+            .summary {
+                flex-grow: 1;
+                font-size: 17px;
+                padding-top: 29px;
+                padding-right: 12px;
+                display: -webkit-box;
+                -webkit-line-clamp: 4;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                line-height: 1.2;
+            }
         }
 
         .contact {

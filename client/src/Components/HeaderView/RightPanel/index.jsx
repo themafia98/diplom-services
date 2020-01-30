@@ -5,10 +5,10 @@ import UserPopup from "../../UserPopup";
 import NotificationPopup from "../../NotificationPopup";
 import Status from "./Status";
 
-const RightPanel = ({ onUpdate, onLogout, goCabinet, status, shouldUpdate }) => {
+const RightPanel = ({ onUpdate, onLogout, goCabinet, status, shouldUpdate, udata = {} }) => {
     return (
         <div className="headerControllers rightPanel">
-            <UserPopup goCabinet={goCabinet} />
+            <UserPopup udata={udata} goCabinet={goCabinet} />
             <div className="groupControllers">
                 <NotificationPopup />
                 <Updater onClick={onUpdate} additionalClassName="updaterDefault" />

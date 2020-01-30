@@ -34,7 +34,9 @@ class Output extends React.PureComponent {
         if (!_.isNull(widthChild) && !_.isNull(widthParent) && this.child && this.parent) {
             const childW = this.child.getBoundingClientRect().width;
             const parentW = this.parent.getBoundingClientRect().width;
+
             const showTooltipUpdate = childW > parentW;
+
             if (showTooltipUpdate !== showTooltip) {
                 return this.setState({
                     ...this.state,

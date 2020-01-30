@@ -51,7 +51,7 @@ class HeaderView extends React.PureComponent {
 
     renderTabs = items => {
         const { size = 160 } = this.state;
-        const { activeTabEUID = "mainModule", cbMenuTabHandler } = this.props;
+        const { activeTabEUID = "mainModule", cbMenuTabHandler, udata } = this.props;
 
         return (
             <Scrollbars>
@@ -79,12 +79,13 @@ class HeaderView extends React.PureComponent {
     };
 
     render() {
-        const { actionTabs = ["mainModule"], goCabinet, status, shouldUpdate, logout } = this.props;
+        const { actionTabs = ["mainModule"], goCabinet, status, shouldUpdate, logout, udata } = this.props;
 
         return (
             <Header>
                 {actionTabs ? this.renderTabs(actionTabs) : null}
                 <RightPanel
+                    udata={udata}
                     shouldUpdate={shouldUpdate}
                     status={status}
                     goCabinet={goCabinet}
@@ -97,12 +98,13 @@ class HeaderView extends React.PureComponent {
 }
 
 const mapStateTopProps = state => {
-    const { status = "online" } = state.publicReducer;
+    const { status = "online", udata = {} } = state.publicReducer;
     const { shouldUpdate = false } = state.router;
     return {
         tabArray: state.router.actionTabs,
         shouldUpdate,
-        status
+        status,
+        udata
     };
 };
 
