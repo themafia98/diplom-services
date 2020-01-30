@@ -26,7 +26,7 @@ namespace System {
 
                 const data: Document[] | null = await actionUserList.getActionData({});
 
-                service.dbm.disconnect().catch((err: Error) => console.error(err));
+                await service.dbm.disconnect().catch((err: Error) => console.error(err));
 
                 if (!data) {
                     params.status = "error";

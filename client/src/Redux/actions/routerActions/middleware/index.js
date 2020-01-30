@@ -31,8 +31,8 @@ export const loadCurrentData = ({
         await request
             .sendRequest(normalizeReqPath, methodRequst, { methodQuery }, true)
             .then(res => {
-                const method = res.config && res.config.method ? res.config.method.toUpperCase() : "GET";
-                const { data: { response: { [method]: { metadata = [], fromCache = false } } = {} } = {} } = res || {};
+
+                const { data: { response: { metadata = [], fromCache = false } = {} } = {} } = res || {};
                 const storeArray = [];
                 metadata.forEach((doc, index) => {
                     if (_.isNumber(index)) storeArray.push(doc);
@@ -50,30 +50,32 @@ export const loadCurrentData = ({
                     return dispatch(saveComponentStateAction({ [storeLoad]: copyStore, load: true, path: pathValid }));
                 }
 
-                const cursor = clientDB.getCursor(storeLoad);
+                // const cursor = clientDB.getCursor(storeLoad);
 
-                cursor.onsuccess = async event => {
-                    const {
-                        target: { result: cursor }
-                    } = event;
-                    if (!cursor) return await next(true);
+                // cursor.onsuccess = async event => {
+                //     const {
+                //         target: { result: cursor }
+                //     } = event;
+                //     if (!cursor) return await next(true);
 
-                    const index = copyStore.findIndex(
-                        it =>
-                            (it[primaryKey] || it["key"]) && (it[primaryKey] === cursor.key || it["key"] === cursor.key)
-                    );
-                    const iEmpty = index === -1;
-                    if (copyStore && iEmpty) {
-                        if (cursor.value.modeAdd === "offline") {
-                            const copy = { ...cursor.value, modeAdd: "online" };
-                            cursor.value.modeAdd = "online";
-                            undefiendCopyStore.push({ ...copy });
-                        }
-                    }
-                    cursor.continue();
-                };
+                //     const index = copyStore.findIndex(
+                //         it =>
+                //             (it[primaryKey] || it["key"]) && (it[primaryKey] === cursor.key || it["key"] === cursor.key)
+                //     );
+                //     const iEmpty = index === -1;
+                //     if (copyStore && iEmpty) {
+                //         if (cursor.value.modeAdd === "offline") {
+                //             const copy = { ...cursor.value, modeAdd: "online" };
+                //             cursor.value.modeAdd = "online";
+                //             undefiendCopyStore.push({ ...copy });
+                //         }
+                //     }
+                //     cursor.continue();
+                // };
+
 
                 const next = async (flag = false) => {
+                    debugger;
                     const schema =
                         storeLoad === "jurnalWork"
                             ? TASK_CONTROLL_JURNAL_SCHEMA
@@ -85,9 +87,9 @@ export const loadCurrentData = ({
 
                     let storeCopyValid = copyStore.map(it => getSchema(schema, it)).filter(Boolean);
 
-                    storeCopyValid.forEach(it => {
-                        clientDB.updateItem(storeLoad, it);
-                    });
+                    // storeCopyValid.forEach(it => {
+                    //     clientDB.updateItem(storeLoad, it);
+                    // });
 
                     const onAction = async () => {
                         if (requestError !== null) await dispatch(errorRequstAction(null));
@@ -97,7 +99,9 @@ export const loadCurrentData = ({
                         );
                     };
 
-                    if (flag && undefiendCopyStore.length) {
+
+
+                    if (flag && storeCopyValid.length) {
                         //if (firebase) {
                         // const items = firebase.db.collection(storeLoad);
                         //  const batch = firebase.db.batch();
@@ -111,6 +115,8 @@ export const loadCurrentData = ({
                         await onAction();
                     } else await onAction();
                 };
+
+                next(true);
             })
             .catch(error => {
                 if (error.status === 400) {

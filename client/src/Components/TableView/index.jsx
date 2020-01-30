@@ -39,6 +39,7 @@ class TableView extends React.Component {
         const { path: validPath = "", page = "", itemId = "" } = routeParser({ pageType: "moduleItem", path });
 
         if (prevProps.visible !== this.props.visible && page === "mainModule" && itemId === "table") {
+
             if (this.props.visible)
                 onLoadCurrentData({
                     path: validPath ? validPath : "",
@@ -115,25 +116,25 @@ class TableView extends React.Component {
                         </thead>
                         <tbody>
                             {currentData &&
-                            currentData.users &&
-                            ((currentData.users.length && currentData.load && !requestError) ||
-                                (currentData.users.length && !currentData.load && requestError) ||
-                                (currentData.mode && currentData.mode === "offlineLoading")) ? (
-                                this.getRowsTable(currentData.users)
-                            ) : (currentData && currentData.load) ||
-                              (currentData && !currentData.load && requestError) ? (
-                                <tr>
-                                    <td colSpan="5">
-                                        <Empty description={<span>Данных нету</span>} className="emptyTable" />
-                                    </td>
-                                </tr>
-                            ) : (
-                                <tr>
-                                    <td colSpan="5">
-                                        <Loader classNameSpiner="tableLoader" className="wrapperLoaderTable" />
-                                    </td>
-                                </tr>
-                            )}
+                                currentData.users &&
+                                ((currentData.users.length && currentData.load && !requestError) ||
+                                    (currentData.users.length && !currentData.load && requestError) ||
+                                    (currentData.mode && currentData.mode === "offlineLoading")) ? (
+                                    this.getRowsTable(currentData.users)
+                                ) : (currentData && currentData.load) ||
+                                    (currentData && !currentData.load && requestError) ? (
+                                        <tr>
+                                            <td colSpan="5">
+                                                <Empty description={<span>Данных нету</span>} className="emptyTable" />
+                                            </td>
+                                        </tr>
+                                    ) : (
+                                        <tr>
+                                            <td colSpan="5">
+                                                <Loader classNameSpiner="tableLoader" className="wrapperLoaderTable" />
+                                            </td>
+                                        </tr>
+                                    )}
                         </tbody>
                         <tfoot></tfoot>
                     </table>
@@ -254,11 +255,11 @@ class TableView extends React.Component {
                 data =
                     flag && data.length
                         ? data
-                              .map(it => {
-                                  if (!_.isNull(it.editor) && it.editor.some(editor => editor === user)) return it;
-                                  else return null;
-                              })
-                              .filter(Boolean)
+                            .map(it => {
+                                if (!_.isNull(it.editor) && it.editor.some(editor => editor === user)) return it;
+                                else return null;
+                            })
+                            .filter(Boolean)
                         : data;
             return (
                 <Table
@@ -357,12 +358,12 @@ class TableView extends React.Component {
                 text === "В работе"
                     ? "active"
                     : text === "Открыт"
-                    ? ""
-                    : text === "Закрыт"
-                    ? "close"
-                    : text === "Выполнен"
-                    ? "done"
-                    : null;
+                        ? ""
+                        : text === "Закрыт"
+                            ? "close"
+                            : text === "Выполнен"
+                                ? "done"
+                                : null;
 
             return (
                 <Output className={className}>
