@@ -8,7 +8,7 @@ import os from "os";
 import _ from 'lodash';
 
 import { ServerRun } from "./Utils/Interfaces";
-import ServerRunner from "./Models/Server";
+import Http from "./Models/Server";
 
 if (process.env.NODE_ENV === "production") {
     /** nginx init */
@@ -16,6 +16,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 namespace Entrypoint {
+
     const cpuLentgh: number = os.cpus().length;
     export const wsWorkers: Array<WebSocketServer> = [];
 
@@ -34,7 +35,7 @@ namespace Entrypoint {
         }
     } else {
         try {
-            const app: ServerRun = new ServerRunner(process.env.APP_PORT || "3001");
+            const app: ServerRun = new Http.ServerRunner(process.env.APP_PORT || "3001");
             app.start();
 
         } catch (err) {

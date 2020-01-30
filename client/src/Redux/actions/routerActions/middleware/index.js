@@ -27,6 +27,7 @@ export const loadCurrentData = ({
         const normalizeReqPath = useStore
             ? `/${typeReq}/${storeLoad}${xhrPath}`.trim().replace("//", "/")
             : `/${typeReq}${xhrPath}`.trim().replace("//", "/");
+
         await request
             .sendRequest(normalizeReqPath, methodRequst, { methodQuery }, true)
             .then(res => {
@@ -77,10 +78,10 @@ export const loadCurrentData = ({
                         storeLoad === "jurnalWork"
                             ? TASK_CONTROLL_JURNAL_SCHEMA
                             : storeLoad === "users"
-                            ? USER_SCHEMA
-                            : storeLoad === "tasks"
-                            ? TASK_SCHEMA
-                            : null;
+                                ? USER_SCHEMA
+                                : storeLoad === "tasks"
+                                    ? TASK_SCHEMA
+                                    : null;
 
                     let storeCopyValid = copyStore.map(it => getSchema(schema, it)).filter(Boolean);
 
@@ -142,10 +143,10 @@ export const loadCurrentData = ({
                 storeLoad === "jurnalWork"
                     ? TASK_CONTROLL_JURNAL_SCHEMA
                     : storeLoad === "users"
-                    ? USER_SCHEMA
-                    : storeLoad === "tasks"
-                    ? TASK_SCHEMA
-                    : null;
+                        ? USER_SCHEMA
+                        : storeLoad === "tasks"
+                            ? TASK_SCHEMA
+                            : null;
 
             const itemsCopy = result.map(it => getSchema(schema, it)).filter(Boolean);
             dispatch(

@@ -4,6 +4,7 @@ import { model, Schema, Model, Document } from 'mongoose';
 import { getSchemaByName } from '../Models/Database/Schema';
 import { RouteDefinition } from './Interfaces';
 import { FileTransportInstance, schemaConfig } from "./Types";
+import Tasks from '../Controllers/Tasks';
 
 namespace Utils {
     export const getLoggerTransports = (level: string): Array<FileTransportInstance> | FileTransportInstance => {
@@ -12,12 +13,14 @@ namespace Utils {
         } else return new winston.transports.File({ filename: "error.log", level: "error" });
     };
 
-    export const getModelByName = (name: string, schemaType: string): Model<Document, Object> | null => {
+    export const getModelByName = (name: string, schemaType: string): Model<Document, {}> | null => {
         try {
             const schema: Schema | null = getSchemaByName(schemaType);
-            if (Schema) return model(name, <Schema>schema);
+            if (schema) return model("", schema);
             else return null;
+
         } catch (err) {
+
             console.error(err);
             return null;
         }

@@ -35,3 +35,5 @@ export type ResRequest = Promise<Response | void>;
 export type Decorator = <Function extends ClassDecorator>(target: object, propKey?: string) => void;
 
 export type FileTransportInstance = winston.transports.FileTransportInstance;
+
+export type docResponse = string | number | object | null | Array<any> | any;

@@ -5,11 +5,14 @@ import { Mongoose } from "mongoose";
 export interface ServerRun {
     isPrivateRoute(req: Request, res: Response, next: NextFunction): Response | void;
     startResponse(req: Request, res: Response, next: NextFunction): void;
+    start(): void;
+}
+
+export interface Rest {
     getApp(): Application;
     getRest(): Application;
     setRest(route: Application): void;
     setApp(express: Application): void;
-    start(): void;
 }
 
 export interface Route {
@@ -25,11 +28,6 @@ export interface Dbms {
     getConnect(): Mongoose | null;
     connection(): Promise<void | Mongoose>;
     disconnect(): Promise<null | Mongoose>;
-    getResponseParams(): ResponseMetadata;
-    setResponse(config: Object): Dbms;
-    setResponseParams(key: string, param: Object | string): void;
-    clearResponseParams(): Dbms;
-    collection(name: string): collectionOperations;
 }
 
 export interface CryptoSecurity {
@@ -43,8 +41,22 @@ export interface App extends Application {
     hash: CryptoSecurity;
 }
 
-export interface ResponseMetadata {
-    [key: string]: any;
+export interface ActionProps {
+    actionPath: string;
+    actionType: string;
+}
+
+export interface Params {
+    methodQuery: string,
+    status: string,
+    from: string,
+    done?: boolean
+}
+
+
+export interface ResponseMetadata<T> {
+    param: Params,
+    body: T
 }
 
 export interface Request extends RequestExpress {
@@ -95,20 +107,16 @@ export interface MetadataMongo extends Metadata {
     [key: string]: MetadataMongo | any;
 }
 
+export interface ActionParams {
+    [key: string]: number | string | Date | object;
+}
+
+export interface ResponseDocument {
+    [key: string]: number | string | Date | object;
+}
+
 export interface MetadataConfig {
     methodQuery: string;
     body?: object;
 }
 
-export interface BuilderData extends ResponseMetadata {
-    err: object | null,
-    data: object | null,
-    param: object | null,
-}
-
-export interface Builder {
-    collection?: string;
-    exit?: boolean;
-    exitData?: object;
-    param?: ResponseMetadata;
-}
