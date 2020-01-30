@@ -1,6 +1,6 @@
 import { NextFunction, Response, Request, response } from "express";
 import { Document } from 'mongoose';
-import { App, ResponseDocument } from "../../Utils/Interfaces";
+import { App, ResponseDocument, Params } from "../../Utils/Interfaces";
 import { docResponse } from '../../Utils/Types';
 import Utils from "../../Utils";
 import Decorators from "../../Decorators";
@@ -20,17 +20,20 @@ namespace System {
 
                 if (!connect) throw new Error("Bad connect");
 
+                const params: Params = { methodQuery: "get_all", status: "done", done: true, from: "users" };
+
                 const actionUserList = new Action.ActionParser({ actionPath: "users", actionType: "get_all" });
 
                 const data: Document[] | null = await actionUserList.getActionData({});
-                console.log(data);
 
-                await service.dbm.disconnect().catch((err: Error) => console.error(err));
+                service.dbm.disconnect().catch((err: Error) => console.error(err));
 
                 if (!data) {
+                    params.status = "error";
+
                     return res.json({
                         action: "error",
-                        response: { param: {}, metadata: data },
+                        response: { param: params, metadata: data },
                         uptime: process.uptime(),
                         responseTime: Utils.responseTime((<any>req).start),
                         work: process.connected
@@ -56,7 +59,7 @@ namespace System {
 
                 return res.json({
                     action: "done",
-                    response: { param: {}, metadata },
+                    response: { param: params, metadata },
                     uptime: process.uptime(),
                     responseTime: Utils.responseTime((<any>req).start),
                     work: process.connected
