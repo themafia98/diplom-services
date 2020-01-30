@@ -26,6 +26,7 @@ namespace Database {
                     useCreateIndex: true,
                     useUnifiedTopology: true,
                     keepAlive: true,
+                    reconnectTries: Number.MAX_VALUE
                 },
                 err => {
                     if (err) console.error(err);
@@ -45,6 +46,8 @@ namespace Database {
             try {
                 const status = mongoose.connection.readyState;
                 console.log("status mongoose connect:", status);
+
+
                 return mongoose.connection;
             } catch (err) {
                 return this.connect;
@@ -53,8 +56,7 @@ namespace Database {
 
         public async disconnect(): Promise<typeof mongoose | null> {
             try {
-                const connect = this.getConnect();
-                (await connect).disconnect();
+                // await mongoose.disconnect();
                 return this.getConnect();
             } catch (err) {
                 console.error("Disconnect error:", err);
