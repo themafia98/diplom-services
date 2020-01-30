@@ -48,6 +48,7 @@ namespace General {
         public async login(req: Request, res: Response, next: NextFunction) {
             const body: BodyLogin = req.body;
             if (!body || (body && _.isEmpty(body))) return void res.sendStatus(503);
+
             return await passport.authenticate(
                 "local",
                 async (err: Error, user: any): ResRequest => {

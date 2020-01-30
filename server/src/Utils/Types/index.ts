@@ -37,3 +37,5 @@ export type Decorator = <Function extends ClassDecorator>(target: object, propKe
 export type FileTransportInstance = winston.transports.FileTransportInstance;
 
 export type docResponse = string | number | object | null | Array<any> | any;
+
+export type ActionData = Promise<Array<Document>> | null | Document | Promise<Document>;

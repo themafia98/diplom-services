@@ -62,6 +62,20 @@ class ContentView extends React.Component {
         dashboardStrem.off("EventUpdate", this.updateFunction);
     };
 
+    getBackground(module) {
+        switch (module) {
+            case "mainModule": return this.checkBackground("mainModule");
+            case "cabientModule": return this.checkBackground("cabinetModule");
+            case "taskModule": return this.checkBackground("taskModule");
+            case "contactModule": return this.checkBackground("contactModule");
+            case "customersModule": return this.checkBackground("customersModule");
+            case "settingsModule": return this.checkBackground("settingsModule");
+            case "statisticModule": return this.checkBackground("statisticModule");
+            case "documentModule": this.checkBackground("documentModule");
+        }
+
+    }
+
     checkBackground = path => {
         const { actionTabs = [] } = this.props;
         return actionTabs.some(actionTab => actionTab.startsWith(path) || actionTab === path);
@@ -94,35 +108,31 @@ class ContentView extends React.Component {
         const { path, onErrorRequstAction, setCurrentTab, actionTabs, router, statusApp, rest } = this.props;
         const { drawerView, key } = this.state;
 
-        const isBackgroundMainModule = this.checkBackground("mainModule");
-        const isBackgroundCabinetModule = this.checkBackground("cabinetModule");
-        const isBackgroundTaskModule = this.checkBackground("taskModule");
-        const isBackgroundContactModule = this.checkBackground("contactModule");
-        const isBackgroundCustomersModule = this.checkBackground("customersModule");
-        const isBackgroundSettingsModule = this.checkBackground("settingsModule");
-        const isStatisticModule = this.checkBackground("statisticModule");
-        const isDocumentModule = this.checkBackground("documentModule");
+
+        if (!key) return <div>no menu</div>
 
         return (
             <React.Fragment>
                 <Content key={key}>
-                    <TabContainer isBackground={isBackgroundMainModule} visible={path === "mainModule"}>
+                    <TabContainer
+                        key="mainModule"
+                        isBackground={this.getBackground("mainModule")}
+                        visible={path === "mainModule"}
+                    >
                         <MainModule
                             visible={path === "mainModule"}
                             rest={rest}
-                            isBackground={isBackgroundMainModule}
                             onErrorRequstAction={onErrorRequstAction}
                             key="mainModule"
                         />
                     </TabContainer>
                     <TabContainer
                         key="cabinet"
-                        isBackground={isBackgroundCabinetModule}
+                        isBackground={this.getBackground("cabinetModule")}
                         visible={path === "cabinetModule"}
                     >
                         <CabinetModule
                             visible={path === "cabinetModule"}
-                            isBackground={isBackgroundCabinetModule}
                             rest={rest}
                             onErrorRequstAction={onErrorRequstAction}
                             key="cabinet"
@@ -131,12 +141,11 @@ class ContentView extends React.Component {
                     <TabContainer
                         path={"taskModule"}
                         key="taskModule"
-                        isBackground={isBackgroundTaskModule}
+                        isBackground={this.getBackground("taskModule")}
                         visible={path.startsWith("taskModule")}
                     >
                         <TaskModule
                             visible={path.startsWith("taskModule")}
-                            isBackground={isBackgroundTaskModule}
                             onErrorRequstAction={onErrorRequstAction}
                             setCurrentTab={setCurrentTab}
                             key="taskModule"
@@ -144,10 +153,12 @@ class ContentView extends React.Component {
                             path={path}
                         />
                     </TabContainer>
-                    <TabContainer isBackground={isDocumentModule} visible={path === "documentModule"}>
+                    <TabContainer
+                        isBackground={this.getBackground("documentModule")}
+                        visible={path === "documentModule"}
+                    >
                         <DocumentModule
                             visible={path === "documentModule"}
-                            isBackground={isDocumentModule}
                             onErrorRequstAction={onErrorRequstAction}
                             key="documentModule"
                             path={path}
@@ -155,26 +166,27 @@ class ContentView extends React.Component {
                             statusApp={statusApp}
                         />
                     </TabContainer>
-                    <TabContainer isBackground={isBackgroundContactModule} visible={path.startsWith("contactModule")}>
+                    <TabContainer
+                        isBackground={this.getBackground("contactModule")}
+                        visible={path.startsWith("contactModule")}
+                    >
                         <ContactModule
                             visible={path.startsWith("contactModule")}
                             actionTabs={actionTabs}
                             statusApp={statusApp}
                             router={router}
                             rest={rest}
-                            isBackground={isBackgroundContactModule}
                             onErrorRequstAction={onErrorRequstAction}
                             key="contact"
                             path={path}
                         />
                     </TabContainer>
                     <TabContainer
-                        isBackground={isBackgroundCustomersModule}
+                        isBackground={this.getBackground("customersModule")}
                         visible={path.startsWith("customersModule")}
                     >
                         <CustomersModule
                             visible={path.startsWith("customersModule")}
-                            isBackground={isBackgroundCustomersModule}
                             onErrorRequstAction={onErrorRequstAction}
                             actionTabs={actionTabs}
                             rest={rest}
@@ -182,20 +194,24 @@ class ContentView extends React.Component {
                             path={path}
                         />
                     </TabContainer>
-                    <TabContainer isBackground={isBackgroundSettingsModule} visible={path === "settingsModule"}>
+                    <TabContainer
+                        isBackground={this.getBackground("settingsModule")}
+                        visible={path === "settingsModule"}
+                    >
                         <SettingsModule
                             visible={path === "settingsModule"}
-                            isBackground={isBackgroundSettingsModule}
                             onErrorRequstAction={onErrorRequstAction}
                             key="settings"
                             rest={rest}
                             path={path}
                         />
                     </TabContainer>
-                    <TabContainer isBackground={isStatisticModule} visible={path === "statisticModule"}>
+                    <TabContainer
+                        isBackground={this.getBackground("statisticModule")}
+                        visible={path === "statisticModule"}
+                    >
                         <StatisticsModule
                             visible={path === "statisticModule"}
-                            isBackground={isStatisticModule}
                             onErrorRequstAction={onErrorRequstAction}
                             key="statistic"
                             rest={rest}

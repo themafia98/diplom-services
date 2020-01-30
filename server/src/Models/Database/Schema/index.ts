@@ -23,9 +23,7 @@ const userSchema = new Schema(
 userSchema
     .virtual("password")
     .set(async function (password: string): Promise<void> {
-        console.log("virtual");
         this._plainPassword = password;
-        console.log(password);
         if (password) {
             this.passwordHash = bcrypt.hashSync(<string>password, 10);
             console.log(this.passwordHash);
@@ -34,7 +32,7 @@ userSchema
         }
     })
     .get(function () {
-        return <any>this._plainPassword;
+        return <string>this._plainPassword;
     });
 
 userSchema.methods.checkPassword = async function (password: string): Promise<boolean> {

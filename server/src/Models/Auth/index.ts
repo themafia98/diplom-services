@@ -5,8 +5,8 @@ namespace Auth {
   const getTokenFromHeaders = (req: Request) => {
     const { headers: { authorization } } = req;
 
-    if (authorization && authorization.split(' ')[0] === 'Token') {
-      return authorization.split(' ')[1];
+    if (authorization && authorization.split(" ")[0] === 'Token') {
+      return authorization.split(" ")[1];
     }
     return null;
   };

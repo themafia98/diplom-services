@@ -5,17 +5,17 @@ import { errorRequstAction, setStatus } from "../../publicActions";
 
 export const loadCurrentData = ({
     path = "",
-    primaryKey = "uuid",
-    typeReq = "",
+    startPath = "",
     storeLoad = "",
     useStore = false,
     methodRequst = "POST",
     methodQuery = "all",
-    xhrPath = "/list",
-    pathValidStart = "_",
+    xhrPath = "list",
     noCorsClient = false,
-    pathValid = path.startsWith(pathValidStart) ? pathValidStart.split("_")[0] || "" : path.split("__")[0]
 }) => async (dispatch, getState, { getSchema, request, clientDB }) => {
+
+    const primaryKey = "uuid";
+    const pathValid = path.includes("_") ? path.split("_")[0] : path.split("__")[0];
     const router = getState().router;
 
     const { requestError, status = "online" } = getState().publicReducer;
@@ -25,8 +25,8 @@ export const loadCurrentData = ({
     }
     if (status === "online") {
         const normalizeReqPath = useStore
-            ? `/${typeReq}/${storeLoad}${xhrPath}`.trim().replace("//", "/")
-            : `/${typeReq}${xhrPath}`.trim().replace("//", "/");
+            ? `/${startPath}/${storeLoad}/${xhrPath}`.trim().replace("//", "/")
+            : `/${startPath}/${xhrPath}`.trim().replace("//", "/");
 
         await request
             .sendRequest(normalizeReqPath, methodRequst, { methodQuery }, true)
@@ -75,7 +75,7 @@ export const loadCurrentData = ({
 
 
                 const next = async (flag = false) => {
-                    debugger;
+
                     const schema =
                         storeLoad === "jurnalWork"
                             ? TASK_CONTROLL_JURNAL_SCHEMA

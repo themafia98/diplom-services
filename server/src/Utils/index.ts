@@ -2,9 +2,8 @@ import { NextFunction } from 'express';
 import winston from "winston";
 import { model, Schema, Model, Document } from 'mongoose';
 import { getSchemaByName } from '../Models/Database/Schema';
-import { RouteDefinition } from './Interfaces';
-import { FileTransportInstance, schemaConfig } from "./Types";
-import Tasks from '../Controllers/Tasks';
+import { RouteDefinition, ResponseDocument } from './Interfaces';
+import { FileTransportInstance, docResponse } from "./Types";
 
 namespace Utils {
     export const getLoggerTransports = (level: string): Array<FileTransportInstance> | FileTransportInstance => {
@@ -60,6 +59,20 @@ namespace Utils {
             });
         });
     }
+
+
+    export const parsePublicData = (data: Document[]): ArrayLike<object> => data.map((it: docResponse) => {
+        const item: ResponseDocument = it["_doc"] || it;
+
+        const itemValid = Object.keys(item).reduce((obj: ResponseDocument, key: string): object => {
+            if (!key.includes("password") && !key.includes("At") && !key.includes("__v")) {
+                obj[key] = item[key];
+            }
+            return obj;
+        }, {});
+
+        return itemValid;
+    }).filter(Boolean);
 }
 
 export default Utils;

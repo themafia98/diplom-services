@@ -42,7 +42,9 @@ class TaskModule extends React.PureComponent {
             const heightForState = this.moduleTask.getBoundingClientRect().height;
             this.setState({ ...this.state, height: heightForState, heightController: heightControllerForState });
         }
-        if (visible) onLoadCurrentData({ path, storeLoad: "tasks", useStore: true, methodRequst: "GET" });
+        if (visible) {
+            onLoadCurrentData({ path, storeLoad: "tasks", useStore: true, methodRequst: "GET" });
+        }
     };
 
     componentDidUpdate = prevProps => {
@@ -62,8 +64,9 @@ class TaskModule extends React.PureComponent {
                 this.setState({ ...this.state, height: heightForState, heightController: heightControllerForState });
         }
 
-        if (shouldUpdate && visible)
+        if (shouldUpdate && visible) {
             onLoadCurrentData({ path, storeLoad: "tasks", useStore: true, methodRequst: "GET" });
+        }
     };
 
     moduleTask = null;

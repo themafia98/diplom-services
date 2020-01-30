@@ -149,7 +149,7 @@ class CreateTask extends React.PureComponent {
         };
     };
 
-    handlerCreateTask = event => {
+    handlerCreateTask = async (event) => {
         const { rest, statusApp = "", onLoadCurrentData } = this.props;
         if (!this.validation()) return;
         let keys = Object.keys(this.state.card);
@@ -164,21 +164,50 @@ class CreateTask extends React.PureComponent {
         this.setState({ ...this.state, load: true });
 
         if (statusApp === "online") {
-            if (rest)
-                rest.sendRequest("/tasks/createTask", "POST", validHash, true)
-                    .then(() =>
-                        this.setState(
-                            { ...this.state, card: { ...this.state.card, key: uuid() }, load: false },
-                            () => message.success(`Задача создана.`))
-                    )
-                    .catch(err => {
-                        if (/offline/gi.test(err.message)) {
-                            onLoadCurrentData({ path: "taskModule", storeLoad: "tasks" }).then(() => {
-                                this.offlineMode(validHash);
-                            });
-                        }
-                    });
-        } else if (statusApp === "offline") this.offlineMode(validHash);
+
+            try {
+
+                if (!rest && statusApp === "offline") this.offlineMode(validHash);
+                else if (rest) {
+
+                    const res = await rest.sendRequest("/tasks/createTask", "POST", validHash, true);
+
+                    if (!res || !res.ok) {
+                        console.error(res);
+                        throw new Error("Bad response");
+                    }
+
+                    const { data: { response: { done = false, metadata = "" } = {} } } = res || {};
+
+                    if (!done) {
+                        throw new Error(typeof metadata === "string" ? metadata : "Error create task");
+                    }
+
+                    message.success(`Задача создана.`);
+                }
+                // if (rest)
+                //     rest.sendRequest("/tasks/createTask", "POST", validHash, true)
+                //         .then((response) => {
+                //             this.setState(
+                //                 { ...this.state, card: { ...this.state.card, key: uuid() }, load: false },
+                //                 () => message.success(`Задача создана.`));
+                //         })
+                //         .catch(err => {
+                //             if (/offline/gi.test(err.message)) {
+                //                 onLoadCurrentData({ path: "taskModule", storeLoad: "tasks" }).then(() => {
+                //                     this.offlineMode(validHash);
+                //                 });
+                //             }
+                //         });
+            } catch (error) {
+                console.error(error);
+                message.success(error.message);
+                this.setState({
+                    ...this.state,
+                    load: false
+                });
+            }
+        }
     };
 
     render() {

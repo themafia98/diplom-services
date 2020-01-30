@@ -1,5 +1,6 @@
 import { ActionProps, ActionParams } from '../../Utils/Interfaces';
-import { Model, Document, DocumentQuery } from 'mongoose';
+import { ActionData } from "../../Utils/Types";
+import { Model, Document } from 'mongoose';
 import Utils from '../../Utils';
 
 namespace Action {
@@ -28,7 +29,7 @@ namespace Action {
             super(props);
         }
 
-        public async getActionData(actionParam: ActionParams = {}): Promise<Array<Document> | null> {
+        public async getActionData(actionParam: ActionParams = {}): Promise<any> {
 
             try {
 
@@ -43,8 +44,13 @@ namespace Action {
 
                             if (!model) return null;
 
-                            const actionData: Array<Document> = await model.find(actionParam);
-                            return actionData;
+                            try {
+                                const actionData: Array<Document> = await model.find(actionParam)
+                                return actionData;
+                            } catch (err) {
+                                console.error(err);
+                                return null;
+                            }
                         }
 
                         break;
@@ -58,8 +64,28 @@ namespace Action {
 
                             if (!model) return null;
 
-                            const actionData: Array<Document> = await model.find(actionParam);
-                            return actionData;
+                            try {
+                                const actionData: Document = await model.create(actionParam);
+                                return actionData;
+                            } catch (err) {
+                                console.error(err);
+                                return null;
+                            }
+                        }
+
+                        if (this.getActionType() === "get_all") {
+
+                            const model: Model<Document> | null = getModelByName("tasks", "task");
+
+                            if (!model) return null;
+
+                            try {
+                                const actionData: Array<Document> = await model.find({});
+                                return actionData;
+                            } catch (err) {
+                                console.error(err);
+                                return null;
+                            }
                         }
 
                         break;

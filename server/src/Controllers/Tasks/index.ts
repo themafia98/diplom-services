@@ -1,8 +1,11 @@
 import { Request, Response, NextFunction } from "express";
+import { Document } from 'mongoose';
 import _ from "lodash";
 import Utils from "../../Utils";
-import { App } from "../../Utils/Interfaces";
-import { ResRequest } from "../../Utils/Types";
+import { App, Params, ResponseDocument } from "../../Utils/Interfaces";
+import { ResRequest, docResponse } from "../../Utils/Types";
+
+import Action from '../../Models/Action';
 import Decorators from "../../Decorators";
 
 namespace Tasks {
@@ -16,47 +19,55 @@ namespace Tasks {
         public async getList(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
             try {
                 const service = server.locals;
-                const connect = await service.dbm.connection();
+                const connect = await service.dbm.connection().catch((err: Error) => {
+                    console.error(err);
+                });
+
+
                 if (!connect) throw new Error("Bad connect");
 
-                service.dbm
-                    .collection("tasks")
-                    .get({ methodQuery: "all" })
-                    .start(
-                        { name: "tasks", schemaType: "task" },
-                        async (err: Error, data: any, param: object): Promise<Response> => {
-                            try {
-                                const connect = await service.dbm.disconnect();
-                                if (!connect) throw new Error("Bad connect");
-                                if (err) {
-                                    return res.json({
-                                        action: err.name,
-                                        response: { param, metadata: err.message },
-                                        uptime: process.uptime(),
-                                        responseTime: Utils.responseTime((<any>req).start),
-                                        work: process.connected
-                                    });
-                                }
+                const params: Params = { methodQuery: "get_all", status: "done", done: true, from: "tasks" };
+                const actionTasks = new Action.ActionParser({ actionPath: "tasks", actionType: "get_all" });
+                const data: Document[] | null = await actionTasks.getActionData({});
 
-                                return res.json({
-                                    action: "done",
-                                    response: { param, ...data },
-                                    uptime: process.uptime(),
-                                    responseTime: Utils.responseTime((<any>req).start),
-                                    work: process.connected
-                                });
-                            } catch (err) {
-                                console.error(err);
-                                return res.json({
-                                    action: err.name,
-                                    response: { param, metadata: err.message },
-                                    uptime: process.uptime(),
-                                    responseTime: Utils.responseTime((<any>req).start),
-                                    work: process.connected
-                                });
+                if (!data) {
+                    params.status = "error";
+
+                    return res.json({
+                        action: "error",
+                        response: { param: params, metadata: data },
+                        uptime: process.uptime(),
+                        responseTime: Utils.responseTime((<any>req).start),
+                        work: process.connected
+                    });
+                }
+
+                await service.dbm.disconnect().catch((err: Error) => console.error(err));
+
+                let metadata: Array<any> = [];
+
+                if (data && Array.isArray(data)) {
+                    metadata = data.map((it: docResponse) => {
+
+                        const item: ResponseDocument = it["_doc"] || it;
+
+                        return Object.keys(item).reduce((obj: ResponseDocument, key: string): object => {
+                            if (!key.includes("password") && !key.includes("At") && !key.includes("__v")) {
+                                obj[key] = item[key];
                             }
-                        }
-                    );
+                            return obj;
+                        }, {});
+                    }).filter(Boolean);
+                }
+
+                return res.json({
+                    action: "done",
+                    response: { param: params, metadata },
+                    uptime: process.uptime(),
+                    responseTime: Utils.responseTime((<any>req).start),
+                    work: process.connected
+                });
+
             } catch (err) {
                 console.error(err);
                 if (!res.headersSent) {
@@ -77,37 +88,45 @@ namespace Tasks {
                 const dbm = server.locals.dbm;
 
                 if (req.body && !_.isEmpty(req.body)) {
-                    await dbm.connection().catch((err: Error) => console.error(err));
-                    dbm.collection("tasks")
-                        .set({ methodQuery: "set_single", body: req.body })
-                        .start(
-                            { name: "tasks", schemaType: "task" },
-                            async (err: Error, data: any, param: object): Promise<Response> => {
-                                await dbm.disconnect().catch((err: Error) => console.error(err));
-                                if (err) {
-                                    return res.json({
-                                        action: err.name,
-                                        response: { param, metadata: err.message },
-                                        uptime: process.uptime(),
-                                        responseTime: Utils.responseTime((<any>req).start),
-                                        work: process.connected
-                                    });
-                                }
+                    const param = {};
+                    const connect = await dbm.connection().catch((err: Error) => console.error(err));
 
-                                console.log("createTask done ");
-                                return res.json({
-                                    action: "done",
-                                    response: { status: "OK", done: true, ...param },
-                                    uptime: process.uptime(),
-                                    responseTime: Utils.responseTime((<any>req).start),
-                                    work: process.connected
-                                });
-                            }
-                        );
+                    if (!connect) throw new Error("Bad connect");
+
+                    const params: Params = { methodQuery: "get_all", status: "done", done: true, from: "users" };
+                    const createTaskAction = new Action.ActionParser({ actionPath: "tasks", actionType: "set_single" });
+
+                    const data: Document[] | null = await createTaskAction.getActionData(req.body);
+                    console.log(data);
+
+                    await dbm.disconnect().catch((err: Error) => console.error(err));
+
+                    if (!data) {
+                        params.status = "error";
+
+                        return res.json({
+                            action: "error set_single task",
+                            response: { status: "FAIL", params, done: false, metadata: data },
+                            uptime: process.uptime(),
+                            responseTime: Utils.responseTime((<any>req).start),
+                            work: process.connected
+                        });
+                    }
+
+                    const metadata: ArrayLike<object> = Utils.parsePublicData(<any>[data]);
+
+                    return res.json({
+                        action: "done",
+                        response: { status: "OK", done: true, ...param, metadata },
+                        uptime: process.uptime(),
+                        responseTime: Utils.responseTime((<any>req).start),
+                        work: process.connected
+                    });
+
                 } else if (!res.headersSent) {
                     return res.json({
                         action: "error",
-                        response: "Body empty",
+                        response: { status: "FAIL", params: { body: req.body }, done: false, metadata: "Body empty" },
                         uptime: process.uptime(),
                         responseTime: Utils.responseTime((<any>req).start),
                         work: process.connected
@@ -118,7 +137,7 @@ namespace Tasks {
                 if (!res.headersSent) {
                     return res.json({
                         action: err.name,
-                        response: "Server error",
+                        response: { status: "FAIL", done: false, metadata: "Server error" },
                         uptime: process.uptime(),
                         responseTime: Utils.responseTime((<any>req).start),
                         work: process.connected

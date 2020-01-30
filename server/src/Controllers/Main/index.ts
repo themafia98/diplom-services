@@ -16,12 +16,11 @@ namespace System {
         async getUsersList(req: Request, res: Response, next: NextFunction, server: App): Promise<Response | void> {
             try {
                 const service = server.locals;
-                const connect = await service.dbm.connection();
+                const connect = await service.dbm.connection().catch((err: Error) => console.error(err));
 
                 if (!connect) throw new Error("Bad connect");
 
                 const params: Params = { methodQuery: "get_all", status: "done", done: true, from: "users" };
-
                 const actionUserList = new Action.ActionParser({ actionPath: "users", actionType: "get_all" });
 
                 const data: Document[] | null = await actionUserList.getActionData({});
@@ -40,22 +39,7 @@ namespace System {
                     });
                 }
 
-                let metadata: Array<any> = [];
-
-                if (data && Array.isArray(data)) {
-                    metadata = data.map((it: docResponse) => {
-
-                        const item: ResponseDocument = it._doc || it;
-
-                        return Object.keys(item).reduce((obj: ResponseDocument, key: string): object => {
-                            if (!key.includes("password") && !key.includes("At") && !key.includes("__v")) {
-                                obj[key] = item[key];
-                            }
-                            return obj;
-                        }, {});
-                    });
-
-                }
+                const metadata: ArrayLike<object> = Utils.parsePublicData(data);
 
                 return res.json({
                     action: "done",
@@ -67,6 +51,9 @@ namespace System {
 
             } catch (err) {
                 console.error(err);
+                await server.locals.service.dbm.disconnect()
+                    .catch((err: Error) => console.error(err));
+
                 if (!res.headersSent) {
                     return res.json({
                         action: err.name,

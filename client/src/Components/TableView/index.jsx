@@ -43,9 +43,8 @@ class TableView extends React.Component {
             if (this.props.visible)
                 onLoadCurrentData({
                     path: validPath ? validPath : "",
-
-                    xhrPath: "/userList",
-                    typeReq: "system",
+                    xhrPath: "userList",
+                    startPath: "system",
                     storeLoad: "users",
                     methodRequst: "GET"
                 });
@@ -57,11 +56,12 @@ class TableView extends React.Component {
         const parsePath = routeParser({ pageType: "moduleItem", path });
 
         if (visible && parsePath && parsePath.page === "mainModule" && parsePath.itemId === "table") {
+
             const { path: validPath = "" } = parsePath;
             onLoadCurrentData({
                 path: validPath ? validPath : "",
-                typeReq: "system",
-                xhrPath: "/userList",
+                startPath: "system",
+                xhrPath: "userList",
                 storeLoad: "users",
                 methodRequst: "GET"
             });
