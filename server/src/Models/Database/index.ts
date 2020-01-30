@@ -1,4 +1,4 @@
-import mongoose, { Mongoose } from "mongoose";
+import mongoose, { Mongoose, mongo } from "mongoose";
 import dotenv from "dotenv";
 import _ from "lodash";
 
@@ -14,10 +14,23 @@ namespace Database {
         public status: any = null;
 
         constructor(db: string, connectionString: string) {
-            //  mongoose.set("debug", true);
+            mongoose.set("debug", true);
             mongoose.set("useCreateIndex", true);
             this.dbClient = db;
             this.connectionString = connectionString;
+
+            mongoose.connect(
+                connectionString,
+                {
+                    useNewUrlParser: true,
+                    useCreateIndex: true,
+                    useUnifiedTopology: true,
+                    keepAlive: true,
+                },
+                err => {
+                    if (err) console.error(err);
+                }
+            );
         }
 
         public get db() {
@@ -28,23 +41,15 @@ namespace Database {
             return this.connectionString;
         }
 
-        public async connection(): Promise<void | Mongoose> {
-            if (!this.getConnectionString()) return <Mongoose>this.getConnect();
+        public async connection(): Promise<any> {
             try {
-                this.connect = await mongoose.connect(
-                    this.getConnectionString(),
-                    {
-                        useNewUrlParser: true,
-                        useCreateIndex: true,
-                        useUnifiedTopology: true
-                    },
-                    err => {
-                        if (err) console.error(err);
-                    }
-                );
+                const status = mongoose.connection.readyState;
+                console.log("status mongoose connect:", status);
+                return mongoose.connection;
+
                 return this.connect;
             } catch (err) {
-                return void console.error(err);
+                return this.connect;
             }
         }
 
