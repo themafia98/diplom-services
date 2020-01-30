@@ -11,6 +11,11 @@ import Textarea from "../../../Textarea";
 import File from "../../../File";
 import uuid from "uuid/v4";
 
+
+
+import { routePathNormalise, routeParser } from "../../../../Utils";
+import config from '../../../../config.json';
+
 import { getSchema } from "../../../../Utils/index";
 import { CREATE_TASK_SCHEMA } from "../../../../Utils/schema/const";
 
@@ -150,7 +155,9 @@ class CreateTask extends React.PureComponent {
     };
 
     handlerCreateTask = async (event) => {
-        const { rest, statusApp = "", onLoadCurrentData } = this.props;
+        const { rest, statusApp = "", onLoadCurrentData, onOpenPageWithData,
+            router: { currentActionTab: path, actionTabs = [] },
+            setCurrentTab, removeTab } = this.props;
         if (!this.validation()) return;
         let keys = Object.keys(this.state.card);
         if (keys.every(key => _.isNull(this.state.card[key]))) return;
@@ -172,7 +179,7 @@ class CreateTask extends React.PureComponent {
 
                     const res = await rest.sendRequest("/tasks/createTask", "POST", validHash, true);
 
-                    if (!res || !res.ok) {
+                    if (res.status !== 200) {
                         console.error(res);
                         throw new Error("Bad response");
                     }
@@ -183,8 +190,44 @@ class CreateTask extends React.PureComponent {
                         throw new Error(typeof metadata === "string" ? metadata : "Error create task");
                     }
 
-                    message.success(`Задача создана.`);
+                    this.setState({
+                        ...this.state,
+                        card: { ...this.state.card, key: uuid() },
+                        load: false
+                    }, () => {
+                        message.success(`Задача создана.`);
+
+                        const { key = "" } = metadata[0] || {};
+                        if (!key) return;
+
+                        if (config.tabsLimit <= actionTabs.length)
+                            return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
+
+                        const { moduleId = "", page = "" } = routeParser({ path });
+                        if (!moduleId || !page) return;
+
+                        const index = actionTabs.findIndex(tab => tab.includes(page) && tab.includes(key));
+                        const isFind = index !== -1;
+
+                        let type = "deafult";
+                        if (path.split("__")[1]) type = "itemTab";
+
+                        removeTab({ path, type: type });
+
+                        if (!isFind) {
+                            onOpenPageWithData({
+                                activePage: routePathNormalise({
+                                    pathType: "moduleItem",
+                                    pathData: { page, moduleId, key }
+                                }),
+                                routeDataActive: metadata[0] || {}
+                            });
+                        } else {
+                            setCurrentTab(actionTabs[index]);
+                        }
+                    });
                 }
+
                 // if (rest)
                 //     rest.sendRequest("/tasks/createTask", "POST", validHash, true)
                 //         .then((response) => {

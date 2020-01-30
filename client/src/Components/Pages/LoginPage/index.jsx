@@ -68,11 +68,11 @@ class LoginPage extends React.Component {
                         onLoadUdata(udataObj);
 
                         addTab(path);
-                    } else throw new Error(res.statusText ? res.statusText : "invalid");
+                    } else throw new Error("invalid login");
                 })
                 .catch(error => {
                     this.setState({
-                        errorMessage: error.response && error.response.data ? error.response.data : error.message,
+                        errorMessage: error.message ? error.message : "Invalid",
                         loading: false
                     });
                 });

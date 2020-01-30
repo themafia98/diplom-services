@@ -9,7 +9,7 @@ import { Button, message } from "antd";
 import { routeParser } from "../../../Utils";
 
 import TabContainer from "../../TabContainer";
-import { addTabAction, openPageWithDataAction } from "../../../Redux/actions/routerActions";
+import { addTabAction, openPageWithDataAction, removeTabAction } from "../../../Redux/actions/routerActions";
 import { loadCurrentData } from "../../../Redux/actions/routerActions/middleware";
 import TaskModuleCalendar from "./TaskModuleCalendar";
 import TaskModuleList from "./TaskModuleList";
@@ -107,6 +107,7 @@ class TaskModule extends React.PureComponent {
                 onOpenPageWithData,
                 onLoadCurrentData,
                 rest,
+                removeTab,
                 setCurrentTab
             } = this.props;
 
@@ -191,6 +192,9 @@ class TaskModule extends React.PureComponent {
                             height={heightController ? height - heightController : height}
                             onLoadCurrentData={onLoadCurrentData}
                             statusApp={status}
+                            router={router}
+                            onOpenPageWithData={onOpenPageWithData}
+                            removeTab={removeTab}
                         />
                     </TabContainer>
                     <TabContainer
@@ -235,6 +239,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         addTab: tab => dispatch(addTabAction(tab)),
+        removeTab: tab => dispatch(removeTabAction(tab)),
         onOpenPageWithData: data => dispatch(openPageWithDataAction(data)),
         onLoadCurrentData: props => dispatch(loadCurrentData({ ...props }))
     };
