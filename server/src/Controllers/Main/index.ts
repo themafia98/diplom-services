@@ -42,7 +42,7 @@ namespace System {
                 if (data && Array.isArray(data)) {
                     metadata = data.map((it: docResponse) => {
 
-                        const item: ResponseDocument = it.doc || it;
+                        const item: ResponseDocument = it._doc || it;
 
                         return Object.keys(item).reduce((obj: ResponseDocument, key: string): object => {
                             if (!key.includes("password") && !key.includes("At") && !key.includes("__v")) {
