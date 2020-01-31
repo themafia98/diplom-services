@@ -12,7 +12,7 @@ export const loadCurrentData = ({
     methodQuery = "all",
     xhrPath = "list",
     noCorsClient = false,
-}) => async (dispatch, getState, { /* getSchema require Schema model */ request, clientDB }) => {
+}) => async (dispatch, getState, { schema, Request, clientDB }) => {
 
     const primaryKey = "uuid";
     const pathValid = path.includes("_") ? path.split("_")[0] : path.split("__")[0];
@@ -28,117 +28,94 @@ export const loadCurrentData = ({
             ? `/${startPath}/${storeLoad}/${xhrPath}`.trim().replace("//", "/")
             : `/${startPath}/${xhrPath}`.trim().replace("//", "/");
 
-        await request
-            .sendRequest(normalizeReqPath, methodRequst, { methodQuery }, true)
-            .then(res => {
+        try {
+            const request = new Request();
+            const res = await request.sendRequest(normalizeReqPath, methodRequst, { methodQuery }, true)
 
-                const { data: { response: { metadata = [], fromCache = false } = {} } = {} } = res || {};
-                const storeArray = [];
-                metadata.forEach((doc, index) => {
-                    if (_.isNumber(index)) storeArray.push(doc);
+            const { data: { response: { metadata = [], fromCache = false } = {} } = {} } = res || {};
+            let items = [];
+
+            metadata.forEach((doc, index) => _.isNumber(index) && items.push(doc));
+
+            if (items.length) items = items.filter(it => !_.isEmpty(it));
+            else if (fromCache && !items.length) throw new Error("Network error");
+
+            const copyStore = [...items];
+            const undefiendCopyStore = [];
+
+            if (noCorsClient && _.isNull(requestError)) {
+                dispatch(saveComponentStateAction({ [storeLoad]: copyStore, load: true, path: pathValid }));
+            }
+
+            if (!_.isNull(requestError)) dispatch(errorRequstAction(null));
+
+            const cursor = clientDB.getCursor(storeLoad);
+
+            cursor.onsuccess = async event => {
+                const { target: { result: cursor } = {} } = event;
+
+                if (!cursor) return await next(true);
+
+                const index = copyStore.findIndex(it => {
+                    const isKey = it[primaryKey] || it["key"];
+                    const isValid = it[primaryKey] === cursor.key || it["key"] === cursor.key;
+
+                    return isKey && isValid;
                 });
-
-                if (storeArray.length) return storeArray.filter(it => !_.isEmpty(it));
-                else if (fromCache && !storeArray.length) throw new Error("Network error");
-            })
-            .then(items => {
-                const copyStore = [...items];
-                const undefiendCopyStore = [];
-
-                if (noCorsClient) {
-                    if (requestError !== null) dispatch(errorRequstAction(null));
-                    return dispatch(saveComponentStateAction({ [storeLoad]: copyStore, load: true, path: pathValid }));
+                const iEmpty = index === -1;
+                if (copyStore && iEmpty) {
+                    if (cursor.value.modeAdd === "offline") {
+                        const copy = { ...cursor.value, modeAdd: "online" };
+                        cursor.value.modeAdd = "online";
+                        undefiendCopyStore.push({ ...copy });
+                    }
                 }
-
-                // const cursor = clientDB.getCursor(storeLoad);
-
-                // cursor.onsuccess = async event => {
-                //     const {
-                //         target: { result: cursor }
-                //     } = event;
-                //     if (!cursor) return await next(true);
-
-                //     const index = copyStore.findIndex(
-                //         it =>
-                //             (it[primaryKey] || it["key"]) && (it[primaryKey] === cursor.key || it["key"] === cursor.key)
-                //     );
-                //     const iEmpty = index === -1;
-                //     if (copyStore && iEmpty) {
-                //         if (cursor.value.modeAdd === "offline") {
-                //             const copy = { ...cursor.value, modeAdd: "online" };
-                //             cursor.value.modeAdd = "online";
-                //             undefiendCopyStore.push({ ...copy });
-                //         }
-                //     }
-                //     cursor.continue();
-                // };
+                cursor.continue();
+            };
 
 
-                const next = async (flag = false) => {
+            const next = async (flag = false) => {
 
-                    const schema =
-                        storeLoad === "jurnalWork"
-                            ? TASK_CONTROLL_JURNAL_SCHEMA
-                            : storeLoad === "users"
-                                ? USER_SCHEMA
-                                : storeLoad === "tasks"
-                                    ? TASK_SCHEMA
-                                    : null;
+                const templateSchema =
+                    storeLoad === "jurnalWork"
+                        ? TASK_CONTROLL_JURNAL_SCHEMA
+                        : storeLoad === "users"
+                            ? USER_SCHEMA
+                            : storeLoad === "tasks"
+                                ? TASK_SCHEMA
+                                : null;
 
-                    // let storeCopyValid = copyStore.map(it => getSchema(schema, it)).filter(Boolean);
-                    let storeCopyValid = copyStore;
-
-
-                    // storeCopyValid.forEach(it => {
-                    //     clientDB.updateItem(storeLoad, it);
-                    // });
-
-                    const onAction = async () => {
-                        if (requestError !== null) await dispatch(errorRequstAction(null));
-
-                        await dispatch(
-                            saveComponentStateAction({ [storeLoad]: copyStore, load: true, path: pathValid })
-                        );
-                    };
+                let storeCopyValid = copyStore.map(it => schema.getSchema(templateSchema, it)).filter(Boolean);
+                storeCopyValid.forEach(it => clientDB.updateItem(storeLoad, it));
 
 
+                if (requestError !== null) await dispatch(errorRequstAction(null));
 
-                    if (flag && storeCopyValid.length) {
-                        //if (firebase) {
-                        // const items = firebase.db.collection(storeLoad);
-                        //  const batch = firebase.db.batch();
-                        // _.uniqBy(undefiendCopyStore, "key" || "uuid").forEach(it => {
-                        //     const itRef = items.doc();
-                        //     batch.set(itRef, it);
-                        // });
-                        // await batch.commit();
-                        // }
-                        // await onAction();
-                        await onAction();
-                    } else await onAction();
-                };
+                const data = { [storeLoad]: copyStore, load: true, path: pathValid };
+                await dispatch(saveComponentStateAction(data));
 
-                next(true);
-            })
-            .catch(error => {
-                if (error.status === 400) {
-                    dispatch(setStatus({ statusRequst: "offline" }));
-                    dispatch(errorRequstAction(error.message));
-                    request.follow(
-                        "offline",
-                        statusRequst => {
-                            if (getState().publicReducer.status !== statusRequst && statusRequst === "online") {
-                                request.unfollow();
+            };
+        } catch (error) {
+            console.error(error);
+            if (error.status === 400) {
+                const errorRequest = new Request();
+                dispatch(setStatus({ statusRequst: "offline" }));
+                dispatch(errorRequstAction(error.message));
+                errorRequest.follow(
+                    "offline",
+                    statusRequst => {
+                        if (getState().publicReducer.status !== statusRequst && statusRequst === "online") {
+                            errorRequest.unfollow();
 
-                                dispatch(setStatus({ statusRequst }));
-                                dispatch(errorRequstAction(null));
-                                dispatch(loadCurrentData({ path, storeLoad }));
-                            }
-                        },
-                        3000
-                    );
-                }
-            });
+                            dispatch(setStatus({ statusRequst }));
+                            dispatch(errorRequstAction(null));
+                            dispatch(loadCurrentData({ path, storeLoad }));
+                        }
+                    },
+                    3000
+                );
+            } else dispatch(errorRequstAction(error.message));
+        };
     } else {
         if (!noCorsClient) return;
 
@@ -147,7 +124,7 @@ export const loadCurrentData = ({
             const {
                 target: { result }
             } = event;
-            const schema =
+            const schemaTemplate =
                 storeLoad === "jurnalWork"
                     ? TASK_CONTROLL_JURNAL_SCHEMA
                     : storeLoad === "users"
@@ -156,11 +133,9 @@ export const loadCurrentData = ({
                             ? TASK_SCHEMA
                             : null;
 
-            //const itemsCopy = result.map(it => getSchema(schema, it)).filter(Boolean);
-            const itemsCopy = result; /** require Schema model */
-            dispatch(
-                saveComponentStateAction({ [storeLoad]: itemsCopy, load: true, path: pathValid, mode: "offline" })
-            );
+            const itemsCopy = result.map(it => schema.getSchema(schemaTemplate, it)).filter(Boolean);
+            const data = saveComponentStateAction({ [storeLoad]: itemsCopy, load: true, path: pathValid, mode: "offline" });
+            dispatch(data);
         };
     }
 };

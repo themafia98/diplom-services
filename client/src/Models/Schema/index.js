@@ -61,6 +61,9 @@ class Schema {
                     _id: null,
                     email: null,
                     displayName: null,
+                    summary: null,
+                    phone: null,
+                    isOnline: null,
                     departament: null,
                     position: null,
                     rules: null,
@@ -108,6 +111,7 @@ class Schema {
      * @return {boolean}
      */
     validateSchema(data, schema) {
+        //debugger;
         if (!_.isArray(data) || !_.isArray(schema)) return false;
 
         const isFind = schema.findIndex(it => it === "modeAdd") !== -1;
@@ -116,12 +120,13 @@ class Schema {
             (isFindBoth && data.length !== schema.length) ||
             (isFind && !isFindBoth && data.length + 1 !== schema.length) ||
             (!isFind && data.length !== schema.length)
-        )
+        ) {
             return false;
+        }
 
         return this.mode !== "no-strict"
             ? data.every((dataKey, i) => dataKey === schema[i])
-            : data.every((dataKey, i) => schema.findIndex(it => it === dataKey) !== -1);
+            : data.every((dataKey) => schema.findIndex(it => it === dataKey) !== -1);
     };
 
     /**
@@ -141,8 +146,9 @@ class Schema {
         if (schema) keysSchema = Object.keys(schema);
         else return null;
 
-        if (this.validateSchema(keysData, keysSchema, this.mode)) return { ...data };
-        else return null;
+        if (this.validateSchema(keysData, keysSchema, this.mode)) {
+            return { ...data };
+        } else return null;
     };
 }
 

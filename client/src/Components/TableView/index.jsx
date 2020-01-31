@@ -127,13 +127,16 @@ class TableView extends React.Component {
                         <tbody>
                             {isUsers && isLoad ? (
                                 this.getRowsTable(currentData.users)
-                            ) : isLoad || requestError ? (
-                                <tr>
-                                    <td colSpan="5">
-                                        <Empty description={<span>Данных нету</span>} className="emptyTable" />
-                                    </td>
-                                </tr>
-                            ) : (
+                            ) :
+                                isLoad || requestError ?
+                                    (
+                                        <tr>
+                                            <td colSpan="5">
+                                                <Empty description={<span>Данных нету</span>} className="emptyTable" />
+                                            </td>
+                                        </tr>
+                                    ) :
+                                    (
                                         <tr>
                                             <td colSpan="5">
                                                 <Loader classNameSpiner="tableLoader" className="wrapperLoaderTable" />

@@ -2,14 +2,14 @@ import _ from "lodash";
 import { сachingAction, setStatus, errorRequstAction } from "../";
 import { updateItemStateAction } from "../../routerActions";
 import { TASK_CONTROLL_JURNAL_SCHEMA, USER_SCHEMA, TASK_SCHEMA } from "../../../../Models/Schema/const";
-/** require Schema model */
-const middlewareCaching = (props) => (dispatch, getState, /* getSchema */ request, clientDB) => {
+
+const middlewareCaching = (props) => (dispatch, getState, schema, Request, clientDB) => {
     const { data, primaryKey, type = "GET", pk = null, store = "" } = props;
     const { requestError, status = "online" } = getState().publicReducer;
 
 };
 
-const middlewareUpdate = async (props) => async (dispatch, getState, { /*getSchema */ request, clientDB }) => {
+const middlewareUpdate = async (props) => async (dispatch, getState, { schema, Request, clientDB }) => {
     const {
         id,
         path = "",
@@ -21,6 +21,8 @@ const middlewareUpdate = async (props) => async (dispatch, getState, { /*getSche
         multiply = false,
         limitUpdate = 20
     } = props || {};
+
+
 
 
 }

@@ -2,15 +2,18 @@ import React from "react";
 import { convertFromRaw } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import _ from "lodash";
-// import { getEditorJSON } from "../../../Models/Schema";
-/** require Schema model */
+
 import "../../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import { Button, notification } from "antd";
+import { Button } from "antd";
+
+import modelContext from '../../../Models/context';
 
 class EditorTextarea extends React.Component {
     state = {
         contentState: null
     };
+
+    static contextType = modelContext;
 
     componentDidMount = () => {
         const { contentState = null } = this.props;
@@ -23,15 +26,16 @@ class EditorTextarea extends React.Component {
 
     componentDidUpdate = () => {
         const { clear = false, clearStatus = null, readOnly = false } = this.props;
+        const { schema = {} } = this.context;
         if (clear && !readOnly) {
-            // this.setState(
-            //     {
-            //         contentState: convertFromRaw(getEditorJSON())
-            //     },
-            //     () => {
-            //         if (clearStatus) clearStatus(false);
-            //     }
-            // );
+            this.setState(
+                {
+                    contentState: convertFromRaw(schema.getEditorJSON())
+                },
+                () => {
+                    if (clearStatus) clearStatus(false);
+                }
+            );
         }
     };
 

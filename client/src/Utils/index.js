@@ -1,6 +1,4 @@
 import _ from "lodash";
-import Request from "../Models/Rest";
-import Schema from "../Models/Schema";
 
 /**
  * @return {void} void
@@ -65,4 +63,4 @@ export const routePathNormalise = ({ pathType = "module", pathData: { page = "",
     }
 };
 
-export { forceUpdateDetectedInit, /* getSchema */ Request };
+export { forceUpdateDetectedInit };

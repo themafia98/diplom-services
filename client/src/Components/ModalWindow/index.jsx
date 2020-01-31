@@ -6,8 +6,6 @@ import moment from "moment";
 import { Modal, Button, Dropdown, Icon, Menu, Input, DatePicker, message, Select } from "antd";
 import uuid from "uuid/v4";
 
-/** require Schema model */
-// import { getSchema } from "../../Utils";
 import { TASK_CONTROLL_JURNAL_SCHEMA } from "../../Models/Schema/const";
 
 import RegistrationModal from "./RegistrationModal";
@@ -273,7 +271,7 @@ class ModalWindow extends React.PureComponent {
             type: typeState
         } = this.state;
         const { keyTask } = this.props;
-
+        const { schema = {} } = this.context;
         let _valid = true;
         let invalidDate = !_.isDate(new Date(date));
         let invalidTimeLost = !_.isString(timeLost);
@@ -294,19 +292,18 @@ class ModalWindow extends React.PureComponent {
         }
         if (!_valid) return _valid;
 
-        // const validData = getSchema(
-        //     TASK_CONTROLL_JURNAL_SCHEMA,
-        //     {
-        //         key: keyTask,
-        //         timeLost: timeLost,
-        //         id: null,
-        //         editor: "Павел Петрович",
-        //         date: date,
-        //         description: description
-        //     },
-        //     "no-strict"
-        // );
-        if (true) return _valid;
+        const validData = schema.getSchema(
+            TASK_CONTROLL_JURNAL_SCHEMA,
+            {
+                key: keyTask,
+                timeLost: timeLost,
+                id: null,
+                editor: "Павел Петрович",
+                date: date,
+                description: description
+            });
+
+        if (validData) return _valid;
         else return false;
     };
 

@@ -1,8 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import _ from "lodash";
-/** requer ClientSideDatabase */
-//import ClientSideDatabase from "../../../../Models/ClientSideDatabase";
 import Scrollbars from "react-custom-scrollbars";
 import TitleModule from "../../../TitleModule";
 import moment from "moment";
@@ -15,8 +13,6 @@ import uuid from "uuid/v4";
 import { routePathNormalise, routeParser } from "../../../../Utils";
 import modelContext from "../../../../Models/context";
 
-/** require Schema model */
-// import { getSchema } from "../../../../Utils/index";
 import { CREATE_TASK_SCHEMA } from "../../../../Models/Schema/const";
 
 const { Option } = Select;
@@ -148,9 +144,9 @@ class CreateTask extends React.PureComponent {
 
     offlineMode = validHash => {
         const offlineValidHash = { ...validHash, modeAdd: "offline" };
-        // ClientSideDatabase require */
-        // const putAction = clientDB.addItem("tasks", offlineValidHash);
-        const putAction = false;
+        const { clientDB = {} } = this.context;
+        const putAction = clientDB.addItem("tasks", offlineValidHash);
+
         if (putAction)
             putAction.onsuccess = event => {
                 this.setState({ ...this.state, card: { ...this.state.card, key: uuid() }, load: false }, () =>
@@ -163,7 +159,7 @@ class CreateTask extends React.PureComponent {
         const { statusApp = "", onLoadCurrentData, onOpenPageWithData,
             router: { currentActionTab: path, actionTabs = [] },
             setCurrentTab, removeTab } = this.props;
-        const { config = {}, Request } = this.context;
+        const { config = {}, Request = {}, schema = {} } = this.context;
 
         if (!this.validation()) return;
 
@@ -172,8 +168,7 @@ class CreateTask extends React.PureComponent {
         if (keys.every(key => _.isNull(this.state.card[key]))) return;
 
         const validHashCopy = [{ ...this.state.card }];
-        //const validHash = validHashCopy.map(it => getSchema(CREATE_TASK_SCHEMA, it, "no-strict")).filter(Boolean)[0];
-        const validHash = validHashCopy;
+        const validHash = validHashCopy.map(it => schema.getSchema(CREATE_TASK_SCHEMA, it)).filter(Boolean)[0];
 
         if (!validHash) return message.error("Не валидные данные.");
 

@@ -14,7 +14,7 @@ namespace Database {
         public status: any = null;
 
         constructor(db: string, connectionString: string) {
-            mongoose.set("debug", true);
+            mongoose.set("debug", false);
             mongoose.set("useCreateIndex", true);
             this.dbClient = db;
             this.connectionString = connectionString;

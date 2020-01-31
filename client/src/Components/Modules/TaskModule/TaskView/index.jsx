@@ -6,8 +6,6 @@ import { Descriptions, Empty, Input, Select, DatePicker, message } from "antd";
 import { connect } from "react-redux";
 import Scrollbars from "react-custom-scrollbars";
 
-/** require Schema model */
-//import { getSchema } from "../../../../Utils/index";
 import { TASK_SCHEMA } from "../../../../Models/Schema/const";
 
 import { middlewareCaching, middlewareUpdate } from "../../../../Redux/actions/publicActions/middleware";
@@ -19,6 +17,8 @@ import Output from "../../../Output";
 import TitleModule from "../../../TitleModule";
 import Comments from "../../../Comments";
 import File from "../../../File";
+
+import modelContext from '../../../../Models/context';
 
 const { Option } = Select;
 
@@ -41,6 +41,8 @@ class TaskView extends React.PureComponent {
         showModalJur: false,
         modeEditContent: false
     };
+
+    static contextType = modelContext;
 
     static propTypes = {
         onCaching: PropTypes.func.isRequired,
@@ -180,8 +182,9 @@ class TaskView extends React.PureComponent {
         const { onUpdate, router: { routeDataActive = {} } = {} } = this.props;
         const { modeControllEdit = {} } = this.state;
         const validHashCopy = [{ ...modeControllEdit }];
-        //const validHash = validHashCopy.map(it => getSchema(TASK_SCHEMA, it, "no-strict")).filter(Boolean)[0];
-        const validHash = validHashCopy;
+        const { schema = {} } = this.context;
+
+        const validHash = validHashCopy.map(it => schema.getSchema(TASK_SCHEMA, it)).filter(Boolean)[0];
 
         if (validHash)
             onUpdate(
