@@ -107,6 +107,11 @@ class TableView extends React.Component {
         const height = heightProps - 250;
 
         if (path === "mainModule__table" && visible) {
+
+            const isUsers = currentData && currentData.users;
+            const isLoad = currentData && currentData.load;
+            // const isOffline = currentData && currentData.mode && currentData.mode === "offlineLoading";
+
             return (
                 <Scrollbars>
                     <table key="mainModule__table">
@@ -120,20 +125,15 @@ class TableView extends React.Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {currentData &&
-                                currentData.users &&
-                                ((currentData.users.length && currentData.load && !requestError) ||
-                                    (currentData.users.length && !currentData.load && requestError) ||
-                                    (currentData.mode && currentData.mode === "offlineLoading")) ? (
-                                    this.getRowsTable(currentData.users)
-                                ) : (currentData && currentData.load) ||
-                                    (currentData && !currentData.load && requestError) ? (
-                                        <tr>
-                                            <td colSpan="5">
-                                                <Empty description={<span>Данных нету</span>} className="emptyTable" />
-                                            </td>
-                                        </tr>
-                                    ) : (
+                            {isUsers && isLoad ? (
+                                this.getRowsTable(currentData.users)
+                            ) : isLoad || requestError ? (
+                                <tr>
+                                    <td colSpan="5">
+                                        <Empty description={<span>Данных нету</span>} className="emptyTable" />
+                                    </td>
+                                </tr>
+                            ) : (
                                         <tr>
                                             <td colSpan="5">
                                                 <Loader classNameSpiner="tableLoader" className="wrapperLoaderTable" />
