@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Redirect } from "react-router-dom";
 import { EventEmitter } from "events";
 import _ from "lodash";
-import config from "../../../config.json";
+
 import { Layout, message, notification, Modal, Button } from "antd";
 import { connect } from "react-redux";
 import {
@@ -21,6 +21,7 @@ import Loader from "../../Loader";
 import HeaderView from "../../HeaderView";
 import ContentView from "../../ContentView";
 import MenuView from "../../MenuView";
+import modelContext from '../../../Models/context';
 
 let deferredPrompt = null;
 
@@ -32,10 +33,12 @@ class Dashboard extends React.PureComponent {
         visibleInstallApp: false,
         redirect: false,
         status: "online",
-        menuItems: config.menu,
+        menuItems: this.context.config.menu,
         counterError: 0,
         showLoader: false
     };
+
+    static contextType = modelContext;
 
     static propTypes = {
         addTab: PropTypes.func.isRequired,
@@ -179,6 +182,7 @@ class Dashboard extends React.PureComponent {
 
     goHome = event => {
         const { addTab, setCurrentTab, router: { currentActionTab = "", actionTabs = [] } = {} } = this.props;
+        const { config = {} } = this.context;
         if (currentActionTab === "mainModule") return;
 
         if (config.tabsLimit <= actionTabs.length)
@@ -191,7 +195,7 @@ class Dashboard extends React.PureComponent {
 
     goCabinet = event => {
         const { addTab, setCurrentTab, router: { currentActionTab = "", actionTabs = [] } = {} } = this.props;
-
+        const { config = {} } = this.context;
         if (currentActionTab === "cabinetModule") return;
 
         if (config.tabsLimit <= actionTabs.length)
@@ -204,6 +208,7 @@ class Dashboard extends React.PureComponent {
 
     menuHandler = (event, key, mode = "open") => {
         const path = event["key"] ? event["key"] : key;
+        const { config = {} } = this.context;
         const { router: { currentActionTab, actionTabs = [] } = {}, addTab, setCurrentTab, removeTab } = this.props;
 
         const actionTabsCopy = [...actionTabs];
@@ -272,6 +277,7 @@ class Dashboard extends React.PureComponent {
             udata = {},
             setCurrentTab
         } = this.props;
+        const { config = {} } = this.context;
 
         if (redirect) return <Redirect to={{ pathname: "/" }} />;
 

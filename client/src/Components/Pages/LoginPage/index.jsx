@@ -1,15 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
-import axios from "axios";
 import { Redirect, NavLink } from "react-router-dom";
 import { Button, Input } from "antd";
 import { connect } from "react-redux";
 import { showGuile, loadUdata } from "../../../Redux/actions/publicActions";
 import { addTabAction, setActiveTabAction } from "../../../Redux/actions/routerActions";
-import config from "../../../config.json";
 
 import Logo from "../../Logo";
 import ModalWindow from "../../ModalWindow";
+import modelContext from '../../../Models/context';
 
 class LoginPage extends React.Component {
     state = {
@@ -18,6 +17,8 @@ class LoginPage extends React.Component {
         redirect: false,
         errorMessage: null
     };
+
+    static contextType = modelContext;
 
     static propTypes = {
         addTab: PropTypes.func.isRequired,
@@ -28,15 +29,18 @@ class LoginPage extends React.Component {
         const {
             onShowGuide = null,
             addTab,
-            rest,
             router: { currentActionTab = "" } = {},
             onLoadUdata,
             setCurrentTab
         } = this.props;
+
+        const { Request, config = {} } = this.context;
+
         const { state: { value: login = "" } = {} } = this.login || {};
         const { state: { value: password = "" } = {} } = this.password || {};
 
         if (login && password) {
+            const rest = new Request();
             this.setState({ errorMessage: null, loading: true });
             rest.sendRequest(
                 "/login",
@@ -93,6 +97,7 @@ class LoginPage extends React.Component {
         const { refLogin, refPassword, enterLoading } = this;
         const { authLoad = false } = this.props;
         const { loading, errorMessage, loginAuth } = this.state;
+        const { config = {} } = this.context;
 
         if (authLoad || loginAuth) return <Redirect to="/dashboard" />;
 

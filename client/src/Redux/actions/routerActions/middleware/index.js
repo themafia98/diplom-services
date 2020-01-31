@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { USER_SCHEMA, TASK_SCHEMA, TASK_CONTROLL_JURNAL_SCHEMA } from "../../../../Utils/schema/const";
+import { USER_SCHEMA, TASK_SCHEMA, TASK_CONTROLL_JURNAL_SCHEMA } from "../../../../Models/Schema/const";
 import { saveComponentStateAction, loadFlagAction } from "../";
 import { errorRequstAction, setStatus } from "../../publicActions";
 
@@ -12,7 +12,7 @@ export const loadCurrentData = ({
     methodQuery = "all",
     xhrPath = "list",
     noCorsClient = false,
-}) => async (dispatch, getState, { getSchema, request, clientDB }) => {
+}) => async (dispatch, getState, { /* getSchema require Schema model */ request, clientDB }) => {
 
     const primaryKey = "uuid";
     const pathValid = path.includes("_") ? path.split("_")[0] : path.split("__")[0];
@@ -85,7 +85,9 @@ export const loadCurrentData = ({
                                     ? TASK_SCHEMA
                                     : null;
 
-                    let storeCopyValid = copyStore.map(it => getSchema(schema, it)).filter(Boolean);
+                    // let storeCopyValid = copyStore.map(it => getSchema(schema, it)).filter(Boolean);
+                    let storeCopyValid = copyStore;
+
 
                     // storeCopyValid.forEach(it => {
                     //     clientDB.updateItem(storeLoad, it);
@@ -154,7 +156,8 @@ export const loadCurrentData = ({
                             ? TASK_SCHEMA
                             : null;
 
-            const itemsCopy = result.map(it => getSchema(schema, it)).filter(Boolean);
+            //const itemsCopy = result.map(it => getSchema(schema, it)).filter(Boolean);
+            const itemsCopy = result; /** require Schema model */
             dispatch(
                 saveComponentStateAction({ [storeLoad]: itemsCopy, load: true, path: pathValid, mode: "offline" })
             );

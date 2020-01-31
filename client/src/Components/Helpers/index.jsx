@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import _ from "lodash";
 import PropTypes from "prop-types";
 import { Route, Redirect } from "react-router-dom";
 import Loader from "../Loader";
+import modelsContext from "../../Models/context";
 
-export const PrivateRoute = ({ component: Component, rest, onLogoutAction, ...routeProps }) => {
+export const PrivateRoute = ({ component: Component, onLogoutAction, ...routeProps }) => {
     let timer = null;
     let counterError = 0;
+    const { rest } = useContext(modelsContext);
+
     const [route, setRoute] = useState(<Loader />);
     const [status, setStatus] = useState(null);
     const [init, setInit] = useState(null);

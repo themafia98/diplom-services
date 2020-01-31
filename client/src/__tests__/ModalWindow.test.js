@@ -8,7 +8,7 @@ describe("<ModalWindow />", () => {
     test("Should works with mode", () => {
         const props = {
             firebase: {},
-            onCaching: () => {},
+            onCaching: () => { },
             primaryKey: "",
             routeDataActive: {},
             mode: "reg",
@@ -16,14 +16,14 @@ describe("<ModalWindow />", () => {
             typeRequst: "",
             keyTask: "",
             accessStatus: ["Открыт", "Выполнен", "Закрыт", "В работе"],
-            onUpdate: () => {},
-            onEdit: () => {},
-            onRejectEdit: () => {},
+            onUpdate: () => { },
+            onEdit: () => { },
+            onRejectEdit: () => { },
             modeControll: "",
             editableContent: "",
             modeEditContent: false,
-            onCancelEditModeContent: () => {},
-            onUpdateEditable: () => {},
+            onCancelEditModeContent: () => { },
+            onUpdateEditable: () => { },
             statusTaskValue: "В работе",
         };
         const ModalWindowWrapper = mount(<ModalWindow {...props} />);

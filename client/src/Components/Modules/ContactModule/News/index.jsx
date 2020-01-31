@@ -2,7 +2,6 @@ import React from "react";
 import { connect } from "react-redux";
 import { Pagination, Button, message, Empty } from "antd";
 
-import config from "../../../../config.json";
 import Scrollbars from "react-custom-scrollbars";
 import { setActiveTabAction, openPageWithDataAction } from "../../../../Redux/actions/routerActions";
 import { middlewareCaching } from "../../../../Redux/actions/publicActions/middleware";
@@ -12,6 +11,8 @@ import NewsCard from "./NewsCard";
 import TitleModule from "../../../TitleModule";
 
 import { routePathNormalise } from "../../../../Utils";
+
+import modelContext from "../../../../Models/context";
 
 class News extends React.PureComponent {
     state = {
@@ -23,6 +24,8 @@ class News extends React.PureComponent {
 
         load: false
     };
+
+    static contextType = modelContext;
 
     componentDidUpdate = () => {
         const { load, isLoading } = this.state;
@@ -38,6 +41,7 @@ class News extends React.PureComponent {
         const { onOpenPageWithData, router: { actionTabs = [] } = {}, setCurrentTab } = this.props;
         const moduleId = "createNews";
         const page = "contactModule";
+        const { config = {} } = this.context;
 
         const routeNormalize = routePathNormalise({
             pathData: { page, moduleId }
@@ -58,6 +62,7 @@ class News extends React.PureComponent {
 
     onOpen = key => {
         const { onOpenPageWithData, router: { actionTabs = [] } = {}, setCurrentTab, data = {} } = this.props;
+        const { config = {} } = this.context;
         let listdata = data && data.news && Array.isArray(data.news) ? [...data.news] : [];
         const moduleId = "informationPage";
         const page = "contactModule";

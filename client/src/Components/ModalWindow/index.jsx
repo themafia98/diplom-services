@@ -6,8 +6,9 @@ import moment from "moment";
 import { Modal, Button, Dropdown, Icon, Menu, Input, DatePicker, message, Select } from "antd";
 import uuid from "uuid/v4";
 
-import { getSchema } from "../../Utils";
-import { TASK_CONTROLL_JURNAL_SCHEMA } from "../../Utils/schema/const";
+/** require Schema model */
+// import { getSchema } from "../../Utils";
+import { TASK_CONTROLL_JURNAL_SCHEMA } from "../../Models/Schema/const";
 
 import RegistrationModal from "./RegistrationModal";
 import Textarea from "../Textarea";
@@ -293,19 +294,19 @@ class ModalWindow extends React.PureComponent {
         }
         if (!_valid) return _valid;
 
-        const validData = getSchema(
-            TASK_CONTROLL_JURNAL_SCHEMA,
-            {
-                key: keyTask,
-                timeLost: timeLost,
-                id: null,
-                editor: "Павел Петрович",
-                date: date,
-                description: description
-            },
-            "no-strict"
-        );
-        if (validData) return _valid;
+        // const validData = getSchema(
+        //     TASK_CONTROLL_JURNAL_SCHEMA,
+        //     {
+        //         key: keyTask,
+        //         timeLost: timeLost,
+        //         id: null,
+        //         editor: "Павел Петрович",
+        //         date: date,
+        //         description: description
+        //     },
+        //     "no-strict"
+        // );
+        if (true) return _valid;
         else return false;
     };
 
@@ -366,8 +367,8 @@ class ModalWindow extends React.PureComponent {
                         {mode === "reg" ? (
                             <RegistrationModal cbOnChange={this.onChange} cbOnChangeSelect={this.onChangeSelect} />
                         ) : (
-                            <div></div>
-                        )}
+                                <div></div>
+                            )}
                     </Modal>
                 </React.Fragment>
             );
@@ -435,10 +436,10 @@ class ModalWindow extends React.PureComponent {
                                                 {statusTaskValue}
                                             </Option>
                                         ) : (
-                                            <Option key={i + status} value={status}>
-                                                {status}
-                                            </Option>
-                                        )
+                                                <Option key={i + status} value={status}>
+                                                    {status}
+                                                </Option>
+                                            )
                                     )}
                                 </Select>
                             </Modal>
@@ -523,8 +524,8 @@ class ModalWindow extends React.PureComponent {
                                     />
                                 </Modal>
                             ) : (
-                                <Modal></Modal>
-                            )}
+                                        <Modal></Modal>
+                                    )}
                         </React.Fragment>
                     );
                 }

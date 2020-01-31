@@ -93,7 +93,7 @@ class Request {
                 const testRequst = new XMLHttpRequest();
                 const api = this.getTestAPI(true);
                 testRequst.open("GET", api);
-                testRequst.onload = function() {
+                testRequst.onload = function () {
                     if (this.status === 200 || this.status === 204) {
                         resolve("online");
                     } else {
@@ -122,17 +122,17 @@ class Request {
     sendRequest(url, method, body, auth = false, customHeaders = {}) {
         const props = auth
             ? {
-                  headers: {
-                      Authorization: this.getToken(auth)
-                  },
-                  data: body
-              }
+                headers: {
+                    Authorization: this.getToken(auth)
+                },
+                data: body
+            }
             : {
-                  headers: {
-                      ...customHeaders
-                  },
-                  data: body ? body : null
-              };
+                headers: {
+                    ...customHeaders
+                },
+                data: body ? body : null
+            };
         if ((_.isNull(props.headers.Authorization) && auth) || (!props.headers.Authorization && auth)) {
             return this.signOut();
         }

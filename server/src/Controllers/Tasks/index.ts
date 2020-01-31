@@ -113,7 +113,9 @@ namespace Tasks {
                         });
                     }
 
-                    const metadata: ArrayLike<object> = Utils.parsePublicData(<any>[data]);
+                    const meta = <ArrayLike<object>>Utils.parsePublicData(<any>[data]);
+
+                    const metadata: ArrayLike<object> = Array.isArray(meta) && meta[0] ? meta[0] : null;
 
                     return res.json({
                         action: "done",

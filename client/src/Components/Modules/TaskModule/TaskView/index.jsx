@@ -6,8 +6,9 @@ import { Descriptions, Empty, Input, Select, DatePicker, message } from "antd";
 import { connect } from "react-redux";
 import Scrollbars from "react-custom-scrollbars";
 
-import { getSchema } from "../../../../Utils/index";
-import { TASK_SCHEMA } from "../../../../Utils/schema/const";
+/** require Schema model */
+//import { getSchema } from "../../../../Utils/index";
+import { TASK_SCHEMA } from "../../../../Models/Schema/const";
 
 import { middlewareCaching, middlewareUpdate } from "../../../../Redux/actions/publicActions/middleware";
 
@@ -179,7 +180,8 @@ class TaskView extends React.PureComponent {
         const { onUpdate, router: { routeDataActive = {} } = {} } = this.props;
         const { modeControllEdit = {} } = this.state;
         const validHashCopy = [{ ...modeControllEdit }];
-        const validHash = validHashCopy.map(it => getSchema(TASK_SCHEMA, it, "no-strict")).filter(Boolean)[0];
+        //const validHash = validHashCopy.map(it => getSchema(TASK_SCHEMA, it, "no-strict")).filter(Boolean)[0];
+        const validHash = validHashCopy;
 
         if (validHash)
             onUpdate(
@@ -243,8 +245,8 @@ class TaskView extends React.PureComponent {
                             {item && item.date && date !== "Invalid date"
                                 ? date
                                 : item[0]
-                                ? item[0].date
-                                : "не установлено"}
+                                    ? item[0].date
+                                    : "не установлено"}
                         </p>
                         <p>
                             <span className="title">Коментарии:</span>
@@ -253,10 +255,10 @@ class TaskView extends React.PureComponent {
                             {item && item.description
                                 ? item.description
                                 : Array.isArray(item)
-                                ? item[0] && item[0].description
-                                    ? item[0].description
-                                    : "не установлено"
-                                : "не установлено"}
+                                    ? item[0] && item[0].description
+                                        ? item[0].description
+                                        : "не установлено"
+                                    : "не установлено"}
                         </p>
                     </div>
                 );
@@ -311,10 +313,10 @@ class TaskView extends React.PureComponent {
             ? status === "Выполнен"
                 ? "done"
                 : status === "Закрыт"
-                ? "close"
-                : status === "В работе"
-                ? "active"
-                : null
+                    ? "close"
+                    : status === "В работе"
+                        ? "active"
+                        : null
             : null;
 
         if (key) {
@@ -409,8 +411,8 @@ class TaskView extends React.PureComponent {
                                                 {Array.isArray(editor) && editor.length === 1
                                                     ? editor
                                                     : Array.isArray(editor) && editor.length > 1
-                                                    ? editor.join(",")
-                                                    : null}
+                                                        ? editor.join(",")
+                                                        : null}
                                             </Output>
                                         ) : modeControll === "edit" && modeControllEdit ? (
                                             <Select
@@ -441,8 +443,8 @@ class TaskView extends React.PureComponent {
                                                     modeControllEdit.date && modeControllEdit.date[0]
                                                         ? modeControllEdit.date[0]
                                                         : date[0]
-                                                        ? date[0]
-                                                        : moment(),
+                                                            ? date[0]
+                                                            : moment(),
                                                     "DD.MM.YYYY"
                                                 )}
                                                 className="dateStartEdit"
@@ -461,8 +463,8 @@ class TaskView extends React.PureComponent {
                                                     modeControllEdit.date && modeControllEdit.date[1]
                                                         ? modeControllEdit.date[1]
                                                         : date[1]
-                                                        ? date[1]
-                                                        : moment(),
+                                                            ? date[1]
+                                                            : moment(),
                                                     "DD.MM.YYYY"
                                                 )}
                                                 className="dateEndEdit"
@@ -507,8 +509,8 @@ class TaskView extends React.PureComponent {
                                 {!jurnalDataKeys ? (
                                     <Empty description={<span>Нету данных в журнале</span>} />
                                 ) : (
-                                    this.renderWorkJurnal(jurnalDataKeys)
-                                )}
+                                        this.renderWorkJurnal(jurnalDataKeys)
+                                    )}
                             </Scrollbars>
                         </div>
                     </div>

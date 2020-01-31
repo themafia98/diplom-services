@@ -3,9 +3,6 @@ import "core-js/features";
 /** --------------------- */
 
 import React from "react";
-import { IntlProvider } from "react-intl";
-import { BrowserRouter } from "react-router-dom";
-import { Provider } from "react-redux";
 import ReactDOM from "react-dom";
 
 import "normalize.css";
@@ -15,23 +12,19 @@ import "./Utils/styles/fontello.css";
 
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-import ErrorBoundary from "./Components/ErrorBoundary";
-import store from "./Redux/store";
 
-import Request from './Utils/xhr';
+import Root from './Root';
+import ModelContext, { modelMethods } from './Models/context';
+
 
 require("es6-promise").polyfill();
 
 ReactDOM.render(
-    <BrowserRouter basename={"/"}>
-        <ErrorBoundary>
-            <Provider store={store}>
-                <IntlProvider locale={"ru"}>
-                    <App rest = {new Request()} />
-                </IntlProvider>
-            </Provider>
-        </ErrorBoundary>
-    </BrowserRouter>,
+    <Root>
+        <ModelContext.Provider value={modelMethods}>
+            <App />
+        </ModelContext.Provider>
+    </Root>,
     document.getElementById("root")
 );
 

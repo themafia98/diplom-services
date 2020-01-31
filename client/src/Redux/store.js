@@ -1,6 +1,7 @@
 import { createStore, applyMiddleware, compose } from "redux";
-import { getSchema, Request } from "../Utils";
-import clientDB from "../clientDB";
+import { /* getSchema, */ Request } from "../Utils";
+/** require Schema model and ClientSideDatabase */
+//import clientDB from "../Models/ClientSideDatabase";
 import thunk from "redux-thunk";
 import combineReducers from "./reducers";
 
@@ -13,7 +14,7 @@ const composeEnhancers =
 
 const middleware = composeEnhancers(
     /** @Include moddleware */
-    applyMiddleware(thunk.withExtraArgument({ getSchema, request, clientDB }))
+    applyMiddleware(thunk.withExtraArgument({ /* getSchema */request, /* clientDB */ }))
 );
 
 const store = createStore(combineReducers, middleware);

@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import moment from "moment";
 import _ from "lodash";
 import { Icon, Empty, Table, Input, Button, message } from "antd";
-import config from "../../config.json";
+
 import Loader from "../Loader";
 import Scrollbars from "react-custom-scrollbars";
 
@@ -14,12 +14,16 @@ import Output from "../Output";
 import { openPageWithDataAction } from "../../Redux/actions/routerActions";
 import { loadCurrentData } from "../../Redux/actions/routerActions/middleware";
 
+import modelContext from "../../Models/context";
+
 class TableView extends React.Component {
     state = {
         sortedInfo: null,
         searchText: null,
         isScroll: null
     };
+
+    static contextType = modelContext;
 
     static propTypes = {
         setCurrentTab: PropTypes.func,
@@ -94,6 +98,7 @@ class TableView extends React.Component {
             height: heightProps,
             visible
         } = this.props;
+        const { config = {} } = this.context;
         const { routeData } = router;
         const routePathData = router.currentActionTab.split("_")[0];
         const currentData = routeData[routePathData];

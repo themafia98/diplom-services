@@ -1,6 +1,6 @@
 import _ from "lodash";
-import Request from "./xhr";
-import { getValidateSchema, validateSchema } from "./schema";
+import Request from "../Models/Rest";
+import Schema from "../Models/Schema";
 
 /**
  * @return {void} void
@@ -9,27 +9,6 @@ const forceUpdateDetectedInit = () => {
     window.addEventListener("beforeunload", event => {
         event.returnValue = `Are you sure you want to leave?`;
     });
-};
-
-/**
- * @return {Object} valid schema object or null
- * @param {string} type string
- * @param {Object} data string
- * @param {string} mode string
- */
-const getSchema = (type, data, mode = "no-strict") => {
-    if (!_.isObject(data)) return null;
-    if (!_.isString(type)) return null;
-    if (_.isNull(data)) return null;
-    let keysSchema = null;
-    const keysData = Object.keys(data);
-
-    const schema = getValidateSchema(type);
-    if (schema) keysSchema = Object.keys(schema);
-    else return null;
-
-    if (validateSchema(keysData, keysSchema, mode)) return { ...data };
-    else return null;
 };
 
 /**
@@ -86,4 +65,4 @@ export const routePathNormalise = ({ pathType = "module", pathData: { page = "",
     }
 };
 
-export { forceUpdateDetectedInit, getSchema, Request };
+export { forceUpdateDetectedInit, /* getSchema */ Request };

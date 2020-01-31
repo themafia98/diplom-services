@@ -6,7 +6,6 @@ import RenderInBrowser from "react-render-in-browser";
 import { Switch, Route } from "react-router-dom";
 import { message } from "antd";
 import { PrivateRoute } from "./Components/Helpers";
-import config from "./config.json";
 import { forceUpdateDetectedInit } from "./Utils";
 
 //import * as Sentry from "@sentry/browser";
@@ -21,6 +20,7 @@ import Recovery from "./Components/Pages/Recovery";
 import LoginPage from "./Components/Pages/LoginPage";
 import Dashboard from "./Components/Pages/Dashboard";
 import "moment/locale/ru";
+import modelContext from './Models/context';
 // import { isMobile } from "react-device-detect";
 
 class App extends React.Component {
@@ -28,6 +28,8 @@ class App extends React.Component {
         loadState: false,
         isUser: false
     };
+
+    static contextType = modelContext;
 
     static propTypes = {
         addTab: PropTypes.func.isRequired,
@@ -40,13 +42,15 @@ class App extends React.Component {
         const {
             addTab,
             setCurrentTab,
-            rest,
             router: { currentActionTab = "", actionTabs = [] } = {},
             udata,
             onLoadUdata
         } = this.props;
+        const { config = {}, Request } = this.context;
 
         return this.setState({ authLoad: true, loadState: true }, () => {
+            const rest = new Request();
+
             rest.sendRequest("/userload", "POST", null, true)
                 .then(res => {
                     let path = "mainModule";
@@ -55,7 +59,7 @@ class App extends React.Component {
 
                     const actionTabsCopy = [...actionTabs];
                     const isFind = actionTabsCopy.findIndex(tab => tab === path) !== -1;
-                    debugger;
+
                     const udata = Object.keys(res.data["user"]).reduce((accumulator, key) => {
                         if (key !== "token") {
                             accumulator[key] = res.data["user"][key];
@@ -84,7 +88,8 @@ class App extends React.Component {
     };
 
     componentDidMount = () => {
-        const { rest } = this.props;
+        const { config = {}, Request } = this.context;
+        const rest = new Request();
         rest.authCheck()
             .then(res => {
                 if (res.status === 200) {
@@ -101,7 +106,7 @@ class App extends React.Component {
 
     render() {
         const { loadState, authLoad } = this.state;
-        const { rest, onLogoutAction } = this.props;
+        const { onLogoutAction } = this.props;
         if (loadState) {
             return (
                 <React.Fragment>
@@ -117,13 +122,12 @@ class App extends React.Component {
                             <Route
                                 exact
                                 path="/"
-                                render={props => <LoginPage rest={rest} {...props} authLoad={authLoad} />}
+                                render={props => <LoginPage {...props} authLoad={authLoad} />}
                             />
                             <Route exact path="/recovory" render={props => <Recovery {...props} />} />
                             <PrivateRoute
                                 exact
                                 path="/dashboard"
-                                rest={rest}
                                 onLogoutAction={onLogoutAction}
                                 component={Dashboard}
                             />

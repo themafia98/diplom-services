@@ -1,15 +1,16 @@
 import _ from "lodash";
-import config from "../config.json";
-import { TASK_SCHEMA, USER_SCHEMA, TASK_CONTROLL_JURNAL_SCHEMA } from "../Utils/schema/const";
-import { getValidateSchema } from "../Utils/schema";
+import config from "../../config.json";
+import { TASK_SCHEMA, USER_SCHEMA, TASK_CONTROLL_JURNAL_SCHEMA } from "../Schema/const";
+import Schema from "../Schema";
 
-class ClientDB {
+class ClientSideDatabase {
     constructor(name, version) {
         this.db = null;
         this.name = name;
         this.version = version;
         this.isInit = false;
         this.crashStatus = false;
+        this.schema = new Schema("no-strict");
     }
 
     updateStateInit(state) {
@@ -33,7 +34,7 @@ class ClientDB {
             let requestOpen = indexedDatabase.open(this.name, this.version);
             requestOpen.onsuccess = event => {
                 this.db = event.target.result;
-                this.db.onversionchange = function() {
+                this.db.onversionchange = function () {
                     this.db.close();
                     alert("Offline data deprecated, please update page for updating storage.");
                 };
@@ -80,16 +81,16 @@ class ClientDB {
                 const objectStoreUsers =
                     !isUsersObject && !newVersionUpdate
                         ? db.createObjectStore("users", {
-                              unique: true,
-                              keyPath: "_id",
-                              autoIncrement: true
-                          })
+                            unique: true,
+                            keyPath: "_id",
+                            autoIncrement: true
+                        })
                         : newVersionUpdate
-                        ? requestOpen.transaction.objectStore("users")
-                        : null;
+                            ? requestOpen.transaction.objectStore("users")
+                            : null;
 
                 if (!isUsersObject) {
-                    const schemaUsers = getValidateSchema(USER_SCHEMA);
+                    const schemaUsers = this.schema.getValidateSchema(USER_SCHEMA);
                     const keysUsers = Object.keys(schemaUsers);
 
                     keysUsers.forEach((key, i) => {
@@ -107,16 +108,16 @@ class ClientDB {
                 const objectStoreTasks =
                     !isTasksObject && !newVersionUpdate
                         ? db.createObjectStore("tasks", {
-                              unique: true,
-                              keyPath: "key",
-                              autoIncrement: true
-                          })
+                            unique: true,
+                            keyPath: "key",
+                            autoIncrement: true
+                        })
                         : newVersionUpdate
-                        ? requestOpen.transaction.objectStore("tasks")
-                        : null;
+                            ? requestOpen.transaction.objectStore("tasks")
+                            : null;
 
                 if (!isTasksObject) {
-                    const schemaTasks = getValidateSchema(TASK_SCHEMA);
+                    const schemaTasks = this.schema.getValidateSchema(TASK_SCHEMA);
                     const keysTasks = Object.keys(schemaTasks);
 
                     keysTasks.forEach((key, i) => {
@@ -134,16 +135,16 @@ class ClientDB {
                 const objectStoreJurnalWork =
                     !isJurnalWorkObject && !newVersionUpdate
                         ? db.createObjectStore("jurnalWork", {
-                              unique: true,
-                              keyPath: "id",
-                              autoIncrement: true
-                          })
+                            unique: true,
+                            keyPath: "id",
+                            autoIncrement: true
+                        })
                         : newVersionUpdate
-                        ? requestOpen.transaction.objectStore("jurnalWork")
-                        : null;
+                            ? requestOpen.transaction.objectStore("jurnalWork")
+                            : null;
 
                 if (!isJurnalWorkObject) {
-                    const schemaJurnalWork = getValidateSchema(TASK_CONTROLL_JURNAL_SCHEMA);
+                    const schemaJurnalWork = this.schema.getValidateSchema(TASK_CONTROLL_JURNAL_SCHEMA);
                     const keysJurnalWork = Object.keys(schemaJurnalWork);
 
                     keysJurnalWork.forEach((key, i) => {
@@ -318,7 +319,8 @@ class ClientDB {
 
 let clientDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
 if (clientDB) {
-    clientDB = new ClientDB(config.clientDB["name"], config.clientDB["version"]);
+    clientDB = new ClientSideDatabase(config.clientDB["name"], config.clientDB["version"]);
     clientDB.init();
 }
-export default clientDB;
+export { clientDB };
+export default ClientSideDatabase;

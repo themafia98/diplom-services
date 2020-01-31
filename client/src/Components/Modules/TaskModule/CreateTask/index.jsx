@@ -1,7 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import _ from "lodash";
-import clientDB from "../../../../clientDB";
+/** requer ClientSideDatabase */
+//import ClientSideDatabase from "../../../../Models/ClientSideDatabase";
 import Scrollbars from "react-custom-scrollbars";
 import TitleModule from "../../../TitleModule";
 import moment from "moment";
@@ -11,13 +12,12 @@ import Textarea from "../../../Textarea";
 import File from "../../../File";
 import uuid from "uuid/v4";
 
-
-
 import { routePathNormalise, routeParser } from "../../../../Utils";
-import config from '../../../../config.json';
+import modelContext from "../../../../Models/context";
 
-import { getSchema } from "../../../../Utils/index";
-import { CREATE_TASK_SCHEMA } from "../../../../Utils/schema/const";
+/** require Schema model */
+// import { getSchema } from "../../../../Utils/index";
+import { CREATE_TASK_SCHEMA } from "../../../../Models/Schema/const";
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -38,6 +38,8 @@ class CreateTask extends React.PureComponent {
         },
         errorBundle: {}
     };
+
+    static contextType = modelContext;
 
     static propTypes = {
         height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -146,24 +148,35 @@ class CreateTask extends React.PureComponent {
 
     offlineMode = validHash => {
         const offlineValidHash = { ...validHash, modeAdd: "offline" };
-        const putAction = clientDB.addItem("tasks", offlineValidHash);
-        putAction.onsuccess = event => {
-            this.setState({ ...this.state, card: { ...this.state.card, key: uuid() }, load: false }, () =>
-                message.success(`Задача создана.`)
-            );
-        };
+        // ClientSideDatabase require */
+        // const putAction = clientDB.addItem("tasks", offlineValidHash);
+        const putAction = false;
+        if (putAction)
+            putAction.onsuccess = event => {
+                this.setState({ ...this.state, card: { ...this.state.card, key: uuid() }, load: false }, () =>
+                    message.success(`Задача создана.`)
+                );
+            };
     };
 
     handlerCreateTask = async (event) => {
-        const { rest, statusApp = "", onLoadCurrentData, onOpenPageWithData,
+        const { statusApp = "", onLoadCurrentData, onOpenPageWithData,
             router: { currentActionTab: path, actionTabs = [] },
             setCurrentTab, removeTab } = this.props;
+        const { config = {}, Request } = this.context;
+
         if (!this.validation()) return;
+
         let keys = Object.keys(this.state.card);
+
         if (keys.every(key => _.isNull(this.state.card[key]))) return;
+
         const validHashCopy = [{ ...this.state.card }];
-        const validHash = validHashCopy.map(it => getSchema(CREATE_TASK_SCHEMA, it, "no-strict")).filter(Boolean)[0];
+        //const validHash = validHashCopy.map(it => getSchema(CREATE_TASK_SCHEMA, it, "no-strict")).filter(Boolean)[0];
+        const validHash = validHashCopy;
+
         if (!validHash) return message.error("Не валидные данные.");
+
         const parseDateArray = [];
 
         if (parseDateArray.length) validHash.date = parseDateArray;
@@ -174,59 +187,59 @@ class CreateTask extends React.PureComponent {
 
             try {
 
-                if (!rest && statusApp === "offline") this.offlineMode(validHash);
-                else if (rest) {
+                if (statusApp === "offline") this.offlineMode(validHash);
 
-                    const res = await rest.sendRequest("/tasks/createTask", "POST", validHash, true);
+                const request = new Request();
+                const res = await request.sendRequest("/tasks/createTask", "POST", validHash, true);
 
-                    if (res.status !== 200) {
-                        console.error(res);
-                        throw new Error("Bad response");
-                    }
-
-                    const { data: { response: { done = false, metadata = "" } = {} } } = res || {};
-
-                    if (!done) {
-                        throw new Error(typeof metadata === "string" ? metadata : "Error create task");
-                    }
-
-                    this.setState({
-                        ...this.state,
-                        card: { ...this.state.card, key: uuid() },
-                        load: false
-                    }, () => {
-                        message.success(`Задача создана.`);
-
-                        const { key = "" } = metadata[0] || {};
-                        if (!key) return;
-
-                        if (config.tabsLimit <= actionTabs.length)
-                            return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
-
-                        const { moduleId = "", page = "" } = routeParser({ path });
-                        if (!moduleId || !page) return;
-
-                        const index = actionTabs.findIndex(tab => tab.includes(page) && tab.includes(key));
-                        const isFind = index !== -1;
-
-                        let type = "deafult";
-                        if (path.split("__")[1]) type = "itemTab";
-
-                        removeTab({ path, type: type });
-
-                        if (!isFind) {
-                            onOpenPageWithData({
-                                activePage: routePathNormalise({
-                                    pathType: "moduleItem",
-                                    pathData: { page, moduleId, key }
-                                }),
-                                routeDataActive: metadata[0] || {}
-                            });
-                        } else {
-                            setCurrentTab(actionTabs[index]);
-                        }
-                    });
+                if (res.status !== 200) {
+                    console.error(res);
+                    throw new Error("Bad response");
                 }
+
+                const { data: { response: { done = false, metadata = [] } = {} } } = res || {};
+
+                if (!done) {
+                    throw new Error(typeof metadata === "string" ? metadata : "Error create task");
+                }
+
+                this.setState({
+                    ...this.state,
+                    card: { ...this.state.card, key: uuid() },
+                    load: false
+                }, () => {
+                    message.success(`Задача создана.`);
+
+                    const { key = "" } = metadata[0] || {};
+                    if (!key) return;
+
+                    if (config.tabsLimit <= actionTabs.length)
+                        return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
+
+                    const { moduleId = "", page = "" } = routeParser({ path });
+                    if (!moduleId || !page) return;
+
+                    const index = actionTabs.findIndex(tab => tab.includes(page) && tab.includes(key));
+                    const isFind = index !== -1;
+
+                    let type = "deafult";
+                    if (path.split("__")[1]) type = "itemTab";
+
+                    removeTab({ path, type: type });
+
+                    if (!isFind) {
+                        onOpenPageWithData({
+                            activePage: routePathNormalise({
+                                pathType: "moduleItem",
+                                pathData: { page, moduleId, key }
+                            }),
+                            routeDataActive: metadata[0] || {}
+                        });
+                    } else {
+                        setCurrentTab(actionTabs[index]);
+                    }
+                });
+
 
                 // if (rest)
                 //     rest.sendRequest("/tasks/createTask", "POST", validHash, true)

@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import _ from "lodash";
-import config from "../../../config.json";
+
 import { connect } from "react-redux";
 import Scrollbars from "react-custom-scrollbars";
 import { Button, message } from "antd";
@@ -17,11 +17,15 @@ import TaskModuleMyList from "./TaskModuleMyList";
 import TaskView from "./TaskView";
 import CreateTask from "./CreateTask";
 
+import modelContext from '../../../Models/context';
+
 class TaskModule extends React.PureComponent {
     state = {
         height: null,
         heightController: null
     };
+
+    static contextType = modelContext;
 
     static propTypes = {
         onErrorRequstAction: PropTypes.func.isRequired,
@@ -80,6 +84,7 @@ class TaskModule extends React.PureComponent {
             setCurrentTab,
             router: { currentActionTab, actionTabs }
         } = this.props;
+        const { config = {} } = this.context;
 
         if (currentActionTab !== "taskModule_createTask") {
             if (config.tabsLimit <= actionTabs.length)

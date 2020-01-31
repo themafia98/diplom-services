@@ -5,9 +5,10 @@ import Scrollbars from "react-custom-scrollbars";
 import moment from "moment";
 import TitleModule from "../../../TitleModule";
 import { Calendar, Popover, Button, message } from "antd";
-import config from "../../../../config.json";
-import { routePathNormalise } from "../../../../Utils";
 
+import modelContext from "../../../../Models/context";
+
+import { routePathNormalise } from "../../../../Utils";
 import Output from "../../../Output";
 
 class TaskModuleCalendar extends React.PureComponent {
@@ -18,12 +19,15 @@ class TaskModuleCalendar extends React.PureComponent {
         router: PropTypes.object.isRequired
     };
 
+    static contextType = modelContext;
+
     onClick = event => {
         const {
             onOpenPageWithData,
             router: { routeData = {}, currentActionTab = "", actionTabs = [] } = {},
             setCurrentTab
         } = this.props;
+        const { config = {} } = this.context;
         const { tasks = [] } = routeData[currentActionTab] || routeData["taskModule"] || {};
         const { currentTarget } = event;
         const record = currentTarget.className;

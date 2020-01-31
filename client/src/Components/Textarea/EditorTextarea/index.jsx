@@ -2,7 +2,8 @@ import React from "react";
 import { convertFromRaw } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import _ from "lodash";
-import { getEditorJSON } from "../../../Utils/schema";
+// import { getEditorJSON } from "../../../Models/Schema";
+/** require Schema model */
 import "../../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { Button, notification } from "antd";
 
@@ -23,14 +24,14 @@ class EditorTextarea extends React.Component {
     componentDidUpdate = () => {
         const { clear = false, clearStatus = null, readOnly = false } = this.props;
         if (clear && !readOnly) {
-            this.setState(
-                {
-                    contentState: convertFromRaw(getEditorJSON())
-                },
-                () => {
-                    if (clearStatus) clearStatus(false);
-                }
-            );
+            // this.setState(
+            //     {
+            //         contentState: convertFromRaw(getEditorJSON())
+            //     },
+            //     () => {
+            //         if (clearStatus) clearStatus(false);
+            //     }
+            // );
         }
     };
 
@@ -47,8 +48,8 @@ class EditorTextarea extends React.Component {
         const readOnlyProps =
             readOnly && contentState
                 ? {
-                      contentState
-                  }
+                    contentState
+                }
                 : {};
 
         return (
