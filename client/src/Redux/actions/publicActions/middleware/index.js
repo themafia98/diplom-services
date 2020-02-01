@@ -4,7 +4,7 @@ import { updateItemStateAction } from "../../routerActions";
 import { TASK_CONTROLL_JURNAL_SCHEMA, USER_SCHEMA, TASK_SCHEMA } from "../../../../Models/Schema/const";
 
 const middlewareCaching = (props) => (dispatch, getState, schema, Request, clientDB) => {
-    const { data, primaryKey, type = "GET", pk = null, store = "" } = props;
+    const { data, primaryKey, type = "GET", pk = null, store = "", actionType = "default" } = props;
     const { requestError, status = "online" } = getState().publicReducer;
 
 };
@@ -18,104 +18,9 @@ const middlewareUpdate = (props) => async (dispatch, getState, { schema, Request
         updateField = "",
         item = {},
         updateItem,
-        store = {}
+        store = {},
+        actionType = "default"
     } = props;
-    // key: "test"
-    // type: "UPDATE"
-    // taskStatus: "Выполнен"
-    // updateField: "status"
-    // item: { editor: Array(1), date: Array(2), comments: Array(0), _id: "5df16c5cccf73419bc1224a8", key: "test", … }
-    // store: "tasks"
-
-    // let updaterItem = null;
-
-    //                                         if (!multiply)
-    //                                             updaterItem = {
-    //                                                 ...doc.data(),
-    //                                                 key: id,
-    //                                                 [updateFild]: updateProp,
-    //                                                 modeAdd: "online"
-    //                                             };
-    //                                         else {
-    //                                             updaterItem = {
-    //                                                 ...doc.data(),
-    //                                                 key: id,
-    //                                                 ...updateProp,
-    //                                                 modeAdd: "online"
-    //                                             };
-    //                                         }
-
-    //                                         const schema =
-    //                                             updateStore === "jurnalWork"
-    //                                                 ? TASK_CONTROLL_JURNAL_SCHEMA
-    //                                                 : updateStore === "users"
-    //                                                     ? USER_SCHEMA
-    //                                                     : updateStore === "tasks"
-    //                                                         ? TASK_SCHEMA
-    //                                                         : null;
-
-    //                                         const storeCopy = [updaterItem]
-    //                                             .map(it => getSchema(schema, it, "no-strict"))
-    //                                             .filter(Boolean);
-
-    //                                         if (storeCopy) {
-    //                                             dispatch(
-    //                                                 updateItemStateAction({
-    //                                                     updaterItem: updaterItem,
-    //                                                     type: findStore || updateStore,
-    //                                                     id: id
-    //                                                 })
-    //                                             );
-
-    //                                             clientDB.updateItem(updateStore, updaterItem); // jurnakWork
-    //                                         }
-    //                                     })
-    //                                     .catch(error => {
-    //                                         if (error.message !== "Network error") return console.error(error.message);
-    //                                         if (status === "offline") return;
-    //                                         dispatch(setStatus({ statusRequst: "offline" }));
-    //                                         dispatch(errorRequstAction(error.message));
-    //                                     });
-    //                             }
-    //                         });
-    //                 })
-    //                 .catch(error => {
-    //                     if (error.message !== "Network error") return console.error(error.message);
-    //                     if (status === "offline") return;
-    //                     dispatch(setStatus({ statusRequst: "offline" }));
-    //                     dispatch(errorRequstAction(error.message));
-    //                 });
-    //     } else if (updateStore && status === "offline") {
-    //         const updaterItem = { ...item, key: id, [updateFild]: updateProp, modeAdd: "offline" };
-    //         const updater = clientDB.updateItem(findStore || updateStore, updaterItem);
-    //         updater.onsuccess = event => {
-
-
-    //             const schema =
-    //                 updateStore === "jurnalWork"
-    //                     ? TASK_CONTROLL_JURNAL_SCHEMA
-    //                     : updateStore === "users"
-    //                         ? USER_SCHEMA
-    //                         : updateStore === "tasks"
-    //                             ? TASK_SCHEMA
-    //                             : null;
-
-    //             const tasksCopy = [updaterItem].map(it => getSchema(schema, it, "no-strict")).filter(Boolean);
-
-    //             if (tasksCopy)
-    //                 dispatch(
-    //                     updateItemStateAction({
-    //                         updaterItem: updaterItem,
-    //                         type: findStore || updateStore,
-    //                         id: id,
-    //                         mode: "offline"
-    //                     })
-    //                 );
-    //         };
-    //     }
-    // } else if (type === "DELETE") {
-
-    console.log(props);
 
     const router = getState().router;
     const { requestError, status = "online" } = getState().publicReducer;
@@ -126,7 +31,7 @@ const middlewareUpdate = (props) => async (dispatch, getState, { schema, Request
 
             case "UPDATE": {
                 try {
-                    const path = `/${store}/update/single`;
+                    const path = actionType === "update_many" ? `/${store}/update/many` : `/${store}/update/single`;
                     const rest = new Request();
 
                     const body = { queryParams: { id, key }, updateItem, updateField };

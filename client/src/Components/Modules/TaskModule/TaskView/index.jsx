@@ -186,11 +186,14 @@ class TaskView extends React.PureComponent {
         const { schema = {} } = this.context;
 
         const validHash = validHashCopy.map(it => schema.getSchema(TASK_SCHEMA, it)).filter(Boolean)[0];
-
+        console.log(validHash);
         if (validHash)
             onUpdate({
                 path,
+                type: "UPDATE",
+                actionType: "update_many",
                 id: modeControllEdit["_id"],
+                key: modeControllEdit["key"] || "",
                 updateItem: { ...validHash },
                 item: { ...routeDataActive },
                 store: "tasks",
@@ -288,7 +291,7 @@ class TaskView extends React.PureComponent {
             date = [],
             description = ""
         } = routeDataActive || {};
-        console.log(routeDataActive);
+
         let jurnalDataKeys = null;
         if (caches && primaryKey && routeDataActive && key) {
             const keys = Object.keys(caches);

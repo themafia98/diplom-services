@@ -52,7 +52,7 @@ class LoginPage extends React.Component {
                 false
             )
                 .then(res => {
-                    console.log(res);
+
                     if (res.status === 200 && res.data && res.data["user"].token) {
                         sessionStorage.setItem("token", JSON.stringify(res.data["user"].token));
                         this.setState({

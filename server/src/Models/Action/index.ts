@@ -43,10 +43,7 @@ namespace Action {
 
 
         public async getActionData(actionParam: ActionParams = {}): Promise<any> {
-
             try {
-
-
                 switch (this.getActionPath()) {
 
                     case "users": {
@@ -66,7 +63,7 @@ namespace Action {
                     case "tasks": {
                         const model: Model<Document> | null = getModelByName("tasks", "task");
                         if (!model) return null;
-
+                        console.log(this.getActionType());
                         if (this.getActionType() === "set_single") {
                             try {
                                 const actionData: Document = await model.create(actionParam);
@@ -75,31 +72,54 @@ namespace Action {
                                 console.error(err);
                                 return null;
                             }
-                        }
+                        } else if (this.getActionType().includes("update_")) {
+                            try {
 
-                        if (this.getActionType() === "update_single") {
+                                /** Params for query */
+                                const { queryParams = {}, updateItem = "" } = actionParam;
+                                const id: string = (<any>queryParams).id;
+                                const key: string = (<any>queryParams).key;
+
+                                let updateProps = {};
+                                let actionData: Document | null = null;
+
+                                if (this.getActionType().includes("single")) {
+
+                                    const updateField: string = (<any>actionParam).updateField;
+                                    (<any>updateProps)[updateField] = <string>updateItem;
+
+                                } else if (this.getActionType().includes("many")) {
+                                    const { updateItem = "" } = actionParam;
+                                    updateProps = updateItem;
+                                }
+
+                                await model.updateOne({ _id: id }, updateProps);
+                                actionData = await model.findById(id);
+
+                                return actionData;
+
+                            } catch (err) {
+                                console.log(err);
+                                return null;
+                            }
+                        } else if (this.getActionType() === "update_fields") {
                             try {
                                 const { queryParams = {}, updateItem = "" } = actionParam;
                                 const id: string = (<any>queryParams).id;
                                 const key: string = (<any>queryParams).key;
 
-                                const updateField: string = (<any>actionParam).updateField;
+                                const updateProps: string = (<any>actionParam).updateProps;
 
-                                const updateProp = {
-                                    [updateField]: updateItem,
-                                };
-
-                                const updateResult = await model.updateOne({ _id: id }, updateProp);
+                                const updateResult = await model.updateOne({ _id: id }, updateProps);
                                 const actionData: Document | null = await model.findById(id);
 
                                 return actionData;
+
                             } catch (err) {
                                 console.log(err);
                                 return null;
                             }
-                        }
-
-                        if (this.getActionType() === "get_all") {
+                        } else if (this.getActionType() === "get_all") {
                             return this.getAll(model, actionParam);
                         }
 
