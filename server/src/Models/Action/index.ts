@@ -102,23 +102,6 @@ namespace Action {
                                 console.log(err);
                                 return null;
                             }
-                        } else if (this.getActionType() === "update_fields") {
-                            try {
-                                const { queryParams = {}, updateItem = "" } = actionParam;
-                                const id: string = (<any>queryParams).id;
-                                const key: string = (<any>queryParams).key;
-
-                                const updateProps: string = (<any>actionParam).updateProps;
-
-                                const updateResult = await model.updateOne({ _id: id }, updateProps);
-                                const actionData: Document | null = await model.findById(id);
-
-                                return actionData;
-
-                            } catch (err) {
-                                console.log(err);
-                                return null;
-                            }
                         } else if (this.getActionType() === "get_all") {
                             return this.getAll(model, actionParam);
                         }
