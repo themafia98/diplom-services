@@ -44,6 +44,7 @@ export interface App extends Application {
 export interface ActionProps {
     actionPath: string;
     actionType: string;
+    body?: object;
 }
 
 export interface Params {

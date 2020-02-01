@@ -179,7 +179,7 @@ class TaskView extends React.PureComponent {
     };
 
     onUpdateEditable = event => {
-        const { onUpdate, router: { routeDataActive = {} } = {} } = this.props;
+        const { onUpdate, router: { routeDataActive = {} } = {}, path = "" } = this.props;
         const { modeControllEdit = {} } = this.state;
         const validHashCopy = [{ ...modeControllEdit }];
         const { schema = {} } = this.context;
@@ -187,16 +187,13 @@ class TaskView extends React.PureComponent {
         const validHash = validHashCopy.map(it => schema.getSchema(TASK_SCHEMA, it)).filter(Boolean)[0];
 
         if (validHash)
-            onUpdate(
-                modeControllEdit.key,
-                "UPDATE",
-                { ...validHash },
-                null,
-                { ...routeDataActive },
-                "tasks",
-                "tasks",
-                true
-            )
+            onUpdate({
+                path,
+                id: modeControllEdit["_id"],
+                updateItem: { ...validHash },
+                item: { ...routeDataActive },
+                store: "tasks",
+            })
                 .then(() => {
                     this.onRejectEdit(event);
                     message.success("Задача обновлена.");
@@ -289,6 +286,7 @@ class TaskView extends React.PureComponent {
             date = [],
             description = ""
         } = routeDataActive || {};
+        console.log(routeDataActive);
         let jurnalDataKeys = null;
         if (caches && primaryKey && routeDataActive && key) {
             const keys = Object.keys(caches);
@@ -534,30 +532,7 @@ const mapDispatchToProps = dispatch => {
     return {
         onCaching: async (data, primaryKey, type, pk, store) =>
             await dispatch(middlewareCaching({ data, primaryKey, type, pk, store })),
-        onUpdate: async (
-            id,
-            type,
-            updateProp,
-            updateFild,
-            item,
-            findStore,
-            updateStore,
-            multiply = false,
-            limitUpdate
-        ) =>
-            await dispatch(
-                middlewareUpdate({
-                    id,
-                    type,
-                    updateProp,
-                    updateFild,
-                    item,
-                    findStore,
-                    updateStore,
-                    multiply,
-                    limitUpdate
-                })
-            )
+        onUpdate: props => dispatch(middlewareUpdate({ ...props }))
     };
 };
 

@@ -28,8 +28,8 @@ export default (state = initialState, action) => {
             const tab = isString
                 ? action.payload
                 : action.payload.pageType === "module"
-                ? `${action.payload.page}${action.payload.moduleId}`
-                : `${action.payload.path}`;
+                    ? `${action.payload.page}${action.payload.moduleId}`
+                    : `${action.payload.path}`;
 
             return {
                 ...state,
@@ -103,15 +103,15 @@ export default (state = initialState, action) => {
         case UPDATE_ITEM: {
             const { routeDataActive } = state;
 
-            const updateCurrent = routeDataActive && routeDataActive.key === action.payload.id ? true : false;
+            const updateCurrent = routeDataActive && routeDataActive._id === action.payload.id ? true : false;
 
             return {
                 ...state,
                 routeDataActive: updateCurrent
                     ? { ...action.payload.updaterItem }
                     : state.routeDataActive
-                    ? { ...state.routeDataActive }
-                    : {},
+                        ? { ...state.routeDataActive }
+                        : {},
                 routeData: {
                     ...state.routeData,
                     [action.payload.id]: { ...action.payload.updaterItem }
@@ -147,8 +147,8 @@ export default (state = initialState, action) => {
                     searchPathContent === "statisticModule"
                         ? "taskModule"
                         : action.payload === "contactModule_feedback"
-                        ? action.payload
-                        : searchPathContent
+                            ? action.payload
+                            : searchPathContent
                 ]
                     ? false
                     : true
@@ -215,10 +215,10 @@ export default (state = initialState, action) => {
                 current = isSimple
                     ? { ...copyData[nextTab.split("__")[1]] }
                     : isDelete
-                    ? routeDataNew[uuid]
-                    : isNext
-                    ? { ...state.routeDataActive }
-                    : {};
+                        ? routeDataNew[uuid]
+                        : isNext
+                            ? { ...state.routeDataActive }
+                            : {};
             } catch {
                 current = {};
             }

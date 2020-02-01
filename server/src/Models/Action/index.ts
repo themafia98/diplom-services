@@ -57,13 +57,10 @@ namespace Action {
                     }
 
                     case "tasks": {
+                        const model: Model<Document> | null = getModelByName("tasks", "task");
+                        if (!model) return null;
 
                         if (this.getActionType() === "set_single") {
-
-                            const model: Model<Document> | null = getModelByName("tasks", "task");
-
-                            if (!model) return null;
-
                             try {
                                 const actionData: Document = await model.create(actionParam);
                                 return actionData;
@@ -73,12 +70,27 @@ namespace Action {
                             }
                         }
 
+                        if (this.getActionType() === "update_single") {
+                            try {
+                                const { queryParams = {}, updateItem = "" } = actionParam;
+                                const id: string = (<any>queryParams).id;
+                                const key: string = (<any>queryParams).key;
+
+                                const updateField: string = (<any>actionParam).updateField;
+
+
+                                const actionData: Document | null = await model.findByIdAndUpdate({ _id: id }, {
+                                    [updateField]: updateItem,
+                                });
+
+                                return actionData;
+                            } catch (err) {
+                                console.log(err);
+                                return null;
+                            }
+                        }
+
                         if (this.getActionType() === "get_all") {
-
-                            const model: Model<Document> | null = getModelByName("tasks", "task");
-
-                            if (!model) return null;
-
                             try {
                                 const actionData: Array<Document> = await model.find({});
                                 return actionData;
@@ -86,16 +98,6 @@ namespace Action {
                                 console.error(err);
                                 return null;
                             }
-                        }
-
-                        if (this.getActionType() === "update_single") {
-
-                            const model: Model<Document> | null = getModelByName("users", "user");
-                            console.log("Model:", model);
-                            if (!model) return;
-
-                            console.log("update:", actionParam);
-                            return await model.updateOne(actionParam, { $set: { isOnline: true } });
                         }
 
                         break;

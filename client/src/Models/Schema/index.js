@@ -111,7 +111,7 @@ class Schema {
      * @return {boolean}
      */
     validateSchema(data, schema) {
-        //debugger;
+        //
         if (!_.isArray(data) || !_.isArray(schema)) return false;
 
         const isFind = schema.findIndex(it => it === "modeAdd") !== -1;

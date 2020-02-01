@@ -11,6 +11,8 @@ import { TASK_CONTROLL_JURNAL_SCHEMA } from "../../Models/Schema/const";
 import RegistrationModal from "./RegistrationModal";
 import Textarea from "../Textarea";
 
+import modelContext from '../../Models/context';
+
 const { Option } = Select;
 
 class ModalWindow extends React.PureComponent {
@@ -34,6 +36,8 @@ class ModalWindow extends React.PureComponent {
         taskStatus: null,
         type: null
     };
+
+    static contextType = modelContext;
 
     static propTypes = {
         onCaching: PropTypes.func,
@@ -115,6 +119,7 @@ class ModalWindow extends React.PureComponent {
             keyTask = null,
             typeRequst: type = "",
             onCancelEditModeContent,
+            path = "",
             modeEditContent = null
         } = this.props;
 
@@ -208,8 +213,16 @@ class ModalWindow extends React.PureComponent {
                     loading: false
                 });
             }
+            onUpdate({
+                path,
+                id: routeDataActive["_id"],
+                key,
+                updateItem: taskStatus,
+                updateField: "status",
+                item: { ...routeDataActive },
+                store: "tasks"
+            });
 
-            onUpdate(key, "UPDATE", taskStatus, "status", { ...routeDataActive }, "tasks");
             return this.setState({
                 ...this.state,
                 visible: false,
