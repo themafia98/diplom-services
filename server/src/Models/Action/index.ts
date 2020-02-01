@@ -78,10 +78,12 @@ namespace Action {
 
                                 const updateField: string = (<any>actionParam).updateField;
 
-
-                                const actionData: Document | null = await model.findByIdAndUpdate({ _id: id }, {
+                                const updateProp = {
                                     [updateField]: updateItem,
-                                });
+                                };
+
+                                const updateResult = await model.updateOne({ _id: id }, updateProp);
+                                const actionData: Document | null = await model.findById(id);
 
                                 return actionData;
                             } catch (err) {

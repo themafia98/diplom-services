@@ -209,6 +209,7 @@ class TaskModule extends React.PureComponent {
                     >
                         <TaskView
                             key={key}
+                            uuid={key}
                             rest={rest}
                             isBackground={isBackgroundTaskViewModule}
                             visible={isViewTask}
