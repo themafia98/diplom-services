@@ -53,7 +53,7 @@ class TaskView extends React.PureComponent {
     };
 
     static getDerivedStateFromProps = (props, state) => {
-        debugger;
+
         if (props.uuid !== state.key) return { ...state, key: props.key };
         else return state;
     };
@@ -276,7 +276,7 @@ class TaskView extends React.PureComponent {
             publicReducer: { caches = null } = {},
             path
         } = this.props;
-        debugger;
+
         const { mode, primaryKey, modeControll, modeEditContent, modeControllEdit } = this.state;
         const {
             key = "",

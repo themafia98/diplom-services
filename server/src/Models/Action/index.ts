@@ -22,12 +22,25 @@ namespace Action {
         public getActionType(): string {
             return this.actionType;
         }
+
     }
 
     export class ActionParser extends ActionEntity {
         constructor(props: ActionProps) {
             super(props);
         }
+
+
+        private async getAll(model: Model<Document>, actionParam: ActionParams) {
+            try {
+                const actionData: Array<Document> = await model.find(actionParam);
+                return actionData;
+            } catch (err) {
+                console.error(err);
+                return null;
+            }
+        }
+
 
         public async getActionData(actionParam: ActionParams = {}): Promise<any> {
 
@@ -44,13 +57,7 @@ namespace Action {
 
                             if (!model) return null;
 
-                            try {
-                                const actionData: Array<Document> = await model.find(actionParam)
-                                return actionData;
-                            } catch (err) {
-                                console.error(err);
-                                return null;
-                            }
+                            return this.getAll(model, actionParam);
                         }
 
                         break;
@@ -93,13 +100,7 @@ namespace Action {
                         }
 
                         if (this.getActionType() === "get_all") {
-                            try {
-                                const actionData: Array<Document> = await model.find({});
-                                return actionData;
-                            } catch (err) {
-                                console.error(err);
-                                return null;
-                            }
+                            return this.getAll(model, actionParam);
                         }
 
                         break;

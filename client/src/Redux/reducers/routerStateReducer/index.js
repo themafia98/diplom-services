@@ -104,7 +104,7 @@ export default (state = initialState, action) => {
             const { routeDataActive } = state;
 
             const updateCurrent = routeDataActive && routeDataActive._id === action.payload.id ? true : false;
-            debugger;
+
             return {
                 ...state,
                 routeDataActive: updateCurrent

@@ -221,15 +221,19 @@ class ModalWindow extends React.PureComponent {
                 updateField: "status",
                 item: { ...routeDataActive },
                 store: "tasks"
-            });
-
-            return this.setState({
-                ...this.state,
-                visible: false,
-                type: null,
-                modeSetTime: false,
-                loading: false
-            });
+            }).then(res => {
+                this.setState({
+                    ...this.state,
+                    visible: false,
+                    type: null,
+                    modeSetTime: false,
+                    loading: false
+                });
+                message.success("Статус изменен.");
+            })
+                .catch(error => {
+                    message.error("Ошибка редактирования.");
+                });
         }
     };
 
