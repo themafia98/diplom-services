@@ -1,5 +1,5 @@
 /** Here action constants import */
-import { SET_ERROR, SET_CACHE, SET_STATUS, SET_ACTIVE_CHAT_TOKEN, SHOW_GUIDE, UDATA_LOAD } from "./const";
+import { SET_ERROR, SET_CACHE, SET_STATUS, SET_ACTIVE_CHAT_TOKEN, SHOW_GUIDE, UDATA_LOAD, CLEAR_CACHE } from "./const";
 
 export const errorRequstAction = state => {
     return {
@@ -34,6 +34,13 @@ export const сachingAction = state => {
         type: SET_CACHE,
         payload: state
     };
+};
+
+export const clearCache = state => {
+    return {
+        type: CLEAR_CACHE,
+        payload: state
+    }
 };
 
 export const setStatus = state => {

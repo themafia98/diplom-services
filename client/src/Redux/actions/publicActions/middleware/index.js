@@ -5,7 +5,7 @@ import { TASK_CONTROLL_JURNAL_SCHEMA, USER_SCHEMA, TASK_SCHEMA } from "../../../
 
 
 /**
- * Middlewares
+ * Middleware
  * @param {object} props
  * @param {object} schema - validator
  * @param {object} Request - http requests
@@ -24,7 +24,7 @@ const middlewareCaching = (props = {}) => async (dispatch, getState, { schema, R
     } = props;
 
     if (status === "online") {
-        debugger;
+
         switch (actionType) {
             case "__setJurnal": {
                 try {
@@ -56,7 +56,7 @@ const middlewareCaching = (props = {}) => async (dispatch, getState, { schema, R
 
                     if (validHash) {
                         clientDB.addItem(store, validHash);
-                        debugger;
+
                         dispatch(сachingAction({ data: validHash, load: true, primaryKey: actionType }));
                     } else throw new Error("Invalid data props");
 
@@ -74,6 +74,76 @@ const middlewareCaching = (props = {}) => async (dispatch, getState, { schema, R
     }
 
 };
+
+const loadCacheData = (props = {}) => async (dispatch, getState, { schema, Request, clientDB }) => {
+
+    const {
+        actionType = "", // key
+        depKey = "",
+        depStore = "",
+        store = "",
+    } = props;
+
+    const { requestError, status = "online" } = getState().publicReducer;
+
+    if (status === "online") {
+
+        switch (actionType) {
+            case "__setJurnal": {
+                try {
+
+                    const path = `/${depStore}/caching/list`;
+                    const rest = new Request();
+
+                    const body = { queryParams: { depKey, store }, actionType };
+
+                    const res = await rest.sendRequest(path, "POST", body, true);
+
+                    if (!res || res.status !== 200) throw new Error("Bad update");
+
+                    const updaterItem = { ...res["data"]["response"]["metadata"] };
+
+                    const schemTemplate =
+                        store === "jurnalworks"
+                            ? TASK_CONTROLL_JURNAL_SCHEMA
+                            : store === "users"
+                                ? USER_SCHEMA
+                                : store === "tasks"
+                                    ? TASK_SCHEMA
+                                    : null;
+
+
+                    // const validHash = [updaterItem]
+                    //     .map(it => schema.getSchema(schemTemplate, it))
+                    //     .filter(Boolean);
+                    const validHash = updaterItem;
+
+                    if (validHash) {
+                        clientDB.addItem(store, validHash);
+                        dispatch(сachingAction({ data: validHash, load: true, primaryKey: actionType }));
+                    } else throw new Error("Invalid data props");
+
+                } catch (error) {
+                    console.error(error);
+                    dispatch(errorRequstAction(error.message));
+                }
+
+                break;
+            }
+
+
+            default: { break; }
+        }
+    }
+};
+
+/**
+ * Middleware
+ * @param {object} props
+ * @param {object} schema - validator
+ * @param {object} Request - http requests
+ * @param {clientDB} clientDB - IndexedDB methods 
+ */
 
 const middlewareUpdate = (props = {}) => async (dispatch, getState, { schema, Request, clientDB }) => {
 
@@ -141,7 +211,7 @@ const middlewareUpdate = (props = {}) => async (dispatch, getState, { schema, Re
                             })
                         );
 
-                        clientDB.updateItem(store, updaterItem); // jurnakWork
+                        clientDB.updateItem(store, updaterItem);
                         break;
 
                     }
@@ -161,4 +231,4 @@ const middlewareUpdate = (props = {}) => async (dispatch, getState, { schema, Re
     }
 }
 
-export { middlewareCaching, middlewareUpdate };
+export { middlewareCaching, middlewareUpdate, loadCacheData };

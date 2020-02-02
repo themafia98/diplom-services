@@ -14,7 +14,7 @@ import {
     shouldUpdateAction
 } from "../../../Redux/actions/routerActions";
 import { loadCurrentData } from "../../../Redux/actions/routerActions/middleware";
-import { errorRequstAction } from "../../../Redux/actions/publicActions";
+import { errorRequstAction, clearCache } from "../../../Redux/actions/publicActions";
 import { routeParser } from "../../../Utils";
 
 import Loader from "../../Loader";
@@ -209,7 +209,13 @@ class Dashboard extends React.PureComponent {
     menuHandler = (event, key, mode = "open") => {
         const path = event["key"] ? event["key"] : key;
         const { config = {} } = this.context;
-        const { router: { currentActionTab, actionTabs = [] } = {}, addTab, setCurrentTab, removeTab } = this.props;
+        const {
+            router: { currentActionTab, actionTabs = [] } = {},
+            addTab,
+            setCurrentTab,
+            removeTab,
+            onClearCache
+        } = this.props;
 
         const actionTabsCopy = [...actionTabs];
         const isFind = actionTabsCopy.findIndex(tab => tab === path) !== -1;
@@ -225,7 +231,10 @@ class Dashboard extends React.PureComponent {
         } else if (mode === "close") {
             let type = "deafult";
             if (path.split("__")[1]) type = "itemTab";
-            if (isFind) removeTab({ path: path, type: type });
+            if (isFind) {
+                removeTab({ path: path, type: type });
+                onClearCache({ path, type: type, currentActionTab });
+            }
         }
     };
 
@@ -360,6 +369,7 @@ const mapDispatchToProps = dispatch => {
     return {
         addTab: tab => dispatch(addTabAction(tab)),
         removeTab: tab => dispatch(removeTabAction(tab)),
+        onClearCache: props => dispatch(clearCache(props)),
         setCurrentTab: tab => dispatch(setActiveTabAction(tab)),
         onLoadCurrentData: ({ path, storeLoad }) => dispatch(loadCurrentData({ path, storeLoad })),
         onErrorRequstAction: async error => await errorRequstAction(error),

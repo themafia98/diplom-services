@@ -192,7 +192,7 @@ class ModalWindow extends React.PureComponent {
                 });
         } else if ((visible && mode === "jur" && this.validation() && !typeValue) || typeValue === "jur") {
             const item = { ...jurnal, depKey: keyTask, editor: "Павел Петрович" };
-            debugger;
+
             if (onCaching) {
                 onCaching({ item, actionType, depStore: "tasks", store: "jurnalworks" })
                     .then(() => this.handleCancel());

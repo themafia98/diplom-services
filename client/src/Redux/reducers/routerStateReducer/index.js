@@ -166,6 +166,7 @@ export default (state = initialState, action) => {
             let deleteKey =
                 action.payload.type === "itemTab" ? action.payload.path.split("__")[1] : action.payload.path;
             const { currentActionTab } = state;
+
             let deleteKeyOnce = !deleteKey ? action.payload.path : null;
             const filterArray = state.actionTabs.filter((tab, i) => {
                 if (

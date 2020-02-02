@@ -244,6 +244,75 @@ namespace Tasks {
             }
         }
 
+        @Post({ path: "/caching/list", private: true })
+        public async getCachingList(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+            try {
+                const service = server.locals;
+                const connect = await service.dbm.connection().catch((err: Error) => {
+                    console.error(err);
+                });
+
+                const { queryParams = {}, actionType = "" } = req.body;
+                const { store = "" } = queryParams || {};
+
+                if (!connect) throw new Error("Bad connect");
+
+                const params: Params = { methodQuery: actionType, status: "done", done: true, from: "tasks" };
+                const actionTasks = new Action.ActionParser({ actionPath: store, actionType: actionType });
+                const data: ParserResult = await actionTasks.getActionData(queryParams);
+
+                if (!data) {
+                    params.status = "error";
+
+                    return res.json({
+                        action: "error",
+                        response: { param: params, metadata: data },
+                        uptime: process.uptime(),
+                        responseTime: Utils.responseTime((<any>req).start),
+                        work: process.connected
+                    });
+                }
+
+                await service.dbm.disconnect().catch((err: Error) => console.error(err));
+
+                let metadata: Array<any> = [];
+
+                if (data && Array.isArray(data)) {
+                    metadata = data.map((it: docResponse) => {
+
+                        const item: ResponseDocument = it["_doc"] || it;
+
+                        return Object.keys(item).reduce((obj: ResponseDocument, key: string): object => {
+                            if (!key.includes("password") && !key.includes("At") && !key.includes("__v")) {
+                                obj[key] = item[key];
+                            }
+                            return obj;
+                        }, {});
+                    }).filter(Boolean);
+                }
+
+                return res.json({
+                    action: "done",
+                    response: { param: params, metadata },
+                    uptime: process.uptime(),
+                    responseTime: Utils.responseTime((<any>req).start),
+                    work: process.connected
+                });
+
+            } catch (err) {
+                console.error(err);
+                if (!res.headersSent) {
+                    return res.json({
+                        action: err.name,
+                        response: "Server error",
+                        uptime: process.uptime(),
+                        responseTime: Utils.responseTime((<any>req).start),
+                        work: process.connected
+                    });
+                }
+            }
+        };
+
 
         @Post({ path: "/update/single", private: true })
         public async updateSingle(req: Request, res: Response, next: NextFunction, server: App): ResRequest {

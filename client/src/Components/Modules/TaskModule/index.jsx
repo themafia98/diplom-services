@@ -11,6 +11,7 @@ import { routeParser } from "../../../Utils";
 import TabContainer from "../../TabContainer";
 import { addTabAction, openPageWithDataAction, removeTabAction } from "../../../Redux/actions/routerActions";
 import { loadCurrentData } from "../../../Redux/actions/routerActions/middleware";
+import { loadCacheData } from "../../../Redux/actions/publicActions/middleware";
 import TaskModuleCalendar from "./TaskModuleCalendar";
 import TaskModuleList from "./TaskModuleList";
 import TaskModuleMyList from "./TaskModuleMyList";
@@ -111,6 +112,7 @@ class TaskModule extends React.PureComponent {
                 publicReducer: { status = null } = {},
                 onOpenPageWithData,
                 onLoadCurrentData,
+                onLoadCacheData,
                 rest,
                 removeTab,
                 setCurrentTab
@@ -215,6 +217,7 @@ class TaskModule extends React.PureComponent {
                             visible={isViewTask}
                             height={heightController ? height - heightController : height}
                             onLoadCurrentData={onLoadCurrentData}
+                            onLoadCacheData={onLoadCacheData}
                             data={router.routeData[key]}
                         />
                     </TabContainer>
@@ -247,6 +250,7 @@ const mapDispatchToProps = dispatch => {
         addTab: tab => dispatch(addTabAction(tab)),
         removeTab: tab => dispatch(removeTabAction(tab)),
         onOpenPageWithData: data => dispatch(openPageWithDataAction(data)),
+        onLoadCacheData: props => dispatch(loadCacheData(props)),
         onLoadCurrentData: props => dispatch(loadCurrentData({ ...props }))
     };
 };

@@ -33,6 +33,7 @@ namespace Action {
 
         private async getAll(model: Model<Document>, actionParam: ActionParams) {
             try {
+                console.log(actionParam);
                 const actionData: Array<Document> = await model.find(actionParam);
                 return actionData;
             } catch (err) {
@@ -75,6 +76,15 @@ namespace Action {
                     case "jurnalworks": {
                         const model: Model<Document> | null = getModelByName("jurnalworks", "jurnalworks");
                         if (!model) return null;
+
+                        // Get jurnal action. Starts with '__set' journals key becouse 
+                        // set for synchronize with client key
+                        if (this.getActionType() === "__setJurnal") {
+                            const { depKey } = actionParam;
+                            const conditions = { depKey };
+                            const actionData: Document[] | null = await this.getAll(model, conditions);
+                            return actionData;
+                        }
 
                         if (this.getActionType() === "set_jurnal") {
                             try {

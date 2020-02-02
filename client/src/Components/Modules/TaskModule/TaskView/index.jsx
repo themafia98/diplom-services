@@ -62,13 +62,13 @@ class TaskView extends React.PureComponent {
         const {
             publicReducer: { caches = {} } = {},
             router: { routeDataActive: { key = "" } = {}, routeDataActive = {} },
-            onCaching,
+            onLoadCacheData,
             data: { key: keyProps = "" } = {}
         } = this.props;
-        const { actionType: actionTypeState } = this.state;
-        const actionType = !_.isEmpty(routeDataActive) && key ? key : keyProps ? keyProps : "";
-        if (_.isEmpty(caches) || (key && !caches[key]) || !key) {
-            //onCaching(null, actionType, "GET", actionTypeState, "jurnalworks");
+        const { actionType } = this.state;
+        const idTask = !_.isEmpty(routeDataActive) && key ? key : keyProps ? keyProps : "";
+        if (_.isEmpty(caches) || (key && !caches[key]) || !key && onLoadCacheData) {
+            onLoadCacheData({ actionType, depKey: idTask, depStore: "tasks", store: "jurnalworks" });
         }
     };
 
