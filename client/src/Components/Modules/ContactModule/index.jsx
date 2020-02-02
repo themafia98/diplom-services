@@ -21,14 +21,16 @@ class ContactModule extends React.PureComponent {
     componentDidMount = () => {
         const { onLoadCurrentData, path } = this.props;
 
-        if (path === "contactModule_feedback") onLoadCurrentData({ path, storeLoad: "news", noCorsClient: true });
+        if (path === "contactModule_feedback") {
+            onLoadCurrentData({ path, storeLoad: "news", noCorsClient: true, useStore: true });
+        }
     };
 
     componentDidUpdate = () => {
         const { router: { shouldUpdate = false } = {}, path, onLoadCurrentData } = this.props;
 
         if (path === "contactModule_feedback" && shouldUpdate) {
-            onLoadCurrentData({ path, storeLoad: "news", noCorsClient: true });
+            onLoadCurrentData({ path, storeLoad: "news", noCorsClient: true, useStore: true });
         }
     };
 
