@@ -41,7 +41,7 @@ class ModalWindow extends React.PureComponent {
 
     static propTypes = {
         onCaching: PropTypes.func,
-        primaryKey: PropTypes.string,
+        actionType: PropTypes.string,
         routeDataActive: PropTypes.object,
         mode: PropTypes.string,
         path: PropTypes.string,
@@ -114,7 +114,7 @@ class ModalWindow extends React.PureComponent {
             onUpdate,
             routeDataActive = {},
             routeDataActive: { key = null } = {},
-            primaryKey = null,
+            actionType = null,
             keyTask = null,
             typeRequst: type = "",
             onCancelEditModeContent,
@@ -191,12 +191,11 @@ class ModalWindow extends React.PureComponent {
                     message.error("Ошибка редактирования.");
                 });
         } else if ((visible && mode === "jur" && this.validation() && !typeValue) || typeValue === "jur") {
-            const data = { ...jurnal, id: uuid(), key: keyTask, editor: "Павел Петрович" };
-
+            const item = { ...jurnal, id: uuid(), depKey: keyTask, editor: "Павел Петрович" };
+            debugger;
             if (onCaching) {
-                onCaching(data, `${data.id}${primaryKey}`, type, primaryKey, "jurnalWork").then(() =>
-                    this.handleCancel()
-                );
+                onCaching({ item, actionType, depStore: "tasks", store: "jurnalWork" })
+                    .then(() => this.handleCancel());
             }
 
             return this.setState({

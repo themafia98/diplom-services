@@ -48,7 +48,7 @@ class Schema {
                 }
             case TASK_CONTROLL_JURNAL_SCHEMA:
                 return {
-                    key: null,
+                    depKey: null,
                     id: null,
                     timeLost: null,
                     editor: null,

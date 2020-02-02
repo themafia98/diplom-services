@@ -166,8 +166,7 @@ const mapDispathToProps = dispatch => {
     return {
         onOpenPageWithData: data => dispatch(openPageWithDataAction(data)),
         setCurrentTab: tab => dispatch(setActiveTabAction(tab)),
-        onCaching: async (data, primaryKey, type, pk, store) =>
-            await dispatch(middlewareCaching({ data, primaryKey, type, pk, store }))
+        onCaching: async props => await dispatch(middlewareCaching(props))
     };
 };
 

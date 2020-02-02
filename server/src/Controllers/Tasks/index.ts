@@ -148,6 +148,102 @@ namespace Tasks {
             }
         }
 
+        @Post({ path: "/caching/jurnal", private: true })
+        public async setJurnalWork(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+            try {
+                const dbm = server.locals.dbm;
+
+                const params: Params = {
+                    methodQuery: "set_jurnal",
+                    status: "done",
+                    done: true,
+                    from: "jurnalWork",
+                }
+
+                const failParams: Params = {
+                    methodQuery: "set_jurnal",
+                    status: "fail",
+                    done: false,
+                    from: "jurnalWork",
+                }
+
+                if (req.body && !_.isEmpty(req.body)) {
+                    const param = {};
+                    const body: object = req.body;
+                    const connect = await dbm.connection().catch((err: Error) => console.error(err));
+
+                    if (!connect) throw new Error("Bad connect");
+
+                    const createJurnalAction = new Action.ActionParser({
+                        actionPath: "jurnalWork",
+                        actionType: "set_jurnal",
+                        body
+                    });
+
+                    const data: ParserResult = await createJurnalAction.getActionData(req.body);
+
+                    await dbm.disconnect().catch((err: Error) => console.error(err));
+
+                    if (!data) {
+                        params.status = "error";
+
+                        return res.json({
+                            action: "error set_jurnal action",
+                            response: {
+                                status: "FAIL",
+                                params: failParams,
+                                done: false,
+                                metadata: data
+                            },
+                            uptime: process.uptime(),
+                            responseTime: Utils.responseTime((<any>req).start),
+                            work: process.connected
+                        });
+                    }
+
+                    const meta = <ArrayLike<object>>Utils.parsePublicData(<any>[data]);
+
+                    const metadata: ArrayLike<object> = Array.isArray(meta) && meta[0] ? meta[0] : null;
+
+                    return res.json({
+                        action: "done",
+                        response: { status: "OK", done: true, ...param, metadata },
+                        uptime: process.uptime(),
+                        responseTime: Utils.responseTime((<any>req).start),
+                        work: process.connected
+                    });
+
+                } else if (!res.headersSent) {
+                    return res.json({
+                        action: "error",
+                        response: { status: "FAIL", params: failParams, done: false, metadata: null },
+                        uptime: process.uptime(),
+                        responseTime: Utils.responseTime((<any>req).start),
+                        work: process.connected
+                    });
+                }
+            } catch (err) {
+                console.log(err.message);
+                if (!res.headersSent) {
+                    return res.json({
+                        action: err.name,
+                        response: {
+                            status: "FAIL",
+                            failParams: {
+                                status: "fail",
+                                done: false
+                            },
+                            done: false,
+                            metadata: "Server error"
+                        },
+                        uptime: process.uptime(),
+                        responseTime: Utils.responseTime((<any>req).start),
+                        work: process.connected
+                    });
+                }
+            }
+        }
+
 
         @Post({ path: "/update/single", private: true })
         public async updateSingle(req: Request, res: Response, next: NextFunction, server: App): ResRequest {

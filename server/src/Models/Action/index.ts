@@ -41,6 +41,16 @@ namespace Action {
             }
         }
 
+        private async createEntity(model: Model<Document>, item: object) {
+            try {
+                const actionData: Document = await model.create(item);
+                return actionData;
+            } catch (err) {
+                console.error(err);
+                return null;
+            }
+        }
+
 
         public async getActionData(actionParam: ActionParams = {}): ParserData {
             try {
@@ -60,13 +70,31 @@ namespace Action {
                         break;
                     }
 
+                    case "jurnalWork": {
+                        const model: Model<Document> | null = getModelByName("jurnalWork", "jurnalItem");
+                        if (!model) return null;
+
+                        if (this.getActionType() === "set_jurnal") {
+                            try {
+                                const { item = {} } = actionParam;
+                                const actionData: Document | null = await this.createEntity(model, <object>item);
+                                return actionData;
+                            } catch (err) {
+                                console.error(err);
+                                return null;
+                            }
+                        }
+
+                        break;
+                    }
+
                     case "tasks": {
                         const model: Model<Document> | null = getModelByName("tasks", "task");
                         if (!model) return null;
                         console.log(this.getActionType());
                         if (this.getActionType() === "set_single") {
                             try {
-                                const actionData: Document = await model.create(actionParam);
+                                const actionData: Document | null = await this.createEntity(model, actionParam);
                                 return actionData;
                             } catch (err) {
                                 console.error(err);

@@ -26,8 +26,8 @@ export default (state = initialState, action) => {
                     action.payload && Array.isArray(state.requestError)
                         ? [...state.requestError, action.payload]
                         : action.payload
-                        ? [action.payload]
-                        : null
+                            ? [action.payload]
+                            : null
             };
         }
 
@@ -57,7 +57,7 @@ export default (state = initialState, action) => {
             };
         }
         case SET_CACHE: {
-            const { primaryKey } = action.payload;
+            const { actionType: primaryKey } = action.payload;
             const { pk = null } = action.payload;
             const { data } = action.payload;
 
@@ -89,10 +89,10 @@ export default (state = initialState, action) => {
                     data && !Array.isArray(data) && primaryKey && data.key
                         ? `${data.key}${data.id}${primaryKey}`
                         : Array.isArray(data) && primaryKey && data[0].key && pk
-                        ? `${data[0].key}${data[0].id}${pk}`
-                        : Array.isArray(data)
-                        ? data[0].key
-                        : data.key;
+                            ? `${data[0].key}${data[0].id}${pk}`
+                            : Array.isArray(data)
+                                ? data[0].key
+                                : data.key;
                 return {
                     ...state,
                     caches: { ...state.caches, [keys]: data[0] ? { ...data[0] } : data }

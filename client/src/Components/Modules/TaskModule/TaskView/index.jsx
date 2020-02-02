@@ -37,7 +37,7 @@ class TaskView extends React.PureComponent {
             description: null,
             date: null
         },
-        primaryKey: "___taskViewSetJurnal",
+        actionType: "__setJurnal",
         showModalJur: false,
         modeEditContent: false
     };
@@ -65,10 +65,10 @@ class TaskView extends React.PureComponent {
             onCaching,
             data: { key: keyProps = "" } = {}
         } = this.props;
-        const { primaryKey: primaryKeyState } = this.state;
-        const primaryKey = !_.isEmpty(routeDataActive) && key ? key : keyProps ? keyProps : "";
+        const { actionType: actionTypeState } = this.state;
+        const actionType = !_.isEmpty(routeDataActive) && key ? key : keyProps ? keyProps : "";
         if (_.isEmpty(caches) || (key && !caches[key]) || !key) {
-            onCaching(null, primaryKey, "GET", primaryKeyState, "jurnalWork");
+            //onCaching(null, actionType, "GET", actionTypeState, "jurnalWork");
         }
     };
 
@@ -281,7 +281,7 @@ class TaskView extends React.PureComponent {
             udata = {}
         } = this.props;
 
-        const { mode, primaryKey, modeControll, modeEditContent, modeControllEdit } = this.state;
+        const { mode, actionType, modeControll, modeEditContent, modeControllEdit } = this.state;
         const {
             key = "",
             status = "",
@@ -294,10 +294,10 @@ class TaskView extends React.PureComponent {
         } = routeDataActive || {};
 
         let jurnalDataKeys = null;
-        if (caches && primaryKey && routeDataActive && key) {
+        if (caches && actionType && routeDataActive && key) {
             const keys = Object.keys(caches);
 
-            jurnalDataKeys = keys.filter(keyData => keyData.includes(primaryKey) && keyData.includes(key));
+            jurnalDataKeys = keys.filter(keyData => keyData.includes(actionType) && keyData.includes(key));
         }
 
         const accessStatus = _.uniq([
@@ -332,7 +332,7 @@ class TaskView extends React.PureComponent {
                     <TitleModule classNameTitle="taskModuleTittle" title="Карточка задачи" />
                     <ModalWindow
                         onCaching={onCaching}
-                        primaryKey={primaryKey}
+                        actionType={actionType}
                         routeDataActive={routeDataActive}
                         mode={mode}
                         path={path}
@@ -547,8 +547,7 @@ const mapStateTopProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onCaching: async (data, primaryKey, type, pk, store) =>
-            await dispatch(middlewareCaching({ data, primaryKey, type, pk, store })),
+        onCaching: async props => await dispatch(middlewareCaching(props)),
         onUpdate: props => dispatch(middlewareUpdate({ ...props }))
     };
 };
