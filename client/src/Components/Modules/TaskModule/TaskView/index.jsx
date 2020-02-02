@@ -68,7 +68,7 @@ class TaskView extends React.PureComponent {
         const { actionType: actionTypeState } = this.state;
         const actionType = !_.isEmpty(routeDataActive) && key ? key : keyProps ? keyProps : "";
         if (_.isEmpty(caches) || (key && !caches[key]) || !key) {
-            //onCaching(null, actionType, "GET", actionTypeState, "jurnalWork");
+            //onCaching(null, actionType, "GET", actionTypeState, "jurnalworks");
         }
     };
 

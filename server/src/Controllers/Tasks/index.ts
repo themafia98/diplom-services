@@ -149,7 +149,7 @@ namespace Tasks {
         }
 
         @Post({ path: "/caching/jurnal", private: true })
-        public async setJurnalWork(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+        public async setjurnalworks(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
             try {
                 const dbm = server.locals.dbm;
 
@@ -157,14 +157,14 @@ namespace Tasks {
                     methodQuery: "set_jurnal",
                     status: "done",
                     done: true,
-                    from: "jurnalWork",
+                    from: "jurnalworks",
                 }
 
                 const failParams: Params = {
                     methodQuery: "set_jurnal",
                     status: "fail",
                     done: false,
-                    from: "jurnalWork",
+                    from: "jurnalworks",
                 }
 
                 if (req.body && !_.isEmpty(req.body)) {
@@ -175,7 +175,7 @@ namespace Tasks {
                     if (!connect) throw new Error("Bad connect");
 
                     const createJurnalAction = new Action.ActionParser({
-                        actionPath: "jurnalWork",
+                        actionPath: "jurnalworks",
                         actionType: "set_jurnal",
                         body
                     });

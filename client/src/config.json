@@ -7,7 +7,7 @@
     },
     "clientDB": {
         "name": "controllSystemDB",
-        "version": 2
+        "version": 3
     },
     "forceUpdate": false,
     "msTimeoutLoading": 0,
@@ -56,7 +56,6 @@
             "ICON": null,
             "SIGN": "freedom"
         },
-
         {
             "EUID": "documentModule",
             "VALUE": "Документы",

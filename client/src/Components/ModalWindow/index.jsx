@@ -194,7 +194,7 @@ class ModalWindow extends React.PureComponent {
             const item = { ...jurnal, depKey: keyTask, editor: "Павел Петрович" };
             debugger;
             if (onCaching) {
-                onCaching({ item, actionType, depStore: "tasks", store: "jurnalWork" })
+                onCaching({ item, actionType, depStore: "tasks", store: "jurnalworks" })
                     .then(() => this.handleCancel());
             }
 

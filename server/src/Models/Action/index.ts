@@ -72,8 +72,8 @@ namespace Action {
                         break;
                     }
 
-                    case "jurnalWork": {
-                        const model: Model<Document> | null = getModelByName("jurnalWork", "jurnalWork");
+                    case "jurnalworks": {
+                        const model: Model<Document> | null = getModelByName("jurnalworks", "jurnalworks");
                         if (!model) return null;
 
                         if (this.getActionType() === "set_jurnal") {

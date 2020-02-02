@@ -77,7 +77,7 @@ export const loadCurrentData = ({
             const next = async (flag = false) => {
 
                 const templateSchema =
-                    storeLoad === "jurnalWork"
+                    storeLoad === "jurnalworks"
                         ? TASK_CONTROLL_JURNAL_SCHEMA
                         : storeLoad === "users"
                             ? USER_SCHEMA
@@ -125,7 +125,7 @@ export const loadCurrentData = ({
                 target: { result }
             } = event;
             const schemaTemplate =
-                storeLoad === "jurnalWork"
+                storeLoad === "jurnalworks"
                     ? TASK_CONTROLL_JURNAL_SCHEMA
                     : storeLoad === "users"
                         ? USER_SCHEMA

@@ -40,7 +40,7 @@ const middlewareCaching = (props = {}) => async (dispatch, getState, { schema, R
                     const updaterItem = { ...res["data"]["response"]["metadata"] };
 
                     const schemTemplate =
-                        store === "jurnalWork"
+                        store === "jurnalworks"
                             ? TASK_CONTROLL_JURNAL_SCHEMA
                             : store === "users"
                                 ? USER_SCHEMA
@@ -119,7 +119,7 @@ const middlewareUpdate = (props = {}) => async (dispatch, getState, { schema, Re
                     const updaterItem = { ...res["data"]["response"]["metadata"] };
 
                     const schemTemplate =
-                        store === "jurnalWork"
+                        store === "jurnalworks"
                             ? TASK_CONTROLL_JURNAL_SCHEMA
                             : store === "users"
                                 ? USER_SCHEMA

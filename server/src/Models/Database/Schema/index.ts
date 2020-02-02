@@ -112,7 +112,7 @@ export const getSchemaByName = (name: string): Schema | null => {
             return task;
         case "users":
             return userSchema;
-        case "jurnalWork":
+        case "jurnalworks":
             return jurnalItem;
         case "newsItem":
             return newsItem;

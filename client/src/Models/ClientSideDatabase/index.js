@@ -65,7 +65,7 @@ class ClientSideDatabase {
 
                 let isUsersObject = false;
                 let isTasksObject = false;
-                let isJurnalWorkObject = false;
+                let isjurnalWorksObject = false;
 
                 const newVersionUpdate = event.newVersion !== event.oldVersion && event.oldVersion !== 0;
 
@@ -76,7 +76,7 @@ class ClientSideDatabase {
 
                 if (db.objectStoreNames.contains("users") && !newVersionUpdate) isUsersObject = true;
                 if (db.objectStoreNames.contains("tasks") && !newVersionUpdate) isTasksObject = true;
-                if (db.objectStoreNames.contains("jurnalWork") && !newVersionUpdate) isJurnalWorkObject = true;
+                if (db.objectStoreNames.contains("jurnalworks") && !newVersionUpdate) isjurnalWorksObject = true;
 
                 const objectStoreUsers =
                     !isUsersObject && !newVersionUpdate
@@ -132,28 +132,28 @@ class ClientSideDatabase {
                     });
                 }
 
-                const objectStoreJurnalWork =
-                    !isJurnalWorkObject && !newVersionUpdate
-                        ? db.createObjectStore("jurnalWork", {
+                const objectStorejurnalWorks =
+                    !isjurnalWorksObject && !newVersionUpdate
+                        ? db.createObjectStore("jurnalworks", {
                             unique: true,
                             keyPath: "id",
                             autoIncrement: true
                         })
                         : newVersionUpdate
-                            ? requestOpen.transaction.objectStore("jurnalWork")
+                            ? requestOpen.transaction.objectStore("jurnalworks")
                             : null;
 
-                if (!isJurnalWorkObject) {
-                    const schemaJurnalWork = this.schema.getValidateSchema(TASK_CONTROLL_JURNAL_SCHEMA);
-                    const keysJurnalWork = Object.keys(schemaJurnalWork);
+                if (!isjurnalWorksObject) {
+                    const schemajurnalWorks = this.schema.getValidateSchema(TASK_CONTROLL_JURNAL_SCHEMA);
+                    const keysjurnalWorks = Object.keys(schemajurnalWorks);
 
-                    keysJurnalWork.forEach((key, i) => {
+                    keysjurnalWorks.forEach((key, i) => {
                         if (newVersionUpdate) {
-                            const keysIndex = Object.keys(objectStoreJurnalWork.indexNames);
-                            const isCanDelete = keysJurnalWork.includes(objectStoreJurnalWork.indexNames[keysIndex[i]]);
-                            if (isCanDelete) objectStoreJurnalWork.deleteIndex(key);
+                            const keysIndex = Object.keys(objectStorejurnalWorks.indexNames);
+                            const isCanDelete = keysjurnalWorks.includes(objectStorejurnalWorks.indexNames[keysIndex[i]]);
+                            if (isCanDelete) objectStorejurnalWorks.deleteIndex(key);
                         }
-                        objectStoreJurnalWork.createIndex(key, key, {
+                        objectStorejurnalWorks.createIndex(key, key, {
                             unique: key === "id" ? true : false
                         });
                     });
@@ -179,7 +179,7 @@ class ClientSideDatabase {
         return store.get(key);
 
         /** @Example */
-        // const item = clientDB.getItemByKey("jurnalWork", "31232");
+        // const item = clientDB.getItemByKey("jurnalworks", "31232");
         // item.onsuccess = event => {
         //     const {
         //         target: { result },
@@ -195,7 +195,7 @@ class ClientSideDatabase {
         return store.getAll();
 
         /** @Example */
-        // const items = clientDB.getAllItems("jurnalWork");
+        // const items = clientDB.getAllItems("jurnalworks");
         // items.onsuccess = event => {
         //     const {
         //         target: { result },
@@ -211,7 +211,7 @@ class ClientSideDatabase {
         return store.add(item);
 
         /** @Example */
-        // const putAction = clientDB.addItem("jurnalWork", {
+        // const putAction = clientDB.addItem("jurnalworks", {
         //     key: "1231312asd",
         //     timeLost: Math.random(),
         //     date: null,
@@ -233,7 +233,7 @@ class ClientSideDatabase {
         return store.put(item);
 
         /** @Example */
-        // const putAction = clientDB.updateItem("jurnalWork", {
+        // const putAction = clientDB.updateItem("jurnalworks", {
         //     key: "1231312asd",
         //     timeLost: Math.random(),
         //     date: null,
@@ -255,7 +255,7 @@ class ClientSideDatabase {
 
         /** @Example */
         // const deleteKey = "1231312asd";
-        // const deleteAction = clientDB.deleteItem("jurnalWork", deleteKey);
+        // const deleteAction = clientDB.deleteItem("jurnalworks", deleteKey);
         // deleteAction.onsuccess = event => {
         //     const {
         //         target: { readyState },
@@ -271,7 +271,7 @@ class ClientSideDatabase {
         return store.openCursor();
 
         /** @Example */
-        // const deleteAction = clientDB.getCursor("jurnalWork");
+        // const deleteAction = clientDB.getCursor("jurnalworks");
         // deleteAction.onsuccess = event => {
         //     const {
         //         target: { result: cursor },
@@ -301,7 +301,7 @@ class ClientSideDatabase {
         return searchIndex.openCursor(searchKeyRange);
 
         /** @Example */
-        // const searchByIndexRange = clientDB.searchItemsByIndexRange("timeLost", 0, 0.7, "jurnalWork");
+        // const searchByIndexRange = clientDB.searchItemsByIndexRange("timeLost", 0, 0.7, "jurnalworks");
         // searchByIndexRange.onsuccess = event => {
         //     const {
         //         target: { result: cursor },
