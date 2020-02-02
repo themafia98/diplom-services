@@ -91,10 +91,9 @@ export const task = new Schema({
 });
 
 export const jurnalItem = new Schema({
-    key: String,
-    id: String,
+    depKey: String,
     timeLost: String,
-    editor: [String],
+    editor: String,
     date: [String],
     description: String,
     modeAdd: String
@@ -113,7 +112,7 @@ export const getSchemaByName = (name: string): Schema | null => {
             return task;
         case "users":
             return userSchema;
-        case "jurnalItem":
+        case "jurnalWork":
             return jurnalItem;
         case "newsItem":
             return newsItem;

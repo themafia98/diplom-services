@@ -49,21 +49,16 @@ const middlewareCaching = (props = {}) => async (dispatch, getState, { schema, R
                                     : null;
 
 
-                    const storeCopy = [updaterItem]
-                        .map(it => schema.getSchema(schemTemplate, it))
-                        .filter(Boolean);
+                    // const validHash = [updaterItem]
+                    //     .map(it => schema.getSchema(schemTemplate, it))
+                    //     .filter(Boolean);
+                    const validHash = updaterItem;
 
-                    if (storeCopy) {
-                        dispatch(
-                            updateItemStateAction({
-                                updaterItem: updaterItem,
-                                type: "UPDATE",
-                                id: item["id"] || "",
-                            })
-                        );
-
-                        clientDB.updateItem(store, updaterItem);
-                    }
+                    if (validHash) {
+                        clientDB.addItem(store, validHash);
+                        debugger;
+                        dispatch(сachingAction({ data: validHash, load: true, primaryKey: actionType }));
+                    } else throw new Error("Invalid data props");
 
                 } catch (error) {
                     console.error(error);

@@ -15,6 +15,7 @@ namespace Utils {
     export const getModelByName = (name: string, schemaType: string): Model<Document, {}> | null => {
         try {
             const schema: Schema | null = getSchemaByName(schemaType);
+            console.log(name);
             if (schema) return model(name, schema);
             else return null;
 

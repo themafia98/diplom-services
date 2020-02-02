@@ -54,6 +54,8 @@ namespace Action {
 
         public async getActionData(actionParam: ActionParams = {}): ParserData {
             try {
+                console.log(`Run action. actionType: ${this.getActionType()}, actionPath: ${this.getActionPath()}`);
+
                 switch (this.getActionPath()) {
 
                     case "users": {
@@ -71,13 +73,15 @@ namespace Action {
                     }
 
                     case "jurnalWork": {
-                        const model: Model<Document> | null = getModelByName("jurnalWork", "jurnalItem");
+                        const model: Model<Document> | null = getModelByName("jurnalWork", "jurnalWork");
                         if (!model) return null;
 
                         if (this.getActionType() === "set_jurnal") {
                             try {
                                 const { item = {} } = actionParam;
+                                console.log("current item:", item);
                                 const actionData: Document | null = await this.createEntity(model, <object>item);
+                                console.log("actionData:", actionData);
                                 return actionData;
                             } catch (err) {
                                 console.error(err);
@@ -91,7 +95,6 @@ namespace Action {
                     case "tasks": {
                         const model: Model<Document> | null = getModelByName("tasks", "task");
                         if (!model) return null;
-                        console.log(this.getActionType());
                         if (this.getActionType() === "set_single") {
                             try {
                                 const actionData: Document | null = await this.createEntity(model, actionParam);

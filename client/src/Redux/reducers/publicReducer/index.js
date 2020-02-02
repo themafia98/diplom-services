@@ -57,18 +57,18 @@ export default (state = initialState, action) => {
             };
         }
         case SET_CACHE: {
-            const { actionType: primaryKey } = action.payload;
+            const { primaryKey } = action.payload;
             const { pk = null } = action.payload;
             const { data } = action.payload;
-
+            debugger;
             let keys = null;
 
             if (data.length > 1) {
                 keys = [];
                 data.forEach(item => {
                     if (pk) {
-                        keys.push(`${item.key}${item.id}${primaryKey}${pk}`);
-                    } else keys.push(`${item.key}${item.id}${primaryKey}`);
+                        keys.push(`${item.depKey}${item._id}${primaryKey}${pk}`);
+                    } else keys.push(`${item.depKey}${item._id}${primaryKey}`);
                 });
 
                 keys = new Set(keys);
@@ -86,13 +86,13 @@ export default (state = initialState, action) => {
                 };
             } else {
                 keys =
-                    data && !Array.isArray(data) && primaryKey && data.key
-                        ? `${data.key}${data.id}${primaryKey}`
-                        : Array.isArray(data) && primaryKey && data[0].key && pk
-                            ? `${data[0].key}${data[0].id}${pk}`
+                    data && !Array.isArray(data) && primaryKey && data.depKey
+                        ? `${data.depKey}${data._id}${primaryKey}`
+                        : Array.isArray(data) && primaryKey && data[0].depKey && pk
+                            ? `${data[0].depKey}${data[0]._id}${pk}`
                             : Array.isArray(data)
-                                ? data[0].key
-                                : data.key;
+                                ? data[0].depKey
+                                : data.depKey;
                 return {
                     ...state,
                     caches: { ...state.caches, [keys]: data[0] ? { ...data[0] } : data }
