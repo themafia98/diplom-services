@@ -236,7 +236,7 @@ class TaskView extends React.PureComponent {
         return _.uniq(jurnalDataKeys)
             .map(key => {
                 const item = caches[key];
-                const date = item && item.date ? moment(item.date).format("DD.MM.YYYY HH:mm:ss") : "Invalid date";
+                const date = item && Array.isArray(item.date) ? item.date[0] : "Invalid date";
 
                 return (
                     <div key={key} className="jurnalItem">
