@@ -205,7 +205,7 @@ class CreateTask extends React.PureComponent {
                 }, () => {
                     message.success(`Задача создана.`);
 
-                    const { key = "" } = metadata[0] || {};
+                    const { key = "" } = metadata[0] || metadata || {};
                     if (!key) return;
 
                     if (config.tabsLimit <= actionTabs.length)
@@ -223,12 +223,13 @@ class CreateTask extends React.PureComponent {
                     removeTab({ path, type: type });
 
                     if (!isFind) {
+
                         onOpenPageWithData({
                             activePage: routePathNormalise({
                                 pathType: "moduleItem",
                                 pathData: { page, moduleId, key }
                             }),
-                            routeDataActive: metadata[0] || {}
+                            routeDataActive: metadata[0] || metadata || {}
                         });
                     } else {
                         setCurrentTab(actionTabs[index]);
