@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 import _ from "lodash";
 import Utils from "../../Utils";
 import { App, Params, ResponseDocument } from "../../Utils/Interfaces";
-import { ResRequest, docResponse } from "../../Utils/Types";
+import { ResRequest, docResponse, ParserResult } from "../../Utils/Types";
 
 import Action from '../../Models/Action';
 import Decorators from "../../Decorators";
@@ -28,7 +28,7 @@ namespace Tasks {
 
                 const params: Params = { methodQuery: "get_all", status: "done", done: true, from: "tasks" };
                 const actionTasks = new Action.ActionParser({ actionPath: "tasks", actionType: "get_all" });
-                const data: Document[] | null = await actionTasks.getActionData({});
+                const data: ParserResult = await actionTasks.getActionData({});
 
                 if (!data) {
                     params.status = "error";
@@ -97,8 +97,7 @@ namespace Tasks {
                     const params: Params = { methodQuery: "set_single", status: "done", done: true, from: "users" };
                     const createTaskAction = new Action.ActionParser({ actionPath: "tasks", actionType: "set_single" });
 
-                    const data: Document[] | null = await createTaskAction.getActionData(req.body);
-                    console.log(data);
+                    const data: ParserResult = await createTaskAction.getActionData(req.body);
 
                     await dbm.disconnect().catch((err: Error) => console.error(err));
 
@@ -182,7 +181,7 @@ namespace Tasks {
                         body
                     });
 
-                    const data: Document[] | null = await createTaskAction.getActionData(req.body);
+                    const data: ParserResult = await createTaskAction.getActionData(req.body);
 
                     await dbm.disconnect().catch((err: Error) => console.error(err));
 
@@ -278,7 +277,7 @@ namespace Tasks {
                         body
                     });
 
-                    const data: Document[] | null = await createTaskAction.getActionData(req.body);
+                    const data: ParserResult = await createTaskAction.getActionData(req.body);
 
                     await dbm.disconnect().catch((err: Error) => console.error(err));
 

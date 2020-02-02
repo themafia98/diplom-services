@@ -20,6 +20,7 @@
         transition: all 0.3s ease-in-out;
         transition: visibility 1s ease-in-out;
         .icon-wrapper {
+            display: none;
             visibility: hidden;
         }
         &:hover {
@@ -27,6 +28,7 @@
                 cursor: pointer;
                 background-color: $editable;
                 .icon-wrapper {
+                    display: inline-block;
                     visibility: visible;
                     position: absolute;
                     top: 0;
@@ -86,9 +88,15 @@
             max-height: 150px;
             height: 150px;
             font-size: 15px;
-            padding: 10px;
+            padding: 0 5px;
             word-break: break-word;
             border: 1px solid $blueDark;
+            .descriptionContent {
+            
+                    display: flex;
+                    flex-direction: column;
+                    padding: 10px;
+            }
         }
     }
 }

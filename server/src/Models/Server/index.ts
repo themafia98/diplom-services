@@ -240,7 +240,7 @@ namespace Http {
 
             const server: HttpServer = this.getApp().listen(this.getPort(), (): void => {
                 console.log(`${chalk.yellow(`Worker ${process.pid}`)} ${chalk.green("started")}`);
-                console.log(`Server or worker listen on ${chalk.blue.bold(this.getPort())}.`);
+                console.log(`Server listen on ${chalk.blue.bold(this.getPort())}.`);
             });
 
             /** initial entrypoint route */

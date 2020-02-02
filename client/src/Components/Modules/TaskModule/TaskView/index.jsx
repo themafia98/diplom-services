@@ -186,7 +186,7 @@ class TaskView extends React.PureComponent {
         const { schema = {} } = this.context;
 
         const validHash = validHashCopy.map(it => schema.getSchema(TASK_SCHEMA, it)).filter(Boolean)[0];
-        console.log(validHash);
+
         if (validHash)
             onUpdate({
                 path,
@@ -492,13 +492,12 @@ class TaskView extends React.PureComponent {
                                             rulesEdit ? "editable" : null
                                         ].join(" ")}
                                     >
+                                        <span className="icon-wrapper">
+                                            <i className="icon-pencil"></i>
+                                        </span>
                                         <Scrollbars style={{ height: "150px" }}>
                                             <span className="descriptionContent">
                                                 {description ? description : "Описания задачи нету."}
-                                            </span>
-
-                                            <span className="icon-wrapper">
-                                                <i className="icon-pencil"></i>
                                             </span>
                                         </Scrollbars>
                                     </div>

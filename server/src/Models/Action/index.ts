@@ -1,5 +1,5 @@
 import { ActionProps, ActionParams } from '../../Utils/Interfaces';
-import { ActionData } from "../../Utils/Types";
+import { ParserData } from "../../Utils/Types";
 import { Model, Document } from 'mongoose';
 import Utils from '../../Utils';
 
@@ -42,7 +42,7 @@ namespace Action {
         }
 
 
-        public async getActionData(actionParam: ActionParams = {}): Promise<any> {
+        public async getActionData(actionParam: ActionParams = {}): ParserData {
             try {
                 switch (this.getActionPath()) {
 

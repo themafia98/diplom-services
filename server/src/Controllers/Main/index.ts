@@ -1,7 +1,6 @@
-import { NextFunction, Response, Request, response } from "express";
-import { Document } from 'mongoose';
-import { App, ResponseDocument, Params } from "../../Utils/Interfaces";
-import { docResponse } from '../../Utils/Types';
+import { NextFunction, Response, Request } from "express";
+import { App, Params } from "../../Utils/Interfaces";
+import { ParserResult } from '../../Utils/Types';
 import Utils from "../../Utils";
 import Decorators from "../../Decorators";
 import Action from "../../Models/Action";
@@ -23,7 +22,7 @@ namespace System {
                 const params: Params = { methodQuery: "get_all", status: "done", done: true, from: "users" };
                 const actionUserList = new Action.ActionParser({ actionPath: "users", actionType: "get_all" });
 
-                const data: Document[] | null = await actionUserList.getActionData({});
+                const data: ParserResult = await actionUserList.getActionData({});
 
                 await service.dbm.disconnect().catch((err: Error) => console.error(err));
 

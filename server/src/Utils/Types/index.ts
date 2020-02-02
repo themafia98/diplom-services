@@ -30,6 +30,7 @@ export type schemaConfig = {
     schemaType: string;
 };
 export type BuilderResponse = Promise<DocumentQuery<any, Document> | object | null>;
+
 export type ResRequest = Promise<Response | void>;
 
 export type Decorator = <Function extends ClassDecorator>(target: object, propKey?: string) => void;
@@ -39,3 +40,7 @@ export type FileTransportInstance = winston.transports.FileTransportInstance;
 export type docResponse = string | number | object | null | Array<any> | any;
 
 export type ActionData = Promise<Array<Document>> | null | Document | Promise<Document>;
+
+export type ParserData = Promise<Document | Document[] | null>;
+
+export type ParserResult = Document | Document[] | null;

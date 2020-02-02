@@ -109,7 +109,6 @@ class ModalWindow extends React.PureComponent {
             description: { value: valueDescription = "" } = {}
         } = this.state;
         const {
-            firebase = null,
             mode = null,
             onCaching,
             onUpdate,
@@ -170,18 +169,24 @@ class ModalWindow extends React.PureComponent {
                 //     .catch(error => console.error(error.message));
             }
         } else if (mode === "jur" && modeEditContent) {
-            onUpdate(key, "UPDATE", valueDescription, "description", { ...routeDataActive }, "tasks")
-                .then(res => {
-                    onCancelEditModeContent(event);
-                    this.setState({
-                        ...this.state,
-                        visible: false,
-                        type: null,
-                        modeSetTime: false,
-                        loading: false
-                    });
-                    message.success("Описание изменено.");
-                })
+            onUpdate({
+                key,
+                id: routeDataActive["_id"],
+                updateItem: valueDescription,
+                updateField: "description",
+                item: { ...routeDataActive },
+                store: "tasks"
+            }).then(res => {
+                onCancelEditModeContent(event);
+                this.setState({
+                    ...this.state,
+                    visible: false,
+                    type: null,
+                    modeSetTime: false,
+                    loading: false
+                });
+                message.success("Описание изменено.");
+            })
                 .catch(error => {
                     message.error("Ошибка редактирования.");
                 });
