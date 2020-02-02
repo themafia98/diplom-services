@@ -87,6 +87,7 @@ namespace Action {
 
                                     const updateField: string = (<any>actionParam).updateField;
                                     (<any>updateProps)[updateField] = <string>updateItem;
+                                    console.log(updateProps);
 
                                 } else if (this.getActionType().includes("many")) {
                                     const { updateItem = "" } = actionParam;

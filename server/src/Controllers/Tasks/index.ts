@@ -156,14 +156,14 @@ namespace Tasks {
                 const dbm = server.locals.dbm;
 
                 const params: Params = {
-                    methodQuery: "update_status",
+                    methodQuery: "update_single",
                     status: "done",
                     done: true,
                     from: "tasks"
                 };
 
                 const failParams: Params = {
-                    methodQuery: "update_status",
+                    methodQuery: "update_single",
                     status: "fail",
                     done: false,
                     from: "tasks"

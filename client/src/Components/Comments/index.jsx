@@ -21,28 +21,42 @@ class Comments extends React.PureComponent {
         data: PropTypes.object.isRequired
     };
 
-    addCommentsDelay = _.debounce(event => {
-        const { value = "" } = this.state;
-        const { onUpdate, data: { key = "", comments = [] } = {}, data = {} } = this.props;
-        if (!value) return message.error("Вы ничего не ввели.");
-        else if (key && Array.isArray(comments) && !_.isEmpty(data)) {
-            const date = moment().format("DD.MM.YYYY HH:mm");
+    addCommentsDelay = _.debounce(async (event) => {
+        try {
+            const { value = "" } = this.state;
+            const {
+                onUpdate,
+                data: { key = "", comments = [], _id: id = "" } = {},
+                data = {}
+            } = this.props;
 
-            const comment = {
-                id: uuid(),
-                time: date,
-                username: "Павел Петрович",
-                message: value
-            };
-            this.setState({ ...this.state, onUpdateDisabled: true, value: "" });
-            onUpdate(key, "UPDATE", [...comments, comment], "comments", { ...data }, "tasks").then(() => {
+            if (!value) return message.error("Вы ничего не ввели.");
+            else if (key && Array.isArray(comments) && !_.isEmpty(data)) {
+
+                const date = moment().format("DD.MM.YYYY HH:mm");
+
+                const comment = {
+                    id: uuid(),
+                    time: date,
+                    username: "Павел Петрович",
+                    message: value
+                };
+                this.setState({ ...this.state, onUpdateDisabled: true, value: "" });
+                await onUpdate({ key, id, updateItem: [...comments, comment], updateField: "comments", store: "tasks" });
+
                 message.success("Коментарий добавлен.");
+
                 return this.setState({
                     ...this.state,
                     onUpdateDisabled: false
                 });
-            });
-        } else return notification.error({ message: "Ошибка", description: "Некоректные данные." });
+
+            } else return notification.error({ message: "Ошибка", description: "Некоректные данные." });
+        } catch (error) {
+            console.error(error);
+            return notification.error({ message: "Ошибка", description: "Некоректные данные." });
+        }
+
     }, 500);
 
     addComments = event => {
