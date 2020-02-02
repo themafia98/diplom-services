@@ -64,7 +64,7 @@ export default (state = initialState, action) => {
             let keys = null;
 
             const isObjects = typeof data === "object" && data !== null && Object.keys(data).length > 1;
-            const isObjectsArray = isObjects && !Object.keys(data).every(key => isNaN(Number(key)));
+            const isObjectsArray = !Object.keys(data).every(key => isNaN(Number(key)));
 
             const validData = isObjectsArray ? Object.entries(data).map(([key, value]) => value).filter(Boolean) : data;
 
@@ -90,14 +90,10 @@ export default (state = initialState, action) => {
                     caches: { ...caches, ..._items }
                 };
             } else {
-                keys =
-                    validData && !Array.isArray(validData) && primaryKey && validData.depKey
-                        ? `${validData.depKey}${validData._id}${primaryKey}`
-                        : Array.isArray(validData) && primaryKey && validData[0].depKey && pk
-                            ? `${validData[0].depKey}${validData[0]._id}${pk}`
-                            : Array.isArray(validData)
-                                ? validData[0].depKey
-                                : validData.depKey;
+
+                const key = Object.keys(validData)[0];
+
+                keys = !isObjectsArray ? `${validData.depKey}${primaryKey}` : `${validData[key].depKey}${primaryKey}`;
 
                 return {
                     ...state,
@@ -109,27 +105,21 @@ export default (state = initialState, action) => {
         case CLEAR_CACHE: {
             const deleteKey =
                 action.payload.type === "itemTab" ? action.payload.path.split("__")[1] : action.payload.path;
-            const currentActionTab = action.payload.type === "itemTab" ?
-                action.payload.currentActionTab.split("__")[1] : action.payload.currentActionTab;
             const { caches = {} } = state || {};
             const copyCahes = { ...caches };
 
-
-            if (currentActionTab === deleteKey) {
-                const filterCaches = Object.keys(copyCahes).reduce((filterObj, key) => {
-                    if (!key.includes(deleteKey)) {
-                        filterObj[key] = copyCahes[key];
-                    }
-                    return filterObj;
-                }, {});
-
-                return {
-                    ...state,
-                    caches: filterCaches,
+            const filterCaches = Object.keys(copyCahes).reduce((filterObj, key) => {
+                if (!key.includes(deleteKey)) {
+                    filterObj[key] = copyCahes[key];
                 }
-            } else return {
+                return filterObj;
+            }, {});
+
+            return {
                 ...state,
+                caches: filterCaches,
             }
+
         }
 
         case SET_STATUS: {
