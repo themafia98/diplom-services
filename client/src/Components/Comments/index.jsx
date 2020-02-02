@@ -21,28 +21,44 @@ class Comments extends React.PureComponent {
         data: PropTypes.object.isRequired
     };
 
-    addCommentsDelay = _.debounce(async (event) => {
+    addCommentsDelay = _.debounce(async event => {
         try {
-            const { value = "" } = this.state;
+            const { value: msg = "" } = this.state;
             const {
                 onUpdate,
                 data: { key = "", comments = [], _id: id = "" } = {},
-                data = {}
+                data = {},
+                udata: { displayName = "", _id: uId = "" } = {}
             } = this.props;
 
-            if (!value) return message.error("Вы ничего не ввели.");
+
+            if (!msg) return message.error("Вы ничего не ввели.");
             else if (key && Array.isArray(comments) && !_.isEmpty(data)) {
 
-                const date = moment().format("DD.MM.YYYY HH:mm");
+                const time = moment().format("DD.MM.YYYY HH:mm");
+
+
+
+                if (!uId || !time || !displayName) {
+                    throw new Error("Invalid data");
+                }
 
                 const comment = {
                     id: uuid(),
-                    time: date,
-                    username: "Павел Петрович",
-                    message: value
+                    uId,
+                    time,
+                    username: displayName,
+                    message: msg
                 };
+
                 this.setState({ ...this.state, onUpdateDisabled: true, value: "" });
-                await onUpdate({ key, id, updateItem: [...comments, comment], updateField: "comments", store: "tasks" });
+
+                await onUpdate({
+                    key, id,
+                    updateItem: [...comments, comment],
+                    updateField: "comments",
+                    store: "tasks"
+                });
 
                 message.success("Коментарий добавлен.");
 
@@ -54,7 +70,10 @@ class Comments extends React.PureComponent {
             } else return notification.error({ message: "Ошибка", description: "Некоректные данные." });
         } catch (error) {
             console.error(error);
-            return notification.error({ message: "Ошибка", description: "Некоректные данные." });
+            notification.error({ message: "Ошибка", description: "Некоректные данные." });
+            this.setState({
+                onUpdateDisabled: false,
+            });
         }
 
     }, 500);

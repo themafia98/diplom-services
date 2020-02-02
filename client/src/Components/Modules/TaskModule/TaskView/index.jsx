@@ -277,7 +277,8 @@ class TaskView extends React.PureComponent {
             onCaching,
             onUpdate,
             publicReducer: { caches = null } = {},
-            path
+            path,
+            udata = {}
         } = this.props;
 
         const { mode, primaryKey, modeControll, modeEditContent, modeControllEdit } = this.state;
@@ -505,7 +506,12 @@ class TaskView extends React.PureComponent {
                                     <p className="task_file">Дополнительные файлы для задачи</p>
                                     <File />
                                     <p className="descriptionTask__comment">Коментарии</p>
-                                    <Comments rules={true} onUpdate={onUpdate} data={routeDataActive} />
+                                    <Comments
+                                        udata={udata}
+                                        rules={true}
+                                        onUpdate={onUpdate}
+                                        data={routeDataActive}
+                                    />
                                 </div>
                             </Scrollbars>
                         </div>
@@ -527,9 +533,16 @@ class TaskView extends React.PureComponent {
 }
 
 const mapStateTopProps = state => {
+    const {
+        router = {},
+        publicReducer = {},
+        publicReducer: { udata = {} } = {}
+    } = state || {};
+
     return {
-        router: state.router,
-        publicReducer: state.publicReducer
+        router,
+        publicReducer,
+        udata
     };
 };
 
