@@ -1,8 +1,10 @@
 import { Request, Response, NextFunction } from "express";
+import multer from 'multer';
+import { files } from 'dropbox';
 import { Document } from 'mongoose';
 import _ from "lodash";
 import Utils from "../../Utils";
-import { App, Params, ResponseDocument } from "../../Utils/Interfaces";
+import { App, Params, ResponseDocument, DropboxApi } from "../../Utils/Interfaces";
 import { ResRequest, docResponse, ParserResult } from "../../Utils/Types";
 
 import Action from '../../Models/Action';
@@ -12,6 +14,7 @@ namespace Tasks {
     const Controller = Decorators.Controller;
     const Get = Decorators.Get;
     const Post = Decorators.Post;
+    const upload = multer();
 
     @Controller("/tasks")
     export class TasksController {
@@ -81,6 +84,77 @@ namespace Tasks {
                 }
             }
         }
+
+
+        @Post({ path: "/file", private: true, file: true })
+        public async saveFile(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+            try {
+                const params: Params = { methodQuery: "save_file", status: "done", done: true, from: "tasks" };
+                const files = Array.isArray(req.files) ? req.files : null;
+
+                if (files) {
+
+                    const store: DropboxApi = server.locals.dropbox;
+                    let responseSave: Array<object | null> = [];
+
+                    for await (let file of files) {
+                        const [filename, taskId] = file.fieldname.split("__");
+                        const parseOriginalName = file.originalname.split(/\./gi);
+                        const ext = parseOriginalName[parseOriginalName.length - 1];
+
+                        const path: string = `/tasks/${taskId}/${filename}.${ext}`;
+                        const result = await store.saveFile({ path, contents: file.buffer });
+
+                        if (result) {
+                            responseSave.push({
+                                name: result.name,
+                                isSave: true,
+                            })
+                        } else {
+                            responseSave.push({
+                                name: `${filename}.${ext}`,
+                                isSave: false,
+                            });
+                        }
+                    };
+
+                    responseSave = responseSave.filter(Boolean);
+
+                    if (responseSave.length)
+                        return res.json({
+                            action: "done",
+                            response: { status: "OK", done: true, param: params, metadata: responseSave },
+                            uptime: process.uptime(),
+                            responseTime: Utils.responseTime((<any>req).start),
+                            work: process.connected
+                        });
+                    else throw new Error("fail save files");
+
+                } else {
+                    params.done = false;
+                    return res.json({
+                        action: "error action save_file task",
+                        response: { status: "FAIL", params, done: false, metadata: [] },
+                        uptime: process.uptime(),
+                        responseTime: Utils.responseTime((<any>req).start),
+                        work: process.connected
+                    });
+                }
+            } catch (err) {
+                console.log(err.message);
+                if (!res.headersSent) {
+                    return res.json({
+                        action: err.name,
+                        response: { status: "FAIL", done: false, metadata: "Server error" },
+                        uptime: process.uptime(),
+                        responseTime: Utils.responseTime((<any>req).start),
+                        work: process.connected
+                    });
+                }
+
+            }
+
+        };
 
         @Post({ path: "/createTask", private: true })
         public async create(req: Request, res: Response, next: NextFunction, server: App): ResRequest {

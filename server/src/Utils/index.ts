@@ -1,4 +1,5 @@
 import { NextFunction } from 'express';
+import multer from 'multer';
 import winston from "winston";
 import { model, Schema, Model, Document } from 'mongoose';
 import { getSchemaByName } from '../Models/Database/Schema';
@@ -6,6 +7,9 @@ import { RouteDefinition, ResponseDocument } from './Interfaces';
 import { FileTransportInstance, docResponse, ParserResult } from "./Types";
 
 namespace Utils {
+
+    const upload = multer();
+
     export const getLoggerTransports = (level: string): Array<FileTransportInstance> | FileTransportInstance => {
         if (level === "info") {
             return [new winston.transports.File({ filename: "info.log", level: "info" })];
@@ -42,20 +46,42 @@ namespace Utils {
             // Iterate over all routes and register them to our express application 
             routes.forEach(route => {
 
-                if (!route.private) {
-                    getRest()[route.requestMethod](prefix === "/" ? route.path : prefix + route.path,
-                        (req: Request, res: Response, next: NextFunction) => {
-                            instance[route.methodName](req, res, next, getApp());
-                        });
-                }
-                else {
-                    getRest()[route.requestMethod](prefix === "/" ? route.path : prefix + route.path,
-                        isPrivateRoute,
-                        (req: Request, res: Response, next: NextFunction) => {
-                            // Execute our method for this path and pass our express
-                            // request and response object.
-                            instance[route.methodName](req, res, next, getApp());
-                        });
+
+                if (!route.file) {
+
+                    if (!route.private) {
+                        getRest()[route.requestMethod](prefix === "/" ? route.path : prefix + route.path,
+                            (req: Request, res: Response, next: NextFunction) => {
+                                instance[route.methodName](req, res, next, getApp());
+                            });
+                    }
+                    else {
+                        getRest()[route.requestMethod](prefix === "/" ? route.path : prefix + route.path,
+                            isPrivateRoute,
+                            (req: Request, res: Response, next: NextFunction) => {
+                                // Execute our method for this path and pass our express
+                                // request and response object.
+                                instance[route.methodName](req, res, next, getApp());
+                            });
+                    }
+                } else {
+
+                    if (!route.private) {
+                        getRest()[route.requestMethod](prefix === "/" ? route.path : prefix + route.path,
+                            upload.any(),
+                            (req: Request, res: Response, next: NextFunction) => {
+                                instance[route.methodName](req, res, next, getApp());
+                            });
+                    }
+                    else {
+                        getRest()[route.requestMethod](prefix === "/" ? route.path : prefix + route.path,
+                            upload.any(), isPrivateRoute,
+                            (req: Request, res: Response, next: NextFunction) => {
+                                // Execute our method for this path and pass our express
+                                // request and response object.
+                                instance[route.methodName](req, res, next, getApp());
+                            });
+                    }
                 }
             });
         });

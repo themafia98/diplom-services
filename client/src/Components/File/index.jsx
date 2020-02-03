@@ -1,13 +1,19 @@
 import React from "react";
+import uuid from 'uuid/v4';
 import { Upload, Icon, message } from "antd";
+import Request from "../../Models/Rest";
 const { Dragger } = Upload;
 
-const File = () => {
+const File = ({ moduleData = {}, module = "", rest = {} }) => {
+
     const props = {
-        name: "file",
+        name: `${uuid()}__${moduleData["_id"]}`,
         multiple: true,
-        action: "https://www.mocky.io/v2/5cc8019d300000980a055e76",
+        withCredentials: true,
+        headers: rest.getHeaders(),
+        action: `${rest.getApi()}/${module}/file`,
         onChange(info) {
+            debugger;
             const { status } = info.file;
             if (status !== "uploading") {
                 console.log(info.file, info.fileList);

@@ -119,6 +119,12 @@ class Request {
         });
     }
 
+    getHeaders() {
+        return {
+            Authorization: this.getToken(true),
+        }
+    }
+
     sendRequest(url, method, body, auth = false, customHeaders = {}) {
         const props = auth
             ? {

@@ -46,6 +46,7 @@ namespace Decorators {
                 requestMethod: "post",
                 path: config.path,
                 private: config.private,
+                file: config.file || undefined,
                 methodName: <string>propKey
             });
 

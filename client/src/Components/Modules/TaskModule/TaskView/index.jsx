@@ -281,6 +281,7 @@ class TaskView extends React.PureComponent {
             udata = {}
         } = this.props;
 
+
         const { mode, actionType, modeControll, modeEditContent, modeControllEdit } = this.state;
         const {
             key = "",
@@ -292,6 +293,8 @@ class TaskView extends React.PureComponent {
             date = [],
             description = ""
         } = routeDataActive || {};
+
+        const { rest = {} } = this.context;
 
         let jurnalDataKeys = null;
         if (caches && actionType && routeDataActive && key) {
@@ -503,7 +506,7 @@ class TaskView extends React.PureComponent {
                                     </div>
 
                                     <p className="task_file">Дополнительные файлы для задачи</p>
-                                    <File />
+                                    <File rest={rest} moduleData={routeDataActive} module="tasks" />
                                     <p className="descriptionTask__comment">Коментарии</p>
                                     <Comments
                                         udata={udata}

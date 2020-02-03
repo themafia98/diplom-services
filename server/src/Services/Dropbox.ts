@@ -99,7 +99,6 @@ namespace DropboxStorage {
                 console.error(err);
                 return null;
             }
-
         }
     }
 }

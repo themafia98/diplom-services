@@ -77,11 +77,13 @@ export interface RouteDefinition {
     requestMethod: "get" | "post" | "delete" | "options" | "put";
     methodName: string;
     private?: boolean;
+    file?: boolean | undefined;
 }
 
 export interface DecoratorConfig extends Object {
     path: string;
     private: boolean;
+    file?: boolean | undefined;
 }
 
 export interface methodParam extends Object {
