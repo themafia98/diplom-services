@@ -18,6 +18,8 @@ import Tasks from "../../Controllers/Tasks";
 import News from "../../Controllers/Contact/News";
 import Database from "../Database";
 
+import DropboxStorage from '../../Services/Dropbox';
+
 import { UserModel } from "../Database/Schema";
 
 const jwt = require("passport-jwt");
@@ -200,7 +202,7 @@ namespace Http {
             });
         }
 
-        public start(): void {
+        public async start(): Promise<void> {
             const Main: Readonly<Function> = General.Main;
             const TasksController: Readonly<Function> = Tasks.TasksController;
             const SystemData: Readonly<Function> = System.SystemData;
@@ -214,6 +216,7 @@ namespace Http {
 
             const SessionStore = MongoStore(session);
             const MONGODB_URI: Readonly<string> = <string>process.env.MONGODB_URI;
+            const DROPBOX_TOKEN: Readonly<string> = <string>process.env.DROPBOX_TOKEN;
 
             this.getApp().use(
                 session({
@@ -235,7 +238,10 @@ namespace Http {
                 MONGODB_URI
             );
 
+            const dropbox = new DropboxStorage.DropboxManager({ token: DROPBOX_TOKEN });
+
             this.getApp().locals.dbm = dbm;
+            this.getApp().locals.dropbox = dropbox;
             this.initJWT(dbm);
 
             const instanceRouter: Route = RouterInstance.Router.instance(this.getApp());

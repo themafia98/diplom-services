@@ -1,0 +1,32 @@
+
+//request foor download
+fetch("/rest/news/list")
+.then(res => res.blob())
+.then(blob => {  
+       
+    const a = document.createElement('a');
+    document.body.appendChild(a);
+    const url = window.URL.createObjectURL(blob);
+    a.href = url;
+    a.download = "filename.doc";
+    a.click();
+
+    setTimeout(() => {
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a); 
+    }, 0); 
+
+});
+
+res.setHeader('Content-disposition', 'attachment; filename=dramaticpenguin.doc');
+res.send((<any>await store.downloadFile()).fileBinary);
+
+
+// save file
+const store: DropboxApi = server.locals.dropbox;
+const result = await store.saveFile({
+        path: `/${Math.random()}.txt`,
+        contents: Buffer.from("adsdsdsd", "utf-8")
+});
+
+

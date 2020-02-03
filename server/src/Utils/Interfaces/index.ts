@@ -1,5 +1,5 @@
 import { Application, Router as RouteExpress, Request as RequestExpress, Response, NextFunction } from "express";
-import { collectionOperations } from "../Types";
+import { Dropbox, files } from 'dropbox';
 import mongoose, { Mongoose, Connection } from "mongoose";
 
 export interface ServerRun {
@@ -119,5 +119,28 @@ export interface ResponseDocument {
 export interface MetadataConfig {
     methodQuery: string;
     body?: object;
+}
+
+export interface DropboxAccess {
+    token: string,
+}
+
+export interface DropboxApi {
+    getDbx(): Dropbox;
+    getAllFiles(): Promise<files.ListFolderResult | null>;
+    downloadFile(fileProps: DownloadDropbox): Promise<files.FileMetadata | null>;
+    saveFile(saveProps: UploadDropbox): Promise<files.FileMetadata | null>;
+}
+
+export interface DownloadDropbox {
+    moduleName: string;
+    filename: string;
+    ext: string;
+    cardName?: string;
+}
+
+export interface UploadDropbox {
+    path: string,
+    contents: Buffer
 }
 

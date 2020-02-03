@@ -134,6 +134,7 @@ class Request {
                 data: body ? body : null
             };
         if ((_.isNull(props.headers.Authorization) && auth) || (!props.headers.Authorization && auth)) {
+
             return this.signOut();
         }
 
@@ -145,12 +146,12 @@ class Request {
     }
 
     restartApp() {
-        sessionStorage.clear();
+        localStorage.clear();
         window.location.assign("/");
     }
 
     getToken(auth) {
-        const token = sessionStorage.getItem("token") || "";
+        const token = localStorage.getItem("token") || "";
         if ((auth && !token) || !token) {
             return null;
         }

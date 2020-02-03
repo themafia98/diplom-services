@@ -13,7 +13,7 @@ export const loadCurrentData = ({
     xhrPath = "list",
     noCorsClient = false,
 }) => async (dispatch, getState, { schema, Request, clientDB }) => {
-    debugger;
+
     const primaryKey = "uuid";
     const pathValid = path.includes("_") ? path.split("_")[0] : path.split("__")[0];
     const router = getState().router;
