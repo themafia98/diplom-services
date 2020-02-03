@@ -205,10 +205,14 @@ class ClientSideDatabase {
     }
 
     addItem(nameStore, item, mode = "readwrite") {
-        if (this.getCrashStatus()) return;
-        const tx = this.db.transaction([nameStore], mode);
-        const store = tx.objectStore(nameStore);
-        return store.add(item);
+        try {
+            if (this.getCrashStatus()) return;
+            const tx = this.db.transaction([nameStore], mode);
+            const store = tx.objectStore(nameStore);
+            return store.add(item);
+        } catch (err) {
+            console.warn(err.message);
+        }
 
         /** @Example */
         // const putAction = clientDB.addItem("jurnalworks", {

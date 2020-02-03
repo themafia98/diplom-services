@@ -1,5 +1,5 @@
 import express, { Application, Response, NextFunction, Router } from "express";
-import session, { SessionOptions } from "express-session";
+import session from "express-session";
 import MongoStore from "connect-mongo";
 
 import passport from "passport";
@@ -15,6 +15,7 @@ import System from "../../Controllers/Main";
 import General from "../../Controllers/General";
 import Chat from "../../Controllers/Contact/Chat";
 import Tasks from "../../Controllers/Tasks";
+import News from "../../Controllers/Contact/News";
 import Database from "../Database";
 
 import { UserModel } from "../Database/Schema";
@@ -203,6 +204,7 @@ namespace Http {
             const Main: Readonly<Function> = General.Main;
             const TasksController: Readonly<Function> = Tasks.TasksController;
             const SystemData: Readonly<Function> = System.SystemData;
+            const NewsController: Readonly<Function> = News.NewsController;
             this.setApp(express());
             this.getApp().disabled("x-powerd-by");
             this.getApp().use(helmet());
@@ -250,7 +252,13 @@ namespace Http {
             Chat.module(<App>this.getApp(), server);
 
             Utils.initControllers(
-                [Main, TasksController, SystemData],
+                [
+                    Main,
+                    TasksController,
+                    NewsController,
+                    SystemData,
+
+                ],
                 this.getApp.bind(this),
                 this.getRest.bind(this),
                 this.isPrivateRoute.bind(this)

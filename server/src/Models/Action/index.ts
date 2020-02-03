@@ -151,6 +151,19 @@ namespace Action {
                         break;
                     }
 
+                    case "news": {
+                        if (this.getActionType() === "get_all") {
+
+                            const model: Model<Document> | null = getModelByName("news", "news");
+
+                            if (!model) return null;
+
+                            return this.getAll(model, actionParam);
+                        }
+
+                        break;
+                    }
+
                     default: {
                         return null;
                     }

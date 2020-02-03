@@ -22,7 +22,7 @@ class ContactModule extends React.PureComponent {
         const { onLoadCurrentData, path } = this.props;
 
         if (path === "contactModule_feedback") {
-            onLoadCurrentData({ path, storeLoad: "news", noCorsClient: true, useStore: true });
+            onLoadCurrentData({ path, storeLoad: "news", methodRequst: "GET", noCorsClient: true, useStore: true });
         }
     };
 
@@ -30,7 +30,7 @@ class ContactModule extends React.PureComponent {
         const { router: { shouldUpdate = false } = {}, path, onLoadCurrentData } = this.props;
 
         if (path === "contactModule_feedback" && shouldUpdate) {
-            onLoadCurrentData({ path, storeLoad: "news", noCorsClient: true, useStore: true });
+            onLoadCurrentData({ path, storeLoad: "news", methodRequst: "GET", noCorsClient: true, useStore: true });
         }
     };
 
