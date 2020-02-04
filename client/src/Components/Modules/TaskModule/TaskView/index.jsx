@@ -75,13 +75,14 @@ class TaskView extends React.PureComponent {
     };
 
     componentDidUpdate = async (props, state) => {
-        const { isLoadingFiles = false } = this.state;
+        const { isLoadingFiles = false, shouldRefresh = false } = this.state;
         const { router: { routeDataActive: { key = "" } = {}, routeDataActive = {} } } = this.props;
         const { Request = {} } = this.context;
 
-        if (!isLoadingFiles && routeDataActive["_id"]) {
+        if (!isLoadingFiles && routeDataActive["_id"] || shouldRefresh) {
             try {
                 this.setState({
+                    shouldRefresh: false,
                     isLoadingFiles: true
                 }, async () => {
                     const rest = new Request();
@@ -116,9 +117,10 @@ class TaskView extends React.PureComponent {
         }
     };
 
-    onAddFileList = file => {
+    onAddFileList = (fileList, status) => {
         this.setState({
-            filesArray: [...this.state.filesArray, file]
+            filesArray: [...fileList],
+            shouldRefresh: status === "done" ? true : false,
         })
     }
 
@@ -567,6 +569,7 @@ class TaskView extends React.PureComponent {
                                     <File
                                         filesArray={filesArray}
                                         rest={rest}
+                                        onAddFileList={this.onAddFileList}
                                         moduleData={routeDataActive}
                                         module="tasks"
                                     />
