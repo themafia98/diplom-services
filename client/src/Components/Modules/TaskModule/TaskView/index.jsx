@@ -40,6 +40,7 @@ class TaskView extends React.PureComponent {
         actionType: "__setJurnal",
         isLoadingFiles: false,
         filesArray: [],
+        filteredUsers: [],
         showModalJur: false,
         modeEditContent: false
     };
@@ -60,17 +61,47 @@ class TaskView extends React.PureComponent {
         else return state;
     };
 
-    componentDidMount = () => {
+    componentDidMount = async () => {
         const {
             publicReducer: { caches = {} } = {},
             router: { routeDataActive: { key = "" } = {}, routeDataActive = {} },
             onLoadCacheData,
             data: { key: keyProps = "" } = {}
         } = this.props;
+        const { Request = {} } = this.context;
         const { actionType } = this.state;
         const idTask = !_.isEmpty(routeDataActive) && key ? key : keyProps ? keyProps : "";
         if (_.isEmpty(caches) || (key && !caches[key]) || !key && onLoadCacheData) {
             onLoadCacheData({ actionType, depKey: idTask, depStore: "tasks", store: "jurnalworks" });
+            try {
+                const rest = new Request();
+                const response = await rest.sendRequest("/system/userList", "GET", null, true);
+
+                if (response && response.status === 200) {
+                    const { data: { response: { metadata = [] } = {} } = {} } = response || {};
+
+                    const filteredUsers = metadata.map(user => {
+                        const { _id = "", displayName = "" } = user;
+
+                        if (!user || !_id || !displayName) return null;
+
+                        return {
+                            _id,
+                            displayName
+                        }
+                    }).filter(Boolean);
+
+                    this.setState({
+                        filteredUsers
+                    });
+
+
+                } else throw new Error("fail load user list");
+
+            } catch (err) {
+                message.error("Ошибка загрузки сотрудников.");
+                console.error(err);
+            }
         }
     };
 
@@ -370,7 +401,8 @@ class TaskView extends React.PureComponent {
             modeControll,
             modeEditContent,
             modeControllEdit,
-            filesArray = []
+            filesArray = [],
+            filteredUsers = []
         } = this.state;
 
         const {
@@ -525,12 +557,13 @@ class TaskView extends React.PureComponent {
                                                 placeholder="выберете исполнителя"
                                                 optionLabelProp="label"
                                             >
-                                                <Option value="Павел Петрович" label="Павел Петрович">
-                                                    <span>Павел Петрович</span>
-                                                </Option>
-                                                <Option value="Гена Букин" label="Гена Букин">
-                                                    <span>Гена Букин</span>
-                                                </Option>
+                                                {
+                                                    filteredUsers.map(it => (
+                                                        <Option key={it._id} value={it.displayName} label={it.displayName}>
+                                                            <span>{it.displayName}</span>
+                                                        </Option>
+                                                    ))
+                                                }
                                             </Select>
                                         ) : null}
                                     </Descriptions.Item>

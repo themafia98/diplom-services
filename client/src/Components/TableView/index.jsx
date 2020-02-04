@@ -96,7 +96,8 @@ class TableView extends React.Component {
             router,
             publicReducer: { requestError },
             height: heightProps,
-            visible
+            visible,
+            udata = {}
         } = this.props;
         const { config = {} } = this.context;
         const { routeData } = router;
@@ -264,7 +265,7 @@ class TableView extends React.Component {
                     flag && data.length
                         ? data
                             .map(it => {
-                                if (!_.isNull(it.editor) && it.editor.some(editor => editor === user)) return it;
+                                if (!_.isNull(it.editor) && it.editor.some(editor => editor === udata.displayName)) return it;
                                 else return null;
                             })
                             .filter(Boolean)

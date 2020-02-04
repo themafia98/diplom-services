@@ -17,10 +17,11 @@ class File extends React.Component {
         if (props.filesArray !== state.filesArray ||
             (isArray && state.filesArray.length !== props.filesArray.length)) {
 
-            return {
-                ...state,
-                filesArray: [...props.filesArray]
-            }
+            if (Array.isArray(props.filesArray))
+                return {
+                    ...state,
+                    filesArray: [...props.filesArray]
+                }
         }
 
         return state;
@@ -53,9 +54,9 @@ class File extends React.Component {
             name: `${uuid()}__${_id}`,
             multiple: true,
             withCredentials: true,
-            headers: rest.getHeaders(),
+            headers: rest ? rest.getHeaders() : null,
             fileList: this.state.filesArray,
-            action: `${rest.getApi()}/${module}/file`,
+            action: rest ? `${rest.getApi()}/${module}/file` : null,
         }
 
         console.log(this.state.filesArray);

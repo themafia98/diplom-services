@@ -115,7 +115,8 @@ class TaskModule extends React.PureComponent {
                 onLoadCacheData,
                 rest,
                 removeTab,
-                setCurrentTab
+                setCurrentTab,
+                udata = {}
             } = this.props;
 
             const isViewTask = path.startsWith("taskModule") && /__/gi.test(path);
@@ -162,6 +163,7 @@ class TaskModule extends React.PureComponent {
                         <TaskModuleMyList
                             key="myListTask"
                             rest={rest}
+                            udata={udata}
                             isBackground={isBackgroundTaskModuleMyTasks}
                             visible={path === "taskModule_myTasks"}
                             setCurrentTab={setCurrentTab}
@@ -239,9 +241,11 @@ class TaskModule extends React.PureComponent {
 }
 
 const mapStateToProps = state => {
+    const { udata = {} } = state.publicReducer;
     return {
         publicReducer: state.publicReducer,
-        router: state.router
+        router: state.router,
+        udata
     };
 };
 

@@ -44,6 +44,41 @@ class CreateTask extends React.PureComponent {
         statusApp: PropTypes.string.isRequired
     };
 
+    componentDidMount = async () => {
+        const { filteredUsers = [] } = this.state;
+        const { Request = {} } = this.context;
+
+        try {
+            const rest = new Request();
+            const response = await rest.sendRequest("/system/userList", "GET", null, true);
+
+            if (response && response.status === 200) {
+                const { data: { response: { metadata = [] } = {} } = {} } = response || {};
+
+                const filteredUsers = metadata.map(user => {
+                    const { _id = "", displayName = "" } = user;
+
+                    if (!user || !_id || !displayName) return null;
+
+                    return {
+                        _id,
+                        displayName
+                    }
+                }).filter(Boolean);
+
+                this.setState({
+                    filteredUsers
+                });
+
+
+            } else throw new Error("fail load user list");
+
+        } catch (err) {
+            message.error("Ошибка загрузки сотрудников.");
+            console.error(err);
+        }
+    }
+
     validation = () => {
         const {
             card: { key, status, name, priority, author, editor, description, date },
@@ -264,7 +299,8 @@ class CreateTask extends React.PureComponent {
 
     render() {
         const dateFormat = "DD.MM.YYYY";
-        const { errorBundle } = this.state;
+        const { errorBundle, filteredUsers = [] } = this.state;
+        const { rest } = this.context;
         // const { height } = this.props;
         return (
             <Scrollbars>
@@ -312,12 +348,13 @@ class CreateTask extends React.PureComponent {
                                         placeholder="выберете исполнителя"
                                         optionLabelProp="label"
                                     >
-                                        <Option value="Павел Петрович" label="Павел Петрович">
-                                            <span>Павел Петрович</span>
-                                        </Option>
-                                        <Option value="Гена Букин" label="Гена Букин">
-                                            <span>Гена Букин</span>
-                                        </Option>
+                                        {filteredUsers && filteredUsers.length ?
+                                            filteredUsers.map(it => (
+                                                <Option value={it.displayName} label={it.displayName} >
+                                                    <span>{it.displayName}</span>
+                                                </Option>
+                                            )) : null
+                                        }
                                     </Select>
                                     <label>Описание задачи: </label>
                                     <Textarea
@@ -330,7 +367,7 @@ class CreateTask extends React.PureComponent {
                                         rows={8}
                                     />
                                     <label>Прикрепить файлы: </label>
-                                    <File />
+                                    <File rest={rest} />
                                     <label>Срок сдачи: </label>
                                     <RangePicker
                                         className={[

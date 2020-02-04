@@ -12,7 +12,7 @@ class TaskModuleMyList extends React.PureComponent {
     };
 
     render() {
-        const { user, data = null, height, setCurrentTab } = this.props;
+        const { udata = {}, data = null, height, setCurrentTab } = this.props;
 
         return (
             <div ref={this.refModuleTask} className="taskModule_all">
@@ -24,7 +24,7 @@ class TaskModuleMyList extends React.PureComponent {
                         tasks={data ? data.tasks : null}
                         data={data}
                         flag={true}
-                        user={user}
+                        udata={udata}
                         path="searchTable"
                     />
                 </div>
