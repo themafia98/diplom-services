@@ -16,7 +16,6 @@ namespace Tasks {
     const Controller = Decorators.Controller;
     const Get = Decorators.Get;
     const Post = Decorators.Post;
-    const upload = multer();
 
     @Controller("/tasks")
     export class TasksController {
