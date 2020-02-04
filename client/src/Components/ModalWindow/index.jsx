@@ -318,7 +318,7 @@ class ModalWindow extends React.PureComponent {
             {
                 depKey: keyTask,
                 timeLost: timeLost,
-                editor: "Павел Петрович",
+                editor: "",
                 date: date,
                 description: description
             });

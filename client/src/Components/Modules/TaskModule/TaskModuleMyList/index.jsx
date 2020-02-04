@@ -8,8 +8,7 @@ class TaskModuleMyList extends React.PureComponent {
         setCurrentTab: PropTypes.func.isRequired,
         height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         data: PropTypes.oneOfType([PropTypes.object, () => null]),
-        user: PropTypes.oneOfType([PropTypes.object, PropTypes.string, () => null]),
-    };
+    }
 
     render() {
         const { udata = {}, data = null, height, setCurrentTab } = this.props;

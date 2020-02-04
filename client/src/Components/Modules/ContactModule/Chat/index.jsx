@@ -15,26 +15,31 @@ import ChatRoom from "./ChatRoom";
 
 
 class Chat extends React.PureComponent {
+
     state = {
         isLoad: true,
         messages: [],
-        visible: null
+        visible: null,
+        socket: null,
     };
 
-    socket = io("/");
-
+    socket = null;
     timer = null;
 
     componentDidMount = () => {
-        const { messages = [] } = this.state;
+        const { messages = [], socket = null } = this.state;
         const { chat: { chatToken = null } = {}, onSetActiveChatToken } = this.props;
+
+        this.socket = io("/");
 
         this.socket.on("reconnect_attempt", () => {
             this.socket.io.opts.transports = ["websocket", "polling"];
         });
 
         this.socket.on("connection", socket => {
-
+            if (socket) {
+                onSetActiveChatToken(uuid(), []);
+            }
         });
 
         this.socket.on("message", msg => {
@@ -49,8 +54,8 @@ class Chat extends React.PureComponent {
             console.log("there was an error");
         });
 
-        if (!_.isNull(chatToken))
-            onSetActiveChatToken(123, []);
+        // if (!_.isNull(chatToken))
+        //     onSetActiveChatToken(123, []);
     };
 
     componentWillUnmount = () => {

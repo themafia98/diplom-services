@@ -11,9 +11,12 @@ namespace Chat {
 
         wsWorkers[workerId].on('connection', (socket: Socket) => {
             console.log("ws connection");
+            socket.emit("connection", true);
+
             socket.on("newMessage", msg => {
                 wsWorkers[workerId].emit("message", msg);
             });
+
         });
 
         wsWorkers[workerId].on('disconnect', (socket: Socket) => {

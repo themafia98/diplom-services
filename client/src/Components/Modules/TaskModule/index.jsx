@@ -169,7 +169,6 @@ class TaskModule extends React.PureComponent {
                             setCurrentTab={setCurrentTab}
                             height={height}
                             data={router.routeData[path]}
-                            user="Павел Петрович"
                         />
                     </TabContainer>
                     <TabContainer
