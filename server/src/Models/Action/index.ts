@@ -1,7 +1,8 @@
-import { ActionProps, ActionParams } from '../../Utils/Interfaces';
+import { ActionProps, ActionParams, DropboxApi } from "../../Utils/Interfaces";
 import { ParserData } from "../../Utils/Types";
-import { Model, Document } from 'mongoose';
-import Utils from '../../Utils';
+import { files } from "dropbox";
+import { Model, Document } from "mongoose";
+import Utils from "../../Utils";
 
 namespace Action {
     const { getModelByName } = Utils;
@@ -9,10 +10,12 @@ namespace Action {
     abstract class ActionEntity {
         private actionPath: string = "";
         private actionType: string = "";
+        private store: DropboxApi;
 
         constructor(props: ActionProps) {
             this.actionPath = props.actionPath;
             this.actionType = props.actionType;
+            this.store = props.store;
         }
 
         public getActionPath(): string {
@@ -23,13 +26,15 @@ namespace Action {
             return this.actionType;
         }
 
+        public getStore() {
+            return this.store;
+        }
     }
 
     export class ActionParser extends ActionEntity {
         constructor(props: ActionProps) {
             super(props);
         }
-
 
         private async getAll(model: Model<Document>, actionParam: ActionParams) {
             try {
@@ -52,17 +57,33 @@ namespace Action {
             }
         }
 
-
         public async getActionData(actionParam: ActionParams = {}): ParserData {
             try {
                 console.log(`Run action. actionType: ${this.getActionType()}, actionPath: ${this.getActionPath()}`);
 
                 switch (this.getActionPath()) {
+                    case "global": {
+                        if (this.getActionType() === "load_files") {
+                        }
+
+                        if (this.getActionType() === "download_files") {
+                            const { queryParams = {} } = actionParam;
+                            const taskId: string = (<any>queryParams).taskId;
+                            const filename: string = (<any>queryParams).filename;
+
+                            const path: string = `/tasks/${taskId}/${filename}`;
+                            const file: files.FileMetadata | null = await this.getStore().downloadFile(path);
+                            return file;
+                        }
+
+                        if (this.getActionType() === "save_file") {
+                        }
+
+                        break;
+                    }
 
                     case "users": {
-
                         if (this.getActionType() === "get_all") {
-
                             const model: Model<Document> | null = getModelByName("users", "users");
 
                             if (!model) return null;
@@ -77,7 +98,7 @@ namespace Action {
                         const model: Model<Document> | null = getModelByName("jurnalworks", "jurnalworks");
                         if (!model) return null;
 
-                        // Get jurnal action. Starts with '__set' journals key becouse 
+                        // Get jurnal action. Starts with '__set' journals key becouse
                         // set for synchronize with client key
                         if (this.getActionType() === "__setJurnal") {
                             const { depKey } = actionParam;
@@ -115,7 +136,6 @@ namespace Action {
                             }
                         } else if (this.getActionType().includes("update_")) {
                             try {
-
                                 /** Params for query */
                                 const { queryParams = {}, updateItem = "" } = actionParam;
                                 const id: string = (<any>queryParams).id;
@@ -125,11 +145,9 @@ namespace Action {
                                 let actionData: Document | null = null;
 
                                 if (this.getActionType().includes("single")) {
-
                                     const updateField: string = (<any>actionParam).updateField;
                                     (<any>updateProps)[updateField] = <string>updateItem;
                                     console.log(updateProps);
-
                                 } else if (this.getActionType().includes("many")) {
                                     const { updateItem = "" } = actionParam;
                                     updateProps = updateItem;
@@ -139,7 +157,6 @@ namespace Action {
                                 actionData = await model.findById(id);
 
                                 return actionData;
-
                             } catch (err) {
                                 console.log(err);
                                 return null;
@@ -153,7 +170,6 @@ namespace Action {
 
                     case "news": {
                         if (this.getActionType() === "get_all") {
-
                             const model: Model<Document> | null = getModelByName("news", "news");
 
                             if (!model) return null;
@@ -170,13 +186,12 @@ namespace Action {
                 }
 
                 return null;
-
             } catch (err) {
                 console.error(err);
                 return null;
             }
         }
     }
-};
+}
 
 export default Action;
