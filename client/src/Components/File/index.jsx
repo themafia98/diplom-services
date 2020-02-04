@@ -4,17 +4,24 @@ import { Upload, Icon, message } from "antd";
 import Request from "../../Models/Rest";
 const { Dragger } = Upload;
 
-const File = ({ moduleData = {}, module = "", rest = {} }) => {
+const File = ({ moduleData = {}, module = "", rest = {}, filesArray = [], onAddFileList = null }) => {
 
-    const props = {
+    const props = filesArray && filesArray.length ? {
         name: `${uuid()}__${moduleData["_id"]}`,
         multiple: true,
         withCredentials: true,
         headers: rest.getHeaders(),
+        fileList: filesArray,
         action: `${rest.getApi()}/${module}/file`,
-        onChange(info) {
+
+        beforeUpload(file, fileList) {
             debugger;
+            if (onAddFileList) onAddFileList(file);
+        },
+
+        onChange(info) {
             const { status } = info.file;
+
             if (status !== "uploading") {
                 console.log(info.file, info.fileList);
             }
@@ -24,7 +31,8 @@ const File = ({ moduleData = {}, module = "", rest = {} }) => {
                 message.error(`${info.file.name} file upload failed.`);
             }
         },
-    };
+
+    } : {};
 
     return (
         <div className="file">

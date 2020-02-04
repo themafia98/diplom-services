@@ -38,6 +38,8 @@ class TaskView extends React.PureComponent {
             date: null
         },
         actionType: "__setJurnal",
+        isLoadingFiles: false,
+        filesArray: [],
         showModalJur: false,
         modeEditContent: false
     };
@@ -71,6 +73,54 @@ class TaskView extends React.PureComponent {
             onLoadCacheData({ actionType, depKey: idTask, depStore: "tasks", store: "jurnalworks" });
         }
     };
+
+    componentDidUpdate = async (props, state) => {
+        const { isLoadingFiles = false } = this.state;
+        const { router: { routeDataActive: { key = "" } = {}, routeDataActive = {} } } = this.props;
+        const { Request = {} } = this.context;
+
+        if (!isLoadingFiles && routeDataActive["_id"]) {
+            try {
+                this.setState({
+                    isLoadingFiles: true
+                }, async () => {
+                    const rest = new Request();
+                    const { data: { response = null } = {} } = await rest.sendRequest(`/tasks/load/file`, "POST", {
+                        queryParams: {
+                            taskId: routeDataActive["_id"]
+                        }
+                    });
+
+                    if (response && response.done) {
+                        const { metadata: filesArray } = response;
+
+                        this.setState({
+                            filesArray: filesArray.map(it => {
+                                const { name, path_display: url, id: uid } = it;
+                                const [module, taskId, filename] = url.slice(1).split(/\//gi);
+
+                                return {
+                                    name,
+                                    url: `${rest.getApi()}/${module}/download/${taskId}/${filename}`,
+                                    status: "done",
+                                    uid
+                                }
+                            })
+                        });
+
+                    }
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    };
+
+    onAddFileList = file => {
+        this.setState({
+            filesArray: [...this.state.filesArray, file]
+        })
+    }
 
     onEdit = event => {
         const {
@@ -282,7 +332,15 @@ class TaskView extends React.PureComponent {
         } = this.props;
 
 
-        const { mode, actionType, modeControll, modeEditContent, modeControllEdit } = this.state;
+        const {
+            mode,
+            actionType,
+            modeControll,
+            modeEditContent,
+            modeControllEdit,
+            filesArray = []
+        } = this.state;
+
         const {
             key = "",
             status = "",
@@ -506,7 +564,12 @@ class TaskView extends React.PureComponent {
                                     </div>
 
                                     <p className="task_file">Дополнительные файлы для задачи</p>
-                                    <File rest={rest} moduleData={routeDataActive} module="tasks" />
+                                    <File
+                                        filesArray={filesArray}
+                                        rest={rest}
+                                        moduleData={routeDataActive}
+                                        module="tasks"
+                                    />
                                     <p className="descriptionTask__comment">Коментарии</p>
                                     <Comments
                                         udata={udata}

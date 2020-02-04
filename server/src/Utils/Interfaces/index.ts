@@ -130,8 +130,10 @@ export interface DropboxAccess {
 export interface DropboxApi {
     getDbx(): Dropbox;
     getAllFiles(): Promise<files.ListFolderResult | null>;
-    downloadFile(fileProps: DownloadDropbox): Promise<files.FileMetadata | null>;
+    downloadFileByProps(fileProps: DownloadDropbox): Promise<files.FileMetadata | null>;
+    downloadFile(path: string): Promise<files.FileMetadata | null>;
     saveFile(saveProps: UploadDropbox): Promise<files.FileMetadata | null>;
+    getFilesByPath(path: string): Promise<files.ListFolderResult | null>;
 }
 
 export interface DownloadDropbox {

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import multer from 'multer';
 import { files } from 'dropbox';
+import uuid from 'uuid/v4';
 import { Document } from 'mongoose';
 import _ from "lodash";
 import Utils from "../../Utils";
@@ -86,6 +87,98 @@ namespace Tasks {
         }
 
 
+        @Get({ path: "/download/:taskId/:filename", private: true })
+        public async downloadFile(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+            console.log("params:", req.params);
+
+            const { taskId = "", filename = "" } = req.params;
+
+            if (taskId && filename) {
+                try {
+                    const params: Params = { methodQuery: "load_files", status: "done", done: true, from: "tasks" };
+
+                    const store: DropboxApi = server.locals.dropbox;
+                    const path: string = `/tasks/${taskId}/${filename}`;
+                    console.log(path);
+                    const file: files.FileMetadata | null = await store.downloadFile(path);
+
+                    if (!file) {
+                        params.done = false;
+                        return res.json({
+                            action: "error action load_files task",
+                            response: { status: "FAIL", params, done: false, metadata: [] },
+                            uptime: process.uptime(),
+                            responseTime: Utils.responseTime((<any>req).start),
+                            work: process.connected
+                        });
+                    } else {
+                        return res.send(Buffer.from((<any>file)["fileBinary"]));
+                    }
+
+
+                } catch (err) {
+                    console.error(err);
+                    if (!res.headersSent)
+                        return res.json({
+                            action: err.name,
+                            response: { status: "FAIL", done: false, metadata: "Server error" },
+                            uptime: process.uptime(),
+                            responseTime: Utils.responseTime((<any>req).start),
+                            work: process.connected
+                        });
+                }
+
+
+            } else return res.sendStatus(404);
+        };
+
+
+        @Post({ path: "/load/file", private: true })
+        public async loadTaskFiles(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+            try {
+                const params: Params = { methodQuery: "load_files", status: "done", done: true, from: "tasks" };
+                const { queryParams: { taskId = "" } = {} } = req.body;
+
+                const store: DropboxApi = server.locals.dropbox;
+                const path: string = `/tasks/${taskId}/`;
+
+                const files: files.ListFolderResult | null = await store.getFilesByPath(path);
+
+                if (!files) {
+                    params.done = false;
+                    return res.json({
+                        action: "error action load_files task",
+                        response: { status: "FAIL", params, done: false, metadata: [] },
+                        uptime: process.uptime(),
+                        responseTime: Utils.responseTime((<any>req).start),
+                        work: process.connected
+                    });
+                } else {
+                    return res.json({
+                        action: "done",
+                        response: { status: "OK", done: true, param: params, metadata: files.entries },
+                        uptime: process.uptime(),
+                        responseTime: Utils.responseTime((<any>req).start),
+                        work: process.connected
+                    });
+                }
+
+
+            } catch (err) {
+                console.error(err);
+                if (!res.headersSent)
+                    return res.json({
+                        action: err.name,
+                        response: { status: "FAIL", done: false, metadata: "Server error" },
+                        uptime: process.uptime(),
+                        responseTime: Utils.responseTime((<any>req).start),
+                        work: process.connected
+                    });
+
+            };
+        }
+
+
         @Post({ path: "/file", private: true, file: true })
         public async saveFile(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
             try {
@@ -102,7 +195,7 @@ namespace Tasks {
                         const parseOriginalName = file.originalname.split(/\./gi);
                         const ext = parseOriginalName[parseOriginalName.length - 1];
 
-                        const path: string = `/tasks/${taskId}/${filename}.${ext}`;
+                        const path: string = `/tasks/${taskId}/${uuid()}.${ext}`;
                         const result = await store.saveFile({ path, contents: file.buffer });
 
                         if (result) {
