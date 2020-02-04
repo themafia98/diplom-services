@@ -66,17 +66,19 @@ namespace Action {
                         if (this.getActionType() === "load_files") {
                             const { queryParams } = actionParam;
                             const taskId: string = (<any>queryParams).taskId;
+
                             const path: string = `/tasks/${taskId}/`;
                             const files: files.ListFolderResult | null = await this.getStore().getFilesByPath(path);
                             return files;
                         }
 
                         if (this.getActionType() === "download_files") {
-                            const { queryParams = {} } = actionParam;
-                            const taskId: string = (<any>queryParams).taskId;
-                            const filename: string = (<any>queryParams).filename;
+
+                            const taskId: string = (<any>actionParam).taskId;
+                            const filename: string = (<any>actionParam).filename;
 
                             const path: string = `/tasks/${taskId}/${filename}`;
+
                             const file: files.FileMetadata | null = await this.getStore().downloadFile(path);
                             return file;
                         }

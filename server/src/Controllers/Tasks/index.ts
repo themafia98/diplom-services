@@ -75,9 +75,8 @@ namespace Tasks {
             }
         }
 
-        @Get({ path: "/download/:taskId/:filename", private: true })
+        @Get({ path: "/download/:taskId/:filename", private: false })
         public async downloadFile(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
-            console.log("params:", req.params);
 
             const { taskId = "", filename = "" } = req.params;
             const params: Params = { methodQuery: "download_files", status: "done", done: true, from: "tasks" };
@@ -92,7 +91,10 @@ namespace Tasks {
                         store: dropbox
                     });
 
-                    const actionData: ParserResult = await downloadAction.getActionData(req.body);
+                    const actionData: ParserResult = await downloadAction.getActionData({
+                        taskId, filename
+                    });
+
                     const isBinary: Boolean = actionData && (<any>actionData).fileBinary;
                     const fileBinary: BinaryType | null = isBinary ? (<any>actionData).fileBinary : null;
 
@@ -133,6 +135,7 @@ namespace Tasks {
                     actionType: "load_files",
                     store: <DropboxApi>server.locals.dropbox
                 });
+
 
                 const actionData: ParserResult = await downloadAction.getActionData(req.body);
 
