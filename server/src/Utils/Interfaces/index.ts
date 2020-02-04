@@ -37,7 +37,7 @@ export interface CryptoSecurity {
 }
 
 export interface App extends Application {
-    locals?: any;
+    locals: any;
     dbm: Dbms;
     hash: CryptoSecurity;
 }
