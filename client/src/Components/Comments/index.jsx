@@ -86,9 +86,10 @@ class Comments extends React.PureComponent {
         this.addCommentsDelay(event);
     };
 
-    onDelete = (event, keyItem) => {
-        const { onUpdate, data: { key = "", comments = [] } = {}, data = {} } = this.props;
-        onUpdate(key, "DELETE", comments, "comments", { id: keyItem, data: { ...data } }, "tasks")
+    onDelete = (event, idComment) => {
+        const { onUpdate, data: { _id: id = "", key = "", comments = [] } = {}, data = {} } = this.props;
+        const filterComments = comments.filter(it => it.id !== idComment);
+        onUpdate({ id, key, item: data, store: "tasks", updateItem: filterComments, updateField: "comments" })
             .then(() => message.success("Коментарий удален."))
             .catch(error => {
                 message.error("Не удалось удалить коментарий.");
@@ -104,9 +105,18 @@ class Comments extends React.PureComponent {
     };
 
     renderComments(commentsArray) {
-        const { rules } = this.props;
+        const { rules, udata: { _id: userId = "" } = {} } = this.props;
         if (commentsArray.length && Array.isArray(commentsArray))
-            return commentsArray.map(it => <Comment key={it.id} rules={rules} it={it} onDelete={this.onDelete} />);
+            return commentsArray.map(it => (
+                <Comment
+                    key={it.id}
+                    rules={rules}
+                    it={it}
+                    uId={it.uId ? it.uId : null}
+                    userId={userId}
+                    onDelete={this.onDelete}
+                />)
+            );
         else return <Empty description={<span>Данных нету</span>} />;
     }
     render() {

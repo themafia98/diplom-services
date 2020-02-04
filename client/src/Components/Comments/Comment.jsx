@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 //import moment from "moment";
 
-const Comment = ({ onDelete, rules, it }) => {
+const Comment = ({ onDelete, rules, it, userId = "", uId = "" }) => {
     const [key] = useState(it.id ? it.id : Math.random());
 
     const onDeleteEvent = event => {
@@ -14,7 +14,9 @@ const Comment = ({ onDelete, rules, it }) => {
             {rules ? (
                 <span className="commentControllers">
                     <span style={{ display: "none" }} className="editComment icon-edit"></span>
-                    <span onClick={onDeleteEvent} className="deleteComment icon-trash-empty"></span>
+                    {userId === uId ?
+                        <span onClick={onDeleteEvent} className="deleteComment icon-trash-empty"></span>
+                        : null}
                 </span>
             ) : null}
             <span className="aboutCommentSender">
