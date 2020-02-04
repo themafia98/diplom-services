@@ -1,5 +1,5 @@
 import { Application, Router as RouteExpress, Request as RequestExpress, Response, NextFunction } from "express";
-import { Dropbox, files } from 'dropbox';
+import { Dropbox, files } from "dropbox";
 import mongoose, { Mongoose, Connection } from "mongoose";
 
 export interface ServerRun {
@@ -37,6 +37,7 @@ export interface CryptoSecurity {
 }
 
 export interface App extends Application {
+    locals?: any;
     dbm: Dbms;
     hash: CryptoSecurity;
 }
@@ -45,19 +46,19 @@ export interface ActionProps {
     actionPath: string;
     actionType: string;
     body?: object;
+    store?: DropboxApi;
 }
 
 export interface Params {
-    methodQuery: string,
-    status: string,
-    from: string,
-    done?: boolean
+    methodQuery: string;
+    status: string;
+    from: string;
+    done?: boolean;
 }
 
-
 export interface ResponseMetadata<T> {
-    param: Params,
-    body: T
+    param: Params;
+    body: T;
 }
 
 export interface Request extends RequestExpress {
@@ -124,7 +125,7 @@ export interface MetadataConfig {
 }
 
 export interface DropboxAccess {
-    token: string,
+    token: string;
 }
 
 export interface DropboxApi {
@@ -144,7 +145,13 @@ export interface DownloadDropbox {
 }
 
 export interface UploadDropbox {
-    path: string,
-    contents: Buffer
+    path: string;
+    contents: Buffer;
 }
 
+export interface ResponseJson<T> {
+    status: string;
+    params: T;
+    done: boolean;
+    metadata: object | Array<any> | null | BinaryType | string;
+}
