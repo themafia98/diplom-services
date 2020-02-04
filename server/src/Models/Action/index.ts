@@ -15,7 +15,7 @@ namespace Action {
         constructor(props: ActionProps) {
             this.actionPath = props.actionPath;
             this.actionType = props.actionType;
-            this.store = props.store;
+            this.store = (<any>props).store;
         }
 
         public getActionPath(): string {

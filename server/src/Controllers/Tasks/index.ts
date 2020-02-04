@@ -5,14 +5,14 @@ import uuid from "uuid/v4";
 import { Document } from "mongoose";
 import _ from "lodash";
 import Utils from "../../Utils";
-import { App, Params, ResponseDocument, DropboxApi } from "../../Utils/Interfaces";
+import { App, Params, ResponseDocument, DropboxApi, ActionProps } from "../../Utils/Interfaces";
 import { ResRequest, docResponse, ParserResult } from "../../Utils/Types";
 
 import Action from "../../Models/Action";
 import Decorators from "../../Decorators";
 
 namespace Tasks {
-    const { getResponseJson } = Utils;
+    const { getResponseJson } = <any>Utils;
     const Controller = Decorators.Controller;
     const Get = Decorators.Get;
     const Post = Decorators.Post;
@@ -37,7 +37,7 @@ namespace Tasks {
                     params.status = "error";
 
                     return res.json(
-                        getResponseJson("error", { params, metadata: data, status: "FAIL", done: false }, req.start)
+                        getResponseJson("error", { params, metadata: data, status: "FAIL", done: false }, (<any>req).start)
                     );
                 }
 
@@ -60,7 +60,7 @@ namespace Tasks {
                         .filter(Boolean);
                 }
 
-                return res.json(getResponseJson("done", { params, metadata, done: true, status: "OK" }, req.start));
+                return res.json(getResponseJson("done", { params, metadata, done: true, status: "OK" }, (<any>req).start));
             } catch (err) {
                 console.error(err);
                 if (!res.headersSent) {
@@ -68,7 +68,7 @@ namespace Tasks {
                         getResponseJson(
                             err.name,
                             { metadata: "Server error", params, done: false, status: "FAIL" },
-                            req.start
+                            (<any>req).start
                         )
                     );
                 }
@@ -84,15 +84,17 @@ namespace Tasks {
 
             if (taskId && filename) {
                 try {
+
+                    const dropbox: DropboxApi = server.locals.dropbox;
                     const downloadAction = new Action.ActionParser({
                         actionPath: "global",
                         actionType: "download_files",
-                        store: <DropboxApi>server.locals.dropbox
+                        store: dropbox
                     });
 
                     const actionData: ParserResult = await downloadAction.getActionData(req.body);
-                    const isBinary: Boolean = actionData && actionData.fileBinary;
-                    const fileBinary: BinaryType | null = isBinary ? actionData.fileBinary : null;
+                    const isBinary: Boolean = actionData && (<any>actionData).fileBinary;
+                    const fileBinary: BinaryType | null = isBinary ? (<any>actionData).fileBinary : null;
 
                     if (!actionData) {
                         params.done = false;
@@ -100,7 +102,7 @@ namespace Tasks {
                             getResponseJson(
                                 "download_files fail",
                                 { status: "FAIL", params, done: true, metadata: fileBinary },
-                                req.start
+                                (<any>req).start
                             )
                         );
                     } else if (fileBinary) {
@@ -114,7 +116,7 @@ namespace Tasks {
                             getResponseJson(
                                 err.name,
                                 { status: "FAIL", params, done: false, metadata: "Server error" },
-                                req.start
+                                (<any>req).start
                             )
                         );
                 }
@@ -140,15 +142,15 @@ namespace Tasks {
                         getResponseJson(
                             "error action load_files task",
                             { status: "FAIL", params, done: false, metadata: [] },
-                            req.start
+                            (<any>req).start
                         )
                     );
                 } else {
                     return res.json(
                         getResponseJson(
                             "done",
-                            { status: "OK", done: true, params, metadata: actionData.entries },
-                            req.start
+                            { status: "OK", done: true, params, metadata: (<Document[]>actionData).entries },
+                            (<any>req).start
                         )
                     );
                 }
@@ -160,7 +162,7 @@ namespace Tasks {
                         getResponseJson(
                             err.name,
                             { status: "FAIL", params, done: false, metadata: "Server error" },
-                            req.start
+                            (<any>req).start
                         )
                     );
             }
@@ -205,7 +207,7 @@ namespace Tasks {
                             getResponseJson(
                                 "done",
                                 { status: "OK", done: true, params, metadata: responseSave },
-                                req.start
+                                (<any>req).start
                             )
                         );
                     else throw new Error("fail save files");
@@ -215,7 +217,7 @@ namespace Tasks {
                         getResponseJson(
                             "error action save_file task",
                             { status: "FAIL", params, done: false, metadata: [] },
-                            req.start
+                            (<any>req).start
                         )
                     );
                 }
@@ -227,7 +229,7 @@ namespace Tasks {
                         getResponseJson(
                             err.name,
                             { status: "FAIL", done: false, params, metadata: "Server error" },
-                            req.start
+                            (<any>req).start
                         )
                     );
                 }
@@ -260,7 +262,7 @@ namespace Tasks {
                             getResponseJson(
                                 "error set_single task",
                                 { status: "FAIL", params, done: false, metadata: data },
-                                req.start
+                                (<any>req).start
                             )
                         );
                     }
@@ -269,7 +271,7 @@ namespace Tasks {
 
                     const metadata: ArrayLike<object> = Array.isArray(meta) && meta[0] ? meta[0] : null;
 
-                    return res.json(getResponseJson("done", { status: "OK", done: true, params, metadata }, req.start));
+                    return res.json(getResponseJson("done", { status: "OK", done: true, params, metadata }, (<any>req).start));
                 } else if (!res.headersSent) {
                     return res.json(
                         getResponseJson(
@@ -280,7 +282,7 @@ namespace Tasks {
                                 done: false,
                                 metadata: "Body empty"
                             },
-                            req.start
+                            (<any>req).start
                         )
                     );
                 }
@@ -291,7 +293,7 @@ namespace Tasks {
                         getResponseJson(
                             err.name,
                             { status: "FAIL", params, done: false, metadata: "Server error" },
-                            req.start
+                            (<any>req).start
                         )
                     );
                 }
@@ -323,20 +325,20 @@ namespace Tasks {
                         params.status = "error";
                         params.done = false;
 
-                        return res.json(
+                        return res.json(getResponseJson(
                             "error set_jurnal action",
                             { status: "FAIL", params, done: false, metadata: data },
-                            req.start
-                        );
+                            (<any>req).start
+                        ));
                     }
 
                     const meta = <ArrayLike<object>>Utils.parsePublicData(<any>[data]);
                     const metadata: ArrayLike<object> = Array.isArray(meta) && meta[0] ? meta[0] : null;
 
-                    return res.json(getResponseJson("done", { status: "OK", done: true, params, metadata }, req.start));
+                    return res.json(getResponseJson("done", { status: "OK", done: true, params, metadata }, (<any>req).start));
                 } else if (!res.headersSent) {
                     return res.json(
-                        getResponseJson("error", { status: "FAIL", params, done: false, metadata: null }, req.start)
+                        getResponseJson("error", { status: "FAIL", params, done: false, metadata: null }, (<any>req).start)
                     );
                 }
             } catch (err) {
@@ -346,7 +348,7 @@ namespace Tasks {
                         getResponseJson(
                             err.name,
                             { status: "FAIL", params, done: false, metadata: "Server error" },
-                            req.start
+                            (<any>req).start
                         )
                     );
                 }
@@ -374,7 +376,7 @@ namespace Tasks {
                     params.status = "error";
 
                     return res.json(
-                        getResponseJson("error", { params, status: "FAIL", done: false, metadata: data }, req.start)
+                        getResponseJson("error", { params, status: "FAIL", done: false, metadata: data }, (<any>req).start)
                     );
                 }
 
@@ -397,7 +399,7 @@ namespace Tasks {
                         .filter(Boolean);
                 }
 
-                return res.json(getResponseJson("done", { params, metadata, status: "OK", done: true }, req.start));
+                return res.json(getResponseJson("done", { params, metadata, status: "OK", done: true }, (<any>req).start));
             } catch (err) {
                 params.done = false;
                 console.error(err);
@@ -406,7 +408,7 @@ namespace Tasks {
                         getResponseJson(
                             err.name,
                             { metadata: "Server error", status: "FAIL", done: false, params },
-                            req.start
+                            (<any>req).start
                         )
                     );
                 }
@@ -442,7 +444,7 @@ namespace Tasks {
                             getResponseJson(
                                 "error set_single task",
                                 { status: "FAIL", params: { body, ...params }, done: false, metadata: data },
-                                req.start
+                                (<any>req).start
                             )
                         );
                     }
@@ -454,7 +456,7 @@ namespace Tasks {
                         getResponseJson(
                             "done",
                             { status: "OK", done: true, params: { body, ...params }, metadata },
-                            req.start
+                            (<any>req).start
                         )
                     );
                 } else if (!res.headersSent) {
@@ -464,7 +466,7 @@ namespace Tasks {
                         getResponseJson(
                             "error",
                             { status: "FAIL", params: { body, ...params }, done: false, metadata: null },
-                            req.start
+                            (<any>req).start
                         )
                     );
                 }
@@ -475,7 +477,7 @@ namespace Tasks {
                         getResponseJson(
                             err.name,
                             { status: "FAIL", params, done: false, metadata: "Server error" },
-                            req.start
+                            (<any>req).start
                         )
                     );
                 }
@@ -513,7 +515,7 @@ namespace Tasks {
                             getResponseJson(
                                 "error update_many task",
                                 { status: "FAIL", params, done: false, metadata: data },
-                                req.start
+                                (<any>req).start
                             )
                         );
                     }
@@ -522,12 +524,12 @@ namespace Tasks {
 
                     const metadata: ArrayLike<object> = Array.isArray(meta) && meta[0] ? meta[0] : null;
 
-                    return res.json(getResponseJson("done", { status: "OK", done: true, params, metadata }, req.start));
+                    return res.json(getResponseJson("done", { status: "OK", done: true, params, metadata }, (<any>req).start));
                 } else if (!res.headersSent) {
                     params.done = false;
                     params.status = "FAIL";
                     return res.json(
-                        getResponseJson("error", { status: "FAIL", params, done: false, metadata: null }, req.start)
+                        getResponseJson("error", { status: "FAIL", params, done: false, metadata: null }, (<any>req).start)
                     );
                 }
             } catch (err) {
@@ -537,7 +539,7 @@ namespace Tasks {
                         getResponseJson(
                             err.name,
                             { status: "FAIL", params, done: false, metadata: "Server error" },
-                            req.start
+                            (<any>req).start
                         )
                     );
                 }

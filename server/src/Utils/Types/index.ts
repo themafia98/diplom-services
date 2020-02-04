@@ -1,4 +1,5 @@
 import winston from "winston";
+import { files } from 'dropbox';
 import { DocumentQuery, Document } from "mongoose";
 import { Response } from "express";
 
@@ -41,6 +42,6 @@ export type docResponse = string | number | object | null | Array<any> | any;
 
 export type ActionData = Promise<Array<Document>> | null | Document | Promise<Document>;
 
-export type ParserData = Promise<Document | Document[] | null>;
+export type ParserData = Promise<Document | Document[] | null | files.FileMetadata | files.ListFolderResult>;
 
-export type ParserResult = Document | Document[] | null;
+export type ParserResult = Document | Document[] | null | files.FileMetadata | files.ListFolderResult | BinaryType;
