@@ -76,7 +76,7 @@ namespace Action {
                             const { queryParams = {}, store = "" } = actionParam;
                             const file = (<any>queryParams).file;
                             const url: string = (<any>file).url || "";
-                            const path: any = `${store}${url.split("download")[1]}` || "";
+                            const path: string = `${store}${url.split("download")[1]}` || "";
 
                             const deleteFile: files.DeleteResult | null = await this.getStore().deleteFile(path);
                             console.log(deleteFile);
