@@ -86,11 +86,12 @@ class TaskView extends React.PureComponent {
                     isLoadingFiles: true
                 }, async () => {
                     const rest = new Request();
-                    const { data: { response = null } = {} } = await rest.sendRequest(`/tasks/load/file`, "POST", {
-                        queryParams: {
-                            taskId: routeDataActive["_id"]
-                        }
-                    });
+                    const { data: { response = null } = {} } = await rest.sendRequest(`/tasks/load/file`, "POST",
+                        {
+                            queryParams: {
+                                taskId: routeDataActive["_id"]
+                            }
+                        });
 
                     if (response && response.done) {
                         const { metadata: filesArray } = response;
@@ -123,6 +124,35 @@ class TaskView extends React.PureComponent {
             shouldRefresh: status === "done" ? true : false,
         })
     }
+
+    onRemoveFile = async (file) => {
+        try {
+
+            const { Request = {} } = this.context;
+            if (!file) return;
+
+            const rest = new Request();
+            const { data: { response = null } = {} } = await rest.sendRequest(`/tasks/delete/file`, "DELETE",
+                {
+                    queryParams: {
+                        file
+                    }
+                });
+
+            if (response && response.done) {
+                const { metadata: filesArray } = response;
+
+                this.setState({
+                    filesArray
+                }, () => {
+                    message.success("Файл успешно удален");
+                });
+            } else throw new Error("Invalid delete file");
+        } catch (err) {
+            console.error(err);
+            message.error("Ошибка удаления файла.");
+        }
+    };
 
     onEdit = event => {
         const {
@@ -570,6 +600,7 @@ class TaskView extends React.PureComponent {
                                         filesArray={filesArray}
                                         rest={rest}
                                         onAddFileList={this.onAddFileList}
+                                        onRemoveFile={this.onRemoveFile}
                                         moduleData={routeDataActive}
                                         module="tasks"
                                     />

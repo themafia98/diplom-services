@@ -72,6 +72,18 @@ namespace Action {
                             return files;
                         }
 
+                        if (this.getActionType() === "delete_file") {
+                            const { queryParams = {}, store = "" } = actionParam;
+                            const file = (<any>queryParams).file;
+                            const url: string = (<any>file).url || "";
+                            const path: any = `${store}${url.split("download")[1]}` || "";
+
+                            const deleteFile: files.DeleteResult | null = await this.getStore().deleteFile(path);
+                            console.log(deleteFile);
+                            if (!deleteFile) return null;
+                            else return deleteFile;
+                        }
+
                         if (this.getActionType() === "download_files") {
 
                             const taskId: string = (<any>actionParam).taskId;
@@ -81,9 +93,6 @@ namespace Action {
 
                             const file: files.FileMetadata | null = await this.getStore().downloadFile(path);
                             return file;
-                        }
-
-                        if (this.getActionType() === "save_file") {
                         }
 
                         break;

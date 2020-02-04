@@ -42,6 +42,11 @@ class File extends React.Component {
         }
     }
 
+    onRemove = file => {
+        const { onRemoveFile = null } = this.props;
+        if (onRemoveFile) onRemoveFile(file);
+    };
+
     render() {
         const { moduleData: { _id = "" } = {}, rest, module = "" } = this.props;
         const props = {
@@ -57,7 +62,12 @@ class File extends React.Component {
 
         return (
             <div className="file">
-                <Dragger beforeUpload={this.beforeUpload} onChange={this.onChange} {...props}>
+                <Dragger
+                    beforeUpload={this.beforeUpload}
+                    onChange={this.onChange}
+                    onRemove={this.onRemove}
+                    {...props}
+                >
                     <p className="ant-upload-drag-icon">
                         <Icon type="inbox" />
                     </p>

@@ -135,6 +135,7 @@ export interface DropboxApi {
     downloadFile(path: string): Promise<files.FileMetadata | null>;
     saveFile(saveProps: UploadDropbox): Promise<files.FileMetadata | null>;
     getFilesByPath(path: string): Promise<files.ListFolderResult | null>;
+    deleteFile(path: string): Promise<files.DeleteResult | null>;
 }
 
 export interface DownloadDropbox {

@@ -46,6 +46,20 @@ namespace DropboxStorage {
         }
 
         /**
+         * Delete file im application store
+         * 
+         */
+        public async deleteFile(path: string): Promise<files.DeleteResult | null> {
+            try {
+                const response = await this.getDbx().filesDeleteV2({ path });
+                return response;
+            } catch (err) {
+                console.error(err);
+                return null;
+            }
+        }
+
+        /**
          * 
          * @param {string} path files by path
          */
