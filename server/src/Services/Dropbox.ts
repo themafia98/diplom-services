@@ -102,7 +102,7 @@ namespace DropboxStorage {
         }
 
         /**
-         * Download file by url adress
+         * Download file by url address
          * @param path file url
          */
         public async downloadFile(path: string): Promise<files.FileMetadata | null> {
