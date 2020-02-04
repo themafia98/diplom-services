@@ -64,6 +64,11 @@ namespace Action {
                 switch (this.getActionPath()) {
                     case "global": {
                         if (this.getActionType() === "load_files") {
+                            const { queryParams } = actionParam;
+                            const taskId: string = (<any>queryParams).taskId;
+                            const path: string = `/tasks/${taskId}/`;
+                            const files: files.ListFolderResult | null = await this.getStore().getFilesByPath(path);
+                            return files;
                         }
 
                         if (this.getActionType() === "download_files") {

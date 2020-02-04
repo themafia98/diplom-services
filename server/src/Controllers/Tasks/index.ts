@@ -126,14 +126,15 @@ namespace Tasks {
             const params: Params = { methodQuery: "load_files", status: "done", done: true, from: "tasks" };
 
             try {
-                const { queryParams: { taskId = "" } = {} } = req.body;
+                const downloadAction = new Action.ActionParser({
+                    actionPath: "global",
+                    actionType: "load_files",
+                    store: <DropboxApi>server.locals.dropbox
+                });
 
-                const store: DropboxApi = server.locals.dropbox;
-                const path: string = `/tasks/${taskId}/`;
+                const actionData: ParserResult = await downloadAction.getActionData(req.body);
 
-                const files: files.ListFolderResult | null = await store.getFilesByPath(path);
-
-                if (!files) {
+                if (!actionData) {
                     params.done = false;
                     return res.json(
                         getResponseJson(
@@ -146,7 +147,7 @@ namespace Tasks {
                     return res.json(
                         getResponseJson(
                             "done",
-                            { status: "OK", done: true, params, metadata: files.entries },
+                            { status: "OK", done: true, params, metadata: actionData.entries },
                             req.start
                         )
                     );
