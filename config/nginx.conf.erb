@@ -70,7 +70,7 @@ http {
 
 
 		# Media: images, icons, video, audio, HTC, fonts
-		location /static/ \.(?:jpg|jpeg|gif|png|ico|cur|gz|svg|svgz|mp4|ogg|ogv|webm|htc|eot|ttf|wooff|wooff2)$ {
+		location /static/ {
 			    root /app/client/build;
 			    expires -1;
 			    access_log off;
