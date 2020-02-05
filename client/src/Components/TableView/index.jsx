@@ -10,6 +10,7 @@ import Scrollbars from "react-custom-scrollbars";
 
 import { routePathNormalise, routeParser } from "../../Utils";
 import Output from "../Output";
+import DynamicTable from "./DynamicTable";
 
 import { openPageWithDataAction } from "../../Redux/actions/routerActions";
 import { loadCurrentData } from "../../Redux/actions/routerActions/middleware";
@@ -97,9 +98,11 @@ class TableView extends React.Component {
             publicReducer: { requestError },
             height: heightProps,
             visible,
+            onOpenPageWithData,
+            setCurrentTab,
             udata = {}
         } = this.props;
-        const { config = {} } = this.context;
+
         const { routeData } = router;
         const routePathData = router.currentActionTab.split("_")[0];
         const currentData = routeData[routePathData];
@@ -126,7 +129,7 @@ class TableView extends React.Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {isUsers && isLoad ? (
+                            {isUsers ? (
                                 this.getRowsTable(currentData.users)
                             ) :
                                 isLoad || requestError ?
@@ -149,176 +152,180 @@ class TableView extends React.Component {
                     </table>
                 </Scrollbars>
             );
+
         } else if (path === "searchTable") {
-            const { sortedInfo = {} } = this.state;
-            const columns = [
-                {
-                    title: "Статус",
-                    className: "status",
-                    dataIndex: "status",
-                    sorter: (a, b) => a.status.length - b.status.length,
-                    sortOrder: sortedInfo && sortedInfo.columnKey === "status" && sortedInfo.order,
-                    key: "status",
-                    render: (text, row, index) => {
-                        let className = "";
-                        if (text === "В работе") className = "active";
-                        else if (text === "Открыт") className = "";
-                        else if (text === "Закрыт") className = "close";
-                        else if (text === "Выполнен") className = "done";
-                        else className = "";
+            const columns = this.getConfigColumns();
 
-                        return (
-                            <Output className={className} key={`${text}${row}${index}status`}>
-                                {text}
-                            </Output>
-                        );
-                    },
-                    ...this.getColumnSearchProps("status")
-                },
-                {
-                    title: "Наименование",
-                    className: "name",
-                    dataIndex: "name",
-                    key: "name",
-                    render: (text, row, index) => {
-                        return <Output key={`${text}${row}${index}name`}>{text}</Output>;
-                    },
-                    onFilter: (value, record) => record.name.includes(value),
-                    sorter: (a, b) => a.name.length - b.name.length,
-                    sortOrder: sortedInfo && sortedInfo.columnKey === "name" && sortedInfo.order,
-                    sortDirections: ["descend", "ascend"],
-                    ...this.getColumnSearchProps("name")
-                },
-                {
-                    title: "Приоритет",
-                    className: "priority",
-                    dataIndex: "priority",
-                    key: "priority",
-                    onFilter: (value, record) => record.priority.includes(value),
-                    render: (text, row, index) => {
-                        return <Output key={`${text}${row}${index}priority`}>{text}</Output>;
-                    },
-                    sorter: (a, b) => a.priority.length - b.priority.length,
-                    sortOrder: sortedInfo && sortedInfo.columnKey === "priority" && sortedInfo.order,
-                    sortDirections: ["descend", "ascend"],
-                    ...this.getColumnSearchProps("priority")
-                },
-                {
-                    title: "Автор",
-                    className: "author",
-                    dataIndex: "author",
-                    key: "author",
-                    onFilter: (value, record) => {
-                        return record.author.includes(value);
-                    },
-                    sorter: (a, b) => a.author.length - b.author.length,
-                    sortOrder: sortedInfo && sortedInfo.columnKey === "author" && sortedInfo.order,
-                    sortDirections: ["descend", "ascend"],
-                    render: (text, row, index) => {
-                        return <Output key={`${text}${row}${index}author`}>{text}</Output>;
-                    },
-                    ...this.getColumnSearchProps("author")
-                },
-                {
-                    title: "Исполнитель",
-                    className: "editor",
-                    dataIndex: "editor",
-                    key: "editor",
-                    onFilter: (value, record) => {
-                        return record.editor.includes(value);
-                    },
-                    sorter: (a, b) => (a.editor && b.editor ? a.editor[0] - b.editor[0] : null),
-                    sortOrder: sortedInfo && sortedInfo.columnKey === "editor" && sortedInfo.order,
-                    sortDirections: ["descend", "ascend"],
-                    render: (text, row, index) => {
-                        return <Output key={`${text}${row}${index}editor`}>{text}</Output>;
-                    },
-                    ...this.getColumnSearchProps("editor")
-                },
-                {
-                    title: "Сроки",
-                    className: "date",
-                    dataIndex: "date",
-                    key: "date",
-                    onFilter: (value, record) => record.date.includes(value),
-                    sorter: (a, b) => {
-                        if (a.date && b.date) {
-                            const sortA = moment(a.date[0], "DD:MM:YYYY");
-                            const sortB = moment(b.date[0], "DD:MM:YYYY");
-                            return sortA - sortB;
-                        }
-                    },
-                    sortOrder: sortedInfo && sortedInfo.columnKey === "date" && sortedInfo.order,
-                    sortDirections: ["descend", "ascend"],
-                    render: (text, row, index) => {
-                        return <Output key={`${text}${row}${index}date`}> {text}</Output>;
-                    },
-                    ...this.getColumnSearchProps("date")
-                }
-            ];
-            let tasksCopy = null;
-            if (tasks) tasksCopy = [...tasks];
-            let data = tasksCopy;
-
-            if (data)
-                data =
-                    flag && data.length
-                        ? data
-                            .map(it => {
-                                if (!_.isNull(it.editor) && it.editor.some(editor => editor === udata.displayName)) return it;
-                                else return null;
-                            })
-                            .filter(Boolean)
-                        : data;
             return (
-                <Table
-                    pagination={{ pageSize: 14 }}
-                    size="medium"
-                    scroll={{ y: height }}
-                    onChange={this.handleFilter}
+                <DynamicTable
+                    key="dynamicTable"
+                    routePathNormalise={routePathNormalise}
+                    routeParser={routeParser}
+                    routePathNormalise={routePathNormalise}
+                    tasks={tasks}
+                    onOpenPageWithData={onOpenPageWithData}
+                    router={router}
+                    setCurrentTab={setCurrentTab}
+                    udata={udata}
+                    flag={flag}
+                    user={user}
+                    visible={visible}
+                    height={height}
                     columns={columns}
-                    dataSource={data}
-                    onRow={(record, rowIndex) => {
-                        return {
-                            onClick: event => {
-                                const {
-                                    onOpenPageWithData,
-                                    router: { currentActionTab: path, actionTabs = [] },
-                                    setCurrentTab
-                                } = this.props;
-
-                                const { key = "" } = record || {};
-                                if (!key) return;
-
-                                if (config.tabsLimit <= actionTabs.length)
-                                    return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
-
-                                const { moduleId = "", page = "" } = routeParser({ path });
-                                if (!moduleId || !page) return;
-
-                                const index = actionTabs.findIndex(tab => tab.includes(page) && tab.includes(key));
-                                const isFind = index !== -1;
-
-                                if (!isFind) {
-                                    onOpenPageWithData({
-                                        activePage: routePathNormalise({
-                                            pathType: "moduleItem",
-                                            pathData: { page, moduleId, key }
-                                        }),
-                                        routeDataActive: record
-                                    });
-                                } else {
-                                    setCurrentTab(actionTabs[index]);
-                                }
-                            } // click row
-                        };
-                    }}
                 />
-            );
-        } else return null;
+            )
+        }
+
+        return null;
     };
 
-    getColumnSearchProps = dataIndex => ({
+    handleSearch = (selectedKeys, confirm, dataIndex) => {
+        confirm();
+        this.setState({ searchText: selectedKeys[0], searchedColumn: dataIndex });
+    };
+
+    handleReset = clearFilters => {
+        clearFilters();
+        this.setState({ searchText: "" });
+    };
+
+    getRowsTable = arrayData => {
+        return arrayData.map((it, id) => {
+            return (
+                <tr className="contentTr" key={`${id}contentTr`}>
+                    <Output key={`${id}${it.status}status`} type="table" className="status">
+                        {it.status || "Скрыт"}
+                    </Output>
+                    <Output key={`${id}${it.displayName}}nameSurname`} type="table" className="nameSurname">
+                        {`${it.displayName}`}
+                    </Output>
+                    <Output key={`${id}${it.departament}departament`} type="table" className="departament">
+                        {it.departament}
+                    </Output>
+                    <Output key={`${id}departament`} type="table" className="departament">
+                        {it.position}
+                    </Output>
+                    {it.email ? (
+                        <td>
+                            <Icon type="mail" />
+                        </td>
+                    ) : null}
+                </tr>
+            );
+        });
+
+    }
+
+    getConfigColumns = () => {
+        const { sortedInfo } = this.state;
+        return [
+            {
+                title: "Статус",
+                className: "status",
+                dataIndex: "status",
+                sorter: (a, b) => a.status.length - b.status.length,
+                sortOrder: sortedInfo && sortedInfo.columnKey === "status" && sortedInfo.order,
+                key: "status",
+                render: (text, row, index) => {
+                    let className = "";
+                    if (text === "В работе") className = "active";
+                    else if (text === "Открыт") className = "";
+                    else if (text === "Закрыт") className = "close";
+                    else if (text === "Выполнен") className = "done";
+                    else className = "";
+
+                    return (
+                        <Output className={className} key={`${text}${row}${index}status`}>
+                            {text}
+                        </Output>
+                    );
+                },
+                ...this.getColumn("status")
+            },
+            {
+                title: "Наименование",
+                className: "name",
+                dataIndex: "name",
+                key: "name",
+                render: (text, row, index) => {
+                    return <Output key={`${text}${row}${index}name`}>{text}</Output>;
+                },
+                onFilter: (value, record) => record.name.includes(value),
+                sorter: (a, b) => a.name.length - b.name.length,
+                sortOrder: sortedInfo && sortedInfo.columnKey === "name" && sortedInfo.order,
+                sortDirections: ["descend", "ascend"],
+                ...this.getColumn("name")
+            },
+            {
+                title: "Приоритет",
+                className: "priority",
+                dataIndex: "priority",
+                key: "priority",
+                onFilter: (value, record) => record.priority.includes(value),
+                render: (text, row, index) => {
+                    return <Output key={`${text}${row}${index}priority`}>{text}</Output>;
+                },
+                sorter: (a, b) => a.priority.length - b.priority.length,
+                sortOrder: sortedInfo && sortedInfo.columnKey === "priority" && sortedInfo.order,
+                sortDirections: ["descend", "ascend"],
+                ...this.getColumn("priority")
+            },
+            {
+                title: "Автор",
+                className: "author",
+                dataIndex: "author",
+                key: "author",
+                onFilter: (value, record) => {
+                    return record.author.includes(value);
+                },
+                sorter: (a, b) => a.author.length - b.author.length,
+                sortOrder: sortedInfo && sortedInfo.columnKey === "author" && sortedInfo.order,
+                sortDirections: ["descend", "ascend"],
+                render: (text, row, index) => {
+                    return <Output key={`${text}${row}${index}author`}>{text}</Output>;
+                },
+                ...this.getColumn("author")
+            },
+            {
+                title: "Исполнитель",
+                className: "editor",
+                dataIndex: "editor",
+                key: "editor",
+                onFilter: (value, record) => {
+                    return record.editor.includes(value);
+                },
+                sorter: (a, b) => (a.editor && b.editor ? a.editor[0] - b.editor[0] : null),
+                sortOrder: sortedInfo && sortedInfo.columnKey === "editor" && sortedInfo.order,
+                sortDirections: ["descend", "ascend"],
+                render: (text, row, index) => {
+                    return <Output key={`${text}${row}${index}editor`}>{text}</Output>;
+                },
+                ...this.getColumn("editor")
+            },
+            {
+                title: "Сроки",
+                className: "date",
+                dataIndex: "date",
+                key: "date",
+                onFilter: (value, record) => record.date.includes(value),
+                sorter: (a, b) => {
+                    if (a.date && b.date) {
+                        const sortA = moment(a.date[0], "DD:MM:YYYY");
+                        const sortB = moment(b.date[0], "DD:MM:YYYY");
+                        return sortA - sortB;
+                    }
+                },
+                sortOrder: sortedInfo && sortedInfo.columnKey === "date" && sortedInfo.order,
+                sortDirections: ["descend", "ascend"],
+                render: (text, row, index) => {
+                    return <Output key={`${text}${row}${index}date`}> {text}</Output>;
+                },
+                ...this.getColumn("date")
+            }
+        ];
+    }
+
+    getColumn = dataIndex => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => {
             return (
                 <div style={{ padding: 8 }}>
@@ -382,47 +389,13 @@ class TableView extends React.Component {
         }
     });
 
-    handleSearch = (selectedKeys, confirm, dataIndex) => {
-        confirm();
-        this.setState({ searchText: selectedKeys[0], searchedColumn: dataIndex });
-    };
-
-    handleReset = clearFilters => {
-        clearFilters();
-        this.setState({ searchText: "" });
-    };
-
-    getRowsTable = arrayData => {
-        return arrayData.map((it, id) => {
-            return (
-                <tr className="contentTr" key={`${id}contentTr`}>
-                    <Output key={`${id}${it.status}status`} type="table" className="status">
-                        {it.status || "Скрыт"}
-                    </Output>
-                    <Output key={`${id}${it.displayName}}nameSurname`} type="table" className="nameSurname">
-                        {`${it.displayName}`}
-                    </Output>
-                    <Output key={`${id}${it.departament}departament`} type="table" className="departament">
-                        {it.departament}
-                    </Output>
-                    <Output key={`${id}departament`} type="table" className="departament">
-                        {it.position}
-                    </Output>
-                    {it.email ? (
-                        <td>
-                            <Icon type="mail" />
-                        </td>
-                    ) : null}
-                </tr>
-            );
-        });
-    };
     render() {
         const { path } = this.props;
         const component = this.getComponentByPath(path);
         return component;
     }
 }
+
 
 const mapStateToProps = state => {
     return {

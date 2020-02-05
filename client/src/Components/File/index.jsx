@@ -59,7 +59,7 @@ class File extends React.Component {
             action: rest ? `${rest.getApi()}/${module}/file` : null,
         }
 
-        console.log(this.state.filesArray);
+
 
         return (
             <div className="file">

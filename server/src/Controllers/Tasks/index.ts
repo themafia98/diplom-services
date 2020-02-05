@@ -152,7 +152,7 @@ namespace Tasks {
                     return res.json(
                         getResponseJson(
                             "done",
-                            { status: "OK", done: true, params, metadata: (<Document[]>actionData).entries },
+                            { status: "OK", done: true, params, metadata: (<any>actionData).metadata },
                             (<any>req).start
                         )
                     );
@@ -233,7 +233,7 @@ namespace Tasks {
                         const parseOriginalName = file.originalname.split(/\./gi);
                         const ext = parseOriginalName[parseOriginalName.length - 1];
 
-                        const path: string = `/tasks/${taskId}/${uuid()}.${ext}`;
+                        const path: string = `/tasks/${taskId}/${file.originalname}`;
                         const result = await store.saveFile({ path, contents: file.buffer });
 
                         if (result) {

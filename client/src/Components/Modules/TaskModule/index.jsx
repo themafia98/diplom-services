@@ -23,7 +23,8 @@ import modelContext from '../../../Models/context';
 class TaskModule extends React.PureComponent {
     state = {
         height: null,
-        heightController: null
+        heightController: null,
+        path: null,
     };
 
     static contextType = modelContext;
@@ -38,18 +39,34 @@ class TaskModule extends React.PureComponent {
         router: PropTypes.object.isRequired
     };
 
+    static getDerivedStateFromProps = (props, state) => {
+
+        if (props.path !== state.path) {
+            return {
+                ...state,
+                path: props.path
+            }
+        }
+
+        return state;
+    }
+
     componentDidMount = () => {
         const { onLoadCurrentData, path, visible } = this.props;
         const { height } = this.state;
 
         if (_.isNull(height) && !_.isNull(this.moduleTask) && visible) {
-            const heightControllerForState = this.controller ? this.controller.getBoundingClientRect().height : null;
-            const heightForState = this.moduleTask.getBoundingClientRect().height;
-            this.setState({ ...this.state, height: heightForState, heightController: heightControllerForState });
+            this.recalcHeight();
         }
         if (visible) {
             onLoadCurrentData({ path, storeLoad: "tasks", useStore: true, methodRequst: "GET" });
         }
+
+        this.setState({
+            path
+        })
+
+        window.addEventListener("resize", this.recalcHeight.bind(this));
     };
 
     componentDidUpdate = prevProps => {
@@ -59,20 +76,34 @@ class TaskModule extends React.PureComponent {
             path,
             router: { shouldUpdate = false }
         } = this.props;
-        const { height, heightController } = this.state;
-
+        const { height } = this.state;
         if (!_.isNull(height) && !_.isNull(this.moduleTask) && visible) {
-            const heightControllerForState = this.controller ? this.controller.getBoundingClientRect().height : null;
-            const heightForState = this.moduleTask.getBoundingClientRect().height;
-
-            if (height !== heightForState || heightControllerForState !== heightController)
-                this.setState({ ...this.state, height: heightForState, heightController: heightControllerForState });
+            this.recalcHeight();
         }
 
         if (shouldUpdate && visible) {
             onLoadCurrentData({ path, storeLoad: "tasks", useStore: true, methodRequst: "GET" });
         }
     };
+
+    recalcHeight = () => {
+        const { height, heightController, path = "" } = this.state;
+        const { router: { currentActionTab = "" } = {}, path: pathProps = "" } = this.props;
+
+        if (currentActionTab !== path || !this.moduleTask || !this.controller) {
+            return;
+        }
+
+        const heightControllerForState = this.controller ? this.controller.getBoundingClientRect().height : null;
+        const heightForState = this.moduleTask.getBoundingClientRect().height;
+
+        if (height !== heightForState || heightControllerForState !== heightController)
+            this.setState({ ...this.state, height: heightForState, heightController: heightControllerForState });
+    }
+
+    componentWillUnmount = () => {
+        window.removeEventListener("resize", this.recalcHeight.bind(this));
+    }
 
     moduleTask = null;
     controller = null;
@@ -241,6 +272,7 @@ class TaskModule extends React.PureComponent {
 
 const mapStateToProps = state => {
     const { udata = {} } = state.publicReducer;
+
     return {
         publicReducer: state.publicReducer,
         router: state.router,

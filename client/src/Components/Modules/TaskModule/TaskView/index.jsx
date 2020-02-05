@@ -150,15 +150,17 @@ class TaskView extends React.PureComponent {
     };
 
     onAddFileList = (fileList, status) => {
+        console.log(status);
+        const shouldRefresh = fileList.every(it => it.status === "done");
         this.setState({
             filesArray: [...fileList],
-            shouldRefresh: status === "done" ? true : false,
+            shouldRefresh
         })
     }
 
     onRemoveFile = async (file) => {
         try {
-
+            const { filesArray } = this.state;
             const { Request = {} } = this.context;
             if (!file) return;
 
@@ -171,10 +173,16 @@ class TaskView extends React.PureComponent {
                 });
 
             if (response && response.done) {
-                const { metadata: filesArray } = response;
+                const { metadata = {} } = response;
+                const { uid: idClient } = file;
+                const { id: idResponse } = metadata;
+
+                if (idClient !== idResponse) {
+                    throw new Error("id files not equal");
+                }
 
                 this.setState({
-                    filesArray
+                    filesArray: filesArray.filter(it => it.uid !== idResponse)
                 }, () => {
                     message.success("Файл успешно удален");
                 });
