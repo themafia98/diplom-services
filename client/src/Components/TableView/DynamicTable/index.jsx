@@ -7,8 +7,6 @@ import Output from "../../Output";
 
 class DynamicTable extends React.PureComponent {
 
-    state = {}
-
     onClickRow = (record) => {
         return {
             onClick: () => {
@@ -49,7 +47,7 @@ class DynamicTable extends React.PureComponent {
     };
 
     render() {
-        const { sortedInfo = {} } = this.state;
+        const { sortedInfo = [], filteredInfo, handleFilter } = this.props;
         const { tasks, flag, udata, height, columns = [] } = this.props;
 
         let tasksCopy = null;
@@ -71,7 +69,7 @@ class DynamicTable extends React.PureComponent {
                 pagination={{ pageSize: 14 }}
                 size="medium"
                 scroll={{ y: height }}
-                onChange={this.handleFilter}
+                onChange={handleFilter}
                 columns={columns}
                 dataSource={data}
                 onRow={this.onClickRow}

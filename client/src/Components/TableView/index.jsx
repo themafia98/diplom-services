@@ -103,6 +103,8 @@ class TableView extends React.Component {
             udata = {}
         } = this.props;
 
+        const { filteredInfo = [], sortedInfo = [] } = this.state;
+
         const { routeData } = router;
         const routePathData = router.currentActionTab.split("_")[0];
         const currentData = routeData[routePathData];
@@ -170,6 +172,9 @@ class TableView extends React.Component {
                     flag={flag}
                     user={user}
                     visible={visible}
+                    filteredInfo={filteredInfo}
+                    sortedInfo={sortedInfo}
+                    handleFilter={this.handleFilter}
                     height={height}
                     columns={columns}
                 />
