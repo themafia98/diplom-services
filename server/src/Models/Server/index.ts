@@ -260,7 +260,7 @@ namespace Http {
             this.setRest(instanceRouter.initInstance("/rest"));
             this.getRest().use(this.startResponse);
 
-            Chat.module(<App>this.getApp(), server);
+            Chat.module(<App>this.getRest(), server);
 
             Utils.initControllers(
                 [

@@ -5,13 +5,14 @@ import { Button, Avatar } from "antd";
 
 import Textarea from "../../../../Textarea";
 import Message from "./Message";
+import moment from "moment";
 
-const ChatRoom = ({ onSend = null, listdata = [], roomToken = "", onKeyDown = null, pushMessage = null }) => {
+const ChatRoom = ({ onSend = null, messages: msgProps = [], roomToken = "", onKeyDown = null, pushMessage = null }) => {
     const [token] = useState(roomToken);
     const [showTooltip, setStateTooltip] = useState(false);
     const [showTooltipID, setIdTooltip] = useState(null);
     const [msg, setMsg] = useState("");
-    const [messages, setMessages] = useState(listdata);
+    const [messages, setMessages] = useState(msgProps);
 
     const refWrapper = useRef(null);
 
@@ -36,8 +37,8 @@ const ChatRoom = ({ onSend = null, listdata = [], roomToken = "", onKeyDown = nu
     };
 
     useEffect(() => {
-        if (messages.length !== listdata.length) {
-            setMessages([...listdata]);
+        if (messages.length !== msgProps.length) {
+            setMessages([...msgProps]);
             resetScrollEffect();
         }
     });
@@ -70,28 +71,37 @@ const ChatRoom = ({ onSend = null, listdata = [], roomToken = "", onKeyDown = nu
         }
     };
 
-    const renderChat = listdata => {
-        return listdata.map((it, i) => {
+    const renderChat = messages => {
+        return messages.map((it, i) => {
+            debugger;
             const item = (
-                <div ref={refWrapper} key={it} className={[i, "message"].join(" ")}>
-                    <Message it={it} key={`${it}_message`}>
-                        {/* showTooltip={showTooltip && showTooltipID === it.id}  */}
-                        <p className="wrapper_msg">{it}</p>
-                        {/* <span
-                            onMouseLeave={e => onMouseLeave(e, it.id)}
-                            onMouseEnter={e => onMouseEnter(e, it.id)}
-                            onClick={event => redirectUserProfile(event, it.link)}
-                            className="msg_author"
-                        >
-                            <Avatar size="small" /> {it.name}.
-                        </span>
-                        <span className="msg_date">{it.date.format("DD.MM.YYYY HH:mm:ss")}.</span>
-                        <p className="wrapper_msg">{it.msg}</p> */}
+                <div ref={refWrapper} key={`${i}${it.tokenRoom}${it.msg}`} className={[i, "message"].join(" ")}>
+                    <Message it={it.msg} key={`${it.msg}_message${it.tokenRoom}`}>
+                        <React.Fragment>
+                            {
+                                it.displayName !== "System" ? (
+
+                                    <span
+                                        onClick={event => redirectUserProfile(event, null)}
+                                        className="msg_author">
+                                        >
+                                        <Avatar size="small" />
+                                    </span>
+                                ) : (
+                                        <p className="admin_wrapper">{it.displayName}</p>
+                                    )}
+
+                            {it.displayName !== "System" ?
+                                <span className="msg_date">{moment().format("DD.MM.YYYY HH:mm:ss")}.</span>
+                                : null
+                            }
+                            <p className="wrapper_msg">{it.msg}</p>
+                        </React.Fragment>
                     </Message>
-                </div>
+                </div >
             );
 
-            if (i === listdata.length - 1) {
+            if (i === msgProps.length - 1) {
                 return (
                     <Element key={Math.random()} name="lastElement">
                         {item}

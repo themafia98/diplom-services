@@ -98,6 +98,11 @@ namespace Action {
                         break;
                     }
 
+                    case "entrypoint_chat": {
+                        return [];
+                        break;
+                    }
+
                     case "users": {
                         if (this.getActionType() === "get_all") {
                             const model: Model<Document> | null = getModelByName("users", "users");

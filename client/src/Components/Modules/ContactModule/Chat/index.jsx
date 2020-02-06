@@ -47,8 +47,8 @@ class Chat extends React.PureComponent {
 
                 if (onLoadActiveChats)
                     onLoadActiveChats({
-                        type: null,
-                        action: null,
+                        path: "loadChats",
+                        action: "entrypoint_chat",
                         options: {
                             limitList: null,
                             socket: {
@@ -67,6 +67,17 @@ class Chat extends React.PureComponent {
             }, () => {
 
             });
+        });
+
+        this.socket.on("joinMsg", ({ displayName, tokenRoom }) => {
+            this.setState({
+                ...this.state,
+                messages: [...this.state.messages, {
+                    tokenRoom,
+                    displayName,
+                    msg: `New user join to room ${tokenRoom}`
+                }]
+            })
         });
 
         this.socket.on("error", () => {
@@ -98,7 +109,7 @@ class Chat extends React.PureComponent {
     };
 
     pushMessage = (event, msg) => {
-        const { roomToken = "" } = this.state;
+        const { chat: { chatToken: roomToken = "" } = {} } = this.props;
 
         console.log("push");
         if (_.isNull(roomToken)) {
@@ -107,34 +118,30 @@ class Chat extends React.PureComponent {
 
         if (!msg) return message.error("Недопустимые значения или вы ничего не ввели.");
 
-        this.socket.emit("newMessage", msg);
+        this.socket.emit("newMessage", msg, roomToken);
     };
 
-    setActiveChatRoom = (event, id = uuid()) => {
-        const { chat: { chatToken = null } = {}, onSetActiveChatToken } = this.props;
-        const token = id;
+    setActiveChatRoom = (event, token = "") => {
+        const {
+            chat: {
+                chatToken = null,
+                listdata: listdataMsgs = {}
+            } = {},
+            udata: { displayName = "" } = {},
+            onSetActiveChatToken = null
+        } = this.props;
 
-        if (chatToken !== id) {
-            const listdata = [
-                {
-                    id: 1,
-                    roomToken: token,
-                    name: "Павел Петрович",
-                    link: "/themafia98",
-                    msg: "Привет! code: " + Math.random(),
-                    date: moment()
-                },
-                {
-                    id: 2,
-                    roomToken: token,
-                    name: "Гена Букин",
-                    link: "/gena228",
-                    msg: "Привет! code: " + Math.random(),
-                    date: moment()
-                }
-            ];
-            onSetActiveChatToken(id, listdata);
-        } else return;
+        if (chatToken !== token || !token) {
+
+            const listdata = [...listdataMsgs];
+
+            if (onSetActiveChatToken) {
+                onSetActiveChatToken(token, listdata);
+                this.socket.emit("onChatRoomActive", { token, displayName });
+            }
+
+        } else if (!token)
+            message.warning("Чат комната не найдена либо требуется обновить систему.");
     };
 
     onVisibleChange = visible => {
@@ -149,9 +156,18 @@ class Chat extends React.PureComponent {
     };
 
     render() {
-        const { isLoad = false, messages = [], visible, isStart = false } = this.state;
-        const { chat: { listdata, chatToken: roomToken = null } = {}, socketConnection } = this.props;
-        console.log(socketConnection);
+        const { messages = [], visible, isStart = false } = this.state;
+        const {
+            chat: {
+                listdata,
+                usersList = [],
+                chatToken: roomToken = null
+            } = {},
+            udata: { _id: currentUserId = "" } = {},
+            socketConnection,
+            socketErrorStatus
+        } = this.props;
+
         return (
             <div className="chat">
                 <TitleModule classNameTitle="ContactModule__chatTitle" title="Корпоративный чат" />
@@ -160,7 +176,7 @@ class Chat extends React.PureComponent {
                     <div className="col-chat-menu">
                         <div className="menuLoading-skeleton">
                             <Scrollbars>
-                                {!socketConnection ? (
+                                {!socketConnection && !socketErrorStatus ? (
                                     messages.length ? messages.map((it, i) => (
                                         <div className="item-skeleton" key={`${it}${i}`}>
                                             <Skeleton loading={true} active avatar paragraph={false}>
@@ -186,17 +202,17 @@ class Chat extends React.PureComponent {
                                 ) : (
                                         <List
                                             key="list-chat"
-                                            dataSource={messages}
+                                            dataSource={usersList.filter(it => it._id !== currentUserId)}
                                             renderItem={(it, i) => (
                                                 <List.Item
                                                     className={[roomToken === it.id ? "activeChat" : null].join(" ")}
-                                                    onClick={e => this.setActiveChatRoom(e, it.id)}
+                                                    onClick={e => this.setActiveChatRoom(e, it._id)}
                                                     key={(it, i)}
                                                 >
                                                     <List.Item.Meta
                                                         key={`${it}${i}`}
                                                         avatar={<Avatar shape="square" size="large" icon="user" />}
-                                                        title={<p>{`${it.name}`}</p>}
+                                                        title={<p>{`${it.displayName}`}</p>}
                                                         description={
                                                             <span className="descriptionChatMenu">
                                                                 A second stack is created, pulling 3 values from the first
@@ -213,7 +229,7 @@ class Chat extends React.PureComponent {
                         <Button
                             onClick={this.onCreateRoom}
                             type="primary"
-                            disabled={!isLoad}
+                            disabled={!socketConnection}
                             className="chat_main__createRoom"
                         >
                             Создать комнату
@@ -228,27 +244,31 @@ class Chat extends React.PureComponent {
                                 <p
                                     className={[
                                         "chat_content__header__statusChat",
-                                        !isLoad ? "isOffline" : "isOnline"
+                                        !socketConnection ? "isOffline" : "isOnline"
                                     ].join(" ")}
                                 >
-                                    {!isLoad ? "не активен" : "активен"}
+                                    {!socketConnection && !roomToken ? "не активен" : "активен"}
                                 </p>
                             </div>
                             <div className="chat_content__main">
-                                {!socketConnection ? (
+                                {!socketConnection && !socketErrorStatus ? (
                                     <Loader />
-                                ) : isStart ? (
+                                ) : roomToken ? (
                                     <ChatRoom
                                         key={roomToken}
                                         onKeyDown={this.pushMessage}
                                         roomToken={roomToken}
                                         listdata={listdata}
                                         pushMessage={this.pushMessage}
-                                        listdata={this.state.messages}
+                                        messages={this.state.messages}
                                     />
                                 ) : (
                                             <div className="emptyChatRoom">
-                                                <p className="emptyChatRoomMsg">Выберите собеседника</p>
+                                                {!socketErrorStatus ?
+                                                    <p className="emptyChatRoomMsg">Выберите собеседника</p>
+                                                    :
+                                                    <p className="socket-error">{socketErrorStatus}</p>
+                                                }
                                             </div>
                                         )}
                             </div>
@@ -264,13 +284,18 @@ const mapStateToProps = state => {
     const {
         chat = {},
         socketConnection = false,
-        activeSocketModule = null
+        activeSocketModule = null,
+        socketErrorStatus = null
     } = state.socketReducer;
+
+    const { udata = {} } = state.publicReducer;
 
     return {
         chat,
         socketConnection,
-        activeSocketModule
+        activeSocketModule,
+        socketErrorStatus,
+        udata
     };
 };
 

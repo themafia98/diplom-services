@@ -1,4 +1,4 @@
-import { SET_ACTIVE_CHAT_TOKEN, SET_SOCKET_CONNECTION, LOAD_CHATS_LIST } from "./const";
+import { SET_ACTIVE_CHAT_TOKEN, SET_SOCKET_CONNECTION, LOAD_CHATS_LIST, INVALID_LOAD_SOCKET } from "./const";
 
 export const setActiveChatToken = state => {
     return {
@@ -20,3 +20,10 @@ export const setSocketConnection = state => {
         payload: state
     }
 }
+
+export const setSocketError = state => {
+    return {
+        type: INVALID_LOAD_SOCKET,
+        payload: state,
+    }
+};
