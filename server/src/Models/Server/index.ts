@@ -22,10 +22,14 @@ import DropboxStorage from '../../Services/Dropbox';
 
 import { UserModel } from "../Database/Schema";
 
-const jwt = require("passport-jwt");
-const LocalStrategy = require("passport-local");
+import jwt, { StrategyOptions } from "passport-jwt";
+import * as passportLocal from 'passport-local';
+
+
 
 namespace Http {
+
+    const LocalStrategy = passportLocal.Strategy;
 
     abstract class RestEntitiy implements Rest {
         private port: string;
@@ -155,26 +159,27 @@ namespace Http {
             };
 
             passport.use(
-                new jwt.Strategy(jwtOptions, async function (payload: Partial<{ id: string }>, done: Function) {
-                    try {
-                        const connect = await dbm.connection();
-                        if (!connect) throw new Error("bad connection");
-                        UserModel.findOne(payload.id, async (err: Error, user: any) => {
-                            await dbm.disconnect().catch((err: Error) => console.error(err));
+                new jwt.Strategy(<StrategyOptions>jwtOptions,
+                    async function (payload: Partial<{ id: string }>, done: Function) {
+                        try {
+                            const connect = await dbm.connection();
+                            if (!connect) throw new Error("bad connection");
+                            UserModel.findOne(payload.id, async (err: Error, user: any) => {
+                                await dbm.disconnect().catch((err: Error) => console.error(err));
 
-                            if (err) {
-                                return done(err);
-                            }
-                            if (user) {
-                                done(null, user);
-                            } else {
-                                done(null, false);
-                            }
-                        });
-                    } catch (err) {
-                        return done(err);
-                    }
-                })
+                                if (err) {
+                                    return done(err);
+                                }
+                                if (user) {
+                                    done(null, user);
+                                } else {
+                                    done(null, false);
+                                }
+                            });
+                        } catch (err) {
+                            return done(err);
+                        }
+                    })
             );
 
             passport.serializeUser((user: Partial<{ id: string }>, done: Function) => {

@@ -1,5 +1,12 @@
 /** Here action constants import */
-import { SET_ERROR, SET_CACHE, SET_STATUS, SET_ACTIVE_CHAT_TOKEN, SHOW_GUIDE, UDATA_LOAD, CLEAR_CACHE } from "./const";
+import {
+    SET_ERROR,
+    SET_CACHE,
+    SET_STATUS,
+    SHOW_GUIDE,
+    UDATA_LOAD,
+    CLEAR_CACHE
+} from "./const";
 
 export const errorRequstAction = state => {
     return {
@@ -18,13 +25,6 @@ export const showGuile = state => {
 export const loadUdata = state => {
     return {
         type: UDATA_LOAD,
-        payload: state
-    };
-};
-
-export const setActiveChatToken = state => {
-    return {
-        type: SET_ACTIVE_CHAT_TOKEN,
         payload: state
     };
 };

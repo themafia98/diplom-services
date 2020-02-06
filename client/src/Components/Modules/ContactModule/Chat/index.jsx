@@ -7,7 +7,9 @@ import uuid from "uuid/v4";
 import Scrollbars from "react-custom-scrollbars";
 import { Skeleton, List, Avatar, Button, notification, message } from "antd";
 
-import { setActiveChatToken } from "../../../../Redux/actions/publicActions";
+import { setActiveChatToken, setSocketConnection } from "../../../../Redux/actions/socketActions";
+import { loadActiveChats } from "../../../../Redux/actions/socketActions/middleware";
+
 import Loader from "../../../Loader";
 import ChatModal from "./ChatRoom/ChatModal";
 import TitleModule from "../../../TitleModule";
@@ -17,18 +19,22 @@ import ChatRoom from "./ChatRoom";
 class Chat extends React.PureComponent {
 
     state = {
-        isLoad: true,
         messages: [],
         visible: null,
-        socket: null,
+        isStart: false,
     };
 
     socket = null;
     timer = null;
 
     componentDidMount = () => {
-        const { messages = [], socket = null } = this.state;
-        const { chat: { chatToken = null } = {}, onSetActiveChatToken } = this.props;
+        const { messages = [] } = this.state;
+        const {
+            chat: { chatToken = null } = {},
+            onSetActiveChatToken,
+            onSetSocketConnection,
+            onLoadActiveChats
+        } = this.props;
 
         this.socket = io("/");
 
@@ -36,13 +42,26 @@ class Chat extends React.PureComponent {
             this.socket.io.opts.transports = ["websocket", "polling"];
         });
 
-        this.socket.on("connection", socket => {
-            if (socket) {
-                onSetActiveChatToken(uuid(), []);
-            }
+        this.socket.on("connection", socketConnection => {
+            if (socketConnection) {
+
+                if (onLoadActiveChats)
+                    onLoadActiveChats({
+                        type: null,
+                        action: null,
+                        options: {
+                            limitList: null,
+                            socket: {
+                                socketConnection,
+                                module: "chat"
+                            }
+                        },
+                    });
+
+            } else messages.error("Соединение не установлено, попытка восстановить соединение.");
         });
 
-        this.socket.on("message", msg => {
+        this.socket.on("msg", msg => {
             this.setState({
                 messages: [...this.state.messages, msg]
             }, () => {
@@ -57,6 +76,15 @@ class Chat extends React.PureComponent {
         // if (!_.isNull(chatToken))
         //     onSetActiveChatToken(123, []);
     };
+
+    componentDidUpdate = (prevProps, prevState) => {
+        const { socketConnection, activeSocketModule = null, onSetSocketConnection } = this.props;
+
+        if (prevProps.socketConnection && !socketConnection) {
+            onSetSocketConnection({ socketConnection: false, module: null });
+            return;
+        }
+    }
 
     componentWillUnmount = () => {
         if (this.timer) clearTimeout(this.timer);
@@ -121,8 +149,9 @@ class Chat extends React.PureComponent {
     };
 
     render() {
-        const { isLoad = false, messages = [], visible } = this.state;
-        const { chat: { listdata, chatToken: roomToken = null } = {} } = this.props;
+        const { isLoad = false, messages = [], visible, isStart = false } = this.state;
+        const { chat: { listdata, chatToken: roomToken = null } = {}, socketConnection } = this.props;
+        console.log(socketConnection);
         return (
             <div className="chat">
                 <TitleModule classNameTitle="ContactModule__chatTitle" title="Корпоративный чат" />
@@ -131,7 +160,7 @@ class Chat extends React.PureComponent {
                     <div className="col-chat-menu">
                         <div className="menuLoading-skeleton">
                             <Scrollbars>
-                                {!isLoad ? (
+                                {!socketConnection ? (
                                     messages.map((it, i) => (
                                         <div className="item-skeleton" key={`${it}${i}`}>
                                             <Skeleton loading={true} active avatar paragraph={false}>
@@ -191,9 +220,9 @@ class Chat extends React.PureComponent {
                                 </p>
                             </div>
                             <div className="chat_content__main">
-                                {!isLoad ? (
+                                {!socketConnection ? (
                                     <Loader />
-                                ) : true ? (
+                                ) : isStart ? (
                                     <ChatRoom
                                         key={roomToken}
                                         onKeyDown={this.pushMessage}
@@ -217,13 +246,23 @@ class Chat extends React.PureComponent {
 }
 
 const mapStateToProps = state => {
+    const {
+        chat = {},
+        socketConnection = false,
+        activeSocketModule = null
+    } = state.socketReducer;
+
     return {
-        chat: state.publicReducer.chat
+        chat,
+        socketConnection,
+        activeSocketModule
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
+        onLoadActiveChats: async payload => await dispatch(loadActiveChats(payload)),
+        onSetSocketConnection: status => dispatch(setSocketConnection(status)),
         onSetActiveChatToken: async (token, listdata) => await dispatch(setActiveChatToken({ token, listdata }))
     };
 };

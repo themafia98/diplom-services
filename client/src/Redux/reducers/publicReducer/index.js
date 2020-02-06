@@ -2,7 +2,6 @@ import {
     SET_ERROR,
     SET_CACHE,
     SET_STATUS,
-    SET_ACTIVE_CHAT_TOKEN,
     SHOW_GUIDE,
     UDATA_LOAD,
     CLEAR_CACHE
@@ -14,7 +13,6 @@ const initialState = {
     firstConnect: false,
     requestError: null,
     udata: {},
-    chat: { chatToken: null },
     caches: {}
 };
 
@@ -44,17 +42,6 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 firstConnect: action.payload
-            };
-        }
-
-        case SET_ACTIVE_CHAT_TOKEN: {
-            return {
-                ...state,
-                chat: {
-                    ...state.chat,
-                    chatToken: action.payload.token || { chatToken: null },
-                    listdata: action.payload.listdata ? [...action.payload.listdata] : []
-                }
             };
         }
         case SET_CACHE: {
