@@ -9,8 +9,6 @@ import { setSocketConnection, onLoadActiveChats } from "../";
  */
 
 const loadActiveChats = payload => async (dispatch, getState, { schema, Request, clientDB }) => {
-    debugger;
-
     const {
         type = "",
         action = "",

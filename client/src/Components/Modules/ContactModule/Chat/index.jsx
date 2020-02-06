@@ -161,13 +161,28 @@ class Chat extends React.PureComponent {
                         <div className="menuLoading-skeleton">
                             <Scrollbars>
                                 {!socketConnection ? (
-                                    messages.map((it, i) => (
+                                    messages.length ? messages.map((it, i) => (
                                         <div className="item-skeleton" key={`${it}${i}`}>
                                             <Skeleton loading={true} active avatar paragraph={false}>
                                                 <List.Item.Meta />
                                             </Skeleton>
                                         </div>
-                                    ))
+                                    )) : (
+                                            _.fill(Array(5), "-_-").map((it, i) => {
+                                                return (
+                                                    <div className="item-skeleton" key={`${it}${i}`}>
+                                                        <Skeleton
+                                                            loading={true}
+                                                            active
+                                                            avatar
+                                                            paragraph={false}
+                                                        >
+                                                            <List.Item.Meta />
+                                                        </Skeleton>
+                                                    </div>
+                                                )
+                                            })
+                                        )
                                 ) : (
                                         <List
                                             key="list-chat"
