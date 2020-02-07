@@ -3,7 +3,7 @@ import multer from "multer";
 import winston from "winston";
 import { model, Schema, Model, Document } from "mongoose";
 import { getSchemaByName } from "../Models/Database/Schema";
-import { RouteDefinition, ResponseDocument, ResponseJson } from "./Interfaces";
+import { RouteDefinition, ResponseDocument, ResponseJson, WsWorker } from "./Interfaces";
 import { FileTransportInstance, docResponse, ParserResult } from "./Types";
 
 namespace Utils {
@@ -35,8 +35,10 @@ namespace Utils {
         controllers: Array<any>,
         getApp: Function,
         getRest: Function,
-        isPrivateRoute: Function
+        isPrivateRoute: Function,
+        wsWorkerManager: WsWorker
     ) => {
+
         controllers.forEach(controller => {
             // This is our instantiated class
             const instance: any = new controller();
@@ -46,50 +48,33 @@ namespace Utils {
 
             // Iterate over all routes and register them to our express application
             routes.forEach(route => {
-                if (!route.file) {
-                    if (!route.private) {
-                        getRest()[route.requestMethod](
-                            prefix === "/" ? route.path : prefix + route.path,
-                            (req: Request, res: Response, next: NextFunction) => {
-                                instance[route.methodName](req, res, next, getApp());
-                            }
-                        );
-                    } else {
-                        getRest()[route.requestMethod](
-                            prefix === "/" ? route.path : prefix + route.path,
-                            isPrivateRoute,
-                            (req: Request, res: Response, next: NextFunction) => {
-                                // Execute our method for this path and pass our express
-                                // request and response object.
-                                instance[route.methodName](req, res, next, getApp());
-                            }
-                        );
+
+                const isWs = route.ws;
+                const isFile = route.file;
+                const isPrivate = route.private;
+
+                const middlewares: any = {};
+
+                isPrivate ? middlewares.private = isPrivateRoute : null;
+                isFile ? middlewares.file = upload.any() : null;
+                isWs ? middlewares.ws = wsWorkerManager : null;
+
+                const compose: Readonly<Array<object>> = Object.keys(middlewares).map((key: string) => {
+                    if (middlewares[key]) {
+                        return middlewares[key];
+                    } else return null;
+                }).filter(Boolean);
+
+                getRest()[route.requestMethod](
+                    prefix === "/" ? route.path : prefix + route.path,
+                    ...compose,
+                    (req: Request, res: Response, next: NextFunction) => {
+                        instance[route.methodName](req, res, next, getApp(), isWs ? wsWorkerManager : null);
                     }
-                } else {
-                    if (!route.private) {
-                        getRest()[route.requestMethod](
-                            prefix === "/" ? route.path : prefix + route.path,
-                            upload.any(),
-                            (req: Request, res: Response, next: NextFunction) => {
-                                instance[route.methodName](req, res, next, getApp());
-                            }
-                        );
-                    } else {
-                        getRest()[route.requestMethod](
-                            prefix === "/" ? route.path : prefix + route.path,
-                            upload.any(),
-                            isPrivateRoute,
-                            (req: Request, res: Response, next: NextFunction) => {
-                                // Execute our method for this path and pass our express
-                                // request and response object.
-                                instance[route.methodName](req, res, next, getApp());
-                            }
-                        );
-                    }
-                }
+                );
             });
-        });
-    };
+        })
+    }
 
     export const getResponseJson = (
         actionString: string,

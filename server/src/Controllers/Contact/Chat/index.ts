@@ -14,7 +14,8 @@ import Action from "../../../Models/Action";
 
 namespace Chat {
 
-    const { Post, Controller } = Decorators;
+    const Post = Decorators.Post;
+    const Controller = Decorators.Controller;
     const { getResponseJson } = Utils;
 
     @Controller("/chat")

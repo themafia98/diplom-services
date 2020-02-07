@@ -1,5 +1,6 @@
 import { Application, Router as RouteExpress, Request as RequestExpress, Response, NextFunction } from "express";
 import { Dropbox, files } from "dropbox";
+import socketio from "socket.io";
 import mongoose, { Mongoose, Connection } from "mongoose";
 
 export interface ServerRun {
@@ -79,6 +80,7 @@ export interface RouteDefinition {
     methodName: string;
     private?: boolean;
     file?: boolean | undefined;
+    ws?: boolean | undefined;
 }
 
 export interface DecoratorConfig extends Object {
@@ -155,4 +157,11 @@ export interface ResponseJson<T> {
     params: T;
     done: boolean;
     metadata: object | Array<any> | null | BinaryType | string;
+}
+
+export interface WsWorker {
+    startSocketConnection(io: socketio.Server): void;
+    getWorkerId(): number;
+    getWorker(id: number): socketio.Server;
+    getWorkersArray(): Array<socketio.Server>;
 }

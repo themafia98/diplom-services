@@ -267,7 +267,6 @@ namespace Http {
 
             const wsWorkerManager: WebSocketWorker = new WebSocketWorker(wsWorkers);
             wsWorkerManager.startSocketConnection(socketio(server));
-            wsWorkerManager.eventStart();
 
             Utils.initControllers(
                 [
@@ -279,7 +278,8 @@ namespace Http {
                 ],
                 this.getApp.bind(this),
                 this.getRest.bind(this),
-                this.isPrivateRoute.bind(this)
+                this.isPrivateRoute.bind(this),
+                wsWorkerManager,
             );
 
             this.initErrorHandler(server, dbm);
