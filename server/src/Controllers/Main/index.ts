@@ -33,7 +33,7 @@ namespace System {
                         action: "error",
                         response: { param: params, metadata: data },
                         uptime: process.uptime(),
-                        responseTime: Utils.responseTime((<any>req).start),
+                        responseTime: Utils.responseTime((req as Record<string, any>).start),
                         work: process.connected
                     });
                 }
@@ -44,7 +44,7 @@ namespace System {
                     action: "done",
                     response: { param: params, metadata },
                     uptime: process.uptime(),
-                    responseTime: Utils.responseTime((<any>req).start),
+                    responseTime: Utils.responseTime((req as Record<string, any>).start),
                     work: process.connected
                 });
 
@@ -58,7 +58,7 @@ namespace System {
                         action: err.name,
                         response: null,
                         uptime: process.uptime(),
-                        responseTime: Utils.responseTime((<any>req).start),
+                        responseTime: Utils.responseTime((req as Record<string, any>).start),
                         work: process.connected
                     });
                 }

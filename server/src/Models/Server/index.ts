@@ -135,7 +135,7 @@ namespace Http {
                         try {
                             const connect = await dbm.connection();
                             if (!connect) throw new Error("Bad connect");
-                            UserModel.findOne({ email }, async (err: Error, user: any) => {
+                            UserModel.findOne({ email }, async (err: Error, user: Record<string, any>) => {
                                 await dbm.disconnect().catch((err: Error) => console.error(err));
                                 if (err) return done(err);
                                 else if (!user || !user.checkPassword(password)) {
@@ -165,7 +165,7 @@ namespace Http {
                         try {
                             const connect = await dbm.connection();
                             if (!connect) throw new Error("bad connection");
-                            UserModel.findOne(payload.id, async (err: Error, user: any) => {
+                            UserModel.findOne(payload.id, async (err: Error, user: Record<string, any>) => {
                                 await dbm.disconnect().catch((err: Error) => console.error(err));
 
                                 if (err) {
@@ -191,7 +191,7 @@ namespace Http {
                 try {
                     const connect = await dbm.connection();
                     if (!connect) throw new Error("Bad connect");
-                    await UserModel.findById(id, async (err: Error, user: any) => {
+                    await UserModel.findById(id, async (err: Error, user: Record<string, any>) => {
                         if (err) {
                             console.log(err);
                             console.log(user);

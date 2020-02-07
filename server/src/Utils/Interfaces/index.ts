@@ -34,11 +34,11 @@ export interface Dbms {
 export interface CryptoSecurity {
     getMode(): string;
     hashing(password: string, salt: number, callback: Function): Promise<void>;
-    verify(password: string, hash: any, callback: Function): Promise<void>;
+    verify(password: string, hash: Record<string, any>, callback: Function): Promise<void>;
 }
 
 export interface App extends Application {
-    locals: any;
+    locals: Record<string, any>;
     dbm: Dbms;
     hash: CryptoSecurity;
 }

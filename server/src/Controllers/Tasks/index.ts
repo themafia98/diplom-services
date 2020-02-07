@@ -12,7 +12,7 @@ import Action from "../../Models/Action";
 import Decorators from "../../Decorators";
 
 namespace Tasks {
-    const { getResponseJson } = <any>Utils;
+    const { getResponseJson } = Utils;
     const Controller = Decorators.Controller;
     const Get = Decorators.Get;
     const Delete = Decorators.Delete;
@@ -38,13 +38,14 @@ namespace Tasks {
                     params.status = "error";
 
                     return res.json(
-                        getResponseJson("error", { params, metadata: data, status: "FAIL", done: false }, (<any>req).start)
+                        getResponseJson("error", { params, metadata: data, status: "FAIL", done: false },
+                            (req as Record<string, any>).start)
                     );
                 }
 
                 await service.dbm.disconnect().catch((err: Error) => console.error(err));
 
-                let metadata: Array<any> = [];
+                let metadata: ArrayLike<object> = [];
 
                 if (data && Array.isArray(data)) {
                     metadata = data
@@ -61,7 +62,8 @@ namespace Tasks {
                         .filter(Boolean);
                 }
 
-                return res.json(getResponseJson("done", { params, metadata, done: true, status: "OK" }, (<any>req).start));
+                return res.json(getResponseJson("done", { params, metadata, done: true, status: "OK" },
+                    (req as Record<string, any>).start));
             } catch (err) {
                 console.error(err);
                 if (!res.headersSent) {
@@ -69,7 +71,7 @@ namespace Tasks {
                         getResponseJson(
                             err.name,
                             { metadata: "Server error", params, done: false, status: "FAIL" },
-                            (<any>req).start
+                            (req as Record<string, any>).start
                         )
                     );
                 }
@@ -97,7 +99,7 @@ namespace Tasks {
                     });
 
                     const isBinary: Boolean = actionData && (<any>actionData).fileBinary;
-                    const fileBinary: BinaryType | null = isBinary ? (<any>actionData).fileBinary : null;
+                    const fileBinary: BinaryType = isBinary ? (actionData as Record<string, any>).fileBinary : null;
 
                     if (!actionData) {
                         params.done = false;
@@ -105,7 +107,7 @@ namespace Tasks {
                             getResponseJson(
                                 "download_files fail",
                                 { status: "FAIL", params, done: true, metadata: fileBinary },
-                                (<any>req).start
+                                (req as Record<string, any>).start
                             )
                         );
                     } else if (fileBinary) {
@@ -119,7 +121,7 @@ namespace Tasks {
                             getResponseJson(
                                 err.name,
                                 { status: "FAIL", params, done: false, metadata: "Server error" },
-                                (<any>req).start
+                                (req as Record<string, any>).start
                             )
                         );
                 }
@@ -145,7 +147,7 @@ namespace Tasks {
                         getResponseJson(
                             "error action delete_file task",
                             { status: "FAIL", params, done: false, metadata: [] },
-                            (<any>req).start
+                            (req as Record<string, any>).start
                         )
                     );
                 } else {
@@ -153,7 +155,7 @@ namespace Tasks {
                         getResponseJson(
                             "done",
                             { status: "OK", done: true, params, metadata: (<any>actionData).metadata },
-                            (<any>req).start
+                            (req as Record<string, any>).start
                         )
                     );
                 }
@@ -165,7 +167,7 @@ namespace Tasks {
                         getResponseJson(
                             err.name,
                             { status: "FAIL", params, done: false, metadata: "Server error" },
-                            (<any>req).start
+                            (req as Record<string, any>).start
                         )
                     );
             }
@@ -191,7 +193,7 @@ namespace Tasks {
                         getResponseJson(
                             "error action load_files task",
                             { status: "FAIL", params, done: false, metadata: [] },
-                            (<any>req).start
+                            (req as Record<string, any>).start
                         )
                     );
                 } else {
@@ -199,7 +201,7 @@ namespace Tasks {
                         getResponseJson(
                             "done",
                             { status: "OK", done: true, params, metadata: (<Document[]>actionData).entries },
-                            (<any>req).start
+                            (req as Record<string, any>).start
                         )
                     );
                 }
@@ -211,7 +213,7 @@ namespace Tasks {
                         getResponseJson(
                             err.name,
                             { status: "FAIL", params, done: false, metadata: "Server error" },
-                            (<any>req).start
+                            (req as Record<string, any>).start
                         )
                     );
             }
@@ -256,7 +258,7 @@ namespace Tasks {
                             getResponseJson(
                                 "done",
                                 { status: "OK", done: true, params, metadata: responseSave },
-                                (<any>req).start
+                                (req as Record<string, any>).start
                             )
                         );
                     else throw new Error("fail save files");
@@ -266,7 +268,7 @@ namespace Tasks {
                         getResponseJson(
                             "error action save_file task",
                             { status: "FAIL", params, done: false, metadata: [] },
-                            (<any>req).start
+                            (req as Record<string, any>).start
                         )
                     );
                 }
@@ -278,7 +280,7 @@ namespace Tasks {
                         getResponseJson(
                             err.name,
                             { status: "FAIL", done: false, params, metadata: "Server error" },
-                            (<any>req).start
+                            (req as Record<string, any>).start
                         )
                     );
                 }
@@ -311,7 +313,7 @@ namespace Tasks {
                             getResponseJson(
                                 "error set_single task",
                                 { status: "FAIL", params, done: false, metadata: data },
-                                (<any>req).start
+                                (req as Record<string, any>).start
                             )
                         );
                     }
@@ -320,7 +322,7 @@ namespace Tasks {
 
                     const metadata: ArrayLike<object> = Array.isArray(meta) && meta[0] ? meta[0] : null;
 
-                    return res.json(getResponseJson("done", { status: "OK", done: true, params, metadata }, (<any>req).start));
+                    return res.json(getResponseJson("done", { status: "OK", done: true, params, metadata }, (req as Record<string, any>).start));
                 } else if (!res.headersSent) {
                     return res.json(
                         getResponseJson(
@@ -331,7 +333,7 @@ namespace Tasks {
                                 done: false,
                                 metadata: "Body empty"
                             },
-                            (<any>req).start
+                            (req as Record<string, any>).start
                         )
                     );
                 }
@@ -342,7 +344,7 @@ namespace Tasks {
                         getResponseJson(
                             err.name,
                             { status: "FAIL", params, done: false, metadata: "Server error" },
-                            (<any>req).start
+                            (req as Record<string, any>).start
                         )
                     );
                 }
@@ -377,17 +379,17 @@ namespace Tasks {
                         return res.json(getResponseJson(
                             "error set_jurnal action",
                             { status: "FAIL", params, done: false, metadata: data },
-                            (<any>req).start
+                            (req as Record<string, any>).start
                         ));
                     }
 
                     const meta = <ArrayLike<object>>Utils.parsePublicData(<any>[data]);
                     const metadata: ArrayLike<object> = Array.isArray(meta) && meta[0] ? meta[0] : null;
 
-                    return res.json(getResponseJson("done", { status: "OK", done: true, params, metadata }, (<any>req).start));
+                    return res.json(getResponseJson("done", { status: "OK", done: true, params, metadata }, (req as Record<string, any>).start));
                 } else if (!res.headersSent) {
                     return res.json(
-                        getResponseJson("error", { status: "FAIL", params, done: false, metadata: null }, (<any>req).start)
+                        getResponseJson("error", { status: "FAIL", params, done: false, metadata: null }, (req as Record<string, any>).start)
                     );
                 }
             } catch (err) {
@@ -397,7 +399,7 @@ namespace Tasks {
                         getResponseJson(
                             err.name,
                             { status: "FAIL", params, done: false, metadata: "Server error" },
-                            (<any>req).start
+                            (req as Record<string, any>).start
                         )
                     );
                 }
@@ -425,7 +427,7 @@ namespace Tasks {
                     params.status = "error";
 
                     return res.json(
-                        getResponseJson("error", { params, status: "FAIL", done: false, metadata: data }, (<any>req).start)
+                        getResponseJson("error", { params, status: "FAIL", done: false, metadata: data }, (req as Record<string, any>).start)
                     );
                 }
 
@@ -448,7 +450,7 @@ namespace Tasks {
                         .filter(Boolean);
                 }
 
-                return res.json(getResponseJson("done", { params, metadata, status: "OK", done: true }, (<any>req).start));
+                return res.json(getResponseJson("done", { params, metadata, status: "OK", done: true }, (req as Record<string, any>).start));
             } catch (err) {
                 params.done = false;
                 console.error(err);
@@ -457,7 +459,7 @@ namespace Tasks {
                         getResponseJson(
                             err.name,
                             { metadata: "Server error", status: "FAIL", done: false, params },
-                            (<any>req).start
+                            (req as Record<string, any>).start
                         )
                     );
                 }
@@ -493,7 +495,7 @@ namespace Tasks {
                             getResponseJson(
                                 "error set_single task",
                                 { status: "FAIL", params: { body, ...params }, done: false, metadata: data },
-                                (<any>req).start
+                                (req as Record<string, any>).start
                             )
                         );
                     }
@@ -505,7 +507,7 @@ namespace Tasks {
                         getResponseJson(
                             "done",
                             { status: "OK", done: true, params: { body, ...params }, metadata },
-                            (<any>req).start
+                            (req as Record<string, any>).start
                         )
                     );
                 } else if (!res.headersSent) {
@@ -515,7 +517,7 @@ namespace Tasks {
                         getResponseJson(
                             "error",
                             { status: "FAIL", params: { body, ...params }, done: false, metadata: null },
-                            (<any>req).start
+                            (req as Record<string, any>).start
                         )
                     );
                 }
@@ -526,7 +528,7 @@ namespace Tasks {
                         getResponseJson(
                             err.name,
                             { status: "FAIL", params, done: false, metadata: "Server error" },
-                            (<any>req).start
+                            (req as Record<string, any>).start
                         )
                     );
                 }
@@ -564,7 +566,7 @@ namespace Tasks {
                             getResponseJson(
                                 "error update_many task",
                                 { status: "FAIL", params, done: false, metadata: data },
-                                (<any>req).start
+                                (req as Record<string, any>).start
                             )
                         );
                     }
@@ -573,12 +575,12 @@ namespace Tasks {
 
                     const metadata: ArrayLike<object> = Array.isArray(meta) && meta[0] ? meta[0] : null;
 
-                    return res.json(getResponseJson("done", { status: "OK", done: true, params, metadata }, (<any>req).start));
+                    return res.json(getResponseJson("done", { status: "OK", done: true, params, metadata }, (req as Record<string, any>).start));
                 } else if (!res.headersSent) {
                     params.done = false;
                     params.status = "FAIL";
                     return res.json(
-                        getResponseJson("error", { status: "FAIL", params, done: false, metadata: null }, (<any>req).start)
+                        getResponseJson("error", { status: "FAIL", params, done: false, metadata: null }, (req as Record<string, any>).start)
                     );
                 }
             } catch (err) {
@@ -588,7 +590,7 @@ namespace Tasks {
                         getResponseJson(
                             err.name,
                             { status: "FAIL", params, done: false, metadata: "Server error" },
-                            (<any>req).start
+                            (req as Record<string, any>).start
                         )
                     );
                 }

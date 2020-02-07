@@ -19,7 +19,7 @@ fetch("/rest/news/list")
 });
 
 res.setHeader('Content-disposition', 'attachment; filename=dramaticpenguin.doc');
-res.send((<any>await store.downloadFile()).fileBinary);
+res.send((await store.downloadFile()).fileBinary);
 
 
 // save file

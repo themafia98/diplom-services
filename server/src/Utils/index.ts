@@ -41,7 +41,7 @@ namespace Utils {
 
         controllers.forEach(controller => {
             // This is our instantiated class
-            const instance: any = new controller();
+            const instance: Record<string, any> = new controller();
             const prefix = Reflect.getMetadata("prefix", controller);
             // Our `routes` array containing all our routes for this controller
             const routes: Array<RouteDefinition> = Reflect.getMetadata("routes", controller);
@@ -53,13 +53,13 @@ namespace Utils {
                 const isFile = route.file;
                 const isPrivate = route.private;
 
-                const middlewares: any = {};
+                const middlewares: Record<string, object> = {};
 
                 isPrivate ? middlewares.private = isPrivateRoute : null;
                 isFile ? middlewares.file = upload.any() : null;
                 isWs ? middlewares.ws = wsWorkerManager : null;
 
-                const compose: Readonly<Array<object>> = Object.keys(middlewares).map((key: string) => {
+                const compose: Readonly<Array<object | null>> = Object.keys(middlewares).map((key: string) => {
                     if (middlewares[key]) {
                         return middlewares[key];
                     } else return null;

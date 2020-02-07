@@ -46,7 +46,7 @@ userSchema.methods.checkPassword = async function (password: string): Promise<bo
 
 userSchema.methods.generateJWT = function (): any {
     const today = new Date();
-    const expirationDate = new Date(<any>today);
+    const expirationDate = new Date(<Date>today);
     expirationDate.setDate(today.getDate() + 30);
 
     return jwt.sign(

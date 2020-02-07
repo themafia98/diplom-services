@@ -36,7 +36,7 @@ namespace News {
                         action: "error",
                         response: { param: params, metadata: [] },
                         uptime: process.uptime(),
-                        responseTime: Utils.responseTime((<any>req).start),
+                        responseTime: Utils.responseTime((req as Record<string, any>).start),
                         work: process.connected
                     });
                 }
@@ -47,7 +47,7 @@ namespace News {
                     action: "done",
                     response: { param: params, metadata: data },
                     uptime: process.uptime(),
-                    responseTime: Utils.responseTime((<any>req).start),
+                    responseTime: Utils.responseTime((req as Record<string, any>).start),
                     work: process.connected
                 });
 
@@ -58,7 +58,7 @@ namespace News {
                         action: err.name,
                         response: "Server error",
                         uptime: process.uptime(),
-                        responseTime: Utils.responseTime((<any>req).start),
+                        responseTime: Utils.responseTime((req as Record<string, any>).start),
                         work: process.connected
                     });
                 }

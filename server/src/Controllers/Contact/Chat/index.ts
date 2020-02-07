@@ -41,7 +41,7 @@ namespace Chat {
                 return res.json(getResponseJson(
                     "done",
                     { params: { ...queryParams }, metadata: data, status: "done", done: true },
-                    (<any>req).start
+                    (req as Record<string, any>).start
                 ));
 
             } catch (err) {

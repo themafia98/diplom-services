@@ -51,7 +51,7 @@ namespace General {
 
             return await passport.authenticate(
                 "local",
-                async (err: Error, user: any): ResRequest => {
+                async (err: Error, user: Record<string, any>): ResRequest => {
                     try {
                         if (!user || err) {
                             return res.status(401).send("Пользователь не найден, проверьте введеные данные.");
@@ -86,7 +86,7 @@ namespace General {
 
         @Post({ path: "/userload", private: true })
         public async userload(req: Request, res: Response): Promise<Response> {
-            if (req.user) return res.json({ user: (<any>req).user.toAuthJSON() });
+            if (req.user) return res.json({ user: (req as Record<string, any>).user.toAuthJSON() });
             else {
                 res.clearCookie("connect.sid");
                 return res.sendStatus(302);
@@ -97,7 +97,7 @@ namespace General {
         public async logout(req: Request, res: Response): Promise<Response> {
             return await req.session.destroy((err: Error): Response => {
                 if (err) console.error(err);
-                <any>req.logOut(); // passportjs logout
+                req.logOut(); // passportjs logout
                 res.clearCookie("connect.sid");
                 return res.sendStatus(200);
             });
