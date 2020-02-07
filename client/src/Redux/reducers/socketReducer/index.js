@@ -57,6 +57,7 @@ export default (state = initialState, action) => {
         }
 
         case LOAD_CHATS_LIST: {
+
             const {
                 usersList = [],
                 listdata = [],

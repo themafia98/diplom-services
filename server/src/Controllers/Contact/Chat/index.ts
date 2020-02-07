@@ -1,21 +1,27 @@
 import cluster from 'cluster';
-import socketio, { Socket } from 'socket.io';
+import _ from 'lodash';
+import socketio, { Socket, EngineSocket } from 'socket.io';
 import { App } from '../../../Utils/Interfaces';
 import Entrypoint from '../../../';
 import { ParserResult, ResRequest } from "../../../Utils/Types";
 import { NextFunction, Request, Response } from 'express';
 
+import Decorators from "../../../Decorators";
+
 import Utils from "../../../Utils";
 import Action from "../../../Models/Action";
-import { isObject } from 'util';
+
+
 namespace Chat {
-    export const module = (app: App, server: any): null | void => {
-        if (!app) return null;
 
+    const { Post, Controller } = Decorators;
+    const { getResponseJson } = Utils;
 
-        const { getResponseJson } = Utils;
+    @Controller("/chat")
+    export class ChatController {
 
-        app.post("/chat/loadChats", async (req: Request, res: Response, next: NextFunction): ResRequest => {
+        @Post({ path: "/loadChats", private: true })
+        async loadChats(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
             const { body: { actionPath = "", actionType = "", queryParams = {} } = {} } = req;
 
             try {
@@ -41,35 +47,7 @@ namespace Chat {
                 console.error(err);
                 res.sendStatus(503);
             }
-        });
-
-        const { wsWorkers = [] } = Entrypoint || {};
-        const workerId = cluster.worker.id;
-
-        wsWorkers[workerId] = socketio(server);
-
-        wsWorkers[workerId].on('connection', (socket: Socket) => {
-            console.log("ws connection");
-            socket.emit("connection", true);
-
-            socket.on("newMessage", (msg, tokenRoom) => {
-                wsWorkers[workerId].to(tokenRoom).emit("msg", msg);
-            });
-
-            socket.on("onChatRoomActive", ({ token: tokenRoom, displayName = "" }) => {
-                socket.join(tokenRoom);
-                wsWorkers[workerId].to(tokenRoom).emit("joinMsg", {
-                    tokenRoom,
-                    displayName: "System",
-                });
-            });
-
-        });
-
-        wsWorkers[workerId].on('disconnect', (socket: Socket) => {
-            console.log(socket.eventNames);
-            console.log('user disconnected');
-        });
+        }
     }
 }
 

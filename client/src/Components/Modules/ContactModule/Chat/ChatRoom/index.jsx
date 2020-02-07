@@ -84,7 +84,7 @@ const ChatRoom = ({ onSend = null, messages: msgProps = [], roomToken = "", onKe
                                     <span
                                         onClick={event => redirectUserProfile(event, null)}
                                         className="msg_author">
-                                        >
+                                        {it.displayName}
                                         <Avatar size="small" />
                                     </span>
                                 ) : (
@@ -92,7 +92,7 @@ const ChatRoom = ({ onSend = null, messages: msgProps = [], roomToken = "", onKe
                                     )}
 
                             {it.displayName !== "System" ?
-                                <span className="msg_date">{moment().format("DD.MM.YYYY HH:mm:ss")}.</span>
+                                <span className="msg_date">{moment().format("DD.MM.YYYY HH:mm")}.</span>
                                 : null
                             }
                             <p className="wrapper_msg">{it.msg}</p>

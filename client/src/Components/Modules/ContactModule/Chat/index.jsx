@@ -61,13 +61,14 @@ class Chat extends React.PureComponent {
             } else messages.error("Соединение не установлено, попытка восстановить соединение.");
         });
 
-        this.socket.on("msg", msg => {
-            this.setState({
-                messages: [...this.state.messages, msg]
-            }, () => {
-
-            });
-        });
+        this.socket.on("msg", ((msgObj) => {
+            if (_.isObject(msgObj)) {
+                this.setState({
+                    ...this.state,
+                    messages: [...this.state.messages, { ...msgObj }]
+                });
+            }
+        }));
 
         this.socket.on("joinMsg", ({ displayName, tokenRoom }) => {
             this.setState({
@@ -109,16 +110,21 @@ class Chat extends React.PureComponent {
     };
 
     pushMessage = (event, msg) => {
-        const { chat: { chatToken: roomToken = "" } = {} } = this.props;
+        const { chat: { chatToken: tokenRoom = "" } = {}, udata: { displayName } = {} } = this.props;
 
         console.log("push");
-        if (_.isNull(roomToken)) {
+        if (_.isNull(tokenRoom)) {
             return notification.error({ message: "Ошибка чата", description: "Данные повреждены." });
         }
 
         if (!msg) return message.error("Недопустимые значения или вы ничего не ввели.");
 
-        this.socket.emit("newMessage", msg, roomToken);
+        this.socket.emit("newMessage",
+            {
+                tokenRoom,
+                displayName,
+                msg
+            });
     };
 
     setActiveChatRoom = (event, token = "") => {

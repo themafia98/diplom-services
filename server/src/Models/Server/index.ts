@@ -1,7 +1,7 @@
 import express, { Application, Response, NextFunction, Router } from "express";
 import session from "express-session";
 import MongoStore from "connect-mongo";
-
+import socketio from 'socket.io';
 import passport from "passport";
 import _ from "lodash";
 import helmet from "helmet";
@@ -25,7 +25,8 @@ import { UserModel } from "../Database/Schema";
 import jwt, { StrategyOptions } from "passport-jwt";
 import * as passportLocal from 'passport-local';
 
-
+import WebSocketWorker from "../WebSocketWorker";
+import Entrypoint from "../..";
 
 namespace Http {
 
@@ -208,10 +209,13 @@ namespace Http {
         }
 
         public async start(): Promise<void> {
+            const { wsWorkers = [] } = Entrypoint || {};
             const Main: Readonly<Function> = General.Main;
             const TasksController: Readonly<Function> = Tasks.TasksController;
             const SystemData: Readonly<Function> = System.SystemData;
             const NewsController: Readonly<Function> = News.NewsController;
+            const ChatAlias: Readonly<Function> = Chat.ChatController;
+
             this.setApp(express());
             this.getApp().disabled("x-powerd-by");
             this.getApp().use(helmet());
@@ -256,11 +260,14 @@ namespace Http {
                 console.log(`Server listen on ${chalk.blue.bold(this.getPort())}.`);
             });
 
+
             /** initial entrypoint route */
             this.setRest(instanceRouter.initInstance("/rest"));
             this.getRest().use(this.startResponse);
 
-            Chat.module(<App>this.getRest(), server);
+            const wsWorkerManager: WebSocketWorker = new WebSocketWorker(wsWorkers);
+            wsWorkerManager.startSocketConnection(socketio(server));
+            wsWorkerManager.eventStart();
 
             Utils.initControllers(
                 [
@@ -268,7 +275,7 @@ namespace Http {
                     TasksController,
                     NewsController,
                     SystemData,
-
+                    ChatAlias
                 ],
                 this.getApp.bind(this),
                 this.getRest.bind(this),
