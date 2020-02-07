@@ -87,6 +87,7 @@ export interface DecoratorConfig extends Object {
     path: string;
     private: boolean;
     file?: boolean | undefined;
+    ws?: boolean | undefined;
 }
 
 export interface methodParam extends Object {

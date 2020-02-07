@@ -73,7 +73,7 @@ const ChatRoom = ({ onSend = null, messages: msgProps = [], roomToken = "", onKe
 
     const renderChat = messages => {
         return messages.map((it, i) => {
-            debugger;
+
             const item = (
                 <div ref={refWrapper} key={`${i}${it.tokenRoom}${it.msg}`} className={[i, "message"].join(" ")}>
                     <Message it={it.msg} key={`${it.msg}_message${it.tokenRoom}`}>

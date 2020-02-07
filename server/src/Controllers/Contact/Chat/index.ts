@@ -1,15 +1,17 @@
 import cluster from 'cluster';
 import _ from 'lodash';
 import socketio, { Socket, EngineSocket } from 'socket.io';
-import { App } from '../../../Utils/Interfaces';
+import { App, WsWorker } from '../../../Utils/Interfaces';
 import Entrypoint from '../../../';
 import { ParserResult, ResRequest } from "../../../Utils/Types";
 import { NextFunction, Request, Response } from 'express';
 
 import Decorators from "../../../Decorators";
 
+import Http from "../../../Models/Server";
 import Utils from "../../../Utils";
 import Action from "../../../Models/Action";
+import WebSocketWorker from '../../../Models/WebSocketWorker';
 
 
 namespace Chat {
@@ -21,7 +23,7 @@ namespace Chat {
     @Controller("/chat")
     export class ChatController {
 
-        @Post({ path: "/loadChats", private: true })
+        @Post({ path: "/loadChats", private: true, ws: true })
         async loadChats(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
             const { body: { actionPath = "", actionType = "", queryParams = {} } = {} } = req;
 
@@ -50,6 +52,36 @@ namespace Chat {
             }
         }
     }
+
+    export const wsModule = (ws: WebSocketWorker) => {
+        const { wsWorkers = [] } = Entrypoint || {};
+        const workerId = cluster.worker.id;
+        const worker = ws.getWorker(workerId);
+
+        worker.on('connection', (socket: Socket) => {
+
+            console.log("ws connection");
+            socket.emit("connection", true);
+
+            socket.on("newMessage", (msg, tokenRoom) => {
+                worker.to(tokenRoom).emit("msg", msg);
+            });
+
+            socket.on("onChatRoomActive", ({ token: tokenRoom, displayName = "" }) => {
+                socket.join(tokenRoom);
+                worker.to(tokenRoom).emit("joinMsg", {
+                    tokenRoom,
+                    displayName: "System",
+                });
+            });
+
+        });
+
+        worker.on('disconnect', (socket: Socket) => {
+            console.log(socket.eventNames);
+            console.log('user disconnected');
+        });
+    };
 }
 
 export default Chat;

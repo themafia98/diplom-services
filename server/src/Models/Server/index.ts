@@ -62,6 +62,7 @@ namespace Http {
         public setApp(express: Application): void {
             if (_.isNull(this.application)) this.application = express;
         }
+
     }
 
     export class ServerRunner extends RestEntitiy {
@@ -267,6 +268,8 @@ namespace Http {
 
             const wsWorkerManager: WebSocketWorker = new WebSocketWorker(wsWorkers);
             wsWorkerManager.startSocketConnection(socketio(server));
+
+            Chat.wsModule(wsWorkerManager);
 
             Utils.initControllers(
                 [
