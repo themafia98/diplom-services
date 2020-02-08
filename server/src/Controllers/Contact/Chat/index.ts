@@ -34,11 +34,12 @@ namespace Chat {
                     throw new TypeError("Bad action data");
                 }
 
-                return res.json(getResponseJson(
-                    "done",
-                    { params: { ...queryParams }, metadata: data, status: "done", done: true },
-                    (req as Record<string, any>).start
-                ));
+                return res.json(
+                    getResponseJson(
+                        "done",
+                        { params: { ...queryParams }, metadata: data, status: "done", done: true },
+                        (req as Record<string, any>).start
+                    ));
 
             } catch (err) {
                 console.error(err);

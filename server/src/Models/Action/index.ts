@@ -58,6 +58,7 @@ namespace Action {
 
         public async getActionData(actionParam: ActionParams = {}): ParserData {
             try {
+                console.log(actionParam);
                 console.log(`Run action. actionType: ${this.getActionType()}, actionPath: ${this.getActionPath()}`);
 
                 switch (this.getActionPath()) {
@@ -100,8 +101,13 @@ namespace Action {
                     case "entrypoint_chat": {
                         const model: Model<Document> | null = getModelByName("chat", "chat");
                         if (!model) return [];
+                        const socket = <Record<string, any>>actionParam.socket || {};
+                        const tokenRoom = <Record<string, any>>actionParam.tokenRoom;
+                        const { socketConnection = false, module: moduleName = "" } = socket;
+                        const query = { moduleName, tokenRoom };
 
-                        return this.getAll(model, {});
+                        if (socketConnection && moduleName)
+                            return this.getAll(model, query);
                         break;
                     }
 

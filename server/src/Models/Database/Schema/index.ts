@@ -7,18 +7,18 @@ const userSchema = new Schema(
     {
         email: {
             type: String,
-            required: "Укажите e-mail",
-            dropDups: true
+            required: true,
+            dropDups: true,
         },
-        passwordHash: { type: String, default: "" },
-        summary: { type: String, default: "" },
-        phone: { type: String, default: "" },
-        isOnline: { type: Boolean, default: false },
-        departament: String,
-        displayName: String,
-        position: String,
-        rules: String,
-        accept: Boolean
+        passwordHash: { type: String, default: "", required: true },
+        summary: { type: String, default: "", required: true },
+        phone: { type: String, default: "", required: true },
+        isOnline: { type: Boolean, default: false, required: true },
+        departament: { type: String, required: true },
+        displayName: { type: String, required: true },
+        position: { type: String, required: true },
+        rules: { type: String, required: true },
+        accept: { type: Boolean, required: true }
     },
     { timestamps: true }
 );
@@ -77,25 +77,26 @@ userSchema.methods.toAuthJSON = function () {
 export const task = new Schema({
     key: {
         type: String,
-        dropDups: true
+        dropDups: true,
+        required: true
     },
-    status: String,
-    name: String,
-    priority: String,
-    author: String,
-    editor: [String],
-    description: String,
-    date: [String],
-    comments: [Object],
+    status: { type: String, required: true },
+    name: { type: String, required: true },
+    priority: { type: String, required: true },
+    author: { type: String, required: true },
+    editor: { type: [String], required: true },
+    description: { type: String, required: true },
+    date: { type: [String], required: true },
+    comments: { type: [Object], required: true },
     modeAdd: String
 });
 
 export const jurnalItem = new Schema({
-    depKey: String,
-    timeLost: String,
-    editor: String,
-    date: [String],
-    description: String,
+    depKey: { type: String, required: true },
+    timeLost: { type: String, required: true },
+    editor: { type: String, required: true },
+    date: { type: [String], required: true },
+    description: { type: String, required: true },
     modeAdd: String
 });
 
@@ -105,12 +106,13 @@ export const newsItem = new Schema({
 });
 
 export const chat = new Schema({
-    msg: String,
-    authorId: String,
-    displayName: String,
-    date: String,
-    tokenRoom: String,
-    groupName: String,
+    msg: { type: String, required: true },
+    authorId: { type: String, required: true },
+    displayName: { type: String, required: true },
+    date: { type: String, required: true },
+    tokenRoom: { type: String, required: true },
+    groupName: { type: String, required: true },
+    moduleName: { type: String, required: true }
 });
 
 export const UserModel = model("users", userSchema);

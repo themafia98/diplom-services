@@ -24,6 +24,9 @@ export default (ws: WebSocketWorker, dbm: Readonly<Database.ManagmentDatabase>) 
                     if (msgObj && _.isObject(msgObj) && (msgObj as Record<string, string>).displayName !== "System") {
 
                         const saveMsg = await model.create(msgObj);
+
+                        if (!saveMsg) throw new TypeError("Bad msg object");
+
                         worker.to(tokenRoom).emit("msg", saveMsg);
 
                     } else worker.to(tokenRoom).emit("msg", msgObj);
