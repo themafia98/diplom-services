@@ -33,7 +33,8 @@ class Chat extends React.PureComponent {
             chat: { chatToken = null } = {},
             onSetActiveChatToken,
             onSetSocketConnection,
-            onLoadActiveChats
+            onLoadActiveChats,
+            udata: { displayName: dnProps = "" } = {},
         } = this.props;
 
         this.socket = io("/");
@@ -75,14 +76,17 @@ class Chat extends React.PureComponent {
                 ...this.state,
                 messages: [...this.state.messages, {
                     tokenRoom,
-                    displayName,
-                    msg: `New user join to room ${tokenRoom}`
+                    displayName: "System",
+                    authorId: "System",
+                    date: moment().format("DD:MM:YYYY"),
+                    groupName: "System",
+                    msg: `${dnProps} join to room ${tokenRoom}`
                 }]
             })
         });
 
         this.socket.on("error", () => {
-            console.log("there was an error");
+            console.log("ws error");
         });
 
         // if (!_.isNull(chatToken))
@@ -110,7 +114,10 @@ class Chat extends React.PureComponent {
     };
 
     pushMessage = (event, msg) => {
-        const { chat: { chatToken: tokenRoom = "" } = {}, udata: { displayName } = {} } = this.props;
+        const {
+            chat: { chatToken: tokenRoom = "", group = "" } = {},
+            udata: { displayName, _id: authorId = "" } = {}
+        } = this.props;
 
         console.log("push");
         if (_.isNull(tokenRoom)) {
@@ -121,8 +128,11 @@ class Chat extends React.PureComponent {
 
         this.socket.emit("newMessage",
             {
+                authorId,
                 tokenRoom,
                 displayName,
+                date: moment().format("DD:MM:YYY"),
+                groupName: group,
                 msg
             });
     };

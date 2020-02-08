@@ -38,7 +38,6 @@ namespace Action {
 
         private async getAll(model: Model<Document>, actionParam: ActionParams) {
             try {
-                console.log(actionParam);
                 const actionData: Array<Document> = await model.find(actionParam);
                 return actionData;
             } catch (err) {
@@ -99,7 +98,10 @@ namespace Action {
                     }
 
                     case "entrypoint_chat": {
-                        return [];
+                        const model: Model<Document> | null = getModelByName("chat", "chat");
+                        if (!model) return [];
+
+                        return this.getAll(model, {});
                         break;
                     }
 

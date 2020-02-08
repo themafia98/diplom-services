@@ -1,6 +1,6 @@
 import { Decorator } from '../Utils/Types';
 import { RouteDefinition, DecoratorConfig } from '../Utils/Interfaces';
-/** Decorator @Controller */
+
 
 namespace Decorators {
 
@@ -26,6 +26,7 @@ namespace Decorators {
                 requestMethod: "get",
                 path: config.path,
                 private: config.private,
+                file: config.file || undefined,
                 methodName: <string>propKey
             });
 
@@ -66,6 +67,27 @@ namespace Decorators {
                 requestMethod: "delete",
                 path: config.path,
                 private: config.private,
+                file: config.file || undefined,
+                methodName: <string>propKey
+            });
+
+            Reflect.defineMetadata("routes", routesArray, target.constructor);
+        }
+    }
+
+    export const Put = (config: DecoratorConfig): Decorator => {
+        return (target: object, propKey: string | undefined): void => {
+            if (!Reflect.hasMetadata("routes", target.constructor)) {
+                Reflect.defineMetadata("routes", [], target.constructor);
+            }
+
+            const routesArray: RouteDefinition[] = Reflect.getMetadata("routes", target.constructor);
+
+            routesArray.push({
+                requestMethod: "put",
+                path: config.path,
+                private: config.private,
+                file: config.file || undefined,
                 methodName: <string>propKey
             });
 

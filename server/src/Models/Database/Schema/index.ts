@@ -104,6 +104,15 @@ export const newsItem = new Schema({
     blocks: [Object]
 });
 
+export const chat = new Schema({
+    msg: String,
+    authorId: String,
+    displayName: String,
+    date: String,
+    tokenRoom: String,
+    groupName: String,
+});
+
 export const UserModel = model("users", userSchema);
 
 export const getSchemaByName = (name: string): Schema | null => {
@@ -116,6 +125,8 @@ export const getSchemaByName = (name: string): Schema | null => {
             return jurnalItem;
         case "newsItem":
             return newsItem;
+        case "chat":
+            return chat;
         default:
             return null;
     }

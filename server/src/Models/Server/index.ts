@@ -27,6 +27,7 @@ import * as passportLocal from 'passport-local';
 
 import WebSocketWorker from "../WebSocketWorker";
 import Entrypoint from "../..";
+import wsEvents from "../../Controllers/Contact/Chat/wsEvents";
 
 namespace Http {
 
@@ -269,7 +270,7 @@ namespace Http {
             const wsWorkerManager: WebSocketWorker = new WebSocketWorker(wsWorkers);
             wsWorkerManager.startSocketConnection(socketio(server));
 
-            Chat.wsModule(wsWorkerManager);
+            wsEvents(wsWorkerManager, dbm); /** chat */
 
             Utils.initControllers(
                 [
