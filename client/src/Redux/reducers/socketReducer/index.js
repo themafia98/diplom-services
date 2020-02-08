@@ -2,7 +2,8 @@ import {
     SET_ACTIVE_CHAT_TOKEN,
     SET_SOCKET_CONNECTION,
     INVALID_LOAD_SOCKET,
-    LOAD_CHATS_LIST
+    LOAD_CHATS_LIST,
+    ADD_CHAT_MSG
 } from "../../actions/socketActions/const";
 
 const initialState = {
@@ -45,6 +46,17 @@ export default (state = initialState, action) => {
                     status: true,
                 }
             };
+        }
+
+        case ADD_CHAT_MSG: {
+            const msg = action.payload;
+            return {
+                ...state,
+                chat: {
+                    ...state.chat,
+                    listdata: [...state.chat.listdata, { ...msg }]
+                }
+            }
         }
 
         case INVALID_LOAD_SOCKET: {

@@ -3,11 +3,11 @@ import { connect } from "react-redux";
 import moment from "moment";
 import _ from "lodash";
 import io from 'socket.io-client';
-import uuid from "uuid/v4";
+
 import Scrollbars from "react-custom-scrollbars";
 import { Skeleton, List, Avatar, Button, notification, message } from "antd";
 
-import { setActiveChatToken, setSocketConnection } from "../../../../Redux/actions/socketActions";
+import { setActiveChatToken, setSocketConnection, addMsg } from "../../../../Redux/actions/socketActions";
 import { loadActiveChats } from "../../../../Redux/actions/socketActions/middleware";
 
 import Loader from "../../../Loader";
@@ -19,36 +19,21 @@ import ChatRoom from "./ChatRoom";
 class Chat extends React.PureComponent {
 
     state = {
-        messages: [],
         visible: null,
-        isStart: false,
     };
 
     socket = null;
-    timer = null;
-
-
-    static getDerivedStateFromProps = (props, state) => {
-        const { chat: { listdata = [] } = {} } = props || {};
-        if (Array.isArray(listdata) && listdata.length && state.messages.length - 1 != listdata.length) {
-            if (state.messages.length - 1 < listdata.length) {
-                return {
-                    ...state,
-                    messages: [...listdata]
-                }
-            }
-        }
-        return state;
-    }
 
     componentDidMount = () => {
-        const { messages = [] } = this.state;
         const {
-            chat: { chatToken: tokenRoom = null } = {},
+            chat: {
+                chatToken: tokenRoom = null,
+                listdata = []
+            } = {},
             onSetActiveChatToken,
             onSetSocketConnection,
             onLoadActiveChats,
-            udata: { displayName: dnProps = "" } = {},
+            onAddMsg = null
         } = this.props;
 
         this.socket = io("/");
@@ -75,72 +60,56 @@ class Chat extends React.PureComponent {
                         },
                     });
 
-            } else messages.error("Соединение не установлено, попытка восстановить соединение.");
+            } else {
+                message.error("Соединение не установлено, попытка восстановить соединение.");
+            }
         });
 
         this.socket.on("msg", ((msgObj) => {
-            if (_.isObject(msgObj)) {
-                this.setState({
-                    ...this.state,
-                    messages: [...this.state.messages, { ...msgObj }]
-                });
-            }
-        }));
 
-        this.socket.on("joinMsg", ({ displayName, tokenRoom }) => {
-            this.setState({
-                ...this.state,
-                messages: [...this.state.messages, {
-                    tokenRoom,
-                    displayName: "System",
-                    authorId: "System",
-                    date: moment().format("DD:MM:YYYY"),
-                    groupName: "System",
-                    msg: `${dnProps} join to room ${tokenRoom}`
-                }]
-            })
-        });
+            if (_.isObject(msgObj)) onAddMsg(msgObj);
+
+        }));
 
         this.socket.on("error", () => {
             console.log("ws error");
         });
 
-        // if (!_.isNull(chatToken))
-        //     onSetActiveChatToken(123, []);
     };
 
     componentDidUpdate = (prevProps, prevState) => {
-        const { socketConnection, activeSocketModule = null, onSetSocketConnection, onLoadActiveChats } = this.props;
+        const {
+            socketConnection,
+            tokenRoom = "",
+            activeSocketModule = null,
+            onSetSocketConnection,
+            onLoadActiveChats
+        } = this.props;
 
         if (prevProps.socketConnection && !socketConnection) {
             onSetSocketConnection({ socketConnection: false, module: null });
             return;
         }
 
-        if (prevProps.tokenRoom !== this.props.tokenRoom &&
-            _.isNull(prevProps.tokenRoom) && !_.isNull(this.props.tokenRoom)) {
+        if (prevProps.tokenRoom !== tokenRoom &&
+            _.isNull(prevProps.tokenRoom) && !_.isNull(tokenRoom)) {
 
             if (onLoadActiveChats)
                 onLoadActiveChats({
                     path: "loadChats",
                     action: "entrypoint_chat",
-                    update: true,
                     options: {
                         limitList: null,
                         socket: {
                             socketConnection,
                             module: "chat"
                         },
-                        tokenRoom: this.props.tokenRoom
+                        tokenRoom: tokenRoom
                     },
                 });
 
         }
     }
-
-    componentWillUnmount = () => {
-        if (this.timer) clearTimeout(this.timer);
-    };
 
     onCreateRoom = event => {
         this.setState({
@@ -155,7 +124,7 @@ class Chat extends React.PureComponent {
             udata: { displayName, _id: authorId = "" } = {}
         } = this.props;
 
-        console.log("push");
+
         if (_.isNull(tokenRoom)) {
             return notification.error({ message: "Ошибка чата", description: "Данные повреждены." });
         }
@@ -210,7 +179,7 @@ class Chat extends React.PureComponent {
     };
 
     render() {
-        const { messages = [], visible, isStart = false } = this.state;
+        const { visible } = this.state;
         const {
             chat: {
                 listdata,
@@ -231,7 +200,7 @@ class Chat extends React.PureComponent {
                         <div className="menuLoading-skeleton">
                             <Scrollbars>
                                 {!socketConnection && !socketErrorStatus ? (
-                                    messages.length ? messages.map((it, i) => (
+                                    listdata.length ? listdata.map((it, i) => (
                                         <div className="item-skeleton" key={`${it}${i}`}>
                                             <Skeleton loading={true} active avatar paragraph={false}>
                                                 <List.Item.Meta />
@@ -314,7 +283,7 @@ class Chat extends React.PureComponent {
                                         roomToken={roomToken}
                                         listdata={listdata}
                                         pushMessage={this.pushMessage}
-                                        messages={this.state.messages}
+                                        messages={listdata}
                                     />
                                 ) : (
                                             <div className="emptyChatRoom">
@@ -357,6 +326,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
+        onAddMsg: async payload => await dispatch(addMsg(payload)),
         onLoadActiveChats: async payload => await dispatch(loadActiveChats(payload)),
         onSetSocketConnection: status => dispatch(setSocketConnection(status)),
         onSetActiveChatToken: async (token, listdata) => await dispatch(setActiveChatToken({ token, listdata }))
