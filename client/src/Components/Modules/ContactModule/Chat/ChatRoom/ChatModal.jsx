@@ -27,13 +27,17 @@ class ChatModal extends React.PureComponent {
                 queryParams: {
                     type,
                     moduleName: "chat",
-                    membersIds: [uid, ...membersIds]
+                    membersIds: _.uniq([uid, ...membersIds])
                 }
             });
 
             if (!res || res.status !== 200) {
                 throw new Error("Bad response create chat room");
             }
+
+            // if (membersIds.length <= 1 && type === "single") {
+            //     throw new Error("Bad members counter");
+            // }
 
             onVisibleChange(visible);
 

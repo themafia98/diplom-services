@@ -129,6 +129,27 @@ namespace Action {
                         break;
                     }
 
+                    case "chatMsg": {
+                        const model: Model<Document> | null = getModelByName("chatMsg", "chatMsg");
+
+                        if (!model) return null;
+
+                        if (this.getActionType() === "get_msg_by_token") {
+                            const {
+                                options: {
+                                    tokenRoom = "",
+                                    moduleName = "",
+                                    membersIds = []
+                                } = {}
+                            } = <Record<string, any>>actionParam;
+
+                            const query: ActionParams = { tokenRoom, moduleName, authorId: { "$in": membersIds } };
+                            return this.getAll(model, query);
+                        }
+
+                        break;
+                    }
+
                     case "users": {
                         if (this.getActionType() === "get_all") {
                             const model: Model<Document> | null = getModelByName("users", "users");

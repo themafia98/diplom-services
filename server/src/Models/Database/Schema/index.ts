@@ -105,7 +105,7 @@ export const newsItem = new Schema({
     blocks: [Object]
 });
 
-export const chat = new Schema({
+export const chatMsg = new Schema({
     msg: { type: String, required: true },
     authorId: { type: String, required: true },
     displayName: { type: String, required: true },
@@ -134,8 +134,8 @@ export const getSchemaByName = (name: string): Schema | null => {
             return jurnalItem;
         case "newsItem":
             return newsItem;
-        case "chat":
-            return chat;
+        case "chatMsg":
+            return chatMsg;
         case "chatRoom":
             return chatRoom;
         default:

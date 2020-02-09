@@ -7,8 +7,8 @@ import io from 'socket.io-client';
 import Scrollbars from "react-custom-scrollbars";
 import { Skeleton, List, Avatar, Button, notification, message } from "antd";
 
-import { setActiveChatToken, setSocketConnection, addMsg } from "../../../../Redux/actions/socketActions";
-import { loadActiveChats } from "../../../../Redux/actions/socketActions/middleware";
+import { setSocketConnection, addMsg } from "../../../../Redux/actions/socketActions";
+import { loadActiveChats, loadingDataByToken } from "../../../../Redux/actions/socketActions/middleware";
 
 import Loader from "../../../Loader";
 import ChatModal from "./ChatRoom/ChatModal";
@@ -88,7 +88,8 @@ class Chat extends React.PureComponent {
             tokenRoom = "",
             activeSocketModule = null,
             onSetSocketConnection,
-            onLoadActiveChats
+            onLoadActiveChats,
+            udata: { _id: uid } = {},
         } = this.props;
 
         if (prevProps.socketConnection && !socketConnection) {
@@ -96,8 +97,7 @@ class Chat extends React.PureComponent {
             return;
         }
 
-        if (prevProps.tokenRoom !== tokenRoom &&
-            _.isNull(prevProps.tokenRoom) && !_.isNull(tokenRoom)) {
+        if (prevProps.tokenRoom !== tokenRoom && !_.isNull(prevProps.tokenRoom)) {
 
             if (onLoadActiveChats)
                 onLoadActiveChats({
@@ -110,7 +110,8 @@ class Chat extends React.PureComponent {
                             socketConnection,
                             module: "chat"
                         },
-                        tokenRoom: tokenRoom
+                        tokenRoom: null,
+                        uid
                     },
                 });
 
@@ -157,13 +158,13 @@ class Chat extends React.PureComponent {
                 listdata = [],
             } = {},
             udata: { displayName = "" } = {},
-            onSetActiveChatToken = null
+            onLoadingDataByToken = null
         } = this.props;
 
         if (chatToken !== token || !token) {
 
-            if (onSetActiveChatToken) {
-                onSetActiveChatToken(token, listdata);
+            if (onLoadingDataByToken) {
+                onLoadingDataByToken(token, listdata, "chat");
                 this.socket.emit("onChatRoomActive", { token, displayName });
             }
 
@@ -211,6 +212,7 @@ class Chat extends React.PureComponent {
             chat: {
                 listdata,
                 usersList = [],
+                listdataMsgs = [],
                 chatToken: tokenRoom = null
             } = {},
             udata: { _id: uid = "" } = {},
@@ -269,6 +271,22 @@ class Chat extends React.PureComponent {
                                                         return name;
 
                                                     }, "").trim() : null;
+
+                                                //const msgs = listdataMsgs[tokenRoom] || null;
+                                                // const isDefined = msgs ? Boolean(msgs[msgs.length - 1]) && msgs.length - 1 === i : null;
+                                                // const lastMsg = msgs && isDefined && msgs[msgs.length - 1].msg ?
+                                                //     msgs[msgs.length - 1].msg : null;
+
+                                                const descriptionChatMenu = false ? (
+                                                    <span className="descriptionChatMenu">
+                                                        {/* lastMsg */}
+                                                    </span>
+                                                ) : (
+                                                        <span className="descriptionChatMenu">
+
+                                                        </span>
+                                                    )
+
                                                 return (
                                                     <List.Item
                                                         className={[tokenRoom === it.tokenRoom ? "activeChat" : null].join(" ")}
@@ -279,11 +297,7 @@ class Chat extends React.PureComponent {
                                                             key={`${it}${i}`}
                                                             avatar={<Avatar shape="square" size="large" icon="user" />}
                                                             title={<p>{`${displayName}`}</p>}
-                                                            description={
-                                                                <span className="descriptionChatMenu">
-
-                                                                </span>
-                                                            }
+                                                            description={descriptionChatMenu}
                                                         />
                                                     </List.Item>
                                                 )
@@ -326,7 +340,7 @@ class Chat extends React.PureComponent {
                                         tokenRoom={tokenRoom}
                                         listdata={listdata}
                                         pushMessage={this.pushMessage}
-                                        messages={listdata}
+                                        messages={listdataMsgs[tokenRoom] || []}
                                     />
                                 ) : (
                                             <div className="emptyChatRoom">
@@ -369,10 +383,10 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onAddMsg: async payload => await dispatch(addMsg(payload)),
-        onLoadActiveChats: async payload => await dispatch(loadActiveChats(payload)),
+        onAddMsg: async payload => dispatch(addMsg(payload)),
+        onLoadActiveChats: async payload => dispatch(loadActiveChats(payload)),
         onSetSocketConnection: status => dispatch(setSocketConnection(status)),
-        onSetActiveChatToken: async (token, listdata) => await dispatch(setActiveChatToken({ token, listdata }))
+        onLoadingDataByToken: (token, listdata, moduleName) => dispatch(loadingDataByToken(token, listdata, moduleName))
     };
 };
 

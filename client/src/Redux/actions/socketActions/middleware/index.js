@@ -1,5 +1,12 @@
-import { setSocketConnection, onLoadActiveChats, setSocketError } from "../";
+import {
+    setSocketConnection,
+    onLoadActiveChats,
+    setSocketError,
+    setActiveChatToken
+} from "../";
+
 import { errorRequstAction } from "../../publicActions";
+
 /**
  * Middleware
  * @param {object} payload chats loading options
@@ -56,9 +63,10 @@ const loadActiveChats = payload => async (dispatch, getState, { schema, Request,
 
         const { data: { response: { metadata: listdata = [] } = {} } } = response || {};
 
+        const { udata: { _id: uidState = "" } = {} } = getState().publicReducer || {};
 
         dispatch(onLoadActiveChats({
-            usersList,
+            usersList: usersList.filter(user => user._id !== uidState),
             listdata,
             options
         }));
@@ -70,5 +78,49 @@ const loadActiveChats = payload => async (dispatch, getState, { schema, Request,
     }
 
 };
+
+export const loadingDataByToken = (token, listdata, activeModule) =>
+    async (dispatch, getState, { schema, Request, clientDB }) => {
+        try {
+
+            const rest = new Request();
+
+            const configToken = listdata.find(config => config && config.tokenRoom === token) || null;
+
+            if (!configToken) {
+                throw new Error("Bad config token");
+            }
+
+            const options = Object.keys(configToken).reduce((optionsObj, key) => {
+
+                if (key !== "_id" && key !== "type") {
+                    optionsObj[key] = configToken[key];
+                    return optionsObj;
+                }
+                return optionsObj;
+            }, {});
+
+            const res = await rest.sendRequest(`/${activeModule}/load/tokenData`, "POST", {
+                queryParams: {
+                    tokenRoom: token,
+                    options
+                }
+            }, true);
+
+            if (!res || res.status !== 200) {
+                throw new Error(`Invalid load in module ${activeModule} action tokenData`);
+            }
+
+            const { data: { response: { metadata: listdataMsgs = [] } = {} } } = res || {};
+
+
+            dispatch(setActiveChatToken({ listdataMsgs, tokenRoom: token }));
+
+        } catch (error) {
+            console.error(error.message);
+            dispatch(errorRequstAction(error.message));
+        }
+
+    };
 
 export { loadActiveChats };

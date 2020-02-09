@@ -19,7 +19,7 @@ export default (ws: WebSocketWorker, dbm: Readonly<Database.ManagmentDatabase>) 
             const { tokenRoom = "" } = msgObj || {};
             try {
 
-                const model: Model<Document> | null = getModelByName("chat", "chat");
+                const model: Model<Document> | null = getModelByName("chatMsg", "chatMsg");
                 if (model && tokenRoom) {
                     if (msgObj && _.isObject(msgObj) && (msgObj as Record<string, string>).displayName !== "System") {
 

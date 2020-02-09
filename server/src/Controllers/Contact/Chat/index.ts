@@ -95,6 +95,37 @@ namespace Chat {
                 if (!res.headersSent) res.sendStatus(503);
             }
         }
+
+        @Post({ path: "/load/tokenData", private: true })
+        async loadTokenData(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+            const { body: { queryParams = {} } = {} } = req;
+            const actionType: string = "get_msg_by_token";
+            const actionPath: string = "chatMsg";
+            try {
+                console.log(queryParams);
+                if (!actionPath || !actionType) {
+                    throw new Error("Invalid action chat");
+                }
+
+                const actionCreateRoom = new Action.ActionParser({ actionPath, actionType });
+                const data: ParserResult = await actionCreateRoom.getActionData(queryParams);
+
+                if (!data) {
+                    throw new TypeError("Bad action data");
+                }
+
+                return res.json(
+                    getResponseJson(
+                        "done",
+                        { params: { ...queryParams }, metadata: data, status: "done", done: true },
+                        (req as Record<string, any>).start
+                    ));
+
+            } catch (err) {
+                console.error(err);
+                if (!res.headersSent) res.sendStatus(503);
+            }
+        }
     }
 }
 

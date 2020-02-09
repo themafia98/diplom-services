@@ -15,7 +15,7 @@ const initialState = {
         limitList: null,
         usersList: [],
         listdata: [],
-        status: false
+        listdataMsgs: {}
     }
 };
 
@@ -37,24 +37,36 @@ export default (state = initialState, action) => {
         }
 
         case SET_ACTIVE_CHAT_TOKEN: {
+            const { chat = {} } = state;
+            const { tokenRoom, listdataMsgs = [] } = action.payload || {};
+
             return {
                 ...state,
                 chat: {
                     ...state.chat,
-                    chatToken: action.payload.token || { chatToken: null },
-                    listdata: action.payload.listdata ? [...action.payload.listdata] : [],
-                    status: true,
+                    chatToken: tokenRoom || { chatToken: null },
+                    listdataMsgs: {
+                        ...chat.listdataMsgs,
+                        [tokenRoom]: [...listdataMsgs]
+                    }
                 }
             };
         }
 
         case ADD_CHAT_MSG: {
+            const { chat: { chatToken = "" } = {}, chat = {} } = state || {};
             const msg = action.payload;
             return {
                 ...state,
                 chat: {
                     ...state.chat,
-                    listdata: [...state.chat.listdata, { ...msg }]
+                    listdataMsgs: {
+                        ...chat.listdataMsgs,
+                        [chatToken]: [
+                            ...state.chat.listdataMsgs[chatToken],
+                            { ...msg }
+                        ]
+                    }
                 }
             }
         }
