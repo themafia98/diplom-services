@@ -203,3 +203,11 @@
         background: #888;
     }
 }
+
+.chatForm {
+    .ant-select {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 5px;
+    }
+}

@@ -7,8 +7,8 @@ import Textarea from "../../../../Textarea";
 import Message from "./Message";
 import moment from "moment";
 
-const ChatRoom = ({ onSend = null, messages: msgProps = [], roomToken = "", onKeyDown = null, pushMessage = null }) => {
-    const [token] = useState(roomToken);
+const ChatRoom = ({ onSend = null, messages: msgProps = [], tokenRoom = "", onKeyDown = null, pushMessage = null }) => {
+    const [token] = useState(tokenRoom);
     const [showTooltip, setStateTooltip] = useState(false);
     const [showTooltipID, setIdTooltip] = useState(null);
     const [msg, setMsg] = useState("");

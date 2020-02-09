@@ -32,12 +32,15 @@ class File extends React.Component {
         const { onAddFileList } = this.props;
 
         if (status === "uploading") {
-            onAddFileList(info.fileList, status);
+            if (onAddFileList) onAddFileList(info.fileList, status);
+
         }
         if (status === "done") {
 
-            onAddFileList(info.fileList, status);
-            message.success(`${info.file.name} file uploaded successfully.`);
+            if (onAddFileList) {
+                onAddFileList(info.fileList, status);
+                message.success(`${info.file.name} file uploaded successfully.`);
+            } else message.error("Error add file");
         } else if (status === "error") {
             message.error(`${info.file.name} file upload failed.`);
         }

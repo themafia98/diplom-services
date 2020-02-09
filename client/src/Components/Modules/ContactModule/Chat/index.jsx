@@ -15,12 +15,15 @@ import ChatModal from "./ChatRoom/ChatModal";
 import TitleModule from "../../../TitleModule";
 import ChatRoom from "./ChatRoom";
 
+import modelsContext from "../../../../Models/context";
 
 class Chat extends React.PureComponent {
 
     state = {
         visible: null,
     };
+
+    static contextType = modelsContext;
 
     socket = null;
 
@@ -30,6 +33,7 @@ class Chat extends React.PureComponent {
                 chatToken: tokenRoom = null,
                 listdata = []
             } = {},
+            udata: { _id: uid } = {},
             onSetActiveChatToken,
             onSetSocketConnection,
             onLoadActiveChats,
@@ -48,15 +52,16 @@ class Chat extends React.PureComponent {
                 if (onLoadActiveChats)
                     onLoadActiveChats({
                         path: "loadChats",
-                        action: "entrypoint_chat",
-                        update: true,
+                        actionPath: "chatRoom",
+                        actionType: "entrypoint_chat",
                         options: {
                             limitList: null,
                             socket: {
                                 socketConnection,
                                 module: "chat"
                             },
-                            tokenRoom
+                            tokenRoom,
+                            uid
                         },
                     });
 
@@ -97,7 +102,8 @@ class Chat extends React.PureComponent {
             if (onLoadActiveChats)
                 onLoadActiveChats({
                     path: "loadChats",
-                    action: "entrypoint_chat",
+                    actionPath: "chatRoom",
+                    actionType: "entrypoint_chat",
                     options: {
                         limitList: null,
                         socket: {
@@ -136,7 +142,7 @@ class Chat extends React.PureComponent {
                 authorId,
                 tokenRoom,
                 displayName,
-                date: moment().format("DD:MM:YYY"),
+                date: moment().format("DD.MM.YYYY"),
                 groupName: group,
                 moduleName: "chat",
                 groupName: "single",
@@ -153,6 +159,7 @@ class Chat extends React.PureComponent {
             udata: { displayName = "" } = {},
             onSetActiveChatToken = null
         } = this.props;
+
 
         if (chatToken !== token || !token) {
 
@@ -175,7 +182,30 @@ class Chat extends React.PureComponent {
     };
 
     renderModal = visible => {
-        return <ChatModal onVisibleChange={this.onVisibleChange} visible={visible} />;
+        const {
+            chat: {
+                usersList = [],
+                listdata = []
+            } = {},
+            udata: { _id: uid } = {},
+            onSetActiveChatToken,
+            onLoadActiveChats,
+        } = this.props;
+
+        const { Request = null } = this.context;
+
+        return (
+            <ChatModal
+                onVisibleChange={this.onVisibleChange}
+                visible={visible}
+                usersList={usersList}
+                uid={uid}
+                listdata={listdata}
+                onLoadActiveChats={onLoadActiveChats}
+                onSetActiveChatToken={onSetActiveChatToken}
+                Request={Request}
+            />
+        );
     };
 
     render() {
@@ -184,7 +214,7 @@ class Chat extends React.PureComponent {
             chat: {
                 listdata,
                 usersList = [],
-                chatToken: roomToken = null
+                chatToken: tokenRoom = null
             } = {},
             udata: { _id: currentUserId = "" } = {},
             socketConnection,
@@ -225,11 +255,11 @@ class Chat extends React.PureComponent {
                                 ) : (
                                         <List
                                             key="list-chat"
-                                            dataSource={usersList.filter(it => it._id !== currentUserId)}
+                                            dataSource={listdata}
                                             renderItem={(it, i) => (
                                                 <List.Item
-                                                    className={[roomToken === it.id ? "activeChat" : null].join(" ")}
-                                                    onClick={e => this.setActiveChatRoom(e, it._id)}
+                                                    className={[tokenRoom === it.tokenRoom ? "activeChat" : null].join(" ")}
+                                                    onClick={e => this.setActiveChatRoom(e, it.tokenRoom)}
                                                     key={(it, i)}
                                                 >
                                                     <List.Item.Meta
@@ -238,9 +268,8 @@ class Chat extends React.PureComponent {
                                                         title={<p>{`${it.displayName}`}</p>}
                                                         description={
                                                             <span className="descriptionChatMenu">
-                                                                A second stack is created, pulling 3 values from the first
-                                                                stack.
-                                                        </span>
+
+                                                            </span>
                                                         }
                                                     />
                                                 </List.Item>
@@ -262,7 +291,7 @@ class Chat extends React.PureComponent {
                         <div className="chat_content">
                             <div className="chat_content__header">
                                 <p className="chat_content__header__title">
-                                    Окно чата{roomToken ? <span> | {roomToken} </span> : null}
+                                    Окно чата{tokenRoom ? <span> | {tokenRoom} </span> : null}
                                 </p>
                                 <p
                                     className={[
@@ -270,17 +299,17 @@ class Chat extends React.PureComponent {
                                         !socketConnection ? "isOffline" : "isOnline"
                                     ].join(" ")}
                                 >
-                                    {!socketConnection && !roomToken ? "не активен" : "активен"}
+                                    {!socketConnection && !tokenRoom ? "не активен" : "активен"}
                                 </p>
                             </div>
                             <div className="chat_content__main">
                                 {!socketConnection && !socketErrorStatus ? (
                                     <Loader />
-                                ) : roomToken ? (
+                                ) : tokenRoom ? (
                                     <ChatRoom
-                                        key={roomToken}
+                                        key={tokenRoom}
                                         onKeyDown={this.pushMessage}
-                                        roomToken={roomToken}
+                                        tokenRoom={tokenRoom}
                                         listdata={listdata}
                                         pushMessage={this.pushMessage}
                                         messages={listdata}

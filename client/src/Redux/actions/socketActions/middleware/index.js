@@ -11,8 +11,8 @@ import { errorRequstAction } from "../../publicActions";
 const loadActiveChats = payload => async (dispatch, getState, { schema, Request, clientDB }) => {
     const {
         path = "",
-        action = "",
-        update = false,
+        actionPath = "",
+        actionType = "",
         options: {
             limitList = null,
             udata = {},
@@ -26,7 +26,7 @@ const loadActiveChats = payload => async (dispatch, getState, { schema, Request,
 
     try {
 
-        if ((!path || !action) && socketConnection && activeModule) {
+        if ((!path || !actionPath) && socketConnection && activeModule) {
             dispatch(setSocketConnection({ socketConnection, activeModule }));
             return;
         }
@@ -43,15 +43,15 @@ const loadActiveChats = payload => async (dispatch, getState, { schema, Request,
 
         const rest = new Request();
         const response = await rest.sendRequest(`/${activeModule}/${path}`, "POST", {
-            actionPath: action,
-            actionType: path,
+            actionPath,
+            actionType,
             queryParams: {
                 ...options
             }
         }, true);
 
         if (!response || response.status !== 200) {
-            throw new Error(`Invalid load action (${action}) options`);
+            throw new Error(`Invalid load action (${actionPath}) options`);
         }
 
         const { data: { response: { metadata: listdata = [] } = {} } } = response || {};

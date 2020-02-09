@@ -81,6 +81,8 @@ export default (state = initialState, action) => {
                 } = {}
             } = action.payload || {};
 
+            const sortListdata = [...listdata].sort((a, b) => Date(a.date) - Date(b.date));
+
             return {
                 ...state,
                 socketConnection,
@@ -88,7 +90,7 @@ export default (state = initialState, action) => {
                 chat: {
                     ...state.chat,
                     usersList,
-                    listdata: [...listdata]
+                    listdata: [...sortListdata]
                 }
 
             };

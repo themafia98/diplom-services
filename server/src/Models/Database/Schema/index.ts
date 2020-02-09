@@ -115,6 +115,13 @@ export const chat = new Schema({
     moduleName: { type: String, required: true }
 });
 
+export const chatRoom = new Schema({
+    type: { type: String, required: true },
+    moduleName: { type: String, required: true },
+    tokenRoom: { type: String, required: true },
+    membersIds: { type: [String], required: true }
+});
+
 export const UserModel = model("users", userSchema);
 
 export const getSchemaByName = (name: string): Schema | null => {
@@ -129,6 +136,8 @@ export const getSchemaByName = (name: string): Schema | null => {
             return newsItem;
         case "chat":
             return chat;
+        case "chatRoom":
+            return chatRoom;
         default:
             return null;
     }

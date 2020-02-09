@@ -367,7 +367,7 @@ class CreateTask extends React.PureComponent {
                                         rows={8}
                                     />
                                     <label>Прикрепить файлы: </label>
-                                    <File rest={rest} />
+                                    <File onAddFileList={null} rest={rest} />
                                     <label>Срок сдачи: </label>
                                     <RangePicker
                                         className={[

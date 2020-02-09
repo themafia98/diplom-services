@@ -1,5 +1,6 @@
 import { ActionProps, ActionParams, DropboxApi } from "../../Utils/Interfaces";
 import { ParserData } from "../../Utils/Types";
+import uuid from "uuid/v4";
 import { files } from "dropbox";
 import { Model, Document } from "mongoose";
 import Utils from "../../Utils";
@@ -45,6 +46,17 @@ namespace Action {
                 return null;
             }
         }
+
+        private async getChatRooms(model: Model<Document>, actionParam: ActionParams) {
+            try {
+                const actionData: Array<Document> = await model.find(actionParam);
+                console.log("actionCharRooms", actionData);
+                return actionData;
+            } catch (err) {
+                console.error(err);
+                return null;
+            }
+        };
 
         private async createEntity(model: Model<Document>, item: object) {
             try {
@@ -98,16 +110,31 @@ namespace Action {
                         break;
                     }
 
-                    case "entrypoint_chat": {
-                        const model: Model<Document> | null = getModelByName("chat", "chat");
-                        if (!model) return [];
-                        const socket = <Record<string, any>>actionParam.socket || {};
-                        const tokenRoom = <Record<string, any>>actionParam.tokenRoom;
-                        const { socketConnection = false, module: moduleName = "" } = socket;
-                        const query = { moduleName, tokenRoom };
+                    case "chatRoom": {
+                        const model: Model<Document> | null = getModelByName("chatRoom", "chatRoom");
 
-                        if (socketConnection && moduleName)
-                            return this.getAll(model, query);
+                        if (!model) return null;
+
+                        if (this.getActionType() === "entrypoint_chat") {
+
+                            const socket = <Record<string, any>>actionParam.socket || {};
+                            const uid = <Record<string, any>>actionParam.uid;
+                            const { socketConnection = false, module: moduleName = "" } = socket;
+                            const query = { moduleName, membersIds: { "$in": [uid] } };
+
+                            if (socketConnection && moduleName)
+                                return this.getChatRooms(model, query);
+
+                        }
+
+                        if (this.getActionType() === "create_chatRoom") {
+                            const actionData: Document | null = await this.createEntity(model, {
+                                ...actionParam,
+                                tokenRoom: uuid(),
+                            });
+                            return actionData;
+                        }
+
                         break;
                     }
 
