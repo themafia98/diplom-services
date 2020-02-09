@@ -76,7 +76,7 @@ namespace Action {
                         if (this.getActionType() === "delete_file") {
                             const { queryParams = {}, store = "" } = actionParam;
 
-                            const file = (queryParams as Record<string, any>).file;
+                            const file: object = (queryParams as Record<string, any>).file;
                             const url: string = (file as Record<string, string>).url || "";
 
                             const path: string = `${store}${url.split("download")[1]}` || "";
@@ -108,10 +108,10 @@ namespace Action {
 
                         if (this.getActionType() === "entrypoint_chat") {
 
-                            const socket = (actionParam as Record<string, any>).socket || {};
-                            const uid = (actionParam as Record<string, string>).uid;
-                            const { socketConnection = false, module: moduleName = "" } = socket;
-                            const query = { moduleName, membersIds: { "$in": [uid] } };
+                            const socket: object = (actionParam as Record<string, any>).socket || {};
+                            const uid: string = (actionParam as Record<string, string>).uid;
+                            const { socketConnection = false, module: moduleName = "" } = <Record<string, any>>socket;
+                            const query: ActionParams = { moduleName, membersIds: { "$in": [uid] } };
 
                             if (socketConnection && moduleName)
                                 return this.getAll(model, query);
