@@ -119,7 +119,8 @@ export const chatRoom = new Schema({
     type: { type: String, required: true },
     moduleName: { type: String, required: true },
     tokenRoom: { type: String, required: true },
-    membersIds: { type: [String], required: true }
+    membersIds: { type: [String], required: true },
+    groupName: String
 });
 
 export const UserModel = model("users", userSchema);

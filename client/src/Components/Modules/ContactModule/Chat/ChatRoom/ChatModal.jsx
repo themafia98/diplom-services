@@ -1,6 +1,6 @@
 import React from "react";
 import _ from 'lodash';
-import { Modal, Select, message } from "antd";
+import { Modal, Select, message, Input } from "antd";
 
 const { Option } = Select;
 
@@ -20,6 +20,10 @@ class ChatModal extends React.PureComponent {
                 throw new Error("Bad request object (chat)");
             }
 
+            const groupProps = type !== "single" ? {
+                groupName: this.groupNameRef ? this.groupNameRef.state.value : null,
+            } : {};
+
             const rest = new Request();
             const res = await rest.sendRequest("/chat/createRoom", "PUT", {
                 actionPath: "chatRoom",
@@ -27,7 +31,8 @@ class ChatModal extends React.PureComponent {
                 queryParams: {
                     type,
                     moduleName: "chat",
-                    membersIds: _.uniq([uid, ...membersIds])
+                    membersIds: _.uniq([uid, ...membersIds]),
+                    ...groupProps
                 }
             });
 
@@ -72,6 +77,9 @@ class ChatModal extends React.PureComponent {
         })
     }
 
+    groupNameRef = null;
+    groupNameRefFunc = node => this.groupNameRef = node;
+
     render() {
         const { confirmLoading, type = "single", membersIds = [] } = this.state;
         const { visible, usersList = [] } = this.props;
@@ -104,6 +112,16 @@ class ChatModal extends React.PureComponent {
                         </Option>
 
                     </Select>
+                    {type !== "single" ? (
+                        <Input
+                            ref={this.groupNameRefFunc}
+                            className="groupName__Input"
+                            name="groupName"
+                            placeholder="Название группы"
+                            required
+                        />
+                    ) : null
+                    }
                     <Select
                         onChange={this.onChangeSelect}
                         name="users"

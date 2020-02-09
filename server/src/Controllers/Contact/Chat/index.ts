@@ -19,7 +19,7 @@ namespace Chat {
     @Controller("/chat")
     export class ChatController {
 
-        @Post({ path: "/loadChats", private: true, ws: true })
+        @Post({ path: "/loadChats", private: true })
         public async loadChats(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
             const { body: { actionPath = "", actionType = "", queryParams = {} } = {} } = req;
 

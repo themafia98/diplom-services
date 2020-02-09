@@ -264,19 +264,11 @@ class Chat extends React.PureComponent {
                                             key="list-chat"
                                             dataSource={listdata}
                                             renderItem={(it, i) => {
-                                                const displayName = it.membersIds ?
-                                                    it.membersIds.reduce((name, current) => {
-                                                        const currUser = usersList.find(it => it._id === current &&
-                                                            it._id !== uid) || null;
 
-                                                        if (currUser) {
-                                                            const displayNames = `${name} ${currUser.displayName}`;
-                                                            return displayNames;
-                                                        }
+                                                const currUser = it.type === "single" ?
+                                                    usersList.find(itUser => Array.isArray(it.membersIds) && itUser !== it.membersIds[1]) : null;
 
-                                                        return name;
-
-                                                    }, "").trim() : null;
+                                                const displayName = currUser ? currUser.displayName : it.groupName ? it.groupName : null;
 
                                                 //const msgs = listdataMsgs[tokenRoom] || null;
                                                 // const isDefined = msgs ? Boolean(msgs[msgs.length - 1]) && msgs.length - 1 === i : null;

@@ -8,10 +8,10 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceFolder}/server/src/index.ts",
-            "preLaunchTask": "typescript",
+            "program": "${workspaceFolder}\\server\\src\\index.ts",
+            "preLaunchTask": "tsc: build - tsconfig.json",
             "outFiles": [
-                "${workspaceFolder}/server/buikd/index.js"
+                "${workspaceFolder}/server/build/**/*.js"
             ]
         }
     ]

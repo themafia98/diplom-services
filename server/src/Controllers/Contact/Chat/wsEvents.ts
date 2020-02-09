@@ -18,10 +18,11 @@ export default (ws: WebSocketWorker, dbm: Readonly<Database.ManagmentDatabase>) 
         socket.broadcast.on("newMessage", async (msgObj) => {
             const { tokenRoom = "" } = msgObj || {};
             try {
-
                 const model: Model<Document> | null = getModelByName("chatMsg", "chatMsg");
+
                 if (model && tokenRoom) {
-                    if (msgObj && _.isObject(msgObj) && (msgObj as Record<string, string>).displayName !== "System") {
+                    const displayName = (msgObj as Record<string, string>).displayName;
+                    if (msgObj && _.isObject(msgObj) && displayName !== "System") {
 
                         const saveMsg = await model.create(msgObj);
 
