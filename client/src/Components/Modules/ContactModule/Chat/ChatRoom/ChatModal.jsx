@@ -39,7 +39,7 @@ class ChatModal extends React.PureComponent {
             //     throw new Error("Bad members counter");
             // }
 
-            onVisibleChange(visible);
+            onVisibleChange(visible, res.status === 200);
 
         } catch (error) {
             console.error(error.message);

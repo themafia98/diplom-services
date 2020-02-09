@@ -91,14 +91,13 @@ class Chat extends React.PureComponent {
             onLoadActiveChats,
             udata: { _id: uid } = {},
         } = this.props;
-
+        const { shouldUpdate = false } = this.state;
         if (prevProps.socketConnection && !socketConnection) {
             onSetSocketConnection({ socketConnection: false, module: null });
             return;
         }
 
-        if (prevProps.tokenRoom !== tokenRoom && !_.isNull(prevProps.tokenRoom)) {
-
+        if (prevProps.tokenRoom !== tokenRoom && !_.isNull(prevProps.tokenRoom) || shouldUpdate) {
             if (onLoadActiveChats)
                 onLoadActiveChats({
                     path: "loadChats",
@@ -114,6 +113,12 @@ class Chat extends React.PureComponent {
                         uid
                     },
                 });
+
+            if (shouldUpdate) {
+                this.setState({
+                    shouldUpdate: false
+                });
+            }
 
         }
     }
@@ -172,9 +177,10 @@ class Chat extends React.PureComponent {
             message.warning("Чат комната не найдена либо требуется обновить систему.");
     };
 
-    onVisibleChange = visible => {
+    onVisibleChange = (visible, shouldUpdate) => {
         this.setState({
             ...this.state,
+            shouldUpdate: true,
             visible: !visible
         });
     };
