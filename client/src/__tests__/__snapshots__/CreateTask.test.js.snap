@@ -104,24 +104,7 @@ exports[`<CreateTask /> template Should be render 1`] = `
               placeholder="выберете исполнителя"
               showSearch={false}
               transitionName="slide-up"
-            >
-              <Option
-                label="Павел Петрович"
-                value="Павел Петрович"
-              >
-                <span>
-                  Павел Петрович
-                </span>
-              </Option>
-              <Option
-                label="Гена Букин"
-                value="Гена Букин"
-              >
-                <span>
-                  Гена Букин
-                </span>
-              </Option>
-            </Select>
+            />
             <label>
               Описание задачи: 
             </label>
@@ -135,7 +118,9 @@ exports[`<CreateTask /> template Should be render 1`] = `
             <label>
               Прикрепить файлы: 
             </label>
-            <File />
+            <File
+              onAddFileList={null}
+            />
             <label>
               Срок сдачи: 
             </label>
@@ -143,8 +128,8 @@ exports[`<CreateTask /> template Should be render 1`] = `
               className=""
               defaultValue={
                 Array [
-                  "2019-12-06T21:00:00.000Z",
-                  "2019-12-06T21:00:00.000Z",
+                  "2020-02-08T21:00:00.000Z",
+                  "2020-02-08T21:00:00.000Z",
                 ]
               }
               format="DD.MM.YYYY"
@@ -234,7 +219,7 @@ exports[`<CreateTask /> template Should be render 2`] = `
               Название: 
             </label>
             <Input
-              className="isError"
+              className=""
               name="name"
               onChange={[Function]}
               type="text"
@@ -273,7 +258,7 @@ exports[`<CreateTask /> template Should be render 2`] = `
             </label>
             <Select
               choiceTransitionName="zoom"
-              className="isError"
+              className=""
               mode="multiple"
               name="editor"
               onChange={[Function]}
@@ -281,29 +266,12 @@ exports[`<CreateTask /> template Should be render 2`] = `
               placeholder="выберете исполнителя"
               showSearch={false}
               transitionName="slide-up"
-            >
-              <Option
-                label="Павел Петрович"
-                value="Павел Петрович"
-              >
-                <span>
-                  Павел Петрович
-                </span>
-              </Option>
-              <Option
-                label="Гена Букин"
-                value="Гена Букин"
-              >
-                <span>
-                  Гена Букин
-                </span>
-              </Option>
-            </Select>
+            />
             <label>
               Описание задачи: 
             </label>
             <Textarea
-              className="isError"
+              className=""
               key="createTextare"
               name="description"
               onChange={[Function]}
@@ -312,7 +280,9 @@ exports[`<CreateTask /> template Should be render 2`] = `
             <label>
               Прикрепить файлы: 
             </label>
-            <File />
+            <File
+              onAddFileList={null}
+            />
             <label>
               Срок сдачи: 
             </label>
@@ -320,8 +290,8 @@ exports[`<CreateTask /> template Should be render 2`] = `
               className=""
               defaultValue={
                 Array [
-                  "2019-12-06T21:00:00.000Z",
-                  "2019-12-06T21:00:00.000Z",
+                  "2020-02-08T21:00:00.000Z",
+                  "2020-02-08T21:00:00.000Z",
                 ]
               }
               format="DD.MM.YYYY"

@@ -36,6 +36,8 @@ exports[`<ContentView /> Should render component 1`] = `
         key="213123"
         onDelete={[Function]}
         rules={true}
+        uId={null}
+        userId=""
       />
     </Scrollbars>
   </div>
@@ -102,6 +104,8 @@ exports[`<ContentView /> Should render component 2`] = `
         key="213123"
         onDelete={[Function]}
         rules={true}
+        uId={null}
+        userId=""
       />
     </Scrollbars>
   </div>
@@ -168,6 +172,8 @@ exports[`<ContentView /> Should render component 3`] = `
         key="213123"
         onDelete={[Function]}
         rules={true}
+        uId={null}
+        userId=""
       />
     </Scrollbars>
   </div>
@@ -234,6 +240,8 @@ exports[`<ContentView /> Should render component 4`] = `
         key="213123"
         onDelete={[Function]}
         rules={true}
+        uId={null}
+        userId=""
       />
     </Scrollbars>
   </div>

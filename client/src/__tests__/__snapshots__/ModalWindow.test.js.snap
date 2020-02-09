@@ -29,6 +29,7 @@ exports[`<ModalWindow /> Should works with mode 1`] = `
   typeRequst=""
 >
   <Button
+    aria-label="reg-button"
     block={false}
     ghost={false}
     htmlType="button"
@@ -38,6 +39,7 @@ exports[`<ModalWindow /> Should works with mode 1`] = `
   >
     <Wave>
       <button
+        aria-label="reg-button"
         className="ant-btn ant-btn-primary"
         onClick={[Function]}
         type="button"

@@ -4,7 +4,9 @@ exports[`<RightPanel /> template should be render 1`] = `
 <div
   className="headerControllers rightPanel"
 >
-  <UserPopup />
+  <UserPopup
+    udata={Object {}}
+  />
   <div
     className="groupControllers"
   >
