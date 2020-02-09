@@ -153,6 +153,12 @@ export interface UploadDropbox {
     contents: Buffer;
 }
 
+export interface EntityActionApi {
+    getActionPath(): string;
+    getActionType(): string;
+    getStore(): DropboxApi;
+};
+
 export interface ResponseJson<T> {
     status: string;
     params: T;
