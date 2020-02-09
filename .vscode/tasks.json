@@ -6,7 +6,17 @@
         {
             "type": "typescript",
             "tsconfig": "./tsconfig.json",
-            "problemMatcher": ["$tsc"]
+            "problemMatcher": [
+                "$tsc"
+            ]
+        },
+        {
+            "type": "typescript",
+            "tsconfig": "tsconfig.json",
+            "problemMatcher": [
+                "$tsc"
+            ],
+            "group": "build"
         }
     ]
 }

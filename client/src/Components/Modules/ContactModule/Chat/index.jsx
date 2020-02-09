@@ -154,16 +154,13 @@ class Chat extends React.PureComponent {
         const {
             chat: {
                 chatToken = null,
-                listdata: listdataMsgs = {}
+                listdata = [],
             } = {},
             udata: { displayName = "" } = {},
             onSetActiveChatToken = null
         } = this.props;
 
-
         if (chatToken !== token || !token) {
-
-            const listdata = [...listdataMsgs];
 
             if (onSetActiveChatToken) {
                 onSetActiveChatToken(token, listdata);
@@ -185,7 +182,7 @@ class Chat extends React.PureComponent {
         const {
             chat: {
                 usersList = [],
-                listdata = []
+                listdata = [],
             } = {},
             udata: { _id: uid } = {},
             onSetActiveChatToken,
@@ -216,7 +213,7 @@ class Chat extends React.PureComponent {
                 usersList = [],
                 chatToken: tokenRoom = null
             } = {},
-            udata: { _id: currentUserId = "" } = {},
+            udata: { _id: uid = "" } = {},
             socketConnection,
             socketErrorStatus
         } = this.props;
@@ -230,13 +227,15 @@ class Chat extends React.PureComponent {
                         <div className="menuLoading-skeleton">
                             <Scrollbars>
                                 {!socketConnection && !socketErrorStatus ? (
-                                    listdata.length ? listdata.map((it, i) => (
-                                        <div className="item-skeleton" key={`${it}${i}`}>
-                                            <Skeleton loading={true} active avatar paragraph={false}>
-                                                <List.Item.Meta />
-                                            </Skeleton>
-                                        </div>
-                                    )) : (
+                                    listdata.length ? listdata.map((it, i) => {
+                                        return (
+                                            <div className="item-skeleton" key={`${it}${i}`}>
+                                                <Skeleton loading={true} active avatar paragraph={false}>
+                                                    <List.Item.Meta />
+                                                </Skeleton>
+                                            </div>
+                                        )
+                                    }) : (
                                             _.fill(Array(5), "-_-").map((it, i) => {
                                                 return (
                                                     <div className="item-skeleton" key={`${it}${i}`}>
@@ -256,24 +255,39 @@ class Chat extends React.PureComponent {
                                         <List
                                             key="list-chat"
                                             dataSource={listdata}
-                                            renderItem={(it, i) => (
-                                                <List.Item
-                                                    className={[tokenRoom === it.tokenRoom ? "activeChat" : null].join(" ")}
-                                                    onClick={e => this.setActiveChatRoom(e, it.tokenRoom)}
-                                                    key={(it, i)}
-                                                >
-                                                    <List.Item.Meta
-                                                        key={`${it}${i}`}
-                                                        avatar={<Avatar shape="square" size="large" icon="user" />}
-                                                        title={<p>{`${it.displayName}`}</p>}
-                                                        description={
-                                                            <span className="descriptionChatMenu">
+                                            renderItem={(it, i) => {
+                                                const displayName = it.membersIds ?
+                                                    it.membersIds.reduce((name, current) => {
+                                                        const currUser = usersList.find(it => it._id === current &&
+                                                            it._id !== uid) || null;
 
-                                                            </span>
+                                                        if (currUser) {
+                                                            const displayNames = `${name} ${currUser.displayName}`;
+                                                            return displayNames;
                                                         }
-                                                    />
-                                                </List.Item>
-                                            )}
+
+                                                        return name;
+
+                                                    }, "").trim() : null;
+                                                return (
+                                                    <List.Item
+                                                        className={[tokenRoom === it.tokenRoom ? "activeChat" : null].join(" ")}
+                                                        onClick={e => this.setActiveChatRoom(e, it.tokenRoom)}
+                                                        key={(it, i)}
+                                                    >
+                                                        <List.Item.Meta
+                                                            key={`${it}${i}`}
+                                                            avatar={<Avatar shape="square" size="large" icon="user" />}
+                                                            title={<p>{`${displayName}`}</p>}
+                                                            description={
+                                                                <span className="descriptionChatMenu">
+
+                                                                </span>
+                                                            }
+                                                        />
+                                                    </List.Item>
+                                                )
+                                            }}
                                         />
                                     )}
                             </Scrollbars>
