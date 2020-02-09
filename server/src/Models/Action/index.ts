@@ -87,8 +87,8 @@ namespace Action {
 
                         if (this.getActionType() === "download_files") {
 
-                            const taskId: string = (<any>actionParam).taskId;
-                            const filename: string = (<any>actionParam).filename;
+                            const taskId: string = (actionParam as Record<string, string>).taskId;
+                            const filename: string = (actionParam as Record<string, string>).filename;
 
                             const path: string = `/tasks/${taskId}/${filename}`;
 
@@ -106,8 +106,8 @@ namespace Action {
 
                         if (this.getActionType() === "entrypoint_chat") {
 
-                            const socket = <Record<string, any>>actionParam.socket || {};
-                            const uid = <Record<string, any>>actionParam.uid;
+                            const socket = (actionParam as Record<string, any>).socket || {};
+                            const uid = (actionParam as Record<string, string>).uid;
                             const { socketConnection = false, module: moduleName = "" } = socket;
                             const query = { moduleName, membersIds: { "$in": [uid] } };
 
@@ -183,16 +183,17 @@ namespace Action {
                             try {
                                 /** Params for query */
                                 const { queryParams = {}, updateItem = "" } = actionParam;
-                                const id: string = (<any>queryParams).id;
-                                const key: string = (<any>queryParams).key;
+                                const id: string = (queryParams as Record<string, string>).id;
+                                const key: string = (queryParams as Record<string, string>).key;
 
                                 let updateProps = {};
                                 let actionData: Document | null = null;
 
                                 if (this.getActionType().includes("single")) {
-                                    const updateField: string = (<any>actionParam).updateField;
-                                    (<any>updateProps)[updateField] = <string>updateItem;
-                                    console.log(updateProps);
+
+                                    const updateField: string = (actionParam as Record<string, string>).updateField;
+                                    (updateProps as Record<string, string>)[updateField] = <string>updateItem;
+
                                 } else if (this.getActionType().includes("many")) {
                                     const { updateItem = "" } = actionParam;
                                     updateProps = updateItem;
