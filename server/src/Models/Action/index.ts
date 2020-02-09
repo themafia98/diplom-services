@@ -47,17 +47,6 @@ namespace Action {
             }
         }
 
-        private async getChatRooms(model: Model<Document>, actionParam: ActionParams) {
-            try {
-                const actionData: Array<Document> = await model.find(actionParam);
-                console.log("actionCharRooms", actionData);
-                return actionData;
-            } catch (err) {
-                console.error(err);
-                return null;
-            }
-        };
-
         private async createEntity(model: Model<Document>, item: object) {
             try {
                 const actionData: Document = await model.create(item);
@@ -123,7 +112,7 @@ namespace Action {
                             const query = { moduleName, membersIds: { "$in": [uid] } };
 
                             if (socketConnection && moduleName)
-                                return this.getChatRooms(model, query);
+                                return this.getAll(model, query);
 
                         }
 
