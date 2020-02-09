@@ -38,7 +38,7 @@ namespace Chat {
 
                 const filterData: object[] | object = Array.isArray(data) ? data.map(it => {
                     const item = it ? { ...(it as Record<string, any>)._doc } : {};
-                    if (item && (item as Record<string, any>).__v) {
+                    if (item && !_.isUndefined((item as Record<string, any>).__v)) {
                         delete item.__v;
                         return item;
                     }
