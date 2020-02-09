@@ -27,8 +27,8 @@ namespace Chat {
                     throw new Error("Invalid action chat");
                 }
 
-                const actionTasks = new Action.ActionParser({ actionPath, actionType });
-                const data: ParserResult = await actionTasks.getActionData(queryParams);
+                const actionLoadChats = new Action.ActionParser({ actionPath, actionType });
+                const data: ParserResult = await actionLoadChats.getActionData(queryParams);
 
                 if (!data) {
                     throw new TypeError("Bad action data");
@@ -57,8 +57,8 @@ namespace Chat {
                     throw new Error("Invalid action chat");
                 }
 
-                const actionTasks = new Action.ActionParser({ actionPath, actionType });
-                const data: ParserResult = await actionTasks.getActionData(queryParams);
+                const actionCreateRoom = new Action.ActionParser({ actionPath, actionType });
+                const data: ParserResult = await actionCreateRoom.getActionData(queryParams);
 
                 if (!data) {
                     throw new TypeError("Bad action data");
