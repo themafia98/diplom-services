@@ -15,7 +15,7 @@ export default (ws: WebSocketWorker, dbm: Readonly<Database.ManagmentDatabase>) 
         console.log("ws connection");
         socket.emit("connection", true);
 
-        socket.on("newMessage", async (msgObj) => {
+        socket.broadcast.on("newMessage", async (msgObj) => {
             const { tokenRoom = "" } = msgObj || {};
             try {
 
