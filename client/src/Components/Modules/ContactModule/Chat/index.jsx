@@ -78,6 +78,7 @@ class Chat extends React.PureComponent {
 
         this.socket.on("error", () => {
             console.log("ws error");
+            onSetSocketConnection({ socketConnection: false, activeModule: "chat" });
         });
 
     };
