@@ -1,42 +1,74 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Element, scroller } from "react-scroll";
 import _ from "lodash";
+
+import Scrollbars from 'react-custom-scrollbars';
 import { Button, Avatar } from "antd";
 
 import Textarea from "../../../../Textarea";
 import Message from "./Message";
-import moment from "moment";
 
-const ChatRoom = ({ uid = "", messages: msgProps = [], tokenRoom = "", onKeyDown = null, pushMessage = null }) => {
+const ChatRoom = ({
+    uid = "",
+    shouldScroll = false,
+    messagesLength,
+    messages: msgProps = [],
+    tokenRoom = "",
+    onClearScroll = null,
+    onKeyDown = null,
+    pushMessage = null
+}) => {
 
+    const refScrollbar = useRef(null);
+    const [isMount, setMount] = useState(false);
     const [token] = useState(tokenRoom);
     const [msg, setMsg] = useState("");
     const [messages, setMessages] = useState(msgProps);
-
-    const refWrapper = useRef(null);
 
     const redirectUserProfile = (event, link) => {
         console.log(link);
     };
 
-    const resetScrollEffect = () => {
-        if (refWrapper.current) {
-            scroller.scrollTo("lastElement", {
-                containerId: "containerChat",
-                smooth: true
-            });
+    const scrollHandler = event => {
+        if (refScrollbar && refScrollbar.current) {
+
+            const scrollTop = refScrollbar.current.getScrollTop();
+            const scrollHeight = refScrollbar.current.getScrollHeight();
+
+            if (scrollHeight - scrollTop < 350 && isMount) {
+                return;
+            }
+
+
+            if (!event) {
+                refScrollbar.current.scrollToBottom();
+                return;
+            }
+
+            if (scrollHeight - scrollTop < 350 && onClearScroll) {
+                refScrollbar.current.scrollToBottom();
+                onClearScroll();
+            }
+
         }
-    };
+    }
+
 
     useEffect(() => {
-
-        if (messages.length !== msgProps.length) {
+        if (messages.length !== msgProps.length)
             setMessages([...msgProps]);
-        }
 
-        resetScrollEffect();
-
+        scrollHandler();
     }, [messages, msgProps]);
+
+    useEffect(() => {
+        scrollHandler();
+        setMount(true);
+    }, []);
+
+    useEffect(() => {
+        if (shouldScroll) scrollHandler(true);
+
+    }, [messagesLength]);
 
     const onChange = event => {
         const { currentTarget: { value = "" } = {} } = event;
@@ -51,11 +83,11 @@ const ChatRoom = ({ uid = "", messages: msgProps = [], tokenRoom = "", onKeyDown
                 event.preventDefault();
             }
             onKeyDown(event, msgValue ? msgValue : msg);
-            resetScrollEffect();
+            scrollHandler();
             setMsg("");
         } else if (event && !_.isNull(msgValue)) {
             pushMessage(event, msgValue);
-            resetScrollEffect();
+            scrollHandler();
             setMsg("");
         }
     };
@@ -63,17 +95,15 @@ const ChatRoom = ({ uid = "", messages: msgProps = [], tokenRoom = "", onKeyDown
     const renderChat = messages => {
         return messages.map((it, i) => {
 
-            const item = (
+            const classNames = [i, "message", uid === it.authorId && uid.includes(it.authorId) ? "currentUser" : null].join(" ");
+            return (
                 <div
-                    ref={refWrapper}
-                    key={`${i}${it.tokenRoom}${it.msg}`}
-                    className={
-                        [i, "message", it.authorId && uid === it.authorId ? "currentUser" : null].join(" ")
-                    }
+                    key={`${i}${it.tokenRoom}${it.msg}${it.authorId}${it.displayName}${it._id}`}
+                    className={classNames}
                 >
                     <Message
                         it={it.msg}
-                        key={`${it.msg}_message${it.tokenRoom}`}
+                        key={`msg_${i}${it.tokenRoom}${it.msg}${it.authorId}${it.displayName}${it._id}`}
                         className="flex-wrapper"
                     >
                         <React.Fragment>
@@ -103,22 +133,20 @@ const ChatRoom = ({ uid = "", messages: msgProps = [], tokenRoom = "", onKeyDown
                         </React.Fragment>
                     </Message>
                 </div >
-            );
-
-            if (i === msgProps.length - 1) {
-                return (
-                    <Element key={Math.random()} name="lastElement">
-                        {item}
-                    </Element>
-                );
-            } else return item;
+            )
         });
     };
 
     return (
         <div key={token} className="chatRoom">
             <div className="chatWindow">
-                <div id="containerChat">{renderChat(messages)}</div>
+                <div id="containerChat">
+                    <Scrollbars ref={refScrollbar}>
+                        <div className='flex-group'>
+                            {renderChat(messages)}
+                        </div>
+                    </Scrollbars>
+                </div>
             </div>
             <Textarea value={msg} onChange={onChange} onKeyDown={e => _onSubmit(e)} className="chat-area" />
             <Button onClick={e => _onSubmit(e, msg)} type="primary">

@@ -130,6 +130,15 @@ class Chat extends React.PureComponent {
         });
     };
 
+    onClearScroll = evt => {
+        const { shouldScroll = false } = this.state;
+
+        if (shouldScroll)
+            this.setState({
+                shouldScroll: false
+            })
+    };
+
     pushMessage = (event, msg) => {
         const {
             chat: { chatToken: tokenRoom = "", group = "" } = {},
@@ -213,7 +222,7 @@ class Chat extends React.PureComponent {
     };
 
     render() {
-        const { visible } = this.state;
+        const { visible, shouldScroll = false } = this.state;
         const {
             chat: {
                 listdata,
@@ -235,7 +244,7 @@ class Chat extends React.PureComponent {
                         <div className="menuLoading-skeleton">
                             <Scrollbars>
                                 {!socketConnection && !socketErrorStatus ? (
-                                    listdata.length ? listdata.map((it, i) => {
+                                    Array.isArray(listdata) && listdata.length ? listdata.map((it, i) => {
                                         return (
                                             <div className="item-skeleton" key={`${it}${i}`}>
                                                 <Skeleton loading={true} active avatar paragraph={false}>
@@ -334,7 +343,9 @@ class Chat extends React.PureComponent {
                                 ) : tokenRoom ? (
                                     <ChatRoom
                                         key={tokenRoom}
-                                        uid={uid}
+                                        uid={uid.trim()}
+                                        onClearScroll={this.onClearScroll}
+                                        shouldScroll={shouldScroll}
                                         onKeyDown={this.pushMessage}
                                         tokenRoom={tokenRoom}
                                         listdata={listdata}
