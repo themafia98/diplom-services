@@ -173,9 +173,13 @@ namespace Action {
                         if (!model) return null;
 
                         if (this.getActionType() === "get_msg_by_token") {
-                            const { options: { tokenRoom = "", moduleName = "", membersIds = [] } = {} } = <
-                                Record<string, any>
-                                >actionParam;
+                            const {
+                                options: {
+                                    tokenRoom = "",
+                                    moduleName = "",
+                                    membersIds = []
+                                } = {}
+                            } = <Record<string, any>>actionParam;
 
                             const query: ActionParams = { tokenRoom, moduleName, authorId: { $in: membersIds } };
                             return this.getAll(model, query);

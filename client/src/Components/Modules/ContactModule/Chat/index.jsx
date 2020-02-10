@@ -148,7 +148,7 @@ class Chat extends React.PureComponent {
                 authorId,
                 tokenRoom,
                 displayName,
-                date: moment().format("DD.MM.YYYY"),
+                date: moment().format("DD.MM.YYYY HH:mm:ss"),
                 groupName: group,
                 moduleName: "chat",
                 groupName: "single",
@@ -334,6 +334,7 @@ class Chat extends React.PureComponent {
                                 ) : tokenRoom ? (
                                     <ChatRoom
                                         key={tokenRoom}
+                                        uid={uid}
                                         onKeyDown={this.pushMessage}
                                         tokenRoom={tokenRoom}
                                         listdata={listdata}

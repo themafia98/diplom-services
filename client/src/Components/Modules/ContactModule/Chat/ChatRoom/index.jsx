@@ -7,10 +7,9 @@ import Textarea from "../../../../Textarea";
 import Message from "./Message";
 import moment from "moment";
 
-const ChatRoom = ({ onSend = null, messages: msgProps = [], tokenRoom = "", onKeyDown = null, pushMessage = null }) => {
+const ChatRoom = ({ uid = "", messages: msgProps = [], tokenRoom = "", onKeyDown = null, pushMessage = null }) => {
+
     const [token] = useState(tokenRoom);
-    const [showTooltip, setStateTooltip] = useState(false);
-    const [showTooltipID, setIdTooltip] = useState(null);
     const [msg, setMsg] = useState("");
     const [messages, setMessages] = useState(msgProps);
 
@@ -18,13 +17,6 @@ const ChatRoom = ({ onSend = null, messages: msgProps = [], tokenRoom = "", onKe
 
     const redirectUserProfile = (event, link) => {
         console.log(link);
-    };
-
-    const onMouseEnter = (event, id) => {
-        if (!showTooltip) {
-            setStateTooltip(true);
-            setIdTooltip(id);
-        }
     };
 
     const resetScrollEffect = () => {
@@ -37,23 +29,20 @@ const ChatRoom = ({ onSend = null, messages: msgProps = [], tokenRoom = "", onKe
     };
 
     useEffect(() => {
+
         if (messages.length !== msgProps.length) {
             setMessages([...msgProps]);
-            resetScrollEffect();
         }
-    });
+
+        resetScrollEffect();
+
+    }, [messages, msgProps]);
 
     const onChange = event => {
         const { currentTarget: { value = "" } = {} } = event;
         if (value !== msg) setMsg(value);
     };
 
-    const onMouseLeave = (event, id) => {
-        if (showTooltip) {
-            setStateTooltip(false);
-            setIdTooltip(null);
-        }
-    };
 
     const _onSubmit = (event, msgValue = null) => {
         if (_.isNull(msgValue)) {
@@ -73,27 +62,43 @@ const ChatRoom = ({ onSend = null, messages: msgProps = [], tokenRoom = "", onKe
 
     const renderChat = messages => {
         return messages.map((it, i) => {
+
             const item = (
-                <div ref={refWrapper} key={`${i}${it.tokenRoom}${it.msg}`} className={[i, "message"].join(" ")}>
-                    <Message it={it.msg} key={`${it.msg}_message${it.tokenRoom}`}>
+                <div
+                    ref={refWrapper}
+                    key={`${i}${it.tokenRoom}${it.msg}`}
+                    className={
+                        [i, "message", it.authorId && uid === it.authorId ? "currentUser" : null].join(" ")
+                    }
+                >
+                    <Message
+                        it={it.msg}
+                        key={`${it.msg}_message${it.tokenRoom}`}
+                        className="flex-wrapper"
+                    >
                         <React.Fragment>
-                            {
-                                it.displayName !== "System" ? (
+                            <div className="msg_header">
+                                {
 
-                                    <span
-                                        onClick={event => redirectUserProfile(event, null)}
-                                        className="msg_author">
-                                        {it.displayName}
-                                        <Avatar size="small" />
-                                    </span>
-                                ) : (
-                                        <p className="admin_wrapper">{it.displayName}</p>
-                                    )}
+                                    it.displayName !== "System" ? (
 
-                            {it.displayName !== "System" ?
-                                <span className="msg_date">{moment().format("DD.MM.YYYY HH:mm")}.</span>
-                                : null
-                            }
+                                        <span
+                                            onClick={event => redirectUserProfile(event, it.authorId ? it.authorId : null)}
+                                            className="msg_author"
+                                        >
+                                            < Avatar size="small" />
+                                            {it.displayName}
+                                        </span>
+                                    ) : (
+                                            <p className="admin_wrapper">{it.displayName}</p>
+                                        )
+                                }
+
+                                {it.displayName !== "System" ?
+                                    <span className="msg_date">{it.date ? it.date : "No date"}.</span>
+                                    : null
+                                }
+                            </div>
                             <p className="wrapper_msg">{it.msg}</p>
                         </React.Fragment>
                     </Message>
