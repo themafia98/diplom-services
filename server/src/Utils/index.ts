@@ -38,7 +38,6 @@ namespace Utils {
         isPrivateRoute: Function,
         wsWorkerManager: WsWorker
     ) => {
-
         controllers.forEach(controller => {
             // This is our instantiated class
             const instance: Record<string, any> = new controller();
@@ -48,22 +47,23 @@ namespace Utils {
 
             // Iterate over all routes and register them to our express application
             routes.forEach(route => {
-
                 const isWs = route.ws;
                 const isFile = route.file;
                 const isPrivate = route.private;
 
                 const middlewares: Record<string, object> = {};
 
-                isPrivate ? middlewares.private = isPrivateRoute : null;
-                isFile ? middlewares.file = upload.any() : null;
-                isWs ? middlewares.ws = wsWorkerManager : null;
+                isPrivate ? (middlewares.private = isPrivateRoute) : null;
+                isFile ? (middlewares.file = upload.any()) : null;
+                isWs ? (middlewares.ws = wsWorkerManager) : null;
 
-                const compose: Readonly<Array<object | null>> = Object.keys(middlewares).map((key: string) => {
-                    if (middlewares[key]) {
-                        return middlewares[key];
-                    } else return null;
-                }).filter(Boolean);
+                const compose: Readonly<Array<object | null>> = Object.keys(middlewares)
+                    .map((key: string) => {
+                        if (middlewares[key]) {
+                            return middlewares[key];
+                        } else return null;
+                    })
+                    .filter(Boolean);
 
                 getRest()[route.requestMethod](
                     prefix === "/" ? route.path : prefix + route.path,
@@ -73,8 +73,8 @@ namespace Utils {
                     }
                 );
             });
-        })
-    }
+        });
+    };
 
     export const getResponseJson = (
         actionString: string,

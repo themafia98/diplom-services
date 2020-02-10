@@ -66,7 +66,7 @@ namespace Action {
                     case "global": {
                         if (this.getActionType() === "load_files") {
                             const { queryParams } = actionParam;
-                            const taskId: string = (<any>queryParams).taskId;
+                            const taskId: string = (queryParams as Record<string, any>).taskId;
 
                             const path: string = `/tasks/${taskId}/`;
                             const files: files.ListFolderResult | null = await this.getStore().getFilesByPath(path);
@@ -88,7 +88,6 @@ namespace Action {
                         }
 
                         if (this.getActionType() === "download_files") {
-
                             const taskId: string = (actionParam as Record<string, string>).taskId;
                             const filename: string = (actionParam as Record<string, string>).filename;
 
@@ -107,21 +106,18 @@ namespace Action {
                         if (!model) return null;
 
                         if (this.getActionType() === "entrypoint_chat") {
-
                             const socket: object = (actionParam as Record<string, any>).socket || {};
                             const uid: string = (actionParam as Record<string, string>).uid;
                             const { socketConnection = false, module: moduleName = "" } = <Record<string, any>>socket;
-                            const query: ActionParams = { moduleName, membersIds: { "$in": [uid] } };
+                            const query: ActionParams = { moduleName, membersIds: { $in: [uid] } };
 
-                            if (socketConnection && moduleName)
-                                return this.getAll(model, query);
-
+                            if (socketConnection && moduleName) return this.getAll(model, query);
                         }
 
                         if (this.getActionType() === "create_chatRoom") {
                             const actionData: Document | null = await this.createEntity(model, {
                                 ...actionParam,
-                                tokenRoom: uuid(),
+                                tokenRoom: uuid()
                             });
                             return actionData;
                         }
@@ -135,15 +131,11 @@ namespace Action {
                         if (!model) return null;
 
                         if (this.getActionType() === "get_msg_by_token") {
-                            const {
-                                options: {
-                                    tokenRoom = "",
-                                    moduleName = "",
-                                    membersIds = []
-                                } = {}
-                            } = <Record<string, any>>actionParam;
+                            const { options: { tokenRoom = "", moduleName = "", membersIds = [] } = {} } = <
+                                Record<string, any>
+                            >actionParam;
 
-                            const query: ActionParams = { tokenRoom, moduleName, authorId: { "$in": membersIds } };
+                            const query: ActionParams = { tokenRoom, moduleName, authorId: { $in: membersIds } };
                             return this.getAll(model, query);
                         }
 
@@ -213,10 +205,8 @@ namespace Action {
                                 let actionData: Document | null = null;
 
                                 if (this.getActionType().includes("single")) {
-
                                     const updateField: string = (actionParam as Record<string, string>).updateField;
                                     (updateProps as Record<string, string>)[updateField] = <string>updateItem;
-
                                 } else if (this.getActionType().includes("many")) {
                                     const { updateItem = "" } = actionParam;
                                     updateProps = updateItem;

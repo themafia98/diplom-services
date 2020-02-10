@@ -38,8 +38,11 @@ namespace Tasks {
                     params.status = "error";
 
                     return res.json(
-                        getResponseJson("error", { params, metadata: data, status: "FAIL", done: false },
-                            (req as Record<string, any>).start)
+                        getResponseJson(
+                            "error",
+                            { params, metadata: data, status: "FAIL", done: false },
+                            (req as Record<string, any>).start
+                        )
                     );
                 }
 
@@ -62,8 +65,13 @@ namespace Tasks {
                         .filter(Boolean);
                 }
 
-                return res.json(getResponseJson("done", { params, metadata, done: true, status: "OK" },
-                    (req as Record<string, any>).start));
+                return res.json(
+                    getResponseJson(
+                        "done",
+                        { params, metadata, done: true, status: "OK" },
+                        (req as Record<string, any>).start
+                    )
+                );
             } catch (err) {
                 console.error(err);
                 if (!res.headersSent) {
@@ -80,13 +88,11 @@ namespace Tasks {
 
         @Get({ path: "/download/:taskId/:filename", private: true })
         public async downloadFile(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
-
             const { taskId = "", filename = "" } = req.params;
             const params: Params = { methodQuery: "download_files", status: "done", done: true, from: "tasks" };
 
             if (taskId && filename) {
                 try {
-
                     const dropbox: DropboxApi = server.locals.dropbox;
                     const downloadAction = new Action.ActionParser({
                         actionPath: "global",
@@ -95,10 +101,11 @@ namespace Tasks {
                     });
 
                     const actionData: ParserResult = await downloadAction.getActionData({
-                        taskId, filename
+                        taskId,
+                        filename
                     });
 
-                    const isBinary: Boolean = actionData && (<any>actionData).fileBinary;
+                    const isBinary: Boolean = actionData && (actionData as Record<string, any>).fileBinary;
                     const fileBinary: BinaryType = isBinary ? (actionData as Record<string, any>).fileBinary : null;
 
                     if (!actionData) {
@@ -154,7 +161,12 @@ namespace Tasks {
                     return res.json(
                         getResponseJson(
                             "done",
-                            { status: "OK", done: true, params, metadata: (<any>actionData).metadata },
+                            {
+                                status: "OK",
+                                done: true,
+                                params,
+                                metadata: (actionData as Record<string, any>).metadata
+                            },
                             (req as Record<string, any>).start
                         )
                     );
@@ -183,7 +195,6 @@ namespace Tasks {
                     actionType: "load_files",
                     store: <DropboxApi>server.locals.dropbox
                 });
-
 
                 const actionData: ParserResult = await downloadAction.getActionData(req.body);
 
@@ -318,11 +329,17 @@ namespace Tasks {
                         );
                     }
 
-                    const meta = <ArrayLike<object>>Utils.parsePublicData(<any>[data]);
+                    const meta = <ArrayLike<object>>Utils.parsePublicData(<ParserResult>[data]);
 
                     const metadata: ArrayLike<object> = Array.isArray(meta) && meta[0] ? meta[0] : null;
 
-                    return res.json(getResponseJson("done", { status: "OK", done: true, params, metadata }, (req as Record<string, any>).start));
+                    return res.json(
+                        getResponseJson(
+                            "done",
+                            { status: "OK", done: true, params, metadata },
+                            (req as Record<string, any>).start
+                        )
+                    );
                 } else if (!res.headersSent) {
                     return res.json(
                         getResponseJson(
@@ -376,20 +393,32 @@ namespace Tasks {
                         params.status = "error";
                         params.done = false;
 
-                        return res.json(getResponseJson(
-                            "error set_jurnal action",
-                            { status: "FAIL", params, done: false, metadata: data },
-                            (req as Record<string, any>).start
-                        ));
+                        return res.json(
+                            getResponseJson(
+                                "error set_jurnal action",
+                                { status: "FAIL", params, done: false, metadata: data },
+                                (req as Record<string, any>).start
+                            )
+                        );
                     }
 
-                    const meta = <ArrayLike<object>>Utils.parsePublicData(<any>[data]);
+                    const meta = <ArrayLike<object>>Utils.parsePublicData(<ParserResult>[data]);
                     const metadata: ArrayLike<object> = Array.isArray(meta) && meta[0] ? meta[0] : null;
 
-                    return res.json(getResponseJson("done", { status: "OK", done: true, params, metadata }, (req as Record<string, any>).start));
+                    return res.json(
+                        getResponseJson(
+                            "done",
+                            { status: "OK", done: true, params, metadata },
+                            (req as Record<string, any>).start
+                        )
+                    );
                 } else if (!res.headersSent) {
                     return res.json(
-                        getResponseJson("error", { status: "FAIL", params, done: false, metadata: null }, (req as Record<string, any>).start)
+                        getResponseJson(
+                            "error",
+                            { status: "FAIL", params, done: false, metadata: null },
+                            (req as Record<string, any>).start
+                        )
                     );
                 }
             } catch (err) {
@@ -427,13 +456,17 @@ namespace Tasks {
                     params.status = "error";
 
                     return res.json(
-                        getResponseJson("error", { params, status: "FAIL", done: false, metadata: data }, (req as Record<string, any>).start)
+                        getResponseJson(
+                            "error",
+                            { params, status: "FAIL", done: false, metadata: data },
+                            (req as Record<string, any>).start
+                        )
                     );
                 }
 
                 await service.dbm.disconnect().catch((err: Error) => console.error(err));
 
-                let metadata: Array<any> = [];
+                let metadata: Array<docResponse> = [];
 
                 if (data && Array.isArray(data)) {
                     metadata = data
@@ -450,7 +483,13 @@ namespace Tasks {
                         .filter(Boolean);
                 }
 
-                return res.json(getResponseJson("done", { params, metadata, status: "OK", done: true }, (req as Record<string, any>).start));
+                return res.json(
+                    getResponseJson(
+                        "done",
+                        { params, metadata, status: "OK", done: true },
+                        (req as Record<string, any>).start
+                    )
+                );
             } catch (err) {
                 params.done = false;
                 console.error(err);
@@ -500,7 +539,7 @@ namespace Tasks {
                         );
                     }
 
-                    const meta = <ArrayLike<object>>Utils.parsePublicData(<any>[data]);
+                    const meta = <ArrayLike<object>>Utils.parsePublicData(<ParserResult>[data]);
                     const metadata: ArrayLike<object> = Array.isArray(meta) && meta[0] ? meta[0] : null;
 
                     return res.json(
@@ -571,16 +610,26 @@ namespace Tasks {
                         );
                     }
 
-                    const meta = <ArrayLike<object>>Utils.parsePublicData(<any>[data]);
+                    const meta = <ArrayLike<object>>Utils.parsePublicData(<ParserResult>[data]);
 
                     const metadata: ArrayLike<object> = Array.isArray(meta) && meta[0] ? meta[0] : null;
 
-                    return res.json(getResponseJson("done", { status: "OK", done: true, params, metadata }, (req as Record<string, any>).start));
+                    return res.json(
+                        getResponseJson(
+                            "done",
+                            { status: "OK", done: true, params, metadata },
+                            (req as Record<string, any>).start
+                        )
+                    );
                 } else if (!res.headersSent) {
                     params.done = false;
                     params.status = "FAIL";
                     return res.json(
-                        getResponseJson("error", { status: "FAIL", params, done: false, metadata: null }, (req as Record<string, any>).start)
+                        getResponseJson(
+                            "error",
+                            { status: "FAIL", params, done: false, metadata: null },
+                            (req as Record<string, any>).start
+                        )
                     );
                 }
             } catch (err) {
