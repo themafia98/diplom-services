@@ -9,6 +9,7 @@ import Action from "../../../Models/Action";
 
 namespace Chat {
     const Post = Decorators.Post;
+    const Delete = Decorators.Delete;
     const Put = Decorators.Put;
     const Controller = Decorators.Controller;
     const { getResponseJson, parsePublicData } = Utils;
@@ -75,13 +76,45 @@ namespace Chat {
             }
         }
 
+        @Delete({ path: "/leaveRoom", private: true })
+        async leaveRoom(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+            const { body: { queryParams = {} } = {} } = req;
+            const actionType: string = "chatRoom";
+            const actionPath: string = "leave_room";
+            try {
+
+                if (!actionPath || !actionType) {
+                    throw new Error("Invalid action chat");
+                }
+
+                const leaveRoomAction = new Action.ActionParser({ actionPath, actionType });
+
+                const data: ParserResult = await leaveRoomAction.getActionData(queryParams);
+
+                if (!data) {
+                    throw new TypeError("Bad action data");
+                }
+
+                return res.json(
+                    getResponseJson(
+                        "done",
+                        { params: { ...queryParams }, metadata: data, status: "done", done: true },
+                        (req as Record<string, any>).start
+                    )
+                );
+            } catch (err) {
+                console.error(err);
+                if (!res.headersSent) res.sendStatus(503);
+            }
+        }
+
         @Post({ path: "/load/tokenData", private: true })
         async loadTokenData(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
             const { body: { queryParams = {} } = {} } = req;
             const actionType: string = "get_msg_by_token";
             const actionPath: string = "chatMsg";
             try {
-                console.log(queryParams);
+
                 if (!actionPath || !actionType) {
                     throw new Error("Invalid action chat");
                 }

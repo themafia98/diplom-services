@@ -2,7 +2,7 @@ import { ActionProps, ActionParams, DropboxApi, EntityActionApi } from "../../Ut
 import { ParserData } from "../../Utils/Types";
 import uuid from "uuid/v4";
 import { files } from "dropbox";
-import { Model, Document } from "mongoose";
+import { Model, Document, Query } from "mongoose";
 import Utils from "../../Utils";
 
 namespace Action {
@@ -50,6 +50,37 @@ namespace Action {
         private async createEntity(model: Model<Document>, item: object) {
             try {
                 const actionData: Document = await model.create(item);
+                return actionData;
+            } catch (err) {
+                console.error(err);
+                return null;
+            }
+        }
+
+        private async deleteEntity(model: Model<Document>, query: ActionParams) {
+            try {
+                const { tokenRoom, uid, updateField } = query;
+                const actionData: Document = await model.update({ tokenRoom }, {
+                    $pullAll: { [<string>updateField]: [uid] }
+                });
+
+                const roomDoc: Document | null = await model.findOne({ tokenRoom });
+
+                if (!roomDoc) {
+                    return null;
+                }
+
+                const record: ArrayLike<string> = (roomDoc as Record<string, any>)[<string>updateField];
+
+                if (Array.isArray(record) && (!record.length || record.length === 0)) {
+                    const roomDocResult: Record<string, any> = await model.deleteOne({ tokenRoom });
+
+                    if (roomDocResult.ok) {
+                        return roomDocResult;
+                    } else return null;
+
+                }
+
                 return actionData;
             } catch (err) {
                 console.error(err);
@@ -122,6 +153,17 @@ namespace Action {
                             return actionData;
                         }
 
+                        if (this.getActionType() === "leave_room") {
+
+                            const uid: string = (actionParam as Record<string, string>).uid;
+                            const roomToken: string = (actionParam as Record<string, string>).roomToken;
+                            const updateField: string = (actionParam as Record<string, string>).updateField;
+
+                            const query = { roomToken, uid, updateField };
+                            const actionData: Record<string, any> | null = await this.deleteEntity(model, query);
+                            return <Document | null>actionData;
+                        }
+
                         break;
                     }
 
@@ -133,7 +175,7 @@ namespace Action {
                         if (this.getActionType() === "get_msg_by_token") {
                             const { options: { tokenRoom = "", moduleName = "", membersIds = [] } = {} } = <
                                 Record<string, any>
-                            >actionParam;
+                                >actionParam;
 
                             const query: ActionParams = { tokenRoom, moduleName, authorId: { $in: membersIds } };
                             return this.getAll(model, query);
