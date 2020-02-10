@@ -94,8 +94,6 @@ namespace Decorators {
             Reflect.defineMetadata("routes", routesArray, target.constructor);
         }
     }
-
-
 }
 
 
