@@ -1,5 +1,7 @@
-import { DropboxApi, DropboxAccess, DownloadDropbox, UploadDropbox } from "../Utils/Interfaces";
+import { FileApi, DropboxAccess, DownloadDropbox, UploadDropbox } from "../Utils/Interfaces";
 import { Dropbox, files } from 'dropbox';
+import { ListFolderResult, FileMetadata, DeleteFile } from "../Utils/Types";
+import FileEntity from "../Models/FileEntity";
 
 /**
  * 
@@ -7,38 +9,29 @@ import { Dropbox, files } from 'dropbox';
  */
 namespace DropboxStorage {
 
-    export class DropboxManager implements DropboxApi {
-
-        /**
-         * Dropbox api object
-         */
-        private dbx: Dropbox;
+    export class DropboxManager extends FileEntity<Dropbox> implements FileApi {
 
         /**
          * 
-         * @param props init with dropbox api token
+         * @param props init service
          */
         constructor(props: DropboxAccess) {
-            this.dbx = new Dropbox({ fetch: require("isomorphic-fetch"), accessToken: props.token });
-        }
-
-        /**
-         * @return {Dropbox} dbx object
-         */
-        public getDbx(): Dropbox {
-            return this.dbx;
+            super(
+                new Dropbox({
+                    fetch: require("isomorphic-fetch"),
+                    accessToken: props.token
+                })
+            );
         }
 
         /**
          * @return {files.ListFolderResult} all files list in application store
          */
-        public async getAllFiles(): Promise<files.ListFolderResult | null> {
+        public async getAllFiles(): Promise<ListFolderResult | null> {
             try {
-                const response = await this.getDbx().filesListFolder({ path: '' });
-
-                if (!response) throw new Error("Bad connect to dropbox");
-
-                return response;
+                const result = await this.getService().filesListFolder({ path: '' });
+                if (result as files.ListFolderResult) return result;
+                else return null;
             } catch (err) {
                 console.error(err);
                 return null;
@@ -51,8 +44,9 @@ namespace DropboxStorage {
          */
         public async deleteFile(path: string): Promise<files.DeleteResult | null> {
             try {
-                const response = await this.getDbx().filesDeleteV2({ path });
-                return response;
+                const result: files.DeleteResult = await this.getService().filesDeleteV2({ path });
+                if (result as files.DeleteResult) return result;
+                else return null;
             } catch (err) {
                 console.error(err);
                 return null;
@@ -65,7 +59,7 @@ namespace DropboxStorage {
          */
         public async getFilesByPath(path: string): Promise<files.ListFolderResult | null> {
             try {
-                const response = await this.getDbx().filesListFolder({ path });
+                const response = await this.getService().filesListFolder({ path });
 
                 if (!response) throw new Error("Bad connect to dropbox");
 
@@ -82,10 +76,12 @@ namespace DropboxStorage {
          * @param {string} path  prop in saveProps, file path for save
          * @param {Buffer} cotents - binary file object for save
          */
-        public async saveFile(saveProps: UploadDropbox): Promise<files.FileMetadata | null> {
+        public async saveFile<UploadDropbox>(saveProps: UploadDropbox): Promise<FileMetadata | null> {
             try {
-                const { path, contents } = saveProps;
-                const response = await this.getDbx().filesUpload({
+                const path: string = (saveProps as Record<string, any>).path;
+                const contents: Buffer = (saveProps as Record<string, any>).contents;
+
+                const response = await this.getService().filesUpload({
                     path,
                     contents,
                 });
@@ -102,12 +98,12 @@ namespace DropboxStorage {
          * @param {string} filename - download filename
          * @param {string} ext - extension downloading file
          */
-        public async downloadFileByProps(fileProps: DownloadDropbox): Promise<files.FileMetadata | null> {
+        public async downloadFileByProps(fileProps: DownloadDropbox): Promise<FileMetadata> {
             try {
                 const { moduleName = "", filename = "", ext = "", cardName = "" } = fileProps;
 
                 const path = !cardName ? `/${moduleName}/${filename}.${ext}` : `/${moduleName}/${cardName}/${filename}.${ext}`;
-                const response = await this.getDbx().filesDownload({ path });
+                const response = await this.getService().filesDownload({ path });
                 return response;
             } catch (err) {
                 console.error(err);
@@ -119,9 +115,9 @@ namespace DropboxStorage {
          * Download file by url address
          * @param path file url
          */
-        public async downloadFile(path: string): Promise<files.FileMetadata | null> {
+        public async downloadFile(path: string): Promise<FileMetadata> {
             try {
-                const response = await this.getDbx().filesDownload({ path });
+                const response: FileMetadata = await this.getService().filesDownload({ path });
                 return response;
             } catch (err) {
                 console.error(err);

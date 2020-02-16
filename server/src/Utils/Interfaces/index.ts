@@ -43,13 +43,6 @@ export interface App extends Application {
     hash: CryptoSecurity;
 }
 
-export interface ActionProps {
-    actionPath: string;
-    actionType: string;
-    body?: object;
-    store?: DropboxApi;
-}
-
 export interface Params {
     methodQuery: string;
     status: string;
@@ -131,14 +124,30 @@ export interface DropboxAccess {
     token: string;
 }
 
-export interface DropboxApi {
-    getDbx(): Dropbox;
-    getAllFiles(): Promise<files.ListFolderResult | null>;
+
+
+
+export interface FilesManager<T> {
+    getService(): T;
+    changeService(service: T): void;
+}
+
+export interface FileApi {
+    getAllFiles(): Promise<Record<string, any> | null>;
     downloadFileByProps(fileProps: DownloadDropbox): Promise<files.FileMetadata | null>;
     downloadFile(path: string): Promise<files.FileMetadata | null>;
-    saveFile(saveProps: UploadDropbox): Promise<files.FileMetadata | null>;
+    saveFile<P>(saveProps: P): Promise<files.FileMetadata | null>;
     getFilesByPath(path: string): Promise<files.ListFolderResult | null>;
     deleteFile(path: string): Promise<files.DeleteResult | null>;
+
+
+}
+
+export interface ActionProps {
+    actionPath: string;
+    actionType: string;
+    body?: object;
+    store?: FileApi;
 }
 
 export interface DownloadDropbox {
@@ -156,7 +165,7 @@ export interface UploadDropbox {
 export interface EntityActionApi {
     getActionPath(): string;
     getActionType(): string;
-    getStore(): DropboxApi;
+    getStore(): any;
 };
 
 export interface ResponseJson<T> {

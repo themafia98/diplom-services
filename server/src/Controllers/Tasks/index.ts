@@ -5,7 +5,7 @@ import uuid from "uuid/v4";
 import { Document } from "mongoose";
 import _ from "lodash";
 import Utils from "../../Utils";
-import { App, Params, ResponseDocument, DropboxApi, ActionProps } from "../../Utils/Interfaces";
+import { App, Params, ResponseDocument, FileApi, ActionProps } from "../../Utils/Interfaces";
 import { ResRequest, docResponse, ParserResult } from "../../Utils/Types";
 
 import Action from "../../Models/Action";
@@ -93,7 +93,7 @@ namespace Tasks {
 
             if (taskId && filename) {
                 try {
-                    const dropbox: DropboxApi = server.locals.dropbox;
+                    const dropbox: FileApi = server.locals.dropbox;
                     const downloadAction = new Action.ActionParser({
                         actionPath: "global",
                         actionType: "download_files",
@@ -143,7 +143,7 @@ namespace Tasks {
                 const deleteFileAction = new Action.ActionParser({
                     actionPath: "global",
                     actionType: "delete_file",
-                    store: <DropboxApi>server.locals.dropbox
+                    store: <FileApi>server.locals.dropbox
                 });
 
                 const actionData: ParserResult = await deleteFileAction.getActionData({ ...req.body, store: "/tasks" });
@@ -193,7 +193,7 @@ namespace Tasks {
                 const downloadAction = new Action.ActionParser({
                     actionPath: "global",
                     actionType: "load_files",
-                    store: <DropboxApi>server.locals.dropbox
+                    store: <FileApi>server.locals.dropbox
                 });
 
                 const actionData: ParserResult = await downloadAction.getActionData(req.body);
@@ -238,7 +238,7 @@ namespace Tasks {
                 const files = Array.isArray(req.files) ? req.files : null;
 
                 if (files) {
-                    const store: DropboxApi = server.locals.dropbox;
+                    const store: FileApi = server.locals.dropbox;
                     let responseSave: Array<object | null> = [];
 
                     for await (let file of files) {

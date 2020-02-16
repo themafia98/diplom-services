@@ -16,6 +16,11 @@ export type actionGet = {
     param: Object;
 };
 
+export type ListFolderResult = files.ListFolderResult | null;
+export type FileMetadata = files.FileMetadata | null;
+export type DeleteFile = files.DeleteResult;
+
+
 export type paramAction = {
     from?: string;
     method?: string;

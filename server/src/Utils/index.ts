@@ -85,7 +85,7 @@ namespace Utils {
             action: actionString,
             response,
             uptime: process.uptime(),
-            responseTime: Utils.responseTime(start),
+            responseTime: responseTime(start),
             work: process.connected
         };
     };

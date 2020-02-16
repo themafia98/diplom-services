@@ -1,5 +1,5 @@
 import { NextFunction, Response, Request } from "express";
-import { App, Params, DropboxApi } from "../../../Utils/Interfaces";
+import { App, Params, FileApi } from "../../../Utils/Interfaces";
 import { ParserResult, Decorator, ResRequest } from '../../../Utils/Types';
 import Utils from "../../../Utils";
 import Decorators from "../../../Decorators";

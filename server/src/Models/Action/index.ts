@@ -1,4 +1,4 @@
-import { ActionProps, ActionParams, DropboxApi, EntityActionApi } from "../../Utils/Interfaces";
+import { ActionProps, ActionParams, EntityActionApi, FileApi } from "../../Utils/Interfaces";
 import { ParserData } from "../../Utils/Types";
 import uuid from "uuid/v4";
 import { files } from "dropbox";
@@ -11,7 +11,7 @@ namespace Action {
     abstract class ActionEntity implements EntityActionApi {
         private actionPath: string = "";
         private actionType: string = "";
-        private store: DropboxApi;
+        private store: FileApi;
 
         constructor(props: ActionProps) {
             this.actionPath = props.actionPath;
@@ -27,7 +27,7 @@ namespace Action {
             return this.actionType;
         }
 
-        public getStore(): DropboxApi {
+        public getStore(): FileApi {
             return this.store;
         }
     }
