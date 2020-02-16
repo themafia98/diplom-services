@@ -6,7 +6,7 @@ import { Model, Document, Query } from "mongoose";
 import Utils from "../../Utils";
 
 namespace Action {
-    const { getModelByName } = Utils;
+    const { getModelByName, checkEntity } = Utils;
 
     abstract class ActionEntity implements EntityActionApi {
         private actionPath: string = "";
@@ -90,7 +90,7 @@ namespace Action {
 
         public async getActionData(actionParam: ActionParams = {}): ParserData {
             try {
-                console.log(actionParam);
+
                 console.log(`Run action. actionType: ${this.getActionType()}, actionPath: ${this.getActionPath()}`);
 
                 switch (this.getActionPath()) {
@@ -146,6 +146,15 @@ namespace Action {
                         }
 
                         if (this.getActionType() === "create_chatRoom") {
+
+                            if (!actionParam) return null;
+
+                            const mode: string = actionParam.type && actionParam.type === "single" ? "equalSingle" : "equal";
+
+                            const isValid: boolean = await checkEntity(mode, "membersIds", actionParam, model);
+
+                            if (!isValid) return null;
+
                             const actionData: Document | null = await this.createEntity(model, {
                                 ...actionParam,
                                 tokenRoom: uuid()

@@ -3,11 +3,35 @@ import multer from "multer";
 import winston from "winston";
 import { model, Schema, Model, Document } from "mongoose";
 import { getSchemaByName } from "../Models/Database/Schema";
-import { RouteDefinition, ResponseDocument, ResponseJson, WsWorker } from "./Interfaces";
+import { RouteDefinition, ResponseDocument, ResponseJson, WsWorker, ActionParams } from "./Interfaces";
 import { FileTransportInstance, docResponse, ParserResult } from "./Types";
 
 namespace Utils {
     const upload = multer();
+
+    export const checkEntity =
+        async (mode: string, checkKey: string, actionParam: ActionParams, model: Model<Document>): Promise<boolean> => {
+            if (mode == "equalSingle") {
+                let query = {};
+
+                const field: any = actionParam[checkKey];
+                const type: string = (actionParam as Record<string, string>).type;
+
+                if (Array.isArray(field)) {
+                    query = { [checkKey]: { $in: field } };
+                }
+
+                query = { type, [checkKey]: field };
+
+                const result = await model.find(query);
+                console.log("query checker:", query);
+
+                if (Array.isArray(result) && result.length) {
+                    return false;
+                }
+            }
+            return true;
+        }
 
     export const getLoggerTransports = (level: string): Array<FileTransportInstance> | FileTransportInstance => {
         if (level === "info") {
