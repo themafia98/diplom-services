@@ -133,7 +133,7 @@ export interface FilesManager<T> {
 }
 
 export interface FileApi {
-    getAllFiles(): Promise<Record<string, any> | null>;
+    getAllFiles(): Promise<files.ListFolderResult | null>;
     downloadFileByProps(fileProps: DownloadDropbox): Promise<files.FileMetadata | null>;
     downloadFile(path: string): Promise<files.FileMetadata | null>;
     saveFile<P>(saveProps: P): Promise<files.FileMetadata | null>;
@@ -165,7 +165,7 @@ export interface UploadDropbox {
 export interface EntityActionApi {
     getActionPath(): string;
     getActionType(): string;
-    getStore(): any;
+    getStore(): FileApi;
 };
 
 export interface ResponseJson<T> {
