@@ -1,6 +1,6 @@
 import { ServiceManager } from "../../Utils/Interfaces";
 
-class Service<T> implements ServiceManager<T> {
+abstract class Service<T> implements ServiceManager<T> {
 
     constructor(private service: T) { };
 
