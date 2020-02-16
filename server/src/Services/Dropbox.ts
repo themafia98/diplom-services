@@ -1,7 +1,7 @@
 import { FileApi, DropboxAccess, DownloadDropbox, UploadDropbox } from "../Utils/Interfaces";
 import { Dropbox, files } from 'dropbox';
 import { ListFolderResult, FileMetadata, DeleteFile } from "../Utils/Types";
-import FileEntity from "../Models/FileEntity";
+import Service from "../Models/Service";
 
 /**
  * 
@@ -9,7 +9,7 @@ import FileEntity from "../Models/FileEntity";
  */
 namespace DropboxStorage {
 
-    export class DropboxManager extends FileEntity<Dropbox> implements FileApi {
+    export class DropboxManager extends Service<Dropbox> implements FileApi {
 
         /**
          * 

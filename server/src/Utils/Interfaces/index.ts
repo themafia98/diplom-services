@@ -127,7 +127,7 @@ export interface DropboxAccess {
 
 
 
-export interface FilesManager<T> {
+export interface ServiceManager<T> {
     getService(): T;
     changeService(service: T): void;
 }

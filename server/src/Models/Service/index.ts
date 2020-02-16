@@ -1,6 +1,6 @@
-import { FilesManager } from "../../Utils/Interfaces";
+import { ServiceManager } from "../../Utils/Interfaces";
 
-class FileEntity<T> implements FilesManager<T> {
+class Service<T> implements ServiceManager<T> {
 
     constructor(private service: T) { };
 
@@ -14,4 +14,4 @@ class FileEntity<T> implements FilesManager<T> {
 
 }
 
-export default FileEntity;
+export default Service;
