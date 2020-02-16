@@ -98,12 +98,16 @@ namespace DropboxStorage {
          * @param {string} filename - download filename
          * @param {string} ext - extension downloading file
          */
-        public async downloadFileByProps(fileProps: DownloadDropbox): Promise<FileMetadata> {
+        public async downloadFileByProps<DownloadDropbox>(fileProps: DownloadDropbox): Promise<FileMetadata> {
             try {
-                const { moduleName = "", filename = "", ext = "", cardName = "" } = fileProps;
 
-                const path = !cardName ? `/${moduleName}/${filename}.${ext}` : `/${moduleName}/${cardName}/${filename}.${ext}`;
-                const response = await this.getService().filesDownload({ path });
+                const moduleName: Readonly<string> = (fileProps as Record<string, any>).moduleName || "";
+                const filename: Readonly<string> = (fileProps as Record<string, any>).filename || "";
+                const ext: Readonly<string> = (fileProps as Record<string, any>).ext || "";
+                const cardName: Readonly<string> = (fileProps as Record<string, any>).cardName || "";
+
+                const path: string = !cardName ? `/${moduleName}/${filename}.${ext}` : `/${moduleName}/${cardName}/${filename}.${ext}`;
+                const response: FileMetadata = await this.getService().filesDownload({ path });
                 return response;
             } catch (err) {
                 console.error(err);

@@ -134,7 +134,7 @@ export interface FilesManager<T> {
 
 export interface FileApi {
     getAllFiles(): Promise<files.ListFolderResult | null>;
-    downloadFileByProps(fileProps: DownloadDropbox): Promise<files.FileMetadata | null>;
+    downloadFileByProps<Props>(fileProps: Props): Promise<files.FileMetadata | null>;
     downloadFile(path: string): Promise<files.FileMetadata | null>;
     saveFile<P>(saveProps: P): Promise<files.FileMetadata | null>;
     getFilesByPath(path: string): Promise<files.ListFolderResult | null>;
