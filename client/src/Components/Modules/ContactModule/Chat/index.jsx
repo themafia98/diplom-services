@@ -4,8 +4,9 @@ import moment from "moment";
 import _ from "lodash";
 import io from 'socket.io-client';
 
-import Scrollbars from "react-custom-scrollbars";
-import { Skeleton, List, Avatar, Button, notification, message } from "antd";
+import ChatMenu from "./ChatMenu";
+
+import { notification, message } from "antd";
 
 import { setSocketConnection, addMsg } from "../../../../Redux/actions/socketActions";
 import { loadActiveChats, loadingDataByToken } from "../../../../Redux/actions/socketActions/middleware";
@@ -222,6 +223,44 @@ class Chat extends React.PureComponent {
         );
     };
 
+    parseChatJson = ({ type, membersIds = [], mode = "displayName" }) => {
+
+        const {
+            chat: {
+                usersList = [],
+            } = {},
+        } = this.props;
+
+        if (Array.isArray(membersIds) && !membersIds.length || !membersIds) {
+            return null;
+        }
+
+        if (type === "single") {
+
+            if (mode === "displayName") {
+
+                if (membersIds.length < 2) return null;
+
+                const InterlocutorId = membersIds[1];
+                const Interlocutor = usersList.find(user => user._id === InterlocutorId) || {};
+
+                const { displayName = "" } = Interlocutor || {};
+                return displayName;
+            }
+        }
+
+        if (type === "group") {
+
+            if (mode === "groupName") {
+
+                const groupsUsersIds = [...membersIds];
+                return "";
+
+            }
+        }
+        return "";
+    };
+
     render() {
         const { visible, shouldScroll = false } = this.state;
         const {
@@ -241,88 +280,16 @@ class Chat extends React.PureComponent {
                 <TitleModule classNameTitle="ContactModule__chatTitle" title="Корпоративный чат" />
                 {this.renderModal(visible)}
                 <div className="chat__main">
-                    <div className="col-chat-menu">
-                        <div className="menuLoading-skeleton">
-                            <Scrollbars>
-                                {!socketConnection && !socketErrorStatus ? (
-                                    Array.isArray(listdata) && listdata.length ? listdata.map((it, i) => {
-                                        return (
-                                            <div className="item-skeleton" key={`${it}${i}`}>
-                                                <Skeleton loading={true} active avatar paragraph={false}>
-                                                    <List.Item.Meta />
-                                                </Skeleton>
-                                            </div>
-                                        )
-                                    }) : (
-                                            _.fill(Array(5), "-_-").map((it, i) => {
-                                                return (
-                                                    <div className="item-skeleton" key={`${it}${i}`}>
-                                                        <Skeleton
-                                                            loading={true}
-                                                            active
-                                                            avatar
-                                                            paragraph={false}
-                                                        >
-                                                            <List.Item.Meta />
-                                                        </Skeleton>
-                                                    </div>
-                                                )
-                                            })
-                                        )
-                                ) : (
-                                        <List
-                                            key="list-chat"
-                                            dataSource={listdata}
-                                            renderItem={(it, i) => {
-
-                                                const currUser = it.type === "single" ?
-                                                    usersList.find(itUser => Array.isArray(it.membersIds) && itUser !== it.membersIds[1]) : null;
-
-                                                const displayName = currUser ? currUser.displayName : it.groupName ? it.groupName : null;
-
-                                                //const msgs = listdataMsgs[tokenRoom] || null;
-                                                // const isDefined = msgs ? Boolean(msgs[msgs.length - 1]) && msgs.length - 1 === i : null;
-                                                // const lastMsg = msgs && isDefined && msgs[msgs.length - 1].msg ?
-                                                //     msgs[msgs.length - 1].msg : null;
-
-                                                const descriptionChatMenu = false ? (
-                                                    <span className="descriptionChatMenu">
-                                                        {/* lastMsg */}
-                                                    </span>
-                                                ) : (
-                                                        <span className="descriptionChatMenu">
-
-                                                        </span>
-                                                    )
-
-                                                return (
-                                                    <List.Item
-                                                        className={[tokenRoom === it.tokenRoom ? "activeChat" : null].join(" ")}
-                                                        onClick={e => this.setActiveChatRoom(e, it.tokenRoom)}
-                                                        key={(it, i)}
-                                                    >
-                                                        <List.Item.Meta
-                                                            key={`${it}${i}`}
-                                                            avatar={<Avatar shape="square" size="large" icon="user" />}
-                                                            title={<p>{`${displayName}`}</p>}
-                                                            description={descriptionChatMenu}
-                                                        />
-                                                    </List.Item>
-                                                )
-                                            }}
-                                        />
-                                    )}
-                            </Scrollbars>
-                        </div>
-                        <Button
-                            onClick={this.onCreateRoom}
-                            type="primary"
-                            disabled={!socketConnection}
-                            className="chat_main__createRoom"
-                        >
-                            Создать комнату
-                        </Button>
-                    </div>
+                    <ChatMenu
+                        socketConnection={socketConnection}
+                        socketErrorStatus={socketErrorStatus}
+                        listdata={listdata}
+                        usersList={usersList}
+                        tokenRoom={tokenRoom}
+                        setActiveChatRoom={this.setActiveChatRoom}
+                        parseChatJson={this.parseChatJson}
+                        onCreateRoom={this.onCreateRoom}
+                    />
                     <div className="col-chat-content">
                         <div className="chat_content">
                             <div className="chat_content__header">
