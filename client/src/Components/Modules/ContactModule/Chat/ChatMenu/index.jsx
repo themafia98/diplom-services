@@ -49,11 +49,7 @@ const ChatMenu = props => {
                                     const { membersIds = [], type } = it || {};
 
 
-                                    const displayName = parseChatJson({
-                                        type,
-                                        membersIds,
-                                        mode: "displayName"
-                                    });
+                                    const displayName = parseChatJson({ type, item: it, mode: "displayName" });
 
                                     const descriptionChatMenu = false ? (
                                         <span className="descriptionChatMenu">

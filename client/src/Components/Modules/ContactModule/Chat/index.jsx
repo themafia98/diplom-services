@@ -223,7 +223,8 @@ class Chat extends React.PureComponent {
         );
     };
 
-    parseChatJson = ({ type, membersIds = [], mode = "displayName" }) => {
+    parseChatJson = ({ type, mode = "displayName", item = {} }) => {
+        const { membersIds = [], groupName = "" } = item || {};
 
         const {
             chat: {
@@ -237,28 +238,17 @@ class Chat extends React.PureComponent {
 
         if (type === "single") {
 
-            if (mode === "displayName") {
+            if (membersIds.length < 2) return null;
 
-                if (membersIds.length < 2) return null;
+            const InterlocutorId = membersIds[1];
+            const Interlocutor = usersList.find(user => user._id === InterlocutorId) || {};
 
-                const InterlocutorId = membersIds[1];
-                const Interlocutor = usersList.find(user => user._id === InterlocutorId) || {};
-
-                const { displayName = "" } = Interlocutor || {};
-                return displayName;
-            }
+            const { [mode]: field = "" } = Interlocutor || {};
+            return field;
         }
 
-        if (type === "group") {
+        if (type === "group") return groupName;
 
-            if (mode === "groupName") {
-
-                const groupsUsersIds = [...membersIds];
-                return "";
-
-            }
-        }
-        return "";
     };
 
     render() {
