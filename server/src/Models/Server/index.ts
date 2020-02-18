@@ -1,7 +1,7 @@
 import express, { Application, Response, NextFunction, Router } from "express";
 import session from "express-session";
 import MongoStore from "connect-mongo";
-import socketio from 'socket.io';
+import socketio from "socket.io";
 import passport from "passport";
 import _ from "lodash";
 import helmet from "helmet";
@@ -9,7 +9,7 @@ import chalk from "chalk";
 import { Route } from "../../Utils/Interfaces";
 import RouterInstance from "../Router";
 import { Server as HttpServer } from "http";
-import { ServerRun, App, Request, Rest } from "../../Utils/Interfaces";
+import { Request, Rest } from "../../Utils/Interfaces";
 import Utils from "../../Utils";
 import System from "../../Controllers/Main";
 import General from "../../Controllers/General";
@@ -18,19 +18,20 @@ import Tasks from "../../Controllers/Tasks";
 import News from "../../Controllers/Contact/News";
 import Database from "../Database";
 
-import DropboxStorage from '../../Services/Dropbox';
+import DropboxStorage from "../../Services/Dropbox";
 
 import { UserModel } from "../Database/Schema";
 
 import jwt, { StrategyOptions } from "passport-jwt";
-import * as passportLocal from 'passport-local';
+import * as passportLocal from "passport-local";
 
 import WebSocketWorker from "../WebSocketWorker";
 import Entrypoint from "../..";
 import wsEvents from "../../Controllers/Contact/Chat/wsEvents";
 
-namespace Http {
+import limiter from "../../config/limiter";
 
+namespace Http {
     const LocalStrategy = passportLocal.Strategy;
 
     abstract class RestEntitiy implements Rest {
@@ -63,11 +64,9 @@ namespace Http {
         public setApp(express: Application): void {
             if (_.isNull(this.application)) this.application = express;
         }
-
     }
 
     export class ServerRunner extends RestEntitiy {
-
         constructor(port: string) {
             super(port);
         }
@@ -162,27 +161,29 @@ namespace Http {
             };
 
             passport.use(
-                new jwt.Strategy(<StrategyOptions>jwtOptions,
-                    async function (payload: Partial<{ id: string }>, done: Function) {
-                        try {
-                            const connect = await dbm.connection();
-                            if (!connect) throw new Error("bad connection");
-                            UserModel.findOne(payload.id, async (err: Error, user: Record<string, any>) => {
-                                await dbm.disconnect().catch((err: Error) => console.error(err));
+                new jwt.Strategy(<StrategyOptions>jwtOptions, async function(
+                    payload: Partial<{ id: string }>,
+                    done: Function
+                ) {
+                    try {
+                        const connect = await dbm.connection();
+                        if (!connect) throw new Error("bad connection");
+                        UserModel.findOne(payload.id, async (err: Error, user: Record<string, any>) => {
+                            await dbm.disconnect().catch((err: Error) => console.error(err));
 
-                                if (err) {
-                                    return done(err);
-                                }
-                                if (user) {
-                                    done(null, user);
-                                } else {
-                                    done(null, false);
-                                }
-                            });
-                        } catch (err) {
-                            return done(err);
-                        }
-                    })
+                            if (err) {
+                                return done(err);
+                            }
+                            if (user) {
+                                done(null, user);
+                            } else {
+                                done(null, false);
+                            }
+                        });
+                    } catch (err) {
+                        return done(err);
+                    }
+                })
             );
 
             passport.serializeUser((user: Partial<{ id: string }>, done: Function) => {
@@ -262,10 +263,10 @@ namespace Http {
                 console.log(`Server listen on ${chalk.blue.bold(this.getPort())}.`);
             });
 
-
             /** initial entrypoint route */
             this.setRest(instanceRouter.initInstance("/rest"));
             this.getRest().use(this.startResponse);
+            this.getRest().use(limiter);
 
             const wsWorkerManager: WebSocketWorker = new WebSocketWorker(wsWorkers);
             wsWorkerManager.startSocketConnection(socketio(server));
@@ -273,23 +274,16 @@ namespace Http {
             wsEvents(wsWorkerManager, dbm); /** chat */
 
             Utils.initControllers(
-                [
-                    Main,
-                    TasksController,
-                    NewsController,
-                    SystemData,
-                    ChatAlias
-                ],
+                [Main, TasksController, NewsController, SystemData, ChatAlias],
                 this.getApp.bind(this),
                 this.getRest.bind(this),
                 this.isPrivateRoute.bind(this),
-                wsWorkerManager,
+                wsWorkerManager
             );
 
             this.initErrorHandler(server, dbm);
         }
     }
-
 }
 
 export default Http;
