@@ -15,7 +15,6 @@ namespace Tasks {
     const { getResponseJson } = Utils;
     const Controller = Decorators.Controller;
     const Get = Decorators.Get;
-    const Delete = Decorators.Delete;
     const Post = Decorators.Post;
 
     @Controller("/tasks")
@@ -83,56 +82,6 @@ namespace Tasks {
                         )
                     );
                 }
-            }
-        }
-
-        @Delete({ path: "/delete/file", private: true })
-        public async deleteTaskFile(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
-            const params: Params = { methodQuery: "delete_file", status: "done", done: true, from: "tasks" };
-
-            try {
-                const deleteFileAction = new Action.ActionParser({
-                    actionPath: "global",
-                    actionType: "delete_file",
-                    store: <FileApi>server.locals.dropbox
-                });
-
-                const actionData: ParserResult = await deleteFileAction.getActionData({ ...req.body, store: "/tasks" });
-
-                if (!actionData) {
-                    params.done = false;
-                    return res.json(
-                        getResponseJson(
-                            "error action delete_file task",
-                            { status: "FAIL", params, done: false, metadata: [] },
-                            (req as Record<string, any>).start
-                        )
-                    );
-                } else {
-                    return res.json(
-                        getResponseJson(
-                            "done",
-                            {
-                                status: "OK",
-                                done: true,
-                                params,
-                                metadata: (actionData as Record<string, any>).metadata
-                            },
-                            (req as Record<string, any>).start
-                        )
-                    );
-                }
-            } catch (err) {
-                params.done = false;
-                console.error(err);
-                if (!res.headersSent)
-                    return res.json(
-                        getResponseJson(
-                            err.name,
-                            { status: "FAIL", params, done: false, metadata: "Server error" },
-                            (req as Record<string, any>).start
-                        )
-                    );
             }
         }
 
