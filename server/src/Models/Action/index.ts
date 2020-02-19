@@ -60,9 +60,12 @@ namespace Action {
         private async deleteEntity(model: Model<Document>, query: ActionParams) {
             try {
                 const { tokenRoom, uid, updateField } = query;
-                const actionData: Document = await model.update({ tokenRoom }, {
-                    $pullAll: { [<string>updateField]: [uid] }
-                });
+                const actionData: Document = await model.update(
+                    { tokenRoom },
+                    {
+                        $pullAll: { [<string>updateField]: [uid] }
+                    }
+                );
 
                 const roomDoc: Document | null = await model.findOne({ tokenRoom });
 
@@ -78,7 +81,6 @@ namespace Action {
                     if (roomDocResult.ok) {
                         return roomDocResult;
                     } else return null;
-
                 }
 
                 return actionData;
@@ -90,16 +92,19 @@ namespace Action {
 
         public async getActionData(actionParam: ActionParams = {}): ParserData {
             try {
-
                 console.log(`Run action. actionType: ${this.getActionType()}, actionPath: ${this.getActionPath()}`);
 
                 switch (this.getActionPath()) {
                     case "global": {
                         if (this.getActionType() === "load_files") {
-                            const { queryParams } = actionParam;
-                            const taskId: string = (queryParams as Record<string, any>).taskId;
+                            const {
+                                body: { queryParams = {} }
+                            } = <Record<string, any>>actionParam;
 
-                            const path: string = `/tasks/${taskId}/`;
+                            const entityId: string = (queryParams as Record<string, string>).entityId;
+                            const moduleName: string = (actionParam as Record<string, string>).moduleName;
+
+                            const path: string = `/${moduleName}/${entityId}/`;
                             const files: files.ListFolderResult | null = await this.getStore().getFilesByPath(path);
                             return files;
                         }
@@ -119,10 +124,11 @@ namespace Action {
                         }
 
                         if (this.getActionType() === "download_files") {
-                            const taskId: string = (actionParam as Record<string, string>).taskId;
+                            const entityId: string = (actionParam as Record<string, string>).entityId;
                             const filename: string = (actionParam as Record<string, string>).filename;
+                            const moduleName: string = (actionParam as Record<string, string>).moduleName;
 
-                            const path: string = `/tasks/${taskId}/${filename}`;
+                            const path: string = `/${moduleName}/${entityId}/${filename}`;
 
                             const file: files.FileMetadata | null = await this.getStore().downloadFile(path);
                             return file;
@@ -146,10 +152,10 @@ namespace Action {
                         }
 
                         if (this.getActionType() === "create_chatRoom") {
-
                             if (!actionParam) return null;
 
-                            const mode: string = actionParam.type && actionParam.type === "single" ? "equalSingle" : "equal";
+                            const mode: string =
+                                actionParam.type && actionParam.type === "single" ? "equalSingle" : "equal";
 
                             const isValid: boolean = await checkEntity(mode, "membersIds", actionParam, model);
 
@@ -163,7 +169,6 @@ namespace Action {
                         }
 
                         if (this.getActionType() === "leave_room") {
-
                             const uid: string = (actionParam as Record<string, string>).uid;
                             const roomToken: string = (actionParam as Record<string, string>).roomToken;
                             const updateField: string = (actionParam as Record<string, string>).updateField;
@@ -182,13 +187,9 @@ namespace Action {
                         if (!model) return null;
 
                         if (this.getActionType() === "get_msg_by_token") {
-                            const {
-                                options: {
-                                    tokenRoom = "",
-                                    moduleName = "",
-                                    membersIds = []
-                                } = {}
-                            } = <Record<string, any>>actionParam;
+                            const { options: { tokenRoom = "", moduleName = "", membersIds = [] } = {} } = <
+                                Record<string, any>
+                            >actionParam;
 
                             const query: ActionParams = { tokenRoom, moduleName, authorId: { $in: membersIds } };
                             return this.getAll(model, query);
