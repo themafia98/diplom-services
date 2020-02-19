@@ -18,7 +18,7 @@ import TitleModule from "../../../TitleModule";
 import Comments from "../../../Comments";
 import File from "../../../File";
 
-import modelContext from '../../../../Models/context';
+import modelContext from "../../../../Models/context";
 
 const { Option } = Select;
 
@@ -56,7 +56,6 @@ class TaskView extends React.PureComponent {
     };
 
     static getDerivedStateFromProps = (props, state) => {
-
         if (props.uuid !== state.key) return { ...state, key: props.key };
         else return state;
     };
@@ -71,7 +70,7 @@ class TaskView extends React.PureComponent {
         const { Request = {} } = this.context;
         const { actionType } = this.state;
         const idTask = !_.isEmpty(routeDataActive) && key ? key : keyProps ? keyProps : "";
-        if (_.isEmpty(caches) || (key && !caches[key]) || !key && onLoadCacheData) {
+        if (_.isEmpty(caches) || (key && !caches[key]) || (!key && onLoadCacheData)) {
             onLoadCacheData({ actionType, depKey: idTask, depStore: "tasks", store: "jurnalworks" });
             try {
                 const rest = new Request();
@@ -80,24 +79,23 @@ class TaskView extends React.PureComponent {
                 if (response && response.status === 200) {
                     const { data: { response: { metadata = [] } = {} } = {} } = response || {};
 
-                    const filteredUsers = metadata.map(user => {
-                        const { _id = "", displayName = "" } = user;
+                    const filteredUsers = metadata
+                        .map(user => {
+                            const { _id = "", displayName = "" } = user;
 
-                        if (!user || !_id || !displayName) return null;
+                            if (!user || !_id || !displayName) return null;
 
-                        return {
-                            _id,
-                            displayName
-                        }
-                    }).filter(Boolean);
+                            return {
+                                _id,
+                                displayName
+                            };
+                        })
+                        .filter(Boolean);
 
                     this.setState({
                         filteredUsers
                     });
-
-
                 } else throw new Error("fail load user list");
-
             } catch (err) {
                 message.error("Ошибка загрузки сотрудников.");
                 console.error(err);
@@ -107,42 +105,49 @@ class TaskView extends React.PureComponent {
 
     componentDidUpdate = async (props, state) => {
         const { isLoadingFiles = false, shouldRefresh = false } = this.state;
-        const { router: { routeDataActive: { key = "" } = {}, routeDataActive = {} } } = this.props;
+        const {
+            router: { routeDataActive: { key = "" } = {}, routeDataActive = {} }
+        } = this.props;
         const { Request = {} } = this.context;
 
-        if (!isLoadingFiles && routeDataActive["_id"] || shouldRefresh) {
+        if ((!isLoadingFiles && routeDataActive["_id"]) || shouldRefresh) {
             try {
-                this.setState({
-                    shouldRefresh: false,
-                    isLoadingFiles: true
-                }, async () => {
-                    const rest = new Request();
-                    const { data: { response = null } = {} } = await rest.sendRequest(`/tasks/load/file`, "POST",
-                        {
-                            queryParams: {
-                                taskId: routeDataActive["_id"]
-                            }
-                        });
-
-                    if (response && response.done) {
-                        const { metadata: filesArray } = response;
-
-                        this.setState({
-                            filesArray: filesArray.map(it => {
-                                const { name, path_display: url, id: uid } = it;
-                                const [module, taskId, filename] = url.slice(1).split(/\//gi);
-
-                                return {
-                                    name,
-                                    url: `${rest.getApi()}/${module}/download/${taskId}/${filename}`,
-                                    status: "done",
-                                    uid
+                this.setState(
+                    {
+                        shouldRefresh: false,
+                        isLoadingFiles: true
+                    },
+                    async () => {
+                        const rest = new Request();
+                        const { data: { response = null } = {} } = await rest.sendRequest(
+                            "/system/tasks/load/file",
+                            "POST",
+                            {
+                                queryParams: {
+                                    taskId: routeDataActive["_id"]
                                 }
-                            })
-                        });
+                            }
+                        );
 
+                        if (response && response.done) {
+                            const { metadata: filesArray } = response;
+
+                            this.setState({
+                                filesArray: filesArray.map(it => {
+                                    const { name, path_display: url, id: uid } = it;
+                                    const [module, taskId, filename] = url.slice(1).split(/\//gi);
+
+                                    return {
+                                        name,
+                                        url: `${rest.getApi()}/system/${module}/download/${taskId}/${filename}`,
+                                        status: "done",
+                                        uid
+                                    };
+                                })
+                            });
+                        }
                     }
-                });
+                );
             } catch (err) {
                 console.error(err);
             }
@@ -155,22 +160,21 @@ class TaskView extends React.PureComponent {
         this.setState({
             filesArray: [...fileList],
             shouldRefresh
-        })
-    }
+        });
+    };
 
-    onRemoveFile = async (file) => {
+    onRemoveFile = async file => {
         try {
             const { filesArray } = this.state;
             const { Request = {} } = this.context;
             if (!file) return;
 
             const rest = new Request();
-            const { data: { response = null } = {} } = await rest.sendRequest(`/tasks/delete/file`, "DELETE",
-                {
-                    queryParams: {
-                        file
-                    }
-                });
+            const { data: { response = null } = {} } = await rest.sendRequest(`/system/tasks/delete/file`, "DELETE", {
+                queryParams: {
+                    file
+                }
+            });
 
             if (response && response.done) {
                 const { metadata = {} } = response;
@@ -181,11 +185,14 @@ class TaskView extends React.PureComponent {
                     throw new Error("id files not equal");
                 }
 
-                this.setState({
-                    filesArray: filesArray.filter(it => it.uid !== idResponse)
-                }, () => {
-                    message.success("Файл успешно удален");
-                });
+                this.setState(
+                    {
+                        filesArray: filesArray.filter(it => it.uid !== idResponse)
+                    },
+                    () => {
+                        message.success("Файл успешно удален");
+                    }
+                );
             } else throw new Error("Invalid delete file");
         } catch (err) {
             console.error(err);
@@ -317,7 +324,7 @@ class TaskView extends React.PureComponent {
                 key: modeControllEdit["key"] || "",
                 updateItem: { ...validHash },
                 item: { ...routeDataActive },
-                store: "tasks",
+                store: "tasks"
             })
                 .then(() => {
                     this.onRejectEdit(event);
@@ -370,8 +377,8 @@ class TaskView extends React.PureComponent {
                             {item && item.date && date !== "Invalid date"
                                 ? date
                                 : item[0]
-                                    ? item[0].date
-                                    : "не установлено"}
+                                ? item[0].date
+                                : "не установлено"}
                         </p>
                         <p>
                             <span className="title">Коментарии:</span>
@@ -380,10 +387,10 @@ class TaskView extends React.PureComponent {
                             {item && item.description
                                 ? item.description
                                 : Array.isArray(item)
-                                    ? item[0] && item[0].description
-                                        ? item[0].description
-                                        : "не установлено"
-                                    : "не установлено"}
+                                ? item[0] && item[0].description
+                                    ? item[0].description
+                                    : "не установлено"
+                                : "не установлено"}
                         </p>
                     </div>
                 );
@@ -401,7 +408,6 @@ class TaskView extends React.PureComponent {
             path,
             udata = {}
         } = this.props;
-
 
         const {
             mode,
@@ -453,10 +459,10 @@ class TaskView extends React.PureComponent {
             ? status === "Выполнен"
                 ? "done"
                 : status === "Закрыт"
-                    ? "close"
-                    : status === "В работе"
-                        ? "active"
-                        : null
+                ? "close"
+                : status === "В работе"
+                ? "active"
+                : null
             : null;
 
         if (key) {
@@ -551,8 +557,8 @@ class TaskView extends React.PureComponent {
                                                 {Array.isArray(editor) && editor.length === 1
                                                     ? editor
                                                     : Array.isArray(editor) && editor.length > 1
-                                                        ? editor.join(",")
-                                                        : null}
+                                                    ? editor.join(",")
+                                                    : null}
                                             </Output>
                                         ) : modeControll === "edit" && modeControllEdit ? (
                                             <Select
@@ -565,13 +571,11 @@ class TaskView extends React.PureComponent {
                                                 placeholder="выберете исполнителя"
                                                 optionLabelProp="label"
                                             >
-                                                {
-                                                    filteredUsers.map(it => (
-                                                        <Option key={it._id} value={it.displayName} label={it.displayName}>
-                                                            <span>{it.displayName}</span>
-                                                        </Option>
-                                                    ))
-                                                }
+                                                {filteredUsers.map(it => (
+                                                    <Option key={it._id} value={it.displayName} label={it.displayName}>
+                                                        <span>{it.displayName}</span>
+                                                    </Option>
+                                                ))}
                                             </Select>
                                         ) : null}
                                     </Descriptions.Item>
@@ -584,8 +588,8 @@ class TaskView extends React.PureComponent {
                                                     modeControllEdit.date && modeControllEdit.date[0]
                                                         ? modeControllEdit.date[0]
                                                         : date[0]
-                                                            ? date[0]
-                                                            : moment(),
+                                                        ? date[0]
+                                                        : moment(),
                                                     "DD.MM.YYYY"
                                                 )}
                                                 className="dateStartEdit"
@@ -604,8 +608,8 @@ class TaskView extends React.PureComponent {
                                                     modeControllEdit.date && modeControllEdit.date[1]
                                                         ? modeControllEdit.date[1]
                                                         : date[1]
-                                                            ? date[1]
-                                                            : moment(),
+                                                        ? date[1]
+                                                        : moment(),
                                                     "DD.MM.YYYY"
                                                 )}
                                                 className="dateEndEdit"
@@ -646,12 +650,7 @@ class TaskView extends React.PureComponent {
                                         module="tasks"
                                     />
                                     <p className="descriptionTask__comment">Коментарии</p>
-                                    <Comments
-                                        udata={udata}
-                                        rules={true}
-                                        onUpdate={onUpdate}
-                                        data={routeDataActive}
-                                    />
+                                    <Comments udata={udata} rules={true} onUpdate={onUpdate} data={routeDataActive} />
                                 </div>
                             </Scrollbars>
                         </div>
@@ -661,8 +660,8 @@ class TaskView extends React.PureComponent {
                                 {!jurnalDataKeys ? (
                                     <Empty description={<span>Нету данных в журнале</span>} />
                                 ) : (
-                                        this.renderWorkJurnal(jurnalDataKeys)
-                                    )}
+                                    this.renderWorkJurnal(jurnalDataKeys)
+                                )}
                             </Scrollbars>
                         </div>
                     </div>
@@ -673,11 +672,7 @@ class TaskView extends React.PureComponent {
 }
 
 const mapStateTopProps = state => {
-    const {
-        router = {},
-        publicReducer = {},
-        publicReducer: { udata = {} } = {}
-    } = state || {};
+    const { router = {}, publicReducer = {}, publicReducer: { udata = {} } = {} } = state || {};
 
     return {
         router,
