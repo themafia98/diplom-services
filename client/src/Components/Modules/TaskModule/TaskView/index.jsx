@@ -124,7 +124,7 @@ class TaskView extends React.PureComponent {
                             "POST",
                             {
                                 queryParams: {
-                                    taskId: routeDataActive["_id"]
+                                    entityId: routeDataActive["_id"]
                                 }
                             }
                         );
