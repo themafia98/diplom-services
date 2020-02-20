@@ -7,7 +7,7 @@
     "license": "MIT",
     "scripts": {
         "start": "run-p dev:**",
-        "heroku-postbuild": "cd client && npm install && yarn add node-sass --save-dev && cd ../ && npm run buildprod",
+        "heroku-postbuild": "cd client && npm install && yarn add node-sass --dev && cd ../ && npm run buildprod",
         "dev:server": "cross-env NODE_ENV=development nodemon ./server/src/index.ts --pretty",
         "dev:app": "cd client && npm start",
         "build": "run-p build:**",
