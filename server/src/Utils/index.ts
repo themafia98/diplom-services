@@ -21,7 +21,11 @@ namespace Utils {
                     query = { [checkKey]: { $in: field } };
                 }
 
+
+
                 query = { type, [checkKey]: field };
+
+                console.log(query);
 
                 const result = await model.find(query);
                 console.log("query checker:", query);

@@ -56,6 +56,17 @@ export default (state = initialState, action) => {
         case ADD_CHAT_MSG: {
             const { chat: { chatToken = "" } = {}, chat = {} } = state || {};
             const msg = action.payload;
+
+            const messages = [...state.chat.listdataMsgs[chatToken]];
+
+            const validMessages = messages.map(msgItem => {
+
+                if (msgItem._id !== msg._id) {
+                    return msgItem;
+                }
+                return null;
+            }).filter(Boolean);
+
             return {
                 ...state,
                 chat: {
@@ -63,7 +74,7 @@ export default (state = initialState, action) => {
                     listdataMsgs: {
                         ...chat.listdataMsgs,
                         [chatToken]: [
-                            ...state.chat.listdataMsgs[chatToken],
+                            ...validMessages,
                             { ...msg }
                         ]
                     }

@@ -6,16 +6,14 @@
     "author": "Pavel Petrovich <gaara33377@gmail.com>",
     "license": "MIT",
     "scripts": {
-        "dev": "run-p dev:**",
-        "heroku-postbuild": "cd client && yarn install && yarn add node-sass --dev && cd ../ && yarn buildprod",
-        "start": "node ./server/build/index.js",
+        "start": "run-p dev:**",
+        "heroku-postbuild": "cd client && npm install && npm install node-sass --save-dev && cd ../ && npm run buildprod",
         "dev:server": "cross-env NODE_ENV=development nodemon ./server/src/index.ts --pretty",
-        "dev:app": "cd client && yarn start",
+        "dev:app": "cd client && npm start",
         "build": "run-p build:**",
         "buildprod": "cd client && yarn build && cd ../ && cd server && tsc",
-        "client": "cd client && yarn build",
         "build:ts": "cd server && tsc",
-        "build:app": "cd client && yarn build && copyfiles -f -V src/build/**/*.* /var/www"
+        "build:app": "cd client && npm build && copyfiles -f -V src/build/**/*.* /var/www"
     },
     "dependencies": {
         "@types/uuid": "^3.4.7",
