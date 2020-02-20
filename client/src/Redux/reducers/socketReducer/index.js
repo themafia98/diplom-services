@@ -15,7 +15,8 @@ const initialState = {
         limitList: null,
         usersList: [],
         listdata: [],
-        listdataMsgs: {}
+        listdataMsgs: {},
+        isFake: null
     }
 };
 
@@ -38,17 +39,18 @@ export default (state = initialState, action) => {
 
         case SET_ACTIVE_CHAT_TOKEN: {
             const { chat = {} } = state;
-            const { tokenRoom, listdataMsgs = [] } = action.payload || {};
+            const { tokenRoom, listdataMsgs = [], isFake = null } = action.payload || {};
 
             return {
                 ...state,
                 chat: {
                     ...state.chat,
                     chatToken: tokenRoom || { chatToken: null },
-                    listdataMsgs: {
+                    listdataMsgs: !isFake ? {
                         ...chat.listdataMsgs,
                         [tokenRoom]: [...listdataMsgs]
-                    }
+                    } : {},
+                    isFake
                 }
             };
         }

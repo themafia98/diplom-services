@@ -14,6 +14,19 @@ namespace Chat {
     const Controller = Decorators.Controller;
     const { getResponseJson, parsePublicData } = Utils;
 
+    export const createRealRoom = async (fakeMsg: Record<string, any>, interlocutorId: string): Promise<ParserResult> => {
+
+        const actionPath: string = "chatRoom";
+        const actionType: string = "create_FakeRoom";
+
+        const actionCreateRoom = new Action.ActionParser({ actionPath, actionType });
+        const queryParams = { fakeMsg, interlocutorId };
+        const data: ParserResult = await actionCreateRoom.getActionData(queryParams);
+        console.log("CreateRealRoom", data);
+
+        return data;
+    };
+
     @Controller("/chat")
     export class ChatController {
         @Post({ path: "/loadChats", private: true })

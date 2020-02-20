@@ -79,12 +79,12 @@ const loadActiveChats = payload => async (dispatch, getState, { schema, Request,
 
 };
 
-export const loadingDataByToken = (token, listdata, activeModule, isFake = false) =>
+export const loadingDataByToken = (token, listdata, activeModule, isFake = null) =>
     async (dispatch, getState, { schema, Request, clientDB }) => {
         try {
 
             if (isFake) {
-                dispatch(setActiveChatToken({ listdata, tokenRoom: `${token}__fakeRoom` }));
+                dispatch(setActiveChatToken({ listdata: [], tokenRoom: `${token}__fakeRoom`, isFake }));
                 return;
             }
 

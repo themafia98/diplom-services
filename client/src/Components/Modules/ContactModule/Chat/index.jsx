@@ -32,7 +32,7 @@ class Chat extends React.PureComponent {
         const {
             chat: {
                 chatToken: tokenRoom = null,
-                listdata = []
+                usersList = []
             } = {},
             udata: { _id: uid } = {},
             onSetActiveChatToken,
@@ -77,6 +77,14 @@ class Chat extends React.PureComponent {
 
         }));
 
+        this.socket.on("initialUpdateFakeRoom", data => {
+            const { id = "", membersIds = [], token = "" } = data || {};
+
+            if (!id || !membersIds || !token) return;
+            debugger;
+            this.setActiveChatRoom({}, id, membersIds = [], token = "");
+        });
+
         this.socket.on("error", () => {
             console.log("ws error");
             onSetSocketConnection({ socketConnection: false, activeModule: "chat" });
@@ -91,6 +99,7 @@ class Chat extends React.PureComponent {
             activeSocketModule = null,
             onSetSocketConnection,
             onLoadActiveChats,
+            chat: { usersList = [] } = {},
             udata: { _id: uid } = {},
         } = this.props;
         const { shouldUpdate = false } = this.state;
@@ -143,6 +152,7 @@ class Chat extends React.PureComponent {
 
     pushMessage = (event, msg) => {
         const {
+            interlocutorIdFakeRoom = null,
             chat: { chatToken: tokenRoom = "", group = "" } = {},
             udata: { displayName, _id: authorId = "" } = {}
         } = this.props;
@@ -151,6 +161,8 @@ class Chat extends React.PureComponent {
         if (_.isNull(tokenRoom)) {
             return notification.error({ message: "Ошибка чата", description: "Данные повреждены." });
         }
+
+
 
         if (!msg) return message.error("Недопустимые значения или вы ничего не ввели.");
 
@@ -165,15 +177,18 @@ class Chat extends React.PureComponent {
             msg
         };
 
-        if (tokenRoom.includes("__fakeRoom")) {
-            this.socket.emit("initFakeRoom", parseMsg);
+        if (tokenRoom.includes("__fakeRoom") && interlocutorIdFakeRoom) {
+
+            const interlocutorId = interlocutorIdFakeRoom;
+
+            this.socket.emit("initFakeRoom", { fakeMsg: parseMsg, interlocutorId });
             return;
         }
 
         this.socket.emit("newMessage", parseMsg);
     };
 
-    setActiveChatRoom = (event, id, token = "") => {
+    setActiveChatRoom = (event, id, membersIds = [], token = "") => {
         const {
             chat: {
                 chatToken = null,
@@ -182,9 +197,9 @@ class Chat extends React.PureComponent {
             udata: { displayName = "" } = {},
             onLoadingDataByToken = null
         } = this.props;
-
+        debugger;
         if (id < 0) {
-            onLoadingDataByToken(token, listdata, "chat", true);
+            onLoadingDataByToken(token, listdata, "chat", membersIds[1]);
             return;
         }
 
@@ -343,7 +358,7 @@ class Chat extends React.PureComponent {
 const mapStateToProps = state => {
     const {
         chat = {},
-        chat: { chatToken: tokenRoom = null } = {},
+        chat: { chatToken: tokenRoom = null, isFake: interlocutorIdFakeRoom = null } = {},
         socketConnection = false,
         activeSocketModule = null,
         socketErrorStatus = null
@@ -357,7 +372,8 @@ const mapStateToProps = state => {
         activeSocketModule,
         socketErrorStatus,
         tokenRoom,
-        udata
+        udata,
+        interlocutorIdFakeRoom
     };
 };
 

@@ -178,6 +178,44 @@ namespace Action {
                             return <Document | null>actionData;
                         }
 
+                        if (this.getActionType() === "create_FakeRoom") {
+                            const msg: Record<string, any> = (actionParam as Record<string, any>).fakeMsg || {};
+                            const interlocutorId: string = (actionParam as Record<string, string>).interlocutorId;
+
+
+                            if (!msg || !msg.authorId || !interlocutorId || !msg.tokenRoom || !msg.moduleName) {
+                                return null;
+                            }
+
+                            const room = {
+                                type: "single",
+                                moduleName: msg.moduleName,
+                                tokenRoom: msg.tokenRoom,
+                                membersIds: [msg.authorId, interlocutorId],
+                                groupName: msg.groupName ? msg.groupName : null
+                            };
+
+                            console.log("generate room:", room);
+
+                            const actionData: Document | null = await this.createEntity(model, room);
+
+                            console.log("fakeChatRoomData", actionData);
+
+                            if (!actionData) {
+                                return null;
+                            }
+
+                            const modelMsg: Model<Document> | null = getModelByName("chatMsg", "chatMsg");
+
+                            if (!modelMsg) return null;
+
+                            const saveMsg = await modelMsg.create(msg);
+
+                            if (!saveMsg) return null;
+
+                            return actionData;
+                        }
+
                         break;
                     }
 
@@ -187,9 +225,7 @@ namespace Action {
                         if (!model) return null;
 
                         if (this.getActionType() === "get_msg_by_token") {
-                            const { options: { tokenRoom = "", moduleName = "", membersIds = [] } = {} } = <
-                                Record<string, any>
-                            >actionParam;
+                            const { options: { tokenRoom = "", moduleName = "", membersIds = [] } = {} } = <Record<string, any>>actionParam;
 
                             const query: ActionParams = { tokenRoom, moduleName, authorId: { $in: membersIds } };
                             return this.getAll(model, query);

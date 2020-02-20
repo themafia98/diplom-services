@@ -4,10 +4,13 @@ import { Socket } from 'socket.io';
 import { Model, Document } from "mongoose";
 import WebSocketWorker from '../../../Models/WebSocketWorker';
 import Database from "../../../Models/Database";
+import Chat from "./";
 import Utils from "../../../Utils";
+import { ParserResult } from '../../../Utils/Types';
 
 export default (ws: WebSocketWorker, dbm: Readonly<Database.ManagmentDatabase>) => {
     const { getModelByName } = Utils;
+    const { createRealRoom } = Chat;
     const workerId = cluster.worker.id;
     const worker = ws.getWorker(workerId);
 
@@ -15,7 +18,7 @@ export default (ws: WebSocketWorker, dbm: Readonly<Database.ManagmentDatabase>) 
         console.log("ws connection");
         socket.emit("connection", true);
 
-        socket.broadcast.on("newMessage", async (msgObj) => {
+        socket.broadcast.on("newMessage", async (msgObj: Record<string, any>) => {
             const { tokenRoom = "" } = msgObj || {};
             try {
                 const model: Model<Document> | null = getModelByName("chatMsg", "chatMsg");
@@ -37,6 +40,24 @@ export default (ws: WebSocketWorker, dbm: Readonly<Database.ManagmentDatabase>) 
                 console.error(err.message);
             }
         });
+
+        socket.on("initFakeRoom", async (fakeData: Record<string, any>) => {
+            const { fakeMsg = {}, interlocutorId = "" } = fakeData || {};
+
+
+            if (!_.isEmpty(fakeMsg) && interlocutorId) {
+                const result: ParserResult = await createRealRoom(fakeMsg, interlocutorId);
+                console.log(result);
+                if (result) {
+                    socket.emit("initialUpdateFakeRoom", {
+                        id: 1,
+                        token: (<any>result).tokenRoom,
+                        membersIds: [...(<any>result).membersIds]
+                    });
+                }
+
+            }
+        })
 
         socket.on("onChatRoomActive", ({ token: tokenRoom, displayName = "" }) => {
             socket.join(tokenRoom);

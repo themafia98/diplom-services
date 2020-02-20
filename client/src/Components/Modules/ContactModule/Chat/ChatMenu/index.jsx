@@ -89,7 +89,7 @@ const ChatMenu = props => {
                                     return (
                                         <Item
                                             className={[tokenRoom === it.tokenRoom ? "activeChat" : null].join(" ")}
-                                            onClick={e => setActiveChatRoom(e, it._id, it.tokenRoom)}
+                                            onClick={e => setActiveChatRoom(e, it._id, membersIds, it.tokenRoom)}
                                             key={(it, i)}
                                         >
                                             <Meta
