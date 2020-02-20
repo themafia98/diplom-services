@@ -26,8 +26,7 @@ namespace Database {
                     useNewUrlParser: true,
                     useCreateIndex: true,
                     useUnifiedTopology: true,
-                    keepAlive: true,
-                    reconnectTries: Number.MAX_VALUE
+                    keepAlive: true
                 },
                 err => {
                     if (err) console.error(err);
