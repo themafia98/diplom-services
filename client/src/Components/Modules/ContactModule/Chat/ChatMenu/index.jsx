@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import _ from 'lodash';
 import Scrollbars from "react-custom-scrollbars";
 import { Skeleton, List, Avatar, Button } from 'antd';
+import uuid from 'uuid';
 
 const { Item: { Meta } = {}, Item = {} } = List || {};
 
@@ -15,6 +16,7 @@ const ChatMenu = props => {
         tokenRoom,
         parseChatJson = null,
         onCreateRoom = null,
+        uid = "",
         setActiveChatRoom
     } = props || {};
 
@@ -35,6 +37,29 @@ const ChatMenu = props => {
         });
     }
 
+    const roomsRenderer = () => {
+        const singleRooms = listdata.filter(room => room.type === "single");
+        const rooms = [];
+        for (let j = 0; j < usersList.length; j++) {
+            const user = usersList[j];
+
+            const room = singleRooms.find(room => !room.membersIds.includes(user._id)) || null;
+
+            if (!room) {
+                rooms.push({
+                    _id: ~~(Math.random() * -10000000),
+                    type: "single",
+                    moduleName: "chat",
+                    tokenRoom: uuid(),
+                    membersIds: uid !== user._id ? [uid, user._id] : [null]
+                });
+                continue;
+            }
+        }
+
+        return [...singleRooms, ...rooms];
+    }
+
     return (
         <div className="col-chat-menu">
             <div className="menuLoading-skeleton">
@@ -44,7 +69,7 @@ const ChatMenu = props => {
                     ) : (
                             <List
                                 key="list-chat"
-                                dataSource={listdata}
+                                dataSource={roomsRenderer()}
                                 renderItem={(it, i) => {
                                     const { membersIds = [], type } = it || {};
 
@@ -64,7 +89,7 @@ const ChatMenu = props => {
                                     return (
                                         <Item
                                             className={[tokenRoom === it.tokenRoom ? "activeChat" : null].join(" ")}
-                                            onClick={e => setActiveChatRoom(e, it.tokenRoom)}
+                                            onClick={e => setActiveChatRoom(e, it._id, it.tokenRoom)}
                                             key={(it, i)}
                                         >
                                             <Meta

@@ -154,20 +154,26 @@ class Chat extends React.PureComponent {
 
         if (!msg) return message.error("Недопустимые значения или вы ничего не ввели.");
 
-        this.socket.emit("newMessage",
-            {
-                authorId,
-                tokenRoom,
-                displayName,
-                date: moment().format("DD.MM.YYYY HH:mm:ss"),
-                groupName: group,
-                moduleName: "chat",
-                groupName: "single",
-                msg
-            });
+        const parseMsg = {
+            authorId,
+            tokenRoom: tokenRoom.split("__fake")[0],
+            displayName,
+            date: moment().format("DD.MM.YYYY HH:mm:ss"),
+            groupName: group,
+            moduleName: "chat",
+            groupName: "single",
+            msg
+        };
+
+        if (tokenRoom.includes("__fakeRoom")) {
+            this.socket.emit("initFakeRoom", parseMsg);
+            return;
+        }
+
+        this.socket.emit("newMessage", parseMsg);
     };
 
-    setActiveChatRoom = (event, token = "") => {
+    setActiveChatRoom = (event, id, token = "") => {
         const {
             chat: {
                 chatToken = null,
@@ -176,6 +182,11 @@ class Chat extends React.PureComponent {
             udata: { displayName = "" } = {},
             onLoadingDataByToken = null
         } = this.props;
+
+        if (id < 0) {
+            onLoadingDataByToken(token, listdata, "chat", true);
+            return;
+        }
 
         if (chatToken !== token || !token) {
 
@@ -271,6 +282,7 @@ class Chat extends React.PureComponent {
                 {this.renderModal(visible)}
                 <div className="chat__main">
                     <ChatMenu
+                        uid={uid}
                         socketConnection={socketConnection}
                         socketErrorStatus={socketErrorStatus}
                         listdata={listdata}
@@ -354,7 +366,9 @@ const mapDispatchToProps = dispatch => {
         onAddMsg: async payload => dispatch(addMsg(payload)),
         onLoadActiveChats: async payload => dispatch(loadActiveChats(payload)),
         onSetSocketConnection: status => dispatch(setSocketConnection(status)),
-        onLoadingDataByToken: (token, listdata, moduleName) => dispatch(loadingDataByToken(token, listdata, moduleName))
+        onLoadingDataByToken: (token, listdata, moduleName, isFake) => {
+            dispatch(loadingDataByToken(token, listdata, moduleName, isFake))
+        }
     };
 };
 
