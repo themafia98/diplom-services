@@ -11,7 +11,7 @@
         "dev:server": "cross-env NODE_ENV=development nodemon ./server/src/index.ts --pretty",
         "dev:app": "cd client && npm start",
         "build": "run-p build:**",
-        "preinstall": "cd client && npm install && cd ../",
+        "preinstall": "cd client && npm install && cd ../ && npm run buildprod",
         "buildprod": "cd client && npm run build && cd ../ && cd server && tsc",
         "build:ts": "cd server && tsc",
         "build:app": "cd client && npm run build && copyfiles -f -V src/build/**/*.* /var/www"
