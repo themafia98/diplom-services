@@ -79,7 +79,7 @@ const loadActiveChats = payload => async (dispatch, getState, { schema, Request,
 
 };
 
-export const loadingDataByToken = (token, listdata, activeModule, isFake = null) =>
+const loadingDataByToken = (token, listdata, activeModule, isFake = null) =>
     async (dispatch, getState, { schema, Request, clientDB }) => {
         try {
 
@@ -128,4 +128,5 @@ export const loadingDataByToken = (token, listdata, activeModule, isFake = null)
 
     };
 
-export { loadActiveChats };
+
+export { loadActiveChats, loadingDataByToken };

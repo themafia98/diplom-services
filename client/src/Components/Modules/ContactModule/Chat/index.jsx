@@ -8,7 +8,7 @@ import ChatMenu from "./ChatMenu";
 
 import { notification, message } from "antd";
 
-import { setSocketConnection, addMsg } from "../../../../Redux/actions/socketActions";
+import { setSocketConnection, addMsg, updateRoom } from "../../../../Redux/actions/socketActions";
 import { loadActiveChats, loadingDataByToken } from "../../../../Redux/actions/socketActions/middleware";
 
 import Loader from "../../../Loader";
@@ -71,19 +71,21 @@ class Chat extends React.PureComponent {
             }
         });
 
+
+        this.socket.on("updateFakeRoom", entity => {
+            const { onUpdateRoom = null } = this.props;
+            const { room = {}, msg = {} } = entity || {};
+            console.log("updateFakeRoom client:", room);
+            if (!room || _.isEmpty(room)) return;
+
+            onUpdateRoom({ room, msg });
+        });
+
         this.socket.on("msg", ((msgObj) => {
 
             if (_.isObject(msgObj)) onAddMsg(msgObj);
 
         }));
-
-        this.socket.on("initialUpdateFakeRoom", data => {
-            const { id = "", membersIds = [], token = "" } = data || {};
-
-            if (!id || !membersIds || !token) return;
-            debugger;
-            this.setActiveChatRoom({}, id, membersIds = [], token = "");
-        });
 
         this.socket.on("error", () => {
             console.log("ws error");
@@ -197,7 +199,7 @@ class Chat extends React.PureComponent {
             udata: { displayName = "" } = {},
             onLoadingDataByToken = null
         } = this.props;
-        debugger;
+
         if (id < 0) {
             onLoadingDataByToken(token, listdata, "chat", membersIds[1]);
             return;
@@ -206,7 +208,7 @@ class Chat extends React.PureComponent {
         if (chatToken !== token || !token) {
 
             if (onLoadingDataByToken) {
-                onLoadingDataByToken(token, listdata, "chat");
+                onLoadingDataByToken(token, listdata, "chat", false);
                 this.socket.emit("onChatRoomActive", { token, displayName });
             }
 
@@ -267,9 +269,13 @@ class Chat extends React.PureComponent {
             if (membersIds.length < 2) return null;
 
             const InterlocutorId = membersIds[1];
-            const Interlocutor = usersList.find(user => user._id === InterlocutorId) || {};
+            let interlocutor = usersList.find(user => user._id === InterlocutorId) || null;
 
-            const { [mode]: field = "" } = Interlocutor || {};
+            if (!interlocutor) {
+                interlocutor = usersList.find(user => user._id === membersIds[0]) || {};
+            }
+
+            const { [mode]: field = "" } = interlocutor || {};
             return field;
         }
 
@@ -311,7 +317,9 @@ class Chat extends React.PureComponent {
                         <div className="chat_content">
                             <div className="chat_content__header">
                                 <p className="chat_content__header__title">
-                                    Окно чата{tokenRoom ? <span> | {tokenRoom} </span> : null}
+                                    Окно чата {
+
+                                    } {tokenRoom ? <span> | {tokenRoom} </span> : null}
                                 </p>
                                 <p
                                     className={[
@@ -384,7 +392,8 @@ const mapDispatchToProps = dispatch => {
         onSetSocketConnection: status => dispatch(setSocketConnection(status)),
         onLoadingDataByToken: (token, listdata, moduleName, isFake) => {
             dispatch(loadingDataByToken(token, listdata, moduleName, isFake))
-        }
+        },
+        onUpdateRoom: payload => dispatch(updateRoom(payload)),
     };
 };
 

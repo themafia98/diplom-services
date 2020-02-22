@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
 import Scrollbars from "react-custom-scrollbars";
 import { Skeleton, List, Avatar, Button } from 'antd';
@@ -20,6 +20,9 @@ const ChatMenu = props => {
         setActiveChatRoom
     } = props || {};
 
+    const [iDs, setIDs] = useState([]);
+    const [rooms, updateRooms] = useState([]);
+
     const generateSkeleton = (counter = 5) => {
         return _.fill(Array(counter), "-_-").map((it, i) => {
             return (
@@ -37,28 +40,40 @@ const ChatMenu = props => {
         });
     }
 
-    const roomsRenderer = () => {
+    useEffect(() => {
+        const ids = [];
+        let i = usersList.length > iDs.length ? iDs.length - 1 : 0;
+
+        for (i; i < usersList.length; i++) {
+            ids.push(uuid());
+        }
+
+        setIDs(ids);
+
+    }, [usersList.length]);
+
+    useEffect(() => {
         const singleRooms = listdata.filter(room => room.type === "single");
         const rooms = [];
         for (let j = 0; j < usersList.length; j++) {
             const user = usersList[j];
 
-            const room = singleRooms.find(room => !room.membersIds.includes(user._id)) || null;
+            const room = singleRooms.find(room => room.membersIds.includes(user._id)) || null;
 
             if (!room) {
                 rooms.push({
                     _id: ~~(Math.random() * -10000000),
                     type: "single",
                     moduleName: "chat",
-                    tokenRoom: uuid(),
+                    tokenRoom: iDs[j],
                     membersIds: uid !== user._id ? [uid, user._id] : [null]
                 });
                 continue;
             }
         }
 
-        return [...singleRooms, ...rooms];
-    }
+        updateRooms([...singleRooms, ...rooms]);
+    }, [usersList, listdata, iDs]);
 
     return (
         <div className="col-chat-menu">
@@ -69,10 +84,9 @@ const ChatMenu = props => {
                     ) : (
                             <List
                                 key="list-chat"
-                                dataSource={roomsRenderer()}
+                                dataSource={rooms}
                                 renderItem={(it, i) => {
                                     const { membersIds = [], type } = it || {};
-
 
                                     const displayName = parseChatJson({ type, item: it, mode: "displayName" });
 

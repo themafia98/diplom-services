@@ -3,7 +3,8 @@ import {
     SET_SOCKET_CONNECTION,
     INVALID_LOAD_SOCKET,
     LOAD_CHATS_LIST,
-    ADD_CHAT_MSG
+    ADD_CHAT_MSG,
+    UPDATE_ENTITY_SOCKET
 } from "../../actions/socketActions/const";
 
 const initialState = {
@@ -53,6 +54,26 @@ export default (state = initialState, action) => {
                     isFake
                 }
             };
+        }
+
+        case UPDATE_ENTITY_SOCKET: {
+            const { room: { tokenRoom = "" } = {}, room = {}, msg = {} } = action.payload || {};
+            const { chat: { listdata = [], listdataMsgs = {} } = {} } = state || {};
+
+            const msgs = typeof listdataMsgs === "object" && listdataMsgs !== null ? listdataMsgs : {};
+
+            return {
+                ...state,
+                chat: {
+                    ...state.chat,
+                    chatToken: tokenRoom,
+                    listdata: [...listdata, room],
+                    listdataMsgs: {
+                        ...msgs,
+                        [tokenRoom]: [msg]
+                    },
+                }
+            }
         }
 
         case ADD_CHAT_MSG: {
@@ -105,8 +126,24 @@ export default (state = initialState, action) => {
                     } = {}
                 } = {}
             } = action.payload || {};
+            const { chat: { tokenRoom = "" } = {} } = state;
 
-            const sortListdata = [...listdata].sort((a, b) => Date(a.date) - Date(b.date));
+            let sortListdata = [...listdata].sort((a, b) => Date(a.date) - Date(b.date));
+            const duplicateFixed = sortListdata.filter(item => {
+                const isExists = item && item.tokenRoom;
+                const findItem = isExists ? item.tokenRoom === tokenRoom : null;
+                if (findItem) return item;
+            });
+
+            const fakeItem = duplicateFixed.find(it => it.tokenRoom.include("__fakeRoom"));
+
+            sortListdata = fakeItem ? sortListdata.map(it => {
+                if (it.tokenRoom.include("__fakeRoom")) {
+                    return null;
+                }
+                return it;
+            }).filter(Boolean) : sortListdata;
+
 
             return {
                 ...state,

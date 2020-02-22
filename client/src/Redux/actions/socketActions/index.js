@@ -3,7 +3,8 @@ import {
     SET_SOCKET_CONNECTION,
     LOAD_CHATS_LIST,
     INVALID_LOAD_SOCKET,
-    ADD_CHAT_MSG
+    ADD_CHAT_MSG,
+    UPDATE_ENTITY_SOCKET
 } from "./const";
 
 export const setActiveChatToken = state => {
@@ -40,3 +41,10 @@ export const setSocketError = state => {
         payload: state,
     }
 };
+
+export const updateRoom = state => {
+    return {
+        type: UPDATE_ENTITY_SOCKET,
+        payload: state
+    }
+}

@@ -18,6 +18,12 @@ export default (ws: WebSocketWorker, dbm: Readonly<Database.ManagmentDatabase>) 
         console.log("ws connection");
         socket.emit("connection", true);
 
+        const callbackFakeRoom = (result: ParserResult, fakeMsg: object) => {
+            const { tokenRoom = "" } = <Record<string, any>>result || {};
+            socket.join(tokenRoom);
+            worker.to(tokenRoom).emit("updateFakeRoom", { room: result, msg: fakeMsg });
+        }
+
         socket.broadcast.on("newMessage", async (msgObj: Record<string, any>) => {
             const { tokenRoom = "" } = msgObj || {};
             try {
@@ -47,13 +53,10 @@ export default (ws: WebSocketWorker, dbm: Readonly<Database.ManagmentDatabase>) 
 
             if (!_.isEmpty(fakeMsg) && interlocutorId) {
                 const result: ParserResult = await createRealRoom(fakeMsg, interlocutorId);
-                console.log(result);
+
                 if (result) {
-                    socket.emit("initialUpdateFakeRoom", {
-                        id: 1,
-                        token: (<any>result).tokenRoom,
-                        membersIds: [...(<any>result).membersIds]
-                    });
+                    console.log("updateFakeRoom", result);
+                    callbackFakeRoom(result, fakeMsg);
                 }
 
             }

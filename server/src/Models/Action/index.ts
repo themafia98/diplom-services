@@ -179,11 +179,13 @@ namespace Action {
                         }
 
                         if (this.getActionType() === "create_FakeRoom") {
+                            const modelMsg: Model<Document> | null = getModelByName("chatMsg", "chatMsg");
                             const msg: Record<string, any> = (actionParam as Record<string, any>).fakeMsg || {};
                             const interlocutorId: string = (actionParam as Record<string, string>).interlocutorId;
 
+                            const isEmptyMsg = !msg || !msg.authorId || !msg.tokenRoom;
 
-                            if (!msg || !msg.authorId || !interlocutorId || !msg.tokenRoom || !msg.moduleName) {
+                            if (!modelMsg || isEmptyMsg || !interlocutorId || !msg.moduleName) {
                                 return null;
                             }
 
@@ -195,24 +197,16 @@ namespace Action {
                                 groupName: msg.groupName ? msg.groupName : null
                             };
 
-                            console.log("generate room:", room);
 
                             const actionData: Document | null = await this.createEntity(model, room);
 
-                            console.log("fakeChatRoomData", actionData);
-
-                            if (!actionData) {
-                                return null;
-                            }
-
-                            const modelMsg: Model<Document> | null = getModelByName("chatMsg", "chatMsg");
-
-                            if (!modelMsg) return null;
+                            if (!actionData) return null;
 
                             const saveMsg = await modelMsg.create(msg);
 
                             if (!saveMsg) return null;
 
+                            console.log("generate room action");
                             return actionData;
                         }
 
