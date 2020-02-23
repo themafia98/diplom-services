@@ -94,7 +94,7 @@ class ModalWindow extends React.PureComponent {
         });
     };
 
-    handleOk = event => {
+    handleOk = async event => {
         const {
             name,
             password,
@@ -123,9 +123,10 @@ class ModalWindow extends React.PureComponent {
         } = this.props;
 
         if (mode === "reg") {
+
             if (name && password && departament && email && !loading) {
-                axios
-                    .post("/rest/reg", {
+                try {
+                    const res = await axios.post("/rest/reg", {
                         email,
                         password,
                         displayName: `${name} ${surname}`,
@@ -133,40 +134,16 @@ class ModalWindow extends React.PureComponent {
                         position: "Master",
                         rules: "full",
                         accept: true
-                    })
-                    .catch(err => console.log(err));
-                // firebase
-                //     .registration(email, password)
-                //     .then(res => {
-                //         if (res.additionalUserInfo.isNewUser)
-                //             firebase.db.collection("users").add({
-                //                 uuid: uuid(),
-                //                 login: login,
-                //                 name: name,
-                //                 surname: surname,
-                //                 departament: departament,
-                //                 email: email,
-                //                 rules: "false",
-                //                 position: "Не установлено",
-                //                 status: "Новый сотрудник"
-                //             });
-                //     })
-                //     .then(res => {
-                //         this.setState({
-                //             ...this.state,
-                //             uuid: uuid(),
-                //             type: null,
-                //             visible: false,
-                //             loading: false,
-                //             jurnal: {
-                //                 timeLost: null,
-                //                 date: moment().format("DD.MM.YYYY HH:mm:ss"),
-                //                 description: null
-                //             },
-                //             error: new Set()
-                //         });
-                //     })
-                //     .catch(error => console.error(error.message));
+                    });
+
+                    if (!res || res.status !== 200) {
+                        throw new Error("Bad registration data");
+                    }
+
+                    this.setState({ ...this.state, visible: false });
+                } catch (error) {
+                    console.error(error);
+                }
             }
         } else if (mode === "jur" && modeEditContent) {
             onUpdate({

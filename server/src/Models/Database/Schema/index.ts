@@ -11,14 +11,14 @@ const userSchema = new Schema(
             dropDups: true,
         },
         passwordHash: { type: String, default: "", required: true },
-        summary: { type: String, default: "", required: true },
-        phone: { type: String, default: "", required: true },
+        summary: { type: String, default: "", },
+        phone: { type: String, default: "", },
         isOnline: { type: Boolean, default: false, required: true },
         departament: { type: String, required: true },
         displayName: { type: String, required: true },
         position: { type: String, required: true },
-        rules: { type: String, required: true },
-        accept: { type: Boolean, required: true }
+        rules: { type: String, default: "guest", required: true },
+        accept: { type: Boolean, default: false, required: true }
     },
     { timestamps: true }
 );

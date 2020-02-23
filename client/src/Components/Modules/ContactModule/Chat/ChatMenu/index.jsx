@@ -54,6 +54,7 @@ const ChatMenu = props => {
 
     useEffect(() => {
         const singleRooms = listdata.filter(room => room.type === "single");
+
         const rooms = [];
         for (let j = 0; j < usersList.length; j++) {
             const user = usersList[j];

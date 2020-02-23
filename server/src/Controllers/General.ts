@@ -22,21 +22,27 @@ namespace General {
         public async reg(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
             try {
                 if (!req.body || (req.body && _.isEmpty(req.body))) throw new Error("Invalid auth data");
+
+                console.log("body:", req.body);
+
                 const service = server.locals;
-                await service.dbm.connection().catch((err: Error): void | Response => {
-                    console.error(err);
-                    if (!res.headersSent) return res.sendStatus(503);
+                const connect = await service.dbm.connection();
+
+                if (!connect) {
+                    console.log("Connect reg:", connect);
+                    return res.sendStatus(503);
+                }
+
+
+                await UserModel.create({ ...req.body, accept: true, rules: "full" }, async (err: Error): ResRequest => {
+
+                    if (err) {
+                        console.error(err);
+                        return res.sendStatus(400);
+                    }
+                    if (!res.headersSent)
+                        return res.sendStatus(200);
                 });
-                if (!res.headersSent)
-                    await UserModel.create({ ...req.body, accept: true, rules: "full" }, async (err: Error): ResRequest => {
-                        await service.dbm.disconnect().catch((err: Error) => console.error(err));
-                        if (err) {
-                            console.error(err);
-                            return res.sendStatus(400);
-                        }
-                        if (!res.headersSent)
-                            return res.sendStatus(200);
-                    });
 
             } catch (err) {
                 console.error(err);

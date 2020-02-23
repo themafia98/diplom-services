@@ -22,6 +22,7 @@ export default (ws: WebSocketWorker, dbm: Readonly<Database.ManagmentDatabase>) 
             const { tokenRoom = "" } = <Record<string, any>>result || {};
             socket.join(tokenRoom);
             worker.to(tokenRoom).emit("updateFakeRoom", { room: result, msg: fakeMsg });
+            socket.broadcast.emit("updateChatsRooms");
         }
 
         socket.broadcast.on("newMessage", async (msgObj: Record<string, any>) => {

@@ -11,6 +11,8 @@ import { notification, message } from "antd";
 import { setSocketConnection, addMsg, updateRoom } from "../../../../Redux/actions/socketActions";
 import { loadActiveChats, loadingDataByToken } from "../../../../Redux/actions/socketActions/middleware";
 
+import ChatModel from "../../../../Models/Chat";
+
 import Loader from "../../../Loader";
 import ChatModal from "./ChatRoom/ChatModal";
 import TitleModule from "../../../TitleModule";
@@ -29,88 +31,77 @@ class Chat extends React.PureComponent {
     socket = null;
 
     componentDidMount = () => {
-        const {
-            chat: {
-                chatToken: tokenRoom = null,
-                usersList = []
-            } = {},
-            udata: { _id: uid } = {},
-            onSetActiveChatToken,
-            onSetSocketConnection,
-            onLoadActiveChats,
-            onAddMsg = null
-        } = this.props;
 
-        this.socket = io("/");
+        this.chat = new ChatModel(io("/"));
 
-        this.socket.on("reconnect_attempt", () => {
-            this.socket.io.opts.transports = ["websocket", "polling"];
-        });
+        this.chat.useDefaultEvents();
 
-        this.socket.on("connection", socketConnection => {
-            if (socketConnection) {
-
-                if (onLoadActiveChats)
-                    onLoadActiveChats({
-                        path: "loadChats",
-                        actionPath: "chatRoom",
-                        actionType: "entrypoint_chat",
-                        options: {
-                            limitList: null,
-                            socket: {
-                                socketConnection,
-                                module: "chat"
-                            },
-                            tokenRoom,
-                            uid
-                        },
-                    });
-
-            } else {
-                message.error("Соединение не установлено, попытка восстановить соединение.");
-            }
-        });
-
-
-        this.socket.on("updateFakeRoom", entity => {
-            const { onUpdateRoom = null } = this.props;
-            const { room = {}, msg = {} } = entity || {};
-            console.log("updateFakeRoom client:", room);
-            if (!room || _.isEmpty(room)) return;
-
-            onUpdateRoom({ room, msg });
-        });
-
-        this.socket.on("msg", ((msgObj) => {
-
-            if (_.isObject(msgObj)) onAddMsg(msgObj);
-
-        }));
-
-        this.socket.on("error", () => {
-            console.log("ws error");
-            onSetSocketConnection({ socketConnection: false, activeModule: "chat" });
-        });
+        this.chat.getSocket().on("updateChatsRooms", this.updateChats);
+        this.chat.getSocket().on("connection", this.connection);
+        this.chat.getSocket().on("updateFakeRoom", this.updateFakeRoom);
+        this.chat.getSocket().on("msg", this.addMsg);
+        this.chat.getSocket().on("error", this.errorConnection);
 
     };
 
-    componentDidUpdate = (prevProps, prevState) => {
+    componentDidUpdate = prevProps => {
         const {
             socketConnection,
             tokenRoom = "",
-            activeSocketModule = null,
             onSetSocketConnection,
             onLoadActiveChats,
-            chat: { usersList = [] } = {},
-            udata: { _id: uid } = {},
         } = this.props;
         const { shouldUpdate = false } = this.state;
+
         if (prevProps.socketConnection && !socketConnection) {
             onSetSocketConnection({ socketConnection: false, module: null });
             return;
         }
 
         if (prevProps.tokenRoom !== tokenRoom && !_.isNull(prevProps.tokenRoom) || shouldUpdate) {
+            if (onLoadActiveChats) {
+                this.updateChats();
+            }
+
+            if (shouldUpdate) {
+                this.setState({
+                    shouldUpdate: false
+                });
+            }
+
+        }
+    }
+
+    errorConnection = () => {
+        const { onSetSocketConnection } = this.props;
+        onSetSocketConnection({ socketConnection: false, activeModule: "chat" });
+    };
+
+    addMsg = msgObj => {
+        const { onAddMsg } = this.props;
+        if (_.isObject(msgObj)) onAddMsg(msgObj);
+    }
+
+    updateFakeRoom = entity => {
+        const { onUpdateRoom = null } = this.props;
+        const { room = {}, msg = {} } = entity || {};
+        console.log("updateFakeRoom client:", room);
+        if (!room || _.isEmpty(room)) return;
+
+        onUpdateRoom({ room, msg });
+    };
+
+    connection = socketConnection => {
+        const {
+            chat: {
+                chatToken: tokenRoom = null,
+            } = {},
+            udata: { _id: uid } = {},
+            onLoadActiveChats,
+        } = this.props;
+
+        if (socketConnection) {
+
             if (onLoadActiveChats)
                 onLoadActiveChats({
                     path: "loadChats",
@@ -122,18 +113,38 @@ class Chat extends React.PureComponent {
                             socketConnection,
                             module: "chat"
                         },
-                        tokenRoom: null,
+                        tokenRoom,
                         uid
                     },
                 });
 
-            if (shouldUpdate) {
-                this.setState({
-                    shouldUpdate: false
-                });
-            }
-
+        } else {
+            message.error("Соединение не установлено, попытка восстановить соединение.");
         }
+
+    }
+
+    updateChats = () => {
+        const {
+            socketConnection,
+            onLoadActiveChats,
+            udata: { _id: uid } = {},
+        } = this.props;
+
+        onLoadActiveChats({
+            path: "loadChats",
+            actionPath: "chatRoom",
+            actionType: "entrypoint_chat",
+            options: {
+                limitList: null,
+                socket: {
+                    socketConnection,
+                    module: "chat"
+                },
+                tokenRoom: null,
+                uid
+            },
+        });
     }
 
     onCreateRoom = event => {
