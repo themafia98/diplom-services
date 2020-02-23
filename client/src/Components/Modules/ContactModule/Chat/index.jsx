@@ -36,7 +36,7 @@ class Chat extends React.PureComponent {
 
         this.chat.useDefaultEvents();
 
-        this.chat.getSocket().on("updateChatsRooms", this.updateChats);
+        this.chat.getSocket().on("updateChatsRooms", this.loadChat);
         this.chat.getSocket().on("connection", this.connection);
         this.chat.getSocket().on("updateFakeRoom", this.updateFakeRoom);
         this.chat.getSocket().on("msg", this.addMsg);
@@ -60,7 +60,7 @@ class Chat extends React.PureComponent {
 
         if (prevProps.tokenRoom !== tokenRoom && !_.isNull(prevProps.tokenRoom) || shouldUpdate) {
             if (onLoadActiveChats) {
-                this.updateChats();
+                this.loadChat();
             }
 
             if (shouldUpdate) {
@@ -70,6 +70,10 @@ class Chat extends React.PureComponent {
             }
 
         }
+    }
+
+    updateChats = () => {
+
     }
 
     errorConnection = () => {
@@ -124,7 +128,7 @@ class Chat extends React.PureComponent {
 
     }
 
-    updateChats = () => {
+    loadChat = () => {
         const {
             socketConnection,
             onLoadActiveChats,
@@ -194,11 +198,11 @@ class Chat extends React.PureComponent {
 
             const interlocutorId = interlocutorIdFakeRoom;
 
-            this.socket.emit("initFakeRoom", { fakeMsg: parseMsg, interlocutorId });
+            this.chat.getSocket().emit("initFakeRoom", { fakeMsg: parseMsg, interlocutorId });
             return;
         }
 
-        this.socket.emit("newMessage", parseMsg);
+        this.chat.getSocket().emit("newMessage", parseMsg);
     };
 
     setActiveChatRoom = (event, id, membersIds = [], token = "") => {
@@ -220,7 +224,7 @@ class Chat extends React.PureComponent {
 
             if (onLoadingDataByToken) {
                 onLoadingDataByToken(token, listdata, "chat", false);
-                this.socket.emit("onChatRoomActive", { token, displayName });
+                this.chat.getSocket().emit("onChatRoomActive", { token, displayName });
             }
 
         } else if (!token)
