@@ -41,6 +41,7 @@ namespace Chat {
                 const actionLoadChats = new Action.ActionParser({ actionPath, actionType });
                 const data: ParserResult = await actionLoadChats.getActionData(queryParams);
 
+
                 if (!data) {
                     throw new TypeError("Bad action data");
                 }
@@ -123,9 +124,9 @@ namespace Chat {
 
         @Post({ path: "/load/tokenData", private: true })
         async loadTokenData(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
-            const { body: { queryParams = {} } = {} } = req;
-            const actionType: string = "get_msg_by_token";
-            const actionPath: string = "chatMsg";
+            const { body: { queryParams = {}, options: { actionPath: aPath = "", actionType: aType = "" } = {} } = {} } = req;
+            const actionType: string = aType ? aType : "get_msg_by_token";
+            const actionPath: string = aPath ? aPath : "chatMsg";
             try {
 
                 if (!actionPath || !actionType) {

@@ -19,10 +19,11 @@ export default (ws: WebSocketWorker, dbm: Readonly<Database.ManagmentDatabase>) 
         socket.emit("connection", true);
 
         const callbackFakeRoom = (result: ParserResult, fakeMsg: object) => {
-            const { tokenRoom = "" } = <Record<string, any>>result || {};
+            const { tokenRoom = "", membersIds = [] } = <Record<string, any>>result || {};
             socket.join(tokenRoom);
-            worker.to(tokenRoom).emit("updateFakeRoom", { room: result, msg: fakeMsg });
-            socket.broadcast.emit("updateChatsRooms");
+            const response = { room: result, msg: fakeMsg };
+            worker.to(tokenRoom).emit("updateFakeRoom", response);
+            socket.broadcast.emit("updateChatsRooms", { ...response, fullUpdate: true, activeModule: "chat" });
         }
 
         socket.broadcast.on("newMessage", async (msgObj: Record<string, any>) => {

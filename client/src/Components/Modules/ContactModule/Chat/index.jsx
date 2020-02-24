@@ -6,10 +6,10 @@ import io from 'socket.io-client';
 
 import ChatMenu from "./ChatMenu";
 
-import { notification, message } from "antd";
+import { notification, message, Popover } from "antd";
 
-import { setSocketConnection, addMsg, updateRoom } from "../../../../Redux/actions/socketActions";
-import { loadActiveChats, loadingDataByToken } from "../../../../Redux/actions/socketActions/middleware";
+import { setSocketConnection, addMsg } from "../../../../Redux/actions/socketActions";
+import { loadActiveChats, loadingDataByToken, updateRooms } from "../../../../Redux/actions/socketActions/middleware";
 
 import ChatModel from "../../../../Models/Chat";
 
@@ -31,12 +31,12 @@ class Chat extends React.PureComponent {
     socket = null;
 
     componentDidMount = () => {
-
+        const { onUpdateRoom } = this.props;
         this.chat = new ChatModel(io("/"));
 
         this.chat.useDefaultEvents();
 
-        this.chat.getSocket().on("updateChatsRooms", this.loadChat);
+        this.chat.getSocket().on("updateChatsRooms", onUpdateRoom);
         this.chat.getSocket().on("connection", this.connection);
         this.chat.getSocket().on("updateFakeRoom", this.updateFakeRoom);
         this.chat.getSocket().on("msg", this.addMsg);
@@ -70,10 +70,6 @@ class Chat extends React.PureComponent {
             }
 
         }
-    }
-
-    updateChats = () => {
-
     }
 
     errorConnection = () => {
@@ -205,6 +201,7 @@ class Chat extends React.PureComponent {
         this.chat.getSocket().emit("newMessage", parseMsg);
     };
 
+
     setActiveChatRoom = (event, id, membersIds = [], token = "") => {
         const {
             chat: {
@@ -298,6 +295,20 @@ class Chat extends React.PureComponent {
 
     };
 
+    getUsersList = () => {
+        const { chat: { usersList = [] } = {}, udata: { displayName = "" } = {} } = this.props;
+        const names = [displayName, ...usersList.map(it => it.displayName)].filter(Boolean);
+        const list = names.map((name, index) => (
+            <li
+                className="simpleLink"
+                key={`${index}${name}`}
+            >
+                {name}
+            </li>
+        ));
+        return <ol className="usersList-room">{list}</ol>;
+    };
+
     render() {
         const { visible, shouldScroll = false } = this.state;
         const {
@@ -311,6 +322,10 @@ class Chat extends React.PureComponent {
             socketConnection,
             socketErrorStatus
         } = this.props;
+
+        const isDev = process.env.NODE_ENV === "development";
+
+        const usersListComponent = tokenRoom ? this.getUsersList() : null;
 
         return (
             <div className="chat">
@@ -331,11 +346,20 @@ class Chat extends React.PureComponent {
                     <div className="col-chat-content">
                         <div className="chat_content">
                             <div className="chat_content__header">
-                                <p className="chat_content__header__title">
-                                    Окно чата {
-
-                                    } {tokenRoom ? <span> | {tokenRoom} </span> : null}
-                                </p>
+                                <div className="area-left">
+                                    <p className="chat_content__header__title">
+                                        Окно чата.
+                                    </p>
+                                    {tokenRoom && !tokenRoom.includes("fakeRoom") ?
+                                        <Popover content={usersListComponent}>
+                                            <p className='counter-room'>
+                                                Участников: <span className="link">{listdata.length + 1}</span>
+                                            </p>
+                                        </Popover>
+                                        : null
+                                    }
+                                    {isDev && tokenRoom ? <p> | {tokenRoom} </p> : null}
+                                </div>
                                 <p
                                     className={[
                                         "chat_content__header__statusChat",
@@ -352,6 +376,7 @@ class Chat extends React.PureComponent {
                                     <ChatRoom
                                         key={tokenRoom}
                                         uid={uid.trim()}
+                                        usersList={usersList}
                                         onClearScroll={this.onClearScroll}
                                         shouldScroll={shouldScroll}
                                         onKeyDown={this.pushMessage}
@@ -408,7 +433,7 @@ const mapDispatchToProps = dispatch => {
         onLoadingDataByToken: (token, listdata, moduleName, isFake) => {
             dispatch(loadingDataByToken(token, listdata, moduleName, isFake))
         },
-        onUpdateRoom: payload => dispatch(updateRoom(payload)),
+        onUpdateRoom: payload => dispatch(updateRooms(payload)),
     };
 };
 

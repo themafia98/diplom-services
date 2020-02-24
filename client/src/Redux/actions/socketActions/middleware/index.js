@@ -2,7 +2,8 @@ import {
     setSocketConnection,
     onLoadActiveChats,
     setSocketError,
-    setActiveChatToken
+    setActiveChatToken,
+    updateRoom
 } from "../";
 
 import { errorRequstAction } from "../../publicActions";
@@ -128,5 +129,50 @@ const loadingDataByToken = (token, listdata, activeModule, isFake = null) =>
 
     };
 
+const updateRooms = payload => async (dispatch, getState, { schema, Request, clientDB }) => {
+    try {
+        const { room: { tokenRoom: token = "" } = {}, msg = {}, fullUpdate = false, activeModule } = payload || {};
+        const { chat: { usersList = [], listdata: listdataState = [] } = {} } = getState().socketReducer || {};
+        const { udata: { _id: uidState = "" } = {} } = getState().publicReducer || {};
 
-export { loadActiveChats, loadingDataByToken };
+        if (!fullUpdate) {
+            dispatch(updateRoom(payload));
+        }
+
+        const rest = new Request();
+        const res = await rest.sendRequest(`/${activeModule}/load/tokenData`, "POST", {
+            queryParams: {
+                queryParams: { tokenRoom: token, moduleName: activeModule },
+            },
+            options: {
+                actionPath: "chatRoom",
+                actionType: "get_update_rooms"
+            }
+        }, true);
+
+
+        const { data: { response: { metadata = [] } = {} } } = res || {};
+
+        if (!res || res.status !== 200) {
+            throw new Error(`Invalid load in module ${activeModule} action tokenData`);
+        }
+
+        dispatch(onLoadActiveChats({
+            usersList: usersList.filter(user => user._id !== uidState),
+            listdata: [...listdataState, metadata[0] ? metadata[0] : null].filter(Boolean),
+            options: {
+                socket: {
+                    socketConnection: true,
+                    module: activeModule
+                }
+            }
+        }));
+
+    } catch (error) {
+        console.error(error.message);
+        dispatch(errorRequstAction(error.message));
+    }
+}
+
+
+export { loadActiveChats, loadingDataByToken, updateRooms };

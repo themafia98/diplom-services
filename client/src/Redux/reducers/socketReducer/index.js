@@ -57,10 +57,24 @@ export default (state = initialState, action) => {
         }
 
         case UPDATE_ENTITY_SOCKET: {
-            const { room: { tokenRoom = "" } = {}, room = {}, msg = {} } = action.payload || {};
-            const { chat: { listdata = [], listdataMsgs = {} } = {} } = state || {};
+            const { room = {}, msg = {} } = action.payload || {};
+            const { tokenRoom = "" } = room || {};
+            const { chat: { chatToken: activeToken = "", listdata = [], listdataMsgs = {} } = {} } = state || {};
 
             const msgs = typeof listdataMsgs === "object" && listdataMsgs !== null ? listdataMsgs : {};
+
+            if ((!room || !action.payload.room) && activeToken !== null) {
+                const isFake = activeToken.includes("fakeRoom");
+                const newActiveToken = isFake ? activeToken.split("__")[0] : activeToken;
+                return {
+                    ...state,
+                    chat: {
+                        ...state.chat,
+                        chatToken: newActiveToken,
+                        listdataMsgs: {}
+                    }
+                }
+            }
 
             return {
                 ...state,

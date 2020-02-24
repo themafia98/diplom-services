@@ -33,10 +33,24 @@ body {
     }
 }
 
-// .validateStyleWrapper {
-//     height: 95%;
-//     min-height: 95%;
-// }
+.area-left {
+    display: flex;
+    align-items: center;
+}
+
+.link {
+    cursor: pointer;
+    color: $linkBlack;
+}
+
+.simpleLink {
+    cursor: pointer;
+    color: $link;
+
+    &:hover {
+        color: $hoverLink;
+    }
+}
 
 .icon-pencil {
     width: 50px;

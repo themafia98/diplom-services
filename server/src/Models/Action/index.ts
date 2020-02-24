@@ -142,6 +142,12 @@ namespace Action {
 
                         if (!model) return null;
 
+                        if (this.getActionType() === "get_update_rooms") {
+                            const { queryParams: { tokenRoom = "", moduleName = "" } = {} } = <Record<string, any>>actionParam || {};
+                            const query: ActionParams = { tokenRoom, moduleName };
+                            return this.getAll(model, query);
+                        }
+
                         if (this.getActionType() === "entrypoint_chat") {
                             const socket: object = (actionParam as Record<string, any>).socket || {};
                             const uid: string = (actionParam as Record<string, string>).uid;
@@ -220,6 +226,11 @@ namespace Action {
 
                         if (this.getActionType() === "get_msg_by_token") {
                             const { options: { tokenRoom = "", moduleName = "", membersIds = [] } = {} } = <Record<string, any>>actionParam;
+
+                            if (!tokenRoom || !moduleName) {
+                                console.error("Bad tokenRoom or moduleName in get_msg_by_token action");
+                                return null;
+                            }
 
                             const query: ActionParams = { tokenRoom, moduleName, authorId: { $in: membersIds } };
                             return this.getAll(model, query);
