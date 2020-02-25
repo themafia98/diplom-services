@@ -29,6 +29,7 @@ export default (ws: WebSocketWorker, dbm: Readonly<Database.ManagmentDatabase>) 
         socket.broadcast.on("newMessage", async (msgObj: Record<string, any>) => {
             const { tokenRoom = "" } = msgObj || {};
             try {
+                console.log("newMessage");
                 const model: Model<Document> | null = getModelByName("chatMsg", "chatMsg");
 
                 if (model && tokenRoom) {
@@ -38,7 +39,7 @@ export default (ws: WebSocketWorker, dbm: Readonly<Database.ManagmentDatabase>) 
                         const saveMsg = await model.create(msgObj);
 
                         if (!saveMsg) throw new TypeError("Bad msg object");
-
+                        console.log("tokenRoom:", tokenRoom);
                         worker.to(tokenRoom).emit("msg", saveMsg);
 
                     } else worker.to(tokenRoom).emit("msg", msgObj);

@@ -32,6 +32,7 @@ class Chat extends React.PureComponent {
 
     componentDidMount = () => {
         const { onUpdateRoom } = this.props;
+        const isDev = process.env.NODE_ENV === "development";
         this.chat = new ChatModel(io("/"));
 
         this.chat.useDefaultEvents();
