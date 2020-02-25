@@ -44,9 +44,9 @@ class CreateNews extends React.PureComponent {
                     metadata: contentState
                 }, true);
 
-                const { response = {}, status = null } = res || {};
-
-                if (!response || _.isEmpty(response) || !status || status !== 200) {
+                const { response: { param: { done = false } = {} } = {} } = res.data || {};
+                debugger;
+                if (!done) {
                     throw new Error("Bad create news");
                 }
 

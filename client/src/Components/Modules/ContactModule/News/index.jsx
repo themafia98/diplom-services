@@ -123,7 +123,7 @@ class News extends React.PureComponent {
         const { data = {}, statusApp, router: { routeData: { contactModule: { news = [] } = {} } = {} } } = this.props;
         let listdata = data && data.news && Array.isArray(data.news) ? [...data.news] : news.length ? news : data;
         const rules = true;
-        debugger;
+
         const total = Math.ceil(listdata.length / 4);
         const pageSize = listdata.length > 4 ? (listdata.length / 4) | 0 : 1;
 
