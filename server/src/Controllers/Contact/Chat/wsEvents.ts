@@ -6,13 +6,15 @@ import WebSocketWorker from '../../../Models/WebSocketWorker';
 import Database from "../../../Models/Database";
 import Chat from "./";
 import Utils from "../../../Utils";
+import { Server as HttpServer } from "http";
 import { ParserResult } from '../../../Utils/Types';
 
-export default (ws: WebSocketWorker, dbm: Readonly<Database.ManagmentDatabase>) => {
+export default (ws: WebSocketWorker, dbm: Readonly<Database.ManagmentDatabase>, server: HttpServer) => {
     const { getModelByName } = Utils;
     const { createRealRoom } = Chat;
     const workerId = cluster.worker.id;
     const worker = ws.getWorker(workerId);
+
 
     worker.on('connection', (socket: Socket) => {
         console.log("ws connection");
@@ -26,7 +28,8 @@ export default (ws: WebSocketWorker, dbm: Readonly<Database.ManagmentDatabase>) 
             socket.broadcast.emit("updateChatsRooms", { ...response, fullUpdate: true, activeModule: "chat" });
         }
 
-        socket.broadcast.on("newMessage", async (msgObj: Record<string, any>) => {
+        socket.on("newMessage", async (msgObj: Record<string, any>) => {
+            console.log("workerId:", workerId);
             const { tokenRoom = "" } = msgObj || {};
             try {
                 console.log("newMessage");

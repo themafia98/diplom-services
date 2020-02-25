@@ -161,7 +161,7 @@ namespace Http {
             };
 
             passport.use(
-                new jwt.Strategy(<StrategyOptions>jwtOptions, async function(
+                new jwt.Strategy(<StrategyOptions>jwtOptions, async function (
                     payload: Partial<{ id: string }>,
                     done: Function
                 ) {
@@ -271,7 +271,7 @@ namespace Http {
             const wsWorkerManager: WebSocketWorker = new WebSocketWorker(wsWorkers);
             wsWorkerManager.startSocketConnection(socketio(server));
 
-            wsEvents(wsWorkerManager, dbm); /** chat */
+            wsEvents(wsWorkerManager, dbm, server); /** chat */
 
             Utils.initControllers(
                 [Main, TasksController, NewsController, SystemData, ChatAlias],
