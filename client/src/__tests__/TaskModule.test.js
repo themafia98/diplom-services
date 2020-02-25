@@ -8,13 +8,12 @@ import { TaskModule } from "../Components/Modules/TaskModule/index";
 describe("<TaskModule /> template", () => {
     test("Should be render", () => {
         const props = {
-            onErrorRequstAction: () => {},
-            setCurrentTab: () => {},
+            onErrorRequstAction: () => { },
+            setCurrentTab: () => { },
             path: "taskModule_all",
-            firebase: {},
-            addTab: () => {},
-            onOpenPageWithData: () => {},
-            onLoadCurrentData: () => {},
+            addTab: () => { },
+            onOpenPageWithData: () => { },
+            onLoadCurrentData: () => { },
             ...initialState,
             router: { ...initialState.router, routeData: { taskModule__all: {} } },
         };

@@ -8,8 +8,7 @@ describe("<CreateTask /> template", () => {
     test("Should be render", () => {
         const props = {
             height: 800,
-            onLoadCurrentData: () => {},
-            firebase: {},
+            onLoadCurrentData: () => { },
             statusApp: "online"
         };
 

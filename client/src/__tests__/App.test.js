@@ -9,7 +9,7 @@ import store from "../Redux/testStore";
 it("App test", () => {
     const AppWrapper = shallow(
         <Provider store={store}>
-            <App firebase={{}} />
+            <App />
         </Provider>,
     );
 

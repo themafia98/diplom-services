@@ -143,12 +143,9 @@ export default (state = initialState, action) => {
                 ...state,
                 currentActionTab: action.payload,
                 routeDataActive: isDataPage ? { ...currentActive } : { ...state.routeDataActive },
-                shouldUpdate: !state.routeData[
+                shouldUpdate: action.payload === "contactModule_feedback" ? true : !state.routeData[
                     searchPathContent === "statisticModule"
-                        ? "taskModule"
-                        : action.payload === "contactModule_feedback"
-                            ? action.payload
-                            : searchPathContent
+                        ? "taskModule" : searchPathContent
                 ]
                     ? false
                     : true

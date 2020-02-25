@@ -9,16 +9,14 @@ describe("<ContentView />", () => {
     test("Should works with state", () => {
         const props = {
             dashboardStrem: new EventEmitter(),
-            setCurrentTab: () => {},
-            updateLoader: () => {},
-            onErrorRequstAction: () => {},
-            firebase: {},
+            setCurrentTab: () => { },
+            updateLoader: () => { },
+            onErrorRequstAction: () => { },
             path: "mainModule"
         };
         const ContentViewWrapper = shallow(<ContentView {...props} />);
 
         toJson(ContentViewWrapper);
-        expect(ContentViewWrapper.find("MainModule").prop("firebase")).toEqual(props.firebase);
 
         ContentViewWrapper.setState({ drawerView: true }, () => {
             expect(ContentViewWrapper.find("DrawerViewer").prop("visible")).toEqual(true);

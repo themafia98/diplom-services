@@ -49,29 +49,35 @@ export const loadCurrentData = ({
 
             if (!_.isNull(requestError)) dispatch(errorRequstAction(null));
 
-            const cursor = clientDB.getCursor(storeLoad);
+            if (storeLoad === "news") {
+                const data = { [storeLoad]: copyStore, load: true, path: pathValid };
+                await dispatch(saveComponentStateAction(data));
+            }
+            else {
+                const cursor = clientDB.getCursor(storeLoad);
 
-            cursor.onsuccess = async event => {
-                const { target: { result: cursor } = {} } = event;
+                cursor.onsuccess = async event => {
+                    const { target: { result: cursor } = {} } = event;
 
-                if (!cursor) return await next(true);
+                    if (!cursor) return await next(true);
 
-                const index = copyStore.findIndex(it => {
-                    const isKey = it[primaryKey] || it["key"];
-                    const isValid = it[primaryKey] === cursor.key || it["key"] === cursor.key;
+                    const index = copyStore.findIndex(it => {
+                        const isKey = it[primaryKey] || it["key"];
+                        const isValid = it[primaryKey] === cursor.key || it["key"] === cursor.key;
 
-                    return isKey && isValid;
-                });
-                const iEmpty = index === -1;
-                if (copyStore && iEmpty) {
-                    if (cursor.value.modeAdd === "offline") {
-                        const copy = { ...cursor.value, modeAdd: "online" };
-                        cursor.value.modeAdd = "online";
-                        undefiendCopyStore.push({ ...copy });
+                        return isKey && isValid;
+                    });
+                    const iEmpty = index === -1;
+                    if (copyStore && iEmpty) {
+                        if (cursor.value.modeAdd === "offline") {
+                            const copy = { ...cursor.value, modeAdd: "online" };
+                            cursor.value.modeAdd = "online";
+                            undefiendCopyStore.push({ ...copy });
+                        }
                     }
-                }
-                cursor.continue();
-            };
+                    cursor.continue();
+                };
+            }
 
 
             const next = async (flag = false) => {

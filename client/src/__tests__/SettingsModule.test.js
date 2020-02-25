@@ -8,10 +8,9 @@ import { SettingsModule } from "../Components/Modules/SettingsModule";
 describe("<SettingsModule /> template", () => {
     test("Should be render", () => {
         const props = {
-            onErrorRequstAction: () => {},
+            onErrorRequstAction: () => { },
             path: "settingsModule",
-            firebase: {},
-            onSaveComponentState: () => {},
+            onSaveComponentState: () => { },
             router: { ...initialState.router },
         };
 

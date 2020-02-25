@@ -9,11 +9,10 @@ import store from "../Redux/testStore";
 describe("<TableView />", () => {
     test("Should TableView render dep on path", () => {
         const props = {
-            setCurrentTab: () => {},
+            setCurrentTab: () => { },
             height: 150,
             tasks: [],
             path: "mainModule__table",
-            firebase: {},
             data: {},
             flag: true,
             user: {},

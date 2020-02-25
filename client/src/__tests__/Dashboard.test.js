@@ -7,13 +7,12 @@ import { Dashboard } from "../Components/Pages/Dashboard";
 describe("<Dashboard /> main page", () => {
     test("Should render component", () => {
         const props = {
-            firebase: { getCurrentUser: () => true },
-            addTab: () => {},
-            removeTab: () => {},
-            setCurrentTab: () => {},
-            onLoadCurrentData: () => {},
-            onErrorRequstAction: () => {},
-            onLogoutAction: () => {},
+            addTab: () => { },
+            removeTab: () => { },
+            setCurrentTab: () => { },
+            onLoadCurrentData: () => { },
+            onErrorRequstAction: () => { },
+            onLogoutAction: () => { },
             publicReducer: {
                 status: "online",
                 prewStatus: "online",

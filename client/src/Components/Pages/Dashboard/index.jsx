@@ -63,17 +63,9 @@ class Dashboard extends React.PureComponent {
         const {
             publicReducer: { requestError = null, status } = {},
             router,
-            firebase,
             router: { currentActionTab = "" }
         } = this.props;
-        const { showLoader, status: statusState, counterError, redirect = false } = this.state;
-
-        if (redirect) return;
-        if (firebase && !firebase.getCurrentUser()) {
-            return this.setState({
-                redirect: true
-            });
-        }
+        const { showLoader, status: statusState, counterError } = this.state;
 
         if (!showLoader && statusState !== status && status === "online")
             notification.success({ message: "Удачно", description: "Интернет соединение восстановлено." });

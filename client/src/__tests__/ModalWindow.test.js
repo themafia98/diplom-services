@@ -7,7 +7,6 @@ import ModalWindow from "../Components/ModalWindow";
 describe("<ModalWindow />", () => {
     test("Should works with mode", () => {
         const props = {
-            firebase: {},
             onCaching: () => { },
             primaryKey: "",
             routeDataActive: {},

@@ -31,7 +31,6 @@ class TableView extends React.Component {
         height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         tasks: PropTypes.array,
         path: PropTypes.string,
-        firebase: PropTypes.object,
         data: PropTypes.object,
         flag: PropTypes.bool,
         user: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),

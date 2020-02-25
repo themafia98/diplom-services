@@ -88,10 +88,10 @@ class News extends React.PureComponent {
     };
 
     renderNewsBlock = currentPage => {
-        const { data = {} } = this.props;
+        const { data = {}, statusApp, router: { routeData: { contactModule: { news = [] } = {} } = {} } } = this.props;
 
         const start = currentPage > 1 ? currentPage * 4 - 4 : 0;
-        let listdata = data && data.news && Array.isArray(data.news) ? [...data.news] : [];
+        let listdata = news;
         if (listdata.length)
             return listdata
                 .slice(start, start + 4 > listdata.length ? listdata.length : start + 4)
@@ -120,10 +120,10 @@ class News extends React.PureComponent {
 
     render() {
         const { currentPage, isOpen } = this.state;
-        const { data = {}, statusApp } = this.props;
-        let listdata = data && data.news && Array.isArray(data.news) ? [...data.news] : [];
+        const { data = {}, statusApp, router: { routeData: { contactModule: { news = [] } = {} } = {} } } = this.props;
+        let listdata = data && data.news && Array.isArray(data.news) ? [...data.news] : news.length ? news : data;
         const rules = true;
-
+        debugger;
         const total = Math.ceil(listdata.length / 4);
         const pageSize = listdata.length > 4 ? (listdata.length / 4) | 0 : 1;
 

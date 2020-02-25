@@ -49,6 +49,7 @@ namespace Action {
 
         private async createEntity(model: Model<Document>, item: object) {
             try {
+                console.log("create entity:", item);
                 const actionData: Document = await model.create(item);
                 return actionData;
             } catch (err) {
@@ -325,12 +326,18 @@ namespace Action {
                     }
 
                     case "news": {
+                        const model: Model<Document> | null = getModelByName("news", "news");
+
+                        if (!model) return null;
+
                         if (this.getActionType() === "get_all") {
-                            const model: Model<Document> | null = getModelByName("news", "news");
-
-                            if (!model) return null;
-
                             return this.getAll(model, actionParam);
+                        }
+
+                        if (this.getActionType() === "create_single_news") {
+                            const body: object = <Record<string, any>>actionParam || {};
+
+                            return this.createEntity(model, body);
                         }
 
                         break;

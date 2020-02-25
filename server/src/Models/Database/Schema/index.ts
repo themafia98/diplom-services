@@ -100,9 +100,9 @@ export const jurnalItem = new Schema({
     modeAdd: String
 });
 
-export const newsItem = new Schema({
-    entityMap: Object,
-    blocks: [Object]
+export const news = new Schema({
+    entityMap: { type: Object, required: true, default: {} },
+    blocks: { type: Array, required: true }
 });
 
 export const chatMsg = new Schema({
@@ -133,8 +133,8 @@ export const getSchemaByName = (name: string): Schema | null => {
             return userSchema;
         case "jurnalworks":
             return jurnalItem;
-        case "newsItem":
-            return newsItem;
+        case "news":
+            return news;
         case "chatMsg":
             return chatMsg;
         case "chatRoom":
