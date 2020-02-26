@@ -111,12 +111,15 @@ namespace Action {
                         }
 
                         if (this.getActionType() === "delete_file") {
-                            const { body: { queryParams = {}, store = "" } = {} } = <Record<string, any>>actionParam;
+                            const { body: { queryParams = {} } = {}, store = "" } = <Record<string, any>>actionParam;
 
                             const file: object = (queryParams as Record<string, any>).file;
                             const url: string = (file as Record<string, string>).url || "";
 
+
                             const path: string = `${store}${url.split("download")[1]}` || "";
+
+                            console.log("path delete:", path);
 
                             const deleteFile: files.DeleteResult | null = await this.getStore().deleteFile(path);
 
