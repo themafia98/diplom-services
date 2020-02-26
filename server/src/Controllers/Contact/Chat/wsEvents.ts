@@ -9,6 +9,11 @@ import Utils from "../../../Utils";
 import { Server as HttpServer } from "http";
 import { ParserResult } from '../../../Utils/Types';
 
+
+/**
+ * Need upgrade for comunication between workers
+ */
+
 export default (ws: WebSocketWorker, dbm: Readonly<Database.ManagmentDatabase>, server: HttpServer) => {
     const { getModelByName } = Utils;
     const { createRealRoom } = Chat;
@@ -30,6 +35,7 @@ export default (ws: WebSocketWorker, dbm: Readonly<Database.ManagmentDatabase>, 
 
         socket.on("newMessage", async (msgObj: Record<string, any>) => {
             console.log("workerId:", workerId);
+            (<Record<string, any>>process).send(workerId);
             const { tokenRoom = "" } = msgObj || {};
             try {
                 console.log("newMessage");
@@ -82,5 +88,11 @@ export default (ws: WebSocketWorker, dbm: Readonly<Database.ManagmentDatabase>, 
         console.log(socket.eventNames);
         console.log('user disconnected');
     });
+
+    process.on('message', function (msg) {
+        console.log("process wokerId message ws:", workerId);
+        console.log("msg process:", msg);
+
+    })
 };
 

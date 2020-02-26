@@ -1,5 +1,4 @@
-import cluster, { Worker } from "cluster";
-import farmhash from "farmhash";
+import cluster, { Worker, workers } from "cluster";
 import "reflect-metadata";
 import { Server as WebSocketServer } from "socket.io";
 import chalk from "chalk";
@@ -11,6 +10,8 @@ import _ from "lodash";
 import { ServerRun } from "./Utils/Interfaces";
 import Http from "./Models/Server";
 
+const farmhash = require("farmhash");
+
 if (process.env.NODE_ENV === "production") {
     /** nginx init */
     fs.openSync("/tmp/app-initialized", "w");
@@ -18,11 +19,8 @@ if (process.env.NODE_ENV === "production") {
 
 namespace Entrypoint {
     const cpuLentgh: number = os.cpus().length;
+    const workers: Array<any> = [];
     export const wsWorkers: Array<WebSocketServer> = [];
-
-    const getWorker_index = (ip: string, len: number) => {
-        return farmhash.fingerprint32(ip) % len;
-    };
 
     const callbackExit = _.debounce((worker: Worker, code: number, signal: string) => {
         console.log(`${chalk.yellow("worker")} ${chalk.red(worker.process.pid)} exit.`);
@@ -33,15 +31,25 @@ namespace Entrypoint {
 
     if (cluster.isMaster) {
         for (let i = 0; i < cpuLentgh; i++) {
-            cluster.fork();
-            cluster.on("exit", callbackExit);
+            const worker = cluster.fork();
+            worker.on("exit", callbackExit);
+
+            worker.on("message", workerData => {
+                console.log("worker message:", workerData);
+
+                for (let worker of workers.values()) {
+                    worker.send(workerData);
+                }
+            });
+
+            workers.push(worker);
         }
 
         // get worker index based on Ip and total no of workers so that it can be tranferred to same worker
     } else {
         try {
             const app: ServerRun = new Http.ServerRunner(process.env.APP_PORT || "3001");
-            app.start(getWorker_index);
+            app.start();
         } catch (err) {
             console.error(err);
             process.kill(process.ppid);

@@ -162,7 +162,7 @@ namespace Http {
             };
 
             passport.use(
-                new jwt.Strategy(<StrategyOptions>jwtOptions, async function(
+                new jwt.Strategy(<StrategyOptions>jwtOptions, async function (
                     payload: Partial<{ id: string }>,
                     done: Function
                 ) {
@@ -259,11 +259,11 @@ namespace Http {
 
             const instanceRouter: Route = RouterInstance.Router.instance(this.getApp());
 
-            const server: HttpServer = this.getApp().listen(this.getPort(), (connection): void => {
+            const server: HttpServer = this.getApp().listen(this.getPort(), (): void => {
                 console.log(`${chalk.yellow(`Worker ${process.pid}`)} ${chalk.green("started")}`);
                 console.log(`Server listen on ${chalk.blue.bold(this.getPort())}.`);
 
-                callback(connection.remoteAddress, os.cpus().length);
+                // callback("", os.cpus().length);
             });
 
             /** initial entrypoint route */
