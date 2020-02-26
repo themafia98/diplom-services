@@ -1,3 +1,4 @@
+import os from "os";
 import express, { Application, Response, NextFunction, Router } from "express";
 import session from "express-session";
 import MongoStore from "connect-mongo";
@@ -161,7 +162,7 @@ namespace Http {
             };
 
             passport.use(
-                new jwt.Strategy(<StrategyOptions>jwtOptions, async function (
+                new jwt.Strategy(<StrategyOptions>jwtOptions, async function(
                     payload: Partial<{ id: string }>,
                     done: Function
                 ) {
@@ -211,7 +212,7 @@ namespace Http {
             });
         }
 
-        public async start(): Promise<void> {
+        public async start(callback: Function): Promise<void> {
             const { wsWorkers = [] } = Entrypoint || {};
             const Main: Readonly<Function> = General.Main;
             const TasksController: Readonly<Function> = Tasks.TasksController;
@@ -258,9 +259,11 @@ namespace Http {
 
             const instanceRouter: Route = RouterInstance.Router.instance(this.getApp());
 
-            const server: HttpServer = this.getApp().listen(this.getPort(), (): void => {
+            const server: HttpServer = this.getApp().listen(this.getPort(), (connection): void => {
                 console.log(`${chalk.yellow(`Worker ${process.pid}`)} ${chalk.green("started")}`);
                 console.log(`Server listen on ${chalk.blue.bold(this.getPort())}.`);
+
+                callback(connection.remoteAddress, os.cpus().length);
             });
 
             /** initial entrypoint route */

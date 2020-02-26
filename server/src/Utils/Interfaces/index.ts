@@ -6,7 +6,7 @@ import mongoose, { Mongoose, Connection } from "mongoose";
 export interface ServerRun {
     isPrivateRoute(req: Request, res: Response, next: NextFunction): Response | void;
     startResponse(req: Request, res: Response, next: NextFunction): void;
-    start(): void;
+    start(callback?: Function): void;
 }
 
 export interface Rest {
@@ -124,9 +124,6 @@ export interface DropboxAccess {
     token: string;
 }
 
-
-
-
 export interface ServiceManager<T> {
     getService(): T;
     changeService(service: T): void;
@@ -139,8 +136,6 @@ export interface FileApi {
     saveFile<P>(saveProps: P): Promise<files.FileMetadata | null>;
     getFilesByPath(path: string): Promise<files.ListFolderResult | null>;
     deleteFile(path: string): Promise<files.DeleteResult | null>;
-
-
 }
 
 export interface ActionProps {
@@ -166,7 +161,7 @@ export interface EntityActionApi {
     getActionPath(): string;
     getActionType(): string;
     getStore(): FileApi;
-};
+}
 
 export interface ResponseJson<T> {
     status: string;

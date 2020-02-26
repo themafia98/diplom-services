@@ -30,6 +30,7 @@
         "express-rate-limit": "^5.0.0",
         "express-session": "^1.17.0",
         "express-validator": "^6.3.0",
+        "farmhash": "^3.0.0",
         "forever": "^1.0.0",
         "helmet": "^3.21.2",
         "isomorphic-fetch": "^2.2.1",
