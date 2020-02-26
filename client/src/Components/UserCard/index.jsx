@@ -2,6 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Avatar, Button, Icon, Dropdown, Menu } from "antd";
 
+import imageCard from "./wallpaper_user.jpg";
+
 class UserCard extends React.Component {
     static propTypes = {
         cbShowModal: PropTypes.func
@@ -18,9 +20,14 @@ class UserCard extends React.Component {
                 </Menu.Item>
             </Menu>
         );
+
+        const imageUrl = {
+            backgroundImage: `url("${imageCard}")`
+        }
+
         return (
             <div className="userCard">
-                <div className="wallpaper"></div>
+                <div style={imageUrl} className="wallpaper"></div>
                 <div className="mainContentCard">
                     <div className="col-6">
                         {isMine ? (
