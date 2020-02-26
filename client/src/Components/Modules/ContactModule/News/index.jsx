@@ -61,9 +61,20 @@ class News extends React.PureComponent {
     };
 
     onOpen = key => {
-        const { onOpenPageWithData, router: { actionTabs = [] } = {}, setCurrentTab, data = {} } = this.props;
+        const {
+            onOpenPageWithData,
+            router: {
+                actionTabs = [],
+                routeData: {
+                    contactModule: {
+                        news = []
+                    } = {} } = {}
+            } = {},
+            setCurrentTab,
+            data = {}
+        } = this.props;
         const { config = {} } = this.context;
-        let listdata = data && data.news && Array.isArray(data.news) ? [...data.news] : [];
+        let listdata = data && data.news && Array.isArray(data.news) ? [...data.news] : news;
         const moduleId = "informationPage";
         const page = "contactModule";
 
@@ -73,7 +84,7 @@ class News extends React.PureComponent {
         });
 
         const index = actionTabs.findIndex(tab => tab === routeNormalize.path);
-        const findItem = listdata.find(it => it.id === key);
+        const findItem = listdata.find(it => it._id === key);
         const dataFind = findItem ? { ...findItem } : {};
         const isFind = index !== -1;
 
@@ -92,21 +103,24 @@ class News extends React.PureComponent {
 
         const start = currentPage > 1 ? currentPage * 4 - 4 : 0;
         let listdata = news;
-        if (listdata.length)
-            return listdata
-                .slice(start, start + 4 > listdata.length ? listdata.length : start + 4)
-                .map((it, index) => {
-                    return (
-                        <NewsCard
-                            key={it._id || Math.random()}
-                            onClick={this.onOpen.bind(this, it._id)}
-                            className="card"
-                            data={it}
-                        />
-                    );
-                })
-                .filter(Boolean);
-        else return <Empty description={<span>Данных нету</span>} />;
+        if (!listdata.length) return <Empty description={<span>Данных нету</span>} />;
+
+        const pageCards = listdata
+            .slice(start, start + 4 > listdata.length ? listdata.length : start + 4);
+
+        return pageCards.map((it, index) => {
+            debugger;
+            return (
+                <NewsCard
+                    key={it._id || index}
+                    onClick={this.onOpen.bind(this, it._id)}
+                    className="card"
+                    data={it}
+                />
+            );
+        })
+            .filter(Boolean);
+
     };
 
     onChange = pageNumber => {
@@ -124,7 +138,7 @@ class News extends React.PureComponent {
         let listdata = data && data.news && Array.isArray(data.news) ? [...data.news] : news.length ? news : data;
         const rules = true;
 
-        const total = Math.ceil(listdata.length / 4);
+        const total = Math.ceil(listdata.length / 2);
         const pageSize = listdata.length > 4 ? (listdata.length / 4) | 0 : 1;
 
         return (
@@ -143,9 +157,10 @@ class News extends React.PureComponent {
                         <Pagination
                             className="pagination-news"
                             onChange={this.onChange}
+                            current={currentPage}
                             pageSize={pageSize}
                             defaultCurrent={currentPage}
-                            total={total}
+                            total={total ? total : undefined}
                         />
                     </TabContainer>
                 </Scrollbars>

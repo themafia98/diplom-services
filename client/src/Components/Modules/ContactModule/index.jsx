@@ -22,22 +22,46 @@ class ContactModule extends React.PureComponent {
         const { onLoadCurrentData, path } = this.props;
 
         if (path === "contactModule_feedback") {
-            onLoadCurrentData({ path, storeLoad: "news", methodRequst: "GET", noCorsClient: true, useStore: true });
+            onLoadCurrentData({
+                path,
+                storeLoad: "news",
+                methodRequst: "GET",
+                noCorsClient: true,
+                useStore: true
+            });
         }
     };
 
     componentDidUpdate = () => {
-        const { router: { shouldUpdate = false } = {}, path, onLoadCurrentData } = this.props;
+        const {
+            router: {
+                shouldUpdate = false
+            } = {},
+            path,
+            onLoadCurrentData
+        } = this.props;
 
         if (path === "contactModule_feedback" && shouldUpdate) {
-            onLoadCurrentData({ path, storeLoad: "news", methodRequst: "GET", noCorsClient: true, useStore: true });
+            onLoadCurrentData({
+                path,
+                storeLoad: "news",
+                methodRequst: "GET",
+                noCorsClient: true,
+                useStore: true
+            });
         }
     };
 
     renderNewsView = () => {
-        const { router: { currentActionTab, routeData } = {}, actionTabs = [] } = this.props;
-        const data = routeData["contactModule_feedback"];
-        const listdata = data && !_.isEmpty(data) && data.news && Array.isArray(data.news) ? [...data.news] : [];
+        const {
+            router: {
+                currentActionTab,
+                routeDataActive: {
+                    key: keyEntity = "",
+                    listdata = {}
+                } } = {},
+            actionTabs = []
+        } = this.props;
 
         const filterActionTab = actionTabs.filter(tab => tab.includes("_informationPage__"));
         const itemsKeys = filterActionTab
@@ -51,13 +75,15 @@ class ContactModule extends React.PureComponent {
 
         return itemsKeys
             .map(key => {
-                const data = listdata.find(it => it._id === key);
                 const route = routeParser({ pageType: "moduleItem", path: currentActionTab });
 
-                if (data)
+                if (!_.isEmpty(listdata) && keyEntity)
                     return (
-                        <TabContainer key={key} visible={route.itemId === key && currentActionTab.includes(key)}>
-                            <NewsViewPage listdata={data} key={key} />
+                        <TabContainer
+                            key={key}
+                            visible={route.itemId === key && currentActionTab.includes(key)}
+                        >
+                            <NewsViewPage listdata={listdata} key={key} />
                         </TabContainer>
                     );
                 else return null;
