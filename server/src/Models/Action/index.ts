@@ -111,7 +111,7 @@ namespace Action {
                         }
 
                         if (this.getActionType() === "delete_file") {
-                            const { queryParams = {}, store = "" } = actionParam;
+                            const { body: { queryParams = {}, store = "" } = {} } = <Record<string, any>>actionParam;
 
                             const file: object = (queryParams as Record<string, any>).file;
                             const url: string = (file as Record<string, string>).url || "";
