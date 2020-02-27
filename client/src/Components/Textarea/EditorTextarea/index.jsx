@@ -1,4 +1,5 @@
 import React from "react";
+import { stateFromHTML } from 'draft-js-import-html';
 import { convertFromRaw } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import _ from "lodash";
@@ -17,10 +18,14 @@ class EditorTextarea extends React.Component {
 
     componentDidMount = () => {
         const { contentState = null } = this.props;
-        if (contentState && !_.isEmpty(contentState)) {
-            this.setState({
-                contentState: contentState
-            });
+        if (contentState && (!_.isEmpty(contentState) || _.isString(contentState))) {
+            try {
+                this.setState({
+                    contentState: _.isString(contentState) ? stateFromHTML(contentState) : contentState
+                });
+            } catch (error) {
+                console.error(error);
+            }
         }
     };
 
@@ -40,10 +45,15 @@ class EditorTextarea extends React.Component {
     };
 
     onContentStateChange = contentState => {
+        console.log(contentState);
         this.setState({
             contentState: contentState
         });
     };
+
+    handlePastedText = (text, html, editorState) => {
+        this.setState({ contentState: editorState });
+    }
 
     render() {
         const { contentState = null } = this.state;
@@ -62,6 +72,7 @@ class EditorTextarea extends React.Component {
                     readOnly={disabled || readOnly}
                     toolbarHidden={readOnly}
                     localization={{ locale: "ru" }}
+                    handlePastedText={this.handlePastedText}
                     wrapperClassName="editor-wrapper"
                     editorClassName="editor"
                     {...readOnlyProps}

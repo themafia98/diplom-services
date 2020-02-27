@@ -101,10 +101,8 @@ namespace DropboxStorage {
         public async downloadFileByProps<DownloadDropbox>(fileProps: DownloadDropbox): Promise<FileMetadata> {
             try {
 
-                const moduleName: Readonly<string> = (fileProps as Record<string, any>).moduleName || "";
-                const filename: Readonly<string> = (fileProps as Record<string, any>).filename || "";
-                const ext: Readonly<string> = (fileProps as Record<string, any>).ext || "";
-                const cardName: Readonly<string> = (fileProps as Record<string, any>).cardName || "";
+                const { moduleName = "", filename = "", cardName = "", ext = "" } = <Record<string, any>>fileProps;
+
 
                 const path: string = !cardName ? `/${moduleName}/${filename}.${ext}` : `/${moduleName}/${cardName}/${filename}.${ext}`;
                 const response: FileMetadata = await this.getService().filesDownload({ path });

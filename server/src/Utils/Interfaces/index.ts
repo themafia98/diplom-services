@@ -9,6 +9,10 @@ export interface ServerRun {
     start(callback?: Function): void;
 }
 
+export interface WorkerDataProps {
+    [key: string]: string | typeof Object
+}
+
 export interface Rest {
     getApp(): Application;
     getRest(): Application;
@@ -146,10 +150,10 @@ export interface ActionProps {
 }
 
 export interface DownloadDropbox {
-    moduleName: string;
-    filename: string;
-    ext: string;
-    cardName?: string;
+    moduleName: Readonly<string>;
+    filename: Readonly<string>;
+    ext: Readonly<string>;
+    cardName?: Readonly<string>;
 }
 
 export interface UploadDropbox {

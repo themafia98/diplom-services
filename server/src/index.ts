@@ -1,4 +1,4 @@
-import cluster, { Worker, workers } from "cluster";
+import cluster, { Worker } from "cluster";
 import "reflect-metadata";
 import { Server as WebSocketServer } from "socket.io";
 import chalk from "chalk";
@@ -7,10 +7,9 @@ import os from "os";
 
 import _ from "lodash";
 
-import { ServerRun } from "./Utils/Interfaces";
+import { ServerRun, WorkerDataProps } from "./Utils/Interfaces";
 import Http from "./Models/Server";
 
-const farmhash = require("farmhash");
 
 if (process.env.NODE_ENV === "production") {
     /** nginx init */
@@ -19,22 +18,22 @@ if (process.env.NODE_ENV === "production") {
 
 namespace Entrypoint {
     const cpuLentgh: number = os.cpus().length;
-    const workers: Array<any> = [];
+    const workers: Array<cluster.Worker> = [];
     export const wsWorkers: Array<WebSocketServer> = [];
 
     const callbackExit = _.debounce((worker: Worker, code: number, signal: string) => {
         console.log(`${chalk.yellow("worker")} ${chalk.red(worker.process.pid)} exit.`);
 
-        const child = cluster.fork();
+        const child: cluster.Worker = cluster.fork();
         console.log(`New ${chalk.yellow("worker")} ${chalk.red(child.process.pid)} born.`);
     }, 300);
 
     if (cluster.isMaster) {
         for (let i = 0; i < cpuLentgh; i++) {
-            const worker = cluster.fork();
+            const worker: cluster.Worker = cluster.fork();
             worker.on("exit", callbackExit);
 
-            worker.on("message", workerData => {
+            worker.on("message", (workerData: WorkerDataProps) => {
                 console.log("worker message:", workerData);
 
                 for (let worker of workers.values()) {

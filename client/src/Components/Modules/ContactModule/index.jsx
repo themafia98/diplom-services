@@ -77,7 +77,7 @@ class ContactModule extends React.PureComponent {
             .map(key => {
                 const route = routeParser({ pageType: "moduleItem", path: currentActionTab });
 
-                if (!_.isEmpty(listdata) && keyEntity)
+                if (!_.isEmpty(listdata) && keyEntity && key)
                     return (
                         <TabContainer
                             key={key}

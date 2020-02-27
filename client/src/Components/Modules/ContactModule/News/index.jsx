@@ -138,7 +138,7 @@ class News extends React.PureComponent {
         let listdata = data && data.news && Array.isArray(data.news) ? [...data.news] : news.length ? news : data;
         const rules = true;
 
-        const total = Math.floor(listdata.length / 2) + 2;
+        const total = Math.floor(listdata.length / 2) + 4;
         const pageSize = listdata.length > 4 ? (listdata.length / 4) | 0 : 1;
 
         return (
