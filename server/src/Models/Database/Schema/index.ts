@@ -103,6 +103,8 @@ export const jurnalItem = new Schema({
 export const news = new Schema({
     entityMap: { type: Object, required: true, default: {} },
     blocks: { type: Array, required: true }
+}, {
+    timestamps: true
 });
 
 export const chatMsg = new Schema({
