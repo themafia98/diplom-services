@@ -31,7 +31,6 @@ class ErrorBoundary extends React.Component {
     }
 
     logger = event => {
-        Sentry.init({ dsn: process.env.REACT_APP_LOGGER_DSN });
         Sentry.showReportDialog({ eventId: this.state.eventId });
     };
 

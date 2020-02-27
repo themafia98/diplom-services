@@ -8,8 +8,6 @@ import { message } from "antd";
 import { PrivateRoute } from "./Components/Helpers";
 import { forceUpdateDetectedInit } from "./Utils";
 
-import * as Sentry from "@sentry/browser";
-
 import { setStatus, loadUdata } from "./Redux/actions/publicActions";
 import { addTabAction, setActiveTabAction, logoutAction } from "./Redux/actions/routerActions";
 
