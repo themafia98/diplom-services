@@ -1,6 +1,6 @@
 import { NextFunction, Response, Request } from "express";
 import { App, Params, ActionParams } from "../../../Utils/Interfaces";
-import { ParserResult, Decorator, ResRequest } from '../../../Utils/Types';
+import { ParserResult, Decorator, ResRequest } from "../../../Utils/Types";
 import Utils from "../../../Utils";
 import Decorators from "../../../Decorators";
 import Action from "../../../Models/Action";
@@ -12,7 +12,6 @@ namespace News {
 
     @Controller("/news")
     export class NewsController {
-
         @Post({ path: "/createNews", private: true })
         public async createNews(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
             try {
@@ -21,7 +20,9 @@ namespace News {
                 const connect = await service.dbm.connection().catch((err: Error) => {
                     console.error(err);
                 });
-                const { queryParams: { actionType = "" } } = bodyRequest;
+                const {
+                    queryParams: { actionType = "" }
+                } = bodyRequest;
                 const body: ActionParams = bodyRequest.metadata;
 
                 const params: Params = { methodQuery: actionType, status: "done", done: true, from: "news" };
@@ -52,7 +53,6 @@ namespace News {
                     responseTime: Utils.responseTime((req as Record<string, any>).start),
                     work: process.connected
                 });
-
             } catch (err) {
                 console.error(err);
                 if (!res.headersSent) {
@@ -65,13 +65,11 @@ namespace News {
                     });
                 }
             }
-
         }
 
         @Get({ path: "/list", private: true })
         public async getNewsList(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
             try {
-
                 const service = server.locals;
                 const connect = await service.dbm.connection().catch((err: Error) => {
                     console.error(err);
@@ -105,7 +103,6 @@ namespace News {
                     responseTime: Utils.responseTime((req as Record<string, any>).start),
                     work: process.connected
                 });
-
             } catch (err) {
                 console.error(err);
                 if (!res.headersSent) {
@@ -118,9 +115,8 @@ namespace News {
                     });
                 }
             }
-
         }
-    };
-};
+    }
+}
 
 export default News;

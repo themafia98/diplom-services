@@ -6,11 +6,11 @@ class StreamBox extends React.Component {
     render() {
         const { mode, boxClassName } = this.props;
         let value = `
-        Hello world!!! 
+        Hello world!!!
         My name Pavel Petrovich and I'm Frontend developer. I looking for job.
-        Hello world!!! 
+        Hello world!!!
         My name Pavel Petrovich and I'm Frontend developer. I looking for job.
-        Hello world!!! 
+        Hello world!!!
         My name Pavel Petrovich and I'm Frontend developer. I looking for job.
         Hello world!!!`;
         return (
@@ -52,7 +52,7 @@ class StreamBox extends React.Component {
 
 StreamBox.propTypes = {
     mode: PropTypes.string,
-    boxClassName: PropTypes.string,
+    boxClassName: PropTypes.string
 };
 
 export default StreamBox;

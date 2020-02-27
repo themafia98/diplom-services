@@ -116,7 +116,6 @@ namespace Action {
                             const file: object = (queryParams as Record<string, any>).file;
                             const url: string = (file as Record<string, string>).url || "";
 
-
                             const path: string = `${store}${url.split("download")[1]}` || "";
 
                             console.log("path delete:", path);
@@ -147,7 +146,8 @@ namespace Action {
                         if (!model) return null;
 
                         if (this.getActionType() === "get_update_rooms") {
-                            const { queryParams: { tokenRoom = "", moduleName = "" } = {} } = <Record<string, any>>actionParam || {};
+                            const { queryParams: { tokenRoom = "", moduleName = "" } = {} } =
+                                <Record<string, any>>actionParam || {};
                             const query: ActionParams = { tokenRoom, moduleName };
                             return this.getAll(model, query);
                         }
@@ -207,7 +207,6 @@ namespace Action {
                                 groupName: msg.groupName ? msg.groupName : null
                             };
 
-
                             const actionData: Document | null = await this.createEntity(model, room);
 
                             if (!actionData) return null;
@@ -229,7 +228,9 @@ namespace Action {
                         if (!model) return null;
 
                         if (this.getActionType() === "get_msg_by_token") {
-                            const { options: { tokenRoom = "", moduleName = "", membersIds = [] } = {} } = <Record<string, any>>actionParam;
+                            const { options: { tokenRoom = "", moduleName = "", membersIds = [] } = {} } = <
+                                Record<string, any>
+                            >actionParam;
 
                             if (!tokenRoom || !moduleName) {
                                 console.error("Bad tokenRoom or moduleName in get_msg_by_token action");

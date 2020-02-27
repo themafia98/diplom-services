@@ -111,8 +111,8 @@ class CabinetModule extends React.PureComponent {
                         {imageUrl && !this.state.loading ? (
                             <img src={imageUrl} alt="avatar" style={{ width: "50%" }} />
                         ) : (
-                                uploadButton
-                            )}
+                            uploadButton
+                        )}
                         {imageUrl ? (
                             <Button className="deleteButton" onClick={this.reset} type="primary">
                                 Удалить загруженное изображение

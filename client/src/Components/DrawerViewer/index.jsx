@@ -11,7 +11,7 @@ class DrawerViewer extends React.PureComponent {
 
 DrawerViewer.propTypes = {
     onClose: PropTypes.func.isRequired,
-    visible: PropTypes.bool.isRequired,
+    visible: PropTypes.bool.isRequired
 };
 
 export default DrawerViewer;

@@ -4,23 +4,22 @@ import { Avatar } from "antd";
 
 class UserPopup extends React.PureComponent {
     state = {
-        udata: {},
+        udata: {}
     };
 
     static getDerivedStateFromProps = (props, state) => {
-
         if (!_.isEqual(props.udata, state.udata)) {
             return {
                 ...state,
                 udata: {
                     ...state.udata,
-                    ...props.udata,
+                    ...props.udata
                 }
-            }
+            };
         }
 
         return state;
-    }
+    };
 
     render() {
         const { goCabinet } = this.props;

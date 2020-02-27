@@ -1,5 +1,5 @@
 import React from "react";
-import { stateFromHTML } from 'draft-js-import-html';
+import { stateFromHTML } from "draft-js-import-html";
 import { convertFromRaw } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import _ from "lodash";
@@ -7,7 +7,7 @@ import _ from "lodash";
 import "../../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { Button } from "antd";
 
-import modelContext from '../../../Models/context';
+import modelContext from "../../../Models/context";
 
 class EditorTextarea extends React.Component {
     state = {
@@ -45,15 +45,12 @@ class EditorTextarea extends React.Component {
     };
 
     onContentStateChange = contentState => {
-        console.log(contentState);
-        this.setState({
-            contentState: contentState
-        });
+        this.setState({ contentState: contentState });
     };
 
     handlePastedText = (text, html, editorState) => {
         this.setState({ contentState: editorState });
-    }
+    };
 
     render() {
         const { contentState = null } = this.state;
@@ -62,8 +59,8 @@ class EditorTextarea extends React.Component {
         const readOnlyProps =
             readOnly && contentState
                 ? {
-                    contentState
-                }
+                      contentState
+                  }
                 : {};
 
         return (

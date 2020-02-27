@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import store from "./Redux/store";
 
 import { IntlProvider } from "react-intl";
@@ -11,13 +11,11 @@ const Root = ({ children }) => {
         <BrowserRouter basename={"/"}>
             <ErrorBoundary>
                 <Provider store={store}>
-                    <IntlProvider locale={"ru"}>
-                        {children}
-                    </IntlProvider>
+                    <IntlProvider locale={"ru"}>{children}</IntlProvider>
                 </Provider>
             </ErrorBoundary>
         </BrowserRouter>
-    )
+    );
 };
 
 export default Root;

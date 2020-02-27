@@ -1,0 +1,32 @@
+{
+    "git.enableSmartCommit": true,
+    "git.autofetch": true,
+    "git.confirmSync": false,
+    "explorer.confirmDelete": true,
+    "editor.minimap.enabled": false,
+    "editor.formatOnSave": true,
+    "css.lint.compatibleVendorPrefixes": "warning",
+    "css.lint.duplicateProperties": "warning",
+    "window.zoomLevel": 0,
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "breadcrumbs.enabled": true,
+    "php.validate.run": "onType",
+    "php.suggest.basic": false,
+    "editor.renderControlCharacters": false,
+    "eslint.autoFixOnSave": true,
+    "[javascriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "diffEditor.ignoreTrimWhitespace": false,
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[json]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "search.useGlobalIgnoreFiles": true,
+    "appService.zipIgnorePattern": ["node_modules{,/**}", ".vscode{,/**}"],
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    }
+}

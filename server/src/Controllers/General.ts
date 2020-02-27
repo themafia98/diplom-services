@@ -2,7 +2,7 @@ import { Response, NextFunction } from "express";
 import _ from "lodash";
 import passport from "passport";
 import { UserModel } from "../Models/Database/Schema";
-import { ResRequest } from '../Utils/Types';
+import { ResRequest } from "../Utils/Types";
 import { Request, App, BodyLogin } from "../Utils/Interfaces";
 
 import Decorators from "../Decorators";
@@ -33,17 +33,16 @@ namespace General {
                     return res.sendStatus(503);
                 }
 
-
-                await UserModel.create({ ...req.body, accept: true, rules: "full" }, async (err: Error): ResRequest => {
-
-                    if (err) {
-                        console.error(err);
-                        return res.sendStatus(400);
+                await UserModel.create(
+                    { ...req.body, accept: true, rules: "full" },
+                    async (err: Error): ResRequest => {
+                        if (err) {
+                            console.error(err);
+                            return res.sendStatus(400);
+                        }
+                        if (!res.headersSent) return res.sendStatus(200);
                     }
-                    if (!res.headersSent)
-                        return res.sendStatus(200);
-                });
-
+                );
             } catch (err) {
                 console.error(err);
                 if (!res.headersSent) return res.sendStatus(400);
@@ -64,10 +63,12 @@ namespace General {
                         }
                         const { password = "" } = body;
 
-                        const isValidPassword = await user.checkPassword(password).catch((err: Error): Response => {
-                            console.error(err);
-                            return res.status(503).send("Ошибка авторизации.");
-                        });
+                        const isValidPassword = await user.checkPassword(password).catch(
+                            (err: Error): Response => {
+                                console.error(err);
+                                return res.status(503).send("Ошибка авторизации.");
+                            }
+                        );
 
                         if (res.headersSent) return;
 
@@ -75,16 +76,18 @@ namespace General {
                             return res.status(401).send("Неверные данные для авторизации.");
                         }
                         user.token = user.generateJWT();
-                        req.login(user, (err: Error): Response => {
-                            if (err) {
-                                res.status(404).send(err.message);
+                        req.login(
+                            user,
+                            (err: Error): Response => {
+                                if (err) {
+                                    res.status(404).send(err.message);
+                                }
+                                return res.json({ user: user.toAuthJSON() });
                             }
-                            return res.json({ user: user.toAuthJSON() });
-                        });
+                        );
                     } catch (err) {
                         console.error(err);
-                        if (!res.headersSent)
-                            return res.status(503).send("Ошибка авторизации.");
+                        if (!res.headersSent) return res.status(503).send("Ошибка авторизации.");
                     }
                 }
             )(req, res, next);
@@ -101,12 +104,14 @@ namespace General {
 
         @Delete({ path: "/logout", private: true })
         public async logout(req: Request, res: Response): Promise<Response> {
-            return await req.session.destroy((err: Error): Response => {
-                if (err) console.error(err);
-                req.logOut(); // passportjs logout
-                res.clearCookie("connect.sid");
-                return res.sendStatus(200);
-            });
+            return await req.session.destroy(
+                (err: Error): Response => {
+                    if (err) console.error(err);
+                    req.logOut(); // passportjs logout
+                    res.clearCookie("connect.sid");
+                    return res.sendStatus(200);
+                }
+            );
         }
     }
 }

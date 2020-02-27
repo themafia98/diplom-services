@@ -54,22 +54,20 @@ class HeaderView extends React.PureComponent {
         const { activeTabEUID = "mainModule", cbMenuTabHandler, udata } = this.props;
 
         return (
-            <Scrollbars>
-                <ul ref={this.refWrapper} className="tabsMenu">
-                    {items.map(item => {
-                        return (
-                            <Tab
-                                hendlerTab={cbMenuTabHandler}
-                                active={activeTabEUID === item.EUID}
-                                key={item.EUID}
-                                itemKey={item.EUID}
-                                value={item.VALUE}
-                                sizeTab={size}
-                            />
-                        );
-                    })}
-                </ul>
-            </Scrollbars>
+            <ul ref={this.refWrapper} className="tabsMenu">
+                {items.map(item => {
+                    return (
+                        <Tab
+                            hendlerTab={cbMenuTabHandler}
+                            active={activeTabEUID === item.EUID}
+                            key={item.EUID}
+                            itemKey={item.EUID}
+                            value={item.VALUE}
+                            sizeTab={size}
+                        />
+                    );
+                })}
+            </ul>
         );
     };
 

@@ -70,20 +70,20 @@ class TaskModuleCalendar extends React.PureComponent {
         let dateArrayTask =
             tasks && tasks
                 ? tasks
-                    .map(it => {
-                        if (valueDate === it.date[1] && it.date[0] === it.date[1])
-                            return { ...it, name: `Конец и начало срока: ${it.name}`, key: it.key };
-                        if (valueDate === it.date[1]) return { ...it, name: `Конец срока: ${it.name}`, key: it.key };
-                        if (valueDate === it.date[0]) return { ...it, name: `Начало срока: ${it.name}`, key: it.key };
-                        else return null;
-                    })
-                    .filter(Boolean)
+                      .map(it => {
+                          if (valueDate === it.date[1] && it.date[0] === it.date[1])
+                              return { ...it, name: `Конец и начало срока: ${it.name}`, key: it.key };
+                          if (valueDate === it.date[1]) return { ...it, name: `Конец срока: ${it.name}`, key: it.key };
+                          if (valueDate === it.date[0]) return { ...it, name: `Начало срока: ${it.name}`, key: it.key };
+                          else return null;
+                      })
+                      .filter(Boolean)
                 : null;
 
         const listData = Array.isArray(dateArrayTask)
             ? dateArrayTask.map(it => {
-                return { type: "success", content: it.name, key: it.key };
-            })
+                  return { type: "success", content: it.name, key: it.key };
+              })
             : [];
 
         return listData || [];
@@ -94,9 +94,7 @@ class TaskModuleCalendar extends React.PureComponent {
         const content = listData.map(item => {
             return (
                 <li className={item.key} onClick={this.onClick} key={item.key}>
-                    <Output>
-                        {item.content}
-                    </Output>
+                    <Output>{item.content}</Output>
                 </li>
             );
         });
@@ -132,7 +130,11 @@ class TaskModuleCalendar extends React.PureComponent {
                 <div className="taskModuleCalendar">
                     <TitleModule classNameTitle="taskModuleTittle" title="Календарь задач" />
                     <div className="taskModuleCalendar__main">
-                        <Calendar fullscreen={true} dateCellRender={this.dateCellRender} monthCellRender={this.monthCellRender} />
+                        <Calendar
+                            fullscreen={true}
+                            dateCellRender={this.dateCellRender}
+                            monthCellRender={this.monthCellRender}
+                        />
                     </div>
                 </div>
             </Scrollbars>

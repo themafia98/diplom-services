@@ -14,7 +14,7 @@ TitleModule.propTypes = {
     title: PropTypes.string,
     className: PropTypes.string,
     classNameTitle: PropTypes.string,
-    additional: PropTypes.string,
+    additional: PropTypes.string
 };
 
 export default TitleModule;

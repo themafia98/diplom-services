@@ -31,13 +31,9 @@ class Comments extends React.PureComponent {
                 udata: { displayName = "", _id: uId = "" } = {}
             } = this.props;
 
-
             if (!msg) return message.error("Вы ничего не ввели.");
             else if (key && Array.isArray(comments) && !_.isEmpty(data)) {
-
                 const time = moment().format("DD.MM.YYYY HH:mm");
-
-
 
                 if (!uId || !time || !displayName) {
                     throw new Error("Invalid data");
@@ -54,7 +50,8 @@ class Comments extends React.PureComponent {
                 this.setState({ ...this.state, onUpdateDisabled: true, value: "" });
 
                 await onUpdate({
-                    key, id,
+                    key,
+                    id,
                     updateItem: [...comments, comment],
                     updateField: "comments",
                     store: "tasks"
@@ -66,16 +63,14 @@ class Comments extends React.PureComponent {
                     ...this.state,
                     onUpdateDisabled: false
                 });
-
             } else return notification.error({ message: "Ошибка", description: "Некоректные данные." });
         } catch (error) {
             console.error(error);
             notification.error({ message: "Ошибка", description: "Некоректные данные." });
             this.setState({
-                onUpdateDisabled: false,
+                onUpdateDisabled: false
             });
         }
-
     }, 500);
 
     addComments = event => {
@@ -115,8 +110,8 @@ class Comments extends React.PureComponent {
                     uId={it.uId ? it.uId : null}
                     userId={userId}
                     onDelete={this.onDelete}
-                />)
-            );
+                />
+            ));
         else return <Empty description={<span>Данных нету</span>} />;
     }
     render() {

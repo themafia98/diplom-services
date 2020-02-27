@@ -43,7 +43,6 @@ class TableView extends React.Component {
         const { path: validPath = "", page = "", itemId = "" } = routeParser({ pageType: "moduleItem", path });
 
         if (prevProps.visible !== this.props.visible && page === "mainModule" && itemId === "table") {
-
             if (this.props.visible)
                 onLoadCurrentData({
                     path: validPath ? validPath : "",
@@ -60,7 +59,6 @@ class TableView extends React.Component {
         const parsePath = routeParser({ pageType: "moduleItem", path });
 
         if (visible && parsePath && parsePath.page === "mainModule" && parsePath.itemId === "table") {
-
             const { path: validPath = "" } = parsePath;
             onLoadCurrentData({
                 path: validPath ? validPath : "",
@@ -112,7 +110,6 @@ class TableView extends React.Component {
         const height = heightProps - 250;
 
         if (path === "mainModule__table" && visible) {
-
             const isUsers = currentData && currentData.users;
             const isLoad = currentData && currentData.load;
             // const isOffline = currentData && currentData.mode && currentData.mode === "offlineLoading";
@@ -132,28 +129,24 @@ class TableView extends React.Component {
                         <tbody>
                             {isUsers ? (
                                 this.getRowsTable(currentData.users)
-                            ) :
-                                isLoad || requestError ?
-                                    (
-                                        <tr>
-                                            <td colSpan="5">
-                                                <Empty description={<span>Данных нету</span>} className="emptyTable" />
-                                            </td>
-                                        </tr>
-                                    ) :
-                                    (
-                                        <tr>
-                                            <td colSpan="5">
-                                                <Loader classNameSpiner="tableLoader" className="wrapperLoaderTable" />
-                                            </td>
-                                        </tr>
-                                    )}
+                            ) : isLoad || requestError ? (
+                                <tr>
+                                    <td colSpan="5">
+                                        <Empty description={<span>Данных нету</span>} className="emptyTable" />
+                                    </td>
+                                </tr>
+                            ) : (
+                                <tr>
+                                    <td colSpan="5">
+                                        <Loader classNameSpiner="tableLoader" className="wrapperLoaderTable" />
+                                    </td>
+                                </tr>
+                            )}
                         </tbody>
                         <tfoot></tfoot>
                     </table>
                 </Scrollbars>
             );
-
         } else if (path === "searchTable") {
             const columns = this.getConfigColumns();
 
@@ -177,7 +170,7 @@ class TableView extends React.Component {
                     height={height}
                     columns={columns}
                 />
-            )
+            );
         }
 
         return null;
@@ -217,8 +210,7 @@ class TableView extends React.Component {
                 </tr>
             );
         });
-
-    }
+    };
 
     getConfigColumns = () => {
         const { sortedInfo } = this.state;
@@ -327,7 +319,7 @@ class TableView extends React.Component {
                 ...this.getColumn("date")
             }
         ];
-    }
+    };
 
     getColumn = dataIndex => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => {
@@ -378,12 +370,12 @@ class TableView extends React.Component {
                 text === "В работе"
                     ? "active"
                     : text === "Открыт"
-                        ? ""
-                        : text === "Закрыт"
-                            ? "close"
-                            : text === "Выполнен"
-                                ? "done"
-                                : null;
+                    ? ""
+                    : text === "Закрыт"
+                    ? "close"
+                    : text === "Выполнен"
+                    ? "done"
+                    : null;
 
             return (
                 <Output className={className}>
@@ -399,7 +391,6 @@ class TableView extends React.Component {
         return component;
     }
 }
-
 
 const mapStateToProps = state => {
     return {

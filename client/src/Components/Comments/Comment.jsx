@@ -14,9 +14,9 @@ const Comment = ({ onDelete, rules, it, userId = "", uId = "" }) => {
             {rules ? (
                 <span className="commentControllers">
                     <span style={{ display: "none" }} className="editComment icon-edit"></span>
-                    {userId === uId ?
+                    {userId === uId ? (
                         <span onClick={onDeleteEvent} className="deleteComment icon-trash-empty"></span>
-                        : null}
+                    ) : null}
                 </span>
             ) : null}
             <span className="aboutCommentSender">

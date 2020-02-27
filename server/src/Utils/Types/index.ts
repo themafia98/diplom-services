@@ -1,5 +1,5 @@
 import winston from "winston";
-import { files } from 'dropbox';
+import { files } from "dropbox";
 import { DocumentQuery, Document } from "mongoose";
 import { Response } from "express";
 
@@ -19,7 +19,6 @@ export type actionGet = {
 export type ListFolderResult = files.ListFolderResult | null;
 export type FileMetadata = files.FileMetadata | null;
 export type DeleteFile = files.DeleteResult;
-
 
 export type paramAction = {
     from?: string;
@@ -47,6 +46,15 @@ export type docResponse = string | number | object | null | Array<any> | any;
 
 export type ActionData = Promise<Array<Document>> | null | Document | Promise<Document>;
 
-export type ParserData = Promise<Document | Document[] | null | files.FileMetadata | files.ListFolderResult | files.DeleteResult>;
+export type ParserData = Promise<
+    Document | Document[] | null | files.FileMetadata | files.ListFolderResult | files.DeleteResult
+>;
 
-export type ParserResult = Document | Document[] | null | files.FileMetadata | files.ListFolderResult | BinaryType | files.DeleteResult;
+export type ParserResult =
+    | Document
+    | Document[]
+    | null
+    | files.FileMetadata
+    | files.ListFolderResult
+    | BinaryType
+    | files.DeleteResult;

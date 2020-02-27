@@ -10,7 +10,7 @@ export interface ServerRun {
 }
 
 export interface WorkerDataProps {
-    [key: string]: string | typeof Object
+    [key: string]: string | typeof Object;
 }
 
 export interface Rest {

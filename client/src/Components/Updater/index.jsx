@@ -21,7 +21,7 @@ const Updater = ({ className = null, additionalClassName = null, onClick = null 
 Updater.propTypes = {
     className: PropTypes.string,
     additionalClassName: PropTypes.string,
-    onClick: PropTypes.func.isRequired,
+    onClick: PropTypes.func.isRequired
 };
 
 export default Updater;

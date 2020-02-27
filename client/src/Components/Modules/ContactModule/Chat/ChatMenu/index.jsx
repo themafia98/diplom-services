@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import _ from 'lodash';
+import React, { useEffect, useState } from "react";
+import _ from "lodash";
 import Scrollbars from "react-custom-scrollbars";
-import { Skeleton, List, Avatar, Button } from 'antd';
-import uuid from 'uuid';
+import { Skeleton, List, Avatar, Button } from "antd";
+import uuid from "uuid";
 
 const { Item: { Meta } = {}, Item = {} } = List || {};
 
 const ChatMenu = props => {
-
     const {
         socketConnection,
         socketErrorStatus,
@@ -27,18 +26,13 @@ const ChatMenu = props => {
         return _.fill(Array(counter), "-_-").map((it, i) => {
             return (
                 <div className="item-skeleton" key={`${it}${i}`}>
-                    <Skeleton
-                        loading={true}
-                        active
-                        avatar
-                        paragraph={false}
-                    >
+                    <Skeleton loading={true} active avatar paragraph={false}>
                         <Meta />
                     </Skeleton>
                 </div>
-            )
+            );
         });
-    }
+    };
 
     useEffect(() => {
         const ids = [];
@@ -49,7 +43,6 @@ const ChatMenu = props => {
         }
 
         setIDs(ids);
-
     }, [usersList.length]);
 
     useEffect(() => {
@@ -83,41 +76,37 @@ const ChatMenu = props => {
                     {!socketConnection && !socketErrorStatus ? (
                         generateSkeleton(listdata && listdata.length ? listdata.length : 5)
                     ) : (
-                            <List
-                                key="list-chat"
-                                dataSource={rooms}
-                                renderItem={(it, i) => {
-                                    const { membersIds = [], type } = it || {};
+                        <List
+                            key="list-chat"
+                            dataSource={rooms}
+                            renderItem={(it, i) => {
+                                const { membersIds = [], type } = it || {};
 
-                                    const displayName = parseChatJson({ type, item: it, mode: "displayName" });
+                                const displayName = parseChatJson({ type, item: it, mode: "displayName" });
 
-                                    const descriptionChatMenu = false ? (
-                                        <span className="descriptionChatMenu">
-                                            {/* lastMsg */}
-                                        </span>
-                                    ) : (
-                                            <span className="descriptionChatMenu">
+                                const descriptionChatMenu = false ? (
+                                    <span className="descriptionChatMenu">{/* lastMsg */}</span>
+                                ) : (
+                                    <span className="descriptionChatMenu"></span>
+                                );
 
-                                            </span>
-                                        )
-
-                                    return (
-                                        <Item
-                                            className={[tokenRoom === it.tokenRoom ? "activeChat" : null].join(" ")}
-                                            onClick={e => setActiveChatRoom(e, it._id, membersIds, it.tokenRoom)}
-                                            key={(it, i)}
-                                        >
-                                            <Meta
-                                                key={`${it}${i}`}
-                                                avatar={<Avatar shape="square" size="large" icon="user" />}
-                                                title={<p>{`${displayName}`}</p>}
-                                                description={descriptionChatMenu}
-                                            />
-                                        </Item>
-                                    )
-                                }}
-                            />
-                        )}
+                                return (
+                                    <Item
+                                        className={[tokenRoom === it.tokenRoom ? "activeChat" : null].join(" ")}
+                                        onClick={e => setActiveChatRoom(e, it._id, membersIds, it.tokenRoom)}
+                                        key={(it, i)}
+                                    >
+                                        <Meta
+                                            key={`${it}${i}`}
+                                            avatar={<Avatar shape="square" size="large" icon="user" />}
+                                            title={<p>{`${displayName}`}</p>}
+                                            description={descriptionChatMenu}
+                                        />
+                                    </Item>
+                                );
+                            }}
+                        />
+                    )}
                 </Scrollbars>
             </div>
             <Button

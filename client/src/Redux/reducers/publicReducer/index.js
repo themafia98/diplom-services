@@ -25,8 +25,8 @@ export default (state = initialState, action) => {
                     action.payload && Array.isArray(state.requestError)
                         ? [...state.requestError, action.payload]
                         : action.payload
-                            ? [action.payload]
-                            : null
+                        ? [action.payload]
+                        : null
             };
         }
 
@@ -53,7 +53,11 @@ export default (state = initialState, action) => {
             const isObjects = typeof data === "object" && data !== null && Object.keys(data).length > 1;
             const isObjectsArray = !Object.keys(data).every(key => isNaN(Number(key)));
 
-            const validData = isObjectsArray ? Object.entries(data).map(([key, value]) => value).filter(Boolean) : data;
+            const validData = isObjectsArray
+                ? Object.entries(data)
+                      .map(([key, value]) => value)
+                      .filter(Boolean)
+                : data;
 
             if (validData.length > 1) {
                 keys = [];
@@ -77,7 +81,6 @@ export default (state = initialState, action) => {
                     caches: { ...caches, ..._items }
                 };
             } else {
-
                 const key = Object.keys(validData)[0];
 
                 keys = !isObjectsArray ? `${validData.depKey}${primaryKey}` : `${validData[key].depKey}${primaryKey}`;
@@ -104,9 +107,8 @@ export default (state = initialState, action) => {
 
             return {
                 ...state,
-                caches: filterCaches,
-            }
-
+                caches: filterCaches
+            };
         }
 
         case SET_STATUS: {
