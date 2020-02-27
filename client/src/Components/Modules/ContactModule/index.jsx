@@ -59,7 +59,7 @@ class ContactModule extends React.PureComponent {
                 routeDataActive: {
                     key: keyEntity = "",
                     listdata = {}
-                } } = {},
+                } = {} } = {},
             actionTabs = []
         } = this.props;
 
