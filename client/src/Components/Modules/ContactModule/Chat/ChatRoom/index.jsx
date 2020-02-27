@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import _ from "lodash";
 
-import Scrollbars from 'react-custom-scrollbars';
+import Scrollbars from "react-custom-scrollbars";
 import { Button, Avatar } from "antd";
 
 import Textarea from "../../../../Textarea";
@@ -17,7 +17,6 @@ const ChatRoom = ({
     onKeyDown = null,
     pushMessage = null
 }) => {
-
     const refScrollbar = useRef(null);
     const [isMount, setMount] = useState(false);
     const [token] = useState(tokenRoom);
@@ -30,14 +29,12 @@ const ChatRoom = ({
 
     const scrollHandler = event => {
         if (refScrollbar && refScrollbar.current) {
-
             const scrollTop = refScrollbar.current.getScrollTop();
             const scrollHeight = refScrollbar.current.getScrollHeight();
 
             if (scrollHeight - scrollTop < 350 && isMount) {
                 return;
             }
-
 
             if (!event) {
                 refScrollbar.current.scrollToBottom();
@@ -48,14 +45,11 @@ const ChatRoom = ({
                 refScrollbar.current.scrollToBottom();
                 onClearScroll();
             }
-
         }
-    }
-
+    };
 
     useEffect(() => {
-        if (messages.length !== msgProps.length)
-            setMessages([...msgProps]);
+        if (messages.length !== msgProps.length) setMessages([...msgProps]);
 
         scrollHandler();
     }, [messages, msgProps]);
@@ -67,14 +61,12 @@ const ChatRoom = ({
 
     useEffect(() => {
         if (shouldScroll) scrollHandler(true);
-
     }, [messagesLength]);
 
     const onChange = event => {
         const { currentTarget: { value = "" } = {} } = event;
         if (value !== msg) setMsg(value);
     };
-
 
     const _onSubmit = (event, msgValue = null) => {
         if (_.isNull(msgValue)) {
@@ -94,8 +86,11 @@ const ChatRoom = ({
 
     const renderChat = messages => {
         return messages.map((it, i) => {
-
-            const classNames = [i, "message", uid === it.authorId && uid.includes(it.authorId) ? "currentUser" : null].join(" ");
+            const classNames = [
+                i,
+                "message",
+                uid === it.authorId && uid.includes(it.authorId) ? "currentUser" : null
+            ].join(" ");
             return (
                 <div
                     key={`${i}${it.tokenRoom}${it.msg}${it.authorId}${it.displayName}${it._id}`}
@@ -108,32 +103,27 @@ const ChatRoom = ({
                     >
                         <React.Fragment>
                             <div className="msg_header">
-                                {
+                                {it.displayName !== "System" ? (
+                                    <span
+                                        onClick={event => redirectUserProfile(event, it.authorId ? it.authorId : null)}
+                                        className="msg_author"
+                                    >
+                                        <Avatar size="small" />
+                                        {it.displayName}
+                                    </span>
+                                ) : (
+                                    <p className="admin_wrapper">{it.displayName}</p>
+                                )}
 
-                                    it.displayName !== "System" ? (
-
-                                        <span
-                                            onClick={event => redirectUserProfile(event, it.authorId ? it.authorId : null)}
-                                            className="msg_author"
-                                        >
-                                            < Avatar size="small" />
-                                            {it.displayName}
-                                        </span>
-                                    ) : (
-                                            <p className="admin_wrapper">{it.displayName}</p>
-                                        )
-                                }
-
-                                {it.displayName !== "System" ?
+                                {it.displayName !== "System" ? (
                                     <span className="msg_date">{it.date ? it.date : "No date"}.</span>
-                                    : null
-                                }
+                                ) : null}
                             </div>
                             <p className="wrapper_msg">{it.msg}</p>
                         </React.Fragment>
                     </Message>
-                </div >
-            )
+                </div>
+            );
         });
     };
 
@@ -142,9 +132,7 @@ const ChatRoom = ({
             <div className="chatWindow">
                 <div id="containerChat">
                     <Scrollbars ref={refScrollbar}>
-                        <div className='flex-group'>
-                            {renderChat(messages)}
-                        </div>
+                        <div className="flex-group">{renderChat(messages)}</div>
                     </Scrollbars>
                 </div>
             </div>

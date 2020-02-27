@@ -28,7 +28,12 @@ class MainModule extends React.PureComponent {
                             <Calendar className="mainModule_calendar" fullscreen={false} />
                         </div>
                         <div className="tableViw__wrapper">
-                            <TableView key="usersView" visible={visible} key="mainModule_table" path="mainModule__table" />
+                            <TableView
+                                key="usersView"
+                                visible={visible}
+                                key="mainModule_table"
+                                path="mainModule__table"
+                            />
                         </div>
                     </div>
                 </div>

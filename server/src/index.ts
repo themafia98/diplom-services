@@ -10,7 +10,6 @@ import _ from "lodash";
 import { ServerRun, WorkerDataProps } from "./Utils/Interfaces";
 import Http from "./Models/Server";
 
-
 if (process.env.NODE_ENV === "production") {
     /** nginx init */
     fs.openSync("/tmp/app-initialized", "w");

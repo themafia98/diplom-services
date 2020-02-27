@@ -1,5 +1,5 @@
 import React from "react";
-//import * as Sentry from "@sentry/browser";
+import * as Sentry from "@sentry/browser";
 
 import ErrorPage from "./ErrorPage";
 
@@ -23,16 +23,16 @@ class ErrorBoundary extends React.Component {
     };
 
     componentDidCatch(error, errorInfo) {
-        // Sentry.withScope(scope => {
-        //  scope.setExtras(errorInfo);
-        // const eventId = Sentry.captureException(error);
-        // this.setState({ eventId });
-        // });
+        Sentry.withScope(scope => {
+            scope.setExtras(errorInfo);
+            const eventId = Sentry.captureException(error);
+            this.setState({ eventId });
+        });
     }
 
     logger = event => {
-        //Sentry.init({ dsn: process.env.REACT_APP_LOGGER_DSN });
-        //Sentry.showReportDialog({ eventId: this.state.eventId });
+        Sentry.init({ dsn: process.env.REACT_APP_LOGGER_DSN });
+        Sentry.showReportDialog({ eventId: this.state.eventId });
     };
 
     render() {

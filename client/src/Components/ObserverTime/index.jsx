@@ -32,6 +32,6 @@ class ObserverTime extends React.PureComponent {
 }
 
 ObserverTime.propTypes = {
-    title: PropTypes.string,
+    title: PropTypes.string
 };
 export default ObserverTime;

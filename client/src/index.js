@@ -13,9 +13,8 @@ import "./Utils/styles/fontello.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 
-import Root from './Root';
-import ModelContext, { modelMethods } from './Models/context';
-
+import Root from "./Root";
+import ModelContext, { modelMethods } from "./Models/context";
 
 require("es6-promise").polyfill();
 

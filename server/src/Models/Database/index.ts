@@ -15,7 +15,7 @@ namespace Database {
 
         constructor(db: string, connectionString: string) {
             mongoose.set("debug", false);
-            mongoose.set('useFindAndModify', false);
+            mongoose.set("useFindAndModify", false);
             mongoose.set("useCreateIndex", true);
             this.dbClient = db;
             this.connectionString = connectionString;
@@ -47,7 +47,6 @@ namespace Database {
                 const status = mongoose.connection.readyState;
                 console.log("status mongoose connect:", status);
 
-
                 return mongoose.connection;
             } catch (err) {
                 return this.connect;
@@ -67,7 +66,6 @@ namespace Database {
         public getConnect(): Promise<typeof mongoose> {
             return this.connect;
         }
-
     }
 }
 

@@ -1,5 +1,5 @@
-import express, { Router as RouteExpress } from 'express';
-import { ServerRun } from '../../Utils/Interfaces';
+import express, { Router as RouteExpress } from "express";
+import { ServerRun } from "../../Utils/Interfaces";
 
 namespace Settings {
     export const module = (app: ServerRun, route: RouteExpress): null | void => {
@@ -7,8 +7,8 @@ namespace Settings {
 
         route.get("/list", (req, res) => {
             res.sendStatus(200);
-        })
-    }
+        });
+    };
 }
 
 export default Settings;

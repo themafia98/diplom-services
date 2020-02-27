@@ -162,7 +162,7 @@ namespace Http {
             };
 
             passport.use(
-                new jwt.Strategy(<StrategyOptions>jwtOptions, async function (
+                new jwt.Strategy(<StrategyOptions>jwtOptions, async function(
                     payload: Partial<{ id: string }>,
                     done: Function
                 ) {

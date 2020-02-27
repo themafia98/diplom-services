@@ -8,7 +8,7 @@ import { message } from "antd";
 import { PrivateRoute } from "./Components/Helpers";
 import { forceUpdateDetectedInit } from "./Utils";
 
-//import * as Sentry from "@sentry/browser";
+import * as Sentry from "@sentry/browser";
 
 import { setStatus, loadUdata } from "./Redux/actions/publicActions";
 import { addTabAction, setActiveTabAction, logoutAction } from "./Redux/actions/routerActions";
@@ -20,7 +20,7 @@ import Recovery from "./Components/Pages/Recovery";
 import LoginPage from "./Components/Pages/LoginPage";
 import Dashboard from "./Components/Pages/Dashboard";
 import "moment/locale/ru";
-import modelContext from './Models/context';
+import modelContext from "./Models/context";
 // import { isMobile } from "react-device-detect";
 
 class App extends React.Component {
@@ -119,11 +119,7 @@ class App extends React.Component {
                     </RenderInBrowser>
                     <RenderInBrowser except ie>
                         <Switch>
-                            <Route
-                                exact
-                                path="/"
-                                render={props => <LoginPage {...props} authLoad={authLoad} />}
-                            />
+                            <Route exact path="/" render={props => <LoginPage {...props} authLoad={authLoad} />} />
                             <Route exact path="/recovory" render={props => <Recovery {...props} />} />
                             <PrivateRoute
                                 exact

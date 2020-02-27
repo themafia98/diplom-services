@@ -1,13 +1,12 @@
-import React from 'react';
-import _ from 'lodash';
-import { Table, Input, Button, Icon, message } from 'antd';
-import moment from 'moment';
+import React from "react";
+import _ from "lodash";
+import { Table, Input, Button, Icon, message } from "antd";
+import moment from "moment";
 
 import Output from "../../Output";
 
 class DynamicTable extends React.PureComponent {
-
-    onClickRow = (record) => {
+    onClickRow = record => {
         return {
             onClick: () => {
                 const {
@@ -43,7 +42,7 @@ class DynamicTable extends React.PureComponent {
                     setCurrentTab(actionTabs[index]);
                 }
             }
-        }
+        };
     };
 
     render() {
@@ -58,11 +57,12 @@ class DynamicTable extends React.PureComponent {
             data =
                 flag && data.length
                     ? data
-                        .map(it => {
-                            if (!_.isNull(it.editor) && it.editor.some(editor => editor === udata.displayName)) return it;
-                            else return null;
-                        })
-                        .filter(Boolean)
+                          .map(it => {
+                              if (!_.isNull(it.editor) && it.editor.some(editor => editor === udata.displayName))
+                                  return it;
+                              else return null;
+                          })
+                          .filter(Boolean)
                     : data;
         return (
             <Table
@@ -73,7 +73,6 @@ class DynamicTable extends React.PureComponent {
                 columns={columns}
                 dataSource={data}
                 onRow={this.onClickRow}
-
             />
         );
     }

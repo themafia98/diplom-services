@@ -14,8 +14,10 @@ namespace Chat {
     const Controller = Decorators.Controller;
     const { getResponseJson, parsePublicData } = Utils;
 
-    export const createRealRoom = async (fakeMsg: Record<string, any>, interlocutorId: string): Promise<ParserResult> => {
-
+    export const createRealRoom = async (
+        fakeMsg: Record<string, any>,
+        interlocutorId: string
+    ): Promise<ParserResult> => {
         const actionPath: string = "chatRoom";
         const actionType: string = "create_FakeRoom";
 
@@ -40,7 +42,6 @@ namespace Chat {
 
                 const actionLoadChats = new Action.ActionParser({ actionPath, actionType });
                 const data: ParserResult = await actionLoadChats.getActionData(queryParams);
-
 
                 if (!data) {
                     throw new TypeError("Bad action data");
@@ -96,7 +97,6 @@ namespace Chat {
             const actionType: string = "chatRoom";
             const actionPath: string = "leave_room";
             try {
-
                 if (!actionPath || !actionType) {
                     throw new Error("Invalid action chat");
                 }
@@ -124,11 +124,12 @@ namespace Chat {
 
         @Post({ path: "/load/tokenData", private: true })
         async loadTokenData(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
-            const { body: { queryParams = {}, options: { actionPath: aPath = "", actionType: aType = "" } = {} } = {} } = req;
+            const {
+                body: { queryParams = {}, options: { actionPath: aPath = "", actionType: aType = "" } = {} } = {}
+            } = req;
             const actionType: string = aType ? aType : "get_msg_by_token";
             const actionPath: string = aPath ? aPath : "chatMsg";
             try {
-
                 if (!actionPath || !actionType) {
                     throw new Error("Invalid action chat");
                 }
