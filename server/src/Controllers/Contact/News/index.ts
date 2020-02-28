@@ -6,6 +6,7 @@ import Decorators from "../../../Decorators";
 import Action from "../../../Models/Action";
 
 namespace News {
+    const { getResponseJson } = Utils;
     const Controller = Decorators.Controller;
     const Post = Decorators.Post;
     const Get = Decorators.Get;
@@ -14,68 +15,73 @@ namespace News {
     export class NewsController {
         @Post({ path: "/createNews", private: true })
         public async createNews(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+
             try {
                 const bodyRequest = <Record<string, any>>req.body;
                 const service = server.locals;
                 const connect = await service.dbm.connection().catch((err: Error) => {
                     console.error(err);
                 });
+
                 const {
                     queryParams: { actionType = "" }
                 } = bodyRequest;
                 const body: ActionParams = bodyRequest.metadata;
 
-                const params: Params = { methodQuery: actionType, status: "done", done: true, from: "news" };
-
                 if (!connect) throw new Error("Bad connect");
+
+                const params: Params = { methodQuery: actionType, status: "done", done: true, from: "news" };
 
                 const actionNews = new Action.ActionParser({ actionPath: "news", actionType });
                 const data: Readonly<ParserResult> = await actionNews.getActionData(body);
 
                 if (!data) {
                     params.status = "error";
-
-                    return res.json({
-                        action: "error",
-                        response: { param: params, metadata: [] },
-                        uptime: process.uptime(),
-                        responseTime: Utils.responseTime((req as Record<string, any>).start),
-                        work: process.connected
-                    });
+                    res.status(404);
+                    return res.json(
+                        getResponseJson(
+                            "error",
+                            { status: "FAIL", params, done: false, metadata: [] },
+                            (req as Record<string, any>).start
+                        ));
                 }
 
                 await service.dbm.disconnect().catch((err: Error) => console.error(err));
 
-                return res.json({
-                    action: "done",
-                    response: { param: params, metadata: data },
-                    uptime: process.uptime(),
-                    responseTime: Utils.responseTime((req as Record<string, any>).start),
-                    work: process.connected
-                });
+                return res.json(
+                    getResponseJson(
+                        "done",
+                        { status: "OK", params, done: true, metadata: data },
+                        (req as Record<string, any>).start
+                    ));
             } catch (err) {
                 console.error(err);
                 if (!res.headersSent) {
-                    return res.json({
-                        action: err.name,
-                        response: "Server error",
-                        uptime: process.uptime(),
-                        responseTime: Utils.responseTime((req as Record<string, any>).start),
-                        work: process.connected
-                    });
+                    const bodyRequest = <Record<string, any>>req.body;
+                    const {
+                        queryParams: { actionType = "" }
+                    } = bodyRequest;
+
+                    const params: Params = { methodQuery: actionType, status: "done", done: true, from: "news" };
+                    res.status(503);
+                    return res.json(
+                        getResponseJson(
+                            err.name,
+                            { status: "Server error", params, done: false, metadata: [] },
+                            (req as Record<string, any>).start
+                        ));
                 }
             }
         }
 
         @Get({ path: "/list", private: true })
         public async getNewsList(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+            const params: Params = { methodQuery: "get_all", status: "done", done: true, from: "news" };
             try {
                 const service = server.locals;
                 const connect = await service.dbm.connection().catch((err: Error) => {
                     console.error(err);
                 });
-
-                const params: Params = { methodQuery: "get_all", status: "done", done: true, from: "news" };
 
                 if (!connect) throw new Error("Bad connect");
 
@@ -84,35 +90,35 @@ namespace News {
 
                 if (!data) {
                     params.status = "error";
-
-                    return res.json({
-                        action: "error",
-                        response: { param: params, metadata: [] },
-                        uptime: process.uptime(),
-                        responseTime: Utils.responseTime((req as Record<string, any>).start),
-                        work: process.connected
-                    });
+                    res.status(404);
+                    return res.json(
+                        getResponseJson(
+                            "error",
+                            { status: "FAIL", done: false, params, metadata: [] },
+                            (req as Record<string, any>).start
+                        ));
                 }
 
                 await service.dbm.disconnect().catch((err: Error) => console.error(err));
 
-                return res.json({
-                    action: "done",
-                    response: { param: params, metadata: data },
-                    uptime: process.uptime(),
-                    responseTime: Utils.responseTime((req as Record<string, any>).start),
-                    work: process.connected
-                });
+                return res.json(
+                    getResponseJson(
+                        "done",
+                        { status: "OK", done: true, params, metadata: data },
+                        (req as Record<string, any>).start
+                    ));
             } catch (err) {
                 console.error(err);
                 if (!res.headersSent) {
-                    return res.json({
-                        action: err.name,
-                        response: "Server error",
-                        uptime: process.uptime(),
-                        responseTime: Utils.responseTime((req as Record<string, any>).start),
-                        work: process.connected
-                    });
+                    params.done = false;
+                    params.status = "FAIL";
+                    res.status(503);
+                    return res.json(
+                        getResponseJson(
+                            err.name,
+                            { status: "Server error", params, done: false, metadata: [] },
+                            (req as Record<string, any>).start
+                        ));
                 }
             }
         }

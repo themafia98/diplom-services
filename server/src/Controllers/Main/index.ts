@@ -16,52 +16,52 @@ namespace System {
     export class SystemData {
         @Get({ path: "/userList", private: true })
         async getUsersList(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+            const params: Params = { methodQuery: "get_all", status: "done", done: true, from: "users" };
             try {
                 const service = server.locals;
                 const connect = await service.dbm.connection().catch((err: Error) => console.error(err));
 
                 if (!connect) throw new Error("Bad connect");
 
-                const params: Params = { methodQuery: "get_all", status: "done", done: true, from: "users" };
                 const actionUserList = new Action.ActionParser({ actionPath: "users", actionType: "get_all" });
-
                 const data: ParserResult = await actionUserList.getActionData({});
 
                 await service.dbm.disconnect().catch((err: Error) => console.error(err));
 
                 if (!data) {
                     params.status = "error";
-
-                    return res.json({
-                        action: "error",
-                        response: { param: params, metadata: data },
-                        uptime: process.uptime(),
-                        responseTime: Utils.responseTime((req as Record<string, any>).start),
-                        work: process.connected
-                    });
+                    params.done = false;
+                    res.status(404);
+                    return res.json(
+                        getResponseJson(
+                            "error",
+                            { status: "FAIL", params, done: false, metadata: data },
+                            (req as Record<string, any>).start
+                        ));
                 }
 
                 const metadata: ArrayLike<object> = Utils.parsePublicData(data);
 
-                return res.json({
-                    action: "done",
-                    response: { param: params, metadata },
-                    uptime: process.uptime(),
-                    responseTime: Utils.responseTime((req as Record<string, any>).start),
-                    work: process.connected
-                });
+                return res.json(
+                    getResponseJson(
+                        "done",
+                        { status: "OK", done: true, params, metadata },
+                        (req as Record<string, any>).start
+                    ));
             } catch (err) {
                 console.error(err);
                 await server.locals.service.dbm.disconnect().catch((err: Error) => console.error(err));
 
                 if (!res.headersSent) {
-                    return res.json({
-                        action: err.name,
-                        response: null,
-                        uptime: process.uptime(),
-                        responseTime: Utils.responseTime((req as Record<string, any>).start),
-                        work: process.connected
-                    });
+                    params.done = false;
+                    params.status = "FAIL";
+                    res.status(503);
+                    return res.json(
+                        getResponseJson(
+                            err.name,
+                            { status: "Server error", done: false, params, metadata: null },
+                            (req as Record<string, any>).start
+                        ));
                 }
             }
         }

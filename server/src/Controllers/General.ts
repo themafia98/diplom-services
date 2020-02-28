@@ -3,11 +3,13 @@ import _ from "lodash";
 import passport from "passport";
 import { UserModel } from "../Models/Database/Schema";
 import { ResRequest } from "../Utils/Types";
+import Utils from "../Utils";
 import { Request, App, BodyLogin } from "../Utils/Interfaces";
 
 import Decorators from "../Decorators";
 
 namespace General {
+    const { getResponseJson } = Utils;
     const Post = Decorators.Post;
     const Delete = Decorators.Delete;
     const Controller = Decorators.Controller;
