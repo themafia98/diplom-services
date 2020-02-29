@@ -8,7 +8,7 @@ const ErrorPage = ({ error, logger, update }) => {
             <p style={{ display: "none" }} className="messageError">
                 {error.message}
             </p>
-            <button disabled={true} onClick={logger}>
+            <button disabled={false} onClick={logger}>
                 Report error
             </button>
             <button onClick={update}>Update app</button>
