@@ -60,19 +60,13 @@
         },
         {
             "EUID": "customersModule",
-            "VALUE": "Работа с клиентами",
+            "VALUE": "Связь",
             "ICON": "global",
             "PARENT_CODE": null
         },
         {
             "EUID": "customersModule_contacts",
             "VALUE": "Контакты",
-            "ICON": null,
-            "PARENT_CODE": "customersModule"
-        },
-        {
-            "EUID": "customersModule_reception",
-            "VALUE": "Обращения",
             "ICON": null,
             "PARENT_CODE": "customersModule"
         },

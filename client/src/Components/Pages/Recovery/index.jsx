@@ -1,25 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios";
 import { Button, Input } from "antd";
+
+import modelContext from "../../../Models/context";
 
 
 const Recovory = props => {
 
+    const { Request } = useContext(modelContext);
     const [status, setStatus] = useState(null);
     const [mode, setMode] = useState("emailMode");
 
     const onSubmit = async event => {
-        const recovoryData = [];
 
-        axios.post("/rest/recovory", recovoryData).then(res => {
-            if (res.status !== 200) throw new Error("Bad data for recovory");
+        try {
+            const recovoryData = [];
+            const rest = new Request();
+            const result = await rest.sendRequest("/rest/recovory", "POST", recovoryData);
+
+            if (result.status !== 200) throw new Error("Bad data for recovory");
 
             setStatus("Новый пороль будет выслан вам на почту.");
 
-        }).catch(error => {
+        } catch (error) {
             console.error(error);
             setStatus(error);
-        });
+        };
     };
 
     const onChangeMode = event => {
