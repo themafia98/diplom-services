@@ -14,6 +14,7 @@ import { Server as HttpServer } from "http";
 import { Request, Rest, Mail } from "../../Utils/Interfaces";
 import Utils from "../../Utils";
 import System from "../../Controllers/Main";
+import Settings from "../../Controllers/Settings";
 import General from "../../Controllers/General";
 import Chat from "../../Controllers/Contact/Chat";
 import Tasks from "../../Controllers/Tasks";
@@ -221,6 +222,7 @@ namespace Http {
             const SystemData: Readonly<Function> = System.SystemData;
             const NewsController: Readonly<Function> = News.NewsController;
             const ChatAlias: Readonly<Function> = Chat.ChatController;
+            const SettingsAlias: Readonly<Function> = Settings.SettingsController;
 
             this.setApp(express());
             this.getApp().disabled("x-powerd-by");
@@ -296,7 +298,7 @@ namespace Http {
             wsEvents(wsWorkerManager, dbm, server); /** chat */
 
             Utils.initControllers(
-                [Main, TasksController, NewsController, SystemData, ChatAlias],
+                [Main, TasksController, NewsController, SystemData, ChatAlias, SettingsAlias],
                 this.getApp.bind(this),
                 this.getRest.bind(this),
                 this.isPrivateRoute.bind(this),

@@ -145,24 +145,33 @@ class SettingsModule extends React.PureComponent {
     onSaveSettings = async (event, settingsKey) => {
         const { Request = {} } = this.context;
         if (settingsKey.includes("password")) {
+            const { udata: { _id: uid = "" } = {} } = this.props;
             const { oldPassword = "", newPassword = "" } = this.state;
             if (!oldPassword || !newPassword) {
                 message.warning("Формат пароля не верен");
                 return;
             }
 
-            const queryProps = {
+            if (!uid) {
+                message.error("Пользователь не найден");
+                return;
+            }
+
+            const queryParams = {
                 oldPassword,
-                newPassword
+                newPassword,
+                uid
             }
 
             try {
                 const rest = new Request();
-                const res = await rest.sendRequest("/settings/password", "POST", { queryProps }, true);
+                const res = await rest.sendRequest("/settings/password", "POST", { queryParams }, true);
 
                 if (!res || res.status !== 200) {
                     throw new Error("Bad request change password");
                 }
+
+                message.success("Пароль сменен.");
 
             } catch (error) {
                 console.error(error);

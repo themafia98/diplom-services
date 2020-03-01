@@ -315,6 +315,42 @@ namespace Action {
                             }
                         }
 
+                        if (this.getActionType() === "change_password") {
+                            const { queryParams = {} } = {} = (<Record<string, any>>actionParam);
+                            const { oldPassword = "", newPassword = "", uid = "" } = queryParams || {};
+
+                            const checkProps = {
+                                _id: uid
+                            }
+
+                            const result: Record<string, any> | null = await this.findOnce(model, { ...checkProps });
+
+                            if (!result) {
+                                console.error("User not find for change password action");
+                                return null;
+                            }
+
+                            if (!result.checkPassword(oldPassword)) {
+                                console.error("Bad old password for change password action");
+                                return null;
+                            };
+
+                            const { _id } = result || {};
+
+                            const password: string = newPassword;
+                            const passwordHash: string | null = await result.changePassword(password);
+
+                            if (!passwordHash) {
+                                return null;
+                            }
+
+                            const res = await this.updateEntity(model, { _id, updateProps: { passwordHash } });
+
+                            if (!res) return null;
+
+                            return res;
+                        }
+
                         break;
                     }
 
