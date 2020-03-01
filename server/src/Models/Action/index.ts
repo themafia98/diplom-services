@@ -303,8 +303,6 @@ namespace Action {
 
                                 const passwordHash: string | null = await result.changePassword(password);
 
-                                console.log("new pass:", passwordHash);
-
                                 if (!passwordHash) {
                                     return null;
                                 }
