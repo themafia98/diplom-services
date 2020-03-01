@@ -133,24 +133,17 @@ namespace General {
                     body
                 });
 
-                const data: ParserResult = await checkerAction.getActionData(body);
-                console.log("data,", data);
-                if (!data) {
+                const password: ParserResult = await checkerAction.getActionData(body);
+
+                if (!password) {
                     throw new Error("Invalid checker data");
-                }
-
-                const currentUser: Record<string, any> = (<Array<Record<string, any>>>data)[0];
-                const { email = "", passwordHash = "" } = currentUser || {};
-
-                if (mode.includes("email") && email !== recovoryField) {
-                    throw new Error("Bad user email find from action");
                 }
 
                 const to: string = recovoryField;
 
                 const result: Promise<any> = await mailer.send(to,
                     "Восстановление пароля / ControllSystem",
-                    `Ваш новый пароль: ${passwordHash}`
+                    `Ваш новый пароль: ${password}`
                 );
 
                 if (!result) {

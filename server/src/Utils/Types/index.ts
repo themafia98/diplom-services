@@ -47,8 +47,7 @@ export type docResponse = string | number | object | null | Array<any> | any;
 export type ActionData = Promise<Array<Document>> | null | Document | Promise<Document>;
 
 export type ParserData = Promise<
-    Document | Document[] | null | files.FileMetadata | files.ListFolderResult | files.DeleteResult
->;
+    Document | Document[] | null | files.FileMetadata | files.ListFolderResult | files.DeleteResult>;
 
 export type transOptions = { service?: string, auth: object, secure?: boolean, host?: string, port?: number };
 

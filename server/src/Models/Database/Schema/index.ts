@@ -44,6 +44,20 @@ userSchema.methods.checkPassword = async function (password: string): Promise<bo
     return await bcrypt.compare(password, this.passwordHash);
 };
 
+userSchema.methods.changePassword = async function (password: string): Promise<string | null> {
+    try {
+        const passwordHash: string = bcrypt.hashSync(<string>password, 10);
+
+        if (!passwordHash) throw new Error("Bad password string for change");
+
+        return passwordHash;
+
+    } catch (err) {
+        console.error(err);
+        return null;
+    }
+}
+
 userSchema.methods.generateJWT = function (): any {
     const today = new Date();
     const expirationDate = new Date(<Date>today);

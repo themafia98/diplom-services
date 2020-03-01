@@ -1,8 +1,9 @@
 import { ActionProps, ActionParams, EntityActionApi, FileApi } from "../../Utils/Interfaces";
+import generator from "generate-password";
 import { ParserData } from "../../Utils/Types";
 import uuid from "uuid/v4";
 import { files } from "dropbox";
-import { Model, Document, Query } from "mongoose";
+import { Model, Document, Query, DocumentQuery } from "mongoose";
 import Utils from "../../Utils";
 
 namespace Action {
@@ -47,6 +48,18 @@ namespace Action {
             }
         }
 
+        public async findOnce(model: Model<Document>, actionParam: ActionParams) {
+            try {
+                console.log("actionParam:", actionParam);
+                const actionData = await model.findOne(actionParam);
+                console.log(actionData);
+                return actionData;
+            } catch (err) {
+                console.error(err);
+                return null;
+            }
+        }
+
         private async createEntity(model: Model<Document>, item: object) {
             try {
                 console.log("create entity:", item);
@@ -84,6 +97,23 @@ namespace Action {
                     } else return null;
                 }
 
+                return actionData;
+            } catch (err) {
+                console.error(err);
+                return null;
+            }
+        }
+
+        public async updateEntity(model: Model<Document>, query: ActionParams) {
+            try {
+                const { _id } = query;
+                const updateProps = <Record<string, any>>query.updateProps;
+                const actionData: Document = await model.updateOne(
+                    { _id },
+                    {
+                        ...updateProps
+                    }
+                );
                 return actionData;
             } catch (err) {
                 console.error(err);
@@ -258,7 +288,33 @@ namespace Action {
                                 email: filed
                             } : { login: filed };
 
-                            return this.getAll(model, { ...props });
+                            const result: Record<string, any> | null = await this.findOnce(model, { ...props });
+
+                            if (!result) return result;
+
+                            if (<Record<string, any>>result) {
+
+                                const { _id } = result || {};
+
+                                const password: string = generator.generate({
+                                    length: 10,
+                                    numbers: true
+                                });
+
+                                const passwordHash: string | null = await result.changePassword(password);
+
+                                console.log("new pass:", passwordHash);
+
+                                if (!passwordHash) {
+                                    return null;
+                                }
+
+                                const res = await this.updateEntity(model, { _id, updateProps: { passwordHash } });
+
+                                if (!res) return null;
+
+                                return <any>password;
+                            }
                         }
 
                         break;
