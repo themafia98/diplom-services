@@ -228,9 +228,7 @@ namespace Action {
                         if (!model) return null;
 
                         if (this.getActionType() === "get_msg_by_token") {
-                            const { options: { tokenRoom = "", moduleName = "", membersIds = [] } = {} } = <
-                                Record<string, any>
-                            >actionParam;
+                            const { options: { tokenRoom = "", moduleName = "", membersIds = [] } = {} } = <Record<string, any>>actionParam;
 
                             if (!tokenRoom || !moduleName) {
                                 console.error("Bad tokenRoom or moduleName in get_msg_by_token action");
@@ -245,12 +243,22 @@ namespace Action {
                     }
 
                     case "users": {
+                        const model: Model<Document> | null = getModelByName("users", "users");
+                        if (!model) return null;
+
                         if (this.getActionType() === "get_all") {
-                            const model: Model<Document> | null = getModelByName("users", "users");
-
-                            if (!model) return null;
-
                             return this.getAll(model, actionParam);
+                        }
+
+                        if (this.getActionType() === "recovory_checker") {
+                            const filed: string = (<Record<string, string>>actionParam).recovoryField;
+                            const mode: string = (<Record<string, string>>actionParam).mode;
+
+                            const props: object = mode == "emailMode" ? {
+                                email: filed
+                            } : { login: filed };
+
+                            return this.getAll(model, { ...props });
                         }
 
                         break;

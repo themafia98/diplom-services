@@ -2,10 +2,10 @@ import { Response, NextFunction } from "express";
 import _ from "lodash";
 import passport from "passport";
 import { UserModel } from "../Models/Database/Schema";
-import { ResRequest } from "../Utils/Types";
+import { ResRequest, ParserResult } from "../Utils/Types";
 import Utils from "../Utils";
 import { Request, App, BodyLogin, Mail } from "../Utils/Interfaces";
-
+import Action from "../Models/Action";
 import Decorators from "../Decorators";
 
 namespace General {
@@ -124,11 +124,33 @@ namespace General {
 
                 const { recovoryField = "", mode = "email" } = body;
 
+                const actionPath: string = "users";
+                const actionType: string = "recovory_checker";
+
+                const checkerAction: Action.ActionParser = new Action.ActionParser({
+                    actionPath,
+                    actionType,
+                    body
+                });
+
+                const data: ParserResult = await checkerAction.getActionData(body);
+                console.log("data,", data);
+                if (!data) {
+                    throw new Error("Invalid checker data");
+                }
+
+                const currentUser: Record<string, any> = (<Array<Record<string, any>>>data)[0];
+                const { email = "", passwordHash = "" } = currentUser || {};
+
+                if (mode.includes("email") && email !== recovoryField) {
+                    throw new Error("Bad user email find from action");
+                }
+
                 const to: string = recovoryField;
 
                 const result: Promise<any> = await mailer.send(to,
                     "Восстановление пароля / ControllSystem",
-                    `Ваш новый пароль: ${Math.random()}`
+                    `Ваш новый пароль: ${passwordHash}`
                 );
 
                 if (!result) {
