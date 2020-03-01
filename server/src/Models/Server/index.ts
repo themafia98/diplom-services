@@ -255,14 +255,25 @@ namespace Http {
 
             const dropbox = new DropboxStorage.DropboxManager({ token: DROPBOX_TOKEN });
             const mailer: Readonly<Mail> = new Mailer.MailManager(nodemailer, {
-                service: "",
-                port: 200,
-                host: "",
-                auth: {}
-            }, {});
+                host: 'smtp.yandex.ru',
+                port: 465,
+                auth: {
+                    user: process.env.TOKEN_YANDEX_USER,
+                    pass: process.env.TOKEN_YANDEX_PASSWORD
+                }
+            }, {
+                from: process.env.TOKEN_YANDEX_USER
+            });
+
+            const createResult = mailer.create();
+
+            if (!createResult) {
+                console.error("Invalid create transport mailer");
+            }
 
             this.getApp().locals.dbm = dbm;
             this.getApp().locals.dropbox = dropbox;
+            this.getApp().locals.mailer = mailer;
             this.initJWT(dbm);
 
             const instanceRouter: Route = RouterInstance.Router.instance(this.getApp());

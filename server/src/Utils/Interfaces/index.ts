@@ -20,7 +20,7 @@ export interface Mail {
     getTransporter(): Transporter | null;
     getSender(): SendMailOptions;
     getMailerConfig(): transOptions;
-    create(): Transporter | null;
+    create(): Promise<Transporter | null>;
     send(to: string, subject: string, text: string): Promise<any>;
 }
 

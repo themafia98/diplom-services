@@ -4,7 +4,7 @@ import passport from "passport";
 import { UserModel } from "../Models/Database/Schema";
 import { ResRequest } from "../Utils/Types";
 import Utils from "../Utils";
-import { Request, App, BodyLogin } from "../Utils/Interfaces";
+import { Request, App, BodyLogin, Mail } from "../Utils/Interfaces";
 
 import Decorators from "../Decorators";
 
@@ -118,8 +118,29 @@ namespace General {
 
         @Post({ path: "/recovory", private: false })
         public async recovoryPassword(req: Request, res: Response, next: NextFunction, server: App): Promise<Response> {
-            const { recovory = {} } = server.locals;
-            return res.sendStatus(200);
+            try {
+                const mailer: Readonly<Mail> = server?.locals?.mailer;
+                const body: Record<string, any> = req?.body;
+
+                const { recovoryField = "", mode = "email" } = body;
+
+                const to: string = recovoryField;
+
+                const result: Promise<any> = await mailer.send(to,
+                    "Восстановление пароля / ControllSystem",
+                    `Ваш новый пароль: ${Math.random()}`
+                );
+
+                if (!result) {
+                    throw new Error("Invalid send mail");
+                }
+
+                return res.sendStatus(200);
+            } catch (error) {
+                console.error(error);
+                res.statusMessage = error.message;
+                return res.sendStatus(503);
+            }
         }
     }
 }
