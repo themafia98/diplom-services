@@ -4,7 +4,8 @@ import {
     SET_STATUS,
     SHOW_GUIDE,
     UDATA_LOAD,
-    CLEAR_CACHE
+    CLEAR_CACHE,
+    UPDATE_UDATA
 } from "../../actions/publicActions/const";
 
 const initialState = {
@@ -25,8 +26,8 @@ export default (state = initialState, action) => {
                     action.payload && Array.isArray(state.requestError)
                         ? [...state.requestError, action.payload]
                         : action.payload
-                        ? [action.payload]
-                        : null
+                            ? [action.payload]
+                            : null
             };
         }
 
@@ -36,6 +37,17 @@ export default (state = initialState, action) => {
                 ...state,
                 udata: { ...payload }
             };
+        }
+
+        case UPDATE_UDATA: {
+            const { payload = {} } = action;
+            return {
+                ...state,
+                udata: {
+                    ...state.udata,
+                    ...payload
+                }
+            }
         }
 
         case SHOW_GUIDE: {
@@ -55,8 +67,8 @@ export default (state = initialState, action) => {
 
             const validData = isObjectsArray
                 ? Object.entries(data)
-                      .map(([key, value]) => value)
-                      .filter(Boolean)
+                    .map(([key, value]) => value)
+                    .filter(Boolean)
                 : data;
 
             if (validData.length > 1) {

@@ -1,4 +1,5 @@
 import { ActionProps, ActionParams, EntityActionApi, FileApi } from "../../Utils/Interfaces";
+import _ from "lodash";
 import generator from "generate-password";
 import { ParserData } from "../../Utils/Types";
 import uuid from "uuid/v4";
@@ -50,9 +51,7 @@ namespace Action {
 
         public async findOnce(model: Model<Document>, actionParam: ActionParams) {
             try {
-                console.log("actionParam:", actionParam);
                 const actionData = await model.findOne(actionParam);
-                console.log(actionData);
                 return actionData;
             } catch (err) {
                 console.error(err);
@@ -258,7 +257,13 @@ namespace Action {
                         if (!model) return null;
 
                         if (this.getActionType() === "get_msg_by_token") {
-                            const { options: { tokenRoom = "", moduleName = "", membersIds = [] } = {} } = <Record<string, any>>actionParam;
+                            const {
+                                options: {
+                                    tokenRoom = "",
+                                    moduleName = "",
+                                    membersIds = []
+                                } = {}
+                            } = <Record<string, any>>actionParam;
 
                             if (!tokenRoom || !moduleName) {
                                 console.error("Bad tokenRoom or moduleName in get_msg_by_token action");
@@ -347,6 +352,42 @@ namespace Action {
                             }
 
                             const res = await this.updateEntity(model, { _id, updateProps: { passwordHash } });
+
+                            if (!res) return null;
+
+                            return res;
+                        }
+
+                        if (this.getActionType() === "common_changes") {
+                            const { queryParams = {} } = {} = (<Record<string, any>>actionParam);
+                            const { newEmail = "", newPhone = "", uid = "" } = queryParams || {};
+
+                            if (!uid || (!newEmail && !newPhone)) {
+                                return null;
+                            }
+
+                            const checkProps = {
+                                _id: uid
+                            }
+
+                            const result: Record<string, any> | null = await this.findOnce(model, { ...checkProps });
+
+                            if (!result) {
+                                console.error("User not find for change password action");
+                                return null;
+                            }
+
+                            const { _id } = result || {};
+
+                            const email: string = newEmail ? newEmail : null;
+                            const phone: string = newPhone ? newPhone : null;
+
+                            const updateProps: Record<string, string> = {};
+
+                            if (!_.isNull(phone)) updateProps.phone = phone;
+                            if (!_.isNull(email)) updateProps.email = email;
+
+                            const res = await this.updateEntity(model, { _id, updateProps });
 
                             if (!res) return null;
 

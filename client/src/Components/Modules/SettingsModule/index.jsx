@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import _ from "lodash";
 import { connect } from "react-redux";
 import { saveComponentStateAction } from "../../../Redux/actions/routerActions";
+import { updateUdata } from "../../../Redux/actions/publicActions";
 import { Collapse, Switch, Input, Button, message } from "antd";
 import Scrollbars from "react-custom-scrollbars";
 
@@ -27,7 +28,6 @@ class SettingsModule extends React.PureComponent {
     static propTypes = {
         onErrorRequstAction: PropTypes.func.isRequired,
         path: PropTypes.string.isRequired,
-
         onSaveComponentState: PropTypes.func.isRequired,
         router: PropTypes.object.isRequired
     };
@@ -143,8 +143,64 @@ class SettingsModule extends React.PureComponent {
     };
 
     onSaveSettings = async (event, settingsKey) => {
-        const { Request = {} } = this.context;
         if (settingsKey.includes("password")) {
+            this.onChangePassword(settingsKey);
+        } else if (settingsKey === "common") {
+            this.onChangeCommon(settingsKey);
+        }
+    };
+
+    onChangeCommon = async keyChange => {
+        try {
+            const { Request = {} } = this.context;
+            const { udata: { _id: uid = "" } = {}, onUpdateUdata = null } = this.props;
+            const { emailValue: newEmail = "", telValue: newPhone = "" } = this.state;
+
+            if (!newEmail || !/\w+\@\w+\.\D+/i.test(newEmail)) {
+                message.error("Формат почты не соблюден");
+                return;
+            }
+
+            if (!uid) {
+                message.error("Пользователь не найден");
+                return;
+            }
+
+            const queryParams = {
+                newEmail,
+                newPhone,
+                uid
+            }
+            const rest = new Request();
+            const res = await rest.sendRequest("/settings/common", "POST", { queryParams }, true);
+
+            if (!res || res.status !== 200) {
+                throw new Error("Bad request change password");
+            }
+
+            if (onUpdateUdata) {
+                onUpdateUdata({ email: newEmail, phone: newPhone })
+            }
+
+
+            this.setState({
+                haveChanges: this.state.haveChanges.filter(it => {
+                    if (it !== keyChange) return true;
+                    else return false;
+                })
+            });
+
+            message.success("Настройки успешно обновлены.");
+
+        } catch (error) {
+            console.error(error);
+            message.error("Ошибка смены пароля");
+        }
+    }
+
+    onChangePassword = async keyChange => {
+        try {
+            const { Request = {} } = this.context;
             const { udata: { _id: uid = "" } = {} } = this.props;
             const { oldPassword = "", newPassword = "" } = this.state;
             if (!oldPassword || !newPassword) {
@@ -162,23 +218,28 @@ class SettingsModule extends React.PureComponent {
                 newPassword,
                 uid
             }
+            const rest = new Request();
+            const res = await rest.sendRequest("/settings/password", "POST", { queryParams }, true);
 
-            try {
-                const rest = new Request();
-                const res = await rest.sendRequest("/settings/password", "POST", { queryParams }, true);
-
-                if (!res || res.status !== 200) {
-                    throw new Error("Bad request change password");
-                }
-
-                message.success("Пароль изменен.");
-
-            } catch (error) {
-                console.error(error);
-                message.error("Ошибка смены пароля");
+            if (!res || res.status !== 200) {
+                throw new Error("Bad request change password");
             }
+
+            this.setState({
+                haveChanges: this.state.haveChanges.filter(it => {
+                    if (it !== keyChange) return true;
+                    else return false;
+                })
+            });
+
+            message.success("Пароль изменен.");
+
+        } catch (error) {
+            console.error(error);
+            message.error("Ошибка смены пароля");
         }
-    };
+    }
+
 
     refWrapper = null;
     refColumn = null;
@@ -324,7 +385,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onSaveComponentState: data => dispatch(saveComponentStateAction(data))
+        onSaveComponentState: data => dispatch(saveComponentStateAction(data)),
+        onUpdateUdata: payload => dispatch(updateUdata(payload))
     };
 };
 

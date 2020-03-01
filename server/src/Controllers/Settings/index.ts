@@ -21,13 +21,53 @@ namespace Settings {
                 const queryParams: Record<string, any> = (<Record<string, any>>body).queryParams;
 
                 if (!queryParams || _.isEmpty(queryParams)) {
-                    throw new Error("Invalid queryParams for change action");
+                    throw new Error("Invalid queryParams for change_password action");
                 }
 
                 const changePasswordAction = new Action.ActionParser({
                     actionPath: "users",
                     actionType: "change_password",
                     body
+                });
+
+                const actionParams: ActionParams = { queryParams };
+                const data: ParserResult = await changePasswordAction.getActionData(actionParams);
+
+                if (!data) {
+                    throw new Error("Invalid change_password action data");
+                }
+
+                return res.sendStatus(200);
+
+            } catch (err) {
+                console.error(err);
+                if (!res.headersSent) {
+                    res.status(503);
+                    return res.json(
+                        getResponseJson(
+                            "Server error",
+                            { params, status: "FAIL", done: false, metadata: [] },
+                            (<Record<string, any>>req).start
+                        )
+                    )
+                }
+            }
+        }
+
+        @Post({ path: "/common", private: true })
+        public async commonSettings(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+            const params: Params = { methodQuery: "common_changes", from: "users", done: true, status: "OK" };
+            try {
+                const body: object = req.body;
+                const queryParams: Record<string, any> = (<Record<string, any>>body).queryParams;
+
+                if (!queryParams || _.isEmpty(queryParams)) {
+                    throw new Error("Invalid queryParams for common_changes action");
+                }
+
+                const changePasswordAction = new Action.ActionParser({
+                    actionPath: "users",
+                    actionType: "common_changes"
                 });
 
                 const actionParams: ActionParams = { queryParams };
