@@ -1,18 +1,26 @@
-import nodemailer, { SendMailOptions, Transporter, createTransport, TransportOptions } from "nodemailer";
+import nodemailer, { SendMailOptions, Transporter, createTransport } from "nodemailer";
+import { Mail } from "../../Utils/Interfaces";
+import { transOptions } from "../../Utils/Types";
 
 namespace Mailer {
 
-    export class MailManager {
+    export class MailManager implements Mail {
         private transporter: Transporter | null = null;
-        private mailer: Transport;
-        private mailSender: object;
+        private mailer: typeof nodemailer;
+        private mailSender: SendMailOptions;
+        private mailerConfig: transOptions;
 
-        constructor(mailer: Transport, mailSender: object) {
+        constructor(mailer: typeof nodemailer, mailerConfig: transOptions, mailSender: SendMailOptions) {
             this.mailer = mailer;
             this.mailSender = mailSender;
+            this.mailerConfig = mailerConfig;
         }
 
-        public getMailer(): Transport {
+        public getMailerConfig(): transOptions {
+            return this.mailerConfig;
+        }
+
+        public getMailer(): typeof nodemailer {
             return this.mailer;
         }
 
@@ -20,13 +28,16 @@ namespace Mailer {
             return this.transporter;
         }
 
-        public getSender(): object {
+        public getSender(): SendMailOptions {
             return this.mailSender;
         }
 
-        public create(config: SendMailOptions): Transporter | null {
+        public create(): Transporter | null {
             if (!this.getMailer()) return null;
-            this.transporter = createTransport(this.getMailer(), config);
+
+            if (this.getTransporter()) return this.transporter;
+
+            this.transporter = createTransport(this.getMailerConfig());
             return this.transporter;
         }
 

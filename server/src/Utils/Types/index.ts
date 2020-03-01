@@ -50,6 +50,8 @@ export type ParserData = Promise<
     Document | Document[] | null | files.FileMetadata | files.ListFolderResult | files.DeleteResult
 >;
 
+export type transOptions = { service?: string, auth: object, secure?: boolean, host?: string, port?: number };
+
 export type ParserResult =
     | Document
     | Document[]

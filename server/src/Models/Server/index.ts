@@ -1,7 +1,8 @@
 import os from "os";
-import express, { Application, Response, NextFunction, Router } from "express";
+import express, { Application, Response, NextFunction } from "express";
 import session from "express-session";
 import MongoStore from "connect-mongo";
+import nodemailer from "nodemailer";
 import socketio from "socket.io";
 import passport from "passport";
 import _ from "lodash";
@@ -10,7 +11,7 @@ import chalk from "chalk";
 import { Route } from "../../Utils/Interfaces";
 import RouterInstance from "../Router";
 import { Server as HttpServer } from "http";
-import { Request, Rest } from "../../Utils/Interfaces";
+import { Request, Rest, Mail } from "../../Utils/Interfaces";
 import Utils from "../../Utils";
 import System from "../../Controllers/Main";
 import General from "../../Controllers/General";
@@ -18,6 +19,7 @@ import Chat from "../../Controllers/Contact/Chat";
 import Tasks from "../../Controllers/Tasks";
 import News from "../../Controllers/Contact/News";
 import Database from "../Database";
+import Mailer from "../Mail";
 
 import DropboxStorage from "../../Services/Dropbox";
 
@@ -162,7 +164,7 @@ namespace Http {
             };
 
             passport.use(
-                new jwt.Strategy(<StrategyOptions>jwtOptions, async function(
+                new jwt.Strategy(<StrategyOptions>jwtOptions, async function (
                     payload: Partial<{ id: string }>,
                     done: Function
                 ) {
@@ -252,6 +254,12 @@ namespace Http {
             );
 
             const dropbox = new DropboxStorage.DropboxManager({ token: DROPBOX_TOKEN });
+            const mailer: Readonly<Mail> = new Mailer.MailManager(nodemailer, {
+                service: "",
+                port: 200,
+                host: "",
+                auth: {}
+            }, {});
 
             this.getApp().locals.dbm = dbm;
             this.getApp().locals.dropbox = dropbox;

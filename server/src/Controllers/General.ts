@@ -115,6 +115,12 @@ namespace General {
                 }
             );
         }
+
+        @Post({ path: "/recovory", private: false })
+        public async recovoryPassword(req: Request, res: Response, next: NextFunction, server: App): Promise<Response> {
+            const { recovory = {} } = server.locals;
+            return res.sendStatus(200);
+        }
     }
 }
 

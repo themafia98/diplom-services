@@ -16,7 +16,7 @@ const Recovory = props => {
         try {
             const recovoryData = [];
             const rest = new Request();
-            const result = await rest.sendRequest("/rest/recovory", "POST", recovoryData);
+            const result = await rest.sendRequest("/recovory", "POST", recovoryData);
 
             if (result.status !== 200) throw new Error("Bad data for recovory");
 
