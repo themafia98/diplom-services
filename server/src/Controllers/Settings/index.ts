@@ -30,8 +30,6 @@ namespace Settings {
                     body
                 });
 
-                console.log(queryParams);
-
                 const actionParams: ActionParams = { queryParams };
                 const data: ParserResult = await changePasswordAction.getActionData(actionParams);
 

@@ -330,7 +330,9 @@ namespace Action {
                                 return null;
                             }
 
-                            if (!result.checkPassword(oldPassword)) {
+                            const isValid: boolean = await result.checkPassword(oldPassword);
+
+                            if (!isValid) {
                                 console.error("Bad old password for change password action");
                                 return null;
                             };
