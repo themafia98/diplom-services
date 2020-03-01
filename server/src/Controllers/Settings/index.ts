@@ -14,7 +14,7 @@ namespace Settings {
     @Controller("/settings")
     export class SettingsController {
         @Post({ path: "/password", private: true })
-        async passwordChaged(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+        public async passwordChaged(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
             const params: Params = { methodQuery: "change_password", from: "users", done: true, status: "OK" };
             try {
                 const body: object = req.body;
