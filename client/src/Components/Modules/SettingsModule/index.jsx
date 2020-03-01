@@ -171,7 +171,7 @@ class SettingsModule extends React.PureComponent {
                     throw new Error("Bad request change password");
                 }
 
-                message.success("Пароль сменен.");
+                message.success("Пароль изменен.");
 
             } catch (error) {
                 console.error(error);
