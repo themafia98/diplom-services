@@ -1,7 +1,7 @@
 import { NextFunction, Response, Request } from "express";
 import _ from "lodash";
 import { App, Params, ActionParams } from "../../Utils/Interfaces";
-import { ParserResult, ResRequest, ParserData } from "../../Utils/Types";
+import { ParserResult, ResRequest } from "../../Utils/Types";
 
 import Utils from "../../Utils";
 import Action from "../../Models/Action";

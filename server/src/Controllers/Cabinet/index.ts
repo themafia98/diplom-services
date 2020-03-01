@@ -1,14 +1,46 @@
-import express, { Router as RouteExpress } from "express";
-import { ServerRun } from "../../Utils/Interfaces";
+import { NextFunction, Response, Request } from "express";
+import _ from "lodash";
+import { App, Params, ActionParams } from "../../Utils/Interfaces";
+import { ParserResult, ResRequest } from "../../Utils/Types";
+
+import Utils from "../../Utils";
+import Action from "../../Models/Action";
+import Decorators from "../../Decorators";
 
 namespace Cabinet {
-    export const module = (app: ServerRun, route: RouteExpress): null | void => {
-        if (!app) return null;
+    const { getResponseJson } = Utils;
+    const { Controller, Post } = Decorators;
 
-        route.get("/list", (req, res) => {
-            res.sendStatus(200);
-        });
-    };
+    @Controller("/cabinet")
+    export class CabinetController {
+        @Post({ path: "/summuryUpdate", private: true })
+        public async summaryUpd(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+            const params: Params = {
+                methodQuery: "summary_update",
+                from: "users",
+                done: true,
+                status: "OK"
+            };
+
+            try {
+
+                return res.sendStatus(200);
+            } catch (error) {
+                console.error(error);
+                if (!res.headersSent) {
+                    res.status(503);
+                    return res.json(
+                        getResponseJson(
+                            "Server error",
+                            { params, status: "FAIL", done: false, metadata: [] },
+                            (<Record<string, any>>req).start
+                        )
+                    )
+                }
+            }
+        }
+    }
+
 }
 
 export default Cabinet;
