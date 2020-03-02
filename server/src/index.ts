@@ -1,4 +1,4 @@
-import cluster, { Worker, workers } from "cluster";
+import cluster, { Worker } from "cluster";
 import "reflect-metadata";
 import { Server as WebSocketServer } from "socket.io";
 import chalk from "chalk";
@@ -19,7 +19,7 @@ if (process.env.NODE_ENV === "production") {
 
 namespace Entrypoint {
     const cpuLentgh: number = os.cpus().length;
-    const workers: Array<any> = [];
+    const workers: Array<Worker> = [];
     export const wsWorkers: Array<WebSocketServer> = [];
 
     const callbackExit = _.debounce((worker: Worker, code: number, signal: string) => {
