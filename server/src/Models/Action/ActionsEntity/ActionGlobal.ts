@@ -1,7 +1,7 @@
 import { ActionParams, Actions } from "../../../Utils/Interfaces";
 import { ParserData } from "../../../Utils/Types";
 import { files } from "dropbox";
-
+import _ from "lodash";
 class ActionGlobal {
     constructor(private entity: Actions) {}
 

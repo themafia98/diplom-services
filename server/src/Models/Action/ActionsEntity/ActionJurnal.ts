@@ -2,7 +2,7 @@ import { Model, Document } from "mongoose";
 import { ActionParams, Actions } from "../../../Utils/Interfaces";
 import { ParserData } from "../../../Utils/Types";
 import Utils from "../../../Utils";
-
+import _ from "lodash";
 const { getModelByName } = Utils;
 
 class ActionJurnal {

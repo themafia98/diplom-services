@@ -3,7 +3,7 @@ import uuid from "uuid";
 import { ActionParams, Actions } from "../../../Utils/Interfaces";
 import { ParserData } from "../../../Utils/Types";
 import Utils from "../../../Utils";
-
+import _ from "lodash";
 const { getModelByName, checkEntity } = Utils;
 
 class ActionChatRoom {
