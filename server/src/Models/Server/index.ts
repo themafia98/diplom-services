@@ -86,7 +86,7 @@ namespace Http {
                 return next();
             } else {
                 res.clearCookie("connect.sid");
-                return res.sendStatus(404);
+                return res.sendStatus(503);
             }
         }
 
@@ -122,12 +122,13 @@ namespace Http {
             const time: Readonly<string> = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
             const day: Readonly<string> = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
             console.error(err.name);
-            if (!err.name) next();
-            else {
-                console.error(err.name);
-                next();
+            console.log(`time: ${time}, day: ${day}.`);
+            if (!err.name) {
+                return void next();
             }
-            // if (err.name) console.error(`${err.name} / ${day}/${time}`);
+
+            console.error(err.name);
+            next();
         }
 
         public initJWT(dbm: Readonly<Database.ManagmentDatabase>): void {

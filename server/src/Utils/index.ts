@@ -48,7 +48,7 @@ namespace Utils {
     export const getModelByName = (name: string, schemaType: string): Model<Document, {}> | null => {
         try {
             const schema: Schema | null = getSchemaByName(schemaType);
-            console.log(name);
+
             if (schema) return model(name, schema);
             else return null;
         } catch (err) {
@@ -116,7 +116,6 @@ namespace Utils {
             response,
             uptime: process.uptime(),
             responseTime: responseTime(start),
-            work: process.connected
         };
     };
 
