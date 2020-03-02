@@ -33,13 +33,7 @@ class ContactModule extends React.PureComponent {
     };
 
     componentDidUpdate = () => {
-        const {
-            router: {
-                shouldUpdate = false
-            } = {},
-            path,
-            onLoadCurrentData
-        } = this.props;
+        const { router: { shouldUpdate = false } = {}, path, onLoadCurrentData } = this.props;
 
         if (path === "contactModule_feedback" && shouldUpdate) {
             onLoadCurrentData({
@@ -54,12 +48,7 @@ class ContactModule extends React.PureComponent {
 
     renderNewsView = () => {
         const {
-            router: {
-                currentActionTab,
-                routeDataActive: {
-                    key: keyEntity = "",
-                    listdata = {}
-                } } = {},
+            router: { currentActionTab, routeDataActive: { key: keyEntity = "", listdata = {} } = {} } = {},
             actionTabs = []
         } = this.props;
 
@@ -77,12 +66,9 @@ class ContactModule extends React.PureComponent {
             .map(key => {
                 const route = routeParser({ pageType: "moduleItem", path: currentActionTab });
 
-                if (!_.isEmpty(listdata) && keyEntity)
+                if (!_.isEmpty(listdata) && keyEntity && key)
                     return (
-                        <TabContainer
-                            key={key}
-                            visible={route.itemId === key && currentActionTab.includes(key)}
-                        >
+                        <TabContainer key={key} visible={route.itemId === key && currentActionTab.includes(key)}>
                             <NewsViewPage listdata={listdata} key={key} />
                         </TabContainer>
                     );

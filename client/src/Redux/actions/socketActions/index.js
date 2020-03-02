@@ -17,34 +17,34 @@ export const setActiveChatToken = state => {
 export const onLoadActiveChats = state => {
     return {
         type: LOAD_CHATS_LIST,
-        payload: state,
-    }
-}
+        payload: state
+    };
+};
 
 export const addMsg = state => {
     return {
         type: ADD_CHAT_MSG,
-        payload: state,
-    }
-}
+        payload: state
+    };
+};
 
 export const setSocketConnection = state => {
     return {
         type: SET_SOCKET_CONNECTION,
         payload: state
-    }
-}
+    };
+};
 
 export const setSocketError = state => {
     return {
         type: INVALID_LOAD_SOCKET,
-        payload: state,
-    }
+        payload: state
+    };
 };
 
 export const updateRoom = state => {
     return {
         type: UPDATE_ENTITY_SOCKET,
         payload: state
-    }
-}
+    };
+};

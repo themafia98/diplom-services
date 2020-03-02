@@ -11,9 +11,8 @@ export const loadCurrentData = ({
     methodRequst = "POST",
     methodQuery = "all",
     xhrPath = "list",
-    noCorsClient = false,
+    noCorsClient = false
 }) => async (dispatch, getState, { schema, Request, clientDB }) => {
-
     const primaryKey = "uuid";
     const pathValid = path.includes("_") ? path.split("_")[0] : path.split("__")[0];
     const router = getState().router;
@@ -30,7 +29,7 @@ export const loadCurrentData = ({
 
         try {
             const request = new Request();
-            const res = await request.sendRequest(normalizeReqPath, methodRequst, { methodQuery }, true)
+            const res = await request.sendRequest(normalizeReqPath, methodRequst, { methodQuery }, true);
 
             const { data: { response: { metadata = [], fromCache = false } = {} } = {} } = res || {};
             let items = [];
@@ -52,8 +51,7 @@ export const loadCurrentData = ({
             if (storeLoad === "news") {
                 const data = { [storeLoad]: copyStore, load: true, path: pathValid };
                 await dispatch(saveComponentStateAction(data));
-            }
-            else {
+            } else {
                 const cursor = clientDB.getCursor(storeLoad);
 
                 cursor.onsuccess = async event => {
@@ -79,27 +77,23 @@ export const loadCurrentData = ({
                 };
             }
 
-
             const next = async (flag = false) => {
-
                 const templateSchema =
                     storeLoad === "jurnalworks"
                         ? TASK_CONTROLL_JURNAL_SCHEMA
                         : storeLoad === "users"
-                            ? USER_SCHEMA
-                            : storeLoad === "tasks"
-                                ? TASK_SCHEMA
-                                : null;
+                        ? USER_SCHEMA
+                        : storeLoad === "tasks"
+                        ? TASK_SCHEMA
+                        : null;
 
                 let storeCopyValid = copyStore.map(it => schema.getSchema(templateSchema, it)).filter(Boolean);
                 storeCopyValid.forEach(it => clientDB.updateItem(storeLoad, it));
-
 
                 if (requestError !== null) await dispatch(errorRequstAction(null));
 
                 const data = { [storeLoad]: copyStore, load: true, path: pathValid };
                 await dispatch(saveComponentStateAction(data));
-
             };
         } catch (error) {
             console.error(error);
@@ -121,7 +115,7 @@ export const loadCurrentData = ({
                     3000
                 );
             } else dispatch(errorRequstAction(error.message));
-        };
+        }
     } else {
         if (!noCorsClient) return;
 
@@ -134,13 +128,18 @@ export const loadCurrentData = ({
                 storeLoad === "jurnalworks"
                     ? TASK_CONTROLL_JURNAL_SCHEMA
                     : storeLoad === "users"
-                        ? USER_SCHEMA
-                        : storeLoad === "tasks"
-                            ? TASK_SCHEMA
-                            : null;
+                    ? USER_SCHEMA
+                    : storeLoad === "tasks"
+                    ? TASK_SCHEMA
+                    : null;
 
             const itemsCopy = result.map(it => schema.getSchema(schemaTemplate, it)).filter(Boolean);
-            const data = saveComponentStateAction({ [storeLoad]: itemsCopy, load: true, path: pathValid, mode: "offline" });
+            const data = saveComponentStateAction({
+                [storeLoad]: itemsCopy,
+                load: true,
+                path: pathValid,
+                mode: "offline"
+            });
             dispatch(data);
         };
     }

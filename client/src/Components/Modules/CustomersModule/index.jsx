@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 
 import TabContainer from "../../TabContainer";
 import Contacts from "./Contacts";
-import Reception from "./Reception";
 
 class CustomersModule extends React.PureComponent {
     static propTypes = {
@@ -19,7 +18,6 @@ class CustomersModule extends React.PureComponent {
     getComponentByPath = path => {
         if (path) {
             const isBackgroundContacts = this.checkBackground("customersModule_contacts");
-            const isBackgroundReception = this.checkBackground("customersModule_reception");
             return (
                 <React.Fragment>
                     <TabContainer isBackground={isBackgroundContacts} visible={path === "customersModule_contacts"}>
@@ -27,13 +25,6 @@ class CustomersModule extends React.PureComponent {
                             key="contacts_module"
                             isBackground={isBackgroundContacts}
                             visible={path === "customersModule_contacts"}
-                        />
-                    </TabContainer>
-                    <TabContainer isBackground={isBackgroundContacts} visible={path === "customersModule_reception"}>
-                        <Reception
-                            key="reception_module"
-                            isBackground={isBackgroundReception}
-                            visible={path === "customersModule_reception"}
                         />
                     </TabContainer>
                 </React.Fragment>

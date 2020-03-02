@@ -64,16 +64,23 @@ class ContentView extends React.Component {
 
     getBackground(module) {
         switch (module) {
-            case "mainModule": return this.checkBackground("mainModule");
-            case "cabientModule": return this.checkBackground("cabinetModule");
-            case "taskModule": return this.checkBackground("taskModule");
-            case "contactModule": return this.checkBackground("contactModule");
-            case "customersModule": return this.checkBackground("customersModule");
-            case "settingsModule": return this.checkBackground("settingsModule");
-            case "statisticModule": return this.checkBackground("statisticModule");
-            case "documentModule": this.checkBackground("documentModule");
+            case "mainModule":
+                return this.checkBackground("mainModule");
+            case "cabientModule":
+                return this.checkBackground("cabinetModule");
+            case "taskModule":
+                return this.checkBackground("taskModule");
+            case "contactModule":
+                return this.checkBackground("contactModule");
+            case "customersModule":
+                return this.checkBackground("customersModule");
+            case "settingsModule":
+                return this.checkBackground("settingsModule");
+            case "statisticModule":
+                return this.checkBackground("statisticModule");
+            case "documentModule":
+                this.checkBackground("documentModule");
         }
-
     }
 
     checkBackground = path => {
@@ -105,11 +112,19 @@ class ContentView extends React.Component {
     };
 
     render() {
-        const { path, onErrorRequstAction, setCurrentTab, actionTabs, router, statusApp, rest, udata = {} } = this.props;
+        const {
+            path,
+            onErrorRequstAction,
+            setCurrentTab,
+            actionTabs,
+            router,
+            statusApp,
+            rest,
+            udata = {}
+        } = this.props;
         const { drawerView, key } = this.state;
 
-
-        if (!key) return <div>no menu</div>
+        if (!key) return <div>no menu</div>;
 
         return (
             <React.Fragment>

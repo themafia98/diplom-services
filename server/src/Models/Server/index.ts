@@ -1,7 +1,8 @@
 import os from "os";
-import express, { Application, Response, NextFunction, Router } from "express";
+import express, { Application, Response, NextFunction } from "express";
 import session from "express-session";
 import MongoStore from "connect-mongo";
+import nodemailer from "nodemailer";
 import socketio from "socket.io";
 import passport from "passport";
 import _ from "lodash";
@@ -10,14 +11,17 @@ import chalk from "chalk";
 import { Route } from "../../Utils/Interfaces";
 import RouterInstance from "../Router";
 import { Server as HttpServer } from "http";
-import { Request, Rest } from "../../Utils/Interfaces";
+import { Request, Rest, Mail } from "../../Utils/Interfaces";
 import Utils from "../../Utils";
 import System from "../../Controllers/Main";
+import Cabinet from "../../Controllers/Cabinet";
+import Settings from "../../Controllers/Settings";
 import General from "../../Controllers/General";
 import Chat from "../../Controllers/Contact/Chat";
 import Tasks from "../../Controllers/Tasks";
 import News from "../../Controllers/Contact/News";
 import Database from "../Database";
+import Mailer from "../Mail";
 
 import DropboxStorage from "../../Services/Dropbox";
 
@@ -219,6 +223,8 @@ namespace Http {
             const SystemData: Readonly<Function> = System.SystemData;
             const NewsController: Readonly<Function> = News.NewsController;
             const ChatAlias: Readonly<Function> = Chat.ChatController;
+            const SettingsAlias: Readonly<Function> = Settings.SettingsController;
+            const CabinetAlias: Readonly<Function> = Cabinet.CabinetController;
 
             this.setApp(express());
             this.getApp().disabled("x-powerd-by");
@@ -252,9 +258,26 @@ namespace Http {
             );
 
             const dropbox = new DropboxStorage.DropboxManager({ token: DROPBOX_TOKEN });
+            const mailer: Readonly<Mail> = new Mailer.MailManager(nodemailer, {
+                host: 'smtp.yandex.ru',
+                port: 465,
+                auth: {
+                    user: process.env.TOKEN_YANDEX_USER,
+                    pass: process.env.TOKEN_YANDEX_PASSWORD
+                }
+            }, {
+                from: process.env.TOKEN_YANDEX_USER
+            });
+
+            const createResult = mailer.create();
+
+            if (!createResult) {
+                console.error("Invalid create transport mailer");
+            }
 
             this.getApp().locals.dbm = dbm;
             this.getApp().locals.dropbox = dropbox;
+            this.getApp().locals.mailer = mailer;
             this.initJWT(dbm);
 
             const instanceRouter: Route = RouterInstance.Router.instance(this.getApp());
@@ -277,7 +300,12 @@ namespace Http {
             wsEvents(wsWorkerManager, dbm, server); /** chat */
 
             Utils.initControllers(
-                [Main, TasksController, NewsController, SystemData, ChatAlias],
+                [
+                    Main, TasksController,
+                    NewsController, SystemData,
+                    ChatAlias, SettingsAlias,
+                    CabinetAlias
+                ],
                 this.getApp.bind(this),
                 this.getRest.bind(this),
                 this.isPrivateRoute.bind(this),

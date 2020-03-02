@@ -9,33 +9,35 @@ import { FileTransportInstance, docResponse, ParserResult } from "./Types";
 namespace Utils {
     const upload = multer();
 
-    export const checkEntity =
-        async (mode: string, checkKey: string, actionParam: ActionParams, model: Model<Document>): Promise<boolean> => {
-            if (mode == "equalSingle") {
-                let query = {};
+    export const checkEntity = async (
+        mode: string,
+        checkKey: string,
+        actionParam: ActionParams,
+        model: Model<Document>
+    ): Promise<boolean> => {
+        if (mode == "equalSingle") {
+            let query = {};
 
-                const field: any = actionParam[checkKey];
-                const type: string = (actionParam as Record<string, string>).type;
+            const field: any = actionParam[checkKey];
+            const type: string = (actionParam as Record<string, string>).type;
 
-                if (Array.isArray(field)) {
-                    query = { [checkKey]: { $in: field } };
-                }
-
-
-
-                query = { type, [checkKey]: field };
-
-                console.log(query);
-
-                const result = await model.find(query);
-                console.log("query checker:", query);
-
-                if (Array.isArray(result) && result.length) {
-                    return false;
-                }
+            if (Array.isArray(field)) {
+                query = { [checkKey]: { $in: field } };
             }
-            return true;
+
+            query = { type, [checkKey]: field };
+
+            console.log(query);
+
+            const result = await model.find(query);
+            console.log("query checker:", query);
+
+            if (Array.isArray(result) && result.length) {
+                return false;
+            }
         }
+        return true;
+    };
 
     export const getLoggerTransports = (level: string): Array<FileTransportInstance> | FileTransportInstance => {
         if (level === "info") {

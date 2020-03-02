@@ -18,13 +18,13 @@ import TaskModuleMyList from "./TaskModuleMyList";
 import TaskView from "./TaskView";
 import CreateTask from "./CreateTask";
 
-import modelContext from '../../../Models/context';
+import modelContext from "../../../Models/context";
 
 class TaskModule extends React.PureComponent {
     state = {
         height: null,
         heightController: null,
-        path: null,
+        path: null
     };
 
     static contextType = modelContext;
@@ -40,16 +40,15 @@ class TaskModule extends React.PureComponent {
     };
 
     static getDerivedStateFromProps = (props, state) => {
-
         if (props.path !== state.path) {
             return {
                 ...state,
                 path: props.path
-            }
+            };
         }
 
         return state;
-    }
+    };
 
     componentDidMount = () => {
         const { onLoadCurrentData, path, visible } = this.props;
@@ -64,7 +63,7 @@ class TaskModule extends React.PureComponent {
 
         this.setState({
             path
-        })
+        });
 
         window.addEventListener("resize", this.recalcHeight.bind(this));
     };
@@ -99,11 +98,11 @@ class TaskModule extends React.PureComponent {
 
         if (height !== heightForState || heightControllerForState !== heightController)
             this.setState({ ...this.state, height: heightForState, heightController: heightControllerForState });
-    }
+    };
 
     componentWillUnmount = () => {
         window.removeEventListener("resize", this.recalcHeight.bind(this));
-    }
+    };
 
     moduleTask = null;
     controller = null;

@@ -1,18 +1,16 @@
 import { FileApi, DropboxAccess, DownloadDropbox, UploadDropbox } from "../Utils/Interfaces";
-import { Dropbox, files } from 'dropbox';
+import { Dropbox, files } from "dropbox";
 import { ListFolderResult, FileMetadata, DeleteFile } from "../Utils/Types";
 import Service from "../Models/Service";
 
 /**
- * 
+ *
  * Remote service Dropbox module
  */
 namespace DropboxStorage {
-
     export class DropboxManager extends Service<Dropbox> implements FileApi {
-
         /**
-         * 
+         *
          * @param props init service
          */
         constructor(props: DropboxAccess) {
@@ -29,7 +27,7 @@ namespace DropboxStorage {
          */
         public async getAllFiles(): Promise<ListFolderResult | null> {
             try {
-                const result = await this.getService().filesListFolder({ path: '' });
+                const result = await this.getService().filesListFolder({ path: "" });
                 if (result as files.ListFolderResult) return result;
                 else return null;
             } catch (err) {
@@ -40,7 +38,7 @@ namespace DropboxStorage {
 
         /**
          * Delete file im application store
-         * 
+         *
          */
         public async deleteFile(path: string): Promise<files.DeleteResult | null> {
             try {
@@ -54,7 +52,7 @@ namespace DropboxStorage {
         }
 
         /**
-         * 
+         *
          * @param {string} path files by path
          */
         public async getFilesByPath(path: string): Promise<files.ListFolderResult | null> {
@@ -71,7 +69,7 @@ namespace DropboxStorage {
         }
 
         /**
-         * 
+         *
          * @param saveProps props for save file in application store
          * @param {string} path  prop in saveProps, file path for save
          * @param {Buffer} cotents - binary file object for save
@@ -83,7 +81,7 @@ namespace DropboxStorage {
 
                 const response = await this.getService().filesUpload({
                     path,
-                    contents,
+                    contents
                 });
                 return response;
             } catch (err) {
@@ -100,13 +98,11 @@ namespace DropboxStorage {
          */
         public async downloadFileByProps<DownloadDropbox>(fileProps: DownloadDropbox): Promise<FileMetadata> {
             try {
+                const { moduleName = "", filename = "", cardName = "", ext = "" } = <Record<string, any>>fileProps;
 
-                const moduleName: Readonly<string> = (fileProps as Record<string, any>).moduleName || "";
-                const filename: Readonly<string> = (fileProps as Record<string, any>).filename || "";
-                const ext: Readonly<string> = (fileProps as Record<string, any>).ext || "";
-                const cardName: Readonly<string> = (fileProps as Record<string, any>).cardName || "";
-
-                const path: string = !cardName ? `/${moduleName}/${filename}.${ext}` : `/${moduleName}/${cardName}/${filename}.${ext}`;
+                const path: string = !cardName
+                    ? `/${moduleName}/${filename}.${ext}`
+                    : `/${moduleName}/${cardName}/${filename}.${ext}`;
                 const response: FileMetadata = await this.getService().filesDownload({ path });
                 return response;
             } catch (err) {

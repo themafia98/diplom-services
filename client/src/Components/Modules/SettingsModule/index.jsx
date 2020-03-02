@@ -3,9 +3,11 @@ import PropTypes from "prop-types";
 import _ from "lodash";
 import { connect } from "react-redux";
 import { saveComponentStateAction } from "../../../Redux/actions/routerActions";
-import { Collapse, Switch, Input, Button } from "antd";
+import { updateUdata } from "../../../Redux/actions/publicActions";
+import { Collapse, Switch, Input, Button, message } from "antd";
 import Scrollbars from "react-custom-scrollbars";
 
+import modelContext from "../../../Models/context";
 import ObserverTime from "../../ObserverTime";
 import TitleModule from "../../TitleModule";
 
@@ -13,10 +15,12 @@ const { Panel } = Collapse;
 
 class SettingsModule extends React.PureComponent {
     state = {
-        haveChanges: false,
+        haveChanges: [],
         showScrollbar: false,
-        emailValue: "",
-        telValue: "",
+        emailValue: null,
+        telValue: null,
+        newPassword: "",
+        oldPassword: "",
         mail: false,
         phone: false
     };
@@ -24,10 +28,24 @@ class SettingsModule extends React.PureComponent {
     static propTypes = {
         onErrorRequstAction: PropTypes.func.isRequired,
         path: PropTypes.string.isRequired,
-
         onSaveComponentState: PropTypes.func.isRequired,
         router: PropTypes.object.isRequired
     };
+
+    static contextType = modelContext;
+
+    static getDerivedStateFromProps = (props, state) => {
+        const { udata: { email = "", phone = "" } = {} } = props;
+
+        if (_.isNull(state.emailValue) && _.isNull(state.telValue)) {
+            return {
+                ...state,
+                emailValue: email,
+                telValue: phone
+            }
+        }
+        return state;
+    }
 
     componentDidMount = () => {
         const { router, path } = this.props;
@@ -37,7 +55,8 @@ class SettingsModule extends React.PureComponent {
     };
 
     componentDidUpdate = () => {
-        const { showScrollbar } = this.state;
+        const { showScrollbar, emailValue = "", telValue = "" } = this.state;
+
         if (this.refWrapper && this.refColumn) {
             const heightWrapper = this.refWrapper.getBoundingClientRect().height;
             const heightColumn = this.refColumn.getBoundingClientRect().height;
@@ -49,6 +68,11 @@ class SettingsModule extends React.PureComponent {
                     showScrollbar: isShow
                 });
             }
+        } else if (!_.isNull(emailValue) || !_.isNull(telValue)) {
+            this.setState({
+                emailValue: null,
+                telValue: null
+            })
         }
     };
 
@@ -79,23 +103,143 @@ class SettingsModule extends React.PureComponent {
         }
     };
 
-    onChangeInput = event => {
-        const { target } = event;
+    onChangeInput = ({ target = {} }, key) => {
+        const { haveChanges = [] } = this.state;
+        const filterChanges = [...haveChanges];
+        if (!filterChanges.includes(key)) {
+            filterChanges.push(key);
+        }
 
-        if (target.dataset.id === "email") {
+        if (target?.dataset?.id === "email") {
             this.setState({
                 ...this.state,
-                haveChanges: true,
+                haveChanges: !filterChanges.length ? [key] : filterChanges,
                 emailValue: target.value
             });
-        } else if (target.dataset.id === "tel") {
+        } else if (target?.dataset?.id === "tel") {
+
             this.setState({
                 ...this.state,
-                haveChanges: true,
+                haveChanges: !filterChanges.length ? [key] : filterChanges,
                 telValue: target.value
             });
+        } else if (target?.dataset?.id === "newPassword") {
+
+            this.setState({
+                ...this.state,
+                haveChanges: "password",
+                haveChanges: !filterChanges.length ? [key] : filterChanges,
+                newPassword: target.value
+            })
+
+        } else if (target?.dataset?.id === "oldPassword") {
+            this.setState({
+                ...this.state,
+                haveChanges: "password",
+                haveChanges: !filterChanges.length ? [key] : filterChanges,
+                oldPassword: target.value
+            })
         }
     };
+
+    onSaveSettings = async (event, settingsKey) => {
+        if (settingsKey.includes("password")) {
+            this.onChangePassword(settingsKey);
+        } else if (settingsKey === "common") {
+            this.onChangeCommon(settingsKey);
+        }
+    };
+
+    onChangeCommon = async keyChange => {
+        try {
+            const { Request = {} } = this.context;
+            const { udata: { _id: uid = "" } = {}, onUpdateUdata = null } = this.props;
+            const { emailValue: newEmail = "", telValue: newPhone = "" } = this.state;
+
+            if (!newEmail || !/\w+\@\w+\.\D+/i.test(newEmail)) {
+                message.error("Формат почты не соблюден");
+                return;
+            }
+
+            if (!uid) {
+                message.error("Пользователь не найден");
+                return;
+            }
+
+            const queryParams = {
+                newEmail,
+                newPhone,
+                uid
+            }
+            const rest = new Request();
+            const res = await rest.sendRequest("/settings/common", "POST", { queryParams }, true);
+
+            if (!res || res.status !== 200) {
+                throw new Error("Bad request change password");
+            }
+
+            if (onUpdateUdata) {
+                onUpdateUdata({ email: newEmail, phone: newPhone })
+            }
+
+
+            this.setState({
+                haveChanges: this.state.haveChanges.filter(it => {
+                    if (it !== keyChange) return true;
+                    else return false;
+                })
+            });
+
+            message.success("Настройки успешно обновлены.");
+
+        } catch (error) {
+            console.error(error);
+            message.error("Ошибка смены пароля");
+        }
+    }
+
+    onChangePassword = async keyChange => {
+        try {
+            const { Request = {} } = this.context;
+            const { udata: { _id: uid = "" } = {} } = this.props;
+            const { oldPassword = "", newPassword = "" } = this.state;
+            if (!oldPassword || !newPassword) {
+                message.warning("Формат пароля не верен");
+                return;
+            }
+
+            if (!uid) {
+                message.error("Пользователь не найден");
+                return;
+            }
+
+            const queryParams = {
+                oldPassword,
+                newPassword,
+                uid
+            }
+            const rest = new Request();
+            const res = await rest.sendRequest("/settings/password", "POST", { queryParams }, true);
+
+            if (!res || res.status !== 200) {
+                throw new Error("Bad request change password");
+            }
+
+            this.setState({
+                haveChanges: this.state.haveChanges.filter(it => {
+                    if (it !== keyChange) return true;
+                    else return false;
+                })
+            });
+
+            message.success("Пароль изменен.");
+
+        } catch (error) {
+            console.error(error);
+            message.error("Ошибка смены пароля");
+        }
+    }
+
 
     refWrapper = null;
     refColumn = null;
@@ -103,19 +247,43 @@ class SettingsModule extends React.PureComponent {
     refColumnFunc = node => (this.refColumn = node);
 
     render() {
-        const { emailValue, telValue, haveChanges } = this.state;
-        const text = ` A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.`;
+        const { emailValue, telValue, haveChanges, oldPassword, newPassword } = this.state;
+        const text = ` A dog is a type of domesticated animal.`;
 
         const settingsBlock = (
             <React.Fragment>
                 <div ref={this.refFunc}>
                     <Collapse defaultActiveKey={["common"]}>
+                        <Panel onChange={this.onUpdate} header="Смена пароля" key="password">
+                            <div className="configWrapper flexWrapper">
+                                <span>Старый пароль:</span>
+                                <Input
+                                    data-id="oldPassword"
+                                    type="password"
+                                    allowClear
+                                    value={oldPassword}
+                                    onChange={(e) => this.onChangeInput(e, "password")}
+                                />
+                            </div>
+                            <div className="configWrapper flexWrapper">
+                                <span>Новый пароль:</span>
+                                <Input
+                                    data-id="newPassword"
+                                    type="password"
+                                    allowClear
+                                    value={newPassword}
+                                    onChange={(e) => this.onChangeInput(e, "password")}
+                                />
+                            </div>
+                            <Button
+                                onClick={(e) => this.onSaveSettings(e, "password")}
+                                className="submit"
+                                type="primary"
+                                disabled={!haveChanges.includes("password")}
+                            >
+                                Принять изменения
+                            </Button>
+                        </Panel>
                         <Panel onChange={this.onUpdate} header="Общие настройки" key="common">
                             <div className="settingsPanel--center-flex">
                                 <div className="configWrapper flexWrapper">
@@ -124,7 +292,7 @@ class SettingsModule extends React.PureComponent {
                                         data-id="email"
                                         allowClear
                                         value={emailValue}
-                                        onChange={this.onChangeInput}
+                                        onChange={(e) => this.onChangeInput(e, "common")}
                                     />
                                 </div>
                                 <div className="configWrapper flexWrapper">
@@ -134,11 +302,20 @@ class SettingsModule extends React.PureComponent {
                                         type="tel"
                                         allowClear
                                         value={telValue}
-                                        onChange={this.onChangeInput}
+                                        onChange={(e) => this.onChangeInput(e, "common")}
                                     />
                                 </div>
                             </div>
+                            <Button
+                                onClick={(e) => this.onSaveSettings(e, "common")}
+                                className="submit"
+                                type="primary"
+                                disabled={!haveChanges.includes("common")}
+                            >
+                                Принять изменения
+                            </Button>
                         </Panel>
+
                         <Panel header="Настройки профиля" key="profile">
                             <div className="configWrapper">
                                 <Switch defaultChecked={this.state.mail} onChange={this.hideMail} />
@@ -148,6 +325,14 @@ class SettingsModule extends React.PureComponent {
                                 <Switch defaultChecked={this.state.phone} onChange={this.hidePhone} />
                                 <span className="configTitle">Скрывать телефон</span>
                             </div>
+                            <Button
+                                onClick={(e) => this.onSaveSettings(e, "profile")}
+                                className="submit"
+                                type="primary"
+                                disabled={!haveChanges.includes("profile")}
+                            >
+                                Принять изменения
+                            </Button>
                         </Panel>
                         <Panel header="Настройки уровней доступа" key="access">
                             <Collapse bordered={false}>
@@ -161,12 +346,17 @@ class SettingsModule extends React.PureComponent {
                                     {text}
                                 </Panel>
                             </Collapse>
+                            <Button
+                                onClick={(e) => this.onSaveSettings(e, "access")}
+                                className="submit"
+                                type="primary"
+                                disabled={!haveChanges.includes("profile")}
+                            >
+                                Принять изменения
+                            </Button>
                         </Panel>
                     </Collapse>
                 </div>
-                <Button className="submit" type="primary" disabled={!haveChanges}>
-                    Принять изменения
-                </Button>
             </React.Fragment>
         );
 
@@ -186,14 +376,17 @@ class SettingsModule extends React.PureComponent {
     }
 }
 const mapStateToProps = state => {
+    const { publicReducer: { udata = {} } = {} } = state;
     return {
-        router: { ...state.router }
+        router: { ...state.router },
+        udata
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        onSaveComponentState: data => dispatch(saveComponentStateAction(data))
+        onSaveComponentState: data => dispatch(saveComponentStateAction(data)),
+        onUpdateUdata: payload => dispatch(updateUdata(payload))
     };
 };
 

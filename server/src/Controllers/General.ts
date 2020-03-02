@@ -2,12 +2,14 @@ import { Response, NextFunction } from "express";
 import _ from "lodash";
 import passport from "passport";
 import { UserModel } from "../Models/Database/Schema";
-import { ResRequest } from '../Utils/Types';
-import { Request, App, BodyLogin } from "../Utils/Interfaces";
-
+import { ResRequest, ParserResult } from "../Utils/Types";
+import Utils from "../Utils";
+import { Request, App, BodyLogin, Mail } from "../Utils/Interfaces";
+import Action from "../Models/Action";
 import Decorators from "../Decorators";
 
 namespace General {
+    const { getResponseJson } = Utils;
     const Post = Decorators.Post;
     const Delete = Decorators.Delete;
     const Controller = Decorators.Controller;
@@ -33,17 +35,16 @@ namespace General {
                     return res.sendStatus(503);
                 }
 
-
-                await UserModel.create({ ...req.body, accept: true, rules: "full" }, async (err: Error): ResRequest => {
-
-                    if (err) {
-                        console.error(err);
-                        return res.sendStatus(400);
+                await UserModel.create(
+                    { ...req.body, accept: true, rules: "full" },
+                    async (err: Error): ResRequest => {
+                        if (err) {
+                            console.error(err);
+                            return res.sendStatus(400);
+                        }
+                        if (!res.headersSent) return res.sendStatus(200);
                     }
-                    if (!res.headersSent)
-                        return res.sendStatus(200);
-                });
-
+                );
             } catch (err) {
                 console.error(err);
                 if (!res.headersSent) return res.sendStatus(400);
@@ -64,10 +65,12 @@ namespace General {
                         }
                         const { password = "" } = body;
 
-                        const isValidPassword = await user.checkPassword(password).catch((err: Error): Response => {
-                            console.error(err);
-                            return res.status(503).send("Ошибка авторизации.");
-                        });
+                        const isValidPassword = await user.checkPassword(password).catch(
+                            (err: Error): Response => {
+                                console.error(err);
+                                return res.status(503).send("Ошибка авторизации.");
+                            }
+                        );
 
                         if (res.headersSent) return;
 
@@ -75,16 +78,18 @@ namespace General {
                             return res.status(401).send("Неверные данные для авторизации.");
                         }
                         user.token = user.generateJWT();
-                        req.login(user, (err: Error): Response => {
-                            if (err) {
-                                res.status(404).send(err.message);
+                        req.login(
+                            user,
+                            (err: Error): Response => {
+                                if (err) {
+                                    res.status(404).send(err.message);
+                                }
+                                return res.json({ user: user.toAuthJSON() });
                             }
-                            return res.json({ user: user.toAuthJSON() });
-                        });
+                        );
                     } catch (err) {
                         console.error(err);
-                        if (!res.headersSent)
-                            return res.status(503).send("Ошибка авторизации.");
+                        if (!res.headersSent) return res.status(503).send("Ошибка авторизации.");
                     }
                 }
             )(req, res, next);
@@ -101,12 +106,56 @@ namespace General {
 
         @Delete({ path: "/logout", private: true })
         public async logout(req: Request, res: Response): Promise<Response> {
-            return await req.session.destroy((err: Error): Response => {
-                if (err) console.error(err);
-                req.logOut(); // passportjs logout
-                res.clearCookie("connect.sid");
+            return await req.session.destroy(
+                (err: Error): Response => {
+                    if (err) console.error(err);
+                    req.logOut(); // passportjs logout
+                    res.clearCookie("connect.sid");
+                    return res.sendStatus(200);
+                }
+            );
+        }
+
+        @Post({ path: "/recovory", private: false })
+        public async recovoryPassword(req: Request, res: Response, next: NextFunction, server: App): Promise<Response> {
+            try {
+                const mailer: Readonly<Mail> = server?.locals?.mailer;
+                const body: Record<string, any> = req?.body;
+
+                const { recovoryField = "", mode = "email" } = body;
+
+                const actionPath: string = "users";
+                const actionType: string = "recovory_checker";
+
+                const checkerAction: Action.ActionParser = new Action.ActionParser({
+                    actionPath,
+                    actionType,
+                    body
+                });
+
+                const password: ParserResult = await checkerAction.getActionData(body);
+
+                if (!password) {
+                    throw new Error("Invalid checker data");
+                }
+
+                const to: string = recovoryField;
+
+                const result: Promise<any> = await mailer.send(to,
+                    "Восстановление пароля / ControllSystem",
+                    `Ваш новый пароль: ${password}`
+                );
+
+                if (!result) {
+                    throw new Error("Invalid send mail");
+                }
+
                 return res.sendStatus(200);
-            });
+            } catch (error) {
+                console.error(error);
+                res.statusMessage = error.message;
+                return res.sendStatus(503);
+            }
         }
     }
 }

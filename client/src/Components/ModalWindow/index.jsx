@@ -11,7 +11,7 @@ import { TASK_CONTROLL_JURNAL_SCHEMA } from "../../Models/Schema/const";
 import RegistrationModal from "./RegistrationModal";
 import Textarea from "../Textarea";
 
-import modelContext from '../../Models/context';
+import modelContext from "../../Models/context";
 
 const { Option } = Select;
 
@@ -123,7 +123,6 @@ class ModalWindow extends React.PureComponent {
         } = this.props;
 
         if (mode === "reg") {
-
             if (name && password && departament && email && !loading) {
                 try {
                     const res = await axios.post("/rest/reg", {
@@ -153,17 +152,18 @@ class ModalWindow extends React.PureComponent {
                 updateField: "description",
                 item: { ...routeDataActive },
                 store: "tasks"
-            }).then(res => {
-                onCancelEditModeContent(event);
-                this.setState({
-                    ...this.state,
-                    visible: false,
-                    type: null,
-                    modeSetTime: false,
-                    loading: false
-                });
-                message.success("Описание изменено.");
             })
+                .then(res => {
+                    onCancelEditModeContent(event);
+                    this.setState({
+                        ...this.state,
+                        visible: false,
+                        type: null,
+                        modeSetTime: false,
+                        loading: false
+                    });
+                    message.success("Описание изменено.");
+                })
                 .catch(error => {
                     message.error("Ошибка редактирования.");
                 });
@@ -171,8 +171,9 @@ class ModalWindow extends React.PureComponent {
             const item = { ...jurnal, depKey: keyTask, editor: "Павел Петрович" };
 
             if (onCaching) {
-                onCaching({ item, actionType, depStore: "tasks", store: "jurnalworks" })
-                    .then(() => this.handleCancel());
+                onCaching({ item, actionType, depStore: "tasks", store: "jurnalworks" }).then(() =>
+                    this.handleCancel()
+                );
             }
 
             return this.setState({
@@ -202,16 +203,17 @@ class ModalWindow extends React.PureComponent {
                 updateField: "status",
                 item: { ...routeDataActive },
                 store: "tasks"
-            }).then(res => {
-                this.setState({
-                    ...this.state,
-                    visible: false,
-                    type: null,
-                    modeSetTime: false,
-                    loading: false
-                });
-                message.success("Статус изменен.");
             })
+                .then(res => {
+                    this.setState({
+                        ...this.state,
+                        visible: false,
+                        type: null,
+                        modeSetTime: false,
+                        loading: false
+                    });
+                    message.success("Статус изменен.");
+                })
                 .catch(error => {
                     message.error("Ошибка редактирования.");
                 });
@@ -290,15 +292,13 @@ class ModalWindow extends React.PureComponent {
         }
         if (!_valid) return _valid;
 
-        const validData = schema.getSchema(
-            TASK_CONTROLL_JURNAL_SCHEMA,
-            {
-                depKey: keyTask,
-                timeLost: timeLost,
-                editor: "",
-                date: date,
-                description: description
-            });
+        const validData = schema.getSchema(TASK_CONTROLL_JURNAL_SCHEMA, {
+            depKey: keyTask,
+            timeLost: timeLost,
+            editor: "",
+            date: date,
+            description: description
+        });
 
         if (validData) return _valid;
         else return false;
@@ -361,8 +361,8 @@ class ModalWindow extends React.PureComponent {
                         {mode === "reg" ? (
                             <RegistrationModal cbOnChange={this.onChange} cbOnChangeSelect={this.onChangeSelect} />
                         ) : (
-                                <div></div>
-                            )}
+                            <div></div>
+                        )}
                     </Modal>
                 </React.Fragment>
             );
@@ -430,10 +430,10 @@ class ModalWindow extends React.PureComponent {
                                                 {statusTaskValue}
                                             </Option>
                                         ) : (
-                                                <Option key={i + status} value={status}>
-                                                    {status}
-                                                </Option>
-                                            )
+                                            <Option key={i + status} value={status}>
+                                                {status}
+                                            </Option>
+                                        )
                                     )}
                                 </Select>
                             </Modal>
@@ -518,8 +518,8 @@ class ModalWindow extends React.PureComponent {
                                     />
                                 </Modal>
                             ) : (
-                                        <Modal></Modal>
-                                    )}
+                                <Modal></Modal>
+                            )}
                         </React.Fragment>
                     );
                 }

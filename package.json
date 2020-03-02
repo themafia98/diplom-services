@@ -32,6 +32,7 @@
         "express-validator": "^6.3.0",
         "farmhash": "^3.0.0",
         "forever": "^1.0.0",
+        "generate-password": "^1.5.1",
         "helmet": "^3.21.2",
         "isomorphic-fetch": "^2.2.1",
         "lodash": "^4.17.15",

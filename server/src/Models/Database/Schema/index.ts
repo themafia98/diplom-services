@@ -8,11 +8,11 @@ const userSchema = new Schema(
         email: {
             type: String,
             required: true,
-            dropDups: true,
+            dropDups: true
         },
         passwordHash: { type: String, default: "", required: true },
-        summary: { type: String, default: "", },
-        phone: { type: String, default: "", },
+        summary: { type: String, default: "" },
+        phone: { type: String, default: "" },
         isOnline: { type: Boolean, default: false, required: true },
         departament: { type: String, required: true },
         displayName: { type: String, required: true },
@@ -43,6 +43,20 @@ userSchema.methods.checkPassword = async function (password: string): Promise<bo
 
     return await bcrypt.compare(password, this.passwordHash);
 };
+
+userSchema.methods.changePassword = async function (password: string): Promise<string | null> {
+    try {
+        const passwordHash: string = bcrypt.hashSync(<string>password, 10);
+
+        if (!passwordHash) throw new Error("Bad password string for change");
+
+        return passwordHash;
+
+    } catch (err) {
+        console.error(err);
+        return null;
+    }
+}
 
 userSchema.methods.generateJWT = function (): any {
     const today = new Date();
@@ -103,6 +117,8 @@ export const jurnalItem = new Schema({
 export const news = new Schema({
     entityMap: { type: Object, required: true, default: {} },
     blocks: { type: Array, required: true }
+}, {
+    timestamps: true
 });
 
 export const chatMsg = new Schema({

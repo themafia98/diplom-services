@@ -1,12 +1,5 @@
 /** Here action constants import */
-import {
-    SET_ERROR,
-    SET_CACHE,
-    SET_STATUS,
-    SHOW_GUIDE,
-    UDATA_LOAD,
-    CLEAR_CACHE
-} from "./const";
+import { SET_ERROR, SET_CACHE, SET_STATUS, SHOW_GUIDE, UDATA_LOAD, CLEAR_CACHE, UPDATE_UDATA } from "./const";
 
 export const errorRequstAction = state => {
     return {
@@ -14,6 +7,13 @@ export const errorRequstAction = state => {
         payload: state
     };
 };
+
+export const updateUdata = state => {
+    return {
+        type: UPDATE_UDATA,
+        payload: state
+    }
+}
 
 export const showGuile = state => {
     return {
@@ -40,7 +40,7 @@ export const clearCache = state => {
     return {
         type: CLEAR_CACHE,
         payload: state
-    }
+    };
 };
 
 export const setStatus = state => {

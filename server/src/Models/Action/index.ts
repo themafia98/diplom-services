@@ -1,8 +1,10 @@
 import { ActionProps, ActionParams, EntityActionApi, FileApi } from "../../Utils/Interfaces";
+import _ from "lodash";
+import generator from "generate-password";
 import { ParserData } from "../../Utils/Types";
 import uuid from "uuid/v4";
 import { files } from "dropbox";
-import { Model, Document, Query } from "mongoose";
+import { Model, Document, Query, DocumentQuery } from "mongoose";
 import Utils from "../../Utils";
 
 namespace Action {
@@ -40,6 +42,16 @@ namespace Action {
         private async getAll(model: Model<Document>, actionParam: ActionParams) {
             try {
                 const actionData: Array<Document> = await model.find(actionParam);
+                return actionData;
+            } catch (err) {
+                console.error(err);
+                return null;
+            }
+        }
+
+        public async findOnce(model: Model<Document>, actionParam: ActionParams) {
+            try {
+                const actionData = await model.findOne(actionParam);
                 return actionData;
             } catch (err) {
                 console.error(err);
@@ -91,6 +103,23 @@ namespace Action {
             }
         }
 
+        public async updateEntity(model: Model<Document>, query: ActionParams) {
+            try {
+                const { _id } = query;
+                const updateProps = <Record<string, any>>query.updateProps;
+                const actionData: Document = await model.updateOne(
+                    { _id },
+                    {
+                        ...updateProps
+                    }
+                );
+                return actionData;
+            } catch (err) {
+                console.error(err);
+                return null;
+            }
+        }
+
         public async getActionData(actionParam: ActionParams = {}): ParserData {
             try {
                 console.log(`Run action. actionType: ${this.getActionType()}, actionPath: ${this.getActionPath()}`);
@@ -115,7 +144,6 @@ namespace Action {
 
                             const file: object = (queryParams as Record<string, any>).file;
                             const url: string = (file as Record<string, string>).url || "";
-
 
                             const path: string = `${store}${url.split("download")[1]}` || "";
 
@@ -147,7 +175,8 @@ namespace Action {
                         if (!model) return null;
 
                         if (this.getActionType() === "get_update_rooms") {
-                            const { queryParams: { tokenRoom = "", moduleName = "" } = {} } = <Record<string, any>>actionParam || {};
+                            const { queryParams: { tokenRoom = "", moduleName = "" } = {} } =
+                                <Record<string, any>>actionParam || {};
                             const query: ActionParams = { tokenRoom, moduleName };
                             return this.getAll(model, query);
                         }
@@ -207,7 +236,6 @@ namespace Action {
                                 groupName: msg.groupName ? msg.groupName : null
                             };
 
-
                             const actionData: Document | null = await this.createEntity(model, room);
 
                             if (!actionData) return null;
@@ -229,7 +257,13 @@ namespace Action {
                         if (!model) return null;
 
                         if (this.getActionType() === "get_msg_by_token") {
-                            const { options: { tokenRoom = "", moduleName = "", membersIds = [] } = {} } = <Record<string, any>>actionParam;
+                            const {
+                                options: {
+                                    tokenRoom = "",
+                                    moduleName = "",
+                                    membersIds = []
+                                } = {}
+                            } = <Record<string, any>>actionParam;
 
                             if (!tokenRoom || !moduleName) {
                                 console.error("Bad tokenRoom or moduleName in get_msg_by_token action");
@@ -244,12 +278,120 @@ namespace Action {
                     }
 
                     case "users": {
+                        const model: Model<Document> | null = getModelByName("users", "users");
+                        if (!model) return null;
+
                         if (this.getActionType() === "get_all") {
-                            const model: Model<Document> | null = getModelByName("users", "users");
-
-                            if (!model) return null;
-
                             return this.getAll(model, actionParam);
+                        }
+
+                        if (this.getActionType() === "recovory_checker") {
+                            const filed: string = (<Record<string, string>>actionParam).recovoryField;
+                            const mode: string = (<Record<string, string>>actionParam).mode;
+
+                            const props: object = mode == "emailMode" ? {
+                                email: filed
+                            } : { login: filed };
+
+                            const result: Record<string, any> | null = await this.findOnce(model, { ...props });
+
+                            if (!result) return result;
+
+                            if (<Record<string, any>>result) {
+
+                                const { _id } = result || {};
+
+                                const password: string = generator.generate({
+                                    length: 10,
+                                    numbers: true
+                                });
+
+                                const passwordHash: string | null = await result.changePassword(password);
+
+                                if (!passwordHash) {
+                                    return null;
+                                }
+
+                                const res = await this.updateEntity(model, { _id, updateProps: { passwordHash } });
+
+                                if (!res) return null;
+
+                                return <any>password;
+                            }
+                        }
+
+                        if (this.getActionType() === "change_password") {
+                            const { queryParams = {} } = {} = (<Record<string, any>>actionParam);
+                            const { oldPassword = "", newPassword = "", uid = "" } = queryParams || {};
+
+                            const checkProps = {
+                                _id: uid
+                            }
+
+                            const result: Record<string, any> | null = await this.findOnce(model, { ...checkProps });
+
+                            if (!result) {
+                                console.error("User not find for change password action");
+                                return null;
+                            }
+
+                            const isValid: boolean = await result.checkPassword(oldPassword);
+
+                            if (!isValid) {
+                                console.error("Bad old password for change password action");
+                                return null;
+                            };
+
+                            const { _id } = result || {};
+
+                            const password: string = newPassword;
+                            const passwordHash: string | null = await result.changePassword(password);
+
+                            if (!passwordHash) {
+                                return null;
+                            }
+
+                            const res = await this.updateEntity(model, { _id, updateProps: { passwordHash } });
+
+                            if (!res) return null;
+
+                            return res;
+                        }
+
+                        if (this.getActionType() === "common_changes") {
+                            const { queryParams = {} } = {} = (<Record<string, any>>actionParam);
+                            const { newEmail = "", newPhone = "", uid = "" } = queryParams || {};
+
+                            if (!uid || (!newEmail && !newPhone)) {
+                                return null;
+                            }
+
+                            const checkProps = {
+                                _id: uid
+                            }
+
+                            const result: Record<string, any> | null = await this.findOnce(model, { ...checkProps });
+
+                            if (!result) {
+                                console.error("User not find for change password action");
+                                return null;
+                            }
+
+                            const { _id } = result || {};
+
+                            const email: string = newEmail ? newEmail : null;
+                            const phone: string = newPhone ? newPhone : null;
+
+                            const updateProps: Record<string, string> = {};
+
+                            if (!_.isNull(phone)) updateProps.phone = phone;
+                            if (!_.isNull(email)) updateProps.email = email;
+
+                            const res = await this.updateEntity(model, { _id, updateProps });
+
+                            if (!res) return null;
+
+                            return res;
                         }
 
                         break;

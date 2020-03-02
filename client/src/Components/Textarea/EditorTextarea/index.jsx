@@ -1,4 +1,5 @@
 import React from "react";
+import { stateFromHTML } from "draft-js-import-html";
 import { convertFromRaw } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import _ from "lodash";
@@ -6,7 +7,7 @@ import _ from "lodash";
 import "../../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { Button } from "antd";
 
-import modelContext from '../../../Models/context';
+import modelContext from "../../../Models/context";
 
 class EditorTextarea extends React.Component {
     state = {
@@ -17,10 +18,14 @@ class EditorTextarea extends React.Component {
 
     componentDidMount = () => {
         const { contentState = null } = this.props;
-        if (contentState && !_.isEmpty(contentState)) {
-            this.setState({
-                contentState: contentState
-            });
+        if (contentState && (!_.isEmpty(contentState) || _.isString(contentState))) {
+            try {
+                this.setState({
+                    contentState: _.isString(contentState) ? stateFromHTML(contentState) : contentState
+                });
+            } catch (error) {
+                console.error(error);
+            }
         }
     };
 
@@ -40,9 +45,11 @@ class EditorTextarea extends React.Component {
     };
 
     onContentStateChange = contentState => {
-        this.setState({
-            contentState: contentState
-        });
+        this.setState({ contentState: contentState });
+    };
+
+    handlePastedText = (text, html, editorState) => {
+        this.setState({ contentState: editorState });
     };
 
     render() {
@@ -52,8 +59,8 @@ class EditorTextarea extends React.Component {
         const readOnlyProps =
             readOnly && contentState
                 ? {
-                    contentState
-                }
+                      contentState
+                  }
                 : {};
 
         return (
@@ -62,6 +69,7 @@ class EditorTextarea extends React.Component {
                     readOnly={disabled || readOnly}
                     toolbarHidden={readOnly}
                     localization={{ locale: "ru" }}
+                    handlePastedText={this.handlePastedText}
                     wrapperClassName="editor-wrapper"
                     editorClassName="editor"
                     {...readOnlyProps}

@@ -55,29 +55,28 @@ class CreateTask extends React.PureComponent {
             if (response && response.status === 200) {
                 const { data: { response: { metadata = [] } = {} } = {} } = response || {};
 
-                const filteredUsers = metadata.map(user => {
-                    const { _id = "", displayName = "" } = user;
+                const filteredUsers = metadata
+                    .map(user => {
+                        const { _id = "", displayName = "" } = user;
 
-                    if (!user || !_id || !displayName) return null;
+                        if (!user || !_id || !displayName) return null;
 
-                    return {
-                        _id,
-                        displayName
-                    }
-                }).filter(Boolean);
+                        return {
+                            _id,
+                            displayName
+                        };
+                    })
+                    .filter(Boolean);
 
                 this.setState({
                     filteredUsers
                 });
-
-
             } else throw new Error("fail load user list");
-
         } catch (err) {
             message.error("Ошибка загрузки сотрудников.");
             console.error(err);
         }
-    }
+    };
 
     validation = () => {
         const {
@@ -190,10 +189,15 @@ class CreateTask extends React.PureComponent {
             };
     };
 
-    handlerCreateTask = async (event) => {
-        const { statusApp = "", onLoadCurrentData, onOpenPageWithData,
+    handlerCreateTask = async event => {
+        const {
+            statusApp = "",
+            onLoadCurrentData,
+            onOpenPageWithData,
             router: { currentActionTab: path, actionTabs = [] },
-            setCurrentTab, removeTab } = this.props;
+            setCurrentTab,
+            removeTab
+        } = this.props;
         const { config = {}, Request = {}, schema = {} } = this.context;
 
         if (!this.validation()) return;
@@ -214,9 +218,7 @@ class CreateTask extends React.PureComponent {
         this.setState({ ...this.state, load: true });
 
         if (statusApp === "online") {
-
             try {
-
                 if (statusApp === "offline") this.offlineMode(validHash);
 
                 const request = new Request();
@@ -227,50 +229,53 @@ class CreateTask extends React.PureComponent {
                     throw new Error("Bad response");
                 }
 
-                const { data: { response: { done = false, metadata = [] } = {} } } = res || {};
+                const {
+                    data: { response: { done = false, metadata = [] } = {} }
+                } = res || {};
 
                 if (!done) {
                     throw new Error(typeof metadata === "string" ? metadata : "Error create task");
                 }
 
-                this.setState({
-                    ...this.state,
-                    card: { ...this.state.card, key: uuid() },
-                    load: false
-                }, () => {
-                    message.success(`Задача создана.`);
+                this.setState(
+                    {
+                        ...this.state,
+                        card: { ...this.state.card, key: uuid() },
+                        load: false
+                    },
+                    () => {
+                        message.success(`Задача создана.`);
 
-                    const { key = "" } = metadata[0] || metadata || {};
-                    if (!key) return;
+                        const { key = "" } = metadata[0] || metadata || {};
+                        if (!key) return;
 
-                    if (config.tabsLimit <= actionTabs.length)
-                        return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
+                        if (config.tabsLimit <= actionTabs.length)
+                            return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
 
-                    const { moduleId = "", page = "" } = routeParser({ path });
-                    if (!moduleId || !page) return;
+                        const { moduleId = "", page = "" } = routeParser({ path });
+                        if (!moduleId || !page) return;
 
-                    const index = actionTabs.findIndex(tab => tab.includes(page) && tab.includes(key));
-                    const isFind = index !== -1;
+                        const index = actionTabs.findIndex(tab => tab.includes(page) && tab.includes(key));
+                        const isFind = index !== -1;
 
-                    let type = "deafult";
-                    if (path.split("__")[1]) type = "itemTab";
+                        let type = "deafult";
+                        if (path.split("__")[1]) type = "itemTab";
 
-                    removeTab({ path, type: type });
+                        removeTab({ path, type: type });
 
-                    if (!isFind) {
-
-                        onOpenPageWithData({
-                            activePage: routePathNormalise({
-                                pathType: "moduleItem",
-                                pathData: { page, moduleId, key }
-                            }),
-                            routeDataActive: metadata[0] || metadata || {}
-                        });
-                    } else {
-                        setCurrentTab(actionTabs[index]);
+                        if (!isFind) {
+                            onOpenPageWithData({
+                                activePage: routePathNormalise({
+                                    pathType: "moduleItem",
+                                    pathData: { page, moduleId, key }
+                                }),
+                                routeDataActive: metadata[0] || metadata || {}
+                            });
+                        } else {
+                            setCurrentTab(actionTabs[index]);
+                        }
                     }
-                });
-
+                );
 
                 // if (rest)
                 //     rest.sendRequest("/tasks/createTask", "POST", validHash, true)
@@ -348,13 +353,13 @@ class CreateTask extends React.PureComponent {
                                         placeholder="выберете исполнителя"
                                         optionLabelProp="label"
                                     >
-                                        {filteredUsers && filteredUsers.length ?
-                                            filteredUsers.map(it => (
-                                                <Option value={it.displayName} label={it.displayName} >
-                                                    <span>{it.displayName}</span>
-                                                </Option>
-                                            )) : null
-                                        }
+                                        {filteredUsers && filteredUsers.length
+                                            ? filteredUsers.map(it => (
+                                                  <Option value={it.displayName} label={it.displayName}>
+                                                      <span>{it.displayName}</span>
+                                                  </Option>
+                                              ))
+                                            : null}
                                     </Select>
                                     <label>Описание задачи: </label>
                                     <Textarea

@@ -25,10 +25,7 @@
         "editor.defaultFormatter": "vscode.json-language-features"
     },
     "search.useGlobalIgnoreFiles": true,
-    "appService.zipIgnorePattern": [
-        "node_modules{,/**}",
-        ".vscode{,/**}"
-    ],
+    "appService.zipIgnorePattern": ["node_modules{,/**}", ".vscode{,/**}"],
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": true
     }

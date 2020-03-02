@@ -1,13 +1,98 @@
-import express, { Router as RouteExpress } from 'express';
-import { ServerRun } from '../../Utils/Interfaces';
+import { NextFunction, Response, Request } from "express";
+import _ from "lodash";
+import { App, Params, ActionParams } from "../../Utils/Interfaces";
+import { ParserResult, ResRequest } from "../../Utils/Types";
+
+import Utils from "../../Utils";
+import Action from "../../Models/Action";
+import Decorators from "../../Decorators";
 
 namespace Settings {
-    export const module = (app: ServerRun, route: RouteExpress): null | void => {
-        if (!app) return null;
+    const { getResponseJson } = Utils;
+    const { Controller, Post } = Decorators;
 
-        route.get("/list", (req, res) => {
-            res.sendStatus(200);
-        })
+    @Controller("/settings")
+    export class SettingsController {
+        @Post({ path: "/password", private: true })
+        public async passwordChaged(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+            const params: Params = { methodQuery: "change_password", from: "users", done: true, status: "OK" };
+            try {
+                const body: object = req.body;
+                const queryParams: Record<string, any> = (<Record<string, any>>body).queryParams;
+
+                if (!queryParams || _.isEmpty(queryParams)) {
+                    throw new Error("Invalid queryParams for change_password action");
+                }
+
+                const changePasswordAction = new Action.ActionParser({
+                    actionPath: "users",
+                    actionType: "change_password",
+                    body
+                });
+
+                const actionParams: ActionParams = { queryParams };
+                const data: ParserResult = await changePasswordAction.getActionData(actionParams);
+
+                if (!data) {
+                    throw new Error("Invalid change_password action data");
+                }
+
+                return res.sendStatus(200);
+
+            } catch (err) {
+                console.error(err);
+                if (!res.headersSent) {
+                    res.status(503);
+                    return res.json(
+                        getResponseJson(
+                            "Server error",
+                            { params, status: "FAIL", done: false, metadata: [] },
+                            (<Record<string, any>>req).start
+                        )
+                    )
+                }
+            }
+        }
+
+        @Post({ path: "/common", private: true })
+        public async commonSettings(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+            const params: Params = { methodQuery: "common_changes", from: "users", done: true, status: "OK" };
+            try {
+                const body: object = req.body;
+                const queryParams: Record<string, any> = (<Record<string, any>>body).queryParams;
+
+                if (!queryParams || _.isEmpty(queryParams)) {
+                    throw new Error("Invalid queryParams for common_changes action");
+                }
+
+                const changePasswordAction = new Action.ActionParser({
+                    actionPath: "users",
+                    actionType: "common_changes"
+                });
+
+                const actionParams: ActionParams = { queryParams };
+                const data: ParserResult = await changePasswordAction.getActionData(actionParams);
+
+                if (!data) {
+                    throw new Error("Invalid action data");
+                }
+
+                return res.sendStatus(200);
+
+            } catch (err) {
+                console.error(err);
+                if (!res.headersSent) {
+                    res.status(503);
+                    return res.json(
+                        getResponseJson(
+                            "Server error",
+                            { params, status: "FAIL", done: false, metadata: [] },
+                            (<Record<string, any>>req).start
+                        )
+                    )
+                }
+            }
+        }
     }
 }
 

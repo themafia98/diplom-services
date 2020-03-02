@@ -1,5 +1,7 @@
 import { Application, Router as RouteExpress, Request as RequestExpress, Response, NextFunction } from "express";
+import nodemailer, { SendMailOptions, Transporter, createTransport } from "nodemailer";
 import { Dropbox, files } from "dropbox";
+import { transOptions } from "../Types";
 import socketio from "socket.io";
 import mongoose, { Mongoose, Connection } from "mongoose";
 
@@ -7,6 +9,19 @@ export interface ServerRun {
     isPrivateRoute(req: Request, res: Response, next: NextFunction): Response | void;
     startResponse(req: Request, res: Response, next: NextFunction): void;
     start(callback?: Function): void;
+}
+
+export interface WorkerDataProps {
+    [key: string]: string | typeof Object;
+}
+
+export interface Mail {
+    getMailer(): typeof nodemailer;
+    getTransporter(): Transporter | null;
+    getSender(): SendMailOptions;
+    getMailerConfig(): transOptions;
+    create(): Promise<Transporter | null>;
+    send(to: string, subject: string, text: string): Promise<any>;
 }
 
 export interface Rest {
@@ -133,7 +148,7 @@ export interface FileApi {
     getAllFiles(): Promise<files.ListFolderResult | null>;
     downloadFileByProps<Props>(fileProps: Props): Promise<files.FileMetadata | null>;
     downloadFile(path: string): Promise<files.FileMetadata | null>;
-    saveFile<P>(saveProps: P): Promise<files.FileMetadata | null>;
+    saveFile<Props>(saveProps: Props): Promise<files.FileMetadata | null>;
     getFilesByPath(path: string): Promise<files.ListFolderResult | null>;
     deleteFile(path: string): Promise<files.DeleteResult | null>;
 }
@@ -146,10 +161,10 @@ export interface ActionProps {
 }
 
 export interface DownloadDropbox {
-    moduleName: string;
-    filename: string;
-    ext: string;
-    cardName?: string;
+    moduleName: Readonly<string>;
+    filename: Readonly<string>;
+    ext: Readonly<string>;
+    cardName?: Readonly<string>;
 }
 
 export interface UploadDropbox {

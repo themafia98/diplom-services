@@ -23,7 +23,7 @@ class UserCard extends React.Component {
 
         const imageUrl = {
             backgroundImage: `url("${imageCard}")`
-        }
+        };
 
         return (
             <div className="userCard">
@@ -35,8 +35,8 @@ class UserCard extends React.Component {
                                 <Avatar className="userLogo" size={84} icon="user" />
                             </Dropdown>
                         ) : (
-                                <Avatar className="userLogo" size={84} icon="user" />
-                            )}
+                            <Avatar className="userLogo" size={84} icon="user" />
+                        )}
                         <div className="mainInformUser">
                             <div className="mainInformUser__main">
                                 <p className="name">{udata.displayName ? udata.displayName : "Unknown"}</p>
@@ -49,24 +49,16 @@ class UserCard extends React.Component {
                                         className="controller"
                                         type="primary"
                                         icon="mail"
-                                    >
-                                    </Button>
+                                    ></Button>
                                 ) : null}
                                 {udata.isOnline ? (
-                                    <Button
-                                        className="controller"
-                                        type="primary"
-                                        icon="wechat"
-                                    >
-                                    </Button>
+                                    <Button className="controller" type="primary" icon="wechat"></Button>
                                 ) : null}
                             </div>
                         </div>
                     </div>
                     <div className="col-6 summary_wrapper">
-                        <p className="summary">
-                            {udata.summary ? udata.summary : ""}
-                        </p>
+                        <p className="summary">{udata.summary ? udata.summary : ""}</p>
                         <div className="contact">
                             {udata.email ? (
                                 <div className="email">

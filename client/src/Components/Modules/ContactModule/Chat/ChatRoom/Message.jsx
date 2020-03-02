@@ -9,8 +9,8 @@ const Message = ({ it = null, children = null, showTooltip, className = "" }) =>
             <span className={className}>{children}</span>
         </Tooltip>
     ) : (
-            <span className={className}>{children}</span>
-        );
+        <span className={className}>{children}</span>
+    );
 };
 
 export default Message;
