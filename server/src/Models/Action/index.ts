@@ -103,7 +103,8 @@ namespace Action {
 
         public async getActionData(actionParam: ActionParams = {}): ParserData {
             try {
-                console.log(`Run action. actionType: ${this.getActionType()}, actionPath: ${this.getActionPath()}`);
+                console.log(`Run action. actionType: ${this.getActionType()}, 
+                            actionPath: ${this.getActionPath()}`);
 
                 switch (this.getActionPath()) {
                     case "global": {
@@ -146,7 +147,6 @@ namespace Action {
                     }
                 }
 
-                return null;
             } catch (err) {
                 console.error(err);
                 return null;

@@ -1,14 +1,14 @@
 import { Model, Document } from "mongoose";
-import { ActionParams, Actions } from "../../../Utils/Interfaces";
+import { ActionParams, Actions, Action } from "../../../Utils/Interfaces";
 import { ParserData } from "../../../Utils/Types";
 import Utils from "../../../Utils";
 import _ from "lodash";
 const { getModelByName } = Utils;
 
-class ActionTasks {
-    constructor(private entity: Actions) {}
+class ActionTasks implements Action {
+    constructor(private entity: Actions) { }
 
-    getEntity(): Actions {
+    public getEntity(): Actions {
         return this.entity;
     }
 

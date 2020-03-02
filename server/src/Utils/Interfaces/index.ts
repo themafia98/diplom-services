@@ -1,7 +1,7 @@
 import { Application, Router as RouteExpress, Request as RequestExpress, Response, NextFunction } from "express";
 import nodemailer, { SendMailOptions, Transporter, createTransport } from "nodemailer";
 import { Dropbox, files } from "dropbox";
-import { transOptions } from "../Types";
+import { transOptions, ParserData } from "../Types";
 import socketio from "socket.io";
 import mongoose, { Mongoose, Connection, Model, Document } from "mongoose";
 
@@ -176,6 +176,11 @@ export interface EntityActionApi {
     getActionPath(): string;
     getActionType(): string;
     getStore(): FileApi;
+}
+
+export interface Action {
+    getEntity(): Actions;
+    run(actionParam: ActionParams): ParserData;
 }
 
 export interface Actions extends EntityActionApi {

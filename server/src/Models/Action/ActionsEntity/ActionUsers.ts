@@ -1,16 +1,16 @@
 import generator from "generate-password";
 import _ from "lodash";
 import { Model, Document } from "mongoose";
-import { ActionParams, Actions } from "../../../Utils/Interfaces";
+import { ActionParams, Actions, Action } from "../../../Utils/Interfaces";
 import { ParserData } from "../../../Utils/Types";
 import Utils from "../../../Utils";
 
 const { getModelByName } = Utils;
 
-class ActionUsers {
-    constructor(private entity: Actions) {}
+class ActionUsers implements Action {
+    constructor(private entity: Actions) { }
 
-    getEntity(): Actions {
+    public getEntity(): Actions {
         return this.entity;
     }
 
@@ -29,8 +29,8 @@ class ActionUsers {
             const props: object =
                 mode == "emailMode"
                     ? {
-                          email: filed
-                      }
+                        email: filed
+                    }
                     : { login: filed };
 
             const result: Record<string, any> | null = await this.getEntity().findOnce(model, { ...props });

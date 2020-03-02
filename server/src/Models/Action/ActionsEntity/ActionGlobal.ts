@@ -1,11 +1,11 @@
-import { ActionParams, Actions } from "../../../Utils/Interfaces";
+import { ActionParams, Actions, Action } from "../../../Utils/Interfaces";
 import { ParserData } from "../../../Utils/Types";
 import { files } from "dropbox";
 import _ from "lodash";
-class ActionGlobal {
-    constructor(private entity: Actions) {}
+class ActionGlobal implements Action {
+    constructor(private entity: Actions) { }
 
-    getEntity(): Actions {
+    public getEntity(): Actions {
         return this.entity;
     }
 
