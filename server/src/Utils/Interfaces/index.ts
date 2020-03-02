@@ -3,7 +3,7 @@ import nodemailer, { SendMailOptions, Transporter, createTransport } from "nodem
 import { Dropbox, files } from "dropbox";
 import { transOptions } from "../Types";
 import socketio from "socket.io";
-import mongoose, { Mongoose, Connection } from "mongoose";
+import mongoose, { Mongoose, Connection, Model, Document } from "mongoose";
 
 export interface ServerRun {
     isPrivateRoute(req: Request, res: Response, next: NextFunction): Response | void;
@@ -176,6 +176,14 @@ export interface EntityActionApi {
     getActionPath(): string;
     getActionType(): string;
     getStore(): FileApi;
+}
+
+export interface Actions extends EntityActionApi {
+    getAll(model: Model<Document>, actionParam: ActionParams): Promise<any>;
+    createEntity(model: Model<Document>, item: object): Promise<any>;
+    deleteEntity(model: Model<Document>, query: ActionParams): Promise<any>;
+    updateEntity(model: Model<Document>, query: ActionParams): Promise<any>;
+    findOnce(model: Model<Document>, actionParam: ActionParams): Promise<any>;
 }
 
 export interface ResponseJson<T> {

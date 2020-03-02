@@ -1,45 +1,26 @@
-import { ActionProps, ActionParams, EntityActionApi, FileApi } from "../../Utils/Interfaces";
+import { ActionProps, ActionParams, Actions } from "../../Utils/Interfaces";
+import { Model, Document } from "mongoose";
 import _ from "lodash";
-import generator from "generate-password";
+import ActionEntity from "./ActionEntity";
 import { ParserData } from "../../Utils/Types";
-import uuid from "uuid/v4";
-import { files } from "dropbox";
-import { Model, Document, Query, DocumentQuery } from "mongoose";
 import Utils from "../../Utils";
 
+/** Actions */
+import ActionNews from "./ActionsEntity/ActionNews";
+import ActionJurnal from "./ActionsEntity/ActionJurnal";
+import ActionUsers from "./ActionsEntity/ActionUsers";
+import ActionChatMessage from "./ActionsEntity/ActionChatMessage";
+import ActionChatRoom from "./ActionsEntity/ActionChatRoom";
+import ActionGlobal from "./ActionsEntity/ActionGlobal";
+import ActionTasks from "./ActionsEntity/ActionTasks";
+
 namespace Action {
-    const { getModelByName, checkEntity } = Utils;
-
-    abstract class ActionEntity implements EntityActionApi {
-        private actionPath: string = "";
-        private actionType: string = "";
-        private store: FileApi;
-
-        constructor(props: ActionProps) {
-            this.actionPath = props.actionPath;
-            this.actionType = props.actionType;
-            this.store = (props as Record<string, any>).store;
-        }
-
-        public getActionPath(): string {
-            return this.actionPath;
-        }
-
-        public getActionType(): string {
-            return this.actionType;
-        }
-
-        public getStore(): FileApi {
-            return this.store;
-        }
-    }
-
-    export class ActionParser extends ActionEntity {
+    export class ActionParser extends ActionEntity implements Actions {
         constructor(props: ActionProps) {
             super(props);
         }
 
-        private async getAll(model: Model<Document>, actionParam: ActionParams) {
+        public async getAll(model: Model<Document>, actionParam: ActionParams) {
             try {
                 const actionData: Array<Document> = await model.find(actionParam);
                 return actionData;
@@ -59,7 +40,7 @@ namespace Action {
             }
         }
 
-        private async createEntity(model: Model<Document>, item: object) {
+        public async createEntity(model: Model<Document>, item: object) {
             try {
                 console.log("create entity:", item);
                 const actionData: Document = await model.create(item);
@@ -70,7 +51,7 @@ namespace Action {
             }
         }
 
-        private async deleteEntity(model: Model<Document>, query: ActionParams) {
+        public async deleteEntity(model: Model<Document>, query: ActionParams) {
             try {
                 const { tokenRoom, uid, updateField } = query;
                 const actionData: Document = await model.update(
@@ -126,366 +107,38 @@ namespace Action {
 
                 switch (this.getActionPath()) {
                     case "global": {
-                        if (this.getActionType() === "load_files") {
-                            const {
-                                body: { queryParams = {} }
-                            } = <Record<string, any>>actionParam;
-
-                            const entityId: string = (queryParams as Record<string, string>).entityId;
-                            const moduleName: string = (actionParam as Record<string, string>).moduleName;
-
-                            const path: string = `/${moduleName}/${entityId}/`;
-                            const files: files.ListFolderResult | null = await this.getStore().getFilesByPath(path);
-                            return files;
-                        }
-
-                        if (this.getActionType() === "delete_file") {
-                            const { body: { queryParams = {} } = {}, store = "" } = <Record<string, any>>actionParam;
-
-                            const file: object = (queryParams as Record<string, any>).file;
-                            const url: string = (file as Record<string, string>).url || "";
-
-                            const path: string = `${store}${url.split("download")[1]}` || "";
-
-                            console.log("path delete:", path);
-
-                            const deleteFile: files.DeleteResult | null = await this.getStore().deleteFile(path);
-
-                            if (!deleteFile) return null;
-                            else return deleteFile;
-                        }
-
-                        if (this.getActionType() === "download_files") {
-                            const entityId: string = (actionParam as Record<string, string>).entityId;
-                            const filename: string = (actionParam as Record<string, string>).filename;
-                            const moduleName: string = (actionParam as Record<string, string>).moduleName;
-
-                            const path: string = `/${moduleName}/${entityId}/${filename}`;
-
-                            const file: files.FileMetadata | null = await this.getStore().downloadFile(path);
-                            return file;
-                        }
-
-                        break;
+                        const action = new ActionGlobal(this);
+                        return action.run(actionParam);
                     }
 
                     case "chatRoom": {
-                        const model: Model<Document> | null = getModelByName("chatRoom", "chatRoom");
-
-                        if (!model) return null;
-
-                        if (this.getActionType() === "get_update_rooms") {
-                            const { queryParams: { tokenRoom = "", moduleName = "" } = {} } =
-                                <Record<string, any>>actionParam || {};
-                            const query: ActionParams = { tokenRoom, moduleName };
-                            return this.getAll(model, query);
-                        }
-
-                        if (this.getActionType() === "entrypoint_chat") {
-                            const socket: object = (actionParam as Record<string, any>).socket || {};
-                            const uid: string = (actionParam as Record<string, string>).uid;
-                            const { socketConnection = false, module: moduleName = "" } = <Record<string, any>>socket;
-                            const query: ActionParams = { moduleName, membersIds: { $in: [uid] } };
-
-                            if (socketConnection && moduleName) return this.getAll(model, query);
-                        }
-
-                        if (this.getActionType() === "create_chatRoom") {
-                            if (!actionParam) return null;
-
-                            const mode: string =
-                                actionParam.type && actionParam.type === "single" ? "equalSingle" : "equal";
-
-                            const isValid: boolean = await checkEntity(mode, "membersIds", actionParam, model);
-
-                            if (!isValid) return null;
-
-                            const actionData: Document | null = await this.createEntity(model, {
-                                ...actionParam,
-                                tokenRoom: uuid()
-                            });
-                            return actionData;
-                        }
-
-                        if (this.getActionType() === "leave_room") {
-                            const uid: string = (actionParam as Record<string, string>).uid;
-                            const roomToken: string = (actionParam as Record<string, string>).roomToken;
-                            const updateField: string = (actionParam as Record<string, string>).updateField;
-
-                            const query = { roomToken, uid, updateField };
-                            const actionData: Record<string, any> | null = await this.deleteEntity(model, query);
-                            return <Document | null>actionData;
-                        }
-
-                        if (this.getActionType() === "create_FakeRoom") {
-                            const modelMsg: Model<Document> | null = getModelByName("chatMsg", "chatMsg");
-                            const msg: Record<string, any> = (actionParam as Record<string, any>).fakeMsg || {};
-                            const interlocutorId: string = (actionParam as Record<string, string>).interlocutorId;
-
-                            const isEmptyMsg = !msg || !msg.authorId || !msg.tokenRoom;
-
-                            if (!modelMsg || isEmptyMsg || !interlocutorId || !msg.moduleName) {
-                                return null;
-                            }
-
-                            const room = {
-                                type: "single",
-                                moduleName: msg.moduleName,
-                                tokenRoom: msg.tokenRoom,
-                                membersIds: [msg.authorId, interlocutorId],
-                                groupName: msg.groupName ? msg.groupName : null
-                            };
-
-                            const actionData: Document | null = await this.createEntity(model, room);
-
-                            if (!actionData) return null;
-
-                            const saveMsg = await modelMsg.create(msg);
-
-                            if (!saveMsg) return null;
-
-                            console.log("generate room action");
-                            return actionData;
-                        }
-
-                        break;
+                        const action = new ActionChatRoom(this);
+                        return action.run(actionParam);
                     }
 
                     case "chatMsg": {
-                        const model: Model<Document> | null = getModelByName("chatMsg", "chatMsg");
-
-                        if (!model) return null;
-
-                        if (this.getActionType() === "get_msg_by_token") {
-                            const {
-                                options: {
-                                    tokenRoom = "",
-                                    moduleName = "",
-                                    membersIds = []
-                                } = {}
-                            } = <Record<string, any>>actionParam;
-
-                            if (!tokenRoom || !moduleName) {
-                                console.error("Bad tokenRoom or moduleName in get_msg_by_token action");
-                                return null;
-                            }
-
-                            const query: ActionParams = { tokenRoom, moduleName, authorId: { $in: membersIds } };
-                            return this.getAll(model, query);
-                        }
-
-                        break;
+                        const action = new ActionChatMessage(this);
+                        return action.run(actionParam);
                     }
 
                     case "users": {
-                        const model: Model<Document> | null = getModelByName("users", "users");
-                        if (!model) return null;
-
-                        if (this.getActionType() === "get_all") {
-                            return this.getAll(model, actionParam);
-                        }
-
-                        if (this.getActionType() === "recovory_checker") {
-                            const filed: string = (<Record<string, string>>actionParam).recovoryField;
-                            const mode: string = (<Record<string, string>>actionParam).mode;
-
-                            const props: object = mode == "emailMode" ? {
-                                email: filed
-                            } : { login: filed };
-
-                            const result: Record<string, any> | null = await this.findOnce(model, { ...props });
-
-                            if (!result) return result;
-
-                            if (<Record<string, any>>result) {
-
-                                const { _id } = result || {};
-
-                                const password: string = generator.generate({
-                                    length: 10,
-                                    numbers: true
-                                });
-
-                                const passwordHash: string | null = await result.changePassword(password);
-
-                                if (!passwordHash) {
-                                    return null;
-                                }
-
-                                const res = await this.updateEntity(model, { _id, updateProps: { passwordHash } });
-
-                                if (!res) return null;
-
-                                return <any>password;
-                            }
-                        }
-
-                        if (this.getActionType() === "change_password") {
-                            const { queryParams = {} } = {} = (<Record<string, any>>actionParam);
-                            const { oldPassword = "", newPassword = "", uid = "" } = queryParams || {};
-
-                            const checkProps = {
-                                _id: uid
-                            }
-
-                            const result: Record<string, any> | null = await this.findOnce(model, { ...checkProps });
-
-                            if (!result) {
-                                console.error("User not find for change password action");
-                                return null;
-                            }
-
-                            const isValid: boolean = await result.checkPassword(oldPassword);
-
-                            if (!isValid) {
-                                console.error("Bad old password for change password action");
-                                return null;
-                            };
-
-                            const { _id } = result || {};
-
-                            const password: string = newPassword;
-                            const passwordHash: string | null = await result.changePassword(password);
-
-                            if (!passwordHash) {
-                                return null;
-                            }
-
-                            const res = await this.updateEntity(model, { _id, updateProps: { passwordHash } });
-
-                            if (!res) return null;
-
-                            return res;
-                        }
-
-                        if (this.getActionType() === "common_changes") {
-                            const { queryParams = {} } = {} = (<Record<string, any>>actionParam);
-                            const { newEmail = "", newPhone = "", uid = "" } = queryParams || {};
-
-                            if (!uid || (!newEmail && !newPhone)) {
-                                return null;
-                            }
-
-                            const checkProps = {
-                                _id: uid
-                            }
-
-                            const result: Record<string, any> | null = await this.findOnce(model, { ...checkProps });
-
-                            if (!result) {
-                                console.error("User not find for change password action");
-                                return null;
-                            }
-
-                            const { _id } = result || {};
-
-                            const email: string = newEmail ? newEmail : null;
-                            const phone: string = newPhone ? newPhone : null;
-
-                            const updateProps: Record<string, string> = {};
-
-                            if (!_.isNull(phone)) updateProps.phone = phone;
-                            if (!_.isNull(email)) updateProps.email = email;
-
-                            const res = await this.updateEntity(model, { _id, updateProps });
-
-                            if (!res) return null;
-
-                            return res;
-                        }
-
-                        break;
+                        const action = new ActionUsers(this);
+                        return action.run(actionParam);
                     }
 
                     case "jurnalworks": {
-                        const model: Model<Document> | null = getModelByName("jurnalworks", "jurnalworks");
-                        if (!model) return null;
-
-                        // Get jurnal action. Starts with '__set' journals key becouse
-                        // set for synchronize with client key
-                        if (this.getActionType() === "__setJurnal") {
-                            const { depKey } = actionParam;
-                            const conditions = { depKey };
-                            const actionData: Document[] | null = await this.getAll(model, conditions);
-                            return actionData;
-                        }
-
-                        if (this.getActionType() === "set_jurnal") {
-                            try {
-                                const { item = {} } = actionParam;
-                                console.log("current item:", item);
-                                const actionData: Document | null = await this.createEntity(model, <object>item);
-                                console.log("actionData:", actionData);
-                                return actionData;
-                            } catch (err) {
-                                console.error(err);
-                                return null;
-                            }
-                        }
-
-                        break;
+                        const action = new ActionJurnal(this);
+                        return action.run(actionParam);
                     }
 
                     case "tasks": {
-                        const model: Model<Document> | null = getModelByName("tasks", "task");
-                        if (!model) return null;
-                        if (this.getActionType() === "set_single") {
-                            try {
-                                const actionData: Document | null = await this.createEntity(model, actionParam);
-                                return actionData;
-                            } catch (err) {
-                                console.error(err);
-                                return null;
-                            }
-                        } else if (this.getActionType().includes("update_")) {
-                            try {
-                                /** Params for query */
-                                const { queryParams = {}, updateItem = "" } = actionParam;
-                                const id: string = (queryParams as Record<string, string>).id;
-                                const key: string = (queryParams as Record<string, string>).key;
-
-                                let updateProps = {};
-                                let actionData: Document | null = null;
-
-                                if (this.getActionType().includes("single")) {
-                                    const updateField: string = (actionParam as Record<string, string>).updateField;
-                                    (updateProps as Record<string, string>)[updateField] = <string>updateItem;
-                                } else if (this.getActionType().includes("many")) {
-                                    const { updateItem = "" } = actionParam;
-                                    updateProps = updateItem;
-                                }
-
-                                await model.updateOne({ _id: id }, updateProps);
-                                actionData = await model.findById(id);
-
-                                return actionData;
-                            } catch (err) {
-                                console.log(err);
-                                return null;
-                            }
-                        } else if (this.getActionType() === "get_all") {
-                            return this.getAll(model, actionParam);
-                        }
-
-                        break;
+                        const action = new ActionTasks(this);
+                        return action.run(actionParam);
                     }
 
                     case "news": {
-                        const model: Model<Document> | null = getModelByName("news", "news");
-
-                        if (!model) return null;
-
-                        if (this.getActionType() === "get_all") {
-                            return this.getAll(model, actionParam);
-                        }
-
-                        if (this.getActionType() === "create_single_news") {
-                            const body: object = <Record<string, any>>actionParam || {};
-
-                            return this.createEntity(model, body);
-                        }
-
-                        break;
+                        const action = new ActionNews(this);
+                        return action.run(actionParam);
                     }
 
                     default: {
