@@ -12,22 +12,28 @@ class ActionNews implements Action {
         return this.entity;
     }
 
+    private getNews(actionParam: ActionParams, model: Model<Document>): ParserData {
+        return this.getEntity().getAll(model, actionParam);
+    }
+
+    private createNews(actionParam: ActionParams, model: Model<Document>): ParserData {
+        const body: object = <Record<string, any>>actionParam || {};
+        return this.getEntity().createEntity(model, body);
+    }
+
     public async run(actionParam: ActionParams): ParserData {
         const model: Model<Document> | null = getModelByName("news", "news");
 
         if (!model) return null;
 
-        if (this.getEntity().getActionType() === "get_all") {
-            return this.getEntity().getAll(model, actionParam);
+        switch (this.getEntity().getActionType()) {
+            case "get_all":
+                return this.getNews(actionParam, model);
+            case "create_single_news":
+                return this.createNews(actionParam, model);
+            default:
+                return null;
         }
-
-        if (this.getEntity().getActionType() === "create_single_news") {
-            const body: object = <Record<string, any>>actionParam || {};
-
-            return this.getEntity().createEntity(model, body);
-        }
-
-        return null;
     }
 }
 

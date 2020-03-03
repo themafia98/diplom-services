@@ -12,33 +12,39 @@ class ActionJurnal implements Action {
         return this.entity;
     }
 
+    private async getJurnal(actionParam: ActionParams, model: Model<Document>): ParserData {
+        const { depKey } = actionParam;
+        const conditions = { depKey };
+        const actionData: Document[] | null = await this.getEntity().getAll(model, conditions);
+        return actionData;
+    }
+
+    private async setJurnal(actionParam: ActionParams, model: Model<Document>): ParserData {
+        try {
+            const { item = {} } = actionParam;
+            const actionData: Document | null = await this.getEntity().createEntity(model, <object>item);
+
+            return actionData;
+        } catch (err) {
+            console.error(err);
+            return null;
+        }
+    }
+
     public async run(actionParam: ActionParams): ParserData {
         const model: Model<Document> | null = getModelByName("jurnalworks", "jurnalworks");
         if (!model) return null;
 
-        // Get jurnal action. Starts with '__set' journals key becouse
-        // set for synchronize with client key
-        if (this.getEntity().getActionType() === "__setJurnal") {
-            const { depKey } = actionParam;
-            const conditions = { depKey };
-            const actionData: Document[] | null = await this.getEntity().getAll(model, conditions);
-            return actionData;
-        }
-
-        if (this.getEntity().getActionType() === "set_jurnal") {
-            try {
-                const { item = {} } = actionParam;
-                console.log("current item:", item);
-                const actionData: Document | null = await this.getEntity().createEntity(model, <object>item);
-                console.log("actionData:", actionData);
-                return actionData;
-            } catch (err) {
-                console.error(err);
+        switch (this.getEntity().getActionType()) {
+            case "__setJurnal":
+                // Get jurnal action. Starts with '__set' journals key becouse
+                // set for synchronize with client key
+                return this.getJurnal(actionParam, model);
+            case "set_jurnal":
+                return this.setJurnal(actionParam, model);
+            default:
                 return null;
-            }
         }
-
-        return null;
     }
 }
 

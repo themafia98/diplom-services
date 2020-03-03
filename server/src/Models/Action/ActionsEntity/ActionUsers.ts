@@ -14,76 +14,30 @@ class ActionUsers implements Action {
         return this.entity;
     }
 
-    public async run(actionParam: ActionParams): ParserData {
-        const model: Model<Document> | null = getModelByName("users", "users");
-        if (!model) return null;
+    private async getUsers(actionParam: ActionParams, model: Model<Document>): ParserData {
+        return this.getEntity().getAll(model, actionParam);
+    }
 
-        if (this.getEntity().getActionType() === "get_all") {
-            return this.getEntity().getAll(model, actionParam);
-        }
+    private async recovoryPassword(actionParam: ActionParams, model: Model<Document>): ParserData {
+        const filed: string = (<Record<string, string>>actionParam).recovoryField;
+        const mode: string = (<Record<string, string>>actionParam).mode;
 
-        if (this.getEntity().getActionType() === "recovory_checker") {
-            const filed: string = (<Record<string, string>>actionParam).recovoryField;
-            const mode: string = (<Record<string, string>>actionParam).mode;
+        const props: object = mode == "emailMode" ?
+            { email: filed }
+            : { login: filed };
 
-            const props: object =
-                mode == "emailMode"
-                    ? {
-                        email: filed
-                    }
-                    : { login: filed };
+        const result: Record<string, any> | null = await this.getEntity().findOnce(model, { ...props });
 
-            const result: Record<string, any> | null = await this.getEntity().findOnce(model, { ...props });
+        if (!result) return result;
 
-            if (!result) return result;
-
-            if (<Record<string, any>>result) {
-                const { _id } = result || {};
-
-                const password: string = generator.generate({
-                    length: 10,
-                    numbers: true
-                });
-
-                const passwordHash: string | null = await result.changePassword(password);
-
-                if (!passwordHash) {
-                    return null;
-                }
-
-                const res = await this.getEntity().updateEntity(model, { _id, updateProps: { passwordHash } });
-
-                if (!res) return null;
-
-                return <any>password;
-            }
-        }
-
-        if (this.getEntity().getActionType() === "change_password") {
-            const { queryParams = {} } = ({} = <Record<string, any>>actionParam);
-            const { oldPassword = "", newPassword = "", uid = "" } = queryParams || {};
-
-            const checkProps = {
-                _id: uid
-            };
-
-            const result: Record<string, any> | null = await this.getEntity().findOnce(model, { ...checkProps });
-
-            if (!result) {
-                console.error("User not find for change password action");
-                return null;
-            }
-
-            const isValid: boolean = await result.checkPassword(oldPassword);
-
-            if (!isValid) {
-                console.error("Bad old password for change password action");
-                return null;
-            }
-
+        if (<Record<string, any>>result) {
             const { _id } = result || {};
 
-            const password: string = newPassword;
+            const password: string = generator.generate({
+                length: 10,
+                numbers: true
+            });
+
             const passwordHash: string | null = await result.changePassword(password);
 
             if (!passwordHash) {
@@ -94,46 +48,102 @@ class ActionUsers implements Action {
 
             if (!res) return null;
 
-            return res;
-        }
-
-        if (this.getEntity().getActionType() === "common_changes") {
-            const { queryParams = {} } = ({} = <Record<string, any>>actionParam);
-            const { newEmail = "", newPhone = "", uid = "" } = queryParams || {};
-
-            if (!uid || (!newEmail && !newPhone)) {
-                return null;
-            }
-
-            const checkProps = {
-                _id: uid
-            };
-
-            const result: Record<string, any> | null = await this.getEntity().findOnce(model, { ...checkProps });
-
-            if (!result) {
-                console.error("User not find for change password action");
-                return null;
-            }
-
-            const { _id } = result || {};
-
-            const email: string = newEmail ? newEmail : null;
-            const phone: string = newPhone ? newPhone : null;
-
-            const updateProps: Record<string, string> = {};
-
-            if (!_.isNull(phone)) updateProps.phone = phone;
-            if (!_.isNull(email)) updateProps.email = email;
-
-            const res = await this.getEntity().updateEntity(model, { _id, updateProps });
-
-            if (!res) return null;
-
-            return res;
+            return <any>password;
         }
 
         return null;
+    }
+
+    private async changePassword(actionParam: ActionParams, model: Model<Document>): ParserData {
+        const { queryParams = {} } = ({} = <Record<string, any>>actionParam);
+        const { oldPassword = "", newPassword = "", uid = "" } = queryParams || {};
+
+        const checkProps = {
+            _id: uid
+        };
+
+        const result: Record<string, any> | null = await this.getEntity().findOnce(model, { ...checkProps });
+
+        if (!result) {
+            console.error("User not find for change password action");
+            return null;
+        }
+
+        const isValid: boolean = await result.checkPassword(oldPassword);
+
+        if (!isValid) {
+            console.error("Bad old password for change password action");
+            return null;
+        }
+
+        const { _id } = result || {};
+
+        const password: string = newPassword;
+        const passwordHash: string | null = await result.changePassword(password);
+
+        if (!passwordHash) {
+            return null;
+        }
+
+        const res = await this.getEntity().updateEntity(model, { _id, updateProps: { passwordHash } });
+
+        if (!res) return null;
+
+        return res;
+    }
+
+    private async updateCommonChanges(actionParam: ActionParams, model: Model<Document>): ParserData {
+        const { queryParams = {} } = ({} = <Record<string, any>>actionParam);
+        const { newEmail = "", newPhone = "", uid = "" } = queryParams || {};
+
+        if (!uid || (!newEmail && !newPhone)) {
+            return null;
+        }
+
+        const checkProps = {
+            _id: uid
+        };
+
+        const result: Record<string, any> | null = await this.getEntity().findOnce(model, { ...checkProps });
+
+        if (!result) {
+            console.error("User not find for change password action");
+            return null;
+        }
+
+        const { _id } = result || {};
+
+        const email: string = newEmail ? newEmail : null;
+        const phone: string = newPhone ? newPhone : null;
+
+        const updateProps: Record<string, string> = {};
+
+        if (!_.isNull(phone)) updateProps.phone = phone;
+        if (!_.isNull(email)) updateProps.email = email;
+
+        const res = await this.getEntity().updateEntity(model, { _id, updateProps });
+
+        if (!res) return null;
+
+        return res;
+    }
+
+    public async run(actionParam: ActionParams): ParserData {
+        const model: Model<Document> | null = getModelByName("users", "users");
+        if (!model) return null;
+
+        switch (this.getEntity().getActionType()) {
+            case "get_all":
+                return this.getUsers(actionParam, model);
+            case "recovory_checker":
+                return this.recovoryPassword(actionParam, model);
+            case "change_password":
+                return this.changePassword(actionParam, model);
+            case "common_changes":
+                return this.updateCommonChanges(actionParam, model);
+            default:
+                return null;
+        }
     }
 }
 

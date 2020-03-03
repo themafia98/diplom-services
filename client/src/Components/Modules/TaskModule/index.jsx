@@ -58,12 +58,15 @@ class TaskModule extends React.PureComponent {
             this.recalcHeight();
         }
         if (visible) {
-            onLoadCurrentData({ path, storeLoad: "tasks", useStore: true, methodRequst: "GET" });
+            onLoadCurrentData({
+                path,
+                storeLoad: "tasks",
+                useStore: true,
+                methodRequst: "GET"
+            });
         }
 
-        this.setState({
-            path
-        });
+        this.setState({ path });
 
         window.addEventListener("resize", this.recalcHeight.bind(this));
     };
@@ -81,7 +84,13 @@ class TaskModule extends React.PureComponent {
         }
 
         if (shouldUpdate && visible) {
-            onLoadCurrentData({ path, storeLoad: "tasks", useStore: true, methodRequst: "GET" });
+            onLoadCurrentData({
+                path,
+                storeLoad: "tasks",
+                useStore: true,
+                methodRequst: "GET"
+            }
+            );
         }
     };
 
@@ -93,11 +102,16 @@ class TaskModule extends React.PureComponent {
             return;
         }
 
-        const heightControllerForState = this.controller ? this.controller.getBoundingClientRect().height : null;
+        const heightControllerForState = this.controller ?
+            this.controller.getBoundingClientRect().height : null;
         const heightForState = this.moduleTask.getBoundingClientRect().height;
 
         if (height !== heightForState || heightControllerForState !== heightController)
-            this.setState({ ...this.state, height: heightForState, heightController: heightControllerForState });
+            this.setState({
+                ...this.state,
+                height: heightForState,
+                heightController: heightControllerForState
+            });
     };
 
     componentWillUnmount = () => {
@@ -164,8 +178,16 @@ class TaskModule extends React.PureComponent {
             return (
                 <Scrollbars>
                     {isList ? (
-                        <div key="controllers" ref={this.refControllers} className="controllersWrapper">
-                            <Button className="newTaskButton" onClick={this.handlerNewTask} type="primary">
+                        <div
+                            key="controllers"
+                            ref={this.refControllers}
+                            className="controllersWrapper"
+                        >
+                            <Button
+                                className="newTaskButton"
+                                onClick={this.handlerNewTask}
+                                type="primary"
+                            >
                                 Создать новую задачу
                             </Button>
                         </div>
@@ -262,7 +284,11 @@ class TaskModule extends React.PureComponent {
 
         const component = this.getTaskByPath(path);
         return (
-            <div key="taskModule" ref={this.refModuleTask} className="taskModule">
+            <div
+                key="taskModule"
+                ref={this.refModuleTask}
+                className="taskModule"
+            >
                 {component ? component : null}
             </div>
         );

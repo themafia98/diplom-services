@@ -103,7 +103,7 @@ export const task = new Schema({
     date: { type: [String], required: true },
     comments: { type: [Object], required: true },
     modeAdd: String
-});
+}, { timestamps: true });
 
 export const jurnalItem = new Schema({
     depKey: { type: String, required: true },
@@ -112,14 +112,18 @@ export const jurnalItem = new Schema({
     date: { type: [String], required: true },
     description: { type: String, required: true },
     modeAdd: String
-});
+}, { timestamps: true });
+
+export const settingsLog = new Schema({
+    uid: { type: String, required: true },
+    message: { type: String, required: true },
+    date: { type: Date, required: true }
+}, { timestamps: true });
 
 export const news = new Schema({
     entityMap: { type: Object, required: true, default: {} },
     blocks: { type: Array, required: true }
-}, {
-    timestamps: true
-});
+}, { timestamps: true });
 
 export const chatMsg = new Schema({
     msg: { type: String, required: true },
@@ -129,7 +133,7 @@ export const chatMsg = new Schema({
     tokenRoom: { type: String, required: true },
     groupName: { type: String, required: true },
     moduleName: { type: String, required: true }
-});
+}, { timestamps: true });
 
 export const chatRoom = new Schema({
     type: { type: String, required: true },
@@ -137,7 +141,7 @@ export const chatRoom = new Schema({
     tokenRoom: { type: String, required: true },
     membersIds: { type: [String], required: true },
     groupName: String
-});
+}, { timestamps: true });
 
 export const UserModel = model("users", userSchema);
 
@@ -155,6 +159,8 @@ export const getSchemaByName = (name: string): Schema | null => {
             return chatMsg;
         case "chatRoom":
             return chatRoom;
+        case "settingsLog":
+            return settingsLog;
         default:
             return null;
     }
