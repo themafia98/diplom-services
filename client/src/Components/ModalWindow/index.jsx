@@ -4,7 +4,6 @@ import axios from "axios";
 import _ from "lodash";
 import moment from "moment";
 import { Modal, Button, Dropdown, Icon, Menu, Input, DatePicker, message, Select } from "antd";
-import uuid from "uuid/v4";
 
 import { TASK_CONTROLL_JURNAL_SCHEMA } from "../../Models/Schema/const";
 
@@ -361,8 +360,8 @@ class ModalWindow extends React.PureComponent {
                         {mode === "reg" ? (
                             <RegistrationModal cbOnChange={this.onChange} cbOnChangeSelect={this.onChangeSelect} />
                         ) : (
-                            <div></div>
-                        )}
+                                <div></div>
+                            )}
                     </Modal>
                 </React.Fragment>
             );
@@ -430,10 +429,10 @@ class ModalWindow extends React.PureComponent {
                                                 {statusTaskValue}
                                             </Option>
                                         ) : (
-                                            <Option key={i + status} value={status}>
-                                                {status}
-                                            </Option>
-                                        )
+                                                <Option key={i + status} value={status}>
+                                                    {status}
+                                                </Option>
+                                            )
                                     )}
                                 </Select>
                             </Modal>
@@ -518,8 +517,8 @@ class ModalWindow extends React.PureComponent {
                                     />
                                 </Modal>
                             ) : (
-                                <Modal></Modal>
-                            )}
+                                        <Modal></Modal>
+                                    )}
                         </React.Fragment>
                     );
                 }

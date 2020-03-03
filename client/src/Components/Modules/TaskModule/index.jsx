@@ -87,7 +87,7 @@ class TaskModule extends React.PureComponent {
 
     recalcHeight = () => {
         const { height, heightController, path = "" } = this.state;
-        const { router: { currentActionTab = "" } = {}, path: pathProps = "" } = this.props;
+        const { router: { currentActionTab = "" } = {} } = this.props;
 
         if (currentActionTab !== path || !this.moduleTask || !this.controller) {
             return;

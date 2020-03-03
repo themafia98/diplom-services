@@ -27,11 +27,8 @@ class LoginPage extends React.Component {
 
     enterLoading = event => {
         const {
-            onShowGuide = null,
             addTab,
-            router: { currentActionTab = "" } = {},
             onLoadUdata,
-            setCurrentTab
         } = this.props;
 
         const { Request, config = {} } = this.context;

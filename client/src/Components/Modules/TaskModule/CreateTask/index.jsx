@@ -45,7 +45,6 @@ class CreateTask extends React.PureComponent {
     };
 
     componentDidMount = async () => {
-        const { filteredUsers = [] } = this.state;
         const { Request = {} } = this.context;
 
         try {
@@ -192,7 +191,6 @@ class CreateTask extends React.PureComponent {
     handlerCreateTask = async event => {
         const {
             statusApp = "",
-            onLoadCurrentData,
             onOpenPageWithData,
             router: { currentActionTab: path, actionTabs = [] },
             setCurrentTab,
@@ -355,10 +353,10 @@ class CreateTask extends React.PureComponent {
                                     >
                                         {filteredUsers && filteredUsers.length
                                             ? filteredUsers.map(it => (
-                                                  <Option value={it.displayName} label={it.displayName}>
-                                                      <span>{it.displayName}</span>
-                                                  </Option>
-                                              ))
+                                                <Option value={it.displayName} label={it.displayName}>
+                                                    <span>{it.displayName}</span>
+                                                </Option>
+                                            ))
                                             : null}
                                     </Select>
                                     <label>Описание задачи: </label>

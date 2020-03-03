@@ -52,7 +52,7 @@ const ChatRoom = ({
         if (messages.length !== msgProps.length) setMessages([...msgProps]);
 
         scrollHandler();
-    }, [messages, msgProps]);
+    }, [messages, msgProps, scrollHandler]);
 
     useEffect(() => {
         scrollHandler();
@@ -61,7 +61,7 @@ const ChatRoom = ({
 
     useEffect(() => {
         if (shouldScroll) scrollHandler(true);
-    }, [messagesLength]);
+    }, [messagesLength, shouldScroll]);
 
     const onChange = event => {
         const { currentTarget: { value = "" } = {} } = event;
@@ -112,8 +112,8 @@ const ChatRoom = ({
                                         {it.displayName}
                                     </span>
                                 ) : (
-                                    <p className="admin_wrapper">{it.displayName}</p>
-                                )}
+                                        <p className="admin_wrapper">{it.displayName}</p>
+                                    )}
 
                                 {it.displayName !== "System" ? (
                                     <span className="msg_date">{it.date ? it.date : "No date"}.</span>

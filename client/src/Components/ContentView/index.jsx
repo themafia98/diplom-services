@@ -79,7 +79,10 @@ class ContentView extends React.Component {
             case "statisticModule":
                 return this.checkBackground("statisticModule");
             case "documentModule":
-                this.checkBackground("documentModule");
+                return this.checkBackground("documentModule");
+            default: {
+                break;
+            }
         }
     }
 

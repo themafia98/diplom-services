@@ -1,9 +1,6 @@
 import React from "react";
 import _ from "lodash";
-import { Table, Input, Button, Icon, message } from "antd";
-import moment from "moment";
-
-import Output from "../../Output";
+import { Table, message } from "antd";
 
 class DynamicTable extends React.PureComponent {
     onClickRow = record => {
@@ -46,7 +43,7 @@ class DynamicTable extends React.PureComponent {
     };
 
     render() {
-        const { sortedInfo = [], filteredInfo, handleFilter } = this.props;
+        const { handleFilter } = this.props;
         const { tasks, flag, udata, height, columns = [] } = this.props;
 
         let tasksCopy = null;
@@ -55,14 +52,17 @@ class DynamicTable extends React.PureComponent {
 
         if (data)
             data =
-                flag && data.length
-                    ? data
-                          .map(it => {
-                              if (!_.isNull(it.editor) && it.editor.some(editor => editor === udata.displayName))
-                                  return it;
-                              else return null;
-                          })
-                          .filter(Boolean)
+                flag && data?.length ? data
+                    .map(it => {
+                        if (!_.isNull(it.editor) &&
+                            it.editor.some(editor => {
+                                return editor === udata.displayName
+                            })
+                        )
+                            return it;
+                        else return null;
+                    })
+                    .filter(Boolean)
                     : data;
         return (
             <Table

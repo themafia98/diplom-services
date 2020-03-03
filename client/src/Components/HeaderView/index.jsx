@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import _ from "lodash";
 import { Layout } from "antd";
-import Scrollbars from "react-custom-scrollbars";
 import Tab from "./Tab";
 import RightPanel from "./RightPanel";
 
@@ -51,7 +50,7 @@ class HeaderView extends React.PureComponent {
 
     renderTabs = items => {
         const { size = 160 } = this.state;
-        const { activeTabEUID = "mainModule", cbMenuTabHandler, udata } = this.props;
+        const { activeTabEUID = "mainModule", cbMenuTabHandler } = this.props;
 
         return (
             <ul ref={this.refWrapper} className="tabsMenu">

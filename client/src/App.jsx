@@ -41,43 +41,48 @@ class App extends React.Component {
             addTab,
             setCurrentTab,
             router: { currentActionTab = "", actionTabs = [] } = {},
-            udata,
             onLoadUdata
         } = this.props;
         const { config = {}, Request } = this.context;
+        const rest = new Request();
 
-        return this.setState({ authLoad: true, loadState: true }, () => {
-            const rest = new Request();
+        return this.setState({ authLoad: true, loadState: true }, async () => {
 
-            rest.sendRequest("/userload", "POST", null, true)
-                .then(res => {
-                    let path = "mainModule";
-                    const defaultModule = config.menu.find(item => item["SIGN"] === "default");
-                    if (defaultModule) path = defaultModule.EUID;
+            try {
 
-                    const actionTabsCopy = [...actionTabs];
-                    const isFind = actionTabsCopy.findIndex(tab => tab === path) !== -1;
+                const res = await rest.sendRequest("/userload", "POST", null, true)
 
-                    const udata = Object.keys(res.data["user"]).reduce((accumulator, key) => {
-                        if (key !== "token") {
-                            accumulator[key] = res.data["user"][key];
-                        }
-                        return accumulator || {};
-                    }, {});
-                    if (!isFind && config.tabsLimit <= actionTabsCopy.length)
-                        return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
-                    const isUserData = udata && !_.isEmpty(udata);
-                    if (!isFind) {
-                        if (isUserData) onLoadUdata(udata).then(() => addTab(routeParser({ path })));
-                        else rest.signOut();
-                    } else if (currentActionTab !== path) {
-                        if (isUserData) onLoadUdata(udata).then(() => setCurrentTab(path));
-                        else rest.signOut();
+                let path = "mainModule";
+                const defaultModule = config.menu.find(item => item["SIGN"] === "default");
+                if (defaultModule) path = defaultModule.EUID;
+
+                const actionTabsCopy = [...actionTabs];
+                const isFind = actionTabsCopy.findIndex(tab => tab === path) !== -1;
+
+                const udata = Object.keys(res.data["user"]).reduce((accumulator, key) => {
+                    if (key !== "token") {
+                        accumulator[key] = res.data["user"][key];
                     }
-                })
-                .catch(err => {
-                    rest.signOut();
-                });
+                    return accumulator || {};
+                }, {});
+
+                if (!isFind && config.tabsLimit <= actionTabsCopy.length)
+                    return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
+                const isUserData = udata && !_.isEmpty(udata);
+
+                if (!isFind) {
+                    if (isUserData) onLoadUdata(udata).then(() => addTab(routeParser({ path })));
+                    else rest.signOut();
+                } else if (currentActionTab !== path) {
+                    if (isUserData) onLoadUdata(udata).then(() => setCurrentTab(path));
+                    else rest.signOut();
+                }
+
+            } catch (error) {
+                console.error(error);
+                rest.signOut();
+            }
+
         });
     };
 

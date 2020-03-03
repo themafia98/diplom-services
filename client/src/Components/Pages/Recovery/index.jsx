@@ -1,5 +1,4 @@
 import React, { useState, useContext } from "react";
-import axios from "axios";
 import { Button, Input } from "antd";
 
 import modelContext from "../../../Models/context";
@@ -17,7 +16,6 @@ const Recovory = props => {
     }
 
     const onSubmit = async () => {
-
         try {
             const regexp = mode === "emailMode" ? /\w+\@\w+\.\D+/i : /\w+/i;
 

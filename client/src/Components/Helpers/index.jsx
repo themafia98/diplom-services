@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useContext } from "react";
 import _ from "lodash";
 import PropTypes from "prop-types";
-import { Route, Redirect } from "react-router-dom";
+import { Route } from "react-router-dom";
 import Loader from "../Loader";
 import modelsContext from "../../Models/context";
 
 export const PrivateRoute = ({ component: Component, onLogoutAction, ...routeProps }) => {
     let timer = null;
-    let counterError = 0;
     const { rest } = useContext(modelsContext);
 
     const [route, setRoute] = useState(<Loader />);
@@ -20,7 +19,6 @@ export const PrivateRoute = ({ component: Component, onLogoutAction, ...routePro
             .then(res => {
                 if (res.status === 200) {
                     if (res.status !== status) {
-                        counterError = 0;
                         setRoute(<Component rest={rest} />);
                         setStatus(res.status);
                     }

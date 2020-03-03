@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import moment from "moment";
 import _ from "lodash";
-import { Icon, Empty, Table, Input, Button, message } from "antd";
+import { Icon, Empty, Input, Button } from "antd";
 
 import Loader from "../Loader";
 import Scrollbars from "react-custom-scrollbars";
@@ -136,12 +136,12 @@ class TableView extends React.Component {
                                     </td>
                                 </tr>
                             ) : (
-                                <tr>
-                                    <td colSpan="5">
-                                        <Loader classNameSpiner="tableLoader" className="wrapperLoaderTable" />
-                                    </td>
-                                </tr>
-                            )}
+                                        <tr>
+                                            <td colSpan="5">
+                                                <Loader classNameSpiner="tableLoader" className="wrapperLoaderTable" />
+                                            </td>
+                                        </tr>
+                                    )}
                         </tbody>
                         <tfoot></tfoot>
                     </table>
@@ -370,12 +370,12 @@ class TableView extends React.Component {
                 text === "В работе"
                     ? "active"
                     : text === "Открыт"
-                    ? ""
-                    : text === "Закрыт"
-                    ? "close"
-                    : text === "Выполнен"
-                    ? "done"
-                    : null;
+                        ? ""
+                        : text === "Закрыт"
+                            ? "close"
+                            : text === "Выполнен"
+                                ? "done"
+                                : null;
 
             return (
                 <Output className={className}>

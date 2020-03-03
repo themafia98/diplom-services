@@ -62,7 +62,7 @@ export default (state = initialState, action) => {
             const { data } = action.payload;
             let keys = null;
 
-            const isObjects = typeof data === "object" && data !== null && Object.keys(data).length > 1;
+            //const isObjects = typeof data === "object" && data !== null && Object.keys(data).length > 1;
             const isObjectsArray = !Object.keys(data).every(key => isNaN(Number(key)));
 
             const validData = isObjectsArray

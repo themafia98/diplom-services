@@ -31,7 +31,7 @@ class Chat extends React.PureComponent {
 
     componentDidMount = () => {
         const { onUpdateRoom } = this.props;
-        const isDev = process.env.NODE_ENV === "development";
+        //  const isDev = process.env.NODE_ENV === "development";
         this.chat = new ChatModel(io("/"));
 
         this.chat.useDefaultEvents();
@@ -335,14 +335,14 @@ class Chat extends React.PureComponent {
                                         messages={listdataMsgs[tokenRoom] || []}
                                     />
                                 ) : (
-                                    <div className="emptyChatRoom">
-                                        {!socketErrorStatus ? (
-                                            <p className="emptyChatRoomMsg">Выберите собеседника</p>
-                                        ) : (
-                                            <p className="socket-error">{socketErrorStatus}</p>
+                                            <div className="emptyChatRoom">
+                                                {!socketErrorStatus ? (
+                                                    <p className="emptyChatRoomMsg">Выберите собеседника</p>
+                                                ) : (
+                                                        <p className="socket-error">{socketErrorStatus}</p>
+                                                    )}
+                                            </div>
                                         )}
-                                    </div>
-                                )}
                             </div>
                         </div>
                     </div>
