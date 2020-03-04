@@ -7,10 +7,12 @@ import { Timeline } from "antd";
 
 const ObserverTime = props => {
 
-    const { title = "", settingsLogs = {} } = props;
+    const { title = "", settingsLogs = [] } = props;
 
-    const renderLogs = (settingsLogs = {}) => {
+    const renderLogs = (settingsLogs = []) => {
         if (!settingsLogs || _.isEmpty(settingsLogs)) return null;
+
+
 
         return settingsLogs.map((log, index) => {
             const { message, date, _id = "" } = log;
@@ -19,19 +21,24 @@ const ObserverTime = props => {
                     {message}
                     {moment(date)
                         .locale(navigator.language)
-                        .format("LL")}
+                        .format("LLL")}
                 </Timeline.Item>
             )
         })
     }
 
+    const isInvalid = !settingsLogs.length || _.isEmpty(settingsLogs);
+
     return (
         <React.Fragment>
             <TitleModule classNameTitle="observerTitle" title={title ? title : "История изменений"} />
             <div className="observerWrapper">
-                <Timeline>
-                    {renderLogs(settingsLogs)}
-                </Timeline>
+                {isInvalid ? null : (
+                    <Timeline>
+                        {renderLogs(settingsLogs)}
+                    </Timeline>
+                )
+                }
             </div>
         </React.Fragment>
     );

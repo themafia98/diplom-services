@@ -237,10 +237,10 @@ class SettingsModule extends React.PureComponent {
             });
 
             const msg = newPhone && !newEmail ?
-                "Телефон успешно обновлен."
+                "Телефон обновлен."
                 : !newPhone && newEmail ?
-                    "Почта успешно обновлена."
-                    : "Почта и телефон успшено обновлены.";
+                    "Почта обновлена."
+                    : "Почта и телефон обновлены.";
 
             onCaching({
                 uid,
@@ -462,24 +462,28 @@ const mapStateToProps = state => {
         router: { shouldUpdate = false, currentActionTab = "" } = {}
     } = state;
 
+    let settingsLogs = [];
     const filterLogs = Object.keys(caches).reduce((logs, key) => {
-        if (key.includes("user_settings_log")) {
+        if (key.includes("user_settings_log") && !_.isEmpty(caches[key])) {
             logs[key] = { ...caches[key] };
         };
         return logs;
     }, {});
 
-    const settingsLogs = Object.keys(filterLogs).map(logKey => {
-        return {
-            ...filterLogs[logKey],
-            date: new Date(filterLogs[logKey].date)
-        };
-    }).sort((a, b) => a.date - b.date);
+    if (!_.isEmpty(filterLogs)) {
+        settingsLogs = Object.keys(filterLogs).map(logKey => {
+            return {
+                ...filterLogs[logKey],
+                date: new Date(filterLogs[logKey].date)
+            };
+        }).sort((a, b) => a.date - b.date);
+    };
 
     return {
         router: { ...state.router },
         settingsLogs,
         udata,
+        settingsLogs,
         shouldUpdate: shouldUpdate && currentActionTab.includes("settings")
     };
 };
