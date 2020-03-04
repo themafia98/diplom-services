@@ -88,7 +88,7 @@ export default (state = initialState, action) => {
                     i += 1;
                 });
                 const { caches = {} } = state;
-                debugger;
+
                 return {
                     ...state,
                     caches: { ...caches, ..._items }
@@ -97,7 +97,7 @@ export default (state = initialState, action) => {
                 const key = Object.keys(validData)[0];
 
                 const depKey = validData.depKey;
-                debugger;
+
                 keys = !isObjectsArray ? `${depKey ? depKey : ""}${primaryKey}` : `${validData[key].depKey}${primaryKey}`;
 
                 return {

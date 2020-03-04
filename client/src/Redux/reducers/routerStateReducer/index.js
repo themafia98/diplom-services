@@ -28,8 +28,8 @@ export default (state = initialState, action) => {
             const tab = isString
                 ? action.payload
                 : action.payload.pageType === "module"
-                ? `${action.payload.page}${action.payload.moduleId}`
-                : `${action.payload.path}`;
+                    ? `${action.payload.page}${action.payload.moduleId}`
+                    : `${action.payload.path}`;
 
             return {
                 ...state,
@@ -110,8 +110,8 @@ export default (state = initialState, action) => {
                 routeDataActive: updateCurrent
                     ? { ...action.payload.updaterItem }
                     : state.routeDataActive
-                    ? { ...state.routeDataActive }
-                    : {},
+                        ? { ...state.routeDataActive }
+                        : {},
                 routeData: {
                     ...state.routeData,
                     [action.payload.id]: { ...action.payload.updaterItem }
@@ -139,16 +139,22 @@ export default (state = initialState, action) => {
             }
             const searchPathContent = selectModule || action.payload || content;
 
+            let shouldUpdate = false;
+            const searchPath = searchPathContent === "statisticModule" ? "taskModule" : searchPathContent;
+
+            if (action.payload === "contactModule_feedback") {
+                shouldUpdate = true;
+            } else if (state.routeData[searchPath]) {
+                shouldUpdate = true;
+            } else if (action.payload.includes("settings")) {
+                shouldUpdate = true;
+            }
+
             return {
                 ...state,
                 currentActionTab: action.payload,
                 routeDataActive: isDataPage ? { ...currentActive } : { ...state.routeDataActive },
-                shouldUpdate:
-                    action.payload === "contactModule_feedback"
-                        ? true
-                        : !state.routeData[searchPathContent === "statisticModule" ? "taskModule" : searchPathContent]
-                        ? false
-                        : true
+                shouldUpdate
             };
         }
         case SET_STATUS: {
@@ -213,10 +219,10 @@ export default (state = initialState, action) => {
                 current = isSimple
                     ? { ...copyData[nextTab.split("__")[1]] }
                     : isDelete
-                    ? routeDataNew[uuid]
-                    : isNext
-                    ? { ...state.routeDataActive }
-                    : {};
+                        ? routeDataNew[uuid]
+                        : isNext
+                            ? { ...state.routeDataActive }
+                            : {};
             } catch {
                 current = {};
             }

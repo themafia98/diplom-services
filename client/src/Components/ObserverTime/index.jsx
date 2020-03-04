@@ -5,9 +5,11 @@ import moment from "moment";
 import TitleModule from "../TitleModule";
 import { Timeline } from "antd";
 
-class ObserverTime extends React.PureComponent {
+const ObserverTime = props => {
 
-    renderLogs = (settingsLogs = {}) => {
+    const { title = "", settingsLogs = {} } = props;
+
+    const renderLogs = (settingsLogs = {}) => {
         if (!settingsLogs || _.isEmpty(settingsLogs)) return null;
 
         return settingsLogs.map((log, index) => {
@@ -23,19 +25,16 @@ class ObserverTime extends React.PureComponent {
         })
     }
 
-    render() {
-        const { title = "", settingsLogs = {} } = this.props;
-        return (
-            <React.Fragment>
-                <TitleModule classNameTitle="observerTitle" title={title ? title : "История изменений"} />
-                <div className="observerWrapper">
-                    <Timeline>
-                        {this.renderLogs(settingsLogs)}
-                    </Timeline>
-                </div>
-            </React.Fragment>
-        );
-    }
+    return (
+        <React.Fragment>
+            <TitleModule classNameTitle="observerTitle" title={title ? title : "История изменений"} />
+            <div className="observerWrapper">
+                <Timeline>
+                    {renderLogs(settingsLogs)}
+                </Timeline>
+            </div>
+        </React.Fragment>
+    );
 }
 
 ObserverTime.propTypes = {

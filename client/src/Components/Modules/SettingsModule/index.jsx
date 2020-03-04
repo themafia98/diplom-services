@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import _ from "lodash";
 import { connect } from "react-redux";
 import { saveComponentStateAction } from "../../../Redux/actions/routerActions";
-import { updateUdata } from "../../../Redux/actions/publicActions";
+import { updateUdata, setStatus } from "../../../Redux/actions/publicActions";
 import { Collapse, Switch, Input, Button, message } from "antd";
 import Scrollbars from "react-custom-scrollbars";
 import {
@@ -20,6 +20,7 @@ class SettingsModule extends React.PureComponent {
         haveChanges: [],
         showScrollbar: false,
         emailValue: null,
+        isLoadingLogs: false,
         telValue: null,
         newPassword: "",
         oldPassword: "",
@@ -50,16 +51,58 @@ class SettingsModule extends React.PureComponent {
     }
 
     componentDidMount = () => {
-        const { router, path } = this.props;
+        const { isLoadingLogs = false } = this.state;
+        const { router, path, settingsLogs = [], udata: { _id: uid = "" } = {}, onCaching } = this.props;
 
         if (router && router.routeData[path] && router.routeData[path].haveChanges) {
             this.setState({ ...this.state, ...router.routeData[path] });
         }
+
+        if (!Object.keys(settingsLogs).length && !isLoadingLogs) {
+            this.setState({
+                isLoadingLogs: true
+            }, () => {
+
+                onCaching({
+                    uid,
+                    actionType: "get_user_settings_log",
+                    depStore: "settings",
+                    type: "logger"
+                });
+            });
+        }
     };
 
-    componentDidUpdate = () => {
-        const { showScrollbar, emailValue = "", telValue = "" } = this.state;
-        console.log(Date.now());
+    componentDidUpdate = (props, state) => {
+        const {
+            showScrollbar,
+            emailValue = "",
+            telValue = "",
+            isLoadingLogs = false
+        } = this.state;
+        const {
+            settingsLogs = [],
+            udata: { _id: uid = "" } = {},
+            onCaching,
+            shouldUpdate = false,
+            onSetStatus
+        } = this.props;
+
+        if (!Object.keys(settingsLogs).length && !isLoadingLogs || shouldUpdate) {
+            this.setState({
+                isLoadingLogs: true
+            }, () => {
+
+                onCaching({
+                    uid,
+                    actionType: "get_user_settings_log",
+                    depStore: "settings",
+                    type: "logger"
+                });
+                onSetStatus(false);
+            });
+        }
+
         if (this.refWrapper && this.refColumn) {
             const heightWrapper = this.refWrapper.getBoundingClientRect().height;
             const heightColumn = this.refColumn.getBoundingClientRect().height;
@@ -223,7 +266,7 @@ class SettingsModule extends React.PureComponent {
     onChangePassword = async keyChange => {
         try {
             const { Request = {} } = this.context;
-            const { udata: { _id: uid = "" } = {} } = this.props;
+            const { udata: { _id: uid = "" } = {}, onCaching } = this.props;
             const { oldPassword = "", newPassword = "" } = this.state;
             if (!oldPassword || !newPassword) {
                 message.warning("Формат пароля не верен");
@@ -252,6 +295,21 @@ class SettingsModule extends React.PureComponent {
                     if (it !== keyChange) return true;
                     else return false;
                 })
+            });
+
+            const msg = "Изменение пароля.";
+
+            onCaching({
+                uid,
+                item: {
+                    uid,
+                    date: new Date(),
+                    message: msg,
+                    depKey: "settings",
+                },
+                actionType: "save_user_settings_log",
+                depStore: "settings",
+                type: "logger"
             });
 
             message.success("Пароль изменен.");
@@ -399,7 +457,10 @@ class SettingsModule extends React.PureComponent {
     }
 }
 const mapStateToProps = state => {
-    const { publicReducer: { udata = {}, caches = {} } = {} } = state;
+    const {
+        publicReducer: { udata = {}, caches = {} } = {},
+        router: { shouldUpdate = false, currentActionTab = "" } = {}
+    } = state;
 
     const filterLogs = Object.keys(caches).reduce((logs, key) => {
         if (key.includes("user_settings_log")) {
@@ -418,7 +479,8 @@ const mapStateToProps = state => {
     return {
         router: { ...state.router },
         settingsLogs,
-        udata
+        udata,
+        shouldUpdate: shouldUpdate && currentActionTab.includes("settings")
     };
 };
 
@@ -426,7 +488,8 @@ const mapDispatchToProps = dispatch => {
     return {
         onSaveComponentState: data => dispatch(saveComponentStateAction(data)),
         onUpdateUdata: payload => dispatch(updateUdata(payload)),
-        onCaching: props => dispatch(middlewareCaching(props))
+        onCaching: props => dispatch(middlewareCaching(props)),
+        onSetStatus: props => dispatch(setStatus(props)),
     };
 };
 
