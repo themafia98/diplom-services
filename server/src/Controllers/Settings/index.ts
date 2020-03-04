@@ -93,6 +93,57 @@ namespace Settings {
                 }
             }
         }
+
+        @Post({ path: "/logger", private: true })
+        async logger(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+            const body = req.body;
+            const actionType: string = body.actionType;
+            const params: Params = { methodQuery: actionType, from: "settingsLog", done: true, status: "OK" };
+
+            try {
+
+                const queryParams: Record<string, any> = (<Record<string, any>>body).queryParams;
+
+                if (!queryParams || _.isEmpty(queryParams)) {
+                    throw new Error("Invalid queryParams for common_changes action");
+                }
+
+                const settingsLogger = new Action.ActionParser({
+                    actionPath: "settingsLog",
+                    actionType
+                });
+
+                const data: ParserResult = await settingsLogger.getActionData(body);
+
+                if (!data) {
+                    throw new Error("Invalid action data");
+                }
+
+                if (!actionType.includes("get"))
+                    return res.sendStatus(200);
+
+                return res.json(
+                    getResponseJson(
+                        actionType,
+                        { done: true, status: "OK", metadata: data, params },
+                        (<Record<string, any>>req).start
+                    )
+                )
+
+            } catch (err) {
+                console.error(err);
+                if (!res.headersSent) {
+                    res.status(503);
+                    return res.json(
+                        getResponseJson(
+                            "Server error",
+                            { params, status: "FAIL", done: false, metadata: [] },
+                            (<Record<string, any>>req).start
+                        )
+                    )
+                }
+            }
+        }
     }
 }
 

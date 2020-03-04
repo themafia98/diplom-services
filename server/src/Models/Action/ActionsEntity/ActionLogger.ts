@@ -20,8 +20,8 @@ class ActionLogger implements Action {
     }
 
     private async saveUserSettingsLog(actionParam: ActionParams, model: Model<Document>): ParserData {
-        const body: object = actionParam;
-        return this.getEntity().createEntity(model, body);
+        const { item = {} } = <Record<string, any>>actionParam;
+        return this.getEntity().createEntity(model, item);
     }
 
 

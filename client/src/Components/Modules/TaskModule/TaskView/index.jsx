@@ -8,7 +8,10 @@ import Scrollbars from "react-custom-scrollbars";
 
 import { TASK_SCHEMA } from "../../../../Models/Schema/const";
 
-import { middlewareCaching, middlewareUpdate } from "../../../../Redux/actions/publicActions/middleware";
+import {
+    middlewareCaching,
+    middlewareUpdate
+} from "../../../../Redux/actions/publicActions/middleware";
 
 import uuid from "uuid/v4";
 

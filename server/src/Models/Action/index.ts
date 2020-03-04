@@ -6,6 +6,7 @@ import { ParserData } from "../../Utils/Types";
 import Utils from "../../Utils";
 
 /** Actions */
+import ActionLogger from "./ActionsEntity/ActionLogger";
 import ActionNews from "./ActionsEntity/ActionNews";
 import ActionJurnal from "./ActionsEntity/ActionJurnal";
 import ActionUsers from "./ActionsEntity/ActionUsers";
@@ -139,6 +140,11 @@ namespace Action {
 
                     case "news": {
                         const action = new ActionNews(this);
+                        return action.run(actionParam);
+                    }
+
+                    case "settingsLog": {
+                        const action = new ActionLogger(this);
                         return action.run(actionParam);
                     }
 

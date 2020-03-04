@@ -14,7 +14,15 @@ import { TASK_CONTROLL_JURNAL_SCHEMA, USER_SCHEMA, TASK_SCHEMA } from "../../../
 const middlewareCaching = (props = {}) => async (dispatch, getState, { schema, Request, clientDB }) => {
     const { requestError, status = "online" } = getState().publicReducer;
 
-    const { actionType = "", item = {}, depKey = "", depStore = "", store = "" } = props;
+    const {
+        actionType = "",
+        item = {},
+        depKey = "",
+        depStore = "",
+        store = "",
+        uid = "",
+        type = "",
+    } = props;
 
     if (status === "online") {
         switch (actionType) {
@@ -35,10 +43,10 @@ const middlewareCaching = (props = {}) => async (dispatch, getState, { schema, R
                         store === "jurnalworks"
                             ? TASK_CONTROLL_JURNAL_SCHEMA
                             : store === "users"
-                            ? USER_SCHEMA
-                            : store === "tasks"
-                            ? TASK_SCHEMA
-                            : null;
+                                ? USER_SCHEMA
+                                : store === "tasks"
+                                    ? TASK_SCHEMA
+                                    : null;
 
                     // const validHash = [updaterItem]
                     //     .map(it => schema.getSchema(schemTemplate, it))
@@ -59,7 +67,38 @@ const middlewareCaching = (props = {}) => async (dispatch, getState, { schema, R
             }
 
             default: {
-                break;
+                try {
+                    const path = `/${depStore}/${type ? type : "caching"}`;
+                    const rest = new Request();
+
+                    const body = { queryParams: { uid }, item, actionType };
+
+                    const res = await rest.sendRequest(path, "POST", body, true);
+
+                    if (!res || res.status !== 200) throw new Error("Bad update");
+
+                    if (res.status === 200 && type === "logger") {
+                        const actionType = "get_user_settings_log";
+
+                        const path = `/${depStore}/${type ? type : "caching"}`;
+                        const rest = new Request();
+
+                        const body = { queryParams: { uid }, actionType };
+
+                        const res = await rest.sendRequest(path, "POST", body, true);
+
+                        if (!res || res.status !== 200) throw new Error("Bad update");
+
+                        const updaterItem = { ...res["data"]["response"]["metadata"] };
+
+                        dispatch(сachingAction({ data: updaterItem, load: true, primaryKey: actionType }));
+                    }
+
+
+                } catch (error) {
+                    console.error(error);
+                    dispatch(errorRequstAction(error.message));
+                }
             }
         }
     }
@@ -94,10 +133,10 @@ const loadCacheData = (props = {}) => async (dispatch, getState, { schema, Reque
                         store === "jurnalworks"
                             ? TASK_CONTROLL_JURNAL_SCHEMA
                             : store === "users"
-                            ? USER_SCHEMA
-                            : store === "tasks"
-                            ? TASK_SCHEMA
-                            : null;
+                                ? USER_SCHEMA
+                                : store === "tasks"
+                                    ? TASK_SCHEMA
+                                    : null;
 
                     // const validHash = [updaterItem]
                     //     .map(it => schema.getSchema(schemTemplate, it))
@@ -175,10 +214,10 @@ const middlewareUpdate = (props = {}) => async (dispatch, getState, { schema, Re
                         store === "jurnalworks"
                             ? TASK_CONTROLL_JURNAL_SCHEMA
                             : store === "users"
-                            ? USER_SCHEMA
-                            : store === "tasks"
-                            ? TASK_SCHEMA
-                            : null;
+                                ? USER_SCHEMA
+                                : store === "tasks"
+                                    ? TASK_SCHEMA
+                                    : null;
 
                     const storeCopy = [updaterItem].map(it => schema.getSchema(schemTemplate, it)).filter(Boolean);
 

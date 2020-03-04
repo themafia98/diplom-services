@@ -114,10 +114,11 @@ export const jurnalItem = new Schema({
     modeAdd: String
 }, { timestamps: true });
 
-export const settingsLog = new Schema({
+export const logger = new Schema({
     uid: { type: String, required: true },
     message: { type: String, required: true },
-    date: { type: Date, required: true }
+    date: { type: Date, required: true },
+    depKey: { type: String, required: true },
 }, { timestamps: true });
 
 export const news = new Schema({
@@ -160,7 +161,7 @@ export const getSchemaByName = (name: string): Schema | null => {
         case "chatRoom":
             return chatRoom;
         case "settingsLog":
-            return settingsLog;
+            return logger;
         default:
             return null;
     }

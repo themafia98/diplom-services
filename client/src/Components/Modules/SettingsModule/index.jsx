@@ -6,7 +6,9 @@ import { saveComponentStateAction } from "../../../Redux/actions/routerActions";
 import { updateUdata } from "../../../Redux/actions/publicActions";
 import { Collapse, Switch, Input, Button, message } from "antd";
 import Scrollbars from "react-custom-scrollbars";
-
+import {
+    middlewareCaching
+} from "../../../Redux/actions/publicActions/middleware";
 import modelContext from "../../../Models/context";
 import ObserverTime from "../../ObserverTime";
 import TitleModule from "../../TitleModule";
@@ -49,6 +51,7 @@ class SettingsModule extends React.PureComponent {
 
     componentDidMount = () => {
         const { router, path } = this.props;
+
         if (router && router.routeData[path] && router.routeData[path].haveChanges) {
             this.setState({ ...this.state, ...router.routeData[path] });
         }
@@ -56,7 +59,7 @@ class SettingsModule extends React.PureComponent {
 
     componentDidUpdate = () => {
         const { showScrollbar, emailValue = "", telValue = "" } = this.state;
-
+        console.log(Date.now());
         if (this.refWrapper && this.refColumn) {
             const heightWrapper = this.refWrapper.getBoundingClientRect().height;
             const heightColumn = this.refColumn.getBoundingClientRect().height;
@@ -153,7 +156,7 @@ class SettingsModule extends React.PureComponent {
     onChangeCommon = async keyChange => {
         try {
             const { Request = {} } = this.context;
-            const { udata: { _id: uid = "" } = {}, onUpdateUdata = null } = this.props;
+            const { udata: { _id: uid = "" } = {}, onUpdateUdata = null, onCaching = null } = this.props;
             const { emailValue: newEmail = "", telValue: newPhone = "" } = this.state;
 
             if (!newEmail || !/\w+\@\w+\.\D+/i.test(newEmail)) {
@@ -188,6 +191,25 @@ class SettingsModule extends React.PureComponent {
                     if (it !== keyChange) return true;
                     else return false;
                 })
+            });
+
+            const msg = newPhone && !newEmail ?
+                "Телефон успешно обновлен."
+                : !newPhone && newEmail ?
+                    "Почта успешно обновлена."
+                    : "Почта и телефон успшено обновлены.";
+
+            onCaching({
+                uid,
+                item: {
+                    uid,
+                    date: new Date(),
+                    message: msg,
+                    depKey: "settings",
+                },
+                actionType: "save_user_settings_log",
+                depStore: "settings",
+                type: "logger"
             });
 
             message.success("Настройки успешно обновлены.");
@@ -248,6 +270,7 @@ class SettingsModule extends React.PureComponent {
 
     render() {
         const { emailValue, telValue, haveChanges, oldPassword, newPassword } = this.state;
+        const { settingsLogs = {} } = this.props;
         const text = ` A dog is a type of domesticated animal.`;
 
         const settingsBlock = (
@@ -368,7 +391,7 @@ class SettingsModule extends React.PureComponent {
                         <Scrollbars>{settingsBlock}</Scrollbars>
                     </div>
                     <div className="col-6">
-                        <ObserverTime />
+                        <ObserverTime settingsLogs={settingsLogs} />
                     </div>
                 </div>
             </div>
@@ -376,9 +399,25 @@ class SettingsModule extends React.PureComponent {
     }
 }
 const mapStateToProps = state => {
-    const { publicReducer: { udata = {} } = {} } = state;
+    const { publicReducer: { udata = {}, caches = {} } = {} } = state;
+
+    const filterLogs = Object.keys(caches).reduce((logs, key) => {
+        if (key.includes("user_settings_log")) {
+            logs[key] = { ...caches[key] };
+        };
+        return logs;
+    }, {});
+
+    const settingsLogs = Object.keys(filterLogs).map(logKey => {
+        return {
+            ...filterLogs[logKey],
+            date: new Date(filterLogs[logKey].date)
+        };
+    }).sort((a, b) => a.date - b.date);
+
     return {
         router: { ...state.router },
+        settingsLogs,
         udata
     };
 };
@@ -386,7 +425,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onSaveComponentState: data => dispatch(saveComponentStateAction(data)),
-        onUpdateUdata: payload => dispatch(updateUdata(payload))
+        onUpdateUdata: payload => dispatch(updateUdata(payload)),
+        onCaching: props => dispatch(middlewareCaching(props))
     };
 };
 
