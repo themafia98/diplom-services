@@ -113,6 +113,7 @@ namespace System {
                     else throw new Error(`fail save files in ${moduleName}`);
                 } else {
                     params.done = false;
+                    res.status(404);
                     return res.json(
                         getResponseJson(
                             "error action save_file task",
@@ -125,6 +126,7 @@ namespace System {
                 params.done = false;
                 console.log(err.message);
                 if (!res.headersSent) {
+                    res.status(503);
                     return res.json(
                         getResponseJson(
                             err.name,
@@ -152,6 +154,7 @@ namespace System {
 
                 if (!actionData) {
                     params.done = false;
+                    res.status(404);
                     return res.json(
                         getResponseJson(
                             `error action load_files ${moduleName}`,
@@ -171,7 +174,8 @@ namespace System {
             } catch (err) {
                 params.done = false;
                 console.error(err);
-                if (!res.headersSent)
+                if (!res.headersSent) {
+                    res.status(503);
                     return res.json(
                         getResponseJson(
                             err.name,
@@ -179,6 +183,7 @@ namespace System {
                             (req as Record<string, any>).start
                         )
                     );
+                }
             }
         }
 
@@ -207,6 +212,7 @@ namespace System {
 
                     if (!actionData) {
                         params.done = false;
+                        res.status(404);
                         return res.json(
                             getResponseJson(
                                 `download_files fail in ${moduleName}`,
@@ -220,7 +226,8 @@ namespace System {
                 } catch (err) {
                     console.error(err);
                     params.done = false;
-                    if (!res.headersSent)
+                    if (!res.headersSent) {
+                        res.status(503);
                         return res.json(
                             getResponseJson(
                                 err.name,
@@ -228,6 +235,7 @@ namespace System {
                                 (req as Record<string, any>).start
                             )
                         );
+                    }
                 }
             } else return res.sendStatus(404);
         }
@@ -251,6 +259,7 @@ namespace System {
 
                 if (!actionData) {
                     params.done = false;
+                    res.status(404);
                     return res.json(
                         getResponseJson(
                             "error action delete_file task",
@@ -275,7 +284,8 @@ namespace System {
             } catch (err) {
                 params.done = false;
                 console.error(err);
-                if (!res.headersSent)
+                if (!res.headersSent) {
+                    res.status(503);
                     return res.json(
                         getResponseJson(
                             err.name,
@@ -283,6 +293,7 @@ namespace System {
                             (req as Record<string, any>).start
                         )
                     );
+                }
             }
         }
 
@@ -313,6 +324,7 @@ namespace System {
                     if (!data) {
                         params.status = "error";
                         params.done = false;
+                        res.status(404);
                         return res.json(
                             getResponseJson(
                                 `error set_single ${moduleName}`,
@@ -335,9 +347,10 @@ namespace System {
                 } else if (!res.headersSent) {
                     params.done = false;
                     params.status = "FAIL";
+                    res.status(404);
                     return res.json(
                         getResponseJson(
-                            "error",
+                            "Bad body request",
                             { status: "FAIL", params: { body, ...params }, done: false, metadata: null },
                             (req as Record<string, any>).start
                         )
@@ -346,6 +359,7 @@ namespace System {
             } catch (err) {
                 console.log(err.message);
                 if (!res.headersSent) {
+                    res.status(503);
                     return res.json(
                         getResponseJson(
                             err.name,
@@ -381,7 +395,7 @@ namespace System {
 
                     if (!data) {
                         params.status = "error";
-
+                        res.status(404);
                         return res.json(
                             getResponseJson(
                                 `error update_many ${moduleName}`,
@@ -405,9 +419,10 @@ namespace System {
                 } else if (!res.headersSent) {
                     params.done = false;
                     params.status = "FAIL";
+                    res.status(404);
                     return res.json(
                         getResponseJson(
-                            "error",
+                            "Bad body request",
                             { status: "FAIL", params, done: false, metadata: null },
                             (req as Record<string, any>).start
                         )
@@ -416,6 +431,7 @@ namespace System {
             } catch (err) {
                 console.log(err.message);
                 if (!res.headersSent) {
+                    res.status(503);
                     return res.json(
                         getResponseJson(
                             err.name,

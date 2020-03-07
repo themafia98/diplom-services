@@ -29,7 +29,7 @@ class UserCard extends React.Component {
         try {
 
             const rest = new Request();
-            const res = await rest.sendRequest("/cabinet/update/single", "POST", {
+            const res = await rest.sendRequest("/system/users/update/single", "POST", {
                 queryParams: { uid },
                 value
             }, true);
