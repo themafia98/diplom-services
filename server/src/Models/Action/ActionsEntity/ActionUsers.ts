@@ -128,6 +128,15 @@ class ActionUsers implements Action {
         return res;
     }
 
+    private async updateSingle(actionParam: ActionParams, model: Model<Document>): ParserData {
+        return null;
+    }
+
+    private async updateMany(actionParam: ActionParams, model: Model<Document>): ParserData {
+        /** Not supported now */
+        return null;
+    }
+
     public async run(actionParam: ActionParams): ParserData {
         const model: Model<Document> | null = getModelByName("users", "users");
         if (!model) return null;
@@ -141,6 +150,10 @@ class ActionUsers implements Action {
                 return this.changePassword(actionParam, model);
             case "common_changes":
                 return this.updateCommonChanges(actionParam, model);
+            case "update_single":
+                return this.updateSingle(actionParam, model);
+            case "update_many":
+                return this.updateMany(actionParam, model);
             default:
                 return null;
         }
