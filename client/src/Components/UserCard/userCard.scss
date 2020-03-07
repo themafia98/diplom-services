@@ -51,6 +51,14 @@
             flex-direction: column;
             display: flex;
             word-break: break-word;
+
+            .canEditSummary {
+                cursor: pointer;
+                position: absolute;
+                align-self: flex-end;
+                font-size: 20px;
+                right: 5px;
+            }
             
             .summary {
                 flex-grow: 1;

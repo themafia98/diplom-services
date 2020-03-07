@@ -7,6 +7,7 @@ import { Modal, Button, Dropdown, Icon, Menu, Input, DatePicker, message, Select
 
 import { TASK_CONTROLL_JURNAL_SCHEMA } from "../../Models/Schema/const";
 
+import SimpleEditableModal from "./SimpleEditableModal";
 import RegistrationModal from "./RegistrationModal";
 import Textarea from "../Textarea";
 
@@ -337,9 +338,14 @@ class ModalWindow extends React.PureComponent {
             description: descriptionDefault = "",
             onRejectEdit = null,
             modeEditContent = null,
+            defaultView = false,
             onCancelEditModeContent = null,
             onUpdateEditable
         } = this.props;
+
+        if (defaultView) {
+            return <SimpleEditableModal {...this.props} />;
+        }
 
         const { type: typeState = "", modeSetTime = null, description: { value: valueDesc = "" } = {} } = this.state;
         if (mode === "reg") {
@@ -516,9 +522,7 @@ class ModalWindow extends React.PureComponent {
                                         rows={4}
                                     />
                                 </Modal>
-                            ) : (
-                                        <Modal></Modal>
-                                    )}
+                            ) : null}
                         </React.Fragment>
                     );
                 }
