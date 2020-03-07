@@ -41,7 +41,10 @@ class UserCard extends React.Component {
 
         const menu = (
             <Menu>
-                <Menu.Item onClick={cdShowModal ? cdShowModal : null} key="photoChange">
+                <Menu.Item
+                    onClick={cdShowModal ? cdShowModal : null}
+                    key="photoChange"
+                >
                     Сменить аватар
                 </Menu.Item>
             </Menu>
@@ -58,9 +61,11 @@ class UserCard extends React.Component {
                     <div className="mainContentCard">
                         <div className="col-6">
                             {isMine ? (
-                                <Dropdown overlay={menu} trigger={["contextMenu"]}>
-                                    <Avatar className="userLogo" size={84} icon="user" />
-                                </Dropdown>
+                                <Tooltip trigger="hover" title="ПКМ - смена фотографии" >
+                                    <Dropdown overlay={menu} trigger={["contextMenu"]}>
+                                        <Avatar className="userLogo" size={84} icon="user" />
+                                    </Dropdown>
+                                </Tooltip>
                             ) : (
                                     <Avatar className="userLogo" size={84} icon="user" />
                                 )}
