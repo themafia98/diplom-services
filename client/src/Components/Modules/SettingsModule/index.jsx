@@ -88,7 +88,7 @@ class SettingsModule extends React.PureComponent {
             onSetStatus
         } = this.props;
 
-        if (!Object.keys(settingsLogs).length && !isLoadingLogs || shouldUpdate) {
+        if ((!Object.keys(settingsLogs).length && !isLoadingLogs) || shouldUpdate) {
             this.setState({
                 isLoadingLogs: true
             }, () => {
@@ -200,7 +200,7 @@ class SettingsModule extends React.PureComponent {
         try {
             const { Request = {} } = this.context;
             const { udata: { _id: uid = "" } = {}, onUpdateUdata = null, onCaching = null } = this.props;
-            const { emailValue: newEmail = "", telValue: newPhone = "" } = this.state;
+            const { emailValue: newEmail = "", telValue: newPhone = "", haveChanges } = this.state;
 
             if (!newEmail || !/\w+\@\w+\.\D+/i.test(newEmail)) {
                 message.error("Формат почты не соблюден");
@@ -236,9 +236,12 @@ class SettingsModule extends React.PureComponent {
                 })
             });
 
-            const msg = newPhone && !newEmail ?
+            const isOnlyPhone = haveChanges.includes("commonPhone") && !haveChanges.includes("commonEmail");
+            const isOnlyEmail = haveChanges.includes("commonEmail") && !haveChanges.includes("commonPhone");
+
+            const msg = isOnlyPhone ?
                 "Телефон обновлен."
-                : !newPhone && newEmail ?
+                : isOnlyEmail ?
                     "Почта обновлена."
                     : "Почта и телефон обновлены.";
 
@@ -255,7 +258,12 @@ class SettingsModule extends React.PureComponent {
                 type: "logger"
             });
 
-            message.success("Настройки успешно обновлены.");
+            this.setState({
+                ...this.state,
+                haveChanges: []
+            }, () => {
+                message.success("Настройки успешно обновлены.");
+            });
 
         } catch (error) {
             console.error(error);
@@ -312,7 +320,12 @@ class SettingsModule extends React.PureComponent {
                 type: "logger"
             });
 
-            message.success("Пароль изменен.");
+            this.setState({
+                ...this.state,
+                haveChanges: []
+            }, () => {
+                message.success("Пароль изменен.");
+            });
 
         } catch (error) {
             console.error(error);
@@ -327,9 +340,12 @@ class SettingsModule extends React.PureComponent {
     refColumnFunc = node => (this.refColumn = node);
 
     render() {
-        const { emailValue, telValue, haveChanges, oldPassword, newPassword } = this.state;
+        const { emailValue, telValue, haveChanges, oldPassword, newPassword, isLoadingLogs: isLoading } = this.state;
         const { settingsLogs = {} } = this.props;
         const text = ` A dog is a type of domesticated animal.`;
+
+        const readonlyPassword = haveChanges.includes("password_new") && haveChanges.includes("password_old");
+        const readonlyCommon = haveChanges.includes("commonEmail") || haveChanges.includes("commonPhone");
 
         const settingsBlock = (
             <React.Fragment>
@@ -343,7 +359,7 @@ class SettingsModule extends React.PureComponent {
                                     type="password"
                                     allowClear
                                     value={oldPassword}
-                                    onChange={(e) => this.onChangeInput(e, "password")}
+                                    onChange={(e) => this.onChangeInput(e, "password_old")}
                                 />
                             </div>
                             <div className="configWrapper flexWrapper">
@@ -353,14 +369,14 @@ class SettingsModule extends React.PureComponent {
                                     type="password"
                                     allowClear
                                     value={newPassword}
-                                    onChange={(e) => this.onChangeInput(e, "password")}
+                                    onChange={(e) => this.onChangeInput(e, "password_new")}
                                 />
                             </div>
                             <Button
                                 onClick={(e) => this.onSaveSettings(e, "password")}
                                 className="submit"
                                 type="primary"
-                                disabled={!haveChanges.includes("password")}
+                                disabled={!readonlyPassword}
                             >
                                 Принять изменения
                             </Button>
@@ -373,7 +389,7 @@ class SettingsModule extends React.PureComponent {
                                         data-id="email"
                                         allowClear
                                         value={emailValue}
-                                        onChange={(e) => this.onChangeInput(e, "common")}
+                                        onChange={(e) => this.onChangeInput(e, "commonEmail")}
                                     />
                                 </div>
                                 <div className="configWrapper flexWrapper">
@@ -383,7 +399,7 @@ class SettingsModule extends React.PureComponent {
                                         type="tel"
                                         allowClear
                                         value={telValue}
-                                        onChange={(e) => this.onChangeInput(e, "common")}
+                                        onChange={(e) => this.onChangeInput(e, "commonPhone")}
                                     />
                                 </div>
                             </div>
@@ -391,7 +407,7 @@ class SettingsModule extends React.PureComponent {
                                 onClick={(e) => this.onSaveSettings(e, "common")}
                                 className="submit"
                                 type="primary"
-                                disabled={!haveChanges.includes("common")}
+                                disabled={!readonlyCommon}
                             >
                                 Принять изменения
                             </Button>
@@ -449,7 +465,10 @@ class SettingsModule extends React.PureComponent {
                         <Scrollbars>{settingsBlock}</Scrollbars>
                     </div>
                     <div className="col-6">
-                        <ObserverTime settingsLogs={settingsLogs} />
+                        <ObserverTime
+                            isLoading={isLoading}
+                            settingsLogs={settingsLogs}
+                        />
                     </div>
                 </div>
             </div>
@@ -476,7 +495,7 @@ const mapStateToProps = state => {
                 ...filterLogs[logKey],
                 date: new Date(filterLogs[logKey].date)
             };
-        }).sort((a, b) => a.date - b.date);
+        }).sort((a, b) => b.date - a.date);
     };
 
     return {

@@ -1,4 +1,5 @@
 import React from "react";
+import Scrollbars from "react-custom-scrollbars";
 import _ from "lodash";
 import PropTypes from "prop-types";
 import moment from "moment";
@@ -7,12 +8,10 @@ import { Timeline } from "antd";
 
 const ObserverTime = props => {
 
-    const { title = "", settingsLogs = [] } = props;
+    const { title = "", settingsLogs = [], /* TODO: need show spiner isLoading = false */ } = props;
 
     const renderLogs = (settingsLogs = []) => {
         if (!settingsLogs || _.isEmpty(settingsLogs)) return null;
-
-
 
         return settingsLogs.map((log, index) => {
             const { message, date, _id = "" } = log;
@@ -32,14 +31,16 @@ const ObserverTime = props => {
     return (
         <React.Fragment>
             <TitleModule classNameTitle="observerTitle" title={title ? title : "История изменений"} />
-            <div className="observerWrapper">
-                {isInvalid ? null : (
-                    <Timeline>
-                        {renderLogs(settingsLogs)}
-                    </Timeline>
-                )
-                }
-            </div>
+            <Scrollbars>
+                <div className="observerWrapper">
+                    {isInvalid ? null : (
+                        <Timeline>
+                            {renderLogs(settingsLogs)}
+                        </Timeline>
+                    )
+                    }
+                </div>
+            </Scrollbars>
         </React.Fragment>
     );
 }

@@ -91,7 +91,7 @@ export default (state = initialState, action) => {
 
                 return {
                     ...state,
-                    caches: { ...caches, ..._items }
+                    caches: { ..._items }
                 };
             } else {
                 const key = Object.keys(validData)[0];
