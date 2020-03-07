@@ -1,8 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Avatar, Button, Icon, Dropdown, Menu, Tooltip } from "antd";
+import { Avatar, Button, Icon, Dropdown, Menu, Tooltip, message } from "antd";
 import ModalWindow from "../ModalWindow";
 
+import modelContext from "../../Models/context";
 import imageCard from "./wallpaper_user.jpg";
 
 class UserCard extends React.Component {
@@ -10,21 +11,39 @@ class UserCard extends React.Component {
         cbShowModal: PropTypes.func
     };
 
+    static contextType = modelContext;
+
     state = {
         visibilityModal: false,
     }
-
 
     showEditSummary = () => {
         const { visibilityModal = false } = this.state;
         this.setState({ visibilityModal: !visibilityModal });
     };
 
-    onSubmitSummuray = (event, value) => {
-        console.log(value);
-        this.setState({
-            visibilityModal: false
-        });
+    onSubmitSummary = async (event, value) => {
+        const { udata: { _id: uid = "" } = {} } = this.props;
+        const { Request } = this.context;
+
+        try {
+
+            const rest = new Request();
+            const res = await rest.sendRequest("/cabinet/update/single", "POST", {
+                queryParams: { uid },
+                value
+            }, true);
+
+            if (res.status !== 200) {
+                throw new Error("Bad summury update");
+            }
+
+            this.setState({ visibilityModal: false });
+
+        } catch (error) {
+            console.error(error.message);
+            message.error("Ошибка обновления описания.");
+        }
     }
 
     onRejectEditSummary = event => {
@@ -116,7 +135,7 @@ class UserCard extends React.Component {
                     defaultView={true}
                     visibility={visibilityModal}
                     onReject={this.onRejectEditSummary}
-                    onOkey={this.onSubmitSummuray}
+                    onOkey={this.onSubmitSummary}
                 />
             </React.Fragment>
         );

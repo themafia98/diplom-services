@@ -199,7 +199,7 @@ const middlewareUpdate = (props = {}) => async (dispatch, getState, { schema, Re
         switch (type) {
             case "UPDATE": {
                 try {
-                    const path = actionType === "update_many" ? `/${store}/update/many` : `/${store}/update/single`;
+                    const path = actionType === "update_many" ? `/system/${store}/update/many` : `/system/${store}/update/single`;
                     const rest = new Request();
 
                     const body = { queryParams: { id, key }, updateItem, updateField };

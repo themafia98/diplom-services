@@ -1,4 +1,5 @@
 import { NextFunction, Response, Request } from "express";
+import _ from "lodash";
 import { Document } from "mongoose";
 import { App, Params, FileApi } from "../../Utils/Interfaces";
 import { ParserResult, ResRequest } from "../../Utils/Types";
@@ -282,6 +283,147 @@ namespace System {
                             (req as Record<string, any>).start
                         )
                     );
+            }
+        }
+
+        @Post({ path: "/:module/update/single", private: true })
+        public async updateSingle(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+            const { module: moduleName = "" } = req.params;
+            const body: object = req.body;
+            const params: Params = { methodQuery: "update_single", status: "done", done: true, from: moduleName };
+            try {
+                const dbm = server.locals.dbm;
+
+                if (req.body && !_.isEmpty(req.body)) {
+                    const connect = await dbm.connection()
+                        .catch((err: Error) => console.error(err));
+
+                    if (!connect) throw new Error("Bad connect");
+
+                    const createTaskAction = new Action.ActionParser({
+                        actionPath: moduleName,
+                        actionType: "update_single",
+                        body
+                    });
+
+                    const data: ParserResult = await createTaskAction.getActionData(req.body);
+
+                    await dbm.disconnect().catch((err: Error) => console.error(err));
+
+                    if (!data) {
+                        params.status = "error";
+                        params.done = false;
+                        return res.json(
+                            getResponseJson(
+                                `error set_single ${moduleName}`,
+                                { status: "FAIL", params: { body, ...params }, done: false, metadata: data },
+                                (req as Record<string, any>).start
+                            )
+                        );
+                    }
+
+                    const meta = <ArrayLike<object>>Utils.parsePublicData(<ParserResult>[data]);
+                    const metadata: ArrayLike<object> = Array.isArray(meta) && meta[0] ? meta[0] : null;
+
+                    return res.json(
+                        getResponseJson(
+                            "done",
+                            { status: "OK", done: true, params: { body, ...params }, metadata },
+                            (req as Record<string, any>).start
+                        )
+                    );
+                } else if (!res.headersSent) {
+                    params.done = false;
+                    params.status = "FAIL";
+                    return res.json(
+                        getResponseJson(
+                            "error",
+                            { status: "FAIL", params: { body, ...params }, done: false, metadata: null },
+                            (req as Record<string, any>).start
+                        )
+                    );
+                }
+            } catch (err) {
+                console.log(err.message);
+                if (!res.headersSent) {
+                    return res.json(
+                        getResponseJson(
+                            err.name,
+                            { status: "FAIL", params, done: false, metadata: "Server error" },
+                            (req as Record<string, any>).start
+                        )
+                    );
+                }
+            }
+        }
+
+        @Post({ path: "/:module/update/many", private: true })
+        public async updateMany(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+            const { module: moduleName = "" } = req.params;
+            const params: Params = { methodQuery: "update_many", status: "done", done: true, from: moduleName };
+
+            try {
+                const dbm = server.locals.dbm;
+
+                if (req.body && !_.isEmpty(req.body)) {
+                    const body: object = req.body;
+                    const connect = await dbm.connection().catch((err: Error) => console.error(err));
+
+                    if (!connect) throw new Error("Bad connect");
+
+                    const createTaskAction = new Action.ActionParser({
+                        actionPath: moduleName,
+                        actionType: "update_many",
+                        body
+                    });
+
+                    const data: ParserResult = await createTaskAction.getActionData(req.body);
+
+                    if (!data) {
+                        params.status = "error";
+
+                        return res.json(
+                            getResponseJson(
+                                `error update_many ${moduleName}`,
+                                { status: "FAIL", params, done: false, metadata: data },
+                                (req as Record<string, any>).start
+                            )
+                        );
+                    }
+
+                    const meta = <ArrayLike<object>>Utils.parsePublicData(<ParserResult>[data]);
+
+                    const metadata: ArrayLike<object> = Array.isArray(meta) && meta[0] ? meta[0] : null;
+
+                    return res.json(
+                        getResponseJson(
+                            "done",
+                            { status: "OK", done: true, params, metadata },
+                            (req as Record<string, any>).start
+                        )
+                    );
+                } else if (!res.headersSent) {
+                    params.done = false;
+                    params.status = "FAIL";
+                    return res.json(
+                        getResponseJson(
+                            "error",
+                            { status: "FAIL", params, done: false, metadata: null },
+                            (req as Record<string, any>).start
+                        )
+                    );
+                }
+            } catch (err) {
+                console.log(err.message);
+                if (!res.headersSent) {
+                    return res.json(
+                        getResponseJson(
+                            err.name,
+                            { status: "FAIL", params, done: false, metadata: "Server error" },
+                            (req as Record<string, any>).start
+                        )
+                    );
+                }
             }
         }
     }
