@@ -129,7 +129,20 @@ class ActionUsers implements Action {
     }
 
     private async updateSingle(actionParam: ActionParams, model: Model<Document>): ParserData {
-        return null;
+        try {
+            const { queryParams = {}, updateItem = "" } = actionParam;
+            const uid: string = (queryParams as Record<string, string>).uid;
+
+            let actionData: Document | null = null;
+
+            await model.updateOne({ _id: uid }, updateItem);
+            actionData = await model.findById(uid);
+
+            return actionData;
+        } catch (err) {
+            console.log(err);
+            return null;
+        }
     }
 
     private async updateMany(actionParam: ActionParams, model: Model<Document>): ParserData {

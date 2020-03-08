@@ -6,6 +6,8 @@ import ModalWindow from "../ModalWindow";
 import modelContext from "../../Models/context";
 import imageCard from "./wallpaper_user.jpg";
 
+const { Item: MenuItem } = Menu;
+
 class UserCard extends React.Component {
     static propTypes = {
         cbShowModal: PropTypes.func
@@ -15,6 +17,7 @@ class UserCard extends React.Component {
 
     state = {
         visibilityModal: false,
+        summary: null,
     }
 
     showEditSummary = () => {
@@ -31,14 +34,18 @@ class UserCard extends React.Component {
             const rest = new Request();
             const res = await rest.sendRequest("/system/users/update/single", "POST", {
                 queryParams: { uid },
-                value
+                updateItem: {
+                    summary: value
+                }
             }, true);
 
             if (res.status !== 200) {
                 throw new Error("Bad summury update");
             }
 
-            this.setState({ visibilityModal: false });
+            const { data: { response: { metadata: { summary = "" } = {} } = {} } = {} } = res;
+
+            this.setState({ visibilityModal: false, summary });
 
         } catch (error) {
             console.error(error.message);
@@ -60,12 +67,12 @@ class UserCard extends React.Component {
 
         const menu = (
             <Menu>
-                <Menu.Item
+                <MenuItem
                     onClick={cdShowModal ? cdShowModal : null}
                     key="photoChange"
                 >
                     Сменить аватар
-                </Menu.Item>
+                </MenuItem>
             </Menu>
         );
 
@@ -114,7 +121,7 @@ class UserCard extends React.Component {
                                     <Icon onClick={this.showEditSummary} type="edit" />
                                 </Tooltip>
                             </div>
-                            <p className="summary">{udata.summary ? udata.summary : ""}</p>
+                            <p className="summary">{this.state.summary ? this.state.summary : ""}</p>
                             <div className="contact">
                                 {udata.email ? (
                                     <div className="email">
