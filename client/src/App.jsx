@@ -50,7 +50,11 @@ class App extends React.Component {
 
             try {
 
-                const res = await rest.sendRequest("/userload", "POST", null, true)
+                const res = await rest.sendRequest("/userload", "POST", null, true);
+
+                if (res.status !== 200) {
+                    throw new Error("Bad user data");
+                }
 
                 let path = "mainModule";
                 const defaultModule = config.menu.find(item => item["SIGN"] === "default");
@@ -59,10 +63,14 @@ class App extends React.Component {
                 const actionTabsCopy = [...actionTabs];
                 const isFind = actionTabsCopy.findIndex(tab => tab === path) !== -1;
 
-                const udata = Object.keys(res.data["user"]).reduce((accumulator, key) => {
+                const { data: { user = {} } = {} } = res || {};
+
+                const udata = Object.keys(user).reduce((accumulator, key) => {
+
                     if (key !== "token") {
                         accumulator[key] = res.data["user"][key];
                     }
+
                     return accumulator || {};
                 }, {});
 

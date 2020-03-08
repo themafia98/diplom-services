@@ -91,7 +91,7 @@ class CabinetModule extends React.PureComponent {
                 <TitleModule additional="Профиль" classNameTitle="cabinetModuleTitle" title="Личный кабинет" />
                 <div className="cabinetModule_main">
                     <div className="col-6">
-                        <UserCard udata={udata} cdShowModal={this.showModal} />
+                        <UserCard cdShowModal={this.showModal} />
                     </div>
                     <div className="col-6">
                         <p className="lastActivity">Последняя активность</p>
@@ -111,8 +111,8 @@ class CabinetModule extends React.PureComponent {
                         {imageUrl && !this.state.loading ? (
                             <img src={imageUrl} alt="avatar" style={{ width: "50%" }} />
                         ) : (
-                            uploadButton
-                        )}
+                                uploadButton
+                            )}
                         {imageUrl ? (
                             <Button className="deleteButton" onClick={this.reset} type="primary">
                                 Удалить загруженное изображение

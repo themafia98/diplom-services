@@ -41,6 +41,7 @@ export default (state = initialState, action) => {
 
         case UPDATE_UDATA: {
             const { payload = {} } = action;
+
             return {
                 ...state,
                 udata: {

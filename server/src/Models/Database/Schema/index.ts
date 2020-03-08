@@ -77,6 +77,7 @@ userSchema.methods.toAuthJSON = function () {
     return {
         _id: this._id,
         email: this.email,
+        summary: this.summary,
         position: this.posotion,
         displayName: this.displayName,
         departament: this.departament,

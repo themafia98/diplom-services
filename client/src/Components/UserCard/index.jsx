@@ -1,6 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Avatar, Button, Icon, Dropdown, Menu, Tooltip, message } from "antd";
+import { connect } from "react-redux";
+import { updateUdata } from "../../Redux/actions/publicActions";
+import { Avatar, Button, Icon, Dropdown, Menu, Tooltip, message, Popover } from "antd";
 import ModalWindow from "../ModalWindow";
 
 import modelContext from "../../Models/context";
@@ -17,7 +19,6 @@ class UserCard extends React.Component {
 
     state = {
         visibilityModal: false,
-        summary: null,
     }
 
     showEditSummary = () => {
@@ -26,7 +27,7 @@ class UserCard extends React.Component {
     };
 
     onSubmitSummary = async (event, value) => {
-        const { udata: { _id: uid = "" } = {} } = this.props;
+        const { udata: { _id: uid = "" } = {}, onUpdateUdata } = this.props;
         const { Request } = this.context;
 
         try {
@@ -43,9 +44,11 @@ class UserCard extends React.Component {
                 throw new Error("Bad summury update");
             }
 
-            const { data: { response: { metadata: { summary = "" } = {} } = {} } = {} } = res;
+            const { response: { metadata: { summary = "" } = {} } = {} } = res.data || {};
 
-            this.setState({ visibilityModal: false, summary });
+            onUpdateUdata({ summary });
+
+            this.setState({ visibilityModal: false });
 
         } catch (error) {
             console.error(error.message);
@@ -121,7 +124,29 @@ class UserCard extends React.Component {
                                     <Icon onClick={this.showEditSummary} type="edit" />
                                 </Tooltip>
                             </div>
-                            <p className="summary">{this.state.summary ? this.state.summary : ""}</p>
+                            {udata.summary ?
+                                <Popover
+                                    overlayStyle={{
+                                        maxWidth: "500px",
+                                    }}
+                                    placement="top"
+                                    content={
+                                        <p className="summary-popover">
+                                            {udata.summary}
+                                        </p>
+                                    }
+                                    trigger="click"
+                                >
+                                    <p className="summary">
+                                        {udata.summary}
+                                    </p>
+                                </Popover>
+                                : (
+                                    <p className="summary">
+                                        {udata.summary}
+                                    </p>
+                                )
+                            }
                             <div className="contact">
                                 {udata.email ? (
                                     <div className="email">
@@ -143,10 +168,22 @@ class UserCard extends React.Component {
                     visibility={visibilityModal}
                     onReject={this.onRejectEditSummary}
                     onOkey={this.onSubmitSummary}
+                    defaultValue={udata.summary}
                 />
             </React.Fragment>
         );
     }
 }
 
-export default UserCard;
+const mapStateToProps = state => {
+    const { udata = {} } = state.publicReducer;
+    return { udata };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onUpdateUdata: udata => dispatch(updateUdata(udata))
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserCard);

@@ -61,10 +61,11 @@
             }
             
             .summary {
+                cursor: pointer;
                 flex-grow: 1;
                 font-size: 17px;
-                padding-top: 29px;
-                padding-right: 12px;
+                margin: 0;
+                padding: 29px 12px 0 0;
                 display: -webkit-box;
                 -webkit-line-clamp: 4;
                 -webkit-box-orient: vertical;
@@ -79,4 +80,9 @@
             padding-bottom: 10px;
         }
     }
+}
+
+.summary-popover {
+        overflow: hidden;
+        word-break: break-all;
 }

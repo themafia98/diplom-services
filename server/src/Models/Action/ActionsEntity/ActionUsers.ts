@@ -140,7 +140,7 @@ class ActionUsers implements Action {
 
             return actionData;
         } catch (err) {
-            console.log(err);
+            console.error(err);
             return null;
         }
     }
