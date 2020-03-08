@@ -22,8 +22,10 @@ const SimpleEditableModal = props => {
     const onChange = ({ currentTarget: { value: val = "" } }) => {
 
         if (!_.isNull(maxLength)) {
-            message.warning(`Максимальная длинна: ${maxLength}`);
-            if (val.length > maxLength) return;
+            if (val.length > maxLength) {
+                message.warning(`Максимальная длинна: ${maxLength}`);
+                return;
+            }
         }
 
         if (val !== value) setValue(val);
