@@ -165,6 +165,7 @@ class UserCard extends React.Component {
                 <ModalWindow
                     title="Редактирование описания"
                     defaultView={true}
+                    maxLength={600}
                     visibility={visibilityModal}
                     onReject={this.onRejectEditSummary}
                     onOkey={this.onSubmitSummary}
