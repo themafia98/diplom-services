@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { Icon } from "antd";
+import { Icon, Tooltip } from "antd";
 
 class Tab extends React.PureComponent {
     static propTypes = {
@@ -46,7 +46,12 @@ class Tab extends React.PureComponent {
                 ref={this.tabRef}
             >
                 <span className={[active ? "tabWrapper-content selected" : "tabWrapper-content"].join(" ")}>
-                    <span className="tab-content">{value}</span>
+                    <Tooltip title={value} placement="bottom" >
+                        <span
+                            className="tab-content"
+                        >{value}
+                        </span>
+                    </Tooltip>
                 </span>
                 <Icon
                     style={{ left: sizeTab < 60 ? `85%` : sizeTab < 90 ? `90%` : sizeTab < 102 ? `93%` : null }}
