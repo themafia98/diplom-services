@@ -99,7 +99,7 @@ class News extends React.PureComponent {
     };
 
     renderNewsBlock = currentPage => {
-        const { data = {}, statusApp, router: { routeData: { contactModule: { news = [] } = {} } = {} } } = this.props;
+        const { router: { routeData: { contactModule: { news = [] } = {} } = {} } } = this.props;
 
         const start = currentPage > 1 ? currentPage * 4 - 4 : 0;
         let listdata = news;
@@ -109,7 +109,7 @@ class News extends React.PureComponent {
             .slice(start, start + 4 > listdata.length ? listdata.length : start + 4);
 
         return pageCards.map((it, index) => {
-
+            debugger;
             return (
                 <NewsCard
                     key={it._id || index}

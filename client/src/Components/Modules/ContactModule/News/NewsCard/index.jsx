@@ -1,8 +1,39 @@
-import React from "react";
+import React, { useContext } from "react";
+import EditorTextarea from "../../../../Textarea/EditorTextarea";
 import _ from "lodash";
 import { Card, Button } from "antd";
 
+import modelContext from '../../../../../Models/context';
+
 const NewsCard = ({ onClick = null, className = null, data = {} }) => {
+
+    const { schema = {} } = useContext(modelContext);
+
+    const getNormalizeContent = (content) => {
+        const contentNormalize = Object.keys(content).reduce((data, key) => {
+            if (key.includes("entity") || key.includes("blocks")) {
+                const isArray = _.isArray(content[key]);
+                const isObject = _.isPlainObject(content[key]);
+                data[key] = isArray ?
+                    [...content[key]]
+                    : isObject ?
+                        { ...content[key] }
+                        : content[key];
+            }
+            return data;
+        }, {});
+
+        if (_.isPlainObject(contentNormalize) && !contentNormalize.entityMap) {
+            contentNormalize.entityMap = {};
+        }
+
+        if (_.isPlainObject(contentNormalize) && !contentNormalize.blocks) {
+            contentNormalize.blocks = [];
+        }
+
+        return contentNormalize;
+    };
+
     if (!data || _.isEmpty(data)) return null;
     else
         return (
@@ -15,7 +46,15 @@ const NewsCard = ({ onClick = null, className = null, data = {} }) => {
                     </Button>
                 }
             >
-                {data.content ? data.content : "Содержание отсутствует."}
+                {'Нажмите "читать" для прочтения'}
+                {/* {data.content ? (
+                    <EditorTextarea
+                        key={data?._id}
+                        readOnly={true}
+                        contentState={getNormalizeContent(data.content)}
+                    />\
+                ) : "Содержание отсутствует."}
+                 */}
             </Card>
         );
 };

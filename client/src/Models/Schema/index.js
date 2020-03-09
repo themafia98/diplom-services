@@ -71,8 +71,8 @@ class Schema {
                 };
             case NEWS_SCHEMA:
                 return {
-                    entityMap: null,
-                    blocks: null
+                    title: null,
+                    content: null, // { entityMap: null,blocks: null }
                 };
             default:
                 return null;

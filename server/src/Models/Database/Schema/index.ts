@@ -123,8 +123,11 @@ export const logger = new Schema({
 }, { timestamps: true });
 
 export const news = new Schema({
-    entityMap: { type: Object, required: true, default: {} },
-    blocks: { type: Array, required: true }
+    title: { type: String, required: true },
+    content: {
+        entityMap: { type: Object, required: true, default: {} },
+        blocks: { type: Array, required: true }
+    }
 }, { timestamps: true });
 
 export const chatMsg = new Schema({

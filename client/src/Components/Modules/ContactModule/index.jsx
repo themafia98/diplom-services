@@ -64,14 +64,22 @@ class ContactModule extends React.PureComponent {
 
         return itemsKeys
             .map(key => {
+
                 const route = routeParser({ pageType: "moduleItem", path: currentActionTab });
 
-                if (!_.isEmpty(listdata) && keyEntity && key)
+                if (!_.isEmpty(listdata) && keyEntity && key) {
+                    const { content = {}, title = "", _id } = listdata;
                     return (
                         <TabContainer key={key} visible={route.itemId === key && currentActionTab.includes(key)}>
-                            <NewsViewPage listdata={listdata} key={key} />
+                            <NewsViewPage
+                                id={_id}
+                                title={title}
+                                content={content}
+                                key={key}
+                            />
                         </TabContainer>
                     );
+                }
                 else return null;
             })
             .filter(Boolean);

@@ -7,31 +7,30 @@ import EditorTextarea from "../../../../Textarea/EditorTextarea";
 
 import modelContext from '../../../../../Models/context';
 
-const NewsViewPage = ({ listdata = null }) => {
-
+const NewsViewPage = ({ content: contentEntity = null, title = "", id: _id = uuid() }) => {
 
     const { schema = {} } = useContext(modelContext);
-    const [id] = useState(listdata ? listdata._id : uuid());
+    const [id] = useState(_id ? _id : uuid());
 
     const getNormalizeContent = () => {
-        const content = Object.keys(listdata).reduce((data, key) => {
+        const content = Object.keys(contentEntity).reduce((data, key) => {
             if (key.includes("entity") || key.includes("blocks")) {
-                const isArray = _.isArray(listdata[key]);
-                const isObject = _.isPlainObject(listdata[key]);
+                const isArray = _.isArray(contentEntity[key]);
+                const isObject = _.isPlainObject(contentEntity[key]);
                 data[key] = isArray ?
-                    [...listdata[key]]
+                    [...contentEntity[key]]
                     : isObject ?
-                        { ...listdata[key] }
-                        : listdata[key];
+                        { ...contentEntity[key] }
+                        : contentEntity[key];
             }
             return data;
         }, {});
 
-        if (_.isPlainObject(content) && !content.entityMap) {
+        if (_.isPlainObject(contentEntity) && !contentEntity.entityMap) {
             content.entityMap = {};
         }
 
-        if (_.isPlainObject(content) && !content.blocks) {
+        if (_.isPlainObject(contentEntity) && !contentEntity.blocks) {
             content.blocks = [];
         }
 
@@ -42,13 +41,13 @@ const NewsViewPage = ({ listdata = null }) => {
         <div className="newsView-page">
             <TitleModule
                 classNameTitle="tittle_contactModule_pageNews"
-                title={listdata && id ? id : "Новость"}
+                title={title ? title : `Новость № ${id}`}
             />
             <div className="newsView-page__main">
                 <EditorTextarea
                     key={id}
                     readOnly={true}
-                    contentState={listdata ? getNormalizeContent() : schema.getEditorJSON()} />
+                    contentState={contentEntity ? getNormalizeContent() : schema.getEditorJSON()} />
             </div>
         </div>
     );
