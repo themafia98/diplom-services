@@ -70,7 +70,10 @@ class ContactModule extends React.PureComponent {
                 if (!_.isEmpty(listdata) && keyEntity && key) {
                     const { content = {}, title = "", _id } = listdata;
                     return (
-                        <TabContainer key={key} visible={route.itemId === key && currentActionTab.includes(key)}>
+                        <TabContainer
+                            key={key}
+                            visible={route.itemId === key && currentActionTab.includes(key)}
+                        >
                             <NewsViewPage
                                 id={_id}
                                 title={title}
