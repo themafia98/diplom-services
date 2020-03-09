@@ -1,5 +1,4 @@
-import os from "os";
-import express, { Application, Response, NextFunction } from "express";
+import express, { Response, NextFunction } from "express";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import nodemailer from "nodemailer";
@@ -11,8 +10,10 @@ import chalk from "chalk";
 import { Route } from "../../Utils/Interfaces";
 import RouterInstance from "../Router";
 import { Server as HttpServer } from "http";
-import { Request, Rest, Mail } from "../../Utils/Interfaces";
+import { Request, Mail } from "../../Utils/Interfaces";
+import RestEntitiy from "./RestEntity";
 import Utils from "../../Utils";
+
 import System from "../../Controllers/Main";
 import Cabinet from "../../Controllers/Cabinet";
 import Settings from "../../Controllers/Settings";
@@ -38,38 +39,6 @@ import limiter from "../../config/limiter";
 
 namespace Http {
     const LocalStrategy = passportLocal.Strategy;
-
-    abstract class RestEntitiy implements Rest {
-        private port: string;
-        private rest: Application | undefined;
-        private application: null | Application = null;
-
-        constructor(port: string) {
-            this.port = port;
-        }
-
-        public getPort(): string {
-            return this.port;
-        }
-
-        public getRest(): Application {
-            return <Application>this.rest;
-        }
-
-        public setRest(route: Application): void {
-            if (!this.rest) {
-                this.rest = route;
-            }
-        }
-
-        public getApp(): Application {
-            return <Application>this.application;
-        }
-
-        public setApp(express: Application): void {
-            if (_.isNull(this.application)) this.application = express;
-        }
-    }
 
     export class ServerRunner extends RestEntitiy {
         constructor(port: string) {
@@ -167,7 +136,7 @@ namespace Http {
             };
 
             passport.use(
-                new jwt.Strategy(<StrategyOptions>jwtOptions, async function (
+                new jwt.Strategy(<StrategyOptions>jwtOptions, async function(
                     payload: Partial<{ id: string }>,
                     done: Function
                 ) {
@@ -259,16 +228,20 @@ namespace Http {
             );
 
             const dropbox = new DropboxStorage.DropboxManager({ token: DROPBOX_TOKEN });
-            const mailer: Readonly<Mail> = new Mailer.MailManager(nodemailer, {
-                host: 'smtp.yandex.ru',
-                port: 465,
-                auth: {
-                    user: process.env.TOKEN_YANDEX_USER,
-                    pass: process.env.TOKEN_YANDEX_PASSWORD
+            const mailer: Readonly<Mail> = new Mailer.MailManager(
+                nodemailer,
+                {
+                    host: "smtp.yandex.ru",
+                    port: 465,
+                    auth: {
+                        user: process.env.TOKEN_YANDEX_USER,
+                        pass: process.env.TOKEN_YANDEX_PASSWORD
+                    }
+                },
+                {
+                    from: process.env.TOKEN_YANDEX_USER
                 }
-            }, {
-                from: process.env.TOKEN_YANDEX_USER
-            });
+            );
 
             const createResult = mailer.create();
 
@@ -301,12 +274,7 @@ namespace Http {
             wsEvents(wsWorkerManager, dbm, server); /** chat */
 
             Utils.initControllers(
-                [
-                    Main, TasksController,
-                    NewsController, SystemData,
-                    ChatAlias, SettingsAlias,
-                    CabinetAlias
-                ],
+                [Main, TasksController, NewsController, SystemData, ChatAlias, SettingsAlias, CabinetAlias],
                 this.getApp.bind(this),
                 this.getRest.bind(this),
                 this.isPrivateRoute.bind(this),
