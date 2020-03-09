@@ -4,15 +4,18 @@ import { Modal, Upload, message, Icon, Button } from "antd";
 import UserCard from "../../UserCard";
 import TitleModule from "../../TitleModule";
 import StreamBox from "../../StreamBox";
-
+import modelContext from "../../../Models/context";
 const { Dragger } = Upload;
 
 class CabinetModule extends React.PureComponent {
     state = {
         imageUrl: null,
         loading: false,
+        filesArray: [],
         disabled: false
     };
+
+    static contextType = modelContext;
 
     static propTypes = {
         onErrorRequstAction: PropTypes.func.isRequired
@@ -73,10 +76,16 @@ class CabinetModule extends React.PureComponent {
     }
 
     render() {
-        const { visible, imageUrl } = this.state;
+        const { visible, imageUrl, filesArray } = this.state;
+        const { rest } = this.context;
         const { udata = {} } = this.props;
         const props = {
-            action: "https://www.mocky.io/v2/5cc8019d300000980a055e76"
+            name: "avatar",
+            multiple: false,
+            withCredentials: true,
+            headers: rest ? rest.getHeaders() : null,
+            fileList: filesArray,
+            action: rest ? `${rest.getApi()}/cabinet/loadAvatar` : null
         };
 
         const uploadButton = (

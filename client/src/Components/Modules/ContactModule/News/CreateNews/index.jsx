@@ -83,7 +83,12 @@ class CreateNews extends React.PureComponent {
             <div className="createNews">
                 <TitleModule classNameTitle="createNewsTitle" title="Создание новой новости" />
                 <div className="createNews__main">
-                    <Input value={titleNews} onChange={this.onChange} placeholder="Заголовок новости" />
+                    <Input
+                        autoFocus={true}
+                        value={titleNews}
+                        onChange={this.onChange}
+                        placeholder="Заголовок новости"
+                    />
                     <EditorTextarea
                         disabled={readOnly}
                         clearStatus={this.clearStatus}

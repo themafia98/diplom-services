@@ -18,7 +18,8 @@ const userSchema = new Schema(
         displayName: { type: String, required: true },
         position: { type: String, required: true },
         rules: { type: String, default: "guest", required: true },
-        accept: { type: Boolean, default: false, required: true }
+        accept: { type: Boolean, default: false, required: true },
+        avatar: { type: String, default: "", required: true }
     },
     { timestamps: true }
 );
@@ -85,6 +86,7 @@ userSchema.methods.toAuthJSON = function () {
         phone: this.phone,
         rules: this.rules,
         accept: this.accept,
+        avatar: this.avatar,
         token: this.generateJWT()
     };
 };

@@ -109,7 +109,7 @@ class News extends React.PureComponent {
             .slice(start, start + 4 > listdata.length ? listdata.length : start + 4);
 
         return pageCards.map((it, index) => {
-            debugger;
+
             return (
                 <NewsCard
                     key={it._id || index}
