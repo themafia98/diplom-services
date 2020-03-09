@@ -58,7 +58,12 @@ class File extends React.Component {
 
         return (
             <div className="file">
-                <Dragger beforeUpload={this.beforeUpload} onChange={this.onChange} onRemove={this.onRemove} {...props}>
+                <Dragger
+                    beforeUpload={this.beforeUpload}
+                    onChange={this.onChange}
+                    onRemove={this.onRemove}
+                    {...props}
+                >
                     <p className="ant-upload-drag-icon">
                         <Icon type="inbox" />
                     </p>

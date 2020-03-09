@@ -64,7 +64,7 @@ class UserCard extends React.Component {
 
     render() {
         const { visibilityModal = false } = this.state;
-        const { udata = {}, cdShowModal } = this.props;
+        const { udata = {}, cdShowModal, imageUrl = "" } = this.props;
 
         const isMine = true;
 
@@ -79,21 +79,21 @@ class UserCard extends React.Component {
             </Menu>
         );
 
-        const imageUrl = {
+        const background = {
             backgroundImage: `url("${imageCard}")`
         };
 
         return (
             <React.Fragment>
                 <div className="userCard">
-                    <div style={imageUrl} className="wallpaper"></div>
+                    <div style={background} className="wallpaper"></div>
                     <div className="mainContentCard">
                         <div className="col-6">
                             {isMine ? (
                                 <Tooltip trigger="hover" title="ПКМ - смена фотографии" >
                                     <Dropdown overlay={menu} trigger={["contextMenu"]}>
                                         <Avatar
-                                            src={udata.avatar}
+                                            src={udata?.avatar ? udata.avatar : imageUrl}
                                             className="userLogo"
                                             size={84}
                                             icon="user"
