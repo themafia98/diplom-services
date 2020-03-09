@@ -46,7 +46,7 @@ const NewsCard = ({ onClick = null, className = null, data = {} }) => {
                     </Button>
                 }
             >
-                {'Нажмите "читать" для прочтения'}
+                {'Препросмотр временно недоступен. Нажмите "читать" для просмотра новости.'}
                 {/* {data.content ? (
                     <EditorTextarea
                         key={data?._id}
