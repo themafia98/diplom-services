@@ -4,15 +4,18 @@ import { Modal, Upload, message, Icon, Button } from "antd";
 import UserCard from "../../UserCard";
 import TitleModule from "../../TitleModule";
 import StreamBox from "../../StreamBox";
-
+import modelContext from "../../../Models/context";
 const { Dragger } = Upload;
 
 class CabinetModule extends React.PureComponent {
     state = {
         imageUrl: null,
         loading: false,
+        filesArray: [],
         disabled: false
     };
+
+    static contextType = modelContext;
 
     static propTypes = {
         onErrorRequstAction: PropTypes.func.isRequired
@@ -57,13 +60,15 @@ class CabinetModule extends React.PureComponent {
         this.setState({ ...this.state, imageUrl: null, loading: false, disabled: false });
     };
 
-    onChangeFile(info) {
+    onChangeFile = (info) => {
         const { status } = info.file;
         if (status !== "uploading") {
+            debugger;
             this.setState({ disabled: false });
         }
         if (status === "done") {
             message.success(`${info.file.name} file uploaded successfully.`);
+            debugger;
             this.getBase64(info.file.originFileObj, this.setFile.bind(this));
             this.setState({ disabled: true });
         } else if (status === "error") {
@@ -74,9 +79,14 @@ class CabinetModule extends React.PureComponent {
 
     render() {
         const { visible, imageUrl } = this.state;
+        const { rest } = this.context;
         const { udata = {} } = this.props;
         const props = {
-            action: "https://www.mocky.io/v2/5cc8019d300000980a055e76"
+            name: "avatar",
+            multiple: false,
+            withCredentials: true,
+            headers: rest ? rest.getHeaders() : null,
+            action: rest ? `${rest.getApi()}/cabinet/validationAvatar` : null
         };
 
         const uploadButton = (
@@ -91,7 +101,7 @@ class CabinetModule extends React.PureComponent {
                 <TitleModule additional="Профиль" classNameTitle="cabinetModuleTitle" title="Личный кабинет" />
                 <div className="cabinetModule_main">
                     <div className="col-6">
-                        <UserCard cdShowModal={this.showModal} />
+                        <UserCard imageUrl={imageUrl} cdShowModal={this.showModal} />
                     </div>
                     <div className="col-6">
                         <p className="lastActivity">Последняя активность</p>
@@ -104,7 +114,7 @@ class CabinetModule extends React.PureComponent {
                         showUploadList={false}
                         listType="picture-card"
                         disabled={this.state.disabled}
-                        onChange={this.onChangeFile.bind(this)}
+                        onChange={this.onChangeFile}
                         accept="image/*"
                         {...props}
                     >

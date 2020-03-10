@@ -82,10 +82,10 @@ export const loadCurrentData = ({
                     storeLoad === "jurnalworks"
                         ? TASK_CONTROLL_JURNAL_SCHEMA
                         : storeLoad === "users"
-                        ? USER_SCHEMA
-                        : storeLoad === "tasks"
-                        ? TASK_SCHEMA
-                        : null;
+                            ? USER_SCHEMA
+                            : storeLoad === "tasks"
+                                ? TASK_SCHEMA
+                                : null;
 
                 let storeCopyValid = copyStore.map(it => schema.getSchema(templateSchema, it)).filter(Boolean);
                 storeCopyValid.forEach(it => clientDB.updateItem(storeLoad, it));
@@ -128,10 +128,10 @@ export const loadCurrentData = ({
                 storeLoad === "jurnalworks"
                     ? TASK_CONTROLL_JURNAL_SCHEMA
                     : storeLoad === "users"
-                    ? USER_SCHEMA
-                    : storeLoad === "tasks"
-                    ? TASK_SCHEMA
-                    : null;
+                        ? USER_SCHEMA
+                        : storeLoad === "tasks"
+                            ? TASK_SCHEMA
+                            : null;
 
             const itemsCopy = result.map(it => schema.getSchema(schemaTemplate, it)).filter(Boolean);
             const data = saveComponentStateAction({

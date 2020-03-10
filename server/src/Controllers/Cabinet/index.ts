@@ -13,10 +13,10 @@ namespace Cabinet {
 
     @Controller("/cabinet")
     export class CabinetController {
-        @Post({ path: "/summuryUpdate", private: true })
-        public async summaryUpd(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+        @Post({ path: "/validationAvatar", private: true })
+        public async validationAvatar(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
             const params: Params = {
-                methodQuery: "summary_update",
+                methodQuery: "update_avatar",
                 from: "users",
                 done: true,
                 status: "OK"

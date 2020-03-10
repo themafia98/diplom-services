@@ -99,7 +99,7 @@ class News extends React.PureComponent {
     };
 
     renderNewsBlock = currentPage => {
-        const { data = {}, statusApp, router: { routeData: { contactModule: { news = [] } = {} } = {} } } = this.props;
+        const { router: { routeData: { contactModule: { news = [] } = {} } = {} } } = this.props;
 
         const start = currentPage > 1 ? currentPage * 4 - 4 : 0;
         let listdata = news;

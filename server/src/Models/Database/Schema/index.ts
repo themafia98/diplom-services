@@ -18,7 +18,8 @@ const userSchema = new Schema(
         displayName: { type: String, required: true },
         position: { type: String, required: true },
         rules: { type: String, default: "guest", required: true },
-        accept: { type: Boolean, default: false, required: true }
+        accept: { type: Boolean, default: false, required: true },
+        avatar: { type: String, default: "", required: true }
     },
     { timestamps: true }
 );
@@ -85,6 +86,7 @@ userSchema.methods.toAuthJSON = function () {
         phone: this.phone,
         rules: this.rules,
         accept: this.accept,
+        avatar: this.avatar,
         token: this.generateJWT()
     };
 };
@@ -123,8 +125,11 @@ export const logger = new Schema({
 }, { timestamps: true });
 
 export const news = new Schema({
-    entityMap: { type: Object, required: true, default: {} },
-    blocks: { type: Array, required: true }
+    title: { type: String, required: true },
+    content: {
+        entityMap: { type: Object, required: true, default: {} },
+        blocks: { type: Array, required: true }
+    }
 }, { timestamps: true });
 
 export const chatMsg = new Schema({

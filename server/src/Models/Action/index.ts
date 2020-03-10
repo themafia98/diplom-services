@@ -85,7 +85,7 @@ namespace Action {
             }
         }
 
-        public async updateEntity(model: Model<Document>, query: ActionParams) {
+        public async updateEntity(model: Model<Document>, query: ActionParams): ParserData {
             try {
                 const { _id } = query;
                 const updateProps = <Record<string, any>>query.updateProps;

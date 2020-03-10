@@ -2,10 +2,11 @@ import React from "react";
 import _ from "lodash";
 import TitleModule from "../../../../TitleModule";
 import EditorTextarea from "../../../../Textarea/EditorTextarea";
-import { message, notification } from "antd";
+import { message, notification, Input } from "antd";
 import modelContext from "../../../../../Models/context";
 class CreateNews extends React.PureComponent {
     state = {
+        titleNews: "",
         clear: false
     };
 
@@ -25,11 +26,23 @@ class CreateNews extends React.PureComponent {
             });
     };
 
+    onChange = ({ currentTarget: { value = "" } = {} }) => {
+        this.setState({
+            ...this.state,
+            titleNews: value
+        });
+    }
+
     onPublish = async contentState => {
         const { statusApp = "" } = this.props;
+        const { titleNews = "" } = this.state;
         const { Request } = this.context;
         if (!contentState) {
             return message.error("Ничего не найдено");
+        }
+
+        if (!titleNews) {
+            return message.error("Название не найдено");
         }
 
         if (statusApp === "online") {
@@ -41,7 +54,7 @@ class CreateNews extends React.PureComponent {
                         actionPath: "news",
                         actionType: "create_single_news"
                     },
-                    metadata: contentState
+                    metadata: { title: titleNews, content: contentState }
                 }, true);
 
                 const { response: { params: { done = false } = {} } = {} } = res.data || {};
@@ -64,12 +77,18 @@ class CreateNews extends React.PureComponent {
         } else return notification.error({ title: "Ошибка сети", message: "Интернет соединение отсутствует" });
     };
     render() {
-        const { clear = false } = this.state;
+        const { clear = false, titleNews = "" } = this.state;
         const { readOnly = "" } = this.props;
         return (
             <div className="createNews">
                 <TitleModule classNameTitle="createNewsTitle" title="Создание новой новости" />
                 <div className="createNews__main">
+                    <Input
+                        autoFocus={true}
+                        value={titleNews}
+                        onChange={this.onChange}
+                        placeholder="Заголовок новости"
+                    />
                     <EditorTextarea
                         disabled={readOnly}
                         clearStatus={this.clearStatus}
