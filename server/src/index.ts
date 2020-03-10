@@ -8,6 +8,7 @@ import os from "os";
 import _ from "lodash";
 
 import { ServerRun, WorkerDataProps } from "./Utils/Interfaces";
+import ProcessRouter from "./Models/Process/ProcessRouter";
 import Http from "./Models/Server";
 
 if (process.env.NODE_ENV === "production") {
@@ -18,32 +19,16 @@ if (process.env.NODE_ENV === "production") {
 namespace Entrypoint {
     const cpuLentgh: number = os.cpus().length;
     const workers: Array<Worker> = [];
+
     export const wsWorkers: Array<WebSocketServer> = [];
-
-    const callbackExit = _.debounce((worker: Worker, code: number, signal: string) => {
-        console.log(`${chalk.yellow("worker")} ${chalk.red(worker.process.pid)} exit.`);
-
-        const child: cluster.Worker = cluster.fork();
-        console.log(`New ${chalk.yellow("worker")} ${chalk.red(child.process.pid)} born.`);
-    }, 300);
+    const workersRouter = new ProcessRouter(workers, wsWorkers);
 
     if (cluster.isMaster) {
         for (let i = 0; i < cpuLentgh; i++) {
-            const worker: cluster.Worker = cluster.fork();
-            worker.on("exit", callbackExit);
-
-            worker.on("message", (workerData: WorkerDataProps) => {
-                console.log("worker message:", workerData);
-
-                for (let worker of workers.values()) {
-                    worker.send(workerData);
-                }
-            });
-
-            workers.push(worker);
+            const worker: Worker = cluster.fork();
+            workersRouter.subscribe(worker);
+            workersRouter.addWorker(worker);
         }
-
-        // get worker index based on Ip and total no of workers so that it can be tranferred to same worker
     } else {
         try {
             const app: ServerRun = new Http.ServerRunner(process.env.APP_PORT || "3001");

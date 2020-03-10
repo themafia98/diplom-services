@@ -12,7 +12,8 @@ export interface ServerRun {
 }
 
 export interface WorkerDataProps {
-    [key: string]: string | typeof Object;
+    action: string;
+    payload: any;
 }
 
 export interface Mail {
