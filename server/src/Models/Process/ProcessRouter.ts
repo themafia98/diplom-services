@@ -21,7 +21,10 @@ class ProcessRouter {
     onExit(worker: Worker, code: number, signal: string) {
         console.log(`${chalk.yellow("worker")} ${chalk.red(worker.process.pid)} exit.`);
 
+        this.removeWorker(worker.id);
+
         const child: Worker = cluster.fork();
+        this.addWorker(child);
 
         console.log(`New ${chalk.yellow("worker")} ${chalk.red(child.process.pid)} born.`);
     }
