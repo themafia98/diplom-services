@@ -50,7 +50,6 @@ export default (ws: WebSocketWorker, dbm: Readonly<Database.ManagmentDatabase>, 
         };
 
         socket.on("newMessage", async (msgObj: Record<string, any>) => {
-            (<Record<string, any>>process).send(workerId);
             const { tokenRoom = "" } = msgObj || {};
             try {
                 const model: Model<Document> | null = getModelByName("chatMsg", "chatMsg");

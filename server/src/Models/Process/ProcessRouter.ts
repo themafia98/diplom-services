@@ -64,10 +64,10 @@ class ProcessRouter {
                             continue;
                         }
 
-                        if (to) {
-                            socket.to(to).emit(event, data);
-                            continue;
-                        }
+                        // if (to) {
+                        //     socket.to(to).emit(event, data);
+                        //     continue;
+                        // }
 
                         socket.emit(event, data);
                     }
