@@ -48,7 +48,7 @@ namespace Chat {
                 }
 
                 const filterData: ArrayLike<object> = parsePublicData(data);
-                res.status(404);
+
                 return res.json(
                     getResponseJson(
                         "done",

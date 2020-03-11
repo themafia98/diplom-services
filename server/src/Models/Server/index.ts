@@ -267,8 +267,7 @@ namespace Http {
             this.getRest().use(limiter);
 
             wsWorkerManager.startSocketConnection(socketio(server));
-            console.log("Entrypoint:", Entrypoint);
-            console.log(wsWorkerManager);
+
             wsEvents(wsWorkerManager, dbm, server); /** chat */
 
             Utils.initControllers(
