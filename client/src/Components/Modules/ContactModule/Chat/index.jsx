@@ -39,7 +39,7 @@ class Chat extends React.PureComponent {
         this.chat.getSocket().on("updateChatsRooms", onUpdateRoom);
         this.chat.getSocket().on("connection", this.connection);
         this.chat.getSocket().on("updateFakeRoom", this.updateFakeRoom);
-        this.chat.on("msg", this.addMsg);
+        this.chat.getSocket().on("msg", this.addMsg);
         this.chat.getSocket().on("error", this.errorConnection);
     };
 
@@ -71,6 +71,7 @@ class Chat extends React.PureComponent {
     };
 
     addMsg = msgObj => {
+        console.log("addMsg");
         const { onAddMsg } = this.props;
         if (_.isObject(msgObj)) onAddMsg(msgObj);
     };

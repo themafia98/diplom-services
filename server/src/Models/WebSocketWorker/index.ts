@@ -14,7 +14,7 @@ class WebSocketWorker implements WsWorker {
         return cluster.worker.id;
     }
 
-    public getWorker(id: number): socketio.Server {
+    public getWorker(id: number = cluster.worker.id): socketio.Server {
         return this.workers[id];
     }
 

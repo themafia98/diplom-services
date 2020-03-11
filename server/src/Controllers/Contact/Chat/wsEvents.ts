@@ -118,4 +118,50 @@ export default (ws: WebSocketWorker, dbm: Readonly<Database.ManagmentDatabase>, 
         console.log(socket.eventNames);
         console.log("user disconnected");
     });
+
+    process.on("message", (data: any) => {
+        try {
+            const { action = "", payload } = data;
+            console.log("router action:", action);
+            switch (action) {
+                // case "processMsg": {
+                //     for (let worker of this.getWorkers().values()) {
+                //         worker.send(payload, (err: Error) => {
+                //             if (err) console.error(err);
+                //         });
+                //     }
+                //     break;
+                // }
+                case "emitSocket": {
+                    const { event = "", data = {}, to = "" } = payload;
+                    console.log("emitSocket run");
+                    console.log(payload);
+                    let socket = ws.getWorker();
+                    if (to && to === "broadcast") {
+                        // (<Socket>worker).broadcast.emit(event, data);
+                        break;
+                    }
+
+                    // if (to) {
+                    //     socket.to(to).emit(event, data);
+                    //     continue;
+                    // }
+
+                    socket.emit(event, data);
+                    break;
+                }
+
+                // case "saveSocket": {
+                //     this.addWorker(payload);
+                //     break;
+                // }
+
+                default: {
+                    console.warn("No router process");
+                }
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    });
 };
