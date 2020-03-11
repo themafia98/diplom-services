@@ -119,9 +119,4 @@ export default (ws: WebSocketWorker, dbm: Readonly<Database.ManagmentDatabase>, 
         console.log(socket.eventNames);
         console.log("user disconnected");
     });
-
-    process.on("message", function(msg) {
-        console.log("process wokerId message ws:", workerId);
-        console.log("msg process:", msg);
-    });
 };

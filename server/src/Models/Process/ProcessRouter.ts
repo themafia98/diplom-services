@@ -44,7 +44,7 @@ class ProcessRouter {
     router(workerData: WorkerDataProps): void {
         try {
             const { action = "", payload } = workerData;
-
+            console.log("router action:", action);
             switch (action) {
                 case "processMsg": {
                     for (let worker of this.getWorkers().values()) {
@@ -56,7 +56,8 @@ class ProcessRouter {
                 }
                 case "emitSocket": {
                     const { event = "", data = {}, to = "" } = payload;
-                    console.log(this);
+                    console.log("emitSocket run");
+                    console.log(payload);
                     for (let worker of this.wsWorker.getWorkersArray().values()) {
                         if (to && to === "broadcast") {
                             // (<Socket>worker).broadcast.emit(event, data);
