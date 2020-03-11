@@ -126,10 +126,10 @@ export default (ws: WebSocketWorker, dbm: Readonly<Database.ManagmentDatabase>, 
 
             switch (action) {
                 case "emitSocket": {
-                    const { event = "", data = {}, to = "", socket } = payload;
+                    const { event = "", data = {}, to = "", socket = null } = payload;
 
                     let worker = ws.getWorker();
-                    if (to && to === "broadcast") {
+                    if (to && to === "broadcast" && socket) {
                         socket.broadcast.emit(event, data);
                         break;
                     }
