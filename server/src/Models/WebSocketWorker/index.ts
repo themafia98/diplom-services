@@ -6,7 +6,7 @@ import cluster from "cluster";
 class WebSocketWorker implements WsWorker {
     private workers: Array<socketio.Server> = [];
 
-    constructor(wsWorkers: Array<socketio.Server>) {
+    constructor(wsWorkers: Array<socketio.Server> = []) {
         this.workers = wsWorkers;
     }
 

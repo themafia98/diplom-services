@@ -21,8 +21,8 @@ namespace Entrypoint {
     const cpuLentgh: number = os.cpus().length;
     const workers: Array<Worker> = [];
 
-    export const wsWorkers: Array<WebSocketServer> = [];
-    export const wsWorkerManager: WebSocketWorker = new WebSocketWorker(wsWorkers);
+    export const wsWorkerManager: WebSocketWorker = new WebSocketWorker();
+    console.log(wsWorkerManager);
     const workersRouter = new ProcessRouter(workers, wsWorkerManager);
 
     if (cluster.isMaster) {
