@@ -88,8 +88,8 @@ class ProcessRouter {
     }
 
     subscribe(worker: Worker): void {
-        worker.on("exit", this.onExit);
-        worker.on("message", this.router);
+        worker.on("exit", this.onExit.bind(this));
+        worker.on("message", this.router.bind(this));
     }
 }
 
