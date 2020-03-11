@@ -39,7 +39,7 @@ class Chat extends React.PureComponent {
         this.chat.getSocket().on("updateChatsRooms", onUpdateRoom);
         this.chat.getSocket().on("connection", this.connection);
         this.chat.getSocket().on("updateFakeRoom", this.updateFakeRoom);
-        this.chat.getSocket().on("msg", this.addMsg);
+        this.chat.on("msg", this.addMsg);
         this.chat.getSocket().on("error", this.errorConnection);
     };
 
@@ -335,14 +335,14 @@ class Chat extends React.PureComponent {
                                         messages={listdataMsgs[tokenRoom] || []}
                                     />
                                 ) : (
-                                            <div className="emptyChatRoom">
-                                                {!socketErrorStatus ? (
-                                                    <p className="emptyChatRoomMsg">Выберите собеседника</p>
-                                                ) : (
-                                                        <p className="socket-error">{socketErrorStatus}</p>
-                                                    )}
-                                            </div>
+                                    <div className="emptyChatRoom">
+                                        {!socketErrorStatus ? (
+                                            <p className="emptyChatRoomMsg">Выберите собеседника</p>
+                                        ) : (
+                                            <p className="socket-error">{socketErrorStatus}</p>
                                         )}
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
