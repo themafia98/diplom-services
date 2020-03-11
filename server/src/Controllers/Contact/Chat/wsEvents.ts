@@ -28,7 +28,7 @@ export default (ws: WebSocketWorker, dbm: Readonly<Database.ManagmentDatabase>, 
             socket.join(tokenRoom);
             const response = { room: result, msg: fakeMsg };
 
-            (<any>process).send({
+            (<Record<string, any>>process).send({
                 action: "emitSocket",
                 payload: {
                     event: "updateFakeRoom",
@@ -37,11 +37,12 @@ export default (ws: WebSocketWorker, dbm: Readonly<Database.ManagmentDatabase>, 
                 }
             });
 
-            (<any>process).send({
+            (<Record<string, any>>process).send({
                 action: "emitSocket",
                 payload: {
                     event: "updateChatsRooms",
                     to: "broadcast",
+                    socket,
                     data: { ...response, fullUpdate: true, activeModule: "chat" }
                 }
             });
@@ -122,39 +123,25 @@ export default (ws: WebSocketWorker, dbm: Readonly<Database.ManagmentDatabase>, 
     process.on("message", (data: any) => {
         try {
             const { action = "", payload } = data;
-            console.log("router action:", action);
+
             switch (action) {
-                // case "processMsg": {
-                //     for (let worker of this.getWorkers().values()) {
-                //         worker.send(payload, (err: Error) => {
-                //             if (err) console.error(err);
-                //         });
-                //     }
-                //     break;
-                // }
                 case "emitSocket": {
-                    const { event = "", data = {}, to = "" } = payload;
-                    console.log("emitSocket run");
-                    console.log(payload);
-                    let socket = ws.getWorker();
+                    const { event = "", data = {}, to = "", socket } = payload;
+
+                    let worker = ws.getWorker();
                     if (to && to === "broadcast") {
-                        // (<Socket>worker).broadcast.emit(event, data);
+                        socket.broadcast.emit(event, data);
                         break;
                     }
 
-                    // if (to) {
-                    //     socket.to(to).emit(event, data);
-                    //     continue;
-                    // }
+                    if (to) {
+                        worker.to(to).emit(event, data);
+                        break;
+                    }
 
-                    socket.emit(event, data);
+                    worker.emit(event, data);
                     break;
                 }
-
-                // case "saveSocket": {
-                //     this.addWorker(payload);
-                //     break;
-                // }
 
                 default: {
                     console.warn("No router process");
