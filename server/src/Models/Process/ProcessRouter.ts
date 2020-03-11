@@ -42,45 +42,48 @@ class ProcessRouter {
     }
 
     router(workerData: WorkerDataProps): void {
-        const { action = "", payload } = workerData;
+        try {
+            const { action = "", payload } = workerData;
 
-        switch (action) {
-            case "processMsg": {
-                for (let worker of this.getWorkers().values()) {
-                    worker.send(payload, (err: Error) => {
-                        if (err) console.error(err);
-                    });
-                }
-                break;
-            }
-            case "emitSocket": {
-                const { event = "", data = {}, to = "" } = payload;
-                for (let worker of this.getWsWorker()
-                    .getWorkersArray()
-                    .values()) {
-                    if (to && to === "broadcast") {
-                        // (<Socket>worker).broadcast.emit(event, data);
-                        continue;
+            switch (action) {
+                case "processMsg": {
+                    for (let worker of this.getWorkers().values()) {
+                        worker.send(payload, (err: Error) => {
+                            if (err) console.error(err);
+                        });
                     }
-
-                    if (to) {
-                        worker.to(to).emit(event, data);
-                        continue;
-                    }
-
-                    worker.emit(event, data);
+                    break;
                 }
-                break;
-            }
+                case "emitSocket": {
+                    const { event = "", data = {}, to = "" } = payload;
+                    console.log(this);
+                    for (let worker of this.wsWorker.getWorkersArray().values()) {
+                        if (to && to === "broadcast") {
+                            // (<Socket>worker).broadcast.emit(event, data);
+                            continue;
+                        }
 
-            case "saveSocket": {
-                this.addWorker(payload);
-                break;
-            }
+                        if (to) {
+                            worker.to(to).emit(event, data);
+                            continue;
+                        }
 
-            default: {
-                console.warn("No router process");
+                        worker.emit(event, data);
+                    }
+                    break;
+                }
+
+                case "saveSocket": {
+                    this.addWorker(payload);
+                    break;
+                }
+
+                default: {
+                    console.warn("No router process");
+                }
             }
+        } catch (err) {
+            console.error(err);
         }
     }
 
