@@ -58,18 +58,18 @@ class ProcessRouter {
                     const { event = "", data = {}, to = "" } = payload;
                     console.log("emitSocket run");
                     console.log(payload);
-                    for (let worker of this.wsWorker.getWorkersArray().values()) {
+                    for (let socket of this.wsWorker.getWorkersArray().values()) {
                         if (to && to === "broadcast") {
                             // (<Socket>worker).broadcast.emit(event, data);
                             continue;
                         }
 
                         if (to) {
-                            worker.to(to).emit(event, data);
+                            socket.to(to).emit(event, data);
                             continue;
                         }
 
-                        worker.emit(event, data);
+                        socket.emit(event, data);
                     }
                     break;
                 }
