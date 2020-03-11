@@ -27,16 +27,32 @@ export default (ws: WebSocketWorker, dbm: Readonly<Database.ManagmentDatabase>, 
             const { tokenRoom = "", membersIds = [] } = <Record<string, any>>result || {};
             socket.join(tokenRoom);
             const response = { room: result, msg: fakeMsg };
-            worker.to(tokenRoom).emit("updateFakeRoom", response);
+
+            (<any>process).send({
+                action: "emitSocket",
+                payload: {
+                    event: "updateFakeRoom",
+                    to: tokenRoom,
+                    data: response
+                }
+            });
+
+            (<any>process).send({
+                action: "emitSocket",
+                payload: {
+                    event: "updateChatsRooms",
+                    to: "broadcast",
+                    data: { ...response, fullUpdate: true, activeModule: "chat" }
+                }
+            });
+
             socket.broadcast.emit("updateChatsRooms", { ...response, fullUpdate: true, activeModule: "chat" });
         };
 
         socket.on("newMessage", async (msgObj: Record<string, any>) => {
-            console.log("workerId:", workerId);
             (<Record<string, any>>process).send(workerId);
             const { tokenRoom = "" } = msgObj || {};
             try {
-                console.log("newMessage");
                 const model: Model<Document> | null = getModelByName("chatMsg", "chatMsg");
 
                 if (model && tokenRoom) {
@@ -46,8 +62,24 @@ export default (ws: WebSocketWorker, dbm: Readonly<Database.ManagmentDatabase>, 
 
                         if (!saveMsg) throw new TypeError("Bad msg object");
                         console.log("tokenRoom:", tokenRoom);
-                        worker.to(tokenRoom).emit("msg", saveMsg);
-                    } else worker.to(tokenRoom).emit("msg", msgObj);
+                        (<any>process).send({
+                            action: "emitSocket",
+                            payload: {
+                                event: "msg",
+                                to: tokenRoom,
+                                data: saveMsg
+                            }
+                        });
+                    } else {
+                        (<any>process).send({
+                            action: "emitSocket",
+                            payload: {
+                                event: "msg",
+                                to: tokenRoom,
+                                data: msgObj
+                            }
+                        });
+                    }
                 } else throw new TypeError("Error save message");
             } catch (err) {
                 console.error(err.message);
@@ -69,9 +101,16 @@ export default (ws: WebSocketWorker, dbm: Readonly<Database.ManagmentDatabase>, 
 
         socket.on("onChatRoomActive", ({ token: tokenRoom, displayName = "" }) => {
             socket.join(tokenRoom);
-            worker.to(tokenRoom).emit("joinMsg", {
-                tokenRoom,
-                displayName: "System"
+
+            (<any>process).send({
+                action: "emitSocket",
+                payload: {
+                    event: "joinMsg",
+                    to: tokenRoom,
+                    data: {
+                        displayName: "System"
+                    }
+                }
             });
         });
     });

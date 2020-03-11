@@ -1,5 +1,5 @@
 import cluster, { Worker } from "cluster";
-import { Server as WebSocketServer } from "socket.io";
+import { Server as WebSocketServer, Socket } from "socket.io";
 import { WorkerDataProps, WsWorker } from "../../Utils/Interfaces";
 import chalk from "chalk";
 
@@ -54,10 +54,20 @@ class ProcessRouter {
                 break;
             }
             case "emitSocket": {
-                const { event = "", data = {} } = payload;
+                const { event = "", data = {}, to = "" } = payload;
                 for (let worker of this.getWsWorker()
                     .getWorkersArray()
                     .values()) {
+                    if (to && to === "broadcast") {
+                        // (<Socket>worker).broadcast.emit(event, data);
+                        continue;
+                    }
+
+                    if (to) {
+                        worker.to(to).emit(event, data);
+                        continue;
+                    }
+
                     worker.emit(event, data);
                 }
                 break;
