@@ -17,12 +17,12 @@ if (process.env.NODE_ENV === "production") {
     fs.openSync("/tmp/app-initialized", "w");
 }
 
+export const wsWorkerManager: WebSocketWorker = new WebSocketWorker();
+
 namespace Entrypoint {
     const cpuLentgh: number = os.cpus().length;
     const workers: Array<Worker> = [];
 
-    export const wsWorkerManager: WebSocketWorker = new WebSocketWorker();
-    console.log(wsWorkerManager);
     const workersRouter = new ProcessRouter(workers, wsWorkerManager);
 
     if (cluster.isMaster) {

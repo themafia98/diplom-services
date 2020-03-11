@@ -31,8 +31,7 @@ import { UserModel } from "../Database/Schema";
 import jwt, { StrategyOptions } from "passport-jwt";
 import * as passportLocal from "passport-local";
 
-import WebSocketWorker from "../WebSocketWorker";
-import Entrypoint from "../..";
+import Entrypoint, { wsWorkerManager } from "../..";
 import wsEvents from "../../Controllers/Contact/Chat/wsEvents";
 
 import limiter from "../../config/limiter";
@@ -187,7 +186,6 @@ namespace Http {
         }
 
         public async start(callback: Function): Promise<void> {
-            const { wsWorkerManager } = Entrypoint || {};
             const Main: Readonly<Function> = General.Main;
             const TasksController: Readonly<Function> = Tasks.TasksController;
             const SystemData: Readonly<Function> = System.SystemData;
@@ -268,9 +266,9 @@ namespace Http {
             this.getRest().use(this.startResponse);
             this.getRest().use(limiter);
 
-            Entrypoint.wsWorkerManager.startSocketConnection(socketio(server));
+            wsWorkerManager.startSocketConnection(socketio(server));
             console.log("Entrypoint:", Entrypoint);
-            console.log(Entrypoint.wsWorkerManager);
+            console.log(wsWorkerManager);
             wsEvents(wsWorkerManager, dbm, server); /** chat */
 
             Utils.initControllers(
