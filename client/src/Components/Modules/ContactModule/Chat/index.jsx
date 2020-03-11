@@ -28,6 +28,7 @@ class Chat extends React.PureComponent {
     static contextType = modelsContext;
 
     socket = null;
+    updaterChats = null;
 
     componentDidMount = () => {
         const { onUpdateRoom } = this.props;
@@ -43,13 +44,55 @@ class Chat extends React.PureComponent {
         this.chat.getSocket().on("error", this.errorConnection);
     };
 
+    componentWillUnmount = () => {
+        if (!_.isNull(this.updaterChats)) {
+            clearInterval(this.updaterChats);
+        }
+    }
+
     componentDidUpdate = prevProps => {
-        const { socketConnection, tokenRoom = "", onSetSocketConnection, onLoadActiveChats } = this.props;
+        const {
+            socketConnection,
+            tokenRoom = "",
+            onSetSocketConnection,
+            onUpdateRoom = null,
+            onLoadActiveChats,
+            udata: {
+                _id: uid
+            } = {},
+            chat: { chatToken = null, listdata = [], shouldLoadingMessage = false } = {},
+            udata: { displayName = "" } = {},
+            onLoadingDataByToken = null
+        } = this.props;
+
         const { shouldUpdate = false } = this.state;
 
         if (prevProps.socketConnection && !socketConnection) {
             onSetSocketConnection({ socketConnection: false, module: null });
             return;
+        }
+
+        if (shouldLoadingMessage) {
+            onLoadingDataByToken(chatToken, listdata, "chat", false);
+        }
+
+        if (_.isNull(this.updaterChats) && socketConnection) {
+            this.updaterChats = setInterval(() => {
+                onLoadActiveChats({
+                    path: "loadChats",
+                    actionPath: "chatRoom",
+                    actionType: "entrypoint_chat",
+                    options: {
+                        limitList: null,
+                        socket: {
+                            socketConnection,
+                            module: "chat"
+                        },
+                        uid
+                    },
+                    shouldRefresh: true
+                });
+            }, 5000);
         }
 
         if ((prevProps.tokenRoom !== tokenRoom && !_.isNull(prevProps.tokenRoom)) || shouldUpdate) {
@@ -86,7 +129,15 @@ class Chat extends React.PureComponent {
     };
 
     connection = socketConnection => {
-        const { chat: { chatToken: tokenRoom = null } = {}, udata: { _id: uid } = {}, onLoadActiveChats } = this.props;
+        const {
+            chat: {
+                chatToken: tokenRoom = null
+            } = {},
+            udata: {
+                _id: uid
+            } = {},
+            onLoadActiveChats
+        } = this.props;
 
         if (socketConnection) {
             if (onLoadActiveChats)
@@ -336,14 +387,14 @@ class Chat extends React.PureComponent {
                                         messages={listdataMsgs[tokenRoom] || []}
                                     />
                                 ) : (
-                                    <div className="emptyChatRoom">
-                                        {!socketErrorStatus ? (
-                                            <p className="emptyChatRoomMsg">Выберите собеседника</p>
-                                        ) : (
-                                            <p className="socket-error">{socketErrorStatus}</p>
+                                            <div className="emptyChatRoom">
+                                                {!socketErrorStatus ? (
+                                                    <p className="emptyChatRoomMsg">Выберите собеседника</p>
+                                                ) : (
+                                                        <p className="socket-error">{socketErrorStatus}</p>
+                                                    )}
+                                            </div>
                                         )}
-                                    </div>
-                                )}
                             </div>
                         </div>
                     </div>
@@ -356,7 +407,11 @@ class Chat extends React.PureComponent {
 const mapStateToProps = state => {
     const {
         chat = {},
-        chat: { chatToken: tokenRoom = null, isFake: interlocutorIdFakeRoom = null } = {},
+        chat: {
+            chatToken: tokenRoom = null,
+            listdataMsgs = {},
+            isFake: interlocutorIdFakeRoom = null
+        } = {},
         socketConnection = false,
         activeSocketModule = null,
         socketErrorStatus = null

@@ -1,5 +1,11 @@
-import { setSocketConnection, onLoadActiveChats, setSocketError, setActiveChatToken, updateRoom } from "../";
-
+import _ from "lodash";
+import {
+    setSocketConnection,
+    onLoadActiveChats,
+    setSocketError,
+    setActiveChatToken,
+    updateRoom
+} from "../";
 import { errorRequstAction } from "../../publicActions";
 
 /**
@@ -16,15 +22,22 @@ const loadActiveChats = payload => async (dispatch, getState, { schema, Request,
         actionPath = "",
         actionType = "",
         options: {
-            limitList = null,
-            udata = {},
-            socket: { socketConnection = false, module: activeModule = "chat" } = {}
+            socket: {
+                socketConnection = false,
+                module: activeModule = "chat"
+            } = {}
         } = {},
-        options = {}
+        options = {},
+        shouldRefresh = false,
     } = payload || {};
 
+    const {
+        chat: {
+            isFake = "",
+        } = {} } = getState().socketReducer || {};
+
     try {
-        if ((!path || !actionPath) && socketConnection && activeModule) {
+        if (!shouldRefresh && (!path || !actionPath) && socketConnection && activeModule) {
             dispatch(setSocketConnection({ socketConnection, activeModule }));
             return;
         }
@@ -63,17 +76,33 @@ const loadActiveChats = payload => async (dispatch, getState, { schema, Request,
         } = response || {};
 
         const { udata: { _id: uidState = "" } = {} } = getState().publicReducer || {};
+        let activeChatRoom = null;
+        if (shouldRefresh) {
+            activeChatRoom = listdata.find(room => {
+                const { membersIds = [] } = room || {};
+                const findResult = membersIds.every(id => {
+                    if (id === isFake || id === uidState) {
+                        return true;
+                    }
+                    return false;
+                });
+
+                return findResult;
+            });
+        }
 
         dispatch(
             onLoadActiveChats({
                 usersList: usersList.filter(user => user._id !== uidState),
+                activeChatRoom,
+                shouldLoadingMessage: shouldRefresh,
                 listdata,
                 options
             })
         );
     } catch (error) {
         console.error(error);
-        dispatch(setSocketError({ socketConnection: false, msg: error.message }));
+        dispatch(setSocketError({ socketConnection: shouldRefresh ? shouldRefresh : false, msg: error.message }));
         dispatch(errorRequstAction(error.message));
     }
 };
@@ -94,7 +123,7 @@ const loadingDataByToken = (token, listdata, activeModule, isFake = null) => asy
         const configToken = listdata.find(config => config && config.tokenRoom === token) || null;
 
         if (!configToken) {
-            throw new Error("Bad config token");
+            console.warn("Bad config token");
         }
 
         const options = Object.keys(configToken).reduce((optionsObj, key) => {
@@ -125,7 +154,12 @@ const loadingDataByToken = (token, listdata, activeModule, isFake = null) => asy
             data: { response: { metadata: listdataMsgs = [] } = {} }
         } = res || {};
 
-        dispatch(setActiveChatToken({ listdataMsgs, tokenRoom: token }));
+        dispatch(setActiveChatToken({
+            listdataMsgs,
+            tokenRoom: token,
+            shouldLoadingMessage: false
+        }));
+
     } catch (error) {
         console.error(error.message);
         dispatch(errorRequstAction(error.message));
@@ -134,13 +168,40 @@ const loadingDataByToken = (token, listdata, activeModule, isFake = null) => asy
 
 const updateRooms = payload => async (dispatch, getState, { schema, Request, clientDB }) => {
     try {
-        const { room: { tokenRoom: token = "" } = {}, msg = {}, fullUpdate = false, activeModule } = payload || {};
-        const { chat: { usersList = [], listdata: listdataState = [] } = {} } = getState().socketReducer || {};
-        const { udata: { _id: uidState = "" } = {} } = getState().publicReducer || {};
+
+        const {
+            room: {
+                tokenRoom: token = "",
+                membersIds = []
+            } = {},
+            msg = {},
+            fullUpdate = false,
+            activeModule
+        } = payload || {};
+
+        const {
+            chat: {
+                usersList = [],
+                listdata: listdataState = []
+            } = {} } = getState().socketReducer || {};
+
+        const {
+            udata: { _id: uidState = "" } = {}
+        } = getState().publicReducer || {};
+
+        let shouldAdd = false;
+        if (Array.isArray(membersIds) && membersIds.length && fullUpdate) {
+
+            if (!membersIds.some(id => id === uidState)) {
+                shouldAdd = !membersIds.some(id => id === uidState);
+            };
+
+        }
 
         if (!fullUpdate) {
             dispatch(updateRoom(payload));
         }
+
 
         const rest = new Request();
         const res = await rest.sendRequest(
@@ -166,10 +227,16 @@ const updateRooms = payload => async (dispatch, getState, { schema, Request, cli
             throw new Error(`Invalid load in module ${activeModule} action tokenData`);
         }
 
+        const rooms = shouldAdd ? [...listdataState, metadata[0] ? metadata[0] : null].filter(Boolean)
+            : [...listdataState];
+
+
+        const normalizeRooms = _.uniqWith(rooms, (a, b) => a._id !== b._id);
+
         dispatch(
             onLoadActiveChats({
                 usersList: usersList.filter(user => user._id !== uidState),
-                listdata: [...listdataState, metadata[0] ? metadata[0] : null].filter(Boolean),
+                listdata: normalizeRooms,
                 options: {
                     socket: {
                         socketConnection: true,

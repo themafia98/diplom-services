@@ -19,7 +19,7 @@ const userSchema = new Schema(
         position: { type: String, required: true },
         rules: { type: String, default: "guest", required: true },
         accept: { type: Boolean, default: false, required: true },
-        avatar: { type: String, default: "", required: true }
+        avatar: { type: String, default: "", required: false }
     },
     { timestamps: true }
 );

@@ -37,15 +37,15 @@ export default (ws: WebSocketWorker, dbm: Readonly<Database.ManagmentDatabase>, 
                 }
             });
 
-            (<Record<string, any>>process).send({
-                action: "emitSocket",
-                payload: {
-                    event: "updateChatsRooms",
-                    to: "broadcast",
-                    socket,
-                    data: { ...response, fullUpdate: true, activeModule: "chat" }
-                }
-            });
+            // (<Record<string, any>>process).send({
+            //     action: "emitSocket",
+            //     payload: {
+            //         event: "updateChatsRooms",
+            //         to: "broadcast",
+            //         socket,
+            //         data: { ...response, fullUpdate: true, activeModule: "chat" }
+            //     }
+            // });
 
             socket.broadcast.emit("updateChatsRooms", { ...response, fullUpdate: true, activeModule: "chat" });
         };

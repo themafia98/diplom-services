@@ -17,7 +17,8 @@ const initialState = {
         usersList: [],
         listdata: [],
         listdataMsgs: {},
-        isFake: null
+        isFake: null,
+        shouldLoadingMessage: false
     }
 };
 
@@ -35,7 +36,12 @@ export default (state = initialState, action) => {
 
         case SET_ACTIVE_CHAT_TOKEN: {
             const { chat = {} } = state;
-            const { tokenRoom, listdataMsgs = [], isFake = null } = action.payload || {};
+            const {
+                tokenRoom,
+                listdataMsgs = [],
+                isFake = null,
+                shouldLoadingMessage = false
+            } = action.payload || {};
 
             return {
                 ...state,
@@ -44,11 +50,12 @@ export default (state = initialState, action) => {
                     chatToken: tokenRoom || { chatToken: null },
                     listdataMsgs: !isFake
                         ? {
-                              ...chat.listdataMsgs,
-                              [tokenRoom]: [...listdataMsgs]
-                          }
+                            ...chat.listdataMsgs,
+                            [tokenRoom]: [...listdataMsgs]
+                        }
                         : {},
-                    isFake
+                    isFake,
+                    shouldLoadingMessage
                 }
             };
         }
@@ -126,8 +133,10 @@ export default (state = initialState, action) => {
         case LOAD_CHATS_LIST: {
             const {
                 usersList = [],
+                activeChatRoom = null,
                 listdata = [],
-                options: { socket: { socketConnection = false, module: activeSocketModule } = {} } = {}
+                options: { socket: { socketConnection = false, module: activeSocketModule } = {} } = {},
+                shouldLoadingMessage = false,
             } = action.payload || {};
             const { chat: { tokenRoom = "" } = {} } = state;
 
@@ -138,18 +147,29 @@ export default (state = initialState, action) => {
                 if (findItem) return item;
             });
 
-            const fakeItem = duplicateFixed.find(it => it.tokenRoom.include("__fakeRoom"));
+            const fakeItem = duplicateFixed.find(it => it?.tokenRoom?.include("__fakeRoom"));
 
             sortListdata = fakeItem
                 ? sortListdata
-                      .map(it => {
-                          if (it.tokenRoom.include("__fakeRoom")) {
-                              return null;
-                          }
-                          return it;
-                      })
-                      .filter(Boolean)
+                    .map(it => {
+                        if (it?.tokenRoom?.include("__fakeRoom")) {
+                            return null;
+                        }
+                        return it;
+                    })
+                    .filter(Boolean)
                 : sortListdata;
+
+            let activeProps = {};
+
+            if (activeChatRoom) {
+                const { tokenRoom: token = "", } = activeChatRoom || {};
+                activeProps = {
+                    chatToken: token,
+                    isFake: null,
+                }
+
+            }
 
             return {
                 ...state,
@@ -158,7 +178,9 @@ export default (state = initialState, action) => {
                 chat: {
                     ...state.chat,
                     usersList,
-                    listdata: [...sortListdata]
+                    listdata: [...sortListdata],
+                    shouldLoadingMessage,
+                    ...activeProps
                 }
             };
         }

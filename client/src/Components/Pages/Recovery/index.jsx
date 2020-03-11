@@ -34,7 +34,7 @@ const Recovory = props => {
 
             if (result.status !== 200) throw new Error("Bad data for recovory");
 
-            setStatus("Новый пороль будет выслан вам на почту.");
+            setStatus("Новый пароль будет выслан вам на почту.");
             setField("");
 
         } catch (error) {
