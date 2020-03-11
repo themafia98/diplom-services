@@ -187,7 +187,7 @@ namespace Http {
         }
 
         public async start(callback: Function): Promise<void> {
-            const { wsWorkers = [] } = Entrypoint || {};
+            const { wsWorkerManager } = Entrypoint || {};
             const Main: Readonly<Function> = General.Main;
             const TasksController: Readonly<Function> = Tasks.TasksController;
             const SystemData: Readonly<Function> = System.SystemData;
@@ -268,7 +268,6 @@ namespace Http {
             this.getRest().use(this.startResponse);
             this.getRest().use(limiter);
 
-            const wsWorkerManager: WebSocketWorker = new WebSocketWorker(wsWorkers);
             wsWorkerManager.startSocketConnection(socketio(server));
 
             wsEvents(wsWorkerManager, dbm, server); /** chat */

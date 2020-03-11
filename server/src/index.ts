@@ -7,7 +7,8 @@ import os from "os";
 
 import _ from "lodash";
 
-import { ServerRun, WorkerDataProps } from "./Utils/Interfaces";
+import { ServerRun } from "./Utils/Interfaces";
+import WebSocketWorker from "./Models/WebSocketWorker";
 import ProcessRouter from "./Models/Process/ProcessRouter";
 import Http from "./Models/Server";
 
@@ -21,7 +22,8 @@ namespace Entrypoint {
     const workers: Array<Worker> = [];
 
     export const wsWorkers: Array<WebSocketServer> = [];
-    const workersRouter = new ProcessRouter(workers, wsWorkers);
+    export const wsWorkerManager: WebSocketWorker = new WebSocketWorker(wsWorkers);
+    const workersRouter = new ProcessRouter(workers, wsWorkerManager);
 
     if (cluster.isMaster) {
         for (let i = 0; i < cpuLentgh; i++) {

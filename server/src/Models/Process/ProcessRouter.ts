@@ -1,19 +1,19 @@
 import cluster, { Worker } from "cluster";
 import { Server as WebSocketServer } from "socket.io";
-import { WorkerDataProps } from "../../Utils/Interfaces";
+import { WorkerDataProps, WsWorker } from "../../Utils/Interfaces";
 import chalk from "chalk";
 
 class ProcessRouter {
     private workers: Array<Worker> = [];
-    private wsWorkers: Array<WebSocketServer> = [];
+    private wsWorker: WsWorker;
 
-    constructor(workers: Array<Worker>, wsWorkers: Array<WebSocketServer>) {
+    constructor(workers: Array<Worker>, wsWorker: WsWorker) {
         this.workers = workers;
-        this.wsWorkers = wsWorkers;
+        this.wsWorker = wsWorker;
     }
 
-    getWsWorkers(): Array<WebSocketServer> {
-        return this.wsWorkers;
+    getWsWorker(): WsWorker {
+        return this.wsWorker;
     }
 
     getWorkers(): Array<Worker> {
@@ -22,10 +22,6 @@ class ProcessRouter {
 
     addWorker(worker: Worker): void {
         this.workers.push(worker);
-    }
-
-    addWsWorker(ws: WebSocketServer): void {
-        this.wsWorkers.push(ws);
     }
 
     removeWorker(workerId: number): void {
@@ -59,7 +55,9 @@ class ProcessRouter {
             }
             case "emitSocket": {
                 const { event = "", data = {} } = payload;
-                for (let worker of this.getWsWorkers().values()) {
+                for (let worker of this.getWsWorker()
+                    .getWorkersArray()
+                    .values()) {
                     worker.emit(event, data);
                 }
                 break;
