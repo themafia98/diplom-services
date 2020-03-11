@@ -123,7 +123,7 @@ const loadingDataByToken = (token, listdata, activeModule, isFake = null) => asy
         const configToken = listdata.find(config => config && config.tokenRoom === token) || null;
 
         if (!configToken) {
-            console.warn("Bad config token");
+            throw new Error("Bad config token");
         }
 
         const options = Object.keys(configToken).reduce((optionsObj, key) => {
