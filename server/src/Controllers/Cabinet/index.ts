@@ -8,13 +8,28 @@ import Action from "../../Models/Action";
 import Decorators from "../../Decorators";
 
 namespace Cabinet {
-    const { getResponseJson } = Utils;
+    const { getResponseJson, isImage } = Utils;
     const { Controller, Post } = Decorators;
 
     @Controller("/cabinet")
     export class CabinetController {
-        @Post({ path: "/validationAvatar", private: true })
+        @Post({ path: "/loadAvatar", private: true, file: true })
         public async validationAvatar(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+            const { files = [] } = req;
+
+            const image = (<Record<string, any>>files)[0] || null;
+
+            if (!image || !image?.buffer) {
+                throw new Error("Bad avatar");
+            }
+
+            const dataUrl = image.buffer.toString("base64");
+
+            if (!dataUrl) {
+                throw new Error("Bad convert to base64");
+            }
+
+
             const params: Params = {
                 methodQuery: "update_avatar",
                 from: "users",
@@ -24,7 +39,14 @@ namespace Cabinet {
 
             try {
 
-                return res.sendStatus(200);
+                res.status(200);
+                return res.json(
+                    getResponseJson(
+                        "update_avatar",
+                        { params, metadata: dataUrl, done: true, status: "OK" },
+                        (<Record<string, any>>req).start
+                    )
+                )
             } catch (error) {
                 console.error(error);
                 if (!res.headersSent) {

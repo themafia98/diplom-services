@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import _ from "lodash";
 import { Modal, Upload, message, Icon, Button } from "antd";
 import UserCard from "../../UserCard";
 import TitleModule from "../../TitleModule";
@@ -63,13 +64,24 @@ class CabinetModule extends React.PureComponent {
     onChangeFile = (info) => {
         const { status } = info.file;
         if (status !== "uploading") {
-            debugger;
+
             this.setState({ disabled: false });
         }
         if (status === "done") {
-            message.success(`${info.file.name} file uploaded successfully.`);
             debugger;
-            this.getBase64(info.file.originFileObj, this.setFile.bind(this));
+            message.success(`${info.file.name} file uploaded successfully.`);
+            const { file: { xhr: { response = null } = {}, originFileObj = {} } = {} } = info;
+
+            const res = _.isString(response) ? JSON.parse(response) : response;
+
+            const { response: { done = false } = {} } = res || {};
+
+            if (!done) {
+                this.setState({ disabled: false });
+                message.error(`${info.file.name} file upload failed.`);
+            }
+
+            this.getBase64(originFileObj, this.setFile.bind(this));
             this.setState({ disabled: true });
         } else if (status === "error") {
             this.setState({ disabled: false });
@@ -86,7 +98,7 @@ class CabinetModule extends React.PureComponent {
             multiple: false,
             withCredentials: true,
             headers: rest ? rest.getHeaders() : null,
-            action: rest ? `${rest.getApi()}/cabinet/validationAvatar` : null
+            action: rest ? `${rest.getApi()}/cabinet/loadAvatar` : null
         };
 
         const uploadButton = (

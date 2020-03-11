@@ -168,6 +168,7 @@
         &:not(.currentUser) {
             background-color: #fdfff5;
             align-self: flex-end;
+            margin-right: 15px;
         }
 
         &:first-child {
