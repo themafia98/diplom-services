@@ -1,11 +1,5 @@
 import _ from "lodash";
-import {
-    setSocketConnection,
-    onLoadActiveChats,
-    setSocketError,
-    setActiveChatToken,
-    updateRoom
-} from "../";
+import { setSocketConnection, onLoadActiveChats, setSocketError, setActiveChatToken, updateRoom } from "../";
 import { errorRequstAction } from "../../publicActions";
 
 /**
@@ -21,20 +15,12 @@ const loadActiveChats = payload => async (dispatch, getState, { schema, Request,
         path = "",
         actionPath = "",
         actionType = "",
-        options: {
-            socket: {
-                socketConnection = false,
-                module: activeModule = "chat"
-            } = {}
-        } = {},
+        options: { socket: { socketConnection = false, module: activeModule = "chat" } = {} } = {},
         options = {},
-        shouldRefresh = false,
+        shouldRefresh = false
     } = payload || {};
 
-    const {
-        chat: {
-            isFake = "",
-        } = {} } = getState().socketReducer || {};
+    const { chat: { isFake = "" } = {} } = getState().socketReducer || {};
 
     try {
         if (!shouldRefresh && (!path || !actionPath) && socketConnection && activeModule) {
@@ -95,7 +81,7 @@ const loadActiveChats = payload => async (dispatch, getState, { schema, Request,
             onLoadActiveChats({
                 usersList: usersList.filter(user => user._id !== uidState),
                 activeChatRoom,
-                shouldLoadingMessage: shouldRefresh,
+                shouldLoadingMessage: activeChatRoom && shouldRefresh,
                 listdata,
                 options
             })
@@ -154,12 +140,13 @@ const loadingDataByToken = (token, listdata, activeModule, isFake = null) => asy
             data: { response: { metadata: listdataMsgs = [] } = {} }
         } = res || {};
 
-        dispatch(setActiveChatToken({
-            listdataMsgs,
-            tokenRoom: token,
-            shouldLoadingMessage: false
-        }));
-
+        dispatch(
+            setActiveChatToken({
+                listdataMsgs,
+                tokenRoom: token,
+                shouldLoadingMessage: false
+            })
+        );
     } catch (error) {
         console.error(error.message);
         dispatch(errorRequstAction(error.message));
@@ -168,40 +155,23 @@ const loadingDataByToken = (token, listdata, activeModule, isFake = null) => asy
 
 const updateRooms = payload => async (dispatch, getState, { schema, Request, clientDB }) => {
     try {
+        const { room: { tokenRoom: token = "", membersIds = [] } = {}, msg = {}, fullUpdate = false, activeModule } =
+            payload || {};
 
-        const {
-            room: {
-                tokenRoom: token = "",
-                membersIds = []
-            } = {},
-            msg = {},
-            fullUpdate = false,
-            activeModule
-        } = payload || {};
+        const { chat: { usersList = [], listdata: listdataState = [] } = {} } = getState().socketReducer || {};
 
-        const {
-            chat: {
-                usersList = [],
-                listdata: listdataState = []
-            } = {} } = getState().socketReducer || {};
-
-        const {
-            udata: { _id: uidState = "" } = {}
-        } = getState().publicReducer || {};
+        const { udata: { _id: uidState = "" } = {} } = getState().publicReducer || {};
 
         let shouldAdd = false;
         if (Array.isArray(membersIds) && membersIds.length && fullUpdate) {
-
             if (!membersIds.some(id => id === uidState)) {
                 shouldAdd = !membersIds.some(id => id === uidState);
-            };
-
+            }
         }
 
         if (!fullUpdate) {
             dispatch(updateRoom(payload));
         }
-
 
         const rest = new Request();
         const res = await rest.sendRequest(
@@ -227,9 +197,9 @@ const updateRooms = payload => async (dispatch, getState, { schema, Request, cli
             throw new Error(`Invalid load in module ${activeModule} action tokenData`);
         }
 
-        const rooms = shouldAdd ? [...listdataState, metadata[0] ? metadata[0] : null].filter(Boolean)
+        const rooms = shouldAdd
+            ? [...listdataState, metadata[0] ? metadata[0] : null].filter(Boolean)
             : [...listdataState];
-
 
         const normalizeRooms = _.uniqWith(rooms, (a, b) => a._id !== b._id);
 
