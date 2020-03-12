@@ -21,7 +21,7 @@ import Loader from "../../Loader";
 import HeaderView from "../../HeaderView";
 import ContentView from "../../ContentView";
 import MenuView from "../../MenuView";
-import modelContext from '../../../Models/context';
+import modelContext from "../../../Models/context";
 
 let deferredPrompt = null;
 
@@ -125,7 +125,7 @@ class Dashboard extends React.PureComponent {
     };
 
     logout = async event => {
-        const { rest, onLogoutAction } = this.props;
+        const { rest } = this.props;
         if (rest) {
             await rest.signOut();
         }
@@ -240,7 +240,7 @@ class Dashboard extends React.PureComponent {
     };
 
     installApp = event => {
-        Notification.requestPermission().then(function (result) {
+        Notification.requestPermission().then(function(result) {
             if (result === "granted") {
                 this.randomNotification();
             }

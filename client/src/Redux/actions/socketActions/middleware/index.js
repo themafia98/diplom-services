@@ -88,7 +88,12 @@ const loadActiveChats = payload => async (dispatch, getState, { schema, Request,
         );
     } catch (error) {
         console.error(error);
-        dispatch(setSocketError({ socketConnection: shouldRefresh ? shouldRefresh : false, msg: error.message }));
+        dispatch(
+            setSocketError({
+                socketConnection: shouldRefresh ? shouldRefresh : false,
+                msg: error.message
+            })
+        );
         dispatch(errorRequstAction(error.message));
     }
 };
@@ -100,7 +105,13 @@ const loadingDataByToken = (token, listdata, activeModule, isFake = null) => asy
 ) => {
     try {
         if (isFake) {
-            dispatch(setActiveChatToken({ listdata: [], tokenRoom: `${token}__fakeRoom`, isFake }));
+            dispatch(
+                setActiveChatToken({
+                    listdata: [],
+                    tokenRoom: `${token}__fakeRoom`,
+                    isFake
+                })
+            );
             return;
         }
 

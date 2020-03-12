@@ -47,9 +47,7 @@ class App extends React.Component {
         const rest = new Request();
 
         return this.setState({ authLoad: true, loadState: true }, async () => {
-
             try {
-
                 const res = await rest.sendRequest("/userload", "POST", null, true);
 
                 if (res.status !== 200) {
@@ -66,7 +64,6 @@ class App extends React.Component {
                 const { data: { user = {} } = {} } = res || {};
 
                 const udata = Object.keys(user).reduce((accumulator, key) => {
-
                     if (key !== "token") {
                         accumulator[key] = res.data["user"][key];
                     }
@@ -79,18 +76,26 @@ class App extends React.Component {
                 const isUserData = udata && !_.isEmpty(udata);
 
                 if (!isFind) {
-                    if (isUserData) onLoadUdata(udata).then(() => addTab(routeParser({ path })));
-                    else rest.signOut();
+                    if (isUserData) {
+                        onLoadUdata(udata)
+                            .then(() => {
+                                addTab(routeParser({ path }));
+                            })
+                            .catch(error => console.error(error));
+                    } else rest.signOut();
                 } else if (currentActionTab !== path) {
-                    if (isUserData) onLoadUdata(udata).then(() => setCurrentTab(path));
-                    else rest.signOut();
+                    if (isUserData) {
+                        onLoadUdata(udata)
+                            .then(() => {
+                                setCurrentTab(path);
+                            })
+                            .catch(error => console.error(error));
+                    } else rest.signOut();
                 }
-
             } catch (error) {
                 console.error(error);
                 rest.signOut();
             }
-
         });
     };
 
