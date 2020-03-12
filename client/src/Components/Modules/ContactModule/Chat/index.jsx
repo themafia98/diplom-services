@@ -48,7 +48,7 @@ class Chat extends React.PureComponent {
         if (!_.isNull(this.updaterChats)) {
             clearInterval(this.updaterChats);
         }
-    }
+    };
 
     componentDidUpdate = prevProps => {
         const {
@@ -57,9 +57,7 @@ class Chat extends React.PureComponent {
             onSetSocketConnection,
             onUpdateRoom = null,
             onLoadActiveChats,
-            udata: {
-                _id: uid
-            } = {},
+            udata: { _id: uid } = {},
             chat: { chatToken = null, listdata = [], shouldLoadingMessage = false } = {},
             udata: { displayName = "" } = {},
             onLoadingDataByToken = null
@@ -129,15 +127,7 @@ class Chat extends React.PureComponent {
     };
 
     connection = socketConnection => {
-        const {
-            chat: {
-                chatToken: tokenRoom = null
-            } = {},
-            udata: {
-                _id: uid
-            } = {},
-            onLoadActiveChats
-        } = this.props;
+        const { chat: { chatToken: tokenRoom = null } = {}, udata: { _id: uid } = {}, onLoadActiveChats } = this.props;
 
         if (socketConnection) {
             if (onLoadActiveChats)
@@ -308,8 +298,23 @@ class Chat extends React.PureComponent {
     };
 
     getUsersList = () => {
-        const { chat: { usersList = [] } = {}, udata: { displayName = "" } = {} } = this.props;
-        const names = [displayName, ...usersList.map(it => it.displayName)].filter(Boolean);
+        const {
+            chat:  {
+                chatToken: tokenRoom = null,
+                usersList = [],
+                listdata = []
+            } = {},
+         } = this.props;
+
+        const room = listdata.find(room => {
+            return room.tokenRoom && room.tokenRoom === tokenRoom;
+        });
+
+        const names = [...usersList.map(it => {
+            if (room.membersIds.includes(it._id)) return it.displayName;
+            return null;
+        )].filter(Boolean);
+
         const list = names.map((name, index) => (
             <li className="simpleLink" key={`${index}${name}`}>
                 {name}
@@ -355,7 +360,7 @@ class Chat extends React.PureComponent {
                                     {tokenRoom && !tokenRoom.includes("fakeRoom") ? (
                                         <Popover content={usersListComponent}>
                                             <p className="counter-room">
-                                                Участников: <span className="link">{listdata.length + 1}</span>
+                                                Участников: <span className="link">{listdata.length}</span>
                                             </p>
                                         </Popover>
                                     ) : null}
@@ -387,14 +392,14 @@ class Chat extends React.PureComponent {
                                         messages={listdataMsgs[tokenRoom] || []}
                                     />
                                 ) : (
-                                            <div className="emptyChatRoom">
-                                                {!socketErrorStatus ? (
-                                                    <p className="emptyChatRoomMsg">Выберите собеседника</p>
-                                                ) : (
-                                                        <p className="socket-error">{socketErrorStatus}</p>
-                                                    )}
-                                            </div>
+                                    <div className="emptyChatRoom">
+                                        {!socketErrorStatus ? (
+                                            <p className="emptyChatRoomMsg">Выберите собеседника</p>
+                                        ) : (
+                                            <p className="socket-error">{socketErrorStatus}</p>
                                         )}
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -407,11 +412,7 @@ class Chat extends React.PureComponent {
 const mapStateToProps = state => {
     const {
         chat = {},
-        chat: {
-            chatToken: tokenRoom = null,
-            listdataMsgs = {},
-            isFake: interlocutorIdFakeRoom = null
-        } = {},
+        chat: { chatToken: tokenRoom = null, listdataMsgs = {}, isFake: interlocutorIdFakeRoom = null } = {},
         socketConnection = false,
         activeSocketModule = null,
         socketErrorStatus = null

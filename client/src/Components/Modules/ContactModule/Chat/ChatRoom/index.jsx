@@ -112,8 +112,8 @@ const ChatRoom = ({
                                         {it.displayName}
                                     </span>
                                 ) : (
-                                        <p className="admin_wrapper">{it.displayName}</p>
-                                    )}
+                                    <p className="admin_wrapper">{it.displayName}</p>
+                                )}
 
                                 {it.displayName !== "System" ? (
                                     <span className="msg_date">{it.date ? it.date : "No date"}.</span>
