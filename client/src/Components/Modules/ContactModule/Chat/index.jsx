@@ -311,12 +311,14 @@ class Chat extends React.PureComponent {
 
         const names = usersList
             .map(it => {
-                if (membersIds.includes(it._id) || membersIds.includes(displayName)) {
+                if (membersIds.includes(it._id)) {
                     return it.displayName;
                 }
                 return null;
             })
             .filter(Boolean);
+
+        names.unshift(displayName);
 
         const list = names.map((name, index) => (
             <li className="simpleLink" key={`${index}${name}`}>
