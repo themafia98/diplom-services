@@ -304,14 +304,12 @@ class Chat extends React.PureComponent {
             return room.tokenRoom && room.tokenRoom === tokenRoom;
         });
 
-        const filteredUsers = usersList
+        const names = usersList
             .map(it => {
                 if (room.membersIds.includes(it._id)) return it.displayName;
                 return null;
             })
             .filter(Boolean);
-
-        const names = [...filteredUsers];
 
         const list = names.map((name, index) => (
             <li className="simpleLink" key={`${index}${name}`}>
