@@ -12,24 +12,24 @@ class ProcessRouter {
         this.wsWorker = wsWorker;
     }
 
-    getWsWorker(): WsWorker {
+    public getWsWorker(): WsWorker {
         return this.wsWorker;
     }
 
-    getWorkers(): Array<Worker> {
+    public getWorkers(): Array<Worker> {
         return this.workers;
     }
 
-    addWorker(worker: Worker): void {
+    public addWorker(worker: Worker): void {
         this.workers.push(worker);
     }
 
-    removeWorker(workerId: number): void {
+    public removeWorker(workerId: number): void {
         const index = this.getWorkers().findIndex(worker => worker.id === workerId);
         this.getWorkers().splice(index, 1);
     }
 
-    onExit(worker: Worker, code: number, signal: string): void {
+    public onExit(worker: Worker, code: number, signal: string): void {
         console.log(`${chalk.yellow("worker")} ${chalk.red(worker?.process?.pid)} exit.`);
 
         this.removeWorker(worker.id);
@@ -41,13 +41,13 @@ class ProcessRouter {
         console.log(`New ${chalk.yellow("worker")} ${chalk.red(child?.process?.pid)} born.`);
     }
 
-    router(workerData: any): void {
+    public router(workerData: any): void {
         for (let worker of this.getWorkers().values()) {
             worker.send(workerData);
         }
     }
 
-    subscribe(worker: Worker): void {
+    public subscribe(worker: Worker): void {
         worker.on("exit", this.onExit.bind(this));
         worker.on("message", this.router.bind(this));
     }
