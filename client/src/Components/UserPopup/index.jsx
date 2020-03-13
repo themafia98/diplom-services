@@ -1,38 +1,38 @@
-import React from "react";
-import _ from "lodash";
-import { Avatar } from "antd";
+import React from 'react';
+import _ from 'lodash';
+import { Avatar } from 'antd';
 
 class UserPopup extends React.PureComponent {
-    state = {
-        udata: {}
-    };
+  state = {
+    udata: {},
+  };
 
-    static getDerivedStateFromProps = (props, state) => {
-        if (!_.isEqual(props.udata, state.udata)) {
-            return {
-                ...state,
-                udata: {
-                    ...state.udata,
-                    ...props.udata
-                }
-            };
-        }
-
-        return state;
-    };
-
-    render() {
-        const { goCabinet } = this.props;
-        const { udata = {} } = this.state;
-        return (
-            <div className="userPopup">
-                <div onClick={goCabinet} className="userPopupMain">
-                    <Avatar shape="square" type="small" icon="user" />
-                    <p className="userName_link">{udata && udata.displayName ? udata.displayName : "Unknown"}</p>
-                </div>
-            </div>
-        );
+  static getDerivedStateFromProps = (props, state) => {
+    if (!_.isEqual(props.udata, state.udata)) {
+      return {
+        ...state,
+        udata: {
+          ...state.udata,
+          ...props.udata,
+        },
+      };
     }
+
+    return state;
+  };
+
+  render() {
+    const { goCabinet } = this.props;
+    const { udata = {} } = this.state;
+    return (
+      <div className="userPopup">
+        <div onClick={goCabinet} className="userPopupMain">
+          <Avatar shape="square" type="small" icon="user" />
+          <p className="userName_link">{udata && udata.displayName ? udata.displayName : 'Unknown'}</p>
+        </div>
+      </div>
+    );
+  }
 }
 
 export default UserPopup;

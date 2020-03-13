@@ -1,49 +1,49 @@
-import React, { useContext } from "react";
+import React, { useContext } from 'react';
 //import EditorTextarea from "../../../../Textarea/EditorTextarea";
-import _ from "lodash";
-import { Card, Button } from "antd";
+import _ from 'lodash';
+import { Card, Button } from 'antd';
 
-import modelContext from "../../../../../Models/context";
-import clsx from "clsx";
+import modelContext from '../../../../../Models/context';
+import clsx from 'clsx';
 
 const NewsCard = ({ onClick = null, className = null, data = {} }) => {
-    const { schema = {} } = useContext(modelContext);
+  const { schema = {} } = useContext(modelContext);
 
-    const getNormalizeContent = content => {
-        const contentNormalize = Object.keys(content).reduce((data, key) => {
-            if (key.includes("entity") || key.includes("blocks")) {
-                const isArray = _.isArray(content[key]);
-                const isObject = _.isPlainObject(content[key]);
-                data[key] = isArray ? [...content[key]] : isObject ? { ...content[key] } : content[key];
-            }
-            return data;
-        }, {});
+  const getNormalizeContent = content => {
+    const contentNormalize = Object.keys(content).reduce((data, key) => {
+      if (key.includes('entity') || key.includes('blocks')) {
+        const isArray = _.isArray(content[key]);
+        const isObject = _.isPlainObject(content[key]);
+        data[key] = isArray ? [...content[key]] : isObject ? { ...content[key] } : content[key];
+      }
+      return data;
+    }, {});
 
-        if (_.isPlainObject(contentNormalize) && !contentNormalize.entityMap) {
-            contentNormalize.entityMap = {};
+    if (_.isPlainObject(contentNormalize) && !contentNormalize.entityMap) {
+      contentNormalize.entityMap = {};
+    }
+
+    if (_.isPlainObject(contentNormalize) && !contentNormalize.blocks) {
+      contentNormalize.blocks = [];
+    }
+
+    return contentNormalize;
+  };
+
+  if (!data || _.isEmpty(data)) return null;
+  else
+    return (
+      <Card
+        className={clsx('news-card', className ? className : null)}
+        title={data?.title ? data?.title : data?._id ? data?._id : null}
+        extra={
+          <Button onClick={onClick} type="primary">
+            Читать
+          </Button>
         }
-
-        if (_.isPlainObject(contentNormalize) && !contentNormalize.blocks) {
-            contentNormalize.blocks = [];
-        }
-
-        return contentNormalize;
-    };
-
-    if (!data || _.isEmpty(data)) return null;
-    else
-        return (
-            <Card
-                className={clsx("news-card", className ? className : null)}
-                title={data?.title ? data?.title : data?._id ? data?._id : null}
-                extra={
-                    <Button onClick={onClick} type="primary">
-                        Читать
-                    </Button>
-                }
-            >
-                {'Препросмотр временно недоступен. Нажмите "читать" для просмотра новости.'}
-                {/* {data.content ? (
+      >
+        {'Препросмотр временно недоступен. Нажмите "читать" для просмотра новости.'}
+        {/* {data.content ? (
                     <EditorTextarea
                         key={data?._id}
                         readOnly={true}
@@ -51,8 +51,8 @@ const NewsCard = ({ onClick = null, className = null, data = {} }) => {
                     />\
                 ) : "Содержание отсутствует."}
                  */}
-            </Card>
-        );
+      </Card>
+    );
 };
 
 export default NewsCard;

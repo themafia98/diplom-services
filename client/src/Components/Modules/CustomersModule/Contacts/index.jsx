@@ -1,8 +1,8 @@
-import React from "react";
+import React from 'react';
 
 class Contacts extends React.PureComponent {
-    render() {
-        return <div className="contacts">Contacts</div>;
-    }
+  render() {
+    return <div className="contacts">Contacts</div>;
+  }
 }
 export default Contacts;
