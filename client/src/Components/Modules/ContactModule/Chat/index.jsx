@@ -298,22 +298,17 @@ class Chat extends React.PureComponent {
     };
 
     getUsersList = () => {
-        const {
-            chat:  {
-                chatToken: tokenRoom = null,
-                usersList = [],
-                listdata = []
-            } = {},
-         } = this.props;
-
+        const { chat: { chatToken: tokenRoom = null, usersList = [], listdata = [] } = {} } = this.props;
+        console.log(listdata);
         const room = listdata.find(room => {
             return room.tokenRoom && room.tokenRoom === tokenRoom;
         });
 
-        const names = [...usersList.map(it => {
+        const filteredUsers = usersList.map(it => {
             if (room.membersIds.includes(it._id)) return it.displayName;
             return null;
-        )].filter(Boolean);
+        });
+        const names = [...filteredUsers].filter(Boolean);
 
         const list = names.map((name, index) => (
             <li className="simpleLink" key={`${index}${name}`}>
