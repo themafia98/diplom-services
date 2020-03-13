@@ -4,7 +4,7 @@
     "git.confirmSync": false,
     "explorer.confirmDelete": true,
     "editor.minimap.enabled": false,
-    "editor.formatOnSave": true,
+    //"editor.formatOnSave": true,
     "css.lint.compatibleVendorPrefixes": "warning",
     "css.lint.duplicateProperties": "warning",
     "window.zoomLevel": -0.4,
@@ -14,21 +14,18 @@
     "php.suggest.basic": false,
     "editor.renderControlCharacters": false,
     "eslint.autoFixOnSave": true,
-    "[javascriptreact]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
+    // "[javascriptreact]": {
+    //     "editor.defaultFormatter": "esbenp.prettier-vscode"
+    // },
     "diffEditor.ignoreTrimWhitespace": false,
-    "[javascript]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[json]": {
-        "editor.defaultFormatter": "vscode.json-language-features"
-    },
+    // "[javascript]": {
+    //     "editor.defaultFormatter": "esbenp.prettier-vscode"
+    // },
+    // "[json]": {
+    //     "editor.defaultFormatter": "vscode.json-language-features"
+    // },
     "search.useGlobalIgnoreFiles": true,
-    "appService.zipIgnorePattern": [
-        "node_modules{,/**}",
-        ".vscode{,/**}"
-    ],
+    "appService.zipIgnorePattern": ["node_modules{,/**}", ".vscode{,/**}"],
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": true
     }
