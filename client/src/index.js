@@ -10,6 +10,7 @@ import "antd/dist/antd.css";
 import "./index.scss";
 import "./Utils/styles/fontello.css";
 
+
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import * as Sentry from "@sentry/browser";
