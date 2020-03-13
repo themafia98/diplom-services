@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import clsx from "clsx";
 import _ from "lodash";
 import Scrollbars from "react-custom-scrollbars";
 import TitleModule from "../../../TitleModule";
@@ -319,18 +320,16 @@ class CreateTask extends React.PureComponent {
                                 <form className="taskForm" name="taskForm">
                                     <label>Название: </label>
                                     <Input
-                                        className={[
-                                            !_.isEmpty(errorBundle) && errorBundle.name ? "isError" : null
-                                        ].join(" ")}
+                                        className={clsx(!_.isEmpty(errorBundle) && errorBundle.name ? "isError" : null)}
                                         onChange={this.onChangeHandler}
                                         name="name"
                                         type="text"
                                     />
                                     <label>Приоритет: </label>
                                     <Select
-                                        className={[
+                                        className={clsx(
                                             !_.isEmpty(errorBundle) && errorBundle.priority ? "isError" : null
-                                        ].join(" ")}
+                                        )}
                                         onChange={this.onChangeHandlerSelectPriority}
                                         defaultValue="Средний"
                                         name="priority"
@@ -342,9 +341,9 @@ class CreateTask extends React.PureComponent {
                                     </Select>
                                     <label>Назначить исполнителя/исполнителей:</label>
                                     <Select
-                                        className={[
+                                        className={clsx(
                                             !_.isEmpty(errorBundle) && errorBundle.editor ? "isError" : null
-                                        ].join(" ")}
+                                        )}
                                         onChange={this.onChangeHandlerSelectEditor}
                                         name="editor"
                                         mode="multiple"
@@ -353,18 +352,18 @@ class CreateTask extends React.PureComponent {
                                     >
                                         {filteredUsers && filteredUsers.length
                                             ? filteredUsers.map(it => (
-                                                <Option value={it.displayName} label={it.displayName}>
-                                                    <span>{it.displayName}</span>
-                                                </Option>
-                                            ))
+                                                  <Option value={it.displayName} label={it.displayName}>
+                                                      <span>{it.displayName}</span>
+                                                  </Option>
+                                              ))
                                             : null}
                                     </Select>
                                     <label>Описание задачи: </label>
                                     <Textarea
                                         key="createTextare"
-                                        className={[
+                                        className={clsx(
                                             !_.isEmpty(errorBundle) && errorBundle.description ? "isError" : null
-                                        ].join(" ")}
+                                        )}
                                         name="description"
                                         onChange={this.onChangeHandler}
                                         rows={8}
@@ -373,9 +372,7 @@ class CreateTask extends React.PureComponent {
                                     <File onAddFileList={null} rest={rest} />
                                     <label>Срок сдачи: </label>
                                     <RangePicker
-                                        className={[
-                                            !_.isEmpty(errorBundle) && errorBundle.date ? "isError" : null
-                                        ].join(" ")}
+                                        className={clsx(!_.isEmpty(errorBundle) && errorBundle.date ? "isError" : null)}
                                         onChange={this.onChangeHandlerDate}
                                         defaultValue={[
                                             moment(moment().format("DD.MM.YYYY"), dateFormat),

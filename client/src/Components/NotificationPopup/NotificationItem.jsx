@@ -1,14 +1,15 @@
 import React from "react";
+import clsx from "clsx";
 import { Avatar } from "antd";
 const NotificationItem = ({ image = false, content = "" }) => {
     return (
-        <div className={["notificationItem", image ? null : "centerContent"].join(" ")}>
+        <div className={clsx("notificationItem", image ? null : "centerContent")}>
             {image ? (
                 <div className="right">
                     <Avatar shape="circle" type="small" icon="user" />
                 </div>
             ) : null}
-            <span className={["notificationItem__content", image ? "left" : null].join(" ")}>{content}</span>
+            <span className={clsx("notificationItem__content", image ? "left" : null)}>{content}</span>
         </div>
     );
 };

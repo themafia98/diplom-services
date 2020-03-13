@@ -1,4 +1,5 @@
 import React from "react";
+import clsx from "clsx";
 
 class TabContainer extends React.PureComponent {
     render() {
@@ -8,7 +9,7 @@ class TabContainer extends React.PureComponent {
             return (
                 <div
                     key={children.key + "tab"}
-                    className={["tabContainer", visible ? "visible" : "hidden", className ? className : null].join(" ")}
+                    className={clsx("tabContainer", visible ? "visible" : "hidden", className ? className : null)}
                 >
                     {children}
                 </div>

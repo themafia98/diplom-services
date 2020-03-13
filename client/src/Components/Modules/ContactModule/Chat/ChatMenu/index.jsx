@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import clsx from "clsx";
 import _ from "lodash";
 import Scrollbars from "react-custom-scrollbars";
 import { Skeleton, List, Avatar, Button } from "antd";
@@ -92,7 +93,7 @@ const ChatMenu = props => {
 
                                 return (
                                     <Item
-                                        className={[tokenRoom === it.tokenRoom ? "activeChat" : null].join(" ")}
+                                        className={clsx(tokenRoom === it.tokenRoom ? "activeChat" : null)}
                                         onClick={e => setActiveChatRoom(e, it._id, membersIds, it.tokenRoom)}
                                         key={(it, i)}
                                     >

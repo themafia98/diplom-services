@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import _ from "lodash";
-
+import clsx from "clsx";
 import Scrollbars from "react-custom-scrollbars";
 import { Button, Avatar } from "antd";
 
@@ -86,11 +86,11 @@ const ChatRoom = ({
 
     const renderChat = messages => {
         return messages.map((it, i) => {
-            const classNames = [
+            const classNames = clsx(
                 i,
                 "message",
                 uid === it.authorId && uid.includes(it.authorId) ? "currentUser" : null
-            ].join(" ");
+            );
             return (
                 <div
                     key={`${i}${it.tokenRoom}${it.msg}${it.authorId}${it.displayName}${it._id}`}

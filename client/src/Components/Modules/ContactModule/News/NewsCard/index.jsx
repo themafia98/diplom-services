@@ -1,24 +1,20 @@
 import React, { useContext } from "react";
-import EditorTextarea from "../../../../Textarea/EditorTextarea";
+//import EditorTextarea from "../../../../Textarea/EditorTextarea";
 import _ from "lodash";
 import { Card, Button } from "antd";
 
-import modelContext from '../../../../../Models/context';
+import modelContext from "../../../../../Models/context";
+import clsx from "clsx";
 
 const NewsCard = ({ onClick = null, className = null, data = {} }) => {
-
     const { schema = {} } = useContext(modelContext);
 
-    const getNormalizeContent = (content) => {
+    const getNormalizeContent = content => {
         const contentNormalize = Object.keys(content).reduce((data, key) => {
             if (key.includes("entity") || key.includes("blocks")) {
                 const isArray = _.isArray(content[key]);
                 const isObject = _.isPlainObject(content[key]);
-                data[key] = isArray ?
-                    [...content[key]]
-                    : isObject ?
-                        { ...content[key] }
-                        : content[key];
+                data[key] = isArray ? [...content[key]] : isObject ? { ...content[key] } : content[key];
             }
             return data;
         }, {});
@@ -38,8 +34,8 @@ const NewsCard = ({ onClick = null, className = null, data = {} }) => {
     else
         return (
             <Card
-                className={["news-card", className ? className : null].join(" ")}
-                title={data.title ? data.title : data._id ? data._id : null}
+                className={clsx("news-card", className ? className : null)}
+                title={data?.title ? data?.title : data?._id ? data?._id : null}
                 extra={
                     <Button onClick={onClick} type="primary">
                         Читать

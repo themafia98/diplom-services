@@ -1,4 +1,5 @@
 import React from "react";
+import clsx from "clsx";
 import PropTypes from "prop-types";
 
 import { Icon, Tooltip } from "antd";
@@ -41,21 +42,18 @@ class Tab extends React.PureComponent {
                     minWidth: `${recalcSize}px`
                 }}
                 onClick={callbackHendlerTab ? this.eventHandler : null}
-                className={[active ? "active" : null].join(" ")}
+                className={clsx(active ? "active" : null)}
                 key={itemKey}
                 ref={this.tabRef}
             >
-                <span className={[active ? "tabWrapper-content selected" : "tabWrapper-content"].join(" ")}>
-                    <Tooltip title={value} placement="bottom" >
-                        <span
-                            className="tab-content"
-                        >{value}
-                        </span>
+                <span className={clsx(active ? "tabWrapper-content selected" : "tabWrapper-content")}>
+                    <Tooltip title={value} placement="bottom">
+                        <span className="tab-content">{value}</span>
                     </Tooltip>
                 </span>
                 <Icon
                     style={{ left: sizeTab < 60 ? `85%` : sizeTab < 90 ? `90%` : sizeTab < 102 ? `93%` : null }}
-                    className={["closeTab"].join(" ")}
+                    className={clsx("closeTab")}
                     onClick={callbackHendlerTab ? this.eventCloseHandler : null}
                     type="close"
                 />

@@ -1,10 +1,11 @@
 import React from "react";
+import clsx from "clsx";
 import PropTypes from "prop-types";
 
 const TitleModule = ({ title, className, classNameTitle, additional }) => {
     return (
-        <div className={["titleModule", className ? className : null].join(" ")}>
-            <p className={["titleModule_title", classNameTitle ? classNameTitle : null].join(" ")}>{title}</p>
+        <div className={clsx("titleModule", className ? className : null)}>
+            <p className={clsx("titleModule_title", classNameTitle ? classNameTitle : null)}>{title}</p>
             {additional ? <span>{additional}</span> : null}
         </div>
     );

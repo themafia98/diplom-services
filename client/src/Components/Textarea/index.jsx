@@ -1,4 +1,5 @@
 import React from "react";
+import clsx from "clsx";
 import { Input } from "antd";
 import EditorTextarea from "./EditorTextarea";
 const { TextArea } = Input;
@@ -22,7 +23,7 @@ const Textarea = ({
                 <EditorTextarea defaultValue={defaultValue} onChange={onChange} {...valueProps} />
             ) : (
                 <TextArea
-                    className={[className, "defaultTextArea"].join(" ")}
+                    className={clsx(className, "defaultTextArea")}
                     row={row}
                     onKeyDown={onKeyDown}
                     onClick={onClick}

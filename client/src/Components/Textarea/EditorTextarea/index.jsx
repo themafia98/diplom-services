@@ -1,4 +1,5 @@
 import React from "react";
+import clsx from "clsx";
 import { stateFromHTML } from "draft-js-import-html";
 import { convertFromRaw } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
@@ -64,7 +65,7 @@ class EditorTextarea extends React.Component {
                 : {};
 
         return (
-            <div className={["content", readOnly ? "readOnly" : null].join(" ")}>
+            <div className={clsx("content", readOnly ? "readOnly" : null)}>
                 <Editor
                     readOnly={disabled || readOnly}
                     toolbarHidden={readOnly}

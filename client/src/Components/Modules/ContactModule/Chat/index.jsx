@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import clsx from "clsx";
 import moment from "moment";
 import _ from "lodash";
 import io from "socket.io-client";
@@ -372,10 +373,10 @@ class Chat extends React.PureComponent {
                                     {isDev && tokenRoom ? <p> | {tokenRoom} </p> : null}
                                 </div>
                                 <p
-                                    className={[
+                                    className={clsx(
                                         "chat_content__header__statusChat",
                                         !socketConnection ? "isOffline" : "isOnline"
-                                    ].join(" ")}
+                                    )}
                                 >
                                     {!socketConnection && !tokenRoom ? "не активен" : "активен"}
                                 </p>

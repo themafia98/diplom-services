@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import clsx from "clsx";
 import axios from "axios";
 import _ from "lodash";
 import moment from "moment";
@@ -366,8 +367,8 @@ class ModalWindow extends React.PureComponent {
                         {mode === "reg" ? (
                             <RegistrationModal cbOnChange={this.onChange} cbOnChangeSelect={this.onChangeSelect} />
                         ) : (
-                                <div></div>
-                            )}
+                            <div></div>
+                        )}
                     </Modal>
                 </React.Fragment>
             );
@@ -435,10 +436,10 @@ class ModalWindow extends React.PureComponent {
                                                 {statusTaskValue}
                                             </Option>
                                         ) : (
-                                                <Option key={i + status} value={status}>
-                                                    {status}
-                                                </Option>
-                                            )
+                                            <Option key={i + status} value={status}>
+                                                {status}
+                                            </Option>
+                                        )
                                     )}
                                 </Select>
                             </Modal>
@@ -496,7 +497,7 @@ class ModalWindow extends React.PureComponent {
                                     <span>Затраченое время:</span>
                                     <Input
                                         onChange={this.onChangeTask}
-                                        className={["timeLost", error.has("timeLost") ? "errorFild" : null].join(" ")}
+                                        className={clsx("timeLost", error.has("timeLost") ? "errorFild" : null)}
                                         value={timeLost}
                                         type="text"
                                         size="default"
@@ -505,7 +506,7 @@ class ModalWindow extends React.PureComponent {
                                     <span>Дата и время:</span>
                                     <DatePicker
                                         onChange={this.onChangeTask}
-                                        className={["date", error.has("date") ? "errorFild" : null].join(" ")}
+                                        className={clsx("date", error.has("date") ? "errorFild" : null)}
                                         format="DD.MM.YYYY HH:mm:ss"
                                         showTime={{ defaultValue: moment() }}
                                         defaultValue={moment()}
