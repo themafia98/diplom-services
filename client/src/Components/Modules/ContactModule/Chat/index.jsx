@@ -344,7 +344,7 @@ class Chat extends React.PureComponent {
   render() {
     const { visible, shouldScroll = false } = this.state;
     const {
-      chat: { listdata, usersList = [], listdataMsgs = [], chatToken: tokenRoom = null } = {},
+      chat: { listdata = [], usersList = [], listdataMsgs = [], chatToken: tokenRoom = null } = {},
       udata: { _id: uid = '' } = {},
       socketConnection,
       socketErrorStatus,

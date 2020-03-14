@@ -173,7 +173,7 @@ namespace System {
 
         if (!actionData) {
           params.done = false;
-          res.status(404);
+      
           return res.json(
             getResponseJson(
               `error action load_files ${moduleName}`,
@@ -236,7 +236,6 @@ namespace System {
 
           if (!actionData) {
             params.done = false;
-            res.status(404);
             return res.json(
               getResponseJson(
                 `download_files fail in ${moduleName}`,
