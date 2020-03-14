@@ -335,7 +335,10 @@ class Chat extends React.PureComponent {
         {name}
       </li>
     ));
-    return <ol className="usersList-room">{list}</ol>;
+    return {
+      usersListComponent: <ol className="usersList-room">{list}</ol>,
+      count: names.length,
+    };
   };
 
   render() {
@@ -349,7 +352,7 @@ class Chat extends React.PureComponent {
 
     const isDev = process.env.NODE_ENV === 'development';
 
-    const usersListComponent = tokenRoom ? this.getUsersList() : null;
+    const { usersListComponent = null, count = 0 } = tokenRoom ? this.getUsersList() : {};
 
     return (
       <div className="chat">
@@ -375,7 +378,7 @@ class Chat extends React.PureComponent {
                   {tokenRoom && !tokenRoom.includes('fakeRoom') ? (
                     <Popover content={usersListComponent}>
                       <p className="counter-room">
-                        Участников: <span className="link">{listdata.length}</span>
+                        Участников: <span className="link">{count}</span>
                       </p>
                     </Popover>
                   ) : null}

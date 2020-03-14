@@ -82,6 +82,11 @@ class TableView extends React.Component {
     else if (this.state.isScroll && window.innerWidth > 1200) this.setState({ isScroll: null });
   };
 
+  /**
+   * @param {any} pagination
+   * @param {any} filters
+   * @param {any} sorter
+   */
   handleFilter = (pagination, filters, sorter) => {
     this.setState({
       filteredInfo: filters,
@@ -89,6 +94,9 @@ class TableView extends React.Component {
     });
   };
 
+  /**
+   * @param {string} path
+   */
   getComponentByPath = path => {
     const {
       user,
