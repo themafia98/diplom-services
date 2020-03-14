@@ -1,64 +1,64 @@
 .comments {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+
+  .block-comment {
+    margin: 0;
+    position: relative;
+  }
+
+  .commentControllers {
+    width: 100px;
     display: flex;
     align-items: center;
-    flex-direction: column;
     justify-content: center;
+    .editComment,
+    .deleteComment {
+      position: absolute;
+      &:hover {
+        cursor: pointer;
+        color: $blueDark;
+      }
+      &.icon-edit {
+        top: 0;
+        left: 93%;
+      }
 
-    .block-comment {
-        margin: 0;
-        position: relative;
+      &.icon-trash-empty {
+        top: 0;
+        left: 95%;
+      }
     }
-
-    .commentControllers {
-        width: 100px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        .editComment,
-        .deleteComment {
-            position: absolute;
-            &:hover {
-                cursor: pointer;
-                color: $blueDark;
-            }
-            &.icon-edit {
-                top: 0;
-                left: 93%;
-            }
-
-            &.icon-trash-empty {
-                top: 0;
-                left: 95%;
-            }
-        }
+  }
+  .comments__controllers {
+    width: 75%;
+    .sendCommentsButton {
+      margin-left: 5px;
+      margin-top: 3px;
     }
-    .comments__controllers {
-        width: 75%;
-        .sendCommentsButton {
-            margin-left: 5px;
-            margin-top: 3px;
-        }
+  }
+  .commnetsListBox {
+    min-width: 85%;
+    min-height: 200px;
+    border: 1px solid $blueDark;
+    padding: 5px;
+    margin-bottom: 10px;
+    height: 300px;
+    overflow: hidden;
+    .aboutCommentSender {
+      font-weight: bold;
+      .sender_name {
+        cursor: pointer;
+        color: $blueDark;
+      }
     }
-    .commnetsListBox {
-        min-width: 85%;
-        min-height: 200px;
-        border: 1px solid $blueDark;
-        padding: 5px;
-        margin-bottom: 10px;
-        height: 300px;
-        overflow: hidden;
-        .aboutCommentSender {
-            font-weight: bold;
-            .sender_name {
-                cursor: pointer;
-                color: $blueDark;
-            }
-        }
-        .commentContet {
-            display: flex;
-            word-break: break-word;
-            width: 98%;
-            border-bottom: 1px solid black;
-        }
+    .commentContet {
+      display: flex;
+      word-break: break-word;
+      width: 98%;
+      border-bottom: 1px solid black;
     }
+  }
 }

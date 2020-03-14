@@ -18,24 +18,12 @@
         "build:app": "cd client && yarn build && copyfiles -f -V src/build/**/*.* /var/www",
         "prettierClient": "prettier --write client/src/**/*.{ts,js,jsx,css}",
         "fix": "yarn fix:eslint && yarn fix:prettier",
-        "fix:eslint": "eslint --fix \"**/*.*\"",
-        "fix:prettier": "prettier --write \"**/*.*\"",
+        "fix:eslint": "eslint --fix \"./**/*.*\"",
+        "fix:prettier": "prettier --write \"./**/*.*\"",
         "lint": "yarn lint:eslint && yarn lint:prettier",
-        "lint:eslint": "eslint \"**/*.*\"",
-        "lint:prettier": "prettier --check \"**/*.*\"",
+        "lint:eslint": "eslint \"./**/*.*\"",
+        "lint:prettier": "prettier --check \"./**/*.*\"",
         "...": "..."
-    },
-    "husky": {
-        "hooks": {
-            "pre-commit": "lint-staged"
-        }
-    },
-    "lint-staged": {
-        "**/*.*": [
-            "eslint",
-            "prettier --write",
-            "git add"
-        ]
     },
     "dependencies": {
         "bcrypt": "^3.0.6",
@@ -87,6 +75,8 @@
         "@types/socket.io": "^2.1.4",
         "@types/uuid": "^3.4.7",
         "@types/winston": "^2.4.4",
+        "@typescript-eslint/eslint-plugin": "^2.23.0",
+        "@typescript-eslint/parser": "^2.23.0",
         "babel-eslint": "^10.1.0",
         "copyfiles": "^2.1.1",
         "cross-env": "^6.0.3",

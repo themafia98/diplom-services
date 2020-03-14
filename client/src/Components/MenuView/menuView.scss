@@ -1,41 +1,41 @@
 ul {
-    &.ant-menu {
-        &.ant-menu-sub,
-        &.ant-menu-dark {
-            li {
-                &.ant-menu-item-selected {
-                    background-color: unset;
-                }
-            }
+  &.ant-menu {
+    &.ant-menu-sub,
+    &.ant-menu-dark {
+      li {
+        &.ant-menu-item-selected {
+          background-color: unset;
         }
+      }
     }
+  }
 }
 
 .aside_menu {
-    flex: 0 0 210px;
-    max-width: 210px;
-    min-width: 209px;
-    width: 210px;
+  flex: 0 0 210px;
+  max-width: 210px;
+  min-width: 209px;
+  width: 210px;
 }
 
 .ant-layout-sider {
-    .logo {
-        display: flex;
-        flex-direction: column;
-        margin-top: 10px;
-        justify-content: center;
-        align-items: center;
-        color: $headerColor;
-        cursor: pointer;
-        img {
-            width: 50px;
-            transition: all 0.2s linear;
-        }
-
-        &:hover {
-            img {
-                transform: scale(1.1);
-            }
-        }
+  .logo {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+    justify-content: center;
+    align-items: center;
+    color: $headerColor;
+    cursor: pointer;
+    img {
+      width: 50px;
+      transition: all 0.2s linear;
     }
+
+    &:hover {
+      img {
+        transform: scale(1.1);
+      }
+    }
+  }
 }

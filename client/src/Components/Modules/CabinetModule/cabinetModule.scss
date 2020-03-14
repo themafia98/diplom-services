@@ -1,125 +1,125 @@
 .cabinetModule {
-    height: 100%;
-    .titleModule {
-        flex: 0 0 10%;
-        user-select: none;
-        span {
-            font-weight: bold;
-            font-size: 22px;
-        }
-        margin-bottom: 10px;
+  height: 100%;
+  .titleModule {
+    flex: 0 0 10%;
+    user-select: none;
+    span {
+      font-weight: bold;
+      font-size: 22px;
     }
+    margin-bottom: 10px;
+  }
 
-    .cabinetModuleTitle {
-        font-size: 30px;
-        font-weight: bold;
-        margin: 0;
-        user-select: none;
-    }
+  .cabinetModuleTitle {
+    font-size: 30px;
+    font-weight: bold;
+    margin: 0;
+    user-select: none;
+  }
 
-    .cabinetModule_main {
-        display: flex;
-        height: calc(100% - 100px);
-    }
+  .cabinetModule_main {
+    display: flex;
+    height: calc(100% - 100px);
+  }
 
-    .lastActivity {
-        font-weight: bold;
-        font-size: 22px;
-        margin-left: 50px;
-    }
+  .lastActivity {
+    font-weight: bold;
+    font-size: 22px;
+    margin-left: 50px;
+  }
 
-    .streamActivityCabinet {
-        height: 550px;
-        .activity {
-            background-color: snow;
-            box-shadow: 0 0 1px 1px;
-        }
+  .streamActivityCabinet {
+    height: 550px;
+    .activity {
+      background-color: snow;
+      box-shadow: 0 0 1px 1px;
     }
+  }
 }
 
 .ant-modal-body {
-    .deleteButton {
-        margin-top: 20px;
-    }
+  .deleteButton {
+    margin-top: 20px;
+  }
 }
 
 @media screen and (max-width: 820px) {
-    main {
-        margin: 16px 10px;
+  main {
+    margin: 16px 10px;
+  }
+  .mainModule {
+    .titleModule {
+      span {
+        font-weight: bold;
+        font-size: 17px;
+      }
     }
-    .mainModule {
-        .titleModule {
-            span {
-                font-weight: bold;
-                font-size: 17px;
-            }
-        }
-        .mainModuleTitle {
-            font-size: 20px;
-        }
-
-        .mainModule_main {
-            display: flex;
-            flex: 0 0 85%;
-            flex-direction: column;
-            .columnModuleRight {
-                .widjects {
-                    height: 70%;
-
-                    .mainModule_calendar {
-                        padding: 0;
-                        .ant-fullcalendar-header {
-                            display: flex;
-                            justify-content: center;
-                        }
-                        .ant-fullcalendar {
-                            table {
-                                height: 160px;
-                            }
-                        }
-                    }
-                }
-            }
-            .columnModuleRight {
-                order: -1;
-            }
-            .tableViw__wrapper {
-                top: 71%;
-                width: 81%;
-                left: 50%;
-                transform: translate(-50%);
-                margin: 5px;
-                table {
-                    width: 93%;
-                    td {
-                        flex: 0 0 30%;
-                        max-width: 30%;
-                        min-width: 30%;
-                        &:first-child {
-                            flex: 0 0 20%;
-                            max-width: 20%;
-                            min-width: 20%;
-                        }
-                        &:last-child {
-                            flex: 0 0 10%;
-                            max-width: 10%;
-                            min-width: 10%;
-                        }
-                        &:nth-child(3) {
-                            flex: 0 0 10%;
-                            max-width: 10%;
-                            min-width: 10%;
-                        }
-                    }
-                }
-            }
-        }
-    }
-    .col-4 {
-        flex: 0 0 100%;
+    .mainModuleTitle {
+      font-size: 20px;
     }
 
-    .col-8 {
-        flex: 0 0 100%;
+    .mainModule_main {
+      display: flex;
+      flex: 0 0 85%;
+      flex-direction: column;
+      .columnModuleRight {
+        .widjects {
+          height: 70%;
+
+          .mainModule_calendar {
+            padding: 0;
+            .ant-fullcalendar-header {
+              display: flex;
+              justify-content: center;
+            }
+            .ant-fullcalendar {
+              table {
+                height: 160px;
+              }
+            }
+          }
+        }
+      }
+      .columnModuleRight {
+        order: -1;
+      }
+      .tableViw__wrapper {
+        top: 71%;
+        width: 81%;
+        left: 50%;
+        transform: translate(-50%);
+        margin: 5px;
+        table {
+          width: 93%;
+          td {
+            flex: 0 0 30%;
+            max-width: 30%;
+            min-width: 30%;
+            &:first-child {
+              flex: 0 0 20%;
+              max-width: 20%;
+              min-width: 20%;
+            }
+            &:last-child {
+              flex: 0 0 10%;
+              max-width: 10%;
+              min-width: 10%;
+            }
+            &:nth-child(3) {
+              flex: 0 0 10%;
+              max-width: 10%;
+              min-width: 10%;
+            }
+          }
+        }
+      }
     }
+  }
+  .col-4 {
+    flex: 0 0 100%;
+  }
+
+  .col-8 {
+    flex: 0 0 100%;
+  }
 }

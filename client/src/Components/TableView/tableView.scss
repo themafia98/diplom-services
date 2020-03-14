@@ -1,167 +1,164 @@
 .tableViw__wrapper {
-    width: 100%;
-    position: absolute;
-    bottom: 0;
-    top: 50%;
-    margin: 10px;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  top: 50%;
+  margin: 10px;
 
-    table {
-        width: 92%;
-        min-height: 85%;
-        max-height: 85%;
-        tbody {
-            position: relative;
-        }
-        tr {
-            height: 40px;
-            text-align: center;
-        }
-        thead {
-            background-color: $headerTable;
-            color: #ffff;
-            font-weight: bold;
-            tr {
-                display: flex;
-                text-align: center;
-
-                &:first-child {
-                    td {
-                        border-top: 0.5px solid $blueDark;
-                        &:last-child {
-                            margin-left: 1px;
-                        }
-                    }
-                }
-            }
-        }
-        td {
-            border-left: 0.5px solid $blueDark;
-            flex: 0 0 28.333%;
-            max-width: 28.333%;
-            min-width: 28.333%;
-            i {
-                cursor: pointer;
-                font-size: 22px;
-                &:hover {
-                    cursor: pointer;
-                    color: $blueDark;
-                }
-            }
-            &:first-child {
-                padding-left: 4px;
-                border-left: none;
-            }
-        }
-
-        .contentTr {
-            display: flex;
-            padding: 0;
-            border-right: 0;
-            border-left: 0;
-            td {
-                flex: 0 0 28.333%;
-                max-width: 28.333%;
-                min-width: 28.333%;
-            }
-        }
-
-        td {
-            padding-top: 10px;
-
-            &:first-child {
-                border-left: 0.5px solid $blueDark;
-                flex: 0 0 10%;
-                max-width: 10%;
-                min-width: 10%;
-            }
-            &:last-child {
-                border-right: 0.5px solid $blueDark;
-                flex: 0 0 5%;
-                max-width: 5%;
-                min-width: 5%;
-            }
-        }
-
-        tr {
-            border: 0.5px solid $blueDark;
-            border-top: none;
-        }
+  table {
+    width: 92%;
+    min-height: 85%;
+    max-height: 85%;
+    tbody {
+      position: relative;
     }
+    tr {
+      height: 40px;
+      text-align: center;
+    }
+    thead {
+      background-color: $headerTable;
+      color: #ffff;
+      font-weight: bold;
+      tr {
+        display: flex;
+        text-align: center;
+
+        &:first-child {
+          td {
+            border-top: 0.5px solid $blueDark;
+            &:last-child {
+              margin-left: 1px;
+            }
+          }
+        }
+      }
+    }
+    td {
+      border-left: 0.5px solid $blueDark;
+      flex: 0 0 28.333%;
+      max-width: 28.333%;
+      min-width: 28.333%;
+      i {
+        cursor: pointer;
+        font-size: 22px;
+        &:hover {
+          cursor: pointer;
+          color: $blueDark;
+        }
+      }
+      &:first-child {
+        padding-left: 4px;
+        border-left: none;
+      }
+    }
+
+    .contentTr {
+      display: flex;
+      padding: 0;
+      border-right: 0;
+      border-left: 0;
+      td {
+        flex: 0 0 28.333%;
+        max-width: 28.333%;
+        min-width: 28.333%;
+      }
+    }
+
+    td {
+      padding-top: 10px;
+
+      &:first-child {
+        border-left: 0.5px solid $blueDark;
+        flex: 0 0 10%;
+        max-width: 10%;
+        min-width: 10%;
+      }
+      &:last-child {
+        border-right: 0.5px solid $blueDark;
+        flex: 0 0 5%;
+        max-width: 5%;
+        min-width: 5%;
+      }
+    }
+
+    tr {
+      border: 0.5px solid $blueDark;
+      border-top: none;
+    }
+  }
 }
 
 .wrapperLoaderTable {
-    .tableLoader {
-        width: 100px;
-    }
+  .tableLoader {
+    width: 100px;
+  }
 }
 
 .ant-table-small > .ant-table-content > .ant-table-body {
-    margin: 0;
+  margin: 0;
 }
 
 .ant-table-thead > tr > th.ant-table-column-has-actions.ant-table-column-has-sorters:hover {
-    background: unset;
-    cursor: pointer;
+  background: unset;
+  cursor: pointer;
 }
 .ant-table-thead > tr > th.ant-table-column-has-actions.ant-table-column-has-sorters:hover .anticon-filter,
 .ant-table-thead > tr > th.ant-table-column-has-actions.ant-table-column-has-sorters:hover .ant-table-filter-icon {
-    background: unset;
+  background: unset;
 }
 
 .ant-table-thead > tr > th.ant-table-column-has-actions.ant-table-column-has-filters:hover .anticon-filter:hover,
 .ant-table-thead
-    > tr
-    > th.ant-table-column-has-actions.ant-table-column-has-filters:hover
-    .ant-table-filter-icon:hover {
-    background: unset;
+  > tr
+  > th.ant-table-column-has-actions.ant-table-column-has-filters:hover
+  .ant-table-filter-icon:hover {
+  background: unset;
 }
 
 .ant-table-thead > tr > th .ant-table-header-column .ant-table-column-sorters {
-    display: flex;
+  display: flex;
 }
 
 .ant-table-body {
-    /* width */
-    &::-webkit-scrollbar {
-        width: 15px;
-        border-radius: 3px;
-    }
+  /* width */
+  &::-webkit-scrollbar {
+    width: 15px;
+    border-radius: 3px;
+  }
 
-    /* Track */
-    &::-webkit-scrollbar-track {
-        background-color: rgba(0, 0, 0, 0.2);
-    }
+  /* Track */
+  &::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
 
-    /* Handle */
-    &::-webkit-scrollbar-thumb {
-        background-color: rgba(0, 0, 0, 0.2);
-    }
+  /* Handle */
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
 
-    /* Handle on hover */
-    &::-webkit-scrollbar-thumb:hover {
-        background: #555;
-    }
+  /* Handle on hover */
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
 }
 
-@media screen and (max-width: 960px){
-    .tableViw__wrapper { 
-        table { 
-            .contentTr {
-                td {
-                    i {
-                        font-size: 14px;
-                    }
-                }
-            } 
-        } 
+@media screen and (max-width: 960px) {
+  .tableViw__wrapper {
+    table {
+      .contentTr {
+        td {
+          i {
+            font-size: 14px;
+          }
+        }
+      }
     }
+  }
 }
 
 @media screen and (max-height: 655px) {
-    .tableViw__wrapper {
-        top: 65%;
-    }
-
+  .tableViw__wrapper {
+    top: 65%;
+  }
 }
-
-

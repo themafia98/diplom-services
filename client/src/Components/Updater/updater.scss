@@ -1,13 +1,13 @@
 .updater {
+  cursor: pointer;
+  position: relative;
+  width: 35px;
+  img {
     cursor: pointer;
-    position: relative;
-    width: 35px;
-    img {
-        cursor: pointer;
-    }
+  }
 }
 
 .updaterDefault {
-    cursor: pointer;
-    width: 100%;
+  cursor: pointer;
+  width: 100%;
 }

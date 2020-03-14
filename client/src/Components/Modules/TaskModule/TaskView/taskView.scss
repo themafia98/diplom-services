@@ -1,158 +1,157 @@
 .taskView {
-    display: flex;
+  display: flex;
 
-    .jurnalItem {
+  .jurnalItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 5px;
+    border: 0.5px solid blue;
+    background-color: #c7e1f7;
+    border-radius: 6px;
+    margin: 5px;
+    .title {
+      font-weight: bold;
+    }
+  }
+
+  .descriptionTask__content {
+    position: relative;
+    transition: all 0.3s ease-in-out;
+    transition: visibility 1s ease-in-out;
+    .icon-wrapper {
+      display: none;
+      visibility: hidden;
+    }
+    &:hover {
+      &.editable {
+        cursor: pointer;
+        background-color: $editable;
+        .icon-wrapper {
+          display: inline-block;
+          visibility: visible;
+          position: absolute;
+          top: 0;
+          left: 97%;
+        }
+      }
+    }
+  }
+
+  .ant-descriptions-row {
+    .output {
+      text-align: start;
+    }
+
+    .ant-select,
+    .ant-calendar-picker {
+      width: 100%;
+    }
+  }
+  tbody {
+    border: 0.5px solid $blueDark;
+    tr {
+      &.ant-descriptions-row {
+        border-top: 0.5px solid $blueDark;
+      }
+      th {
+        &.ant-descriptions-item-label {
+          border-right: 0.5px solid $blueDark;
+        }
+      }
+      .ant-descriptions-item-content {
+        max-width: 300px;
+      }
+    }
+  }
+  .historyTaskTitle {
+    font-size: 23px;
+    font-weight: bold;
+    margin: 0;
+    user-select: none;
+    text-align: center;
+  }
+  .descriptionTask {
+    .descriptionTask__title,
+    .task_file,
+    .descriptionTask__comment {
+      text-align: center;
+      font-weight: bold;
+      padding: 5px;
+      font-size: 16px;
+    }
+    .descriptionTask__content {
+      display: block;
+      width: 98%;
+      overflow: hidden;
+      min-height: 50px;
+      max-height: 150px;
+      height: 150px;
+      font-size: 15px;
+      padding: 0 5px;
+      word-break: break-word;
+      border: 1px solid $blueDark;
+      .descriptionContent {
         display: flex;
         flex-direction: column;
-        align-items: center;
-        margin: 5px;
-        border: 0.5px solid blue;
-        background-color: #c7e1f7;
-        border-radius: 6px;
-        margin: 5px;
-        .title {
-            font-weight: bold;
-        }
+        padding: 10px;
+      }
     }
-
-    .descriptionTask__content {
-        position: relative;
-        transition: all 0.3s ease-in-out;
-        transition: visibility 1s ease-in-out;
-        .icon-wrapper {
-            display: none;
-            visibility: hidden;
-        }
-        &:hover {
-            &.editable {
-                cursor: pointer;
-                background-color: $editable;
-                .icon-wrapper {
-                    display: inline-block;
-                    visibility: visible;
-                    position: absolute;
-                    top: 0;
-                    left: 97%;
-                }
-            }
-        }
-    }
-
-    .ant-descriptions-row {
-        .output {
-            text-align: start;
-        }
-
-        .ant-select,
-        .ant-calendar-picker {
-            width: 100%;
-        }
-    }
-    tbody {
-        border: 0.5px solid $blueDark;
-        tr {
-            &.ant-descriptions-row {
-                border-top: 0.5px solid $blueDark;
-            }
-            th {
-                &.ant-descriptions-item-label {
-                    border-right: 0.5px solid $blueDark;
-                }
-            }
-            .ant-descriptions-item-content {
-                max-width: 300px;
-            }
-        }
-    }
-    .historyTaskTitle {
-        font-size: 23px;
-        font-weight: bold;
-        margin: 0;
-        user-select: none;
-        text-align: center;
-    }
-    .descriptionTask {
-        .descriptionTask__title,
-        .task_file,
-        .descriptionTask__comment {
-            text-align: center;
-            font-weight: bold;
-            padding: 5px;
-            font-size: 16px;
-        }
-        .descriptionTask__content {
-            display: block;
-            width: 98%;
-            overflow: hidden;
-            min-height: 50px;
-            max-height: 150px;
-            height: 150px;
-            font-size: 15px;
-            padding: 0 5px;
-            word-break: break-word;
-            border: 1px solid $blueDark;
-            .descriptionContent {
-            
-                    display: flex;
-                    flex-direction: column;
-                    padding: 10px;
-            }
-        }
-    }
+  }
 }
 
 .col-taskDescription {
-    height: 70vh;
-    max-height: 70vh;
-    .ant-descriptions {
-        &.ant-descriptions-bordered {
-            width: 98%;
-        }
+  height: 70vh;
+  max-height: 70vh;
+  .ant-descriptions {
+    &.ant-descriptions-bordered {
+      width: 98%;
     }
+  }
 }
 
 .dropDownWrapper {
-    max-width: 50%;
-    display: flex;
-    p {
-        margin-right: 15px;
-        margin-bottom: 5px;
-    }
+  max-width: 50%;
+  display: flex;
+  p {
+    margin-right: 15px;
+    margin-bottom: 5px;
+  }
 
-    .modeControllEdit,
-    .modeControllEditReject {
-        font-weight: bold;
-        cursor: pointer;
-        &:hover {
-            color: red;
-        }
+  .modeControllEdit,
+  .modeControllEditReject {
+    font-weight: bold;
+    cursor: pointer;
+    &:hover {
+      color: red;
     }
+  }
 }
 
 .ant-dropdown-trigger:hover {
-    cursor: pointer;
-    color: $blueDark;
+  cursor: pointer;
+  color: $blueDark;
 }
 
 .ant-dropdown-menu-item {
+  cursor: pointer;
+  p {
+    text-align: center;
     cursor: pointer;
-    p {
-        text-align: center;
-        cursor: pointer;
-    }
+  }
 
-    p:hover {
-        cursor: pointer;
-        color: red;
-    }
+  p:hover {
+    cursor: pointer;
+    color: red;
+  }
 }
 
 .modalWindow {
-    .ant-modal-content {
-        .ant-modal-body {
-            .ant-select {
-                width: 100%;
-            }
-        }
+  .ant-modal-content {
+    .ant-modal-body {
+      .ant-select {
+        width: 100%;
+      }
     }
+  }
 }

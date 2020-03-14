@@ -1,34 +1,33 @@
 /** IE supports polyfills */
-import "core-js/features";
+import 'core-js/features';
 /** --------------------- */
 
-import React from "react";
-import ReactDOM from "react-dom";
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-import "normalize.css";
-import "antd/dist/antd.css";
-import "./index.scss";
-import "./Utils/styles/fontello.css";
+import 'normalize.css';
+import 'antd/dist/antd.css';
+import './index.scss';
+import './Utils/styles/fontello.css';
 
+import App from './App';
+import * as serviceWorker from './serviceWorker';
+import * as Sentry from '@sentry/browser';
 
-import App from "./App";
-import * as serviceWorker from "./serviceWorker";
-import * as Sentry from "@sentry/browser";
+import Root from './Root';
+import ModelContext, { modelMethods } from './Models/context';
 
-import Root from "./Root";
-import ModelContext, { modelMethods } from "./Models/context";
-
-require("es6-promise").polyfill();
+require('es6-promise').polyfill();
 
 Sentry.init({ dsn: process.env.REACT_APP_LOGGER_DSN });
 
 ReactDOM.render(
-    <Root>
-        <ModelContext.Provider value={modelMethods}>
-            <App />
-        </ModelContext.Provider>
-    </Root>,
-    document.getElementById("root")
+  <Root>
+    <ModelContext.Provider value={modelMethods}>
+      <App />
+    </ModelContext.Provider>
+  </Root>,
+  document.getElementById('root'),
 );
 
 serviceWorker.register();

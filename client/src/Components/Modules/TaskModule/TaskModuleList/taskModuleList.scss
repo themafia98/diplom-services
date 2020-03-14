@@ -1,153 +1,153 @@
 .taskModule {
-    width: 100%;
-    height: 100%;
-    .tabList {
-        height: calc(100% - 65px);
-        min-height:  calc(100% - 65px);
+  width: 100%;
+  height: 100%;
+  .tabList {
+    height: calc(100% - 65px);
+    min-height: calc(100% - 65px);
+  }
+  .taskModuleTittle {
+    font-size: 30px;
+    font-weight: bold;
+    margin: 0;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+  }
+  .taskModule_all {
+    height: calc(100% - 65px);
+    margin-top: 2px;
+  }
+  .titleModule {
+    span:first-of-type {
+      font-weight: bold;
+      font-size: 22px;
     }
-    .taskModuleTittle {
-        font-size: 30px;
-        font-weight: bold;
-        margin: 0;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        user-select: none;
+  }
+  .taskModuleAll_main {
+    .ant-table-placeholder {
+      background: unset;
+      border: none;
     }
-    .taskModule_all {
-        height: calc(100% - 65px);
-        margin-top: 2px;
+    .ant-pagination {
+      width: 100%;
+      display: flex;
+      margin-bottom: 0;
+      margin-top: 5px;
+      justify-content: flex-start;
     }
-    .titleModule {
-        span:first-of-type {
-            font-weight: bold;
-            font-size: 22px;
+    table {
+      // padding-right: 25px;
+      border-bottom: 0.5px solid $blueDark;
+      .ant-table-thead {
+        background-color: $headerTable;
+        border-bottom: 0.5px solid $blueDark;
+        i {
+          color: white;
+          font-size: 14px;
+          padding: 5px;
+          background: #7ac0da;
         }
-    }
-    .taskModuleAll_main {
-        .ant-table-placeholder {
+        tr {
+          // display: flex;
+          cursor: pointer;
+          th {
+            .ant-table-column-sorter {
+              opacity: 0;
+            }
+            .ant-table-header-column {
+              display: block;
+              .ant-table-column-title {
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                text-align: center;
+                display: block;
+              }
+            }
+            cursor: pointer;
+
+            text-align: center;
+            overflow: hidden;
+            &.status {
+              flex: 0 0 10%;
+              max-width: 10%;
+            }
+            &.name {
+              flex: 0 0 25%;
+              max-width: 335px;
+            }
+            &.priority {
+              flex: 0 0 15%;
+              max-width: 15%;
+            }
+            &.author {
+              flex: 0 0 16%;
+              max-width: 16%;
+            }
+            &.editor {
+              flex: 0 0 20%;
+              max-width: 20%;
+            }
+            border-left: 0.5px solid $blueDark;
+            color: #ffff;
             background: unset;
-            border: none;
+            span {
+              font-size: 20px;
+            }
+          }
+
+          th:last-child {
+            // width: 100%;
+            border-right: 0.5px solid $blueDark;
+          }
         }
-        .ant-pagination {
-            width: 100%;
-            display: flex;
-            margin-bottom: 0;
-            margin-top: 5px;
-            justify-content: flex-start;
-        }
-        table {
-            // padding-right: 25px;
+      }
+
+      .ant-table-tbody {
+        tr {
+          cursor: pointer;
+          // display: flex;
+          td {
+            border-left: 0.5px solid $blueDark;
             border-bottom: 0.5px solid $blueDark;
-            .ant-table-thead {
-                background-color: $headerTable;
-                border-bottom: 0.5px solid $blueDark;
-                i {
-                    color: white;
-                    font-size: 14px;
-                    padding: 5px;
-                    background: #7ac0da;
-                }
-                tr {
-                    // display: flex;
-                    cursor: pointer;
-                    th {
-                        .ant-table-column-sorter {
-                            opacity: 0;
-                        }
-                        .ant-table-header-column {
-                            display: block;
-                            .ant-table-column-title {
-                                overflow: hidden;
-                                white-space: nowrap;
-                                text-overflow: ellipsis;
-                                text-align: center;
-                                display: block;
-                            }
-                        }
-                        cursor: pointer;
-
-                        text-align: center;
-                        overflow: hidden;
-                        &.status {
-                            flex: 0 0 10%;
-                            max-width: 10%;
-                        }
-                        &.name {
-                            flex: 0 0 25%;
-                            max-width: 335px;
-                        }
-                        &.priority {
-                            flex: 0 0 15%;
-                            max-width: 15%;
-                        }
-                        &.author {
-                            flex: 0 0 16%;
-                            max-width: 16%;
-                        }
-                        &.editor {
-                            flex: 0 0 20%;
-                            max-width: 20%;
-                        }
-                        border-left: 0.5px solid $blueDark;
-                        color: #ffff;
-                        background: unset;
-                        span {
-                            font-size: 20px;
-                        }
-                    }
-
-                    th:last-child {
-                        // width: 100%;
-                        border-right: 0.5px solid $blueDark;
-                    }
-                }
+            width: 100%;
+            overflow: hidden;
+            span {
+              font-weight: bold;
+              cursor: pointer;
+              font-size: 17px;
             }
 
-            .ant-table-tbody {
-                tr {
-                    cursor: pointer;
-                    // display: flex;
-                    td {
-                        border-left: 0.5px solid $blueDark;
-                        border-bottom: 0.5px solid $blueDark;
-                        width: 100%;
-                        overflow: hidden;
-                        span {
-                            font-weight: bold;
-                            cursor: pointer;
-                            font-size: 17px;
-                        }
-
-                        &.status {
-                            flex: 0 0 10%;
-                            max-width: 10%;
-                        }
-                        &.name {
-                            flex: 0 0 25%;
-                            max-width: 335px;
-                        }
-                        &.priority {
-                            flex: 0 0 15%;
-                            max-width: 15%;
-                        }
-                        &.author {
-                            flex: 0 0 16%;
-                            max-width: 16%;
-                        }
-                        &.editor {
-                            flex: 0 0 20%;
-                            max-width: 20%;
-                        }
-                    }
-                    td:last-child {
-                        border-right: 0.5px solid $blueDark;
-                    }
-                }
+            &.status {
+              flex: 0 0 10%;
+              max-width: 10%;
             }
+            &.name {
+              flex: 0 0 25%;
+              max-width: 335px;
+            }
+            &.priority {
+              flex: 0 0 15%;
+              max-width: 15%;
+            }
+            &.author {
+              flex: 0 0 16%;
+              max-width: 16%;
+            }
+            &.editor {
+              flex: 0 0 20%;
+              max-width: 20%;
+            }
+          }
+          td:last-child {
+            border-right: 0.5px solid $blueDark;
+          }
         }
+      }
     }
+  }
 }
 
 .ant-table-header {
-    background: none;
+  background: none;
 }

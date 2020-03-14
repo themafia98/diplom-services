@@ -1,27 +1,27 @@
 .output {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: center;
 
-    .active {
-        color: $active;
-    }
-    .done {
-        color: $done;
-    }
+  .active {
+    color: $active;
+  }
+  .done {
+    color: $done;
+  }
 
-    .close {
-        color: $close;
-    }
+  .close {
+    color: $close;
+  }
 }
 
 .pointerTooltip {
-    .output {
-        padding-left: 8px;
-    }
+  .output {
+    padding-left: 8px;
+  }
+  cursor: pointer;
+  span {
     cursor: pointer;
-    span {
-        cursor: pointer;
-    }
+  }
 }

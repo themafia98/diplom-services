@@ -1,61 +1,61 @@
 $cardCount: 6;
 
 .streamBox {
+  display: flex;
+  flex-direction: column;
+  height: 73%;
+  align-items: center;
+  width: 100%;
+  .cardStream {
     display: flex;
     flex-direction: column;
-    height: 73%;
     align-items: center;
-    width: 100%;
-    .cardStream {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 70%;
-        font-weight: bold;
-        background-color: $cardColorBg;
-        max-height: 250px;
-        min-height: 175px;
-        margin-top: 10px;
-        box-shadow: $cardBorderShadow;
-        margin: 10px;
+    width: 70%;
+    font-weight: bold;
+    background-color: $cardColorBg;
+    max-height: 250px;
+    min-height: 175px;
+    margin-top: 10px;
+    box-shadow: $cardBorderShadow;
+    margin: 10px;
 
-        .about {
-            display: flex;
-            width: 100%;
-            justify-content: center;
-            align-items: center;
+    .about {
+      display: flex;
+      width: 100%;
+      justify-content: center;
+      align-items: center;
 
-            p {
-                padding-left: 10px;
-                margin: 0;
-            }
+      p {
+        padding-left: 10px;
+        margin: 0;
+      }
 
-            span {
-                margin-top: 2px;
-            }
-        }
-
-        .card_message {
-            width: 85%;
-            cursor: pointer;
-            text-align: center;
-            display: -webkit-box;
-            -webkit-line-clamp: $cardCount;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            line-height: 1.2;
-        }
+      span {
+        margin-top: 2px;
+      }
     }
+
+    .card_message {
+      width: 85%;
+      cursor: pointer;
+      text-align: center;
+      display: -webkit-box;
+      -webkit-line-clamp: $cardCount;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-height: 1.2;
+    }
+  }
 }
 
 .columnModuleLeft {
-    .streamBox {
-        .cardStream {
-            width: 80%;
-        }
+  .streamBox {
+    .cardStream {
+      width: 80%;
     }
+  }
 }
 
 .ant-tooltip {
-    max-width: 475px;
+  max-width: 475px;
 }

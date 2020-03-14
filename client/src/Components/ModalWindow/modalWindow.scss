@@ -1,31 +1,31 @@
 .modalWindow {
-    input {
-        margin: 5px;
-    }
+  input {
+    margin: 5px;
+  }
 
-    .ant-calendar-picker {
-        width: 100%;
-    }
+  .ant-calendar-picker {
+    width: 100%;
+  }
 
-    .ant-calendar-time-picker-btn {
-        display: none;
-    }
+  .ant-calendar-time-picker-btn {
+    display: none;
+  }
 
-    .ant-modal-body {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
+  .ant-modal-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 
-    button {
-        margin-top: 5px;
-    }
+  button {
+    margin-top: 5px;
+  }
 
-    .selectDepartament {
-        width: 100%;
-    }
+  .selectDepartament {
+    width: 100%;
+  }
 
-    .errorFild {
-        border: 1px solid red;
-    }
+  .errorFild {
+    border: 1px solid red;
+  }
 }

@@ -1,88 +1,88 @@
 .userCard {
-    .wallpaper {
-        height: 200px;
-        width: 100%;
-        background-size: cover;
+  .wallpaper {
+    height: 200px;
+    width: 100%;
+    background-size: cover;
+  }
+
+  .mainContentCard {
+    position: relative;
+    background-color: $uiCardInfo;
+    display: flex;
+    box-shadow: 0 5px 5px 0;
+    .col-6:first-child {
+      text-align: center;
+    }
+    .userLogo {
+      position: absolute;
+      cursor: pointer;
+      top: -44%;
+      transform: translate(-50%);
+      color: black;
+      box-sizing: content-box;
+      font-size: 42px;
+      border: 5px solid white;
     }
 
-    .mainContentCard {
-        position: relative;
-        background-color: $uiCardInfo;
-        display: flex;
-        box-shadow: 0 5px 5px 0;
-        .col-6:first-child {
-            text-align: center;
+    .mainInformUser {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 25px;
+      padding-bottom: 20px;
+      .name {
+        font-weight: bold;
+        font-size: 22px;
+        margin-bottom: 0;
+      }
+
+      button {
+        &.controller {
+          margin-right: 5px;
         }
-        .userLogo {
-            position: absolute;
-            cursor: pointer;
-            top: -44%;
-            transform: translate(-50%);
-            color: black;
-            box-sizing: content-box;
-            font-size: 42px;
-            border: 5px solid white;
-        }
+      }
 
-        .mainInformUser {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 25px;
-            padding-bottom: 20px;
-            .name {
-                font-weight: bold;
-                font-size: 22px;
-                margin-bottom: 0;
-            }
-
-            button {
-                &.controller {
-                    margin-right: 5px;
-                }
-            }
-
-            .position {
-                font-size: 13px;
-            }
-        }
-
-        .summary_wrapper {
-            flex-direction: column;
-            display: flex;
-            word-break: break-word;
-
-            .canEditSummary {
-                cursor: pointer;
-                position: absolute;
-                align-self: flex-end;
-                font-size: 20px;
-                right: 5px;
-            }
-            
-            .summary {
-                cursor: pointer;
-                flex-grow: 1;
-                font-size: 17px;
-                margin: 0;
-                padding: 29px 12px 0 0;
-                display: -webkit-box;
-                -webkit-line-clamp: 4;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
-                line-height: 1.2;
-            }
-        }
-
-        .contact {
-            display: flex;
-            justify-content: space-around;
-            padding-bottom: 10px;
-        }
+      .position {
+        font-size: 13px;
+      }
     }
+
+    .summary_wrapper {
+      flex-direction: column;
+      display: flex;
+      word-break: break-word;
+
+      .canEditSummary {
+        cursor: pointer;
+        position: absolute;
+        align-self: flex-end;
+        font-size: 20px;
+        right: 5px;
+      }
+
+      .summary {
+        cursor: pointer;
+        flex-grow: 1;
+        font-size: 17px;
+        margin: 0;
+        padding: 29px 12px 0 0;
+        display: -webkit-box;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        line-height: 1.2;
+      }
+    }
+
+    .contact {
+      display: flex;
+      justify-content: space-around;
+      padding-bottom: 10px;
+    }
+  }
 }
 
 .summary-popover {
-        overflow: hidden;
-        word-break: break-all;
+  overflow: hidden;
+  word-break: break-all;
 }

@@ -11,6 +11,12 @@ yarn.lock
 build/
 package.json
 .eslintignore
+.ts
+.json
+.ico
+.gif
+.log
+.svg
 .prettierignore
 coverage/
 fixtures/

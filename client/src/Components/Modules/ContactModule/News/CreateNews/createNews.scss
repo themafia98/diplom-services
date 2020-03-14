@@ -1,54 +1,54 @@
 .createNews {
-    .createNewsTitle {
-        font-size: 30px;
-        font-weight: bold;
-        margin: 0;
-        user-select: none;
-    }
-    .createNews__main {
-        .editor-wrapper {
-            .rdw-editor-main {
-                height: 100%;
-                background-color: #fff;
-                min-height: calc(80vh - 140px);
-                max-height: calc(80vh - 140px);
-                resize: none;
-                &::-webkit-scrollbar {
-                    width: 6px;
-                }
-                &::-webkit-scrollbar-track {
-                    background: #f1f1f1;
-                }
-
-                &::-webkit-scrollbar-thumb {
-                    background-color: rgba(0, 0, 0, 0.2);
-                }
-            }
-        }
-    }
-
-    .rdw-dropdown-optionwrapper,
-    .rdw-emoji-modal,
-    .rdw-colorpicker-modal-options {
+  .createNewsTitle {
+    font-size: 30px;
+    font-weight: bold;
+    margin: 0;
+    user-select: none;
+  }
+  .createNews__main {
+    .editor-wrapper {
+      .rdw-editor-main {
+        height: 100%;
+        background-color: #fff;
+        min-height: calc(80vh - 140px);
+        max-height: calc(80vh - 140px);
+        resize: none;
         &::-webkit-scrollbar {
-            width: 6px;
+          width: 6px;
         }
         &::-webkit-scrollbar-track {
-            background: #f1f1f1;
+          background: #f1f1f1;
         }
 
         &::-webkit-scrollbar-thumb {
-            background-color: rgba(0, 0, 0, 0.2);
+          background-color: rgba(0, 0, 0, 0.2);
         }
+      }
+    }
+  }
+
+  .rdw-dropdown-optionwrapper,
+  .rdw-emoji-modal,
+  .rdw-colorpicker-modal-options {
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
     }
 
-    .rdw-colorpicker-modal {
-        overflow: auto;
-        overflow-x: hidden;
-        height: 300px;
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(0, 0, 0, 0.2);
     }
+  }
 
-    .rdw-link-modal {
-        height: 231px;
-    }
+  .rdw-colorpicker-modal {
+    overflow: auto;
+    overflow-x: hidden;
+    height: 300px;
+  }
+
+  .rdw-link-modal {
+    height: 231px;
+  }
 }
