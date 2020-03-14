@@ -1,4 +1,7 @@
 class ChatModel {
+  /**
+   * @param {any} io
+   */
   constructor(io) {
     this.socket = io;
   }
@@ -15,6 +18,9 @@ class ChatModel {
     });
   }
 
+  /**
+   * @param {any} rules
+   */
   reconnectAttempt(rules) {
     this.socket.io.opts.transports = rules;
   }

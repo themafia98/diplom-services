@@ -4,6 +4,10 @@ import { TASK_SCHEMA, USER_SCHEMA, TASK_CONTROLL_JURNAL_SCHEMA } from '../Schema
 import Schema from '../Schema';
 
 class ClientSideDatabase {
+  /**
+   * @param {string} name
+   * @param {number} version
+   */
   constructor(name, version) {
     this.db = null;
     this.name = name;
@@ -13,6 +17,9 @@ class ClientSideDatabase {
     this.schema = new Schema('no-strict');
   }
 
+  /**
+   * @param {boolean} state
+   */
   updateStateInit(state) {
     this.isInit = state;
   }
@@ -31,6 +38,9 @@ class ClientSideDatabase {
     try {
       const indexedDatabase = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
       let requestOpen = indexedDatabase.open(this.name, this.version);
+      /**
+       * @param {{ target: { result: any; }; }} event
+       */
       requestOpen.onsuccess = event => {
         this.db = event.target.result;
         this.db.onversionchange = function() {
@@ -38,14 +48,23 @@ class ClientSideDatabase {
           alert('Offline data deprecated, please update page for updating storage.');
         };
       };
+      /**
+       * @param {any} event
+       */
       requestOpen.onerror = event => {
         /** clear and reload client db if catch error */
         const deleteIndexedDbEvent = indexedDatabase.deleteDatabase(this.name);
+        /**
+         * @param {any} event
+         */
         deleteIndexedDbEvent.onerror = event => {
           alert('Error. Please clear your browser data or update browser.');
           console.error(event);
         };
 
+        /**
+         * @param {{ result: any; }} event
+         */
         deleteIndexedDbEvent.onsuccess = event => {
           if (_.isUndefined(event.result)) {
             this.updateStateInit(false);
@@ -58,6 +77,9 @@ class ClientSideDatabase {
           }
         };
       };
+      /**
+       * @param {{ target: { result: any; }; newVersion: any; oldVersion: number; }} event
+       */
       requestOpen.onupgradeneeded = event => {
         this.db = event.target.result;
         const { db } = this;
@@ -171,6 +193,10 @@ class ClientSideDatabase {
     }
   }
 
+  /**
+   * @param {any} nameStore
+   * @param {any} key
+   */
   getItemByKey(nameStore, key, mode = 'readonly') {
     if (this.getCrashStatus()) return;
     const tx = this.db.transaction([nameStore], mode);
@@ -187,6 +213,9 @@ class ClientSideDatabase {
     // };
   }
 
+  /**
+   * @param {any} nameStore
+   */
   getAllItems(nameStore, mode = 'readonly') {
     if (this.getCrashStatus()) return;
     const tx = this.db.transaction([nameStore], mode);
@@ -203,6 +232,10 @@ class ClientSideDatabase {
     // };
   }
 
+  /**
+   * @param {any} nameStore
+   * @param {any} item
+   */
   addItem(nameStore, item, mode = 'readwrite') {
     try {
       if (this.getCrashStatus()) return;
@@ -228,6 +261,11 @@ class ClientSideDatabase {
     // };
   }
 
+  /**
+   * @param {any} nameStore
+   * @param {any} item
+   * @param {any} pk
+   */
   updateItem(nameStore, item, pk, mode = 'readwrite') {
     if (this.getCrashStatus()) return;
 
@@ -250,7 +288,10 @@ class ClientSideDatabase {
     // };
   }
 
-  deleteItem(nameStore, key, mode = 'readwrite') {
+  /**
+   * @param {any} key
+   */
+  deleteItem(nameStore = '', key, mode = 'readwrite') {
     if (this.getCrashStatus()) return;
     const tx = this.db.transaction([nameStore], mode);
     const store = tx.objectStore(nameStore);
@@ -267,7 +308,7 @@ class ClientSideDatabase {
     // };
   }
 
-  getCursor(nameStore, mode = 'readonly') {
+  getCursor(nameStore = '', mode = 'readonly') {
     if (this.getCrashStatus()) return;
     const tx = this.db.transaction(nameStore, mode);
     const store = tx.objectStore(nameStore);
@@ -289,6 +330,9 @@ class ClientSideDatabase {
     // };
   }
 
+  /**
+   * @param {any} nameStore
+   */
   searchItemsByIndexRange(index = null, lowerKey = null, upperKey = null, nameStore, mode = 'readonly') {
     if (this.getCrashStatus()) return;
     if (_.isNull(lowerKey) && _.isNull(upperKey) && _.isNull(index)) return;

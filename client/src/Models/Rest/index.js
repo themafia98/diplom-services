@@ -2,6 +2,9 @@ import _ from 'lodash';
 import axios from 'axios';
 
 class Request {
+  /**
+   * @param {string} [prop]
+   */
   constructor(prop) {
     /** @const {string} */
     this.status = prop;
@@ -125,6 +128,11 @@ class Request {
     };
   }
 
+  /**
+   * @param {string} url
+   * @param {any} method
+   * @param {any} body
+   */
   sendRequest(url, method, body, auth = false, customHeaders = {}) {
     const props = auth
       ? {
@@ -155,6 +163,9 @@ class Request {
     window.location.assign('/');
   }
 
+  /**
+   * @param {boolean} auth
+   */
   getToken(auth) {
     const token = localStorage.getItem('token') || '';
     if ((auth && !token) || !token) {
@@ -164,7 +175,13 @@ class Request {
   }
 
   signOut = async () => {
-    await axios
+    /**
+     * @param {any} error
+     */
+    await /**
+     * @param {{ status: number; }} res
+     */
+    axios
       .delete(this.getApi() + '/logout', {
         headers: {
           Authorization: this.getToken(true),
