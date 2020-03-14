@@ -120,11 +120,15 @@ class TaskView extends React.PureComponent {
           },
           async () => {
             const rest = new Request();
-            const { data: { response = null } = {} } = await rest.sendRequest('/system/tasks/load/file', 'POST', {
-              queryParams: {
-                entityId: routeDataActive['_id'],
+            const { data: { response = null } = {} } = await rest.sendRequest(
+              '/system/tasks/load/file',
+              'POST',
+              {
+                queryParams: {
+                  entityId: routeDataActive['_id'],
+                },
               },
-            });
+            );
 
             if (response && response.done) {
               const { metadata: filesArray } = response;
@@ -167,11 +171,15 @@ class TaskView extends React.PureComponent {
       if (!file) return;
 
       const rest = new Request();
-      const { data: { response = null } = {} } = await rest.sendRequest(`/system/tasks/delete/file`, 'DELETE', {
-        queryParams: {
-          file,
+      const { data: { response = null } = {} } = await rest.sendRequest(
+        `/system/tasks/delete/file`,
+        'DELETE',
+        {
+          queryParams: {
+            file,
+          },
         },
-      });
+      );
 
       if (response && response.done) {
         const { metadata = {} } = response;
@@ -389,7 +397,11 @@ class TaskView extends React.PureComponent {
             </p>
             <p>
               <span className="title">Дата:</span>{' '}
-              {item && item.date && date !== 'Invalid date' ? date : item[0] ? item[0].date : 'не установлено'}
+              {item && item.date && date !== 'Invalid date'
+                ? date
+                : item[0]
+                ? item[0].date
+                : 'не установлено'}
             </p>
             <p>
               <span className="title">Коментарии:</span>
@@ -430,8 +442,16 @@ class TaskView extends React.PureComponent {
       filteredUsers = [],
     } = this.state;
 
-    const { key = '', status = '', priority = '', name = '', author = '', editor = [], date = [], description = '' } =
-      routeDataActive || {};
+    const {
+      key = '',
+      status = '',
+      priority = '',
+      name = '',
+      author = '',
+      editor = [],
+      date = [],
+      description = '',
+    } = routeDataActive || {};
 
     const { rest = {} } = this.context;
 
@@ -504,7 +524,11 @@ class TaskView extends React.PureComponent {
                     {modeControll === 'default' ? (
                       <Output className="name">{name}</Output>
                     ) : modeControll === 'edit' && modeControllEdit ? (
-                      <Input className="nameEdit" onChange={this.onChangeEditable} value={modeControllEdit.name} />
+                      <Input
+                        className="nameEdit"
+                        onChange={this.onChangeEditable}
+                        value={modeControllEdit.name}
+                      />
                     ) : null}
                   </Descriptions.Item>
                   <Descriptions.Item label="Статус">
@@ -632,7 +656,9 @@ class TaskView extends React.PureComponent {
                       <i className="icon-pencil"></i>
                     </span>
                     <Scrollbars style={{ height: '150px' }}>
-                      <span className="descriptionContent">{description ? description : 'Описания задачи нету.'}</span>
+                      <span className="descriptionContent">
+                        {description ? description : 'Описания задачи нету.'}
+                      </span>
                     </Scrollbars>
                   </div>
 

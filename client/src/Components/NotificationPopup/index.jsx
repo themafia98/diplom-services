@@ -7,7 +7,11 @@ class NotificationPopup extends React.PureComponent {
     return items.map((it, i) => {
       return (
         <div key={`wrapper${i}`} className="itemWrapper">
-          <NotificationItem key={i} image={it.image ? it.image : null} content={it.content ? it.content : ''} />
+          <NotificationItem
+            key={i}
+            image={it.image ? it.image : null}
+            content={it.content ? it.content : ''}
+          />
           <hr />
         </div>
       );

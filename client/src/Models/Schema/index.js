@@ -1,5 +1,11 @@
 import _ from 'lodash';
-import { TASK_SCHEMA, USER_SCHEMA, TASK_CONTROLL_JURNAL_SCHEMA, NEWS_SCHEMA, CREATE_TASK_SCHEMA } from './const';
+import {
+  TASK_SCHEMA,
+  USER_SCHEMA,
+  TASK_CONTROLL_JURNAL_SCHEMA,
+  NEWS_SCHEMA,
+  CREATE_TASK_SCHEMA,
+} from './const';
 
 class Schema {
   /**

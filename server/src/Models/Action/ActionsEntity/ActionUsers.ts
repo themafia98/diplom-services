@@ -42,7 +42,10 @@ class ActionUsers implements Action {
         return null;
       }
 
-      const res = await this.getEntity().updateEntity(model, { _id, updateProps: { passwordHash } });
+      const res = await this.getEntity().updateEntity(model, {
+        _id,
+        updateProps: { passwordHash },
+      });
 
       if (!res) return null;
 
@@ -60,7 +63,9 @@ class ActionUsers implements Action {
       _id: uid,
     };
 
-    const result: Record<string, any> | null = await this.getEntity().findOnce(model, { ...checkProps });
+    const result: Record<string, any> | null = await this.getEntity().findOnce(model, {
+      ...checkProps,
+    });
 
     if (!result) {
       console.error('User not find for change password action');
@@ -102,7 +107,9 @@ class ActionUsers implements Action {
       _id: uid,
     };
 
-    const result: Record<string, any> | null = await this.getEntity().findOnce(model, { ...checkProps });
+    const result: Record<string, any> | null = await this.getEntity().findOnce(model, {
+      ...checkProps,
+    });
 
     if (!result) {
       console.error('User not find for change password action');

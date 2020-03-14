@@ -104,11 +104,17 @@
   cursor: pointer;
 }
 .ant-table-thead > tr > th.ant-table-column-has-actions.ant-table-column-has-sorters:hover .anticon-filter,
-.ant-table-thead > tr > th.ant-table-column-has-actions.ant-table-column-has-sorters:hover .ant-table-filter-icon {
+.ant-table-thead
+  > tr
+  > th.ant-table-column-has-actions.ant-table-column-has-sorters:hover
+  .ant-table-filter-icon {
   background: unset;
 }
 
-.ant-table-thead > tr > th.ant-table-column-has-actions.ant-table-column-has-filters:hover .anticon-filter:hover,
+.ant-table-thead
+  > tr
+  > th.ant-table-column-has-actions.ant-table-column-has-filters:hover
+  .anticon-filter:hover,
 .ant-table-thead
   > tr
   > th.ant-table-column-has-actions.ant-table-column-has-filters:hover

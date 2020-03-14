@@ -86,9 +86,16 @@ const ChatRoom = ({
 
   const renderChat = messages => {
     return messages.map((it, i) => {
-      const classNames = clsx(i, 'message', uid === it.authorId && uid.includes(it.authorId) ? 'currentUser' : null);
+      const classNames = clsx(
+        i,
+        'message',
+        uid === it.authorId && uid.includes(it.authorId) ? 'currentUser' : null,
+      );
       return (
-        <div key={`${i}${it.tokenRoom}${it.msg}${it.authorId}${it.displayName}${it._id}`} className={classNames}>
+        <div
+          key={`${i}${it.tokenRoom}${it.msg}${it.authorId}${it.displayName}${it._id}`}
+          className={classNames}
+        >
           <Message
             it={it.msg}
             key={`msg_${i}${it.tokenRoom}${it.msg}${it.authorId}${it.displayName}${it._id}`}

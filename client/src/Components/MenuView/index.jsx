@@ -53,7 +53,12 @@ const MenuView = ({ collapsed, cbOnCollapse, items, cbMenuHandler, activeTabEUID
         <Logo />
       </div>
       {items ? (
-        <Menu selectedKeys={[activeTabEUID]} theme="dark" defaultSelectedKeys={[items[0].VALUE]} mode="inline">
+        <Menu
+          selectedKeys={[activeTabEUID]}
+          theme="dark"
+          defaultSelectedKeys={[items[0].VALUE]}
+          mode="inline"
+        >
           {renderMenu(items)}
         </Menu>
       ) : null}

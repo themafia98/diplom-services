@@ -39,7 +39,10 @@ class TableView extends React.Component {
 
   componentDidUpdate = prevProps => {
     const { path, onLoadCurrentData } = this.props;
-    const { path: validPath = '', page = '', itemId = '' } = routeParser({ pageType: 'moduleItem', path });
+    const { path: validPath = '', page = '', itemId = '' } = routeParser({
+      pageType: 'moduleItem',
+      path,
+    });
 
     if (prevProps.visible !== this.props.visible && page === 'mainModule' && itemId === 'table') {
       if (this.props.visible)

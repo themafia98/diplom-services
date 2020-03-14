@@ -115,7 +115,16 @@ class ContentView extends React.Component {
   };
 
   render() {
-    const { path, onErrorRequstAction, setCurrentTab, actionTabs, router, statusApp, rest, udata = {} } = this.props;
+    const {
+      path,
+      onErrorRequstAction,
+      setCurrentTab,
+      actionTabs,
+      router,
+      statusApp,
+      rest,
+      udata = {},
+    } = this.props;
     const { drawerView, key } = this.state;
 
     if (!key) return <div>no menu</div>;
@@ -163,7 +172,10 @@ class ContentView extends React.Component {
               path={path}
             />
           </TabContainer>
-          <TabContainer isBackground={this.getBackground('documentModule')} visible={path === 'documentModule'}>
+          <TabContainer
+            isBackground={this.getBackground('documentModule')}
+            visible={path === 'documentModule'}
+          >
             <DocumentModule
               visible={path === 'documentModule'}
               onErrorRequstAction={onErrorRequstAction}
@@ -173,7 +185,10 @@ class ContentView extends React.Component {
               statusApp={statusApp}
             />
           </TabContainer>
-          <TabContainer isBackground={this.getBackground('contactModule')} visible={path.startsWith('contactModule')}>
+          <TabContainer
+            isBackground={this.getBackground('contactModule')}
+            visible={path.startsWith('contactModule')}
+          >
             <ContactModule
               visible={path.startsWith('contactModule')}
               actionTabs={actionTabs}
@@ -198,7 +213,10 @@ class ContentView extends React.Component {
               path={path}
             />
           </TabContainer>
-          <TabContainer isBackground={this.getBackground('settingsModule')} visible={path === 'settingsModule'}>
+          <TabContainer
+            isBackground={this.getBackground('settingsModule')}
+            visible={path === 'settingsModule'}
+          >
             <SettingsModule
               visible={path === 'settingsModule'}
               onErrorRequstAction={onErrorRequstAction}
@@ -207,7 +225,10 @@ class ContentView extends React.Component {
               path={path}
             />
           </TabContainer>
-          <TabContainer isBackground={this.getBackground('statisticModule')} visible={path === 'statisticModule'}>
+          <TabContainer
+            isBackground={this.getBackground('statisticModule')}
+            visible={path === 'statisticModule'}
+          >
             <StatisticsModule
               visible={path === 'statisticModule'}
               onErrorRequstAction={onErrorRequstAction}

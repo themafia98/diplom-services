@@ -47,7 +47,11 @@ export default (ws: WebSocketWorker, dbm: Readonly<Database.ManagmentDatabase>, 
       //     }
       // });
 
-      socket.broadcast.emit('updateChatsRooms', { ...response, fullUpdate: true, activeModule: 'chat' });
+      socket.broadcast.emit('updateChatsRooms', {
+        ...response,
+        fullUpdate: true,
+        activeModule: 'chat',
+      });
     };
 
     socket.on('newMessage', async (msgObj: Record<string, any>) => {

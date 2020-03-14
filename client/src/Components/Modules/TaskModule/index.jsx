@@ -246,7 +246,11 @@ class TaskModule extends React.PureComponent {
               removeTab={removeTab}
             />
           </TabContainer>
-          <TabContainer className="validateStyleWrapper" isBackground={isBackgroundTaskViewModule} visible={isViewTask}>
+          <TabContainer
+            className="validateStyleWrapper"
+            isBackground={isBackgroundTaskViewModule}
+            visible={isViewTask}
+          >
             <TaskView
               key={key}
               uuid={key}

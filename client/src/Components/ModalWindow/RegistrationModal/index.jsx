@@ -4,7 +4,14 @@ import { Input, Select } from 'antd';
 const { Option } = Select;
 const RegistrationModal = ({ cbOnChangeSelect, cbOnChange }) => (
   <div>
-    <Input name="email" onChange={cbOnChange} className="email" type="text" size="default" placeholder="email" />
+    <Input
+      name="email"
+      onChange={cbOnChange}
+      className="email"
+      type="text"
+      size="default"
+      placeholder="email"
+    />
     <Input
       name="password"
       onChange={cbOnChange}
@@ -15,7 +22,14 @@ const RegistrationModal = ({ cbOnChangeSelect, cbOnChange }) => (
     />
 
     <Input name="name" onChange={cbOnChange} className="name" type="text" size="default" placeholder="name" />
-    <Input name="surname" onChange={cbOnChange} className="surname" type="text" size="default" placeholder="surname" />
+    <Input
+      name="surname"
+      onChange={cbOnChange}
+      className="surname"
+      type="text"
+      size="default"
+      placeholder="surname"
+    />
     <Select
       onChange={cbOnChangeSelect}
       className="selectDepartament"

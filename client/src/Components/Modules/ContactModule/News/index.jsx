@@ -105,7 +105,14 @@ class News extends React.PureComponent {
 
     return pageCards
       .map((it, index) => {
-        return <NewsCard key={it._id || index} onClick={this.onOpen.bind(this, it._id)} className="card" data={it} />;
+        return (
+          <NewsCard
+            key={it._id || index}
+            onClick={this.onOpen.bind(this, it._id)}
+            className="card"
+            data={it}
+          />
+        );
       })
       .filter(Boolean);
   };

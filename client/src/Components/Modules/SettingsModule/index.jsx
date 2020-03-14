@@ -231,7 +231,11 @@ class SettingsModule extends React.PureComponent {
       const isOnlyPhone = haveChanges.includes('commonPhone') && !haveChanges.includes('commonEmail');
       const isOnlyEmail = haveChanges.includes('commonEmail') && !haveChanges.includes('commonPhone');
 
-      const msg = isOnlyPhone ? 'Телефон обновлен.' : isOnlyEmail ? 'Почта обновлена.' : 'Почта и телефон обновлены.';
+      const msg = isOnlyPhone
+        ? 'Телефон обновлен.'
+        : isOnlyEmail
+        ? 'Почта обновлена.'
+        : 'Почта и телефон обновлены.';
 
       onCaching({
         uid,
@@ -331,7 +335,14 @@ class SettingsModule extends React.PureComponent {
   refColumnFunc = node => (this.refColumn = node);
 
   render() {
-    const { emailValue, telValue, haveChanges, oldPassword, newPassword, isLoadingLogs: isLoading } = this.state;
+    const {
+      emailValue,
+      telValue,
+      haveChanges,
+      oldPassword,
+      newPassword,
+      isLoadingLogs: isLoading,
+    } = this.state;
     const { settingsLogs = {} } = this.props;
     const text = ` A dog is a type of domesticated animal.`;
 

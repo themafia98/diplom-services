@@ -76,9 +76,16 @@ class CreateNews extends React.PureComponent {
         );
       } catch (error) {
         console.error(error);
-        notification.error({ title: 'Ошибка создания новой новости', message: 'Возможно данные повреждены' });
+        notification.error({
+          title: 'Ошибка создания новой новости',
+          message: 'Возможно данные повреждены',
+        });
       }
-    } else return notification.error({ title: 'Ошибка сети', message: 'Интернет соединение отсутствует' });
+    } else
+      return notification.error({
+        title: 'Ошибка сети',
+        message: 'Интернет соединение отсутствует',
+      });
   };
   render() {
     const { clear = false, titleNews = '' } = this.state;
@@ -87,7 +94,12 @@ class CreateNews extends React.PureComponent {
       <div className="createNews">
         <TitleModule classNameTitle="createNewsTitle" title="Создание новой новости" />
         <div className="createNews__main">
-          <Input autoFocus={true} value={titleNews} onChange={this.onChange} placeholder="Заголовок новости" />
+          <Input
+            autoFocus={true}
+            value={titleNews}
+            onChange={this.onChange}
+            placeholder="Заголовок новости"
+          />
 
           <EditorTextarea
             disabled={readOnly}

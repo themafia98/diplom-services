@@ -16,7 +16,11 @@ const NewsViewPage = ({ content: contentEntity = null, title = '', id: _id = uui
       if (key.includes('entity') || key.includes('blocks')) {
         const isArray = _.isArray(contentEntity[key]);
         const isObject = _.isPlainObject(contentEntity[key]);
-        data[key] = isArray ? [...contentEntity[key]] : isObject ? { ...contentEntity[key] } : contentEntity[key];
+        data[key] = isArray
+          ? [...contentEntity[key]]
+          : isObject
+          ? { ...contentEntity[key] }
+          : contentEntity[key];
       }
       return data;
     }, {});

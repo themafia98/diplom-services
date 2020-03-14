@@ -16,7 +16,12 @@ namespace Settings {
   export class SettingsController {
     @Post({ path: '/password', private: true })
     public async passwordChaged(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
-      const params: Params = { methodQuery: 'change_password', from: 'users', done: true, status: 'OK' };
+      const params: Params = {
+        methodQuery: 'change_password',
+        from: 'users',
+        done: true,
+        status: 'OK',
+      };
       try {
         const body: object = req.body;
         const queryParams: Record<string, any> = (<Record<string, any>>body).queryParams;
@@ -56,7 +61,12 @@ namespace Settings {
 
     @Post({ path: '/common', private: true })
     public async commonSettings(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
-      const params: Params = { methodQuery: 'common_changes', from: 'users', done: true, status: 'OK' };
+      const params: Params = {
+        methodQuery: 'common_changes',
+        from: 'users',
+        done: true,
+        status: 'OK',
+      };
       try {
         const body: object = req.body;
         const queryParams: Record<string, any> = (<Record<string, any>>body).queryParams;
@@ -97,7 +107,12 @@ namespace Settings {
     async logger(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const body = req.body;
       const actionType: string = body.actionType;
-      const params: Params = { methodQuery: actionType, from: 'settingsLog', done: true, status: 'OK' };
+      const params: Params = {
+        methodQuery: actionType,
+        from: 'settingsLog',
+        done: true,
+        status: 'OK',
+      };
 
       try {
         const queryParams: Record<string, any> = (<Record<string, any>>body).queryParams;

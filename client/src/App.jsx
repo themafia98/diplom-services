@@ -37,7 +37,12 @@ class App extends React.Component {
   };
 
   loadAppSession = () => {
-    const { addTab, setCurrentTab, router: { currentActionTab = '', actionTabs = [] } = {}, onLoadUdata } = this.props;
+    const {
+      addTab,
+      setCurrentTab,
+      router: { currentActionTab = '', actionTabs = [] } = {},
+      onLoadUdata,
+    } = this.props;
     const { config = {}, Request } = this.context;
     const rest = new Request();
 

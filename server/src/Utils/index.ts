@@ -39,7 +39,9 @@ namespace Utils {
     return true;
   };
 
-  export const getLoggerTransports = (level: string): Array<FileTransportInstance> | FileTransportInstance => {
+  export const getLoggerTransports = (
+    level: string,
+  ): Array<FileTransportInstance> | FileTransportInstance => {
     if (level === 'info') {
       return [new winston.transports.File({ filename: 'info.log', level: 'info' })];
     } else return new winston.transports.File({ filename: 'error.log', level: 'error' });
@@ -106,7 +108,11 @@ namespace Utils {
     });
   };
 
-  export const getResponseJson = (actionString: string, response: ResponseJson<object | null>, start: Date): object => {
+  export const getResponseJson = (
+    actionString: string,
+    response: ResponseJson<object | null>,
+    start: Date,
+  ): object => {
     return {
       action: actionString,
       response,

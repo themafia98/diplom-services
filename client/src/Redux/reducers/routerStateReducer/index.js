@@ -79,7 +79,11 @@ export default (state = initialState, action) => {
       let path = action.payload.path;
       const update = action.shouldUpdate || false;
       let pathParse = path.split('_');
-      if (pathParse[0] === 'taskModule' && pathParse[1] && (pathParse[1] === 'myTasks' || pathParse[1] === 'all')) {
+      if (
+        pathParse[0] === 'taskModule' &&
+        pathParse[1] &&
+        (pathParse[1] === 'myTasks' || pathParse[1] === 'all')
+      ) {
         path = pathParse[0];
       }
       copyRouteData[path] = action.payload;
@@ -162,7 +166,8 @@ export default (state = initialState, action) => {
       };
     }
     case REMOVE_TAB: {
-      let deleteKey = action.payload.type === 'itemTab' ? action.payload.path.split('__')[1] : action.payload.path;
+      let deleteKey =
+        action.payload.type === 'itemTab' ? action.payload.path.split('__')[1] : action.payload.path;
       const { currentActionTab } = state;
 
       let deleteKeyOnce = !deleteKey ? action.payload.path : null;
@@ -194,7 +199,8 @@ export default (state = initialState, action) => {
       const currentFind = filterArray.findIndex(tab => tab === currentActionTab);
       const nextTab = currentFind !== -1 ? currentActionTab : filterArray[indexFind - 1];
 
-      const uuid = typeof nextTab === 'string' && action.payload.type === 'itemTab' ? nextTab.split('__')[1] : nextTab;
+      const uuid =
+        typeof nextTab === 'string' && action.payload.type === 'itemTab' ? nextTab.split('__')[1] : nextTab;
 
       const copyData = routeDataNew;
       let current = null;
@@ -202,10 +208,13 @@ export default (state = initialState, action) => {
         const isSimple =
           copyData[nextTab.split('__')[1]] && copyData[nextTab.split('__')[1]].key === nextTab.split('__')[1];
 
-        const isDelete = state.routeDataActive && deleteKey === state.routeDataActive.key && uuid && !deleteKeyOnce;
+        const isDelete =
+          state.routeDataActive && deleteKey === state.routeDataActive.key && uuid && !deleteKeyOnce;
 
         const isNext =
-          state.routeDataActive && nextTab.split('__')[1] && state.routeDataActive.key === nextTab.split('__')[1];
+          state.routeDataActive &&
+          nextTab.split('__')[1] &&
+          state.routeDataActive.key === nextTab.split('__')[1];
 
         current = isSimple
           ? { ...copyData[nextTab.split('__')[1]] }

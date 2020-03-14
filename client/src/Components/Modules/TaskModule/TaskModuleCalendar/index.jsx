@@ -130,7 +130,11 @@ class TaskModuleCalendar extends React.PureComponent {
         <div className="taskModuleCalendar">
           <TitleModule classNameTitle="taskModuleTittle" title="Календарь задач" />
           <div className="taskModuleCalendar__main">
-            <Calendar fullscreen={true} dateCellRender={this.dateCellRender} monthCellRender={this.monthCellRender} />
+            <Calendar
+              fullscreen={true}
+              dateCellRender={this.dateCellRender}
+              monthCellRender={this.monthCellRender}
+            />
           </div>
         </div>
       </Scrollbars>

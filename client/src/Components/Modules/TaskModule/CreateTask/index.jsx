@@ -150,7 +150,10 @@ class CreateTask extends React.PureComponent {
     if (!_.isNull(target) && target.name === 'name')
       return this.setState({ ...this.state, card: { ...this.state.card, name: target.value } });
     else if (!_.isNull(target) && target.name === 'description')
-      return this.setState({ ...this.state, card: { ...this.state.card, description: target.value } });
+      return this.setState({
+        ...this.state,
+        card: { ...this.state.card, description: target.value },
+      });
   };
 
   onChangeTextArea = event => {
@@ -309,7 +312,11 @@ class CreateTask extends React.PureComponent {
     return (
       <Scrollbars>
         <div className="createTask">
-          <TitleModule additional="Форма создания задачи" classNameTitle="createTaskTitle" title="Новая задача" />
+          <TitleModule
+            additional="Форма создания задачи"
+            classNameTitle="createTaskTitle"
+            title="Новая задача"
+          />
           <div className="createTask__main">
             <div className="col-6 col-task">
               <Scrollbars autoHide>

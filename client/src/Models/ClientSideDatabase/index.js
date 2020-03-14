@@ -36,7 +36,8 @@ class ClientSideDatabase {
     if (this.isInit) return;
 
     try {
-      const indexedDatabase = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+      const indexedDatabase =
+        window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
       let requestOpen = indexedDatabase.open(this.name, this.version);
       /**
        * @param {{ target: { result: any; }; }} event

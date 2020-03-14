@@ -92,7 +92,12 @@ class UserCard extends React.Component {
               {isMine ? (
                 <Tooltip trigger="hover" title="ПКМ - смена фотографии">
                   <Dropdown overlay={menu} trigger={['contextMenu']}>
-                    <Avatar src={udata?.avatar ? udata.avatar : imageUrl} className="userLogo" size={84} icon="user" />
+                    <Avatar
+                      src={udata?.avatar ? udata.avatar : imageUrl}
+                      className="userLogo"
+                      size={84}
+                      icon="user"
+                    />
                   </Dropdown>
                 </Tooltip>
               ) : (
@@ -107,7 +112,9 @@ class UserCard extends React.Component {
                   {udata.email ? (
                     <Button title={udata.email} className="controller" type="primary" icon="mail"></Button>
                   ) : null}
-                  {udata.isOnline ? <Button className="controller" type="primary" icon="wechat"></Button> : null}
+                  {udata.isOnline ? (
+                    <Button className="controller" type="primary" icon="wechat"></Button>
+                  ) : null}
                 </div>
               </div>
             </div>

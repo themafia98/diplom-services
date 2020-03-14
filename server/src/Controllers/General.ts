@@ -117,7 +117,12 @@ namespace General {
     }
 
     @Post({ path: '/recovory', private: false })
-    public async recovoryPassword(req: Request, res: Response, next: NextFunction, server: App): Promise<Response> {
+    public async recovoryPassword(
+      req: Request,
+      res: Response,
+      next: NextFunction,
+      server: App,
+    ): Promise<Response> {
       try {
         const mailer: Readonly<Mail> = server?.locals?.mailer;
         const body: Record<string, any> = req?.body;

@@ -61,7 +61,11 @@ namespace Tasks {
         }
 
         return res.json(
-          getResponseJson('done', { params, metadata, done: true, status: 'OK' }, (req as Record<string, any>).start),
+          getResponseJson(
+            'done',
+            { params, metadata, done: true, status: 'OK' },
+            (req as Record<string, any>).start,
+          ),
         );
       } catch (err) {
         console.error(err);
@@ -79,7 +83,12 @@ namespace Tasks {
 
     @Post({ path: '/createTask', private: true })
     public async create(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
-      const params: Params = { methodQuery: 'set_single', status: 'done', done: true, from: 'users' };
+      const params: Params = {
+        methodQuery: 'set_single',
+        status: 'done',
+        done: true,
+        from: 'users',
+      };
       try {
         const dbm = server.locals.dbm;
 
@@ -90,7 +99,10 @@ namespace Tasks {
 
           if (!connect) throw new Error('Bad connect');
 
-          const createTaskAction = new Action.ActionParser({ actionPath: 'tasks', actionType: 'set_single' });
+          const createTaskAction = new Action.ActionParser({
+            actionPath: 'tasks',
+            actionType: 'set_single',
+          });
 
           const data: ParserResult = await createTaskAction.getActionData(req.body);
 
@@ -113,7 +125,11 @@ namespace Tasks {
           const metadata: ArrayLike<object> = Array.isArray(meta) && meta[0] ? meta[0] : null;
 
           return res.json(
-            getResponseJson('done', { status: 'OK', done: true, params, metadata }, (req as Record<string, any>).start),
+            getResponseJson(
+              'done',
+              { status: 'OK', done: true, params, metadata },
+              (req as Record<string, any>).start,
+            ),
           );
         } else if (!res.headersSent) {
           return res.json(
@@ -145,7 +161,12 @@ namespace Tasks {
 
     @Post({ path: '/caching/jurnal', private: true })
     public async setJurnalWorks(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
-      const params: Params = { methodQuery: 'set_jurnal', status: 'done', done: true, from: 'jurnalworks' };
+      const params: Params = {
+        methodQuery: 'set_jurnal',
+        status: 'done',
+        done: true,
+        from: 'jurnalworks',
+      };
       try {
         const dbm = server.locals.dbm;
 
@@ -181,7 +202,11 @@ namespace Tasks {
           const metadata: ArrayLike<object> = Array.isArray(meta) && meta[0] ? meta[0] : null;
 
           return res.json(
-            getResponseJson('done', { status: 'OK', done: true, params, metadata }, (req as Record<string, any>).start),
+            getResponseJson(
+              'done',
+              { status: 'OK', done: true, params, metadata },
+              (req as Record<string, any>).start,
+            ),
           );
         } else if (!res.headersSent) {
           return res.json(
@@ -255,7 +280,11 @@ namespace Tasks {
         }
 
         return res.json(
-          getResponseJson('done', { params, metadata, status: 'OK', done: true }, (req as Record<string, any>).start),
+          getResponseJson(
+            'done',
+            { params, metadata, status: 'OK', done: true },
+            (req as Record<string, any>).start,
+          ),
         );
       } catch (err) {
         params.done = false;

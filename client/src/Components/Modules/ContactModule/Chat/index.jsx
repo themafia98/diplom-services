@@ -10,7 +10,11 @@ import ChatMenu from './ChatMenu';
 import { notification, message, Popover } from 'antd';
 
 import { setSocketConnection, addMsg } from '../../../../Redux/actions/socketActions';
-import { loadActiveChats, loadingDataByToken, updateRooms } from '../../../../Redux/actions/socketActions/middleware';
+import {
+  loadActiveChats,
+  loadingDataByToken,
+  updateRooms,
+} from '../../../../Redux/actions/socketActions/middleware';
 
 import ChatModel from '../../../../Models/Chat';
 
@@ -129,7 +133,11 @@ class Chat extends React.PureComponent {
   };
 
   connection = socketConnection => {
-    const { chat: { chatToken: tokenRoom = null } = {}, udata: { _id: uid } = {}, onLoadActiveChats } = this.props;
+    const {
+      chat: { chatToken: tokenRoom = null } = {},
+      udata: { _id: uid } = {},
+      onLoadActiveChats,
+    } = this.props;
 
     if (socketConnection) {
       if (onLoadActiveChats)
@@ -373,7 +381,12 @@ class Chat extends React.PureComponent {
                   ) : null}
                   {isDev && tokenRoom ? <p> | {tokenRoom} </p> : null}
                 </div>
-                <p className={clsx('chat_content__header__statusChat', !socketConnection ? 'isOffline' : 'isOnline')}>
+                <p
+                  className={clsx(
+                    'chat_content__header__statusChat',
+                    !socketConnection ? 'isOffline' : 'isOnline',
+                  )}
+                >
                   {!socketConnection && !tokenRoom ? 'не активен' : 'активен'}
                 </p>
               </div>

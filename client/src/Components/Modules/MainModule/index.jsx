@@ -16,7 +16,11 @@ class MainModule extends React.PureComponent {
     const { visible } = this.props;
     return (
       <div className="mainModule">
-        <TitleModule additional="Общая информация" classNameTitle="mainModuleTitle" title="Главная страница" />
+        <TitleModule
+          additional="Общая информация"
+          classNameTitle="mainModuleTitle"
+          title="Главная страница"
+        />
         <div className="mainModule_main">
           <div className="col-4 columnModuleLeft">
             <StreamBox />

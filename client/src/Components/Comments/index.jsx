@@ -84,7 +84,14 @@ class Comments extends React.PureComponent {
   onDelete = (event, idComment) => {
     const { onUpdate, data: { _id: id = '', key = '', comments = [] } = {}, data = {} } = this.props;
     const filterComments = comments.filter(it => it.id !== idComment);
-    onUpdate({ id, key, item: data, store: 'tasks', updateItem: filterComments, updateField: 'comments' })
+    onUpdate({
+      id,
+      key,
+      item: data,
+      store: 'tasks',
+      updateItem: filterComments,
+      updateField: 'comments',
+    })
       .then(() => message.success('Коментарий удален.'))
       .catch(error => {
         message.error('Не удалось удалить коментарий.');

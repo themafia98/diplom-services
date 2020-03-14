@@ -88,7 +88,8 @@ namespace Http {
       // set locals, only providing error in development
       const today: Readonly<Date> = new Date();
       const time: Readonly<string> = today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds();
-      const day: Readonly<string> = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+      const day: Readonly<string> =
+        today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
       console.error(err.name);
       console.log(`time: ${time}, day: ${day}.`);
       if (!err.name) {
@@ -135,7 +136,10 @@ namespace Http {
       };
 
       passport.use(
-        new jwt.Strategy(<StrategyOptions>jwtOptions, async function(payload: Partial<{ id: string }>, done: Function) {
+        new jwt.Strategy(<StrategyOptions>jwtOptions, async function(
+          payload: Partial<{ id: string }>,
+          done: Function,
+        ) {
           try {
             const connect = await dbm.connection();
             if (!connect) throw new Error('bad connection');
@@ -217,7 +221,10 @@ namespace Http {
       this.getApp().use(passport.session());
       this.getApp().use(this.errorLogger);
 
-      const dbm: Readonly<Database.ManagmentDatabase> = new Database.ManagmentDatabase('controllSystem', MONGODB_URI);
+      const dbm: Readonly<Database.ManagmentDatabase> = new Database.ManagmentDatabase(
+        'controllSystem',
+        MONGODB_URI,
+      );
 
       const dropbox = new DropboxStorage.DropboxManager({ token: DROPBOX_TOKEN });
       const mailer: Readonly<Mail> = new Mailer.MailManager(

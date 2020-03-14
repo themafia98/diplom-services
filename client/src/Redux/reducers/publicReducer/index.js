@@ -99,7 +99,9 @@ export default (state = initialState, action) => {
 
         const depKey = validData.depKey;
 
-        keys = !isObjectsArray ? `${depKey ? depKey : ''}${primaryKey}` : `${validData[key].depKey}${primaryKey}`;
+        keys = !isObjectsArray
+          ? `${depKey ? depKey : ''}${primaryKey}`
+          : `${validData[key].depKey}${primaryKey}`;
 
         return {
           ...state,
@@ -109,7 +111,8 @@ export default (state = initialState, action) => {
     }
 
     case CLEAR_CACHE: {
-      const deleteKey = action.payload.type === 'itemTab' ? action.payload.path.split('__')[1] : action.payload.path;
+      const deleteKey =
+        action.payload.type === 'itemTab' ? action.payload.path.split('__')[1] : action.payload.path;
       const { caches = {} } = state || {};
       const copyCahes = { ...caches };
 

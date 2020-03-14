@@ -36,7 +36,8 @@ export default (state = initialState, action) => {
 
     case SET_ACTIVE_CHAT_TOKEN: {
       const { chat = {} } = state;
-      const { tokenRoom, listdataMsgs = [], isFake = null, shouldLoadingMessage = false } = action.payload || {};
+      const { tokenRoom, listdataMsgs = [], isFake = null, shouldLoadingMessage = false } =
+        action.payload || {};
 
       return {
         ...state,

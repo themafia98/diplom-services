@@ -31,7 +31,9 @@ const ObserverTime = props => {
     <React.Fragment>
       <TitleModule classNameTitle="observerTitle" title={title ? title : 'История изменений'} />
       <Scrollbars>
-        <div className="observerWrapper">{isInvalid ? null : <Timeline>{renderLogs(settingsLogs)}</Timeline>}</div>
+        <div className="observerWrapper">
+          {isInvalid ? null : <Timeline>{renderLogs(settingsLogs)}</Timeline>}
+        </div>
       </Scrollbars>
     </React.Fragment>
   );

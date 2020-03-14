@@ -27,7 +27,13 @@ class CabinetModule extends React.PureComponent {
   };
 
   hideModal = event => {
-    this.setState({ ...this.state, visible: false, imageUrl: null, loading: false, disabled: false });
+    this.setState({
+      ...this.state,
+      visible: false,
+      imageUrl: null,
+      loading: false,
+      disabled: false,
+    });
   };
 
   beforeUpload = file => {

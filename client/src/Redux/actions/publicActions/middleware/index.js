@@ -202,7 +202,9 @@ const /**
         case 'UPDATE': {
           try {
             const path =
-              actionType === 'update_many' ? `/system/${store}/update/many` : `/system/${store}/update/single`;
+              actionType === 'update_many'
+                ? `/system/${store}/update/many`
+                : `/system/${store}/update/single`;
             const rest = new Request();
 
             const body = { queryParams: { id, key }, updateItem, updateField };

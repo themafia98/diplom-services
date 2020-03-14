@@ -172,7 +172,9 @@ class ModalWindow extends React.PureComponent {
       const item = { ...jurnal, depKey: keyTask, editor: 'Павел Петрович' };
 
       if (onCaching) {
-        onCaching({ item, actionType, depStore: 'tasks', store: 'jurnalworks' }).then(() => this.handleCancel());
+        onCaching({ item, actionType, depStore: 'tasks', store: 'jurnalworks' }).then(() =>
+          this.handleCancel(),
+        );
       }
 
       return this.setState({
@@ -316,7 +318,11 @@ class ModalWindow extends React.PureComponent {
       this.setState({
         jurnal: { ...this.state.jurnal, date: event.toString() },
       });
-    } else if (target && (target.value || target.value === '') && target.className.split(' ')[1] === 'description') {
+    } else if (
+      target &&
+      (target.value || target.value === '') &&
+      target.className.split(' ')[1] === 'description'
+    ) {
       this.setState({
         jurnal: { ...this.state.jurnal, description: target.value },
       });
@@ -342,7 +348,11 @@ class ModalWindow extends React.PureComponent {
       return <SimpleEditableModal {...this.props} />;
     }
 
-    const { type: typeState = '', modeSetTime = null, description: { value: valueDesc = '' } = {} } = this.state;
+    const {
+      type: typeState = '',
+      modeSetTime = null,
+      description: { value: valueDesc = '' } = {},
+    } = this.state;
     if (mode === 'reg') {
       return (
         <React.Fragment>

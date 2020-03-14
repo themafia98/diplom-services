@@ -13,7 +13,9 @@ class ActionChatMessage implements Action {
   }
 
   private getMsgByToken(actionParam: ActionParams, model: Model<Document>) {
-    const { options: { tokenRoom = '', moduleName = '', membersIds = [] } = {} } = <Record<string, any>>actionParam;
+    const { options: { tokenRoom = '', moduleName = '', membersIds = [] } = {} } = <Record<string, any>>(
+      actionParam
+    );
 
     if (!tokenRoom || !moduleName) {
       console.error('Bad tokenRoom or moduleName in get_msg_by_token action');

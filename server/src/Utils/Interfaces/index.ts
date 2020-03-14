@@ -1,4 +1,10 @@
-import { Application, Router as RouteExpress, Request as RequestExpress, Response, NextFunction } from 'express';
+import {
+  Application,
+  Router as RouteExpress,
+  Request as RequestExpress,
+  Response,
+  NextFunction,
+} from 'express';
 import nodemailer, { SendMailOptions, Transporter, createTransport } from 'nodemailer';
 import { Dropbox, files } from 'dropbox';
 import { transOptions, ParserData } from '../Types';

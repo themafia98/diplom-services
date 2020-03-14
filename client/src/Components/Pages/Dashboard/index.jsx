@@ -68,7 +68,10 @@ class Dashboard extends React.PureComponent {
     const { showLoader, status: statusState, counterError } = this.state;
 
     if (!showLoader && statusState !== status && status === 'online')
-      notification.success({ message: 'Удачно', description: 'Интернет соединение восстановлено.' });
+      notification.success({
+        message: 'Удачно',
+        description: 'Интернет соединение восстановлено.',
+      });
 
     if (showLoader && _.isNull(requestError) && status === 'online') {
       const { routeData = {} } = router;
@@ -161,7 +164,8 @@ class Dashboard extends React.PureComponent {
         const PAGEDATA = routeParser({ pageType: 'page', path: tabsCopy[i] });
         const PARENT_CODE = PAGEDATA['page'];
         const DATAKEY = PAGEDATA['pageChild'] || PAGEDATA['page'] || '';
-        const { listdata: { title: titleListdata = '' } = {}, title = '', name = '' } = routeData[DATAKEY] || {};
+        const { listdata: { title: titleListdata = '' } = {}, title = '', name = '' } =
+          routeData[DATAKEY] || {};
 
         const VALUE = DATAKEY && name ? name : title ? title : titleListdata ? titleListdata : DATAKEY;
         tabItem = { EUID: PAGEDATA['path'] || tabsCopy[i], PARENT_CODE, DATAKEY, VALUE };

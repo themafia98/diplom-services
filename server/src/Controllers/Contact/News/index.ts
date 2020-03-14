@@ -29,7 +29,12 @@ namespace News {
 
         if (!connect) throw new Error('Bad connect');
 
-        const params: Params = { methodQuery: actionType, status: 'done', done: true, from: 'news' };
+        const params: Params = {
+          methodQuery: actionType,
+          status: 'done',
+          done: true,
+          from: 'news',
+        };
 
         const actionNews = new Action.ActionParser({ actionPath: 'news', actionType });
         const data: Readonly<ParserResult> = await actionNews.getActionData(body);
@@ -63,7 +68,12 @@ namespace News {
             queryParams: { actionType = '' },
           } = bodyRequest;
 
-          const params: Params = { methodQuery: actionType, status: 'done', done: true, from: 'news' };
+          const params: Params = {
+            methodQuery: actionType,
+            status: 'done',
+            done: true,
+            from: 'news',
+          };
           res.status(503);
           return res.json(
             getResponseJson(

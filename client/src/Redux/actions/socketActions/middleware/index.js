@@ -185,8 +185,12 @@ const /**
    */
   updateRooms = payload => async (dispatch, getState, { schema, Request, clientDB }) => {
     try {
-      const { room: { tokenRoom: token = '', membersIds = [] } = {}, msg = {}, fullUpdate = false, activeModule } =
-        payload || {};
+      const {
+        room: { tokenRoom: token = '', membersIds = [] } = {},
+        msg = {},
+        fullUpdate = false,
+        activeModule,
+      } = payload || {};
 
       const { chat: { usersList = [], listdata: listdataState = [] } = {} } = getState().socketReducer || {};
 

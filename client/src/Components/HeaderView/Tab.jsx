@@ -33,7 +33,11 @@ class Tab extends React.PureComponent {
   render() {
     const { value, active, hendlerTab: callbackHendlerTab, itemKey, sizeTab = 10 } = this.props;
     const recalcSize =
-      sizeTab > 55 ? sizeTab - sizeTab * 0.15 : sizeTab > 43 ? sizeTab - sizeTab * 0.2 : sizeTab - sizeTab * 0.3;
+      sizeTab > 55
+        ? sizeTab - sizeTab * 0.15
+        : sizeTab > 43
+        ? sizeTab - sizeTab * 0.2
+        : sizeTab - sizeTab * 0.3;
     return (
       <li
         style={{
@@ -52,7 +56,9 @@ class Tab extends React.PureComponent {
           </Tooltip>
         </span>
         <Icon
-          style={{ left: sizeTab < 60 ? `85%` : sizeTab < 90 ? `90%` : sizeTab < 102 ? `93%` : null }}
+          style={{
+            left: sizeTab < 60 ? `85%` : sizeTab < 90 ? `90%` : sizeTab < 102 ? `93%` : null,
+          }}
           className={clsx('closeTab')}
           onClick={callbackHendlerTab ? this.eventCloseHandler : null}
           type="close"

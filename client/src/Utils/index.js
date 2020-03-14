@@ -51,7 +51,10 @@ export const routeParser = ({ pageType = 'module', path: route = null }) => {
  *  @param {string} moduleId string (pathData)
  *  @param {string} key string (pathData)
  */
-export const routePathNormalise = ({ pathType = 'module', pathData: { page = '', moduleId = '', key = '' } = {} }) => {
+export const routePathNormalise = ({
+  pathType = 'module',
+  pathData: { page = '', moduleId = '', key = '' } = {},
+}) => {
   if (!page && !moduleId && !key) return '';
   if (typeof page !== 'string' || typeof moduleId !== 'string' || typeof key !== 'string') return '';
   if (pathType === 'module') {
@@ -59,7 +62,12 @@ export const routePathNormalise = ({ pathType = 'module', pathData: { page = '',
     return { path: moduleId ? `${page}_${moduleId}` : page, moduleId: moduleId, page: page };
   } else if (pathType === 'moduleItem') {
     if (!key) return '';
-    return { path: moduleId ? `${page}_${moduleId}__${key}` : `${page}__${key}`, page, moduleId, key };
+    return {
+      path: moduleId ? `${page}_${moduleId}__${key}` : `${page}__${key}`,
+      page,
+      moduleId,
+      key,
+    };
   }
 };
 

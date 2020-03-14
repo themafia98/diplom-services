@@ -110,7 +110,12 @@ const ChatMenu = props => {
           )}
         </Scrollbars>
       </div>
-      <Button onClick={onCreateRoom} type="primary" disabled={!socketConnection} className="chat_main__createRoom">
+      <Button
+        onClick={onCreateRoom}
+        type="primary"
+        disabled={!socketConnection}
+        className="chat_main__createRoom"
+      >
         Создать комнату
       </Button>
     </div>
