@@ -123,3 +123,11 @@
     flex: 0 0 100%;
   }
 }
+
+.loadingAvatar-modal {
+  .ant-modal-footer {
+    .ant-btn:first-child {
+      visibility: hidden;
+    }
+  }
+}

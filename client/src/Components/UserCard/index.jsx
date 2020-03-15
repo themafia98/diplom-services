@@ -93,7 +93,7 @@ class UserCard extends React.Component {
                 <Tooltip trigger="hover" title="ПКМ - смена фотографии">
                   <Dropdown overlay={menu} trigger={['contextMenu']}>
                     <Avatar
-                      src={udata?.avatar ? udata.avatar : imageUrl}
+                      src={imageUrl ? `data:image/png;base64,${imageUrl}` : null}
                       className="userLogo"
                       size={84}
                       icon="user"

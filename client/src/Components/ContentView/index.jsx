@@ -115,16 +115,7 @@ class ContentView extends React.Component {
   };
 
   render() {
-    const {
-      path,
-      onErrorRequstAction,
-      setCurrentTab,
-      actionTabs,
-      router,
-      statusApp,
-      rest,
-      udata = {},
-    } = this.props;
+    const { path, onErrorRequstAction, setCurrentTab, actionTabs, router, statusApp, rest } = this.props;
     const { drawerView, key } = this.state;
 
     if (!key) return <div>no menu</div>;
@@ -152,7 +143,6 @@ class ContentView extends React.Component {
             <CabinetModule
               visible={path === 'cabinetModule'}
               rest={rest}
-              udata={udata}
               onErrorRequstAction={onErrorRequstAction}
               key="cabinet"
             />

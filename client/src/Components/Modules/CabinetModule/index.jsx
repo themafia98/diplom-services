@@ -1,7 +1,9 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { Modal, Upload, message, Icon, Button } from 'antd';
+import { updateUdata } from '../../../Redux/actions/publicActions';
 import UserCard from '../../UserCard';
 import TitleModule from '../../TitleModule';
 import StreamBox from '../../StreamBox';
@@ -56,11 +58,18 @@ class CabinetModule extends React.PureComponent {
     reader.readAsDataURL(img);
   };
 
-  setFile = imageUrl => {
-    this.setState({
-      imageUrl,
-      loading: false,
-    });
+  setFile = (imageUrl, disabled) => {
+    const { onUpdateUdata = null } = this.props;
+    this.setState(
+      {
+        imageUrl: `data:image/png;base64,${imageUrl}`,
+        loading: false,
+        disabled,
+      },
+      () => {
+        if (onUpdateUdata) onUpdateUdata({ avatar: imageUrl });
+      },
+    );
   };
 
   reset = event => {
@@ -73,21 +82,20 @@ class CabinetModule extends React.PureComponent {
       this.setState({ disabled: false });
     }
     if (status === 'done') {
-      debugger;
       message.success(`${info.file.name} file uploaded successfully.`);
-      const { file: { xhr: { response = null } = {}, originFileObj = {} } = {} } = info;
+      const { file: { xhr: { response = null } = {} } = {} } = info;
 
       const res = _.isString(response) ? JSON.parse(response) : response;
 
-      const { response: { done = false } = {} } = res || {};
+      const { response: { metadata = '', done = false } = {} } = res || {};
 
       if (!done) {
         this.setState({ disabled: false });
         message.error(`${info.file.name} file upload failed.`);
+        return;
       }
 
-      this.getBase64(originFileObj, this.setFile.bind(this));
-      this.setState({ disabled: true });
+      this.setFile(metadata, true);
     } else if (status === 'error') {
       this.setState({ disabled: false });
       message.error(`${info.file.name} file upload failed.`);
@@ -97,13 +105,16 @@ class CabinetModule extends React.PureComponent {
   render() {
     const { visible, imageUrl } = this.state;
     const { rest } = this.context;
-    // const { udata = {} } = this.props;
+    const { udata: { _id: uid = '', avatar = '' } = {} } = this.props;
+
+    const uidUser = uid;
+
     const props = {
       name: 'avatar',
       multiple: false,
       withCredentials: true,
       headers: rest ? rest.getHeaders() : null,
-      action: rest ? `${rest.getApi()}/cabinet/loadAvatar` : null,
+      action: rest && uidUser ? `${rest.getApi()}/cabinet/${uidUser}/loadAvatar` : null,
     };
 
     const uploadButton = (
@@ -118,14 +129,21 @@ class CabinetModule extends React.PureComponent {
         <TitleModule additional="Профиль" classNameTitle="cabinetModuleTitle" title="Личный кабинет" />
         <div className="cabinetModule_main">
           <div className="col-6">
-            <UserCard imageUrl={imageUrl} cdShowModal={this.showModal} />
+            <UserCard imageUrl={avatar} cdShowModal={this.showModal} />
           </div>
           <div className="col-6">
             <p className="lastActivity">Последняя активность</p>
             <StreamBox boxClassName="streamActivityCabinet" mode="activity" />
           </div>
         </div>
-        <Modal title="Сменить фото" visible={visible} onCancel={this.hideModal}>
+        <Modal
+          destroyOnClose={true}
+          className="loadingAvatar-modal"
+          title="Сменить фото"
+          visible={visible}
+          onCancel={this.hideModal}
+          onOk={this.hideModal}
+        >
           <Dragger
             beforeUpload={this.beforeUpload}
             showUploadList={false}
@@ -152,4 +170,18 @@ class CabinetModule extends React.PureComponent {
   }
 }
 
-export default CabinetModule;
+const mapStateToProps = state => {
+  const { udata = {} } = state.publicReducer;
+
+  return {
+    udata,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onUpdateUdata: payload => dispatch(updateUdata(payload)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(CabinetModule);

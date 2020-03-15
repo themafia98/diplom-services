@@ -13,9 +13,10 @@ namespace Cabinet {
 
   @Controller('/cabinet')
   export class CabinetController {
-    @Post({ path: '/loadAvatar', private: true, file: true })
-    public async validationAvatar(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    @Post({ path: '/:uid/loadAvatar', private: true, file: true })
+    public async loadAvatar(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { files = [] } = req;
+      const { uid = "" } = req.params;
 
       const image = (<Record<string, any>>files)[0] || null;
 
@@ -37,6 +38,23 @@ namespace Cabinet {
       };
 
       try {
+        const dbm = server.locals.dbm;
+        const connect = await dbm.connection().catch((err: Error) => console.error(err));
+
+        if (!connect) throw new Error('Bad connect');
+
+          const updateAvatarAction = new Action.ActionParser({
+            actionPath: "users",
+            actionType: 'update_single',
+          });
+
+          const body = { queryParams: { uid }, updateItem: { avatar: dataUrl } };
+
+          const data: ParserResult = await updateAvatarAction.getActionData(body);
+
+
+          await dbm.disconnect().catch((err: Error) => console.error(err));
+
         res.status(200);
         return res.json(
           getResponseJson(

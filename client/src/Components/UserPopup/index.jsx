@@ -23,11 +23,19 @@ class UserPopup extends React.PureComponent {
 
   render() {
     const { goCabinet } = this.props;
-    const { udata = {} } = this.state;
+    const {
+      udata = {},
+      udata: { avatar = '' },
+    } = this.state;
     return (
       <div className="userPopup">
         <div onClick={goCabinet} className="userPopupMain">
-          <Avatar shape="square" type="small" icon="user" />
+          <Avatar
+            src={avatar ? `data:image/png;base64,${avatar}` : null}
+            shape="square"
+            type="small"
+            icon="user"
+          />
           <p className="userName_link">{udata && udata.displayName ? udata.displayName : 'Unknown'}</p>
         </div>
       </div>
