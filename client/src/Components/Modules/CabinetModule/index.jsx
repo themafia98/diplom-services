@@ -97,7 +97,7 @@ class CabinetModule extends React.PureComponent {
   render() {
     const { visible, imageUrl } = this.state;
     const { rest } = this.context;
-    const { udata = {} } = this.props;
+    // const { udata = {} } = this.props;
     const props = {
       name: 'avatar',
       multiple: false,

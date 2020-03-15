@@ -61,6 +61,7 @@ export default (state = initialState, action) => {
       const { primaryKey } = action.payload;
       const { pk = null } = action.payload;
       const { data } = action.payload;
+      const { caches = {} } = state;
       let keys = null;
 
       //const isObjects = typeof data === "object" && data !== null && Object.keys(data).length > 1;
@@ -88,7 +89,6 @@ export default (state = initialState, action) => {
           _items[value] = { ...validData[i] };
           i += 1;
         });
-        const { caches = {} } = state;
 
         return {
           ...state,
@@ -105,7 +105,7 @@ export default (state = initialState, action) => {
 
         return {
           ...state,
-          caches: { ...state.caches, [keys]: validData[0] ? { ...validData[0] } : validData },
+          caches: { ...caches, [keys]: validData[0] ? { ...validData[0] } : validData },
         };
       }
     }

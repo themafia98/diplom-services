@@ -117,7 +117,6 @@ class ModalWindow extends React.PureComponent {
       routeDataActive: { key = null } = {},
       actionType = null,
       keyTask = null,
-      typeRequst: type = '',
       onCancelEditModeContent,
       path = '',
       modeEditContent = null,

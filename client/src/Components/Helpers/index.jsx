@@ -1,12 +1,14 @@
-import React, { useState, useEffect, useContext } from 'react';
-import _ from 'lodash';
+import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Route } from 'react-router-dom';
 import Loader from '../Loader';
 import modelsContext from '../../Models/context';
 
 export const PrivateRoute = ({ component: Component, onLogoutAction, ...routeProps }) => {
-  let timer = null;
+  /**
+   * @type {import('react').MutableRefObject}
+   */
+  const timerRef = useRef(); // instanse timer
 
   const { rest } = useContext(modelsContext);
 
@@ -14,7 +16,7 @@ export const PrivateRoute = ({ component: Component, onLogoutAction, ...routePro
   const [status, setStatus] = useState(null);
   const [init, setInit] = useState(null);
 
-  const getRouters = async () => {
+  const getRoutersFunc = async () => {
     await rest
       .authCheck()
       .then(res => {
@@ -32,20 +34,25 @@ export const PrivateRoute = ({ component: Component, onLogoutAction, ...routePro
       });
   };
 
-  const debounceGetRouters = _.debounce(getRouters, 1000);
+  const getRouters = useCallback(getRoutersFunc, [rest]);
+
+  const startTimer = useCallback(() => {
+    // @ts-ignore
+    timerRef.current = setInterval(getRouters, 20000);
+  }, [timerRef, getRouters]);
+
+  const clearTimer = useCallback(() => clearInterval(timerRef.current), [timerRef]);
 
   useEffect(() => {
     if (!init) {
       setInit(true);
-      debounceGetRouters();
+      getRouters();
     }
     if (status !== 'error') {
-      timer = setInterval(() => {
-        debounceGetRouters();
-      }, 20000);
+      startTimer();
     }
-    return () => clearInterval(timer);
-  }, ['']);
+    return () => clearTimer();
+  }, [getRouters, status, init, clearTimer, startTimer]);
   return <Route exact {...routeProps} render={props => route} />;
 };
 

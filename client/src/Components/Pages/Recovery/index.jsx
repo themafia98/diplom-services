@@ -15,7 +15,7 @@ const Recovory = props => {
 
   const onSubmit = async () => {
     try {
-      const regexp = mode === 'emailMode' ? /\w+\@\w+\.\D+/i : /\w+/i;
+      const regexp = mode === 'emailMode' ? /\w+@\w+\.\D+/i : /\w+/i;
 
       if (!regexp.test(recovoryField)) {
         setStatus(mode === 'emailMode' ? 'Неверный формат почты' : 'Неверный формат поля');

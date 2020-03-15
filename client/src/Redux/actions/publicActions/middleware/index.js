@@ -1,5 +1,4 @@
-import _ from 'lodash';
-import { сachingAction, setStatus, errorRequstAction } from '../';
+import { сachingAction, errorRequstAction } from '../';
 import { updateItemStateAction } from '../../routerActions';
 import { TASK_CONTROLL_JURNAL_SCHEMA, USER_SCHEMA, TASK_SCHEMA } from '../../../../Models/Schema/const';
 
@@ -16,7 +15,7 @@ const /**
    * @param {() => { (): any; new (): any; publicReducer: { requestError: any; status?: "online"; }; }} getState
    */
   middlewareCaching = (props = {}) => async (dispatch, getState, { schema, Request, clientDB }) => {
-    const { requestError, status = 'online' } = getState().publicReducer;
+    const { status = 'online' } = getState().publicReducer;
 
     const { actionType = '', item = {}, depKey = '', depStore = '', store = '', uid = '', type = '' } = props;
 
@@ -35,14 +34,14 @@ const /**
 
             const updaterItem = { ...res['data']['response']['metadata'] };
 
-            const schemTemplate =
-              store === 'jurnalworks'
-                ? TASK_CONTROLL_JURNAL_SCHEMA
-                : store === 'users'
-                ? USER_SCHEMA
-                : store === 'tasks'
-                ? TASK_SCHEMA
-                : null;
+            // const schemTemplate =
+            //   store === 'jurnalworks'
+            //     ? TASK_CONTROLL_JURNAL_SCHEMA
+            //     : store === 'users'
+            //     ? USER_SCHEMA
+            //     : store === 'tasks'
+            //     ? TASK_SCHEMA
+            //     : null;
 
             // const validHash = [updaterItem]
             //     .map(it => schema.getSchema(schemTemplate, it))
@@ -110,7 +109,7 @@ const /**
       store = '',
     } = props;
 
-    const { requestError, status = 'online' } = getState().publicReducer;
+    const { status = 'online' } = getState().publicReducer;
 
     if (status === 'online') {
       switch (actionType) {
@@ -127,14 +126,14 @@ const /**
 
             const updaterItem = { ...res['data']['response']['metadata'] };
 
-            const schemTemplate =
-              store === 'jurnalworks'
-                ? TASK_CONTROLL_JURNAL_SCHEMA
-                : store === 'users'
-                ? USER_SCHEMA
-                : store === 'tasks'
-                ? TASK_SCHEMA
-                : null;
+            // const schemTemplate =
+            //   store === 'jurnalworks'
+            //     ? TASK_CONTROLL_JURNAL_SCHEMA
+            //     : store === 'users'
+            //     ? USER_SCHEMA
+            //     : store === 'tasks'
+            //     ? TASK_SCHEMA
+            //     : null;
 
             // const validHash = [updaterItem]
             //     .map(it => schema.getSchema(schemTemplate, it))
@@ -188,14 +187,12 @@ const /**
       key = '',
       type = 'UPDATE',
       updateField = '',
-      item = {},
       updateItem,
       store = {},
       actionType = 'default',
     } = props;
 
-    const router = getState().router;
-    const { requestError, status = 'online' } = getState().publicReducer;
+    const { status = 'online' } = getState().publicReducer;
 
     if (status === 'online') {
       switch (type) {
@@ -243,6 +240,8 @@ const /**
             dispatch(errorRequstAction(error.message));
             break;
           }
+
+          break;
         }
 
         case 'DELETE': {

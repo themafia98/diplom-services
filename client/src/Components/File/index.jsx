@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import uuid from 'uuid/v4';
 import { Upload, Icon, message } from 'antd';
-import Request from '../../Models/Rest';
 const { Dragger } = Upload;
 
 class File extends React.Component {

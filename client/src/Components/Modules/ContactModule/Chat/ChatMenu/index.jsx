@@ -44,7 +44,7 @@ const ChatMenu = props => {
     }
 
     setIDs(ids);
-  }, [usersList.length]);
+  }, [usersList.length, iDs.length]);
 
   useEffect(() => {
     const singleRooms = listdata.filter(room => room.type === 'single');
@@ -68,7 +68,7 @@ const ChatMenu = props => {
     }
 
     updateRooms([...singleRooms, ...rooms]);
-  }, [usersList, listdata, iDs]);
+  }, [usersList, listdata, iDs, uid]);
 
   return (
     <div className="col-chat-menu">

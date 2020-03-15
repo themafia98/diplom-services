@@ -167,14 +167,12 @@ class SettingsModule extends React.PureComponent {
     } else if (target?.dataset?.id === 'newPassword') {
       this.setState({
         ...this.state,
-        haveChanges: 'password',
         haveChanges: !filterChanges.length ? [key] : filterChanges,
         newPassword: target.value,
       });
     } else if (target?.dataset?.id === 'oldPassword') {
       this.setState({
         ...this.state,
-        haveChanges: 'password',
         haveChanges: !filterChanges.length ? [key] : filterChanges,
         oldPassword: target.value,
       });
@@ -195,7 +193,7 @@ class SettingsModule extends React.PureComponent {
       const { udata: { _id: uid = '' } = {}, onUpdateUdata = null, onCaching = null } = this.props;
       const { emailValue: newEmail = '', telValue: newPhone = '', haveChanges } = this.state;
 
-      if (!newEmail || !/\w+\@\w+\.\D+/i.test(newEmail)) {
+      if (!newEmail || !/\w+@\w+\.\D+/i.test(newEmail)) {
         message.error('Формат почты не соблюден');
         return;
       }
@@ -503,7 +501,6 @@ const mapStateToProps = state => {
     router: { ...state.router },
     settingsLogs,
     udata,
-    settingsLogs,
     shouldUpdate: shouldUpdate && currentActionTab.includes('settings'),
   };
 };

@@ -60,6 +60,7 @@ export default (ws: WebSocketWorker, dbm: Readonly<Database.ManagmentDatabase>, 
         const model: Model<Document> | null = getModelByName('chatMsg', 'chatMsg');
 
         if (model && tokenRoom) {
+          socket.join(tokenRoom);
           const displayName = (msgObj as Record<string, string>).displayName;
           if (msgObj && _.isObject(msgObj) && displayName !== 'System') {
             const saveMsg = await model.create(msgObj);

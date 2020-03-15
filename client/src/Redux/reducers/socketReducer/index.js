@@ -137,11 +137,14 @@ export default (state = initialState, action) => {
       const { chat: { tokenRoom = '' } = {} } = state;
 
       let sortListdata = [...listdata].sort((a, b) => Date(a.date) - Date(b.date));
-      const duplicateFixed = sortListdata.filter(item => {
-        const isExists = item && item.tokenRoom;
-        const findItem = isExists ? item.tokenRoom === tokenRoom : null;
-        if (findItem) return item;
-      });
+      const duplicateFixed = sortListdata
+        .filter(item => {
+          const isExists = item && item.tokenRoom;
+          const findItem = isExists ? item.tokenRoom === tokenRoom : null;
+          if (findItem) return item;
+          else return null;
+        })
+        .filter(Boolean);
 
       const fakeItem = duplicateFixed.find(it => it?.tokenRoom?.include('__fakeRoom'));
 

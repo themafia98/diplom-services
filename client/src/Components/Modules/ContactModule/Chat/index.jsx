@@ -43,7 +43,6 @@ class Chat extends React.PureComponent {
     this.chat.useDefaultEvents();
 
     this.chat.getSocket().on('updateChatsRooms', onUpdateRoom);
-
     this.chat.getSocket().on('connection', this.connection);
     this.chat.getSocket().on('updateFakeRoom', this.updateFakeRoom);
     this.chat.getSocket().on('msg', this.addMsg);
@@ -61,11 +60,9 @@ class Chat extends React.PureComponent {
       socketConnection,
       tokenRoom = '',
       onSetSocketConnection,
-      onUpdateRoom = null,
       onLoadActiveChats,
       udata: { _id: uid } = {},
       chat: { chatToken = null, listdata = [], shouldLoadingMessage = false } = {},
-      udata: { displayName = '' } = {},
       onLoadingDataByToken = null,
     } = this.props;
 
@@ -215,7 +212,6 @@ class Chat extends React.PureComponent {
       date: moment().format('DD.MM.YYYY HH:mm:ss'),
       groupName: group,
       moduleName: 'chat',
-      groupName: 'single',
       msg,
     };
 
@@ -430,7 +426,7 @@ class Chat extends React.PureComponent {
 const mapStateToProps = state => {
   const {
     chat = {},
-    chat: { chatToken: tokenRoom = null, listdataMsgs = {}, isFake: interlocutorIdFakeRoom = null } = {},
+    chat: { chatToken: tokenRoom = null, isFake: interlocutorIdFakeRoom = null } = {},
     socketConnection = false,
     activeSocketModule = null,
     socketErrorStatus = null,

@@ -165,7 +165,6 @@ class TableView extends React.Component {
           key="dynamicTable"
           routePathNormalise={routePathNormalise}
           routeParser={routeParser}
-          routePathNormalise={routePathNormalise}
           tasks={tasks}
           onOpenPageWithData={onOpenPageWithData}
           router={router}

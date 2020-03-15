@@ -1,5 +1,4 @@
 import React from 'react';
-import _ from 'lodash';
 import TitleModule from '../../../../TitleModule';
 import EditorTextarea from '../../../../Textarea/EditorTextarea';
 import { message, notification, Input } from 'antd';

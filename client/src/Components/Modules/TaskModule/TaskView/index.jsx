@@ -56,6 +56,10 @@ class TaskView extends React.PureComponent {
     data: PropTypes.oneOfType([PropTypes.object, () => null]),
   };
 
+  /**
+   * @param {{ uuid: any; key: any; }} props
+   * @param {{ key: any; }} state
+   */
   static getDerivedStateFromProps = (props, state) => {
     if (props.uuid !== state.key) return { ...state, key: props.key };
     else return state;
@@ -104,10 +108,14 @@ class TaskView extends React.PureComponent {
     }
   };
 
+  /**
+   * @param {any} props
+   * @param {any} state
+   */
   componentDidUpdate = async (props, state) => {
     const { isLoadingFiles = false, shouldRefresh = false } = this.state;
     const {
-      router: { routeDataActive: { key = '' } = {}, routeDataActive = {} },
+      router: { routeDataActive = {} },
     } = this.props;
     const { Request = {} } = this.context;
 
@@ -155,6 +163,10 @@ class TaskView extends React.PureComponent {
     }
   };
 
+  /**
+   * @param {any[]} fileList
+   * @param {any} status
+   */
   onAddFileList = (fileList, status) => {
     console.log(status);
     const shouldRefresh = fileList.every(it => it.status === 'done');
@@ -164,6 +176,9 @@ class TaskView extends React.PureComponent {
     });
   };
 
+  /**
+   * @param {{ uid: any; }} file
+   */
   onRemoveFile = async file => {
     try {
       const { filesArray } = this.state;
@@ -452,6 +467,8 @@ class TaskView extends React.PureComponent {
       date = [],
       description = '',
     } = routeDataActive || {};
+
+    console.log(status);
 
     const { rest = {} } = this.context;
 

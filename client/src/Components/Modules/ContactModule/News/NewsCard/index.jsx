@@ -1,34 +1,34 @@
-import React, { useContext } from 'react';
+import React from 'react';
 //import EditorTextarea from "../../../../Textarea/EditorTextarea";
 import _ from 'lodash';
 import { Card, Button } from 'antd';
 
-import modelContext from '../../../../../Models/context';
+//import modelContext from '../../../../../Models/context';
 import clsx from 'clsx';
 
 const NewsCard = ({ onClick = null, className = null, data = {} }) => {
-  const { schema = {} } = useContext(modelContext);
+  // const { schema = {} } = useContext(modelContext);
 
-  const getNormalizeContent = content => {
-    const contentNormalize = Object.keys(content).reduce((data, key) => {
-      if (key.includes('entity') || key.includes('blocks')) {
-        const isArray = _.isArray(content[key]);
-        const isObject = _.isPlainObject(content[key]);
-        data[key] = isArray ? [...content[key]] : isObject ? { ...content[key] } : content[key];
-      }
-      return data;
-    }, {});
+  // const getNormalizeContent = content => {
+  //   const contentNormalize = Object.keys(content).reduce((data, key) => {
+  //     if (key.includes('entity') || key.includes('blocks')) {
+  //       const isArray = _.isArray(content[key]);
+  //       const isObject = _.isPlainObject(content[key]);
+  //       data[key] = isArray ? [...content[key]] : isObject ? { ...content[key] } : content[key];
+  //     }
+  //     return data;
+  //   }, {});
 
-    if (_.isPlainObject(contentNormalize) && !contentNormalize.entityMap) {
-      contentNormalize.entityMap = {};
-    }
+  //   if (_.isPlainObject(contentNormalize) && !contentNormalize.entityMap) {
+  //     contentNormalize.entityMap = {};
+  //   }
 
-    if (_.isPlainObject(contentNormalize) && !contentNormalize.blocks) {
-      contentNormalize.blocks = [];
-    }
+  //   if (_.isPlainObject(contentNormalize) && !contentNormalize.blocks) {
+  //     contentNormalize.blocks = [];
+  //   }
 
-    return contentNormalize;
-  };
+  //   return contentNormalize;
+  // };
 
   if (!data || _.isEmpty(data)) return null;
   else

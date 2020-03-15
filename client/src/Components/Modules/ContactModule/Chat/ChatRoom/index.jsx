@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import _ from 'lodash';
 import clsx from 'clsx';
 import Scrollbars from 'react-custom-scrollbars';
@@ -27,26 +27,29 @@ const ChatRoom = ({
     console.log(link);
   };
 
-  const scrollHandler = event => {
-    if (refScrollbar && refScrollbar.current) {
-      const scrollTop = refScrollbar.current.getScrollTop();
-      const scrollHeight = refScrollbar.current.getScrollHeight();
+  const scrollHandler = useCallback(
+    event => {
+      if (refScrollbar && refScrollbar.current) {
+        const scrollTop = refScrollbar.current.getScrollTop();
+        const scrollHeight = refScrollbar.current.getScrollHeight();
 
-      if (scrollHeight - scrollTop < 350 && isMount) {
-        return;
-      }
+        if (scrollHeight - scrollTop < 350 && isMount) {
+          return;
+        }
 
-      if (!event) {
-        refScrollbar.current.scrollToBottom();
-        return;
-      }
+        if (!event) {
+          refScrollbar.current.scrollToBottom();
+          return;
+        }
 
-      if (scrollHeight - scrollTop < 350 && onClearScroll) {
-        refScrollbar.current.scrollToBottom();
-        onClearScroll();
+        if (scrollHeight - scrollTop < 350 && onClearScroll) {
+          refScrollbar.current.scrollToBottom();
+          onClearScroll();
+        }
       }
-    }
-  };
+    },
+    [isMount, refScrollbar, onClearScroll],
+  );
 
   useEffect(() => {
     if (messages.length !== msgProps.length) setMessages([...msgProps]);
@@ -55,13 +58,14 @@ const ChatRoom = ({
   }, [messages, msgProps, scrollHandler]);
 
   useEffect(() => {
+    if (isMount) return;
     scrollHandler();
     setMount(true);
-  }, []);
+  }, [isMount, scrollHandler]);
 
   useEffect(() => {
     if (shouldScroll) scrollHandler(true);
-  }, [messagesLength, shouldScroll]);
+  }, [messagesLength, shouldScroll, scrollHandler]);
 
   const onChange = event => {
     const { currentTarget: { value = '' } = {} } = event;
