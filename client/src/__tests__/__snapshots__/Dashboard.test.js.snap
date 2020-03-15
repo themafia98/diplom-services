@@ -60,7 +60,7 @@ exports[`<Dashboard /> main page Should render component 1`] = `
             "VALUE": "Новая задача",
           },
           Object {
-            "EUID": "documentModule",
+            "EUID": "wikiModule",
             "ICON": "file-sync",
             "PARENT_CODE": null,
             "VALUE": "Документы",
@@ -263,7 +263,7 @@ exports[`<Dashboard /> main page Should render component 2`] = `
             "VALUE": "Новая задача",
           },
           Object {
-            "EUID": "documentModule",
+            "EUID": "wikiModule",
             "ICON": "file-sync",
             "PARENT_CODE": null,
             "VALUE": "Документы",

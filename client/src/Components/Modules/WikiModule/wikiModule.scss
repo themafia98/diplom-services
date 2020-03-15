@@ -1,11 +1,11 @@
-.documentModule {
-  .documentModuleTitle {
+.wikiModule {
+  .wikiModuleTitle {
     font-size: 30px;
     font-weight: bold;
     margin: 0;
     user-select: none;
   }
-  .documentModule__main {
+  .wikiModule__main {
     display: flex;
     .ant-tree {
       span {

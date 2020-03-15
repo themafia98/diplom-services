@@ -7,7 +7,7 @@ import TitleModule from '../../TitleModule';
 
 const { TreeNode, DirectoryTree } = Tree;
 
-class DocumentModule extends React.PureComponent {
+class WikiModule extends React.PureComponent {
   static propTypes = {
     onErrorRequstAction: PropTypes.func.isRequired,
     path: PropTypes.string.isRequired,
@@ -27,9 +27,9 @@ class DocumentModule extends React.PureComponent {
 
   render() {
     return (
-      <div className="documentModule">
-        <TitleModule classNameTitle="documentModuleTitle" title="Документы" />
-        <div className="documentModule__main">
+      <div className="wikiModule">
+        <TitleModule classNameTitle="wikiModuleTitle" title="Википедия системы" />
+        <div className="wikiModule__main">
           <div className="col-6">
             <DirectoryTree multiple defaultExpandAll onSelect={this.onSelect} onExpand={this.onExpand}>
               <TreeNode title="parent 0" key="0-0">
@@ -48,4 +48,4 @@ class DocumentModule extends React.PureComponent {
   }
 }
 
-export default DocumentModule;
+export default WikiModule;

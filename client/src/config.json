@@ -53,8 +53,8 @@
       "SIGN": "freedom"
     },
     {
-      "EUID": "documentModule",
-      "VALUE": "Документы",
+      "EUID": "wikiModule",
+      "VALUE": "Википедия",
       "ICON": "file-sync",
       "PARENT_CODE": null
     },

@@ -85,7 +85,7 @@ exports[`<MenuView /> Should MenuView render with itemsMenu 1`] = `
     </SubMenu>
     <MenuItem
       className="menuItem"
-      key="documentModule"
+      key="wikiModule"
       onClick={[Function]}
     >
       <Icon
@@ -262,7 +262,7 @@ exports[`<MenuView /> Should MenuView render with itemsMenu 2`] = `
     </SubMenu>
     <MenuItem
       className="menuItem"
-      key="documentModule"
+      key="wikiModule"
       onClick={[Function]}
     >
       <Icon

@@ -13,7 +13,7 @@ import StatisticsModule from '../Modules/StatisticsModule';
 import SettingsModule from '../Modules/SettingsModule';
 import ContactModule from '../Modules/ContactModule';
 import CustomersModule from '../Modules/CustomersModule';
-import DocumentModule from '../Modules/DocumentModule';
+import WikiModule from '../Modules/WikiModule';
 
 import uuid from 'uuid/v4';
 
@@ -78,8 +78,8 @@ class ContentView extends React.Component {
         return this.checkBackground('settingsModule');
       case 'statisticModule':
         return this.checkBackground('statisticModule');
-      case 'documentModule':
-        return this.checkBackground('documentModule');
+      case 'wikiModule':
+        return this.checkBackground('wikiModule');
       default: {
         break;
       }
@@ -162,14 +162,11 @@ class ContentView extends React.Component {
               path={path}
             />
           </TabContainer>
-          <TabContainer
-            isBackground={this.getBackground('documentModule')}
-            visible={path === 'documentModule'}
-          >
-            <DocumentModule
-              visible={path === 'documentModule'}
+          <TabContainer isBackground={this.getBackground('wikiModule')} visible={path === 'wikiModule'}>
+            <WikiModule
+              visible={path === 'wikiModule'}
               onErrorRequstAction={onErrorRequstAction}
-              key="documentModule"
+              key="wikiModule"
               path={path}
               rest={rest}
               statusApp={statusApp}
