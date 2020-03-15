@@ -5,9 +5,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-
+  min-width: 300px;
   font-weight: bold;
   .userPopup {
+    display: flex;
+    align-items: center;
     height: 100%;
     margin-right: 30px;
     .userPopupMain {
