@@ -73,7 +73,7 @@ class LoginPage extends React.Component {
           const {
             response: { data = '' },
           } = error || {};
-          debugger;
+
           const isHtml = /DOCTYPE html/gi.test(data);
           const isValid = _.isString(data) && data && !isHtml;
 
