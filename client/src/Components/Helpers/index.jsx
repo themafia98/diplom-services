@@ -37,7 +37,6 @@ export const PrivateRoute = ({ component: Component, onLogoutAction, ...routePro
   const getRouters = useCallback(getRoutersFunc, [rest]);
 
   const startTimer = useCallback(() => {
-    // @ts-ignore
     timerRef.current = setInterval(getRouters, 20000);
   }, [timerRef, getRouters]);
 

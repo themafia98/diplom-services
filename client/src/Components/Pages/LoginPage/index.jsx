@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { Redirect, NavLink } from 'react-router-dom';
 import { Button, Input } from 'antd';
@@ -66,11 +67,20 @@ class LoginPage extends React.Component {
             onLoadUdata(udataObj);
 
             addTab(path);
-          } else throw new Error('invalid login');
+          } else throw new Error(res.status);
         })
         .catch(error => {
+          const {
+            response: { data = '' },
+          } = error || {};
+          debugger;
+          const isHtml = /DOCTYPE html/gi.test(data);
+          const isValid = _.isString(data) && data && !isHtml;
+
+          const errorMessage = isValid ? data : 'Ошибка авторизации';
+
           this.setState({
-            errorMessage: error.message ? error.message : 'Invalid',
+            errorMessage,
             loading: false,
           });
         });
