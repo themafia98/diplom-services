@@ -210,7 +210,7 @@ class Chat extends React.PureComponent {
       tokenRoom: tokenRoom.split('__fake')[0],
       displayName,
       date: moment().format('DD.MM.YYYY HH:mm:ss'),
-      groupName: group,
+      groupName: group ? group : 'single',
       moduleName: 'chat',
       msg,
     };
