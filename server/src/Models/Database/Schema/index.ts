@@ -167,6 +167,22 @@ export const chatRoom = new Schema(
   { timestamps: true },
 );
 
+export const notification = new Schema(
+  {
+    type: { type: String, required: true },
+    title: { type: String, required: true },
+    message: { type: String, required: true },
+    action: {
+      type: { type: String, required: true },
+      link: { type: String, required: true }
+    },
+    uidCreater: { type: String, required: true },
+    authorName: { type: String },
+  }, {
+    timestamps: true
+  }
+)
+
 export const UserModel = model('users', userSchema);
 
 export const getSchemaByName = (name: string): Schema | null => {
@@ -185,6 +201,8 @@ export const getSchemaByName = (name: string): Schema | null => {
       return chatRoom;
     case 'settingsLog':
       return logger;
+    case 'notification':
+      return notification;
     default:
       return null;
   }
