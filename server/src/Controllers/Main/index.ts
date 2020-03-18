@@ -480,11 +480,11 @@ namespace System {
       }
     }
 
-    @Post({ path: "/:methodQuery/notification", private: true })
+    @Post({ path: "/:actionType/notification", private: true })
     public async notification(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
-      const { methodQuery = '' } = req.params;
+      const { actionType = '' } = req.params;
       const params: Params = {
-        methodQuery,
+        methodQuery: actionType,
         status: 'done',
         done: true,
         from: "notification",
@@ -501,11 +501,32 @@ namespace System {
           if (!connect) throw new Error('Bad connect');
 
           const createNotificationAction = new Action.ActionParser({
-            actionPath: methodQuery,
+            actionPath: "notification",
             actionType,
           });
 
           const data: ParserResult = await createNotificationAction.getActionData(req.body);
+
+          if (data){
+          return res.json(
+            getResponseJson(
+              'done',
+              { status: 'OK', done: true, params: { ...params }, metadata: data },
+              (req as Record<string, any>).start,
+            ),
+          );
+          } else {
+
+            params.status = 'error';
+            res.status(404);
+              return res.json(
+                getResponseJson(
+                  `error get_notification`,
+                  { status: 'FAIL', params, done: false, metadata: data },
+                  (req as Record<string, any>).start,
+                ),
+              );
+          }
 
         } else if (!res.headersSent) {
             params.done = false;

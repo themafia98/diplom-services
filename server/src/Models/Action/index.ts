@@ -3,10 +3,10 @@ import { Model, Document } from 'mongoose';
 import _ from 'lodash';
 import ActionEntity from './ActionEntity';
 import { ParserData } from '../../Utils/Types';
-import Utils from '../../Utils';
 
 /** Actions */
 import ActionLogger from './ActionsEntity/ActionLogger';
+import ActionNotification from "./ActionsEntity/ActionNotification";
 import ActionNews from './ActionsEntity/ActionNews';
 import ActionJurnal from './ActionsEntity/ActionJurnal';
 import ActionUsers from './ActionsEntity/ActionUsers';
@@ -110,6 +110,11 @@ namespace Action {
         switch (this.getActionPath()) {
           case 'global': {
             const action = new ActionGlobal(this);
+            return action.run(actionParam);
+          }
+
+          case 'notification': {
+            const action = new ActionNotification(this);
             return action.run(actionParam);
           }
 

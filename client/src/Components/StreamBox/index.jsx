@@ -34,6 +34,10 @@ class StreamBox extends React.Component {
     const { Request } = this.context;
     try {
       const res = new Request();
+
+      res.sendRequest('/system/global/notification', 'POST', {
+        actionType: 'get_notifications',
+      });
     } catch (error) {
       console.error(error);
       notification.error({
