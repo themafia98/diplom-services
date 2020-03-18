@@ -466,7 +466,7 @@ namespace System {
           );
         }
       } catch (err) {
-        console.log(err.message);
+        console.error(err.message);
         if (!res.headersSent) {
           res.status(503);
           return res.json(
@@ -479,6 +479,63 @@ namespace System {
         }
       }
     }
+
+    @Post({ path: "/:methodQuery/notification", private: true })
+    public async notification(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+      const { methodQuery = '' } = req.params;
+      const params: Params = {
+        methodQuery,
+        status: 'done',
+        done: true,
+        from: "notification",
+      };
+
+      try {
+        const dbm = server.locals.dbm;
+
+        if (req.body && !_.isEmpty(req.body)) {
+          const body: object = req.body;
+          const { actionType = "" } = <Record<string, any>>body;
+          const connect = await dbm.connection().catch((err: Error) => console.error(err));
+
+          if (!connect) throw new Error('Bad connect');
+
+          const createNotificationAction = new Action.ActionParser({
+            actionPath: methodQuery,
+            actionType,
+          });
+
+          const data: ParserResult = await createNotificationAction.getActionData(req.body);
+
+        } else if (!res.headersSent) {
+            params.done = false;
+            params.status = 'FAIL';
+            return res.json(
+              getResponseJson(
+                'Bad body request',
+                { status: 'FAIL', params, done: false, metadata: null },
+                (req as Record<string, any>).start,
+              )
+            );
+
+          }
+        } catch(err){
+          
+          console.error(err.message);
+          if (!res.headersSent) {
+            res.status(503);
+            return res.json(
+              getResponseJson(
+                err.name,
+                { status: 'FAIL', params, done: false, metadata: 'Server error' },
+                (req as Record<string, any>).start,
+              ),
+            );
+          }
+
+        }
+    }
+
   }
 }
 

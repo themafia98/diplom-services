@@ -66,9 +66,9 @@ const Recovory = props => {
           value={recovoryField}
         />
 
-        <Button onClick={onChangeMode} type="link">
+        {/* <Button onClick={onChangeMode} type="link">
           {msgLink}
-        </Button>
+        </Button> */}
         <Button disabled={!recovoryField} type="primary" onClick={onSubmit}>
           Восстановить
         </Button>

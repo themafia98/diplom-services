@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { Modal, Upload, message, Icon, Button } from 'antd';
+import { b64toBlob } from '../../../Utils';
 import { updateUdata } from '../../../Redux/actions/publicActions';
 import UserCard from '../../UserCard';
 import TitleModule from '../../TitleModule';
@@ -50,12 +51,6 @@ class CabinetModule extends React.PureComponent {
       message.error('Изображение должно быть меньше 5 мб.');
     }
     return isJpgOrPng && isLt2M;
-  };
-
-  getBase64 = (img, callback) => {
-    const reader = new FileReader();
-    reader.addEventListener('load', () => callback(reader.result));
-    reader.readAsDataURL(img);
   };
 
   setFile = (imageUrl, disabled) => {

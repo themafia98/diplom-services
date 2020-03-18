@@ -53,12 +53,6 @@
       "SIGN": "freedom"
     },
     {
-      "EUID": "wikiModule",
-      "VALUE": "Википедия",
-      "ICON": "file-sync",
-      "PARENT_CODE": null
-    },
-    {
       "EUID": "customersModule",
       "VALUE": "Связь",
       "ICON": "global",
@@ -92,6 +86,12 @@
       "EUID": "statisticModule",
       "VALUE": "Статистика",
       "ICON": "line-chart",
+      "PARENT_CODE": null
+    },
+    {
+      "EUID": "wikiModule",
+      "VALUE": "Википедия",
+      "ICON": "file-sync",
       "PARENT_CODE": null
     },
     {

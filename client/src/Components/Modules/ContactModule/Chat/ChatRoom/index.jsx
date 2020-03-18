@@ -112,7 +112,7 @@ const ChatRoom = ({
                     onClick={event => redirectUserProfile(event, it.authorId ? it.authorId : null)}
                     className="msg_author"
                   >
-                    <Avatar size="small" />
+                    <Avatar src={`data:image/png;base64,${null}`} size="small" />
                     {it.displayName}
                   </span>
                 ) : (

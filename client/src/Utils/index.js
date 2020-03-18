@@ -8,8 +8,8 @@ const forceUpdateDetectedInit = () => {
 };
 
 /**
- * @return {string} route path string
- *  @param {string} pageType string
+ * @return {string | object} route path string
+ *  @param {string | object} pageType string
  *  @param {string | null} path string or null
  */
 export const routeParser = ({ pageType = 'module', path: route = null }) => {
@@ -44,7 +44,7 @@ export const routeParser = ({ pageType = 'module', path: route = null }) => {
 /**
  *  @return {object} object with normalize path
  *  @param {string} pathType string
- *  @param {Object} pathData Object
+ *  @param {object} pathData Object
  *  @param {string} page string (pathData)
  *  @param {string} moduleId string (pathData)
  *  @param {string} key string (pathData)
@@ -69,4 +69,36 @@ export const routePathNormalise = ({
   }
 };
 
-export { forceUpdateDetectedInit };
+/**
+ * @param {string} b64Data
+ */
+const b64toBlob = (b64Data, contentType = '', sliceSize = 512) => {
+  const byteCharacters = atob(b64Data);
+  const byteArrays = [];
+
+  for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+    const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+    const byteNumbers = new Array(slice.length);
+    for (let i = 0; i < slice.length; i++) {
+      byteNumbers[i] = slice.charCodeAt(i);
+    }
+
+    const byteArray = new Uint8Array(byteNumbers);
+    byteArrays.push(byteArray);
+  }
+
+  return new Blob(byteArrays, { type: contentType });
+};
+
+/**
+ * @param {Blob} img
+ * @param {(arg0: string | ArrayBuffer) => any} callback
+ */
+const getBase64 = (img, callback) => {
+  const reader = new FileReader();
+  reader.addEventListener('load', () => callback(reader.result));
+  reader.readAsDataURL(img);
+};
+
+export { forceUpdateDetectedInit, b64toBlob, getBase64 };
