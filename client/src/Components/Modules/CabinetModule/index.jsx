@@ -53,6 +53,10 @@ class CabinetModule extends React.PureComponent {
     return isJpgOrPng && isLt2M;
   };
 
+  /**
+   * @param {string} imageUrl
+   * @param {boolean} disabled
+   */
   setFile = (imageUrl, disabled) => {
     const { onUpdateUdata = null } = this.props;
     this.setState(
@@ -71,6 +75,9 @@ class CabinetModule extends React.PureComponent {
     this.setState({ ...this.state, imageUrl: null, loading: false, disabled: false });
   };
 
+  /**
+   * @param {{ file: any; }} info
+   */
   onChangeFile = info => {
     const { status } = info.file;
     if (status !== 'uploading') {

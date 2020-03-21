@@ -14,22 +14,36 @@ class ActionNotification implements Action {
         return this.entity;
     }
 
-    public runGlobal(actionParam: ActionParams): any {}
+    public runGlobal(actionParam: ActionParams, model: Model<Document>): any {
+        const actionType: string = this.getEntity().getActionType();
 
-    public runMass(actionParam: ActionParams): any {}
+        if (actionType.includes("set")){
+            const { item = null } = <Record<string, object>>actionParam;
+
+            console.log("action item:", item);
+
+            if (!item) return null;
+
+            return this.getEntity().createEntity(model, item);
+        }
+
+        return this.getEntity().getAll(model, { type: "global" });
+    }
+
+    public runMass(actionParam: ActionParams, model: Model<Document>): any {}
 
     public async run(actionParam: ActionParams): ParserData {
         const model: Model<Document> | null = getModelByName("notification", "notification");
         if (!model) return null;
 
-        const { type = "" } = actionParam;
+        const { item: { type = "global" } = {} } = <Record<string,any>>actionParam;
 
         switch(type){
             case "global": {
-                return this.runGlobal(actionParam);
+                return this.runGlobal(actionParam, model);
             }
             case "mass": {
-                return this.runMass(actionParam);
+                return this.runMass(actionParam, model);
             }
             default: {
                 return null;

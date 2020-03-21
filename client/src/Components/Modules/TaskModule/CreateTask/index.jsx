@@ -199,6 +199,7 @@ class CreateTask extends React.PureComponent {
       router: { currentActionTab: path, actionTabs = [] },
       setCurrentTab,
       removeTab,
+      udata: { _id: uid, displayName = '' },
     } = this.props;
     const { config = {}, Request = {}, schema = {} } = this.context;
 
@@ -250,6 +251,32 @@ class CreateTask extends React.PureComponent {
 
             const { key = '' } = metadata[0] || metadata || {};
             if (!key) return;
+            debugger;
+            const rest = new Request();
+            rest
+              .sendRequest(
+                `/system/global/notification`,
+                'POST',
+                {
+                  actionType: 'set_notification',
+                  item: {
+                    type: 'global',
+                    title: 'Новая задача',
+                    message: 'Создана новая задача',
+                    action: {
+                      type: 'task_link',
+                      link: key,
+                    },
+                    uidCreator: uid,
+                    authorName: displayName,
+                  },
+                },
+                true,
+              )
+              .catch(error => {
+                console.error(error);
+                message.error('Ошибка глобального уведомления');
+              });
 
             if (config.tabsLimit <= actionTabs.length)
               return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);

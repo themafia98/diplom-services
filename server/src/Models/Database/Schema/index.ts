@@ -181,7 +181,7 @@ export const notification = new Schema(
   }, {
     timestamps: true
   }
-)
+);
 
 export const UserModel = model('users', userSchema);
 

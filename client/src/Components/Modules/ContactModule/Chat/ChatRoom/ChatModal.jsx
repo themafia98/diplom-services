@@ -59,6 +59,9 @@ class ChatModal extends React.PureComponent {
     onVisibleChange(visible);
   };
 
+  /**
+   * @param {any} eventData
+   */
   onChangeSelect = eventData => {
     this.setState({
       ...this.state,
@@ -66,6 +69,9 @@ class ChatModal extends React.PureComponent {
     });
   };
 
+  /**
+   * @param {string} eventType
+   */
   onChangeType = eventType => {
     const { membersIds = [] } = this.state;
     const isMore = eventType === 'single' && membersIds.length > 1;
@@ -77,6 +83,9 @@ class ChatModal extends React.PureComponent {
   };
 
   groupNameRef = null;
+  /**
+   * @param {HTMLElement} node
+   */
   groupNameRefFunc = node => (this.groupNameRef = node);
 
   render() {

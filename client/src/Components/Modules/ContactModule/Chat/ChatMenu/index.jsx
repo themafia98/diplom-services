@@ -95,7 +95,7 @@ const ChatMenu = props => {
                   <Item
                     className={clsx(tokenRoom === it.tokenRoom ? 'activeChat' : null)}
                     onClick={e => setActiveChatRoom(e, it._id, membersIds, it.tokenRoom)}
-                    key={(it, i)}
+                    key={it._id + i}
                   >
                     <Meta
                       key={`${it}${i}`}

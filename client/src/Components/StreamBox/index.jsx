@@ -52,18 +52,10 @@ class StreamBox extends React.Component {
   };
 
   render() {
-    const { mode, boxClassName, type } = this.props;
+    const { mode, boxClassName, type, value = '' } = this.props;
 
-    if (!type) return null;
+    if (!type || !value) return null;
 
-    let value = `
-        Hello world!!!
-        My name Pavel Petrovich and I'm Frontend developer. I looking for job.
-        Hello world!!!
-        My name Pavel Petrovich and I'm Frontend developer. I looking for job.
-        Hello world!!!
-        My name Pavel Petrovich and I'm Frontend developer. I looking for job.
-        Hello world!!!`;
     return (
       <Scrollbars style={mode ? { height: 'calc(100% - 100px)' } : null}>
         <div className={clsx('streamBox', boxClassName ? boxClassName : null)}>

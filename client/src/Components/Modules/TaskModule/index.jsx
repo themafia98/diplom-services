@@ -244,6 +244,7 @@ class TaskModule extends React.PureComponent {
               router={router}
               onOpenPageWithData={onOpenPageWithData}
               removeTab={removeTab}
+              udata = {udata}
             />
           </TabContainer>
           <TabContainer

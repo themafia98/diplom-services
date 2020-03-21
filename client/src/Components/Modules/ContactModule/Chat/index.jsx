@@ -114,12 +114,18 @@ class Chat extends React.PureComponent {
     onSetSocketConnection({ socketConnection: false, activeModule: 'chat' });
   };
 
+  /**
+   * @param {object} msgObj
+   */
   addMsg = msgObj => {
     console.log('addMsg');
     const { onAddMsg } = this.props;
     if (_.isObject(msgObj)) onAddMsg(msgObj);
   };
 
+  /**
+   * @param {object} entity
+   */
   updateFakeRoom = entity => {
     const { onUpdateRoom = null } = this.props;
     const { room = {}, msg = {} } = entity || {};
@@ -196,7 +202,7 @@ class Chat extends React.PureComponent {
     const {
       interlocutorIdFakeRoom = null,
       chat: { chatToken: tokenRoom = '', group = '' } = {},
-      udata: { displayName, _id: authorId = '' } = {},
+      udata: { displayName = '', _id: authorId = '' } = {},
     } = this.props;
 
     if (_.isNull(tokenRoom)) {
@@ -225,6 +231,11 @@ class Chat extends React.PureComponent {
     this.chat.getSocket().emit('newMessage', parseMsg);
   };
 
+  /**
+   * @param {object} event
+   * @param {number} id
+   * @param {object} membersIds
+   */
   setActiveChatRoom = (event, id, membersIds = [], token = '') => {
     const {
       chat: { chatToken = null, listdata = [] } = {},
@@ -245,6 +256,10 @@ class Chat extends React.PureComponent {
     } else if (!token) message.warning('Чат комната не найдена либо требуется обновить систему.');
   };
 
+  /**
+   * @param {boolean} visible
+   * @param {boolean} shouldUpdate
+   */
   onVisibleChange = (visible, shouldUpdate) => {
     this.setState({
       ...this.state,
@@ -253,6 +268,9 @@ class Chat extends React.PureComponent {
     });
   };
 
+  /**
+   * @param {boolean} visible
+   */
   renderModal = visible => {
     const {
       chat: { usersList = [], listdata = [] } = {},
