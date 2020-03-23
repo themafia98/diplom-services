@@ -14,7 +14,7 @@ class DynamicTable extends React.PureComponent {
           routePathNormalise,
         } = this.props;
         const { config = {} } = this.context;
-
+        debugger;
         const { key = '' } = record || {};
         if (!key) return;
 

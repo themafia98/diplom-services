@@ -1,11 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { addTabAction, openPageWithDataAction } from '../../Redux/actions/routerActions';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { Avatar, notification, message } from 'antd';
 import { Scrollbars } from 'react-custom-scrollbars';
 import clsx from 'clsx';
-
+import { routeParser, routePathNormalise } from '../../Utils';
 import modelContext from '../../Models/context';
 
 class StreamBox extends React.Component {
@@ -63,9 +64,45 @@ class StreamBox extends React.Component {
 
   onRunAction = index => {
     const { streamList } = this.state;
-    const { action = {} } = streamList[index] || {};
+    const {
+      addTab,
+      setCurrentTab,
+      onOpenPageWithData,
+      router: { currentActionTab, actionTabs } = {},
+    } = this.props;
 
-    console.log(action);
+    const { action: { type = '', link: key = '' } = {} } = streamList[index] || {};
+    const { config = {} } = this.context;
+
+    switch (type) {
+      case 'task_link': {
+        console.log(type);
+        if (config.tabsLimit <= actionTabs.length)
+          return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
+
+        const path = 'taskModule_globalNotification';
+        const { moduleId = '', page = '' } = routeParser({ path });
+        if (!moduleId || !page) return;
+
+        const index = actionTabs.findIndex(tab => tab.includes(page) && tab.includes(key));
+        const isFind = index !== -1;
+
+        if (!isFind) {
+          onOpenPageWithData({
+            activePage: routePathNormalise({
+              pathType: 'moduleItem',
+              pathData: { page, moduleId, key },
+            }),
+            routeDataActive: {},
+          });
+        } else {
+          setCurrentTab(actionTabs[index]);
+        }
+      }
+      default: {
+        return;
+      }
+    }
   };
 
   render() {
@@ -100,8 +137,16 @@ class StreamBox extends React.Component {
   }
 }
 
-const mapStateToProps = state => {};
+const mapStateToProps = state => {
+  const { router = {} } = state;
+  return { router };
+};
 
-const mapDispatchToProps = dispatch => {};
+const mapDispatchToProps = dispatch => {
+  return {
+    addTab: tab => dispatch(addTabAction(tab)),
+    onOpenPageWithData: data => dispatch(openPageWithDataAction(data)),
+  };
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(StreamBox);
