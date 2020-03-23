@@ -19,6 +19,14 @@ $cardCount: 6;
     box-shadow: $cardBorderShadow;
     margin: 10px;
 
+    &.withAction {
+      cursor: pointer;
+    }
+
+    .card_title {
+      color: rgb(69, 111, 240);
+    }
+
     .about {
       display: flex;
       width: 100%;

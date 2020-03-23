@@ -267,7 +267,7 @@ class CreateTask extends React.PureComponent {
                       type: 'task_link',
                       link: key,
                     },
-                    uidCreator: uid,
+                    uidCreater: uid,
                     authorName: displayName,
                   },
                 },

@@ -11,6 +11,7 @@ import modelContext from '../../Models/context';
 class StreamBox extends React.Component {
   state = {
     type: null,
+    streamList: [],
   };
 
   static propTypes = {
@@ -30,17 +31,26 @@ class StreamBox extends React.Component {
     return state;
   };
 
-  componentDidMount = () => {
+  componentDidMount = async () => {
     const { Request } = this.context;
     const { type = '' } = this.props;
 
     if (!type) return;
 
     try {
-      const res = new Request();
-
-      res.sendRequest(`/system/${type}/notification`, 'POST', {
+      const rest = new Request();
+      const res = await rest.sendRequest(`/system/${type}/notification`, 'POST', {
         actionType: 'get_notifications',
+      });
+
+      if (res.status !== 200) throw new Error('Bad get notification request');
+
+      const {
+        data: { response: { metadata = [] } = {} },
+      } = res;
+
+      this.setState({
+        streamList: metadata,
       });
     } catch (error) {
       console.error(error);
@@ -51,42 +61,39 @@ class StreamBox extends React.Component {
     }
   };
 
+  onRunAction = index => {
+    const { streamList } = this.state;
+    const { action = {} } = streamList[index] || {};
+
+    console.log(action);
+  };
+
   render() {
     const { mode, boxClassName, type, value = '' } = this.props;
-
-    if (!type || !value) return null;
+    const { streamList = [] } = this.state;
+    if (!type || !streamList?.length) return null;
 
     return (
       <Scrollbars style={mode ? { height: 'calc(100% - 100px)' } : null}>
         <div className={clsx('streamBox', boxClassName ? boxClassName : null)}>
-          <div className={clsx('cardStream', mode ? mode : null)}>
-            <div className="about">
-              <Avatar size="64" icon="user" />
-              <p className="name">Pavel Petrovich</p>
-            </div>
-            <p className="card_message">{value}</p>
-          </div>
-          <div className={clsx('cardStream', mode ? mode : null)}>
-            <div className="about">
-              <Avatar size="64" icon="user" />
-              <p className="name">Pavel Petrovich</p>
-            </div>
-            <p className="card_message">{value}</p>
-          </div>
-          <div className={clsx('cardStream', mode ? mode : null)}>
-            <div className="about">
-              <Avatar size="64" icon="user" />
-              <p className="name">Pavel Petrovich</p>
-            </div>
-            <p className="card_message">{value}</p>
-          </div>
-          <div className={clsx('cardStream', mode ? mode : null)}>
-            <div className="about">
-              <Avatar size="64" icon="user" />
-              <p className="name">Pavel Petrovich</p>
-            </div>
-            <p className="card_message">{value}</p>
-          </div>
+          {streamList.map((card, index) => {
+            const { _id = '', authorName = '', title = '', message = '', action = {} } = card;
+            const key = _id ? _id : index;
+            return (
+              <div
+                onClick={this.onRunAction.bind(this, index)}
+                key={key}
+                className={clsx('cardStream', mode ? mode : null, !_.isEmpty(action) ? 'withAction' : null)}
+              >
+                <div className="about">
+                  <Avatar size="64" icon="user" />
+                  <p className="name">{authorName}</p>
+                </div>
+                <p className="card_title">{title}</p>
+                <p className="card_message">{message}</p>
+              </div>
+            );
+          })}
         </div>
       </Scrollbars>
     );
