@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { addTabAction, openPageWithDataAction } from '../../Redux/actions/routerActions';
+import { addTabAction, openPageWithDataAction, setActiveTabAction } from '../../Redux/actions/routerActions';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { Avatar, notification, message } from 'antd';
@@ -68,7 +68,7 @@ class StreamBox extends React.Component {
       addTab,
       setCurrentTab,
       onOpenPageWithData,
-      router: { currentActionTab, actionTabs } = {},
+      router: { routeData = {}, currentActionTab, actionTabs } = {},
     } = this.props;
 
     const { action: { type = '', link: key = '' } = {} } = streamList[index] || {};
@@ -83,17 +83,20 @@ class StreamBox extends React.Component {
         const path = 'taskModule_globalNotification';
         const { moduleId = '', page = '' } = routeParser({ path });
         if (!moduleId || !page) return;
-
+        const { tasks = [] } = routeData['taskModule'] || {};
         const index = actionTabs.findIndex(tab => tab.includes(page) && tab.includes(key));
         const isFind = index !== -1;
 
         if (!isFind) {
+          const item = tasks.find(it => it.key === key);
+          if (!item) return;
+
           onOpenPageWithData({
             activePage: routePathNormalise({
               pathType: 'moduleItem',
               pathData: { page, moduleId, key },
             }),
-            routeDataActive: {},
+            routeDataActive: { ...item },
           });
         } else {
           setCurrentTab(actionTabs[index]);
@@ -145,6 +148,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     addTab: tab => dispatch(addTabAction(tab)),
+    setCurrentTab: tab => dispatch(setActiveTabAction(tab)),
     onOpenPageWithData: data => dispatch(openPageWithDataAction(data)),
   };
 };
