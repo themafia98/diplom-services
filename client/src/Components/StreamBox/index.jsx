@@ -68,7 +68,7 @@ class StreamBox extends React.Component {
       addTab,
       setCurrentTab,
       onOpenPageWithData,
-      router: { routeData = {}, currentActionTab, actionTabs } = {},
+      router: { routeData = {}, actionTabs = [] } = {},
     } = this.props;
 
     const { action: { type = '', link: key = '' } = {} } = streamList[index] || {};
@@ -76,9 +76,8 @@ class StreamBox extends React.Component {
 
     switch (type) {
       case 'task_link': {
-        console.log(type);
-        if (config.tabsLimit <= actionTabs.length)
-          return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
+        if (config?.tabsLimit <= actionTabs?.length)
+          return message.error(`Максимальное количество вкладок: ${config?.tabsLimit}`);
 
         const path = 'taskModule_globalNotification';
         const { moduleId = '', page = '' } = routeParser({ path });
@@ -87,20 +86,19 @@ class StreamBox extends React.Component {
         const index = actionTabs.findIndex(tab => tab.includes(page) && tab.includes(key));
         const isFind = index !== -1;
 
-        if (!isFind) {
-          const item = tasks.find(it => it.key === key);
-          if (!item) return;
+        if (isFind) return setCurrentTab(actionTabs[index]);
 
-          onOpenPageWithData({
-            activePage: routePathNormalise({
-              pathType: 'moduleItem',
-              pathData: { page, moduleId, key },
-            }),
-            routeDataActive: { ...item },
-          });
-        } else {
-          setCurrentTab(actionTabs[index]);
-        }
+        const item = tasks.find(it => it?.key === key);
+        if (!item) return;
+
+        onOpenPageWithData({
+          // @ts-ignore
+          activePage: routePathNormalise({
+            pathType: 'moduleItem',
+            pathData: { page, moduleId, key },
+          }),
+          routeDataActive: { ...item },
+        });
       }
       default: {
         return;
