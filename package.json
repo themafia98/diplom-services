@@ -22,8 +22,7 @@
         "fix:prettier": "prettier --write \"./**/*.*\"",
         "lint": "yarn lint:eslint && yarn lint:prettier",
         "lint:eslint": "eslint \"./**/*.*\"",
-        "lint:prettier": "prettier --check \"./**/*.*\"",
-        "...": "..."
+        "lint:prettier": "prettier --check \"./**/*.*\""
     },
     "dependencies": {
         "bcrypt": "^3.0.6",

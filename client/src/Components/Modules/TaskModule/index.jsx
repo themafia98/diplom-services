@@ -50,8 +50,17 @@ class TaskModule extends React.PureComponent {
   };
 
   componentDidMount = () => {
-    const { onLoadCurrentData, path, visible } = this.props;
+    const {
+      onLoadCurrentData,
+      path = '',
+      visible,
+      loaderMethods = {},
+      router: { routeData },
+    } = this.props;
     const { height } = this.state;
+    const { onShowLoader } = loaderMethods;
+
+    const isEmptyTasks = _.isEmpty(routeData[path.split('_')[0]]);
 
     if (_.isNull(height) && !_.isNull(this.moduleTask) && visible) {
       this.recalcHeight();
@@ -63,6 +72,10 @@ class TaskModule extends React.PureComponent {
         useStore: true,
         methodRequst: 'GET',
       });
+    }
+
+    if (_.isFunction(onShowLoader) && isEmptyTasks) {
+      onShowLoader();
     }
 
     this.setState({ path });
@@ -81,6 +94,7 @@ class TaskModule extends React.PureComponent {
       path,
       router: { shouldUpdate = false },
     } = this.props;
+
     const { height } = this.state;
     if (!_.isNull(height) && !_.isNull(this.moduleTask) && visible) {
       this.recalcHeight();
@@ -158,6 +172,7 @@ class TaskModule extends React.PureComponent {
         removeTab,
         setCurrentTab,
         udata = {},
+        loaderMethods = {},
       } = this.props;
 
       const isViewTask = path.startsWith('taskModule') && /__/gi.test(path);
@@ -190,6 +205,7 @@ class TaskModule extends React.PureComponent {
               key="taskList"
               isBackground={isBackgroundTaskModuleAll}
               rest={rest}
+              loaderMethods={loaderMethods}
               visible={path === 'taskModule_all'}
               setCurrentTab={setCurrentTab}
               height={heightController ? height - heightController : height}
@@ -205,6 +221,7 @@ class TaskModule extends React.PureComponent {
               key="myListTask"
               rest={rest}
               udata={udata}
+              loaderMethods={loaderMethods}
               isBackground={isBackgroundTaskModuleMyTasks}
               visible={path === 'taskModule_myTasks'}
               setCurrentTab={setCurrentTab}
@@ -244,7 +261,7 @@ class TaskModule extends React.PureComponent {
               router={router}
               onOpenPageWithData={onOpenPageWithData}
               removeTab={removeTab}
-              udata = {udata}
+              udata={udata}
             />
           </TabContainer>
           <TabContainer

@@ -108,6 +108,7 @@ class TableView extends React.Component {
       onOpenPageWithData,
       setCurrentTab,
       udata = {},
+      loaderMethods = {},
     } = this.props;
 
     const { filteredInfo = [], sortedInfo = [] } = this.state;
@@ -173,6 +174,7 @@ class TableView extends React.Component {
           flag={flag}
           user={user}
           visible={visible}
+          loaderMethods={loaderMethods}
           filteredInfo={filteredInfo}
           sortedInfo={sortedInfo}
           handleFilter={this.handleFilter}

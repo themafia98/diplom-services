@@ -115,8 +115,23 @@ class ContentView extends React.Component {
   };
 
   render() {
-    const { path, onErrorRequstAction, setCurrentTab, actionTabs, router, statusApp, rest } = this.props;
+    const {
+      path,
+      onErrorRequstAction,
+      setCurrentTab,
+      actionTabs,
+      router,
+      statusApp,
+      rest,
+      onShowLoader,
+      onHideLoader,
+    } = this.props;
     const { drawerView, key } = this.state;
+
+    const loaderMethods = {
+      onShowLoader,
+      onHideLoader,
+    };
 
     if (!key) return <div>no menu</div>;
 
@@ -132,6 +147,7 @@ class ContentView extends React.Component {
               visible={path === 'mainModule'}
               rest={rest}
               onErrorRequstAction={onErrorRequstAction}
+              loaderMethods={loaderMethods}
               key="mainModule"
             />
           </TabContainer>
@@ -143,6 +159,7 @@ class ContentView extends React.Component {
             <CabinetModule
               visible={path === 'cabinetModule'}
               rest={rest}
+              loaderMethods={loaderMethods}
               onErrorRequstAction={onErrorRequstAction}
               key="cabinet"
             />
@@ -159,6 +176,7 @@ class ContentView extends React.Component {
               setCurrentTab={setCurrentTab}
               key="taskModule"
               rest={rest}
+              loaderMethods={loaderMethods}
               path={path}
             />
           </TabContainer>
@@ -168,6 +186,7 @@ class ContentView extends React.Component {
               onErrorRequstAction={onErrorRequstAction}
               key="wikiModule"
               path={path}
+              loaderMethods={loaderMethods}
               rest={rest}
               statusApp={statusApp}
             />
@@ -182,6 +201,7 @@ class ContentView extends React.Component {
               statusApp={statusApp}
               router={router}
               rest={rest}
+              loaderMethods={loaderMethods}
               onErrorRequstAction={onErrorRequstAction}
               key="contact"
               path={path}
@@ -196,6 +216,7 @@ class ContentView extends React.Component {
               onErrorRequstAction={onErrorRequstAction}
               actionTabs={actionTabs}
               rest={rest}
+              loaderMethods={loaderMethods}
               key="customers"
               path={path}
             />
@@ -208,6 +229,7 @@ class ContentView extends React.Component {
               visible={path === 'settingsModule'}
               onErrorRequstAction={onErrorRequstAction}
               key="settings"
+              loaderMethods={loaderMethods}
               rest={rest}
               path={path}
             />
@@ -220,6 +242,7 @@ class ContentView extends React.Component {
               visible={path === 'statisticModule'}
               onErrorRequstAction={onErrorRequstAction}
               key="statistic"
+              loaderMethods={loaderMethods}
               rest={rest}
               path={path}
             />

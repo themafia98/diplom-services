@@ -6,7 +6,7 @@ import { ParserData } from '../../Utils/Types';
 
 /** Actions */
 import ActionLogger from './ActionsEntity/ActionLogger';
-import ActionNotification from "./ActionsEntity/ActionNotification";
+import ActionNotification from './ActionsEntity/ActionNotification';
 import ActionNews from './ActionsEntity/ActionNews';
 import ActionJurnal from './ActionsEntity/ActionJurnal';
 import ActionUsers from './ActionsEntity/ActionUsers';

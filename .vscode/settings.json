@@ -5,6 +5,9 @@
   "explorer.confirmDelete": true,
   "editor.minimap.enabled": false,
   "editor.formatOnSave": true,
+  "editor.tokenColorCustomizations": {
+    "semanticHighlighting": true
+  },
   "css.lint.compatibleVendorPrefixes": "warning",
   "css.lint.duplicateProperties": "warning",
   "window.zoomLevel": -0.4,

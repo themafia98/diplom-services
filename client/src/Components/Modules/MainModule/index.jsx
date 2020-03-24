@@ -23,7 +23,7 @@ class MainModule extends React.PureComponent {
         />
         <div className="mainModule_main">
           <div className="col-4 columnModuleLeft">
-            <StreamBox type={'global'} />
+            <StreamBox key="streamMain" type={'global'} />
           </div>
           <div className="col-8 columnModuleRight">
             <div className="widjects">

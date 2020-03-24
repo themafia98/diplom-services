@@ -46,7 +46,7 @@ $cardCount: 6;
     .card_message {
       width: 85%;
       cursor: pointer;
-      text-align: center;
+      word-break: break-word;
       display: -webkit-box;
       -webkit-line-clamp: $cardCount;
       -webkit-box-orient: vertical;

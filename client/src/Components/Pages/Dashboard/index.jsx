@@ -233,6 +233,18 @@ class Dashboard extends React.PureComponent {
     }
   };
 
+  onShowLoader = () => {
+    this.setState({
+      showLoader: true,
+    });
+  };
+
+  onHideLoader = () => {
+    this.setState({
+      showLoader: false,
+    });
+  };
+
   randomNotification = () => {
     // let notifTitle = "System Controll";
     // let notifBody = "Hello from System Controll";
@@ -315,6 +327,8 @@ class Dashboard extends React.PureComponent {
               actionTabs={actionTabs}
               udata={udata}
               shouldUpdate={shouldUpdate}
+              onShowLoader={this.onShowLoader}
+              onHideLoader={this.onHideLoader}
               router={router}
               statusApp={publicReducer.status}
               onShoudUpdate={onShoudUpdate}

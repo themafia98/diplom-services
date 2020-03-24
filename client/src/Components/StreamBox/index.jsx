@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { addTabAction, openPageWithDataAction, setActiveTabAction } from '../../Redux/actions/routerActions';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { Avatar, notification, message } from 'antd';
+import { Avatar, notification, message, Tooltip } from 'antd';
 import { Scrollbars } from 'react-custom-scrollbars';
 import clsx from 'clsx';
 import { routeParser, routePathNormalise } from '../../Utils';
@@ -89,7 +89,10 @@ class StreamBox extends React.Component {
         if (isFind) return setCurrentTab(actionTabs[index]);
 
         const item = tasks.find(it => it?.key === key);
-        if (!item) return;
+        if (!item) {
+          message.warning('Страница не найдена.');
+          return;
+        }
 
         onOpenPageWithData({
           // @ts-ignore
@@ -106,6 +109,30 @@ class StreamBox extends React.Component {
     }
   };
 
+  /**
+   * @param {string} id
+   */
+  onMouseEnter = id => {
+    const { idTooltipActive = '' } = this.state;
+
+    if (!idTooltipActive || idTooltipActive === id) {
+      this.setState({
+        idTooltipActive: id,
+      });
+    }
+  };
+
+  /**
+   * @param {string} id
+   */
+  onMouseLeave = id => {
+    const { idTooltipActive = '' } = this.state;
+    if (idTooltipActive === id)
+      this.setState({
+        idTooltipActive: null,
+      });
+  };
+
   render() {
     const { mode, boxClassName, type, value = '' } = this.props;
     const { streamList = [] } = this.state;
@@ -117,8 +144,15 @@ class StreamBox extends React.Component {
           {streamList.map((card, index) => {
             const { _id = '', authorName = '', title = '', message = '', action = {} } = card;
             const key = _id ? _id : index;
-            return (
+            const { type = '', link = '' } = action;
+
+            const isWithTooltip = type.includes('link') && link;
+
+            const cardItem = (
               <div
+                key={`cardItem_${_id}`}
+                onMouseEnter={isWithTooltip ? this.onMouseEnter.bind(this, _id) : null}
+                onMouseLeave={isWithTooltip ? this.onMouseLeave.bind(this, _id) : null}
                 onClick={this.onRunAction.bind(this, index)}
                 key={key}
                 className={clsx('cardStream', mode ? mode : null, !_.isEmpty(action) ? 'withAction' : null)}
@@ -130,6 +164,18 @@ class StreamBox extends React.Component {
                 <p className="card_title">{title}</p>
                 <p className="card_message">{message}</p>
               </div>
+            );
+
+            return isWithTooltip ? (
+              <Tooltip
+                key={`cardTooltip_${_id ? _id : Math.random()}`}
+                mouseEnterDelay={0.2}
+                title="Кликните для перехода на страницу уведомления"
+              >
+                {cardItem}
+              </Tooltip>
+            ) : (
+              cardItem
             );
           })}
         </div>

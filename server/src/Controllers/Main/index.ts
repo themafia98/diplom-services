@@ -480,14 +480,14 @@ namespace System {
       }
     }
 
-    @Post({ path: "/:actionType/notification", private: true })
+    @Post({ path: '/:actionType/notification', private: true })
     public async notification(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { actionType = '' } = req.params;
       const params: Params = {
         methodQuery: actionType,
         status: 'done',
         done: true,
-        from: "notification",
+        from: 'notification',
       };
 
       try {
@@ -495,68 +495,63 @@ namespace System {
 
         if (req.body && !_.isEmpty(req.body)) {
           const body: object = req.body;
-          const { actionType = "" } = <Record<string, any>>body;
+          const { actionType = '' } = <Record<string, any>>body;
           const connect = await dbm.connection().catch((err: Error) => console.error(err));
 
           if (!connect) throw new Error('Bad connect');
 
           const createNotificationAction = new Action.ActionParser({
-            actionPath: "notification",
+            actionPath: 'notification',
             actionType,
           });
 
           const data: ParserResult = await createNotificationAction.getActionData(req.body);
 
-          if (data){
-          return res.json(
-            getResponseJson(
-              'done',
-              { status: 'OK', done: true, params: { ...params }, metadata: data },
-              (req as Record<string, any>).start,
-            ),
-          );
+          if (data) {
+            const sortData = Array.isArray(data) ? data.reverse() : data;
+            return res.json(
+              getResponseJson(
+                'done',
+                { status: 'OK', done: true, params: { ...params }, metadata: sortData },
+                (req as Record<string, any>).start,
+              ),
+            );
           } else {
-
             params.status = 'error';
             res.status(404);
-              return res.json(
-                getResponseJson(
-                  `error get_notification`,
-                  { status: 'FAIL', params, done: false, metadata: data },
-                  (req as Record<string, any>).start,
-                ),
-              );
-          }
-
-        } else if (!res.headersSent) {
-            params.done = false;
-            params.status = 'FAIL';
             return res.json(
               getResponseJson(
-                'Bad body request',
-                { status: 'FAIL', params, done: false, metadata: null },
-                (req as Record<string, any>).start,
-              )
-            );
-
-          }
-        } catch(err){
-          
-          console.error(err.message);
-          if (!res.headersSent) {
-            res.status(503);
-            return res.json(
-              getResponseJson(
-                err.name,
-                { status: 'FAIL', params, done: false, metadata: 'Server error' },
+                `error get_notification`,
+                { status: 'FAIL', params, done: false, metadata: data },
                 (req as Record<string, any>).start,
               ),
             );
           }
-
+        } else if (!res.headersSent) {
+          params.done = false;
+          params.status = 'FAIL';
+          return res.json(
+            getResponseJson(
+              'Bad body request',
+              { status: 'FAIL', params, done: false, metadata: null },
+              (req as Record<string, any>).start,
+            ),
+          );
         }
+      } catch (err) {
+        console.error(err.message);
+        if (!res.headersSent) {
+          res.status(503);
+          return res.json(
+            getResponseJson(
+              err.name,
+              { status: 'FAIL', params, done: false, metadata: 'Server error' },
+              (req as Record<string, any>).start,
+            ),
+          );
+        }
+      }
     }
-
   }
 }
 

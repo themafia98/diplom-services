@@ -248,7 +248,9 @@ class CreateTask extends React.PureComponent {
           },
           () => {
             message.success(`Задача создана.`);
-
+            const {
+              card: { name = '' },
+            } = this.state;
             const { key = '' } = metadata[0] || metadata || {};
             if (!key) return;
             debugger;
@@ -262,7 +264,7 @@ class CreateTask extends React.PureComponent {
                   item: {
                     type: 'global',
                     title: 'Новая задача',
-                    message: 'Создана новая задача',
+                    message: `Создана новая задача № ${key}. ${name}`,
                     action: {
                       type: 'task_link',
                       link: key,

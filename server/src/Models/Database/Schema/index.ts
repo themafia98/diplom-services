@@ -174,13 +174,14 @@ export const notification = new Schema(
     message: { type: String, required: true },
     action: {
       type: { type: String, required: true },
-      link: { type: String, required: true }
+      link: { type: String, required: true },
     },
     uidCreater: { type: String, required: true },
     authorName: { type: String },
-  }, {
-    timestamps: true
-  }
+  },
+  {
+    timestamps: true,
+  },
 );
 
 export const UserModel = model('users', userSchema);

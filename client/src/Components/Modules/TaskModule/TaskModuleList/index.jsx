@@ -12,12 +12,13 @@ class TaskModuleList extends React.PureComponent {
   };
 
   render() {
-    const { data = null, height, setCurrentTab } = this.props;
+    const { data = null, height, setCurrentTab, loaderMethods = {} } = this.props;
     return (
       <div className="taskModule_all">
         <TitleModule additional="Все задачи" classNameTitle="taskModuleTittle" title="Список всех задач" />
         <div className="taskModuleAll_main">
           <TableView
+            loaderMethods={loaderMethods}
             setCurrentTab={setCurrentTab}
             height={height}
             tasks={data ? data.tasks : null}
