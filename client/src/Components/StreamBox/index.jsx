@@ -32,33 +32,46 @@ class StreamBox extends React.Component {
     return state;
   };
 
+  onLoadingInterval = null;
+
   componentDidMount = async () => {
     const { Request } = this.context;
     const { type = '' } = this.props;
 
     if (!type) return;
 
-    try {
-      const rest = new Request();
-      const res = await rest.sendRequest(`/system/${type}/notification`, 'POST', {
-        actionType: 'get_notifications',
-      });
+    const onLoadingStreamList = async () => {
+      try {
+        const rest = new Request();
+        const res = await rest.sendRequest(`/system/${type}/notification`, 'POST', {
+          actionType: 'get_notifications',
+        });
 
-      if (res.status !== 200) throw new Error('Bad get notification request');
+        if (res.status !== 200) throw new Error('Bad get notification request');
 
-      const {
-        data: { response: { metadata = [] } = {} },
-      } = res;
+        const {
+          data: { response: { metadata = [] } = {} },
+        } = res;
 
-      this.setState({
-        streamList: metadata,
-      });
-    } catch (error) {
-      console.error(error);
-      notification.error({
-        message: 'Stream error',
-        description: 'Bad request',
-      });
+        this.setState({
+          streamList: metadata,
+        });
+      } catch (error) {
+        console.error(error);
+        notification.error({
+          message: 'Stream error',
+          description: 'Bad request',
+        });
+      }
+    };
+
+    await onLoadingStreamList();
+    this.onLoadingInterval = setInterval(onLoadingStreamList, 30000);
+  };
+
+  componentWillUnmount = () => {
+    if (this.onLoadingInterval) {
+      clearInterval(this.onLoadingInterval);
     }
   };
 
