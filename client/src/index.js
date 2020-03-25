@@ -19,7 +19,7 @@ import ModelContext, { modelMethods } from './Models/context';
 
 require('es6-promise').polyfill();
 
-Sentry.init({ dsn: process.env.REACT_APP_LOGGER_DSN });
+//Sentry.init({ dsn: process.env.REACT_APP_LOGGER_DSN });
 
 ReactDOM.render(
   <Root>

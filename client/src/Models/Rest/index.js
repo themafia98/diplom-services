@@ -2,18 +2,20 @@ import _ from 'lodash';
 import axios from 'axios';
 
 class Request {
+  /** @private {string} */
+  #testAPI;
+  /** @private {string} */
+  #api;
+
   /**
    * @param {string} [prop]
    */
   constructor(prop) {
+    this.#testAPI = '/favicon.ico?_=';
+    this.#api = '/rest';
+
     /** @const {string} */
     this.status = prop;
-
-    /** @private {string} */
-    this.testAPI = '/favicon.ico?_=';
-
-    /** @private {string} */
-    this.api = '/rest';
 
     /** @type {function} */
     this.followObserver = null;
@@ -29,8 +31,8 @@ class Request {
    *  @param {boolean} flag
    */
   getTestAPI(flag = null) {
-    if (flag) return this.testAPI + new Date().getTime();
-    else return this.testAPI.split('_')[0];
+    if (flag) return this.#testAPI + new Date().getTime();
+    else return this.#testAPI.split('_')[0];
   }
 
   /**
@@ -38,7 +40,7 @@ class Request {
    * @return {string} entrypoint
    */
   getApi() {
-    return this.api;
+    return this.#api;
   }
 
   /** @public

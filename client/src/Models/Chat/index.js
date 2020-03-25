@@ -1,20 +1,22 @@
 class ChatModel {
   /**
-   * @param {any} io
+   * @private
    */
+  #socket;
+
   constructor(io) {
-    this.socket = io;
+    this.#socket = io;
   }
 
   getSocket() {
-    return this.socket;
+    return this.#socket;
   }
 
   useDefaultEvents() {
     if (!this.getSocket()) return;
 
     this.getSocket().on('reconnect_attempt', () => {
-      this.socket.io.opts.transports = ['websocket', 'polling'];
+      this.getSocket().io.opts.transports = ['websocket', 'polling'];
     });
   }
 
@@ -22,7 +24,7 @@ class ChatModel {
    * @param {any} rules
    */
   reconnectAttempt(rules) {
-    this.socket.io.opts.transports = rules;
+    this.getSocket().io.opts.transports = rules;
   }
 }
 

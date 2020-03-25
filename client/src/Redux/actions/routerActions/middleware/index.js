@@ -12,6 +12,7 @@ export const loadCurrentData = ({
   methodQuery = 'all',
   xhrPath = 'list',
   noCorsClient = false,
+  options = {},
 }) => async (dispatch, getState, { schema, Request, clientDB }) => {
   const primaryKey = 'uuid';
   const pathValid = path.includes('_') ? path.split('_')[0] : path.split('__')[0];
@@ -29,7 +30,7 @@ export const loadCurrentData = ({
 
     try {
       const request = new Request();
-      const res = await request.sendRequest(normalizeReqPath, methodRequst, { methodQuery }, true);
+      const res = await request.sendRequest(normalizeReqPath, methodRequst, { methodQuery, options }, true);
 
       const { data: { response: { metadata = [], fromCache = false } = {} } = {} } = res || {};
       let items = [];

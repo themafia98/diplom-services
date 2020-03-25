@@ -8,19 +8,12 @@ import {
 } from './const';
 
 class Schema {
-  /**
-   *
-   * @param {string} modeProp
-   *
-   */
+  /** @param {string} modeProp */
   constructor(modeProp = 'no-strict') {
     this.mode = modeProp;
   }
 
-  /**
-   *
-   * @param {string} type
-   */
+  /** @param {string} type */
   getValidateSchema(type) {
     switch (type) {
       case TASK_SCHEMA:

@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { loadCurrentData } from '../../Redux/actions/routerActions/middleware';
 import { addTabAction, openPageWithDataAction, setActiveTabAction } from '../../Redux/actions/routerActions';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
@@ -36,7 +37,7 @@ class StreamBox extends React.Component {
 
   componentDidMount = async () => {
     const { Request } = this.context;
-    const { type = '' } = this.props;
+    const { type = '', onLoadCurrentData } = this.props;
 
     if (!type) return;
 
@@ -52,6 +53,16 @@ class StreamBox extends React.Component {
         const {
           data: { response: { metadata = [] } = {} },
         } = res;
+
+        onLoadCurrentData({
+          path: 'taskModule',
+          storeLoad: 'tasks',
+          useStore: true,
+          methodRequst: 'POST',
+          options: {
+            ids: _.uniq(metadata.map(task => task._id)),
+          },
+        });
 
         this.setState({
           streamList: metadata,
@@ -206,6 +217,7 @@ const mapDispatchToProps = dispatch => {
   return {
     addTab: tab => dispatch(addTabAction(tab)),
     setCurrentTab: tab => dispatch(setActiveTabAction(tab)),
+    onLoadCurrentData: props => dispatch(loadCurrentData({ ...props })),
     onOpenPageWithData: data => dispatch(openPageWithDataAction(data)),
   };
 };
