@@ -6,6 +6,11 @@ $cardCount: 6;
   height: 73%;
   align-items: center;
   width: 100%;
+
+  .ant-spin {
+    margin-top: 10px;
+  }
+
   .cardStream {
     display: flex;
     flex-direction: column;

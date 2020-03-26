@@ -4,7 +4,7 @@ import { loadCurrentData } from '../../Redux/actions/routerActions/middleware';
 import { addTabAction, openPageWithDataAction, setActiveTabAction } from '../../Redux/actions/routerActions';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { Avatar, notification, message, Tooltip } from 'antd';
+import { Avatar, notification, message, Tooltip, Spin } from 'antd';
 import { Scrollbars } from 'react-custom-scrollbars';
 import clsx from 'clsx';
 import { routeParser, routePathNormalise } from '../../Utils';
@@ -160,47 +160,51 @@ class StreamBox extends React.Component {
   render() {
     const { mode, boxClassName, type, value = '' } = this.props;
     const { streamList = [] } = this.state;
-    if (!type || !streamList?.length) return null;
+    if (!type) return null;
 
     return (
       <Scrollbars style={mode ? { height: 'calc(100% - 100px)' } : null}>
         <div className={clsx('streamBox', boxClassName ? boxClassName : null)}>
-          {streamList.map((card, index) => {
-            const { _id = '', authorName = '', title = '', message = '', action = {} } = card;
-            const key = _id ? _id : index;
-            const { type = '', link = '' } = action;
+          {streamList?.length ? (
+            streamList.map((card, index) => {
+              const { _id = '', authorName = '', title = '', message = '', action = {} } = card;
+              const key = _id ? _id : index;
+              const { type = '', link = '' } = action;
 
-            const isWithTooltip = type.includes('link') && link;
+              const isWithTooltip = type.includes('link') && link;
 
-            const cardItem = (
-              <div
-                key={`cardItem_${_id}`}
-                onMouseEnter={isWithTooltip ? this.onMouseEnter.bind(this, _id) : null}
-                onMouseLeave={isWithTooltip ? this.onMouseLeave.bind(this, _id) : null}
-                onClick={this.onRunAction.bind(this, index)}
-                className={clsx('cardStream', mode ? mode : null, !_.isEmpty(action) ? 'withAction' : null)}
-              >
-                <div className="about">
-                  <Avatar size="64" icon="user" />
-                  <p className="name">{authorName}</p>
+              const cardItem = (
+                <div
+                  key={`cardItem_${_id}`}
+                  onMouseEnter={isWithTooltip ? this.onMouseEnter.bind(this, _id) : null}
+                  onMouseLeave={isWithTooltip ? this.onMouseLeave.bind(this, _id) : null}
+                  onClick={this.onRunAction.bind(this, index)}
+                  className={clsx('cardStream', mode ? mode : null, !_.isEmpty(action) ? 'withAction' : null)}
+                >
+                  <div className="about">
+                    <Avatar size="64" icon="user" />
+                    <p className="name">{authorName}</p>
+                  </div>
+                  <p className="card_title">{title}</p>
+                  <p className="card_message">{message}</p>
                 </div>
-                <p className="card_title">{title}</p>
-                <p className="card_message">{message}</p>
-              </div>
-            );
+              );
 
-            return isWithTooltip ? (
-              <Tooltip
-                key={`cardTooltip_${_id ? _id : Math.random()}`}
-                mouseEnterDelay={0.2}
-                title="Кликните для перехода на страницу уведомления"
-              >
-                {cardItem}
-              </Tooltip>
-            ) : (
-              cardItem
-            );
-          })}
+              return isWithTooltip ? (
+                <Tooltip
+                  key={`cardTooltip_${_id ? _id : Math.random()}`}
+                  mouseEnterDelay={0.2}
+                  title="Кликните для перехода на страницу уведомления"
+                >
+                  {cardItem}
+                </Tooltip>
+              ) : (
+                cardItem
+              );
+            })
+          ) : (
+            <Spin size="large" />
+          )}
         </div>
       </Scrollbars>
     );
