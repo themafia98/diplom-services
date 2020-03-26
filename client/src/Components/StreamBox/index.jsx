@@ -60,7 +60,7 @@ class StreamBox extends React.Component {
           useStore: true,
           methodRequst: 'POST',
           options: {
-            ids: _.uniq(metadata.map(task => task._id)),
+            keys: _.uniq(metadata.map(notification => notification?.action?.link)),
           },
         });
 
@@ -178,7 +178,6 @@ class StreamBox extends React.Component {
                 onMouseEnter={isWithTooltip ? this.onMouseEnter.bind(this, _id) : null}
                 onMouseLeave={isWithTooltip ? this.onMouseLeave.bind(this, _id) : null}
                 onClick={this.onRunAction.bind(this, index)}
-                key={key}
                 className={clsx('cardStream', mode ? mode : null, !_.isEmpty(action) ? 'withAction' : null)}
               >
                 <div className="about">

@@ -21,9 +21,19 @@ namespace Action {
       super(props);
     }
 
-    public async getAll(model: Model<Document>, actionParam: ActionParams) {
+    public async getAll(model: Model<Document>, actionParam: ActionParams, limit: number | null | undefined) {
       try {
-        const actionData: Array<Document> = await model.find(actionParam);
+        if (actionParam.in && actionParam.where) {
+          return await model
+            .find()
+            .where(actionParam.where)
+            .in((<Record<string, any[]>>actionParam).in);
+        }
+
+        const actionData: Array<Document> = !limit
+          ? await model.find(actionParam)
+          : await model.find(actionParam).limit(limit);
+
         return actionData;
       } catch (err) {
         console.error(err);

@@ -179,7 +179,7 @@ class DynamicTable extends React.PureComponent {
       }
     },
     render: text => {
-      const isDateString = _.isArray(text) && moment(text[0], 'DD.MM.YYYY')._isValid;
+      const isDateString = _.isArray(text) && moment(text[0], 'DD.MM.YYYY')?._isValid;
       const isArrayEditors = _.isArray(text) && !isDateString;
       const className =
         text === 'В работе'

@@ -21,7 +21,7 @@ class StatisticsModule extends React.PureComponent {
         useStore: true,
         methodRequst: 'POST',
         options: {
-          limitsList: 20,
+          limitList: 20,
         },
       });
     }

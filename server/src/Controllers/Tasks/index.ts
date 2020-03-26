@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import _ from 'lodash';
 import Utils from '../../Utils';
-import { App, Params, ResponseDocument } from '../../Utils/Interfaces';
+import { App, Params, ResponseDocument, ActionParams } from '../../Utils/Interfaces';
 import { ResRequest, docResponse, ParserResult } from '../../Utils/Types';
 
 import Action from '../../Models/Action';
@@ -15,11 +15,10 @@ namespace Tasks {
 
   @Controller('/tasks')
   export class TasksController {
-
-    @Post({ path: "/list", private: true })
+    @Post({ path: '/list', private: true })
     @Get({ path: '/list', private: true })
     public async getList(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
-      const isWithOptions = req.method.toLowerCase().includes("post");
+      const isWithOptions = req.method.toLowerCase().includes('post');
 
       const params: Params = { methodQuery: 'get_all', status: 'done', done: true, from: 'tasks' };
       try {
@@ -28,13 +27,13 @@ namespace Tasks {
           console.error(err);
         });
 
-      const { options: { limitList = null, ids = [] } = {} } = req?.body || {};
+        const { options: { limitList = null, keys = null } = {} } = req?.body || {};
+        const actionParams: ActionParams = { queryParams: { keys }, limitList };
 
-        
         if (!connect) throw new Error('Bad connect');
 
         const actionTasks = new Action.ActionParser({ actionPath: 'tasks', actionType: 'get_all' });
-        const data: ParserResult = await actionTasks.getActionData({});
+        const data: ParserResult = await actionTasks.getActionData(actionParams);
 
         if (!data) {
           params.status = 'error';
