@@ -19,7 +19,10 @@ class StatisticsModule extends React.PureComponent {
         path: 'taskModule',
         storeLoad: 'tasks',
         useStore: true,
-        methodRequst: 'GET',
+        methodRequst: 'POST',
+        options: {
+          limitsList: 20,
+        },
       });
     }
   };
