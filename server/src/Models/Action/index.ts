@@ -27,12 +27,11 @@ namespace Action {
           return await model
             .find()
             .where(actionParam.where)
-            .in((<Record<string, any[]>>actionParam).in);
+            .in((<Record<string, any[]>>actionParam).in)
+            .limit(<number>limit);
         }
 
-        const actionData: Array<Document> = !limit
-          ? await model.find(actionParam)
-          : await model.find(actionParam).limit(limit);
+        const actionData: Array<Document> = await model.find(actionParam).limit(<number>limit);
 
         return actionData;
       } catch (err) {
