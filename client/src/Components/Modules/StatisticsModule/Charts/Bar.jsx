@@ -1,10 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
+import { Spin } from 'antd';
 import moment from 'moment';
 import { ResponsiveBar } from '@nivo/bar';
 
-const Bar = ({ data, dateList }) => {
+const Bar = ({ isPartData, data, dateList }) => {
+  if (!data || !data?.length || isPartData) return <Spin size="large" />;
+
   const buildingBar = () => {
     const keysData = Object.keys(data);
     const result = [];

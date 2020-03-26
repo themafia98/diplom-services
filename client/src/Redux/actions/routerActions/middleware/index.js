@@ -32,7 +32,10 @@ export const loadCurrentData = ({
       const request = new Request();
       const res = await request.sendRequest(normalizeReqPath, methodRequst, { methodQuery, options }, true);
 
-      const { data: { response: { metadata = [], fromCache = false } = {} } = {} } = res || {};
+      const {
+        data: { response: { metadata = [], params: { isPartData = false, fromCache = false } = {} } = {} },
+      } = res || {};
+      console.log('isPart:', isPartData);
       let items = [];
 
       metadata.forEach((doc, index) => _.isNumber(index) && items.push(doc));
@@ -44,13 +47,15 @@ export const loadCurrentData = ({
       const undefiendCopyStore = [];
 
       if (noCorsClient && _.isNull(requestError)) {
-        dispatch(saveComponentStateAction({ [storeLoad]: copyStore, load: true, path: pathValid }));
+        dispatch(
+          saveComponentStateAction({ [storeLoad]: copyStore, load: true, path: pathValid, isPartData }),
+        );
       }
 
       if (!_.isNull(requestError)) dispatch(errorRequstAction(null));
 
       if (storeLoad === 'news') {
-        const data = { [storeLoad]: copyStore, load: true, path: pathValid };
+        const data = { [storeLoad]: copyStore, load: true, path: pathValid, isPartData };
         await dispatch(saveComponentStateAction(data));
       } else {
         const cursor = clientDB.getCursor(storeLoad);
@@ -93,7 +98,7 @@ export const loadCurrentData = ({
 
         if (requestError !== null) await dispatch(errorRequstAction(null));
 
-        const data = { [storeLoad]: copyStore, load: true, path: pathValid };
+        const data = { [storeLoad]: copyStore, load: true, path: pathValid, isPartData };
         await dispatch(saveComponentStateAction(data));
       };
     } catch (error) {

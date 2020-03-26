@@ -119,6 +119,13 @@
     background-color: #fff;
     padding: 0 8px;
     overflow: hidden;
+
+    .ant-spin {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+    }
+
     .chatRoom {
       width: 100%;
       height: calc(100% - 160px);

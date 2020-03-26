@@ -17,6 +17,8 @@ const initialState = {
   routeDataActive: {},
   routeData: {},
   load: false,
+  isPartData: false,
+  partDataPath: null,
   shouldUpdate: false,
 };
 
@@ -76,8 +78,8 @@ export default (state = initialState, action) => {
     }
     case SAVE_STATE: {
       const copyRouteData = { ...state.routeData };
-      let path = action.payload.path;
-      const update = action.shouldUpdate || false;
+      const { isPartData = false, shouldUpdate = false, path = '' } = action?.payload || {};
+
       let pathParse = path.split('_');
       if (
         pathParse[0] === 'taskModule' &&
@@ -92,11 +94,15 @@ export default (state = initialState, action) => {
         delete copyRouteData[path].mode;
       }
 
+      const isNewPartData = state?.partDataPath === null || state?.partDataPath === path;
+
       return {
         ...state,
         routeData: copyRouteData,
         load: action.payload.load,
-        shouldUpdate: update,
+        isPartData: isNewPartData ? isPartData : state.isPartData,
+        partDataPath: isNewPartData ? path : state.partDataPath,
+        shouldUpdate,
       };
     }
 

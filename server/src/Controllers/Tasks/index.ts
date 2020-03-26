@@ -28,20 +28,20 @@ namespace Tasks {
         });
 
         const { options: { limitList = null, keys = null } = {} } = req?.body || {};
-        const actionParams: ActionParams = { queryParams: { keys }, limitList };
+        const actionParams: ActionParams = { queryParams: keys ? { keys } : {}, limitList };
 
         if (!connect) throw new Error('Bad connect');
 
         const actionTasks = new Action.ActionParser({ actionPath: 'tasks', actionType: 'get_all' });
         const data: ParserResult = await actionTasks.getActionData(actionParams);
-
+        const isPartData: boolean = Boolean(keys);
         if (!data) {
           params.status = 'error';
 
           return res.json(
             getResponseJson(
               'error',
-              { params, metadata: data, status: 'FAIL', done: false },
+              { params, metadata: data, isPartData, status: 'FAIL', done: false },
               (req as Record<string, any>).start,
             ),
           );
@@ -65,7 +65,7 @@ namespace Tasks {
             })
             .filter(Boolean);
         }
-
+        (<Record<string, any>>params).isPartData = isPartData;
         return res.json(
           getResponseJson(
             'done',

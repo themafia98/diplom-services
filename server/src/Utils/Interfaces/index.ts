@@ -202,6 +202,7 @@ export interface ResponseJson<T> {
   status: string;
   params: T;
   done: boolean;
+  isPartData?: boolean;
   metadata: object | Array<any> | null | BinaryType | string;
 }
 

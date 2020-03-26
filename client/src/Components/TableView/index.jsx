@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { Icon, Empty } from 'antd';
+import { Icon, Empty, Spin } from 'antd';
 
 import Loader from '../Loader';
 import Scrollbars from 'react-custom-scrollbars';
@@ -134,7 +134,7 @@ class TableView extends React.Component {
               ) : (
                 <tr>
                   <td colSpan="5">
-                    <Loader classNameSpiner="tableLoader" className="wrapperLoaderTable" />
+                    <Spin size="large" />
                   </td>
                 </tr>
               )}

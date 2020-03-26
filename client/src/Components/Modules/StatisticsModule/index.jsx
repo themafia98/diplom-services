@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import data from './data.json';
@@ -19,10 +19,7 @@ class StatisticsModule extends React.PureComponent {
         path: 'taskModule',
         storeLoad: 'tasks',
         useStore: true,
-        methodRequst: 'POST',
-        options: {
-          limitList: 20,
-        },
+        methodRequst: 'GET',
       });
     }
   };
@@ -43,14 +40,16 @@ class StatisticsModule extends React.PureComponent {
   };
 
   render() {
-    const { router: { routeData: { taskModule: { tasks = [] } = {} } = {} } = {} } = this.props;
+    const {
+      router: { isPartData = false, routeData: { taskModule: { tasks = [] } = {} } = {} } = {},
+    } = this.props;
 
     return (
       <div className="statisticsModule">
         <TitleModule classNameTitle="statisticsModuleTitle" title="Статистика" />
         <div className="statisticsModule__main">
           <div className="col-6">
-            <Bar data={tasks} dateList={data.date} />
+            <Bar isPartData={isPartData} data={tasks} dateList={data.date} />
           </div>
         </div>
       </div>

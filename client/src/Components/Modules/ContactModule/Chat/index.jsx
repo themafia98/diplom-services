@@ -7,7 +7,7 @@ import io from 'socket.io-client';
 
 import ChatMenu from './ChatMenu';
 
-import { notification, message, Popover } from 'antd';
+import { notification, message, Popover, Spin } from 'antd';
 
 import { setSocketConnection, addMsg } from '../../../../Redux/actions/socketActions';
 import {
@@ -409,7 +409,7 @@ class Chat extends React.PureComponent {
               </div>
               <div className="chat_content__main">
                 {!socketConnection && !socketErrorStatus ? (
-                  <Loader />
+                  <Spin size="large" />
                 ) : tokenRoom ? (
                   <ChatRoom
                     key={tokenRoom}

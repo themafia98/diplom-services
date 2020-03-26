@@ -1,5 +1,12 @@
 .statisticsModule {
   height: 100%;
+
+  .ant-spin {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+  }
+
   .statisticsModuleTitle {
     font-size: 30px;
     font-weight: bold;
