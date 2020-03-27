@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Pagination, Button, message, Empty } from 'antd';
+import { Pagination, Button, message, Empty, Spin } from 'antd';
 
 import Scrollbars from 'react-custom-scrollbars';
 import { setActiveTabAction, openPageWithDataAction } from '../../../../Redux/actions/routerActions';
@@ -132,6 +132,7 @@ class News extends React.PureComponent {
       data = {},
       statusApp,
       router: { routeData: { contactModule: { news = [] } = {} } = {} },
+      isLoading = false,
     } = this.props;
     let listdata = data && data.news && Array.isArray(data.news) ? [...data.news] : news.length ? news : data;
     const rules = true;
@@ -151,7 +152,9 @@ class News extends React.PureComponent {
         <Scrollbars>
           <TabContainer visible={!isOpen}>
             <div className="news__main">
-              <div className="col-fullscreen">{this.renderNewsBlock(currentPage)}</div>
+              <div className="col-fullscreen">
+                {isLoading ? <Spin size="large" /> : this.renderNewsBlock(currentPage)}
+              </div>
             </div>
             <Pagination
               className="pagination-news"

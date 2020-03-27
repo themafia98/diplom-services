@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import {
   ADD_TAB,
   SET_ACTIVE_TAB,
@@ -12,6 +13,7 @@ import {
 import { SET_STATUS } from '../../actions/publicActions/const';
 
 const initialState = {
+  path: null,
   currentActionTab: 'mainModule',
   actionTabs: [],
   routeDataActive: {},
@@ -77,7 +79,7 @@ export default (state = initialState, action) => {
       };
     }
     case SAVE_STATE: {
-      const copyRouteData = { ...state.routeData };
+      let copyRouteData = { ...state.routeData };
       const { isPartData = false, shouldUpdate = false, path = '' } = action?.payload || {};
 
       let pathParse = path.split('_');
@@ -93,11 +95,24 @@ export default (state = initialState, action) => {
       else if (action.payload.mode === 'online' && copyRouteData[path].mode === 'offlineLoading') {
         delete copyRouteData[path].mode;
       }
-
       const isNewPartData = state?.partDataPath === null || state?.partDataPath === path;
+
+      if (isPartData && copyRouteData[path]?.tasks && state.routeData[path]?.tasks) {
+        const isMore = state.routeData[path].tasks.length > copyRouteData[path]?.tasks.length;
+        copyRouteData = {
+          ...copyRouteData,
+          [path]: {
+            ...copyRouteData[path],
+            tasks: isMore
+              ? _.uniqBy([...copyRouteData[path].tasks, ...state.routeData[path].tasks], '_id')
+              : _.uniqBy([...state.routeData[path].tasks, ...copyRouteData[path].tasks], '_id'),
+          },
+        };
+      }
 
       return {
         ...state,
+        path,
         routeData: copyRouteData,
         load: action.payload.load,
         isPartData: isNewPartData ? isPartData : state.isPartData,

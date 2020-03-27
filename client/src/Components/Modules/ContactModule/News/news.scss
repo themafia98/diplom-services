@@ -6,6 +6,13 @@
     .col-fullscreen {
       display: flex;
       flex-wrap: wrap;
+
+      .ant-spin {
+        position: absolute;
+        left: 50%;
+        top: 25%;
+      }
+
       .ant-empty {
         width: 100%;
       }

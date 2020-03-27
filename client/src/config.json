@@ -8,6 +8,9 @@
   "forceUpdate": false,
   "msTimeoutLoading": 0,
   "tabsLimit": 20,
+  "task": {
+    "limitList": 20
+  },
   "menu": [
     {
       "EUID": "mainModule",

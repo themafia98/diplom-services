@@ -59,6 +59,11 @@ class TaskModule extends React.PureComponent {
     } = this.props;
     const { height } = this.state;
     const { onShowLoader } = loaderMethods;
+    const {
+      config: {
+        task: { limitList = 20 },
+      },
+    } = this.context;
 
     const isEmptyTasks = _.isEmpty(routeData[path.split('_')[0]]);
 
@@ -70,7 +75,10 @@ class TaskModule extends React.PureComponent {
         path,
         storeLoad: 'tasks',
         useStore: true,
-        methodRequst: 'GET',
+        methodRequst: 'POST',
+        options: {
+          limitList,
+        },
       });
     }
 
@@ -94,6 +102,11 @@ class TaskModule extends React.PureComponent {
       path,
       router: { shouldUpdate = false },
     } = this.props;
+    const {
+      config: {
+        task: { limitList = 20 },
+      },
+    } = this.context;
 
     const { height } = this.state;
     if (!_.isNull(height) && !_.isNull(this.moduleTask) && visible) {
@@ -105,7 +118,10 @@ class TaskModule extends React.PureComponent {
         path,
         storeLoad: 'tasks',
         useStore: true,
-        methodRequst: 'GET',
+        methodRequst: 'POST',
+        options: {
+          limitList,
+        },
       });
     }
   };
@@ -209,7 +225,8 @@ class TaskModule extends React.PureComponent {
               visible={path === 'taskModule_all'}
               setCurrentTab={setCurrentTab}
               height={heightController ? height - heightController : height}
-              data={router.routeData[path]}
+              data={router?.routeData[path]}
+              router={router}
             />
           </TabContainer>
           <TabContainer
@@ -221,12 +238,13 @@ class TaskModule extends React.PureComponent {
               key="myListTask"
               rest={rest}
               udata={udata}
+              router={router}
               loaderMethods={loaderMethods}
               isBackground={isBackgroundTaskModuleMyTasks}
               visible={path === 'taskModule_myTasks'}
               setCurrentTab={setCurrentTab}
               height={height}
-              data={router.routeData[path]}
+              data={router?.routeData[path]}
             />
           </TabContainer>
           <TabContainer

@@ -144,6 +144,7 @@ class TableView extends React.Component {
         </Scrollbars>
       );
     } else if (path === 'searchTable') {
+      const { isPartData = false, partDataPath = '' } = router;
       return (
         <DynamicTable
           key="dynamicTable"
@@ -156,6 +157,7 @@ class TableView extends React.Component {
           udata={udata}
           flag={flag}
           user={user}
+          loading={partDataPath === path && isPartData}
           visible={visible}
           loaderMethods={loaderMethods}
           height={height}

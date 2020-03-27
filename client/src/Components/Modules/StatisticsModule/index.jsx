@@ -13,7 +13,12 @@ class StatisticsModule extends React.PureComponent {
   };
 
   componentDidMount = () => {
-    const { onLoadCurrentData, visible } = this.props;
+    const {
+      router: { routeData = {} },
+      onLoadCurrentData,
+      visible,
+    } = this.props;
+
     if (visible) {
       onLoadCurrentData({
         path: 'taskModule',
@@ -28,15 +33,17 @@ class StatisticsModule extends React.PureComponent {
     const {
       onLoadCurrentData,
       visible,
-      router: { shouldUpdate = false },
+      router: { shouldUpdate = false, routeData = {} },
     } = this.props;
-    if (shouldUpdate && visible)
+
+    if (shouldUpdate && visible) {
       onLoadCurrentData({
         path: 'taskModule',
         storeLoad: 'tasks',
         useStore: true,
         methodRequst: 'GET',
       });
+    }
   };
 
   render() {
