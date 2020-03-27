@@ -141,12 +141,19 @@ export default (state = initialState, action) => {
     }
     case SET_FLAG_LOAD_DATA: {
       const copyRouteData = { ...state.routeData };
-      copyRouteData[action.payload.path].load = action.payload.load;
+      const { path, load } = action.payload;
 
       return {
         ...state,
         load: action.payload.load,
-        routeData: copyRouteData,
+        routeData: {
+          ...state.routeData,
+          ...copyRouteData,
+          [path]: {
+            ...copyRouteData[path],
+            load,
+          },
+        },
       };
     }
     case SET_ACTIVE_TAB: {

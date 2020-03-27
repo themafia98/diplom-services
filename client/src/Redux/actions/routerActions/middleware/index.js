@@ -29,6 +29,7 @@ export const loadCurrentData = ({
       : `/${startPath}/${xhrPath}`.trim().replace('//', '/');
 
     try {
+      dispatch(loadFlagAction({ path: pathValid, load: false }));
       const request = new Request();
       const res = await request.sendRequest(normalizeReqPath, methodRequst, { methodQuery, options }, true);
 

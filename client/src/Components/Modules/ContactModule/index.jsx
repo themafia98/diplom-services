@@ -38,22 +38,8 @@ class ContactModule extends React.PureComponent {
 
   componentDidUpdate = () => {
     const { router: { shouldUpdate = false, routeData = {} } = {}, path, onLoadCurrentData } = this.props;
-    const { isLoading = false } = this.state;
-    const { load = true } = routeData['contactModule'] || {};
 
-    if (!isLoading && !routeData['contactModule']?.news?.length) {
-      this.setState({
-        isLoading: true,
-      });
-    }
-
-    if (isLoading && load && routeData['contactModule']?.news?.length) {
-      this.setState({
-        isLoading: false,
-      });
-    }
-
-    if (path === 'contactModule_feedback' && shouldUpdate) {
+    if (path === 'contactModule_feedback' && shouldUpdate && routeData[path.split('_')[0]]?.load) {
       onLoadCurrentData({
         path,
         storeLoad: 'news',
@@ -107,8 +93,9 @@ class ContactModule extends React.PureComponent {
     const isBackgroundInfoPage = this.checkBackground('contactModule_informationPage');
     const isBackgroundCreateNews = this.checkBackground('contactModule_createNews');
     const { statusApp = '', router: { routeData = {} } = {} } = this.props;
-    const data = routeData[path];
-    const { isLoading = false } = this.state;
+    const data = routeData[path] || {};
+    const { load = false, news = [] } = routeData['contactModule'] || {};
+
     return (
       <React.Fragment>
         <TabContainer isBackground={isBackgroundChat} visible={path === 'contactModule_chat'}>
@@ -117,7 +104,7 @@ class ContactModule extends React.PureComponent {
         <TabContainer isBackground={isBackgrounNews} visible={path === 'contactModule_feedback'}>
           <News
             data={data}
-            isLoading={isLoading}
+            isLoading={!load && !news.length}
             key="newsModule"
             isBackground={isBackgrounNews}
             visible={path === 'contactModule_feedback'}

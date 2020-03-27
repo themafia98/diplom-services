@@ -34,9 +34,10 @@ class StatisticsModule extends React.PureComponent {
       onLoadCurrentData,
       visible,
       router: { shouldUpdate = false, routeData = {} },
+      path,
     } = this.props;
 
-    if (shouldUpdate && visible) {
+    if (shouldUpdate && visible && routeData['taskModule']?.load) {
       onLoadCurrentData({
         path: 'taskModule',
         storeLoad: 'tasks',
