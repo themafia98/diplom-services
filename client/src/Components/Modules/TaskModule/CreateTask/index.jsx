@@ -253,7 +253,7 @@ class CreateTask extends React.PureComponent {
             } = this.state;
             const { key = '' } = metadata[0] || metadata || {};
             if (!key) return;
-            debugger;
+
             const rest = new Request();
             rest
               .sendRequest(

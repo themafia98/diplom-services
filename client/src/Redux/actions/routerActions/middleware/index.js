@@ -19,9 +19,10 @@ export const loadCurrentData = ({
   const router = getState().router;
 
   const { requestError, status = 'online' } = getState().publicReducer;
+  const isExist = router.routeData && router.routeData[pathValid];
 
-  if (router.routeData && router.routeData[pathValid] && router.routeData[pathValid].load) {
-    dispatch(loadFlagAction({ path: pathValid, load: false }));
+  if (isExist && !router.routeData[pathValid].load) {
+    dispatch(loadFlagAction({ path: pathValid, load: true }));
   }
   if (status === 'online') {
     const normalizeReqPath = useStore
@@ -29,7 +30,6 @@ export const loadCurrentData = ({
       : `/${startPath}/${xhrPath}`.trim().replace('//', '/');
 
     try {
-      dispatch(loadFlagAction({ path: pathValid, load: false }));
       const request = new Request();
       const res = await request.sendRequest(normalizeReqPath, methodRequst, { methodQuery, options }, true);
 

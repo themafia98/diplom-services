@@ -6,11 +6,15 @@ import { loadCurrentData } from '../../../Redux/actions/routerActions/middleware
 import Bar from './Charts/Bar';
 import TitleModule from '../../TitleModule';
 
+import modelContext from '../../../Models/context';
+
 class StatisticsModule extends React.PureComponent {
   static propTypes = {
     onErrorRequstAction: PropTypes.func.isRequired,
     path: PropTypes.string.isRequired,
   };
+
+  static contextType = modelContext;
 
   componentDidMount = () => {
     const {
@@ -34,7 +38,6 @@ class StatisticsModule extends React.PureComponent {
       onLoadCurrentData,
       visible,
       router: { shouldUpdate = false, routeData = {} },
-      path,
     } = this.props;
 
     if (shouldUpdate && visible && routeData['taskModule']?.load) {

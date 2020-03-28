@@ -97,15 +97,35 @@ export default (state = initialState, action) => {
       }
       const isNewPartData = state?.partDataPath === null || state?.partDataPath === path;
 
-      if (isPartData && copyRouteData[path]?.tasks && state.routeData[path]?.tasks) {
+      if (copyRouteData[path]?.tasks && state.routeData[path]?.tasks) {
         const isMore = state.routeData[path].tasks.length > copyRouteData[path]?.tasks.length;
+
+        const validationTasks = (currentTasks, prevTasks) => {
+          const tasks = [...currentTasks];
+
+          for (let i = 0; i < prevTasks.length; i++) {
+            const task = prevTasks[i];
+            const { _id = '' } = task || {};
+
+            const isExist = currentTasks.some(prevTask => prevTask._id === _id);
+
+            if (!isExist) {
+              tasks.push(task);
+            }
+          }
+          return tasks;
+        };
+
+        const currentTasks = isMore ? state.routeData[path].tasks : copyRouteData[path]?.tasks;
+        const prevTasks = isMore ? copyRouteData[path]?.tasks : state.routeData[path].tasks;
+
+        const tasks = validationTasks(currentTasks, prevTasks);
         copyRouteData = {
           ...copyRouteData,
           [path]: {
             ...copyRouteData[path],
-            tasks: isMore
-              ? _.uniqBy([...copyRouteData[path].tasks, ...state.routeData[path].tasks], '_id')
-              : _.uniqBy([...state.routeData[path].tasks, ...copyRouteData[path].tasks], '_id'),
+            load: true,
+            tasks,
           },
         };
       }
@@ -178,10 +198,30 @@ export default (state = initialState, action) => {
         shouldUpdate = true;
       }
 
+      const isExistModule = state.routeData[selectModule] || null;
+
+      const existModuleProps = isExistModule
+        ? {
+            ...state.routeData[selectModule],
+            load: false,
+          }
+        : {};
+
+      const routeData = isExistModule
+        ? {
+            ...state.routeData,
+            [selectModule]: {
+              ...state.routeData[selectModule],
+              ...existModuleProps,
+            },
+          }
+        : { ...state.routeData };
+
       return {
         ...state,
         currentActionTab: action.payload,
         routeDataActive: isDataPage ? { ...currentActive } : { ...state.routeDataActive },
+        routeData,
         shouldUpdate,
       };
     }

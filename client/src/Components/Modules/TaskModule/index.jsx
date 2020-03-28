@@ -100,7 +100,7 @@ class TaskModule extends React.PureComponent {
       visible,
       onLoadCurrentData,
       path,
-      router: { shouldUpdate = false },
+      router: { shouldUpdate = false, routeData = {} },
     } = this.props;
     const {
       config: {
@@ -113,7 +113,7 @@ class TaskModule extends React.PureComponent {
       this.recalcHeight();
     }
 
-    if (shouldUpdate && visible) {
+    if (shouldUpdate && visible && !routeData['taskModule']?.load) {
       onLoadCurrentData({
         path,
         storeLoad: 'tasks',
