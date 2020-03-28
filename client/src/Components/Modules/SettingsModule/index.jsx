@@ -56,19 +56,12 @@ class SettingsModule extends React.PureComponent {
     }
 
     if (!Object.keys(settingsLogs).length && !isLoadingLogs) {
-      this.setState(
-        {
-          isLoadingLogs: true,
-        },
-        () => {
-          onCaching({
-            uid,
-            actionType: 'get_user_settings_log',
-            depStore: 'settings',
-            type: 'logger',
-          });
-        },
-      );
+      onCaching({
+        uid,
+        actionType: 'get_user_settings_log',
+        depStore: 'settings',
+        type: 'logger',
+      });
     }
   };
 
@@ -83,20 +76,13 @@ class SettingsModule extends React.PureComponent {
     } = this.props;
 
     if ((!Object.keys(settingsLogs).length && !isLoadingLogs) || shouldUpdate) {
-      this.setState(
-        {
-          isLoadingLogs: true,
-        },
-        () => {
-          onCaching({
-            uid,
-            actionType: 'get_user_settings_log',
-            depStore: 'settings',
-            type: 'logger',
-          });
-          onSetStatus(false);
-        },
-      );
+      onCaching({
+        uid,
+        actionType: 'get_user_settings_log',
+        depStore: 'settings',
+        type: 'logger',
+      });
+      onSetStatus(false);
     }
 
     if (this.refWrapper && this.refColumn) {
@@ -333,15 +319,8 @@ class SettingsModule extends React.PureComponent {
   refColumnFunc = node => (this.refColumn = node);
 
   render() {
-    const {
-      emailValue,
-      telValue,
-      haveChanges,
-      oldPassword,
-      newPassword,
-      isLoadingLogs: isLoading,
-    } = this.state;
-    const { settingsLogs = {} } = this.props;
+    const { emailValue, telValue, haveChanges, oldPassword, newPassword } = this.state;
+    const { settingsLogs = {}, shouldUpdate } = this.props;
     const text = ` A dog is a type of domesticated animal.`;
 
     const readonlyPassword = haveChanges.includes('password_new') && haveChanges.includes('password_old');
@@ -465,7 +444,7 @@ class SettingsModule extends React.PureComponent {
             <Scrollbars>{settingsBlock}</Scrollbars>
           </div>
           <div className="col-6">
-            <ObserverTime isLoading={isLoading} settingsLogs={settingsLogs} />
+            <ObserverTime isLoading={!shouldUpdate && !settingsLogs?.length} settingsLogs={settingsLogs} />
           </div>
         </div>
       </div>

@@ -4,10 +4,14 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import TitleModule from '../TitleModule';
-import { Timeline } from 'antd';
+import { Timeline, Spin } from 'antd';
 
 const ObserverTime = props => {
-  const { title = '', settingsLogs = [] /* TODO: need show spiner isLoading = false */ } = props;
+  const {
+    title = '',
+    settingsLogs = [],
+    isLoading = false /* TODO: need show spiner isLoading = false */,
+  } = props;
 
   const renderLogs = (settingsLogs = []) => {
     if (!settingsLogs || _.isEmpty(settingsLogs)) return null;
@@ -25,14 +29,18 @@ const ObserverTime = props => {
     });
   };
 
-  const isInvalid = !settingsLogs.length || _.isEmpty(settingsLogs);
+  const isInvalid = !isLoading && (!settingsLogs.length || _.isEmpty(settingsLogs));
 
   return (
     <React.Fragment>
       <TitleModule classNameTitle="observerTitle" title={title ? title : 'История изменений'} />
       <Scrollbars>
         <div className="observerWrapper">
-          {isInvalid ? null : <Timeline>{renderLogs(settingsLogs)}</Timeline>}
+          {isInvalid ? null : isLoading ? (
+            <Spin size="large" />
+          ) : (
+            <Timeline>{renderLogs(settingsLogs)}</Timeline>
+          )}
         </div>
       </Scrollbars>
     </React.Fragment>

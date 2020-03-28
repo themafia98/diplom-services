@@ -36,7 +36,7 @@ export const loadCurrentData = ({
       const {
         data: { response: { metadata = [], params: { isPartData = false, fromCache = false } = {} } = {} },
       } = res || {};
-      console.log('isPart:', isPartData);
+
       let items = [];
 
       metadata.forEach((doc, index) => _.isNumber(index) && items.push(doc));
