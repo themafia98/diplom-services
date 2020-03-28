@@ -7,11 +7,7 @@ import TitleModule from '../TitleModule';
 import { Timeline, Spin } from 'antd';
 
 const ObserverTime = props => {
-  const {
-    title = '',
-    settingsLogs = [],
-    isLoading = false /* TODO: need show spiner isLoading = false */,
-  } = props;
+  const { title = '', settingsLogs = [], isLoading = false } = props;
 
   const renderLogs = (settingsLogs = []) => {
     if (!settingsLogs || _.isEmpty(settingsLogs)) return null;

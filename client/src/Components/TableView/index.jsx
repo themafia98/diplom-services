@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { Icon, Empty, Spin } from 'antd';
+import { Icon, Empty, Spin, Tooltip } from 'antd';
 
 import Loader from '../Loader';
 import Scrollbars from 'react-custom-scrollbars';
@@ -168,6 +168,14 @@ class TableView extends React.Component {
     return null;
   };
 
+  onMail = email => {
+    if (!email || !_.isString(email)) return;
+    const a = document.createElement('a');
+    a.href = `mailto:${email}`;
+    a.click();
+    a.remove();
+  };
+
   getRowsTable = arrayData => {
     return arrayData.map((it, id) => {
       return (
@@ -186,7 +194,9 @@ class TableView extends React.Component {
           </Output>
           {it.email ? (
             <td>
-              <Icon type="mail" />
+              <Tooltip title={it.email}>
+                <Icon onClick={this.onMail.bind(this, it.email)} type="mail" />
+              </Tooltip>
             </td>
           ) : null}
         </tr>
