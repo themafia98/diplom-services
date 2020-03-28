@@ -47,10 +47,12 @@ class ContentView extends React.Component {
   };
 
   shouldComponentUpdate = (nextProps, nextState) => {
+    const { path: currentPath } = this.props;
+    const { key: currentKey, drawerView: currentDrawerView } = this.state;
     if (
-      nextProps.path !== this.props.path ||
-      nextState.key !== this.state.key ||
-      nextState.drawerView !== this.state.drawerView
+      nextProps.path !== currentPath ||
+      nextState.key !== currentKey ||
+      nextState.drawerView !== currentDrawerView
     ) {
       return true;
     } else return false;
@@ -86,8 +88,14 @@ class ContentView extends React.Component {
     }
   }
 
+  /**
+   * @param {string} path
+   */
   checkBackground = path => {
     const { actionTabs = [] } = this.props;
+    /**
+     * @param {string} actionTab
+     */
     return actionTabs.some(actionTab => actionTab.startsWith(path) || actionTab === path);
   };
 
@@ -110,7 +118,7 @@ class ContentView extends React.Component {
     }
   };
 
-  onClose = event => {
+  onClose = () => {
     return this.setState({ ...this.state, drawerView: false });
   };
 
