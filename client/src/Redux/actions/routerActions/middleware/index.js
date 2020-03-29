@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import moment from 'moment';
 import { USER_SCHEMA, TASK_SCHEMA, TASK_CONTROLL_JURNAL_SCHEMA } from '../../../../Models/Schema/const';
 import { saveComponentStateAction, loadFlagAction } from '../';
 import { errorRequstAction, setStatus } from '../../publicActions';
@@ -48,8 +49,16 @@ export const loadCurrentData = ({
       const undefiendCopyStore = [];
 
       if (noCorsClient && _.isNull(requestError)) {
+        const sortedCopyStore = copyStore.every(it => it.createdAt)
+          ? copyStore.sort((a, b) => {
+              const aDate = moment(a.createdAt).unix();
+              const bDate = moment(b.createdAt).unix();
+              return bDate - aDate;
+            })
+          : copyStore;
+
         dispatch(
-          saveComponentStateAction({ [storeLoad]: copyStore, load: true, path: pathValid, isPartData }),
+          saveComponentStateAction({ [storeLoad]: sortedCopyStore, load: true, path: pathValid, isPartData }),
         );
       }
 
@@ -95,11 +104,20 @@ export const loadCurrentData = ({
             : null;
 
         let storeCopyValid = copyStore.map(it => schema.getSchema(templateSchema, it)).filter(Boolean);
+
         storeCopyValid.forEach(it => clientDB.updateItem(storeLoad, it));
 
         if (requestError !== null) await dispatch(errorRequstAction(null));
 
-        const data = { [storeLoad]: copyStore, load: true, path: pathValid, isPartData };
+        const sortedCopyStore = copyStore.every(it => it.createdAt)
+          ? copyStore.sort((a, b) => {
+              const aDate = moment(a.createdAt).unix();
+              const bDate = moment(b.createdAt).unix();
+              return bDate - aDate;
+            })
+          : copyStore;
+
+        const data = { [storeLoad]: sortedCopyStore, load: true, path: pathValid, isPartData };
         await dispatch(saveComponentStateAction(data));
       };
     } catch (error) {
