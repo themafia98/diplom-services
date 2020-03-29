@@ -1,8 +1,14 @@
 .contactsModule {
+  height: calc(100vh - 150px);
   .contactsModuleTitle {
     font-size: 30px;
     font-weight: bold;
     margin: 0;
     user-select: none;
+  }
+
+  .contactsModule__main {
+    width: 100%;
+    height: calc(100% - 50px);
   }
 }

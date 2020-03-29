@@ -6,6 +6,7 @@ import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 import VList from 'react-virtualized/dist/commonjs/List';
 import InfiniteLoader from 'react-virtualized/dist/commonjs/InfiniteLoader';
 import { List, message, Avatar, Spin } from 'antd';
+import Scrollbars from 'react-custom-scrollbars';
 
 const fakeDataUrl = 'https://randomuser.me/api/?results=5&inc=name,gender,email,nat&noinfo';
 
@@ -32,6 +33,7 @@ class Contacts extends React.PureComponent {
 
   handleInfiniteOnLoad = ({ startIndex, stopIndex }) => {
     let { data } = this.state;
+    debugger;
     this.setState({
       loading: true,
     });
@@ -40,7 +42,7 @@ class Contacts extends React.PureComponent {
       this.loadedRowsMap[i] = 1;
     }
     if (data.length > 19) {
-      message.warning('Virtualized List loaded all');
+      message.success('Список контактов успешно загружен');
       this.setState({
         loading: false,
       });
@@ -73,12 +75,12 @@ class Contacts extends React.PureComponent {
     );
   };
 
-  render() {
+  getAdditionalComponents = () => {
     const { data } = this.state;
-    const vlist = ({ height, isScrolling, onChildScroll, scrollTop, onRowsRendered, width }) => (
+    const vlist = ({ isScrolling, onChildScroll, scrollTop, onRowsRendered, width }) => (
       <VList
         autoHeight
-        height={height}
+        height={73 * data.length}
         isScrolling={isScrolling}
         onScroll={onChildScroll}
         overscanRowCount={2}
@@ -122,13 +124,25 @@ class Contacts extends React.PureComponent {
       </InfiniteLoader>
     );
 
+    return infiniteLoader;
+  };
+
+  render() {
+    const { data } = this.state;
+
+    const infiniteLoader = this.getAdditionalComponents();
+
     return (
       <div className="contactsModule">
         <TitleModule classNameTitle="contactsModuleTitle" title="Контакты" />
-        <List>
-          {data?.length > 0 && <WindowScroller>{infiniteLoader}</WindowScroller>}
-          {this.state.loading && <Spin className="demo-loading" />}
-        </List>
+        <div className="contactsModule__main">
+          <Scrollbars>
+            <List>
+              {data?.length > 0 && <WindowScroller>{infiniteLoader}</WindowScroller>}
+              {this.state.loading && <Spin size="large" className="demo-loading" />}
+            </List>
+          </Scrollbars>
+        </div>
       </div>
     );
   }
