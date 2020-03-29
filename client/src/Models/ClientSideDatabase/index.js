@@ -71,7 +71,7 @@ class ClientSideDatabase {
       requestOpen.onsuccess = event => {
         this.#db = event?.target?.result;
         this.#db.onversionchange = function() {
-          this.db.close();
+          this.getDb().close();
           alert('Offline data deprecated, please update page for updating storage.');
         };
       };
