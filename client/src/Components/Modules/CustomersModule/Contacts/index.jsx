@@ -33,7 +33,7 @@ class Contacts extends React.PureComponent {
 
   handleInfiniteOnLoad = ({ startIndex, stopIndex }) => {
     let { data } = this.state;
-    debugger;
+
     this.setState({
       loading: true,
     });
@@ -50,7 +50,7 @@ class Contacts extends React.PureComponent {
     }
     this.fetchData(res => {
       data = data.concat(res.results);
-      debugger;
+
       this.setState({
         data,
         loading: false,
