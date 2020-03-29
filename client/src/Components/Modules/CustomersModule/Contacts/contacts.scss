@@ -10,5 +10,19 @@
   .contactsModule__main {
     width: 100%;
     height: calc(100% - 50px);
+
+    .ant-spin {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: 100px;
+      height: 100px;
+    }
+
+    .item-desccription {
+      p {
+        margin: 0;
+      }
+    }
   }
 }

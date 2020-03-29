@@ -1,6 +1,6 @@
 import React from 'react';
 import TitleModule from '../../../TitleModule';
-
+import modelContext from '../../../../Models/context';
 import WindowScroller from 'react-virtualized/dist/commonjs/WindowScroller';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 import VList from 'react-virtualized/dist/commonjs/List';
@@ -14,26 +14,62 @@ class Contacts extends React.PureComponent {
   state = {
     data: [],
     loading: false,
+    isLoadingModule: false,
   };
+
+  static contextType = modelContext;
 
   loadedRowsMap = {};
 
-  componentDidMount() {
-    this.fetchData(res => {
-      this.setState({
-        data: res.results,
+  componentDidMount = async () => {
+    this.setState(
+      {
+        isLoadingModule: true,
+      },
+      () => {
+        this.fetchData(res => {
+          this.setState({
+            data: res?.metadata,
+            isLoadingModule: false,
+          });
+        });
+      },
+    );
+  };
+
+  componentDidUpdate = () => {
+    const { path } = this.props;
+
+    if (false) {
+      this.fetchData(res => {
+        this.setState({
+          data: res?.metadata,
+          isLoadingModule: false,
+        });
       });
-    });
-  }
+    }
+  };
 
   fetchData = async callback => {
-    const res = await fetch(fakeDataUrl);
-    callback(await res.json());
+    const { Request } = this.context;
+    try {
+      const rest = new Request();
+      const res = await rest.sendRequest('/system/userList', 'GET', null, true);
+
+      if (res.status !== 200) {
+        throw new Error('Bad load list');
+      }
+      const { data: { response = {} } = {} } = res || {};
+      callback(response);
+    } catch (error) {
+      console.error(error);
+      message.error('Не удалось загрузить список');
+
+      this.setState({ isLoadingModule: false });
+    }
   };
 
   handleInfiniteOnLoad = ({ startIndex, stopIndex }) => {
-    let { data } = this.state;
-
     this.setState({
       loading: true,
     });
@@ -41,20 +77,11 @@ class Contacts extends React.PureComponent {
       // 1 means loading
       this.loadedRowsMap[i] = 1;
     }
-    if (data.length > 19) {
-      message.success('Список контактов успешно загружен');
-      this.setState({
-        loading: false,
-      });
-      return;
-    }
-    this.fetchData(res => {
-      data = data.concat(res.results);
 
-      this.setState({
-        data,
-        loading: false,
-      });
+    message.success('Список контактов успешно загружен');
+    this.setState({
+      loading: false,
+      isLoadingModule: false,
     });
   };
 
@@ -66,11 +93,15 @@ class Contacts extends React.PureComponent {
     return (
       <List.Item key={key} style={style}>
         <List.Item.Meta
-          avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-          title={<a href="https://ant.design">{item.name.last}</a>}
-          description={item.email}
+          avatar={<Avatar src={`data:image/png;base64,${item?.avatar}`} />}
+          title={<a href="#">{item?.displayName}</a>}
+          description={
+            <div className="item-desccription">
+              {item?.email ? <p>{item.email}</p> : null}
+              {item?.phone ? <p>{item.phone}</p> : null}
+            </div>
+          }
         />
-        <div>Content</div>
       </List.Item>
     );
   };
@@ -128,7 +159,7 @@ class Contacts extends React.PureComponent {
   };
 
   render() {
-    const { data } = this.state;
+    const { data, isLoadingModule = false } = this.state;
 
     const infiniteLoader = this.getAdditionalComponents();
 
@@ -139,7 +170,7 @@ class Contacts extends React.PureComponent {
           <Scrollbars>
             <List>
               {data?.length > 0 && <WindowScroller>{infiniteLoader}</WindowScroller>}
-              {this.state.loading && <Spin size="large" className="demo-loading" />}
+              {isLoadingModule && <Spin size="large" className="demo-loading" />}
             </List>
           </Scrollbars>
         </div>
