@@ -92,7 +92,7 @@ class ContactModule extends React.PureComponent {
     const isBackgrounNews = this.checkBackground('contactModule_feedback');
     const isBackgroundInfoPage = this.checkBackground('contactModule_informationPage');
     const isBackgroundCreateNews = this.checkBackground('contactModule_createNews');
-    const { statusApp = '', router: { routeData = {} } = {} } = this.props;
+    const { statusApp = '', router: { routeData = {} } = {}, udata } = this.props;
     const data = routeData[path] || {};
     const { load = false, news = [] } = routeData['contactModule'] || {};
 
@@ -121,6 +121,7 @@ class ContactModule extends React.PureComponent {
           <CreateNews
             readOnly={statusApp === 'offline'}
             key="createNews"
+            udata={udata}
             statusApp={statusApp}
             isBackground={isBackgroundInfoPage}
             visible={path === 'contactModule_createNews'}
@@ -142,8 +143,11 @@ class ContactModule extends React.PureComponent {
 }
 
 const mapStateToProps = state => {
-  const { router = {} } = state;
-  return { router };
+  const {
+    router = {},
+    publicReducer: { udata = {} },
+  } = state;
+  return { router, udata };
 };
 
 const mapDispatchToProps = dispatch => {

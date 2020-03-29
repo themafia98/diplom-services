@@ -14,6 +14,7 @@ class MainModule extends React.PureComponent {
 
   render() {
     const { visible } = this.props;
+
     return (
       <div className="mainModule">
         <TitleModule

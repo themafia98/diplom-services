@@ -69,6 +69,7 @@ class News extends React.PureComponent {
       data = {},
     } = this.props;
     const { config = {} } = this.context;
+
     let listdata = data && data.news && Array.isArray(data.news) ? [...data.news] : news;
     const moduleId = 'informationPage';
     const page = 'contactModule';

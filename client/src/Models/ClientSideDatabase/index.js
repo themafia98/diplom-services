@@ -4,47 +4,73 @@ import { TASK_SCHEMA, USER_SCHEMA, TASK_CONTROLL_JURNAL_SCHEMA } from '../Schema
 import Schema from '../Schema';
 
 class ClientSideDatabase {
+  #db = null;
+  #name = null;
+  #version = null;
+  #isInit = false;
+  #crashStatus = false;
+  #schema = null;
   /**
    * @param {string} name
    * @param {number} version
    */
   constructor(name, version) {
-    this.db = null;
-    this.name = name;
-    this.version = version;
-    this.isInit = false;
-    this.crashStatus = false;
-    this.schema = new Schema('no-strict');
+    this.#db = null;
+    this.#name = name;
+    this.#version = version;
+    this.#isInit = false;
+    this.#crashStatus = false;
+    this.#schema = new Schema('no-strict');
   }
 
   /**
    * @param {boolean} state
    */
   updateStateInit(state) {
-    this.isInit = state;
+    this.#isInit = state;
   }
 
   setCrashStatus() {
-    this.crashStatus = true;
+    this.#crashStatus = true;
   }
 
   getCrashStatus() {
-    return this.crashStatus;
+    return this.#crashStatus;
+  }
+
+  getName() {
+    return this.#name;
+  }
+
+  getSchema() {
+    return this.#schema;
+  }
+
+  getDb() {
+    return this.#db;
+  }
+
+  getInitStatus() {
+    return this.#isInit;
+  }
+
+  getVersion() {
+    return this.#version;
   }
 
   async init() {
-    if (this.isInit) return;
+    if (this.getInitStatus()) return;
 
     try {
       const indexedDatabase =
         window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-      let requestOpen = indexedDatabase.open(this.name, this.version);
+      let requestOpen = indexedDatabase.open(this.getName(), this.getVersion());
       /**
        * @param {{ target: { result: any; }; }} event
        */
       requestOpen.onsuccess = event => {
-        this.db = event.target.result;
-        this.db.onversionchange = function() {
+        this.#db = event?.target?.result;
+        this.#db.onversionchange = function() {
           this.db.close();
           alert('Offline data deprecated, please update page for updating storage.');
         };
@@ -54,7 +80,7 @@ class ClientSideDatabase {
        */
       requestOpen.onerror = event => {
         /** clear and reload client db if catch error */
-        const deleteIndexedDbEvent = indexedDatabase.deleteDatabase(this.name);
+        const deleteIndexedDbEvent = indexedDatabase.deleteDatabase(this.getName());
         /**
          * @param {any} event
          */
@@ -82,9 +108,7 @@ class ClientSideDatabase {
        * @param {{ target: { result: any; }; newVersion: any; oldVersion: number; }} event
        */
       requestOpen.onupgradeneeded = event => {
-        this.db = event.target.result;
-        const { db } = this;
-
+        this.#db = event?.target.result;
         let isUsersObject = false;
         let isTasksObject = false;
         let isjurnalWorksObject = false;
@@ -92,17 +116,18 @@ class ClientSideDatabase {
         const newVersionUpdate = event.newVersion !== event.oldVersion && event.oldVersion !== 0;
 
         if (newVersionUpdate) {
-          indexedDB.deleteDatabase(this.db);
+          indexedDB.deleteDatabase(this.#db);
           return void this.init();
         }
 
-        if (db.objectStoreNames.contains('users') && !newVersionUpdate) isUsersObject = true;
-        if (db.objectStoreNames.contains('tasks') && !newVersionUpdate) isTasksObject = true;
-        if (db.objectStoreNames.contains('jurnalworks') && !newVersionUpdate) isjurnalWorksObject = true;
+        if (this.getDb().objectStoreNames.contains('users') && !newVersionUpdate) isUsersObject = true;
+        if (this.getDb().objectStoreNames.contains('tasks') && !newVersionUpdate) isTasksObject = true;
+        if (this.getDb().objectStoreNames.contains('jurnalworks') && !newVersionUpdate)
+          isjurnalWorksObject = true;
 
         const objectStoreUsers =
           !isUsersObject && !newVersionUpdate
-            ? db.createObjectStore('users', {
+            ? this.getDb().createObjectStore('users', {
                 unique: true,
                 keyPath: '_id',
                 autoIncrement: true,
@@ -112,7 +137,7 @@ class ClientSideDatabase {
             : null;
 
         if (!isUsersObject) {
-          const schemaUsers = this.schema.getValidateSchema(USER_SCHEMA);
+          const schemaUsers = this.getSchema()?.getValidateSchema(USER_SCHEMA);
           const keysUsers = Object.keys(schemaUsers);
 
           keysUsers.forEach((key, i) => {
@@ -129,7 +154,7 @@ class ClientSideDatabase {
 
         const objectStoreTasks =
           !isTasksObject && !newVersionUpdate
-            ? db.createObjectStore('tasks', {
+            ? this.getDb().createObjectStore('tasks', {
                 unique: true,
                 keyPath: 'key',
                 autoIncrement: true,
@@ -139,7 +164,7 @@ class ClientSideDatabase {
             : null;
 
         if (!isTasksObject) {
-          const schemaTasks = this.schema.getValidateSchema(TASK_SCHEMA);
+          const schemaTasks = this.getSchema()?.getValidateSchema(TASK_SCHEMA);
           const keysTasks = Object.keys(schemaTasks);
 
           keysTasks.forEach((key, i) => {
@@ -156,7 +181,7 @@ class ClientSideDatabase {
 
         const objectStorejurnalWorks =
           !isjurnalWorksObject && !newVersionUpdate
-            ? db.createObjectStore('jurnalworks', {
+            ? this.getDb().createObjectStore('jurnalworks', {
                 unique: true,
                 keyPath: 'id',
                 autoIncrement: true,
@@ -166,7 +191,7 @@ class ClientSideDatabase {
             : null;
 
         if (!isjurnalWorksObject) {
-          const schemajurnalWorks = this.schema.getValidateSchema(TASK_CONTROLL_JURNAL_SCHEMA);
+          const schemajurnalWorks = this.getSchema()?.getValidateSchema(TASK_CONTROLL_JURNAL_SCHEMA);
           const keysjurnalWorks = Object.keys(schemajurnalWorks);
 
           keysjurnalWorks.forEach((key, i) => {
@@ -186,10 +211,10 @@ class ClientSideDatabase {
         }
       };
 
-      this.isInit = true;
+      this.#isInit = true;
     } catch (e) {
       console.error(e);
-      this.isInit = true;
+      this.#isInit = true;
       this.setCrashStatus();
     }
   }
@@ -200,7 +225,7 @@ class ClientSideDatabase {
    */
   getItemByKey(nameStore, key, mode = 'readonly') {
     if (this.getCrashStatus()) return;
-    const tx = this.db.transaction([nameStore], mode);
+    const tx = this.getDb().transaction([nameStore], mode);
     const store = tx.objectStore(nameStore);
     return store.get(key);
 
@@ -219,7 +244,7 @@ class ClientSideDatabase {
    */
   getAllItems(nameStore, mode = 'readonly') {
     if (this.getCrashStatus()) return;
-    const tx = this.db.transaction([nameStore], mode);
+    const tx = this.getDb().transaction([nameStore], mode);
     const store = tx.objectStore(nameStore);
     return store.getAll();
 
@@ -240,7 +265,7 @@ class ClientSideDatabase {
   addItem(nameStore, item, mode = 'readwrite') {
     try {
       if (this.getCrashStatus()) return;
-      const tx = this.db.transaction([nameStore], mode);
+      const tx = this.getDb().transaction([nameStore], mode);
       const store = tx.objectStore(nameStore);
       return store.add(item);
     } catch (err) {
@@ -270,7 +295,7 @@ class ClientSideDatabase {
   updateItem(nameStore, item, pk, mode = 'readwrite') {
     if (this.getCrashStatus()) return;
 
-    const tx = this.db.transaction([nameStore], mode);
+    const tx = this.getDb().transaction([nameStore], mode);
     const store = tx.objectStore(nameStore);
     return store.put(item);
 
@@ -294,7 +319,7 @@ class ClientSideDatabase {
    */
   deleteItem(nameStore = '', key, mode = 'readwrite') {
     if (this.getCrashStatus()) return;
-    const tx = this.db.transaction([nameStore], mode);
+    const tx = this.getDb().transaction([nameStore], mode);
     const store = tx.objectStore(nameStore);
     return store.delete(key);
 
@@ -311,7 +336,7 @@ class ClientSideDatabase {
 
   getCursor(nameStore = '', mode = 'readonly') {
     if (this.getCrashStatus()) return;
-    const tx = this.db.transaction(nameStore, mode);
+    const tx = this.getDb().transaction(nameStore, mode);
     const store = tx.objectStore(nameStore);
     return store.openCursor();
 
@@ -343,7 +368,7 @@ class ClientSideDatabase {
     else if (_.isNull(upperKey) && !_.isNull(lowerKey)) searchKeyRange = IDBKeyRange.lowerBound(lowerKey);
     else searchKeyRange = IDBKeyRange.bound(lowerKey, upperKey);
     if (!searchKeyRange) return;
-    const tx = this.db.transaction([nameStore], mode);
+    const tx = this.getDb().transaction([nameStore], mode);
     const store = tx.objectStore(nameStore);
     const searchIndex = store.index(index);
     return searchIndex.openCursor(searchKeyRange);

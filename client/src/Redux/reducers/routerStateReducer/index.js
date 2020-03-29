@@ -80,8 +80,8 @@ export default (state = initialState, action) => {
     }
     case SAVE_STATE: {
       let copyRouteData = { ...state.routeData };
-      const { isPartData = false, shouldUpdate = false, path = '' } = action?.payload || {};
-
+      const { isPartData = false, shouldUpdate = false, path: pathAction = '' } = action?.payload || {};
+      let path = pathAction;
       let pathParse = path.split('_');
       if (
         pathParse[0] === 'taskModule' &&

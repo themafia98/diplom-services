@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment';
 import TitleModule from '../../../../TitleModule';
 import EditorTextarea from '../../../../Textarea/EditorTextarea';
 import { message, notification, Input } from 'antd';
@@ -34,7 +35,7 @@ class CreateNews extends React.PureComponent {
   };
 
   onPublish = async contentState => {
-    const { statusApp = '' } = this.props;
+    const { statusApp = '', udata: { displayName = '', _id: uid = '' } = {} } = this.props;
     const { titleNews = '' } = this.state;
     const { Request } = this.context;
     if (!contentState) {
@@ -61,11 +62,32 @@ class CreateNews extends React.PureComponent {
           true,
         );
 
-        const { response: { params: { done = false } = {} } = {} } = res.data || {};
+        const { response: { metadata: { _id: key = '' } = {}, params: { done = false } = {} } = {} } =
+          res.data || {};
 
         if (!done) {
           throw new Error('Bad create news');
         }
+
+        rest.sendRequest(
+          `/system/global/notification`,
+          'POST',
+          {
+            actionType: 'set_notification',
+            item: {
+              type: 'global',
+              title: 'Новость',
+              message: `${titleNews}. Добавлена: ${moment().format('MM.DD.YYYY HH:mm')}`,
+              action: {
+                type: 'news_link',
+                link: key,
+              },
+              uidCreater: uid,
+              authorName: displayName,
+            },
+          },
+          true,
+        );
 
         this.setState(
           {

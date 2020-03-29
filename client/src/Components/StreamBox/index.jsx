@@ -158,7 +158,7 @@ class StreamBox extends React.Component {
   };
 
   render() {
-    const { mode, boxClassName, type, value = '' } = this.props;
+    const { mode, boxClassName, type, udata: { _id: uid = '' } = {} } = this.props;
     const { streamList = [] } = this.state;
     if (!type) return null;
 
@@ -171,7 +171,7 @@ class StreamBox extends React.Component {
               const key = _id ? _id : index;
               const { type = '', link = '' } = action;
 
-              const isWithTooltip = type.includes('link') && link;
+              const isWithTooltip = type.includes('task_link') && link;
 
               const cardItem = (
                 <div
