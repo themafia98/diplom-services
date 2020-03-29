@@ -8,9 +8,18 @@ import {
 } from './const';
 
 class Schema {
+  /**
+   * @private
+   * @type {string|null}
+   */
+  #mode = null;
   /** @param {string} modeProp */
   constructor(modeProp = 'no-strict') {
-    this.mode = modeProp;
+    this.#mode = modeProp;
+  }
+
+  getMode() {
+    return this.#mode;
   }
 
   /** @param {string} type */
@@ -119,7 +128,7 @@ class Schema {
       return false;
     }
 
-    return this.mode !== 'no-strict'
+    return this.getMode() !== 'no-strict'
       ? data.every((dataKey, i) => dataKey === schema[i])
       : data.every(dataKey => schema.findIndex(it => it === dataKey) !== -1);
   }
@@ -141,7 +150,7 @@ class Schema {
     if (schema) keysSchema = Object.keys(schema);
     else return null;
 
-    if (this.validateSchema(keysData, keysSchema, this.mode)) {
+    if (this.validateSchema(keysData, keysSchema, this.getMode())) {
       return { ...data };
     } else return null;
   }

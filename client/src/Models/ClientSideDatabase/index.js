@@ -4,11 +4,35 @@ import { TASK_SCHEMA, USER_SCHEMA, TASK_CONTROLL_JURNAL_SCHEMA } from '../Schema
 import Schema from '../Schema';
 
 class ClientSideDatabase {
+  /**
+   * @private
+   * @type {object|null}
+   */
   #db = null;
+  /**
+   * @private
+   * @type {string|null}
+   */
   #name = null;
+  /**
+   * @private
+   * @type {number|null}
+   */
   #version = null;
+  /**
+   * @private
+   * @type {boolean}
+   */
   #isInit = false;
+  /**
+   * @private
+   * @type {boolean}
+   */
   #crashStatus = false;
+  /**
+   * @private
+   * @type {Schema}
+   */
   #schema = null;
   /**
    * @param {string} name
@@ -62,8 +86,7 @@ class ClientSideDatabase {
     if (this.getInitStatus()) return;
 
     try {
-      const indexedDatabase =
-        window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+      const indexedDatabase = window?.indexedDB;
       let requestOpen = indexedDatabase.open(this.getName(), this.getVersion());
       /**
        * @param {{ target: { result: any; }; }} event
@@ -89,17 +112,13 @@ class ClientSideDatabase {
           console.error(event);
         };
 
-        /**
-         * @param {{ result: any; }} event
-         */
-        deleteIndexedDbEvent.onsuccess = event => {
-          if (_.isUndefined(event.result)) {
+        deleteIndexedDbEvent.onsuccess = ({ result }) => {
+          if (_.isUndefined(result)) {
             this.updateStateInit(false);
             this.init().then(() => {
               console.log('Database sussesfully clear and update after error or rollback');
             });
           } else {
-            console.error(event);
             alert(' Please clear your browser data or update browser.');
           }
         };
@@ -120,14 +139,14 @@ class ClientSideDatabase {
           return void this.init();
         }
 
-        if (this.getDb().objectStoreNames.contains('users') && !newVersionUpdate) isUsersObject = true;
-        if (this.getDb().objectStoreNames.contains('tasks') && !newVersionUpdate) isTasksObject = true;
-        if (this.getDb().objectStoreNames.contains('jurnalworks') && !newVersionUpdate)
+        if (this.getDb()?.objectStoreNames.contains('users') && !newVersionUpdate) isUsersObject = true;
+        if (this.getDb()?.objectStoreNames.contains('tasks') && !newVersionUpdate) isTasksObject = true;
+        if (this.getDb()?.objectStoreNames.contains('jurnalworks') && !newVersionUpdate)
           isjurnalWorksObject = true;
 
         const objectStoreUsers =
           !isUsersObject && !newVersionUpdate
-            ? this.getDb().createObjectStore('users', {
+            ? this.getDb()?.createObjectStore('users', {
                 unique: true,
                 keyPath: '_id',
                 autoIncrement: true,

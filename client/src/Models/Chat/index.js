@@ -1,9 +1,13 @@
 class ChatModel {
   /**
    * @private
+   * @type {SocketIOClient.Socket}
    */
   #socket;
 
+  /**
+   * @param {SocketIOClient.Socket} io
+   */
   constructor(io) {
     this.#socket = io;
   }
