@@ -32,13 +32,13 @@ class WikiModule extends React.PureComponent {
         <div className="wikiModule__main">
           <div className="col-6">
             <DirectoryTree multiple defaultExpandAll onSelect={this.onSelect} onExpand={this.onExpand}>
-              <TreeNode title="parent 0" key="0-0">
-                <TreeNode title="leaf 0-0" key="0-0-0" isLeaf />
-                <TreeNode title="leaf 0-1" key="0-0-1" isLeaf />
+              <TreeNode title="Главная страница" key="0-0">
+                <TreeNode title="Глобальные уведомления" key="0-0-0" isLeaf />
+                <TreeNode title="Таблица сотрудников" key="0-0-1" isLeaf />
               </TreeNode>
-              <TreeNode title="parent 1" key="0-1">
-                <TreeNode title="leaf 1-0" key="0-1-0" isLeaf />
-                <TreeNode title="leaf 1-1" key="0-1-1" isLeaf />
+              <TreeNode title="Кабинет" key="0-1">
+                <TreeNode title="Карточка пользователся" key="0-1-0" isLeaf />
+                <TreeNode title="Журнал активности" key="0-1-1" isLeaf />
               </TreeNode>
             </DirectoryTree>
           </div>

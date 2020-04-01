@@ -14,7 +14,7 @@ import {
   shouldUpdateAction,
 } from '../../../Redux/actions/routerActions';
 import { loadCurrentData } from '../../../Redux/actions/routerActions/middleware';
-import { errorRequstAction, clearCache } from '../../../Redux/actions/publicActions';
+import { errorRequstAction, clearCache, setStatus } from '../../../Redux/actions/publicActions';
 import { routeParser } from '../../../Utils';
 
 import Loader from '../../Loader';
@@ -292,6 +292,7 @@ class Dashboard extends React.PureComponent {
       firstConnect = false,
       udata = {},
       setCurrentTab,
+      onSetStatus,
     } = this.props;
     const { config = {} } = this.context;
 
@@ -326,6 +327,7 @@ class Dashboard extends React.PureComponent {
               dashboardStrem={this.dashboardStrem}
               actionTabs={actionTabs}
               udata={udata}
+              onSetStatus={onSetStatus}
               shouldUpdate={shouldUpdate}
               onShowLoader={this.onShowLoader}
               onHideLoader={this.onHideLoader}
@@ -378,6 +380,7 @@ const mapDispatchToProps = dispatch => {
   return {
     addTab: tab => dispatch(addTabAction(tab)),
     removeTab: tab => dispatch(removeTabAction(tab)),
+    onSetStatus: status => dispatch(setStatus(status)),
     onClearCache: props => dispatch(clearCache(props)),
     setCurrentTab: tab => dispatch(setActiveTabAction(tab)),
     onLoadCurrentData: ({ path, storeLoad }) => dispatch(loadCurrentData({ path, storeLoad })),

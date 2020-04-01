@@ -16,6 +16,7 @@ class CustomersModule extends React.PureComponent {
   };
 
   getComponentByPath = path => {
+    const { router = {}, onSetStatus } = this.props;
     if (path) {
       const isBackgroundContacts = this.checkBackground('customersModule_contacts');
       return (
@@ -24,6 +25,9 @@ class CustomersModule extends React.PureComponent {
             <Contacts
               key="contacts_module"
               isBackground={isBackgroundContacts}
+              router={router}
+              onSetStatus={onSetStatus}
+              path={path}
               visible={path === 'customersModule_contacts'}
             />
           </TabContainer>

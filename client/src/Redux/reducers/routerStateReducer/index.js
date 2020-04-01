@@ -196,6 +196,8 @@ export default (state = initialState, action) => {
         shouldUpdate = true;
       } else if (action.payload.includes('settings')) {
         shouldUpdate = true;
+      } else if (action.payload.includes('customersModule_contacts')) {
+        shouldUpdate = true;
       }
 
       const isExistModule = state.routeData[selectModule] || null;
@@ -227,7 +229,7 @@ export default (state = initialState, action) => {
     }
     case SET_STATUS: {
       const { shouldUpdate = false } = action.payload;
-
+      debugger;
       return {
         ...state,
         shouldUpdate: shouldUpdate,

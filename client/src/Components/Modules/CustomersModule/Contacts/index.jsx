@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import TitleModule from '../../../TitleModule';
 import modelContext from '../../../../Models/context';
 import WindowScroller from 'react-virtualized/dist/commonjs/WindowScroller';
@@ -38,9 +39,14 @@ class Contacts extends React.PureComponent {
   };
 
   componentDidUpdate = () => {
-    const { path } = this.props;
+    const {
+      onSetStatus,
+      visible,
+      path = '',
+      router: { currentActionTab = '', shouldUpdate = false } = {},
+    } = this.props;
 
-    if (false) {
+    if (visible && false) {
       this.fetchData(res => {
         this.setState({
           data: res?.metadata,

@@ -133,6 +133,7 @@ class ContentView extends React.Component {
       rest,
       onShowLoader,
       onHideLoader,
+      onSetStatus,
     } = this.props;
     const { drawerView, key } = this.state;
 
@@ -209,6 +210,7 @@ class ContentView extends React.Component {
               statusApp={statusApp}
               router={router}
               rest={rest}
+              onSetStatus={onSetStatus}
               loaderMethods={loaderMethods}
               onErrorRequstAction={onErrorRequstAction}
               key="contact"
@@ -224,6 +226,8 @@ class ContentView extends React.Component {
               onErrorRequstAction={onErrorRequstAction}
               actionTabs={actionTabs}
               rest={rest}
+              onSetStatus={onSetStatus}
+              router={router}
               loaderMethods={loaderMethods}
               key="customers"
               path={path}
