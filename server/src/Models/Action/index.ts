@@ -1,4 +1,4 @@
-import { ActionProps, ActionParams, Actions } from '../../Utils/Interfaces';
+import { ActionProps, ActionParams, Actions, Action } from '../../Utils/Interfaces';
 import { Model, Document } from 'mongoose';
 import _ from 'lodash';
 import ActionEntity from './ActionEntity';
@@ -14,6 +14,7 @@ import ActionChatMessage from './ActionsEntity/ActionChatMessage';
 import ActionChatRoom from './ActionsEntity/ActionChatRoom';
 import ActionGlobal from './ActionsEntity/ActionGlobal';
 import ActionTasks from './ActionsEntity/ActionTasks';
+import ActionWiki from './ActionsEntity/ActionWiki';
 
 namespace Action {
   export class ActionParser extends ActionEntity implements Actions {
@@ -128,37 +129,42 @@ namespace Action {
           }
 
           case 'chatRoom': {
-            const action = new ActionChatRoom(this);
+            const action: Action = new ActionChatRoom(this);
             return action.run(actionParam);
           }
 
           case 'chatMsg': {
-            const action = new ActionChatMessage(this);
+            const action: Action = new ActionChatMessage(this);
             return action.run(actionParam);
           }
 
           case 'users': {
-            const action = new ActionUsers(this);
+            const action: Action = new ActionUsers(this);
             return action.run(actionParam);
           }
 
           case 'jurnalworks': {
-            const action = new ActionJurnal(this);
+            const action: Action = new ActionJurnal(this);
             return action.run(actionParam);
           }
 
           case 'tasks': {
-            const action = new ActionTasks(this);
+            const action: Action = new ActionTasks(this);
             return action.run(actionParam);
           }
 
           case 'news': {
-            const action = new ActionNews(this);
+            const action: Action = new ActionNews(this);
             return action.run(actionParam);
           }
 
           case 'settingsLog': {
-            const action = new ActionLogger(this);
+            const action: Action = new ActionLogger(this);
+            return action.run(actionParam);
+          }
+
+          case 'wiki': {
+            const action: Action = new ActionWiki(this);
             return action.run(actionParam);
           }
 

@@ -184,6 +184,17 @@ export const notification = new Schema(
   },
 );
 
+export const wikiTree = new Schema(
+  {
+    name: { type: String, required: null },
+    level: { type: Number, required: true },
+    accessGroups: { type: [String], required: false },
+  },
+  {
+    timestamps: true,
+  },
+);
+
 export const UserModel = model('users', userSchema);
 
 export const getSchemaByName = (name: string): Schema | null => {
@@ -204,6 +215,8 @@ export const getSchemaByName = (name: string): Schema | null => {
       return logger;
     case 'notification':
       return notification;
+    case 'wikiTree':
+      return wikiTree;
     default:
       return null;
   }
