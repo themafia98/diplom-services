@@ -92,9 +92,10 @@ namespace Wiki {
         await service.dbm.disconnect().catch((err: Error) => console.error(err));
 
         const { user: { rules = '' } = {} } = <Record<string, Record<string, string>>>body;
+
         const metadata: ArrayLike<object> = Utils.parsePublicData(data, 'accessGroups', rules);
 
-        if (!data) {
+        if (!data || !metadata || (metadata && !metadata?.length)) {
           params.status = 'error';
           params.done = false;
           res.status(404);

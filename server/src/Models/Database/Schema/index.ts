@@ -188,7 +188,7 @@ export const wikiTree = new Schema(
   {
     name: { type: String, required: null },
     level: { type: Number, required: true },
-    accessGroups: { type: [String], required: false },
+    accessGroups: { type: [String], required: true },
   },
   {
     timestamps: true,
