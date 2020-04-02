@@ -138,21 +138,52 @@ namespace Utils {
     );
   };
 
-  export const parsePublicData = (data: ParserResult): ArrayLike<object> =>
-    (<docResponse[]>data)
-      .map((it: docResponse) => {
-        const item: ResponseDocument = it['_doc'] || it;
+  export const parsePublicData = (
+    data: ParserResult,
+    mode: string = 'default',
+    rules = '',
+  ): ArrayLike<object> => {
+    switch (mode) {
+      case 'access':
+      case 'accessGroups':
+        const isGroupMode = mode.includes('Groups');
+        return (<docResponse[]>data)
+          .map((it: docResponse) => {
+            const item: ResponseDocument = it['_doc'] || it;
 
-        const itemValid = Object.keys(item).reduce((obj: ResponseDocument, key: string): object => {
-          if (!key.includes('password') && !key.includes('At') && !key.includes('__v')) {
-            obj[key] = item[key];
-          }
-          return obj;
-        }, {});
+            if (isGroupMode) {
+              if (!Array.isArray(item[mode])) return null;
 
-        return itemValid;
-      })
-      .filter(Boolean);
+              const accept: Array<string> = <Array<string>>item[mode] || [];
+
+              if (accept.some(rule => rule === rules)) return it;
+            } else {
+              if (!rules) return null;
+
+              const accept: string = <string>item[mode];
+              if (accept === rules) return it;
+            }
+            return null;
+          })
+          .filter(Boolean);
+
+      default:
+        return (<docResponse[]>data)
+          .map((it: docResponse) => {
+            const item: ResponseDocument = it['_doc'] || it;
+
+            const itemValid = Object.keys(item).reduce((obj: ResponseDocument, key: string): object => {
+              if (!key.includes('password') && !key.includes('At') && !key.includes('__v')) {
+                obj[key] = item[key];
+              }
+              return obj;
+            }, {});
+
+            return itemValid;
+          })
+          .filter(Boolean);
+    }
+  };
 }
 
 export default Utils;

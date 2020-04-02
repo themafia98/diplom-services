@@ -17,6 +17,14 @@ class ActionWiki implements Action {
     return this.getEntity().getAll(model, actionParam);
   }
 
+  private async createLeaf(actionParam: ActionParams, model: Model<Document>): ParserData {
+    const { item = null } = <Record<string, object>>actionParam || {};
+
+    if (!item || (item && _.isEmpty(item))) return null;
+
+    return this.getEntity().createEntity(model, item);
+  }
+
   public async run(actionParam: ActionParams): ParserData {
     const model: Model<Document> | null = getModelByName('wikiTree', 'wikiTree');
     if (!model) return null;
@@ -24,7 +32,8 @@ class ActionWiki implements Action {
     switch (this.getEntity().getActionType()) {
       case 'get_all':
         return this.getTreeList(actionParam, model);
-
+      case 'create_leaf':
+        return this.createLeaf(actionParam, model);
       default:
         return null;
     }
