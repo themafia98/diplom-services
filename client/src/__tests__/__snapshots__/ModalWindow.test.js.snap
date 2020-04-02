@@ -11,7 +11,6 @@ exports[`<ModalWindow /> Should works with mode 1`] = `
     ]
   }
   editableContent=""
-  firebase={Object {}}
   keyTask=""
   mode="reg"
   modeControll=""
@@ -161,14 +160,6 @@ exports[`<ModalWindow /> Should works with mode 3`] = `
       </p>
     </Dropdown>
   </div>
-  <Modal
-    confirmLoading={false}
-    maskTransitionName="fade"
-    okType="primary"
-    transitionName="zoom"
-    visible={false}
-    width={520}
-  />
 </Fragment>
 `;
 
@@ -316,14 +307,6 @@ exports[`<ModalWindow /> Should works with mode 5`] = `
       Отмена изменений
     </p>
   </div>
-  <Modal
-    confirmLoading={false}
-    maskTransitionName="fade"
-    okType="primary"
-    transitionName="zoom"
-    visible={false}
-    width={520}
-  />
 </Fragment>
 `;
 

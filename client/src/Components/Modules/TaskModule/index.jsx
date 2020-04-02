@@ -59,11 +59,8 @@ class TaskModule extends React.PureComponent {
     } = this.props;
     const { height } = this.state;
     const { onShowLoader } = loaderMethods;
-    const {
-      config: {
-        task: { limitList = 20 },
-      },
-    } = this.context;
+    const { config } = this.context || {};
+    const { limitList = 20 } = config?.task || {};
 
     const isEmptyTasks = _.isEmpty(routeData[path.split('_')[0]]);
 
@@ -102,11 +99,8 @@ class TaskModule extends React.PureComponent {
       path,
       router: { shouldUpdate = false, routeData = {} },
     } = this.props;
-    const {
-      config: {
-        task: { limitList = 20 },
-      },
-    } = this.context;
+    const { config } = this.context || {};
+    const { limitList = 20 } = config?.task || {};
 
     const { height } = this.state;
     if (!_.isNull(height) && !_.isNull(this.moduleTask) && visible) {

@@ -9,28 +9,32 @@ exports[`<LoginPage /> template Should be render 1`] = `
   >
     <h1
       className="loginContainer__title"
-    >
-      Controll system
-    </h1>
+    />
     <Logo />
     <form
       className="loginContainer__loginForm"
+      method="POST"
       name="loginForm"
     >
       <div
         className="notificationWrapper"
       />
       <Input
+        aria-label="login"
+        name="email"
         placeholder="login"
         size="large"
         type="text"
       />
       <Input
+        aria-label="password"
+        name="password"
         placeholder="password"
         size="large"
         type="password"
       />
       <Button
+        aria-label="login-button"
         block={false}
         className="enterSystem"
         ghost={false}
@@ -45,6 +49,8 @@ exports[`<LoginPage /> template Should be render 1`] = `
         mode="reg"
       />
       <NavLink
+        aria-label="recovory-link"
+        className="recovory-link"
         to="/recovory"
       >
         Восстановление доступа
@@ -63,28 +69,32 @@ exports[`<LoginPage /> template Should be render 2`] = `
   >
     <h1
       className="loginContainer__title"
-    >
-      Controll system
-    </h1>
+    />
     <Logo />
     <form
       className="loginContainer__loginForm"
+      method="POST"
       name="loginForm"
     >
       <div
         className="notificationWrapper"
       />
       <Input
+        aria-label="login"
+        name="email"
         placeholder="login"
         size="large"
         type="text"
       />
       <Input
+        aria-label="password"
+        name="password"
         placeholder="password"
         size="large"
         type="password"
       />
       <Button
+        aria-label="login-button"
         block={false}
         className="enterSystem"
         ghost={false}
@@ -99,6 +109,8 @@ exports[`<LoginPage /> template Should be render 2`] = `
         mode="reg"
       />
       <NavLink
+        aria-label="recovory-link"
+        className="recovory-link"
         to="/recovory"
       >
         Восстановление доступа
@@ -117,28 +129,32 @@ exports[`<LoginPage /> template Should be render 3`] = `
   >
     <h1
       className="loginContainer__title"
-    >
-      Controll system
-    </h1>
+    />
     <Logo />
     <form
       className="loginContainer__loginForm"
+      method="POST"
       name="loginForm"
     >
       <div
         className="notificationWrapper"
       />
       <Input
+        aria-label="login"
+        name="email"
         placeholder="login"
         size="large"
         type="text"
       />
       <Input
+        aria-label="password"
+        name="password"
         placeholder="password"
         size="large"
         type="password"
       />
       <Button
+        aria-label="login-button"
         block={false}
         className="enterSystem"
         ghost={false}
@@ -153,6 +169,8 @@ exports[`<LoginPage /> template Should be render 3`] = `
         mode="reg"
       />
       <NavLink
+        aria-label="recovory-link"
+        className="recovory-link"
         to="/recovory"
       >
         Восстановление доступа
@@ -171,28 +189,32 @@ exports[`<LoginPage /> template Should be render 4`] = `
   >
     <h1
       className="loginContainer__title"
-    >
-      Controll system
-    </h1>
+    />
     <Logo />
     <form
       className="loginContainer__loginForm"
+      method="POST"
       name="loginForm"
     >
       <div
         className="notificationWrapper"
       />
       <Input
+        aria-label="login"
+        name="email"
         placeholder="login"
         size="large"
         type="text"
       />
       <Input
+        aria-label="password"
+        name="password"
         placeholder="password"
         size="large"
         type="password"
       />
       <Button
+        aria-label="login-button"
         block={false}
         className="enterSystem"
         ghost={false}
@@ -207,6 +229,8 @@ exports[`<LoginPage /> template Should be render 4`] = `
         mode="reg"
       />
       <NavLink
+        aria-label="recovory-link"
+        className="recovory-link"
         to="/recovory"
       >
         Восстановление доступа

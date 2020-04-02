@@ -47,6 +47,19 @@ exports[`<TaskModule /> template Should be render 1`] = `
         height={null}
         isBackground={false}
         key="taskList"
+        loaderMethods={Object {}}
+        router={
+          Object {
+            "actionTabs": Array [
+              "MainModule",
+            ],
+            "currentActionTab": "mainModule",
+            "routeData": Object {
+              "taskModule__all": Object {},
+            },
+            "routeDataActive": Object {},
+          }
+        }
         setCurrentTab={[Function]}
         visible={true}
       />
@@ -60,8 +73,21 @@ exports[`<TaskModule /> template Should be render 1`] = `
         height={null}
         isBackground={false}
         key="myListTask"
+        loaderMethods={Object {}}
+        router={
+          Object {
+            "actionTabs": Array [
+              "MainModule",
+            ],
+            "currentActionTab": "mainModule",
+            "routeData": Object {
+              "taskModule__all": Object {},
+            },
+            "routeDataActive": Object {},
+          }
+        }
         setCurrentTab={[Function]}
-        user="Павел Петрович"
+        udata={Object {}}
         visible={false}
       />
     </TabContainer>
@@ -97,12 +123,25 @@ exports[`<TaskModule /> template Should be render 1`] = `
       visible={false}
     >
       <CreateTask
-        firebase={Object {}}
         height={null}
         isBackground={false}
         key="createTask_module"
         onLoadCurrentData={[Function]}
+        onOpenPageWithData={[Function]}
+        router={
+          Object {
+            "actionTabs": Array [
+              "MainModule",
+            ],
+            "currentActionTab": "mainModule",
+            "routeData": Object {
+              "taskModule__all": Object {},
+            },
+            "routeDataActive": Object {},
+          }
+        }
         statusApp="online"
+        udata={Object {}}
         visible={false}
       />
     </TabContainer>

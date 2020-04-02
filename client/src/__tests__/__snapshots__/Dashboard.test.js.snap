@@ -5,7 +5,7 @@ exports[`<Dashboard /> main page Should render component 1`] = `
   <Loader
     className="mainLoader"
   />
-  <Adapter
+  <Layout
     className="layout_menu"
   >
     <MenuView
@@ -14,110 +14,10 @@ exports[`<Dashboard /> main page Should render component 1`] = `
       cbMenuHandler={[Function]}
       cbOnCollapse={[Function]}
       collapsed={false}
-      items={
-        Array [
-          Object {
-            "EUID": "mainModule",
-            "ICON": "home",
-            "PARENT_CODE": null,
-            "SIGN": "default",
-            "VALUE": "Главное меню",
-          },
-          Object {
-            "EUID": "cabinetModule",
-            "ICON": "user",
-            "PARENT_CODE": null,
-            "VALUE": "Личный кабинет",
-          },
-          Object {
-            "EUID": "taskModule",
-            "ICON": "project",
-            "PARENT_CODE": null,
-            "VALUE": "Задачи",
-          },
-          Object {
-            "EUID": "taskModule_all",
-            "ICON": null,
-            "PARENT_CODE": "taskModule",
-            "VALUE": "Все задачи",
-          },
-          Object {
-            "EUID": "taskModule_myTasks",
-            "ICON": null,
-            "PARENT_CODE": "taskModule",
-            "VALUE": "Мои задачи",
-          },
-          Object {
-            "EUID": "taskModule_сalendar",
-            "ICON": null,
-            "PARENT_CODE": "taskModule",
-            "VALUE": "Календарь задач",
-          },
-          Object {
-            "EUID": "taskModule_createTask",
-            "ICON": null,
-            "SIGN": "freedom",
-            "VALUE": "Новая задача",
-          },
-          Object {
-            "EUID": "wikiModule",
-            "ICON": "file-sync",
-            "PARENT_CODE": null,
-            "VALUE": "Документы",
-          },
-          Object {
-            "EUID": "customersModule",
-            "ICON": "global",
-            "PARENT_CODE": null,
-            "VALUE": "Работа с клиентами",
-          },
-          Object {
-            "EUID": "customersModule_contacts",
-            "ICON": null,
-            "PARENT_CODE": "customersModule",
-            "VALUE": "Контакты",
-          },
-          Object {
-            "EUID": "customersModule_reception",
-            "ICON": null,
-            "PARENT_CODE": "customersModule",
-            "VALUE": "Обращения",
-          },
-          Object {
-            "EUID": "contactModule",
-            "ICON": "wechat",
-            "PARENT_CODE": null,
-            "VALUE": "Связь",
-          },
-          Object {
-            "EUID": "contactModule_feedback",
-            "ICON": null,
-            "PARENT_CODE": "contactModule",
-            "VALUE": "Информация",
-          },
-          Object {
-            "EUID": "contactModule_chat",
-            "ICON": null,
-            "PARENT_CODE": "contactModule",
-            "VALUE": "Корпоративный чат",
-          },
-          Object {
-            "EUID": "statisticModule",
-            "ICON": "line-chart",
-            "PARENT_CODE": null,
-            "VALUE": "Статистика",
-          },
-          Object {
-            "EUID": "settingsModule",
-            "ICON": "build",
-            "PARENT_CODE": null,
-            "VALUE": "Настройки",
-          },
-        ]
-      }
+      items={null}
       key="menu"
     />
-    <Adapter
+    <Layout
       key="main"
     >
       <Connect(HeaderView)
@@ -157,13 +57,10 @@ exports[`<Dashboard /> main page Should render component 1`] = `
             "_maxListeners": undefined,
           }
         }
-        firebase={
-          Object {
-            "getCurrentUser": [Function],
-          }
-        }
         key="contentView"
         onErrorRequstAction={[Function]}
+        onHideLoader={[Function]}
+        onShowLoader={[Function]}
         path="MainModule"
         router={
           Object {
@@ -182,6 +79,7 @@ exports[`<Dashboard /> main page Should render component 1`] = `
         setCurrentTab={[Function]}
         shouldUpdate={false}
         statusApp="online"
+        udata={Object {}}
         updateLoader={[Function]}
       />
       <Modal
@@ -198,17 +96,17 @@ exports[`<Dashboard /> main page Should render component 1`] = `
       >
         <p>
           Спасибо что выбрали 
-          Controll system
+          нашу систему!
         </p>
       </Modal>
-    </Adapter>
-  </Adapter>
+    </Layout>
+  </Layout>
 </Fragment>
 `;
 
 exports[`<Dashboard /> main page Should render component 2`] = `
 <Fragment>
-  <Adapter
+  <Layout
     className="layout_menu"
   >
     <MenuView
@@ -217,110 +115,10 @@ exports[`<Dashboard /> main page Should render component 2`] = `
       cbMenuHandler={[Function]}
       cbOnCollapse={[Function]}
       collapsed={false}
-      items={
-        Array [
-          Object {
-            "EUID": "mainModule",
-            "ICON": "home",
-            "PARENT_CODE": null,
-            "SIGN": "default",
-            "VALUE": "Главное меню",
-          },
-          Object {
-            "EUID": "cabinetModule",
-            "ICON": "user",
-            "PARENT_CODE": null,
-            "VALUE": "Личный кабинет",
-          },
-          Object {
-            "EUID": "taskModule",
-            "ICON": "project",
-            "PARENT_CODE": null,
-            "VALUE": "Задачи",
-          },
-          Object {
-            "EUID": "taskModule_all",
-            "ICON": null,
-            "PARENT_CODE": "taskModule",
-            "VALUE": "Все задачи",
-          },
-          Object {
-            "EUID": "taskModule_myTasks",
-            "ICON": null,
-            "PARENT_CODE": "taskModule",
-            "VALUE": "Мои задачи",
-          },
-          Object {
-            "EUID": "taskModule_сalendar",
-            "ICON": null,
-            "PARENT_CODE": "taskModule",
-            "VALUE": "Календарь задач",
-          },
-          Object {
-            "EUID": "taskModule_createTask",
-            "ICON": null,
-            "SIGN": "freedom",
-            "VALUE": "Новая задача",
-          },
-          Object {
-            "EUID": "wikiModule",
-            "ICON": "file-sync",
-            "PARENT_CODE": null,
-            "VALUE": "Документы",
-          },
-          Object {
-            "EUID": "customersModule",
-            "ICON": "global",
-            "PARENT_CODE": null,
-            "VALUE": "Работа с клиентами",
-          },
-          Object {
-            "EUID": "customersModule_contacts",
-            "ICON": null,
-            "PARENT_CODE": "customersModule",
-            "VALUE": "Контакты",
-          },
-          Object {
-            "EUID": "customersModule_reception",
-            "ICON": null,
-            "PARENT_CODE": "customersModule",
-            "VALUE": "Обращения",
-          },
-          Object {
-            "EUID": "contactModule",
-            "ICON": "wechat",
-            "PARENT_CODE": null,
-            "VALUE": "Связь",
-          },
-          Object {
-            "EUID": "contactModule_feedback",
-            "ICON": null,
-            "PARENT_CODE": "contactModule",
-            "VALUE": "Информация",
-          },
-          Object {
-            "EUID": "contactModule_chat",
-            "ICON": null,
-            "PARENT_CODE": "contactModule",
-            "VALUE": "Корпоративный чат",
-          },
-          Object {
-            "EUID": "statisticModule",
-            "ICON": "line-chart",
-            "PARENT_CODE": null,
-            "VALUE": "Статистика",
-          },
-          Object {
-            "EUID": "settingsModule",
-            "ICON": "build",
-            "PARENT_CODE": null,
-            "VALUE": "Настройки",
-          },
-        ]
-      }
+      items={null}
       key="menu"
     />
-    <Adapter
+    <Layout
       key="main"
     >
       <Connect(HeaderView)
@@ -360,13 +158,10 @@ exports[`<Dashboard /> main page Should render component 2`] = `
             "_maxListeners": undefined,
           }
         }
-        firebase={
-          Object {
-            "getCurrentUser": [Function],
-          }
-        }
         key="contentView"
         onErrorRequstAction={[Function]}
+        onHideLoader={[Function]}
+        onShowLoader={[Function]}
         path="MainModule"
         router={
           Object {
@@ -385,6 +180,7 @@ exports[`<Dashboard /> main page Should render component 2`] = `
         setCurrentTab={[Function]}
         shouldUpdate={false}
         statusApp="online"
+        udata={Object {}}
         updateLoader={[Function]}
       />
       <Modal
@@ -401,17 +197,17 @@ exports[`<Dashboard /> main page Should render component 2`] = `
       >
         <p>
           Спасибо что выбрали 
-          Controll system
+          нашу систему!
         </p>
       </Modal>
-    </Adapter>
-  </Adapter>
+    </Layout>
+  </Layout>
 </Fragment>
 `;
 
 exports[`<Dashboard /> main page Should render component 3`] = `
 <Fragment>
-  <Adapter
+  <Layout
     className="layout_menu"
   >
     <MenuView
@@ -423,7 +219,7 @@ exports[`<Dashboard /> main page Should render component 3`] = `
       items={Array []}
       key="menu"
     />
-    <Adapter
+    <Layout
       key="main"
     >
       <Connect(HeaderView)
@@ -463,13 +259,10 @@ exports[`<Dashboard /> main page Should render component 3`] = `
             "_maxListeners": undefined,
           }
         }
-        firebase={
-          Object {
-            "getCurrentUser": [Function],
-          }
-        }
         key="contentView"
         onErrorRequstAction={[Function]}
+        onHideLoader={[Function]}
+        onShowLoader={[Function]}
         path="MainModule"
         router={
           Object {
@@ -488,6 +281,7 @@ exports[`<Dashboard /> main page Should render component 3`] = `
         setCurrentTab={[Function]}
         shouldUpdate={false}
         statusApp="online"
+        udata={Object {}}
         updateLoader={[Function]}
       />
       <Modal
@@ -504,10 +298,10 @@ exports[`<Dashboard /> main page Should render component 3`] = `
       >
         <p>
           Спасибо что выбрали 
-          Controll system
+          нашу систему!
         </p>
       </Modal>
-    </Adapter>
-  </Adapter>
+    </Layout>
+  </Layout>
 </Fragment>
 `;

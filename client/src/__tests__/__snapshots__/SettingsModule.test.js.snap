@@ -49,6 +49,51 @@ exports[`<SettingsModule /> template Should be render 1`] = `
             }
           >
             <CollapsePanel
+              header="Смена пароля"
+              key="password"
+            >
+              <div
+                className="configWrapper flexWrapper"
+              >
+                <span>
+                  Старый пароль:
+                </span>
+                <Input
+                  allowClear={true}
+                  data-id="oldPassword"
+                  onChange={[Function]}
+                  type="password"
+                  value=""
+                />
+              </div>
+              <div
+                className="configWrapper flexWrapper"
+              >
+                <span>
+                  Новый пароль:
+                </span>
+                <Input
+                  allowClear={true}
+                  data-id="newPassword"
+                  onChange={[Function]}
+                  type="password"
+                  value=""
+                />
+              </div>
+              <Button
+                block={false}
+                className="submit"
+                disabled={true}
+                ghost={false}
+                htmlType="button"
+                loading={false}
+                onClick={[Function]}
+                type="primary"
+              >
+                Принять изменения
+              </Button>
+            </CollapsePanel>
+            <CollapsePanel
               header="Общие настройки"
               key="common"
             >
@@ -66,7 +111,7 @@ exports[`<SettingsModule /> template Should be render 1`] = `
                     data-id="email"
                     onChange={[Function]}
                     type="text"
-                    value=""
+                    value={null}
                   />
                 </div>
                 <div
@@ -80,10 +125,22 @@ exports[`<SettingsModule /> template Should be render 1`] = `
                     data-id="tel"
                     onChange={[Function]}
                     type="tel"
-                    value=""
+                    value={null}
                   />
                 </div>
               </div>
+              <Button
+                block={false}
+                className="submit"
+                disabled={true}
+                ghost={false}
+                htmlType="button"
+                loading={false}
+                onClick={[Function]}
+                type="primary"
+              >
+                Принять изменения
+              </Button>
             </CollapsePanel>
             <CollapsePanel
               header="Настройки профиля"
@@ -115,6 +172,18 @@ exports[`<SettingsModule /> template Should be render 1`] = `
                   Скрывать телефон
                 </span>
               </div>
+              <Button
+                block={false}
+                className="submit"
+                disabled={true}
+                ghost={false}
+                htmlType="button"
+                loading={false}
+                onClick={[Function]}
+                type="primary"
+              >
+                Принять изменения
+              </Button>
             </CollapsePanel>
             <CollapsePanel
               header="Настройки уровней доступа"
@@ -136,58 +205,44 @@ exports[`<SettingsModule /> template Should be render 1`] = `
                   key="admin"
                 >
                    A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
                 </CollapsePanel>
                 <CollapsePanel
                   header="Начальник отдела"
                   key="headDepartament"
                 >
                    A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
                 </CollapsePanel>
                 <CollapsePanel
                   header="Сотрудник"
                   key="solider"
                 >
                    A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
                 </CollapsePanel>
               </Collapse>
+              <Button
+                block={false}
+                className="submit"
+                disabled={true}
+                ghost={false}
+                htmlType="button"
+                loading={false}
+                onClick={[Function]}
+                type="primary"
+              >
+                Принять изменения
+              </Button>
             </CollapsePanel>
           </Collapse>
         </div>
-        <Button
-          block={false}
-          className="submit"
-          disabled={true}
-          ghost={false}
-          htmlType="button"
-          loading={false}
-          type="primary"
-        >
-          Принять изменения
-        </Button>
       </Scrollbars>
     </div>
     <div
       className="col-6"
     >
-      <ObserverTime />
+      <ObserverTime
+        isLoading={true}
+        settingsLogs={Object {}}
+      />
     </div>
   </div>
 </div>
@@ -242,6 +297,51 @@ exports[`<SettingsModule /> template Should be render 2`] = `
             }
           >
             <CollapsePanel
+              header="Смена пароля"
+              key="password"
+            >
+              <div
+                className="configWrapper flexWrapper"
+              >
+                <span>
+                  Старый пароль:
+                </span>
+                <Input
+                  allowClear={true}
+                  data-id="oldPassword"
+                  onChange={[Function]}
+                  type="password"
+                  value=""
+                />
+              </div>
+              <div
+                className="configWrapper flexWrapper"
+              >
+                <span>
+                  Новый пароль:
+                </span>
+                <Input
+                  allowClear={true}
+                  data-id="newPassword"
+                  onChange={[Function]}
+                  type="password"
+                  value=""
+                />
+              </div>
+              <Button
+                block={false}
+                className="submit"
+                disabled={true}
+                ghost={false}
+                htmlType="button"
+                loading={false}
+                onClick={[Function]}
+                type="primary"
+              >
+                Принять изменения
+              </Button>
+            </CollapsePanel>
+            <CollapsePanel
               header="Общие настройки"
               key="common"
             >
@@ -259,7 +359,7 @@ exports[`<SettingsModule /> template Should be render 2`] = `
                     data-id="email"
                     onChange={[Function]}
                     type="text"
-                    value=""
+                    value={null}
                   />
                 </div>
                 <div
@@ -273,10 +373,22 @@ exports[`<SettingsModule /> template Should be render 2`] = `
                     data-id="tel"
                     onChange={[Function]}
                     type="tel"
-                    value=""
+                    value={null}
                   />
                 </div>
               </div>
+              <Button
+                block={false}
+                className="submit"
+                disabled={true}
+                ghost={false}
+                htmlType="button"
+                loading={false}
+                onClick={[Function]}
+                type="primary"
+              >
+                Принять изменения
+              </Button>
             </CollapsePanel>
             <CollapsePanel
               header="Настройки профиля"
@@ -308,6 +420,18 @@ exports[`<SettingsModule /> template Should be render 2`] = `
                   Скрывать телефон
                 </span>
               </div>
+              <Button
+                block={false}
+                className="submit"
+                disabled={true}
+                ghost={false}
+                htmlType="button"
+                loading={false}
+                onClick={[Function]}
+                type="primary"
+              >
+                Принять изменения
+              </Button>
             </CollapsePanel>
             <CollapsePanel
               header="Настройки уровней доступа"
@@ -329,58 +453,44 @@ exports[`<SettingsModule /> template Should be render 2`] = `
                   key="admin"
                 >
                    A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
                 </CollapsePanel>
                 <CollapsePanel
                   header="Начальник отдела"
                   key="headDepartament"
                 >
                    A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
                 </CollapsePanel>
                 <CollapsePanel
                   header="Сотрудник"
                   key="solider"
                 >
                    A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
                 </CollapsePanel>
               </Collapse>
+              <Button
+                block={false}
+                className="submit"
+                disabled={true}
+                ghost={false}
+                htmlType="button"
+                loading={false}
+                onClick={[Function]}
+                type="primary"
+              >
+                Принять изменения
+              </Button>
             </CollapsePanel>
           </Collapse>
         </div>
-        <Button
-          block={false}
-          className="submit"
-          disabled={true}
-          ghost={false}
-          htmlType="button"
-          loading={false}
-          type="primary"
-        >
-          Принять изменения
-        </Button>
       </Scrollbars>
     </div>
     <div
       className="col-6"
     >
-      <ObserverTime />
+      <ObserverTime
+        isLoading={true}
+        settingsLogs={Object {}}
+      />
     </div>
   </div>
 </div>

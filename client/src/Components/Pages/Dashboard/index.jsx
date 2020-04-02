@@ -33,7 +33,7 @@ class Dashboard extends React.PureComponent {
     visibleInstallApp: false,
     redirect: false,
     status: 'online',
-    menuItems: this.context.config.menu,
+    menuItems: this.context?.config?.menu,
     counterError: 0,
     showLoader: false,
   };
@@ -159,7 +159,7 @@ class Dashboard extends React.PureComponent {
     const tabsCopy = [...tabs];
     const tabsArray = [];
     for (let i = 0; i < tabsCopy.length; i++) {
-      let tabItem = menu.find(tab => tab.EUID === tabsCopy[i]);
+      let tabItem = Array.isArray(menu) ? menu.find(tab => tab.EUID === tabsCopy[i]) : null;
       if (!tabItem) {
         const PAGEDATA = routeParser({ pageType: 'page', path: tabsCopy[i] });
         const PARENT_CODE = PAGEDATA['page'];

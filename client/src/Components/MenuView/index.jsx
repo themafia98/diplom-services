@@ -69,7 +69,7 @@ const MenuView = ({ collapsed, cbOnCollapse, items, cbMenuHandler, activeTabEUID
 MenuView.propTypes = {
   collapsed: PropTypes.bool.isRequired,
   cbOnCollapse: PropTypes.func.isRequired,
-  items: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
+  items: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.object.isRequired).isRequired, () => null]),
   cbMenuHandler: PropTypes.func.isRequired,
   activeTabEUID: PropTypes.string.isRequired,
   cbGoMain: PropTypes.func.isRequired,

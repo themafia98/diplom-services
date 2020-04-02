@@ -46,7 +46,8 @@ class CreateTask extends React.PureComponent {
   };
 
   componentDidMount = async () => {
-    const { Request = {} } = this.context;
+    const { Request = null } = this.context;
+    if (!Request) return;
 
     try {
       const rest = new Request();

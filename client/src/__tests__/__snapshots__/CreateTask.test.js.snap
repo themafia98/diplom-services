@@ -128,8 +128,8 @@ exports[`<CreateTask /> template Should be render 1`] = `
               className=""
               defaultValue={
                 Array [
-                  "2020-02-08T21:00:00.000Z",
-                  "2020-02-08T21:00:00.000Z",
+                  "2020-04-01T21:00:00.000Z",
+                  "2020-04-01T21:00:00.000Z",
                 ]
               }
               format="DD.MM.YYYY"
@@ -290,8 +290,8 @@ exports[`<CreateTask /> template Should be render 2`] = `
               className=""
               defaultValue={
                 Array [
-                  "2020-02-08T21:00:00.000Z",
-                  "2020-02-08T21:00:00.000Z",
+                  "2020-04-01T21:00:00.000Z",
+                  "2020-04-01T21:00:00.000Z",
                 ]
               }
               format="DD.MM.YYYY"

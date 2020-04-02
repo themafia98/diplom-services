@@ -31,6 +31,7 @@ exports[`<TaskView /> template Should be render with data 1`] = `
         "Закрыт",
       ]
     }
+    actionType="__setJurnal"
     description="asdasd"
     editableContent="asdasd"
     key="testTask"
@@ -44,7 +45,6 @@ exports[`<TaskView /> template Should be render with data 1`] = `
     onRejectEdit={[Function]}
     onUpdate={[Function]}
     onUpdateEditable={[Function]}
-    primaryKey="___taskViewSetJurnal"
     routeDataActive={
       Object {
         "author": "Павел Петрович",
@@ -172,6 +172,13 @@ exports[`<TaskView /> template Should be render with data 1`] = `
                
             </Output>
           </DescriptionsItem>
+          <DescriptionsItem
+            label="Затрачено времени"
+          >
+            <Output>
+              0.0 ч
+            </Output>
+          </DescriptionsItem>
         </Descriptions>
         <div
           className="descriptionTask"
@@ -185,6 +192,13 @@ exports[`<TaskView /> template Should be render with data 1`] = `
             className="description descriptionTask__content editable"
             onClick={[Function]}
           >
+            <span
+              className="icon-wrapper"
+            >
+              <i
+                className="icon-pencil"
+              />
+            </span>
             <Scrollbars
               autoHeight={false}
               autoHeightMax={200}
@@ -212,13 +226,6 @@ exports[`<TaskView /> template Should be render with data 1`] = `
               >
                 asdasd
               </span>
-              <span
-                className="icon-wrapper"
-              >
-                <i
-                  className="icon-pencil"
-                />
-              </span>
             </Scrollbars>
           </div>
           <p
@@ -226,7 +233,28 @@ exports[`<TaskView /> template Should be render with data 1`] = `
           >
             Дополнительные файлы для задачи
           </p>
-          <File />
+          <File
+            filesArray={Array []}
+            module="tasks"
+            moduleData={
+              Object {
+                "author": "Павел Петрович",
+                "date": Array [],
+                "description": "asdasd",
+                "editor": Array [
+                  "Павел Петрович",
+                  "Гена Букин",
+                ],
+                "key": "testTask",
+                "name": "Task1",
+                "priority": "Средний",
+                "status": "В работе",
+              }
+            }
+            onAddFileList={[Function]}
+            onRemoveFile={[Function]}
+            rest={Object {}}
+          />
           <p
             className="descriptionTask__comment"
           >
@@ -250,6 +278,7 @@ exports[`<TaskView /> template Should be render with data 1`] = `
             }
             onUpdate={[Function]}
             rules={true}
+            udata={Object {}}
           />
         </div>
       </Scrollbars>

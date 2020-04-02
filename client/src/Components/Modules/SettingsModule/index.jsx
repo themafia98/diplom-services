@@ -35,7 +35,7 @@ class SettingsModule extends React.PureComponent {
   static contextType = modelContext;
 
   static getDerivedStateFromProps = (props, state) => {
-    const { udata: { email = '', phone = '' } = {} } = props;
+    const { udata: { email = null, phone = null } = {} } = props;
 
     if (_.isNull(state.emailValue) && _.isNull(state.telValue)) {
       return {
@@ -55,7 +55,7 @@ class SettingsModule extends React.PureComponent {
       this.setState({ ...this.state, ...router.routeData[path] });
     }
 
-    if (!Object.keys(settingsLogs).length && !isLoadingLogs) {
+    if (!Object.keys(settingsLogs).length && !isLoadingLogs && onCaching) {
       onCaching({
         uid,
         actionType: 'get_user_settings_log',
@@ -75,7 +75,7 @@ class SettingsModule extends React.PureComponent {
       onSetStatus,
     } = this.props;
 
-    if ((!Object.keys(settingsLogs).length && !isLoadingLogs) || shouldUpdate) {
+    if (onCaching && ((!Object.keys(settingsLogs).length && !isLoadingLogs) || shouldUpdate)) {
       onCaching({
         uid,
         actionType: 'get_user_settings_log',
@@ -97,10 +97,7 @@ class SettingsModule extends React.PureComponent {
         });
       }
     } else if (!_.isNull(emailValue) || !_.isNull(telValue)) {
-      this.setState({
-        emailValue: null,
-        telValue: null,
-      });
+      this.setState({ emailValue: null, telValue: null });
     }
   };
 
@@ -221,6 +218,8 @@ class SettingsModule extends React.PureComponent {
         ? 'Почта обновлена.'
         : 'Почта и телефон обновлены.';
 
+      if (!onCaching) return;
+
       onCaching({
         uid,
         item: {
@@ -284,6 +283,8 @@ class SettingsModule extends React.PureComponent {
       });
 
       const msg = 'Изменение пароля.';
+
+      if (!onCaching) return;
 
       onCaching({
         uid,
