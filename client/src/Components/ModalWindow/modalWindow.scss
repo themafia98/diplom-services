@@ -29,3 +29,13 @@
     border: 1px solid red;
   }
 }
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  input,
+  .ant-select {
+    margin: 5px 0;
+  }
+}

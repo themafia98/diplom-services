@@ -26,7 +26,8 @@ class ActionWiki implements Action {
   }
 
   public async run(actionParam: ActionParams): ParserData {
-    const model: Model<Document> | null = getModelByName('wikiTree', 'wikiTree');
+    const { type = 'wikiTree' } = <Record<string, string>>actionParam;
+    const model: Model<Document> | null = getModelByName(type, type);
     if (!model) return null;
 
     switch (this.getEntity().getActionType()) {

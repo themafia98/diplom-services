@@ -14,6 +14,7 @@ const SimpleEditableModal = props => {
     showTooltip = false,
     maxLength = null,
     Component,
+    content = null,
   } = props;
 
   const [value, setValue] = useState(defaultValue);
@@ -55,7 +56,15 @@ const SimpleEditableModal = props => {
 
   return (
     <Modal onOk={onSubmit} onCancel={onCancel} title={title} visible={visibility} destroyOnClose={true}>
-      {Component ? <Component {...props} /> : showTooltip ? withTooltip(textarea) : textarea}
+      {Component ? (
+        <Component {...props} />
+      ) : content ? (
+        content
+      ) : showTooltip ? (
+        withTooltip(textarea)
+      ) : (
+        textarea
+      )}
     </Modal>
   );
 };
