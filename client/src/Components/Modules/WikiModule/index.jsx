@@ -105,7 +105,6 @@ class WikiModule extends React.PureComponent {
           </div>
         </div>
         <ModalWindow
-          un
           defaultView={true}
           visibility={visibleModal}
           onOkey={this.onCreate}
