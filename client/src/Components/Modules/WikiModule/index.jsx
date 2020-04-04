@@ -2,10 +2,10 @@ import React from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 
-import { Tree, Button, Input, Select, Dropdown, Menu } from 'antd';
+import { Tree, Button, Input, Select, Dropdown, Menu, message } from 'antd';
 import ModalWindow from '../../ModalWindow';
 import TitleModule from '../../TitleModule';
-
+import modalContext from '../../../Models/context';
 const { TreeNode, DirectoryTree } = Tree;
 const { Option } = Select;
 
@@ -15,13 +15,20 @@ class WikiModule extends React.PureComponent {
     path: PropTypes.string.isRequired,
   };
 
+  static contextType = modalContext;
+
   state = {
     isLoading: false,
     visibleModal: false,
+    metadata: [],
     node: {
       title: '',
       accessGroup: [],
     },
+  };
+
+  componentDidMount = async () => {
+    this.fetchTree('didMount');
   };
 
   onSelect = (keys, event) => {
@@ -32,21 +39,76 @@ class WikiModule extends React.PureComponent {
     console.log('Trigger Expand');
   };
 
-  onVisibleModalChange = () => {
-    this.setState(state => {
-      return {
-        ...state,
-        visibleModal: !state?.visibleModal,
-        node: {
-          title: '',
-          accessGroup: [],
-        },
-      };
-    });
+  onVisibleModalChange = callback => {
+    this.setState(
+      state => {
+        return {
+          ...state,
+          visibleModal: !state?.visibleModal,
+          node: {
+            title: '',
+            accessGroup: [],
+          },
+        };
+      },
+      () => {
+        if (_.isFunction(callback)) {
+          callback();
+        }
+      },
+    );
   };
 
-  onCreate = event => {
-    console.log(event);
+  fetchTree = async (mode = '') => {
+    const { metadata: metadataState = [] } = this.state;
+    const { Request } = this.context;
+    if (!Request) return;
+    try {
+      const rest = new Request();
+      const res = await rest.sendRequest('/wiki/list');
+
+      if (res.status !== 200) {
+        throw new Error('Bad load wiki list');
+      }
+
+      const { data: { response: { metadata = [] } = {} } = {} } = res;
+
+      const metadataByMode =
+        mode === 'didMount' ? metadata : _.uniqBy([...metadataState, ...metadata], '_id');
+
+      this.setState({ metadata: metadataByMode });
+    } catch (error) {
+      console.error(error);
+      message.error('Ошибка загрузки дерева');
+    }
+  };
+
+  onCreate = async event => {
+    const { node, metadata = [] } = this.state;
+    const { Request } = this.context;
+    if (!Request) return;
+    try {
+      debugger;
+      const index = metadata?.length + 1;
+      const rest = new Request();
+      const res = await rest.sendRequest('/wiki/createLeaf', 'PUT', {
+        type: 'wikiTree',
+        item: {
+          ...node,
+          level: 1,
+          path: `0-${index}`,
+        },
+      });
+
+      if (res.status !== 200) {
+        throw new Error('Bad create');
+      }
+
+      this.onVisibleModalChange(this.fetchTree);
+    } catch (error) {
+      console.error(error);
+      message.error('Ошибка создания новой ветки');
+    }
   };
 
   onChangeSelect = value => {
@@ -69,6 +131,11 @@ class WikiModule extends React.PureComponent {
     });
   };
 
+  renderTree = () => {
+    const { metadata = [] } = this.state;
+    return metadata.map((node, index) => <TreeNode title={node?.title} key={node?.path}></TreeNode>);
+  };
+
   render() {
     const {
       visibleModal = false,
@@ -82,6 +149,16 @@ class WikiModule extends React.PureComponent {
       </Menu>
     );
 
+    // TODO: antd tree example
+    //   <TreeNode title="Главная страница" key="0-0">
+    //   <TreeNode title="Глобальные уведомления" key="0-0-0" isLeaf />
+    //   <TreeNode title="Таблица сотрудников" key="0-0-1" isLeaf />
+    // </TreeNode>
+    // <TreeNode title="Кабинет" key="0-1">
+    //   <TreeNode title="Карточка пользователся" key="0-1-0" isLeaf />
+    //   <TreeNode title="Журнал активности" key="0-1-1" isLeaf />
+    // </TreeNode>
+
     return (
       <React.Fragment>
         <div className="wikiModule">
@@ -92,14 +169,7 @@ class WikiModule extends React.PureComponent {
           <div className="wikiModule__main">
             <div className="col-6">
               <DirectoryTree multiple defaultExpandAll onSelect={this.onSelect} onExpand={this.onExpand}>
-                <TreeNode title="Главная страница" key="0-0">
-                  <TreeNode title="Глобальные уведомления" key="0-0-0" isLeaf />
-                  <TreeNode title="Таблица сотрудников" key="0-0-1" isLeaf />
-                </TreeNode>
-                <TreeNode title="Кабинет" key="0-1">
-                  <TreeNode title="Карточка пользователся" key="0-1-0" isLeaf />
-                  <TreeNode title="Журнал активности" key="0-1-1" isLeaf />
-                </TreeNode>
+                {this.renderTree()}
               </DirectoryTree>
             </div>
           </div>

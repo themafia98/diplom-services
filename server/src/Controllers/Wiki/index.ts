@@ -93,9 +93,11 @@ namespace Wiki {
 
         const { user: { rules = '' } = {} } = <Record<string, Record<string, string>>>body;
 
-        const metadata: ArrayLike<object> = Utils.parsePublicData(data, 'accessGroups', rules);
+        // TODO: delay disabled filter
+        // const metadata: ArrayLike<object> = Utils.parsePublicData(data, 'accessGroups', rules);
 
-        if (!data || !metadata || (metadata && !metadata?.length)) {
+        const metadata = _.isPlainObject(data) ? [data] : data;
+        if (!data || !metadata) {
           params.status = 'error';
           params.done = false;
           res.status(404);
@@ -136,4 +138,4 @@ namespace Wiki {
   }
 }
 
-export default Document;
+export default Wiki;

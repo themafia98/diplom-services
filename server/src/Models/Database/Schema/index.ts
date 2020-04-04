@@ -186,8 +186,9 @@ export const notification = new Schema(
 
 export const wikiTree = new Schema(
   {
-    name: { type: String, required: null },
+    title: { type: String, required: true },
     level: { type: Number, required: true },
+    path: { type: String, reuired: true },
     accessGroups: { type: [String], required: true },
   },
   {

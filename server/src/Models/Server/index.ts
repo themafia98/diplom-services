@@ -20,6 +20,7 @@ import Settings from '../../Controllers/Settings';
 import General from '../../Controllers/General';
 import Chat from '../../Controllers/Contact/Chat';
 import Tasks from '../../Controllers/Tasks';
+import Wiki from '../../Controllers/Wiki';
 import News from '../../Controllers/Contact/News';
 import Database from '../Database';
 import Mailer from '../Mail';
@@ -188,11 +189,12 @@ namespace Http {
 
     public async start(callback: Function): Promise<void> {
       const Main: Readonly<Function> = General.Main;
-      const TasksController: Readonly<Function> = Tasks.TasksController;
-      const SystemData: Readonly<Function> = System.SystemData;
-      const NewsController: Readonly<Function> = News.NewsController;
+      const TasksAlias: Readonly<Function> = Tasks.TasksController;
+      const SystemAlias: Readonly<Function> = System.SystemData;
+      const NewsAlias: Readonly<Function> = News.NewsController;
       const ChatAlias: Readonly<Function> = Chat.ChatController;
       const SettingsAlias: Readonly<Function> = Settings.SettingsController;
+      const WikiAlias: Readonly<Function> = Wiki.WikiController;
       const CabinetAlias: Readonly<Function> = Cabinet.CabinetController;
 
       this.setApp(express());
@@ -272,7 +274,7 @@ namespace Http {
       wsEvents(wsWorkerManager, dbm, server); /** chat */
 
       Utils.initControllers(
-        [Main, TasksController, NewsController, SystemData, ChatAlias, SettingsAlias, CabinetAlias],
+        [Main, TasksAlias, WikiAlias, NewsAlias, SystemAlias, ChatAlias, SettingsAlias, CabinetAlias],
         this.getApp.bind(this),
         this.getRest.bind(this),
         this.isPrivateRoute.bind(this),
