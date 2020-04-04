@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import config from '../../config.json';
-import { TASK_SCHEMA, USER_SCHEMA, TASK_CONTROLL_JURNAL_SCHEMA } from '../Schema/const';
+import { TASK_SCHEMA, USER_SCHEMA, TASK_CONTROLL_JURNAL_SCHEMA, WIKI_NODE_TREE } from '../Schema/const';
 import Schema from '../Schema';
 
 class ClientSideDatabase {
@@ -131,6 +131,7 @@ class ClientSideDatabase {
         let isUsersObject = false;
         let isTasksObject = false;
         let isjurnalWorksObject = false;
+        let isWikiTreeObject = false;
 
         const newVersionUpdate = event.newVersion !== event.oldVersion && event.oldVersion !== 0;
 
@@ -140,6 +141,7 @@ class ClientSideDatabase {
         }
 
         if (this.getDb()?.objectStoreNames.contains('users') && !newVersionUpdate) isUsersObject = true;
+        if (this.getDb()?.objectStoreNames.contains('wikiTree') && !newVersionUpdate) isWikiTreeObject = true;
         if (this.getDb()?.objectStoreNames.contains('tasks') && !newVersionUpdate) isTasksObject = true;
         if (this.getDb()?.objectStoreNames.contains('jurnalworks') && !newVersionUpdate)
           isjurnalWorksObject = true;
@@ -193,6 +195,33 @@ class ClientSideDatabase {
               if (isCanDelete) objectStoreTasks.deleteIndex(key);
             }
             objectStoreTasks.createIndex(key, key, {
+              unique: key === 'key' ? true : false,
+            });
+          });
+        }
+
+        const objectStoreWikiTree =
+          !isWikiTreeObject && !newVersionUpdate
+            ? this.getDb().createObjectStore('wikiTree', {
+                unique: true,
+                keyPath: 'key',
+                autoIncrement: true,
+              })
+            : newVersionUpdate
+            ? requestOpen.transaction.objectStore('wikiTree')
+            : null;
+
+        if (!isWikiTreeObject) {
+          const schemaWikiTree = this.getSchema()?.getValidateSchema(WIKI_NODE_TREE);
+          const keysWikiTree = Object.keys(schemaWikiTree);
+
+          keysWikiTree.forEach((key, i) => {
+            if (newVersionUpdate) {
+              const keysIndex = Object.keys(objectStoreWikiTree.indexNames);
+              const isCanDelete = keysWikiTree.includes(objectStoreWikiTree.indexNames[keysIndex[i]]);
+              if (isCanDelete) objectStoreWikiTree.deleteIndex(key);
+            }
+            objectStoreWikiTree.createIndex(key, key, {
               unique: key === 'key' ? true : false,
             });
           });
@@ -355,9 +384,14 @@ class ClientSideDatabase {
 
   getCursor(nameStore = '', mode = 'readonly') {
     if (this.getCrashStatus()) return;
-    const tx = this.getDb().transaction(nameStore, mode);
-    const store = tx.objectStore(nameStore);
-    return store.openCursor();
+    try {
+      const tx = this.getDb().transaction(nameStore, mode);
+      const store = tx.objectStore(nameStore);
+      return store.openCursor();
+    } catch (error) {
+      console.error(error.message);
+      return null;
+    }
 
     /** @Example */
     // const deleteAction = clientDB.getCursor("jurnalworks");

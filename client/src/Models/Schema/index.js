@@ -5,6 +5,7 @@ import {
   TASK_CONTROLL_JURNAL_SCHEMA,
   NEWS_SCHEMA,
   CREATE_TASK_SCHEMA,
+  WIKI_NODE_TREE,
 } from './const';
 
 class Schema {
@@ -79,6 +80,14 @@ class Schema {
         return {
           title: null,
           content: null, // { entityMap: null,blocks: null }
+        };
+      case WIKI_NODE_TREE:
+        return {
+          _id: null,
+          title: null,
+          level: null,
+          path: null,
+          accessGroups: null,
         };
       default:
         return null;

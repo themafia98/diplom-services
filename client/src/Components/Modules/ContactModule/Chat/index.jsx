@@ -118,7 +118,6 @@ class Chat extends React.PureComponent {
    * @param {object} msgObj
    */
   addMsg = msgObj => {
-    console.log('addMsg');
     const { onAddMsg } = this.props;
     if (_.isObject(msgObj)) onAddMsg(msgObj);
   };
@@ -129,7 +128,7 @@ class Chat extends React.PureComponent {
   updateFakeRoom = entity => {
     const { onUpdateRoom = null } = this.props;
     const { room = {}, msg = {} } = entity || {};
-    console.log('updateFakeRoom client:', room);
+
     if (!room || _.isEmpty(room)) return;
 
     onUpdateRoom({ room, msg });

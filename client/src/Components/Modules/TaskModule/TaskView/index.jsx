@@ -168,7 +168,6 @@ class TaskView extends React.PureComponent {
    * @param {any} status
    */
   onAddFileList = (fileList, status) => {
-    console.log(status);
     const shouldRefresh = fileList.every(it => it.status === 'done');
     this.setState({
       filesArray: [...fileList],
@@ -467,8 +466,6 @@ class TaskView extends React.PureComponent {
       date = [],
       description = '',
     } = routeDataActive || {};
-
-    console.log(status);
 
     const { rest = {} } = this.context;
 

@@ -1,6 +1,11 @@
 import _ from 'lodash';
 import moment from 'moment';
-import { USER_SCHEMA, TASK_SCHEMA, TASK_CONTROLL_JURNAL_SCHEMA } from '../../../../Models/Schema/const';
+import {
+  USER_SCHEMA,
+  TASK_SCHEMA,
+  TASK_CONTROLL_JURNAL_SCHEMA,
+  WIKI_NODE_TREE,
+} from '../../../../Models/Schema/const';
 import { saveComponentStateAction, loadFlagAction } from '../';
 import { errorRequstAction, setStatus } from '../../publicActions';
 
@@ -15,6 +20,7 @@ export const loadCurrentData = ({
   noCorsClient = false,
   options = {},
 }) => async (dispatch, getState, { schema, Request, clientDB }) => {
+  let isLocalUpdate = true;
   const primaryKey = 'uuid';
   const pathValid = path.includes('_') ? path.split('_')[0] : path.split('__')[0];
   const router = getState().router;
@@ -69,33 +75,38 @@ export const loadCurrentData = ({
         await dispatch(saveComponentStateAction(data));
       } else {
         const cursor = clientDB.getCursor(storeLoad);
+        isLocalUpdate = !_.isNull(cursor);
 
-        cursor.onsuccess = async event => {
-          const { target: { result: cursor } = {} } = event;
+        if (cursor) {
+          cursor.onsuccess = async event => {
+            const { target: { result: cursor } = {} } = event;
 
-          if (!cursor) return await next(true);
+            if (!cursor) return await next(true);
 
-          const index = copyStore.findIndex(it => {
-            const isKey = it[primaryKey] || it['key'];
-            const isValid = it[primaryKey] === cursor.key || it['key'] === cursor.key;
+            const index = copyStore.findIndex(it => {
+              const isKey = it[primaryKey] || it['key'];
+              const isValid = it[primaryKey] === cursor.key || it['key'] === cursor.key;
 
-            return isKey && isValid;
-          });
-          const iEmpty = index === -1;
-          if (copyStore && iEmpty) {
-            if (cursor.value.modeAdd === 'offline') {
-              const copy = { ...cursor.value, modeAdd: 'online' };
-              cursor.value.modeAdd = 'online';
-              undefiendCopyStore.push({ ...copy });
+              return isKey && isValid;
+            });
+            const iEmpty = index === -1;
+            if (copyStore && iEmpty) {
+              if (cursor.value.modeAdd === 'offline') {
+                const copy = { ...cursor.value, modeAdd: 'online' };
+                cursor.value.modeAdd = 'online';
+                undefiendCopyStore.push({ ...copy });
+              }
             }
-          }
-          cursor.continue();
-        };
+            cursor.continue();
+          };
+        }
       }
 
-      const next = async (flag = false) => {
+      const next = async (flag = false, isLocalUpdate = true) => {
         const templateSchema =
-          storeLoad === 'jurnalworks'
+          storeLoad === 'wiki' && methodQuery === 'get_all'
+            ? WIKI_NODE_TREE
+            : storeLoad === 'jurnalworks'
             ? TASK_CONTROLL_JURNAL_SCHEMA
             : storeLoad === 'users'
             ? USER_SCHEMA
@@ -120,6 +131,10 @@ export const loadCurrentData = ({
         const data = { [storeLoad]: sortedCopyStore, load: true, path: pathValid, isPartData };
         await dispatch(saveComponentStateAction(data));
       };
+
+      if (!isLocalUpdate) {
+        next(true, false);
+      }
     } catch (error) {
       console.error(error);
       if (error.status === 400) {

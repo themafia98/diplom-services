@@ -1,7 +1,8 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-
+import { loadCurrentData } from '../../../Redux/actions/routerActions/middleware';
 import { Tree, Button, Input, Select, Dropdown, Menu, message } from 'antd';
 import ModalWindow from '../../ModalWindow';
 import TitleModule from '../../TitleModule';
@@ -20,7 +21,6 @@ class WikiModule extends React.PureComponent {
   state = {
     isLoading: false,
     visibleModal: false,
-    metadata: [],
     node: {
       title: '',
       accessGroup: [],
@@ -29,6 +29,10 @@ class WikiModule extends React.PureComponent {
 
   componentDidMount = async () => {
     this.fetchTree('didMount');
+  };
+
+  componentDidUpdate = async () => {
+    this.fetchTree();
   };
 
   onSelect = (keys, event) => {
@@ -60,31 +64,22 @@ class WikiModule extends React.PureComponent {
   };
 
   fetchTree = async (mode = '') => {
-    const { metadata: metadataState = [] } = this.state;
-    const { Request } = this.context;
-    if (!Request) return;
-    try {
-      const rest = new Request();
-      const res = await rest.sendRequest('/wiki/list');
+    const { onLoadCurrentData, visible, router: { shouldUpdate = false, routeData = {} } = {} } = this.props;
 
-      if (res.status !== 200) {
-        throw new Error('Bad load wiki list');
-      }
-
-      const { data: { response: { metadata = [] } = {} } = {} } = res;
-
-      const metadataByMode =
-        mode === 'didMount' ? metadata : _.uniqBy([...metadataState, ...metadata], '_id');
-
-      this.setState({ metadata: metadataByMode });
-    } catch (error) {
-      console.error(error);
-      message.error('Ошибка загрузки дерева');
+    if (mode === 'didMount' || (shouldUpdate && visible && routeData['wikiModule']?.load)) {
+      onLoadCurrentData({
+        path: 'wikiModule',
+        storeLoad: 'wiki',
+        useStore: true,
+        methodQuery: 'get_all',
+        methodRequst: 'GET',
+      });
     }
   };
 
   onCreate = async event => {
-    const { node, metadata = [] } = this.state;
+    const { node } = this.state;
+    const { metadata = [] } = this.props;
     const { Request } = this.context;
     if (!Request) return;
     try {
@@ -131,7 +126,7 @@ class WikiModule extends React.PureComponent {
   };
 
   renderTree = () => {
-    const { metadata = [] } = this.state;
+    const { metadata = [] } = this.props;
     return metadata.map((node, index) => <TreeNode title={node?.title} key={node?.path}></TreeNode>);
   };
 
@@ -202,4 +197,26 @@ class WikiModule extends React.PureComponent {
   }
 }
 
-export default WikiModule;
+const mapStateToProps = state => {
+  const {
+    router,
+    router: { routeData = {} } = {},
+    publicReducer: { udata = {} },
+  } = state;
+
+  const { wiki: metadata = [] } = routeData['wikiModule'] || {};
+
+  return {
+    router,
+    udata,
+    metadata,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onLoadCurrentData: props => dispatch(loadCurrentData(props)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(WikiModule);
