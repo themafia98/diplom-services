@@ -229,7 +229,7 @@ export default (state = initialState, action) => {
     }
     case SET_STATUS: {
       const { shouldUpdate = false } = action.payload;
-      debugger;
+
       return {
         ...state,
         shouldUpdate: shouldUpdate,

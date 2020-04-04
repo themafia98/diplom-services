@@ -88,7 +88,6 @@ class WikiModule extends React.PureComponent {
     const { Request } = this.context;
     if (!Request) return;
     try {
-      debugger;
       const index = metadata?.length + 1;
       const rest = new Request();
       const res = await rest.sendRequest('/wiki/createLeaf', 'PUT', {
