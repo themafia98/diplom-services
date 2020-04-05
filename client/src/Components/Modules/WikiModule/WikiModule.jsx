@@ -4,9 +4,12 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { loadCurrentData } from '../../../Redux/actions/routerActions/middleware';
 import { Tree, Button, Input, Select, Dropdown, Menu, message, Spin } from 'antd';
+
+import WikiPage from './WikiPage';
 import ModalWindow from '../../ModalWindow';
 import TitleModule from '../../TitleModule';
 import modalContext from '../../../Models/context';
+
 const { TreeNode, DirectoryTree } = Tree;
 const { Option } = Select;
 
@@ -21,6 +24,7 @@ class WikiModule extends React.PureComponent {
   state = {
     isLoading: false,
     visibleModal: false,
+    selectedNode: '',
     node: {
       title: '',
       accessGroup: [],
@@ -36,7 +40,13 @@ class WikiModule extends React.PureComponent {
   };
 
   onSelect = (keys, event) => {
-    console.log('Trigger Select', keys, event);
+    const { metadata = [] } = this.props;
+    const selectedNodeItem = metadata.find(node => node?.path === keys[0]);
+
+    this.setState({
+      ...this.state,
+      selectedNode: selectedNodeItem ? { ...selectedNodeItem } : null,
+    });
   };
 
   onExpand = () => {
@@ -143,7 +153,9 @@ class WikiModule extends React.PureComponent {
 
   renderTree = () => {
     const { metadata = [] } = this.props;
-    return metadata.map((node, index) => <TreeNode title={node?.title} key={node?.path}></TreeNode>);
+    return metadata.map(node => {
+      return <TreeNode title={node?.title} key={node?.path}></TreeNode>;
+    });
   };
 
   render() {
@@ -151,6 +163,8 @@ class WikiModule extends React.PureComponent {
       visibleModal = false,
       node: { title = '', accessGroup = [] },
       isLoading: isLoadingState,
+      selectedNode,
+      selectedNode: { _id: key = '' } = {},
     } = this.state;
     const { metadata = [], router: { shouldUpdate = false } = {} } = this.props;
     const isLoading = isLoadingState || (shouldUpdate && !metadata?.length);
@@ -195,6 +209,9 @@ class WikiModule extends React.PureComponent {
               ) : (
                 <Spin size="large" />
               )}
+            </div>
+            <div className="col-6">
+              {selectedNode ? <WikiPage key={key} selectedNode={selectedNode} /> : null}
             </div>
           </div>
         </div>
