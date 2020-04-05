@@ -26,6 +26,14 @@
         "format": "prettier --write src/**/*.{js,jsx,json,css,scss}",
         "lint-staged": "lint-staged"
     },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged"
+        }
+    },
+    "lint-staged": {
+        "*.{js,jsx,ts,json,scss,css,md}": "prettier --write"
+    },
     "dependencies": {
         "bcrypt": "^3.0.6",
         "chalk": "^3.0.0",
