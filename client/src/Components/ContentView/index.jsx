@@ -30,7 +30,6 @@ class ContentView extends React.Component {
     setCurrentTab: PropTypes.func.isRequired,
     updateLoader: PropTypes.func.isRequired,
     onErrorRequstAction: PropTypes.func.isRequired,
-
     path: PropTypes.string.isRequired,
   };
 

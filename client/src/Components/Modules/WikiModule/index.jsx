@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { loadCurrentData } from '../../../Redux/actions/routerActions/middleware';
-import { Tree, Button, Input, Select, Dropdown, Menu, message } from 'antd';
+import { Tree, Button, Input, Select, Dropdown, Menu, message, Spin } from 'antd';
 import ModalWindow from '../../ModalWindow';
 import TitleModule from '../../TitleModule';
 import modalContext from '../../../Models/context';
@@ -63,10 +63,26 @@ class WikiModule extends React.PureComponent {
     );
   };
 
-  fetchTree = async (mode = '') => {
+  fetchTree = async (mode = '', forceUpdate = false) => {
     const { onLoadCurrentData, visible, router: { shouldUpdate = false, routeData = {} } = {} } = this.props;
+    const { isLoading = false } = this.state;
+    const isModuleUpdate = shouldUpdate && visible && !routeData['wikiModule']?.load;
 
-    if (mode === 'didMount' || (shouldUpdate && visible && routeData['wikiModule']?.load)) {
+    if (mode === 'didMount') {
+      this.setState({
+        ...this.state,
+        isLoading: true,
+      });
+    }
+
+    if (mode !== 'didMount' && isLoading && routeData['wikiModule']?.load) {
+      this.setState({
+        ...this.state,
+        isLoading: false,
+      });
+    }
+
+    if (forceUpdate || mode === 'didMount' || isModuleUpdate) {
       onLoadCurrentData({
         path: 'wikiModule',
         storeLoad: 'wiki',
@@ -98,7 +114,7 @@ class WikiModule extends React.PureComponent {
         throw new Error('Bad create');
       }
 
-      this.onVisibleModalChange(this.fetchTree);
+      this.onVisibleModalChange(this.fetchTree.bind(this, '', true));
     } catch (error) {
       console.error(error);
       message.error('Ошибка создания новой ветки');
@@ -134,7 +150,10 @@ class WikiModule extends React.PureComponent {
     const {
       visibleModal = false,
       node: { title = '', accessGroup = [] },
+      isLoading: isLoadingState,
     } = this.state;
+    const { metadata = [], router: { shouldUpdate = false } = {} } = this.props;
+    const isLoading = isLoadingState || (shouldUpdate && !metadata?.length);
 
     const menu = (
       <Menu>
@@ -157,14 +176,25 @@ class WikiModule extends React.PureComponent {
       <React.Fragment>
         <div className="wikiModule">
           <TitleModule classNameTitle="wikiModuleTitle" title="Википедия системы" />
-          <Button onClick={this.onVisibleModalChange} type="primary" className="createNode">
+          <Button
+            disabled={isLoadingState}
+            onClick={this.onVisibleModalChange}
+            type="primary"
+            className="createNode"
+          >
             Создать новую ветку
           </Button>
           <div className="wikiModule__main">
             <div className="col-6">
-              <DirectoryTree multiple defaultExpandAll onSelect={this.onSelect} onExpand={this.onExpand}>
-                {this.renderTree()}
-              </DirectoryTree>
+              {metadata.length ? (
+                <DirectoryTree multiple defaultExpandAll onSelect={this.onSelect} onExpand={this.onExpand}>
+                  {this.renderTree()}
+                </DirectoryTree>
+              ) : !isLoading ? (
+                <p className="empty-tree">В Wiki ничего нет</p>
+              ) : (
+                <Spin size="large" />
+              )}
             </div>
           </div>
         </div>

@@ -7,6 +7,18 @@
   }
   .wikiModule__main {
     display: flex;
+
+    .empty-tree {
+      margin: 10px;
+      font-size: 19px;
+    }
+
+    .ant-spin {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+    }
+
     .ant-tree {
       span {
         font-size: 17px;

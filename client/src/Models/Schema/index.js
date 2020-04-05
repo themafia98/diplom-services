@@ -96,7 +96,6 @@ class Schema {
 
   /**
    * Schema
-   * @param {string} type
    * @return {Object} Object
    */
   getEditorJSON() {
@@ -120,7 +119,6 @@ class Schema {
    * Schema
    * @param {Array<string>} data
    * @param {Array<null>} schema
-   * @param {string} mode
    * @return {boolean}
    */
   validateSchema(data, schema) {
@@ -146,7 +144,6 @@ class Schema {
    * @return {Object} valid schema object or null
    * @param {string} type string
    * @param {Object} data string
-   * @param {string} mode string
    */
   getSchema(type, data) {
     if (!_.isObject(data)) return null;
