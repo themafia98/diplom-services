@@ -172,7 +172,7 @@ class WikiModule extends React.PureComponent {
       isLoading: isLoadingState,
       selectedNode = null,
     } = this.state;
-    const { _id: key = '' } = selectedNode || {};
+    const { _id: key = '', path } = selectedNode || {};
     const { metadata = [], router: { shouldUpdate = false } = {} } = this.props;
     const isLoading = isLoadingState || (shouldUpdate && !metadata?.length);
 
@@ -208,7 +208,9 @@ class WikiModule extends React.PureComponent {
           <div className="wikiModule__main">
             <div className="col-6">
               {metadata.length ? (
-                <DirectoryTree onSelect={this.onSelect}>{this.renderTree()}</DirectoryTree>
+                <DirectoryTree expandedKeys={[path]} selectedKeys={[path]} onSelect={this.onSelect}>
+                  {this.renderTree()}
+                </DirectoryTree>
               ) : !isLoading ? (
                 <p className="empty-tree">В Wiki ничего нет</p>
               ) : (
