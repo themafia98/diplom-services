@@ -4,7 +4,7 @@ import { Route } from 'react-router-dom';
 import Loader from '../Loader';
 import modelsContext from '../../Models/context';
 
-export const PrivateRoute = ({ component: Component, onLogoutAction, ...routeProps }) => {
+const PrivateRoute = ({ component: Component, onLogoutAction, ...routeProps }) => {
   /**
    * @type {import('react').MutableRefObject}
    */
@@ -58,3 +58,5 @@ export const PrivateRoute = ({ component: Component, onLogoutAction, ...routePro
 PrivateRoute.propTypes = {
   component: PropTypes.object.isRequired,
 };
+
+export { PrivateRoute };
