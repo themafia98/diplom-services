@@ -3,8 +3,6 @@ import 'reflect-metadata';
 import fs from 'fs';
 import os from 'os';
 
-import _ from 'lodash';
-
 import { ServerRun } from './Utils/Interfaces';
 import WebSocketWorker from './Models/WebSocketWorker';
 import ProcessRouter from './Models/Process/ProcessRouter';
