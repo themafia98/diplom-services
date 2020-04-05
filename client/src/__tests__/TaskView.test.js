@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import toJson from 'enzyme-to-json';
 
-import { TaskView } from '../Components/Modules/TaskModule/TaskView/index';
+import { TaskView } from '../Components/Modules/TaskModule/TaskView/TaskView';
 import { initialState } from '../Redux/testStore';
 
 describe('<TaskView /> template', () => {

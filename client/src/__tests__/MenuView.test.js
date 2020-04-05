@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 import toJson from 'enzyme-to-json';
 import config from '../config.json';
 
-import MenuView from '../Components/MenuView/index';
+import MenuView from '../Components/MenuView';
 
 describe('<MenuView />', () => {
   test('Should MenuView render with itemsMenu', () => {

@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 import toJson from 'enzyme-to-json';
 
 import { initialState } from '../Redux/testStore';
-import { TaskModule } from '../Components/Modules/TaskModule/index';
+import { TaskModule } from '../Components/Modules/TaskModule/TaskModule';
 
 describe('<TaskModule /> template', () => {
   test('Should be render', () => {

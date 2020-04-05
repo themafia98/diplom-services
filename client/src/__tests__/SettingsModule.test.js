@@ -3,7 +3,7 @@ import toJson from 'enzyme-to-json';
 import { shallow } from 'enzyme';
 
 import { initialState } from '../Redux/testStore';
-import { SettingsModule } from '../Components/Modules/SettingsModule';
+import { SettingsModule } from '../Components/Modules/SettingsModule/SettingsModule';
 
 describe('<SettingsModule /> template', () => {
   test('Should be render', () => {

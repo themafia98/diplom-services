@@ -3,7 +3,7 @@ import { EventEmitter } from 'events';
 import { shallow } from 'enzyme';
 import toJson from 'enzyme-to-json';
 
-import ContentView from '../Components/ContentView/index';
+import ContentView from '../Components/ContentView';
 
 describe('<ContentView />', () => {
   test('Should works with state', () => {

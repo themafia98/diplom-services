@@ -2,7 +2,7 @@ import React from 'react';
 import toJson from 'enzyme-to-json';
 import { shallow } from 'enzyme';
 
-import { LoginPage } from '../Components/Pages/LoginPage';
+import { LoginPage } from '../Components/Pages/LoginPage/LoginPage';
 import { initialState } from '../Redux/testStore';
 
 describe('<LoginPage /> template', () => {

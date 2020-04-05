@@ -3,7 +3,7 @@ import { EventEmitter } from 'events';
 import { shallow } from 'enzyme';
 import toJson from 'enzyme-to-json';
 
-import { HeaderView } from '../Components/HeaderView/index';
+import { HeaderView } from '../Components/HeaderView/HeaderView';
 import { initialState } from '../Redux/testStore';
 
 describe('<HeaderView /> and children', () => {
