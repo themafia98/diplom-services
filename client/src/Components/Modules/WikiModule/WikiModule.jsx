@@ -208,9 +208,7 @@ class WikiModule extends React.PureComponent {
           <div className="wikiModule__main">
             <div className="col-6">
               {metadata.length ? (
-                <DirectoryTree onSelect={this.onSelect} onExpand={this.onExpand}>
-                  {this.renderTree()}
-                </DirectoryTree>
+                <DirectoryTree onSelect={this.onSelect}>{this.renderTree()}</DirectoryTree>
               ) : !isLoading ? (
                 <p className="empty-tree">В Wiki ничего нет</p>
               ) : (
