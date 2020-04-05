@@ -23,6 +23,7 @@ class WikiModule extends React.PureComponent {
 
   state = {
     isLoading: false,
+    expanded: false,
     visibleModal: false,
     selectedNode: '',
     node: {
@@ -40,17 +41,23 @@ class WikiModule extends React.PureComponent {
   };
 
   onSelect = (keys, event) => {
+    const { node: { props: { expanded = false } = {} } = {} } = event || {};
     const { metadata = [] } = this.props;
+
+    if (expanded) {
+      this.setState({
+        ...this.state,
+        selectedNode: null,
+      });
+      return;
+    }
+
     const selectedNodeItem = metadata.find(node => node?.path === keys[0]);
 
     this.setState({
       ...this.state,
       selectedNode: selectedNodeItem ? { ...selectedNodeItem } : null,
     });
-  };
-
-  onExpand = () => {
-    console.log('Trigger Expand');
   };
 
   onVisibleModalChange = callback => {
@@ -163,9 +170,9 @@ class WikiModule extends React.PureComponent {
       visibleModal = false,
       node: { title = '', accessGroup = [] },
       isLoading: isLoadingState,
-      selectedNode,
-      selectedNode: { _id: key = '' } = {},
+      selectedNode = null,
     } = this.state;
+    const { _id: key = '' } = selectedNode || {};
     const { metadata = [], router: { shouldUpdate = false } = {} } = this.props;
     const isLoading = isLoadingState || (shouldUpdate && !metadata?.length);
 
@@ -201,7 +208,7 @@ class WikiModule extends React.PureComponent {
           <div className="wikiModule__main">
             <div className="col-6">
               {metadata.length ? (
-                <DirectoryTree multiple defaultExpandAll onSelect={this.onSelect} onExpand={this.onExpand}>
+                <DirectoryTree onSelect={this.onSelect} onExpand={this.onExpand}>
                   {this.renderTree()}
                 </DirectoryTree>
               ) : !isLoading ? (
