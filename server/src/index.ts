@@ -4,16 +4,14 @@ import fs from 'fs';
 import os from 'os';
 
 import { ServerRun } from './Utils/Interfaces';
-import WebSocketWorker from './Models/WebSocketWorker';
+import Utils from './Utils';
+import wsWorkerManager from './Utils/instanseWs';
 import ProcessRouter from './Models/Process/ProcessRouter';
 import Http from './Models/Server';
 
-if (process.env.NODE_ENV === 'production') {
-  /** nginx init */
+if (Utils.isProd()) {
   fs.openSync('/tmp/app-initialized', 'w');
 }
-
-export const wsWorkerManager: WebSocketWorker = new WebSocketWorker();
 
 namespace Entrypoint {
   const cpuLentgh: number = os.cpus().length;
@@ -37,5 +35,3 @@ namespace Entrypoint {
     }
   }
 }
-
-export default Entrypoint;

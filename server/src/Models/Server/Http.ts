@@ -32,7 +32,7 @@ import { UserModel } from '../Database/Schema';
 import jwt, { StrategyOptions } from 'passport-jwt';
 import * as passportLocal from 'passport-local';
 
-import Entrypoint, { wsWorkerManager } from '../..';
+import wsWorkerManager from '../../Utils/instanseWs';
 import wsEvents from '../../Controllers/Contact/Chat/wsEvents';
 
 import limiter from '../../config/limiter';

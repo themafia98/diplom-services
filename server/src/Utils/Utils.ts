@@ -9,6 +9,13 @@ import { FileTransportInstance, docResponse, ParserResult } from './Types';
 namespace Utils {
   const upload = multer();
 
+  /**
+   * @returns {boolean} current process is production or not
+   */
+  export const isProd = (): boolean => {
+    return process.env.NODE_ENV === 'production';
+  };
+
   export const checkEntity = async (
     mode: string,
     checkKey: string,
