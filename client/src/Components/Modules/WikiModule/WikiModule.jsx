@@ -13,6 +13,8 @@ import modalContext from '../../../Models/context';
 const { TreeNode, DirectoryTree } = Tree;
 const { Option } = Select;
 
+const { Search } = Input;
+
 class WikiModule extends React.PureComponent {
   static propTypes = {
     onErrorRequstAction: PropTypes.func.isRequired,
@@ -26,6 +28,9 @@ class WikiModule extends React.PureComponent {
     expanded: false,
     visibleModal: false,
     selectedNode: '',
+    searchValue: '',
+    expandedKeys: [],
+    autoExpandParent: false,
     node: {
       title: '',
       accessGroup: [],
@@ -122,8 +127,9 @@ class WikiModule extends React.PureComponent {
         type: 'wikiTree',
         item: {
           ...node,
-          level: 1,
-          path: `0-${index}`,
+          level: 2,
+          path: `0-1-${1}`,
+          parentId: metadata[0]._id,
         },
       });
 
@@ -158,10 +164,93 @@ class WikiModule extends React.PureComponent {
     });
   };
 
+  buildTree = (rootNodeList, nodeListChildren, index = 0, currentId = 'root') => {
+    const rootNodeListCopy = [...rootNodeList];
+    const nodeListChildrenCopy = [...nodeListChildren];
+    const node = rootNodeList[index];
+
+    if (!node || (node && _.isEmpty(node))) {
+      return rootNodeList;
+    }
+
+    const { _id: nodeRootId } = node;
+
+    const children = nodeListChildren.filter((node, index) => {
+      if (node?.parentId === nodeRootId) {
+        delete nodeListChildrenCopy[index];
+        return {
+          ...node,
+          children: [],
+        };
+      }
+
+      return false;
+    });
+
+    rootNodeListCopy[index] = {
+      ...rootNodeListCopy[index],
+      children,
+    };
+
+    return this.buildTree(rootNodeListCopy, nodeListChildrenCopy.filter(Boolean), index + 1);
+  };
+
+  getTreeData = nodeList => {
+    if (!Array.isArray(nodeList)) return [];
+    const parseTreeArray = [];
+
+    let isDone = false;
+    let currentLevel = 1;
+
+    const rootNodesList = nodeList.filter(node => node?.parentId === 'root');
+    const nodeListChildren = nodeList.filter(node => node?.parentId !== 'root');
+
+    return this.buildTree(rootNodesList, nodeListChildren);
+  };
+
   renderTree = () => {
+    const { searchValue, expandedKeys, autoExpandParent } = this.state;
     const { metadata = [] } = this.props;
-    return metadata.map(node => {
-      return <TreeNode title={node?.title} key={node?.path}></TreeNode>;
+
+    const listData = this.getTreeData(metadata);
+
+    const loop = data =>
+      data.map(it => {
+        const item = {
+          ...it,
+          children: it?.children ? it.children : [],
+        };
+        const index = item.title.indexOf(searchValue);
+        const beforeStr = item.title.substr(0, index);
+        const afterStr = item.title.substr(index + searchValue.length);
+        const title =
+          index > -1 ? (
+            <span>
+              {beforeStr}
+              <span style={{ color: 'blue' }} className="site-tree-search-value">
+                {searchValue}
+              </span>
+              {afterStr}
+            </span>
+          ) : (
+            <span>{item?.title}</span>
+          );
+        if (item?.children) {
+          return { title, key: item?.path, children: loop(item.children) };
+        }
+      });
+
+    return loop(listData);
+
+    // return metadata.map(node => {
+    //   return <TreeNode title={node?.title} key={node?.path}></TreeNode>;
+    // });
+  };
+
+  onSearch = ({ target: { value: searchValue = '' } }) => {
+    this.setState({
+      ...this.state,
+      searchValue,
     });
   };
 
@@ -198,7 +287,7 @@ class WikiModule extends React.PureComponent {
         <div className="wikiModule">
           <TitleModule classNameTitle="wikiModuleTitle" title="Википедия системы" />
           <Button
-            disabled={isLoadingState}
+            disabled={true || isLoadingState}
             onClick={this.onVisibleModalChange}
             type="primary"
             className="createNode"
@@ -208,9 +297,14 @@ class WikiModule extends React.PureComponent {
           <div className="wikiModule__main">
             <div className="col-6">
               {metadata.length ? (
-                <DirectoryTree expandedKeys={[path]} selectedKeys={[path]} onSelect={this.onSelect}>
-                  {this.renderTree()}
-                </DirectoryTree>
+                <React.Fragment>
+                  <Search
+                    className="wikiModule__searchInput"
+                    placeholder="Поиск по дереву"
+                    onChange={this.onSearch}
+                  />
+                  <Tree onSelect={this.onSelect} treeData={this.renderTree()} />
+                </React.Fragment>
               ) : !isLoading ? (
                 <p className="empty-tree">В Wiki ничего нет</p>
               ) : (

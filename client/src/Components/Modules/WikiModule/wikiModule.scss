@@ -8,6 +8,11 @@
   .wikiModule__main {
     display: flex;
 
+    .wikiModule__searchInput {
+      margin: 8px 0;
+      width: 60%;
+    }
+
     .empty-tree {
       margin: 10px;
       font-size: 19px;

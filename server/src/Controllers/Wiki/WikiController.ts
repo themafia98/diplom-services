@@ -45,39 +45,6 @@ namespace Wiki {
           );
         }
 
-        // let isSorted = false;
-        // let currentLevel = 1;
-        // let metadata: Array<object> = [];
-
-        // while (!isSorted){
-
-        //   const filteredByLevel = (<Array<Record<string, any>>>data).filter(it => it?.level === currentLevel);
-
-        //   if (!filteredByLevel.length){
-        //     isSorted = true;
-        //     break;
-        //   }
-
-        //   filteredByLevel.sort((node1, node2) => {
-
-        //   const { path = '', level = 1 } = <Record<string, string|number>>node1;
-
-        //   const { path: nextPath = '', level: nextLevel = 1 } = <Record<string, string|number>>node2;
-
-        //   const splitedPath = (<string>path).split('-');
-        //   const position: number = parseFloat(splitedPath[<number>level]);
-
-        //   const splitedNextPath = (<string>nextPath).split('-');
-        //   const positionNext: number = parseFloat(splitedNextPath[<number>nextLevel]);
-
-        //     return positionNext - position;
-        //   });
-
-        //   metadata = [...metadata, ...filteredByLevel];
-
-        //   currentLevel++;
-        // }
-
         return res.json(
           getResponseJson(
             'done',

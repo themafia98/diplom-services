@@ -87,6 +87,7 @@ class Schema {
           title: null,
           level: null,
           path: null,
+          parentId: null,
           accessGroups: null,
         };
       default:
