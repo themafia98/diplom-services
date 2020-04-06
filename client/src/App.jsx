@@ -124,21 +124,21 @@ class App extends React.Component {
   render() {
     const { loadState, authLoad } = this.state;
     const { onLogoutAction } = this.props;
+
+    //   <RenderInBrowser ie only>
+    //   <div className="ie-only">
+    //     <p>Приложение не поддерживает браузер IE, предлагаем установить более современные браузеры.</p>
+    //   </div>
+    // </RenderInBrowser>
+    // <RenderInBrowser except ie>
     if (loadState) {
       return (
         <React.Fragment>
-          <RenderInBrowser ie only>
-            <div className="ie-only">
-              <p>Приложение не поддерживает браузер IE, предлагаем установить более современные браузеры.</p>
-            </div>
-          </RenderInBrowser>
-          <RenderInBrowser except ie>
-            <Switch>
-              <Route exact path="/" render={props => <LoginPage {...props} authLoad={authLoad} />} />
-              <Route exact path="/recovory" render={props => <Recovery {...props} />} />
-              <PrivateRoute exact path="/dashboard" onLogoutAction={onLogoutAction} component={Dashboard} />
-            </Switch>
-          </RenderInBrowser>
+          <Switch>
+            <Route exact path="/" render={props => <LoginPage {...props} authLoad={authLoad} />} />
+            <Route exact path="/recovory" render={props => <Recovery {...props} />} />
+            <PrivateRoute exact path="/dashboard" onLogoutAction={onLogoutAction} component={Dashboard} />
+          </Switch>
         </React.Fragment>
       );
     } else return <Loader />;
