@@ -16,6 +16,7 @@
         "moment": "^2.24.0",
         "normalize.css": "^8.0.1",
         "react": "^16.10.1",
+        "react-app-polyfill": "^1.0.6",
         "react-clock": "^2.4.0",
         "react-custom-scrollbars": "^4.2.1",
         "react-device-detect": "^1.9.10",

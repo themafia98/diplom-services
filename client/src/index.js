@@ -1,5 +1,8 @@
 /** IE supports polyfills */
 import 'core-js/features';
+import 'react-app-polyfill/ie9';
+import 'react-app-polyfill/ie11';
+import 'react-app-polyfill/stable';
 /** --------------------- */
 
 import React from 'react';
@@ -19,7 +22,7 @@ import ModelContext, { modelMethods } from './Models/context';
 
 require('es6-promise').polyfill();
 
-//Sentry.init({ dsn: process.env.REACT_APP_LOGGER_DSN });
+Sentry.init({ dsn: process.env.REACT_APP_LOGGER_DSN });
 
 ReactDOM.render(
   <Root>
