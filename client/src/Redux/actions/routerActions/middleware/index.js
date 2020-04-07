@@ -18,6 +18,7 @@ export const loadCurrentData = ({
   methodQuery = 'all',
   xhrPath = 'list',
   noCorsClient = false,
+  sortBy = '',
   options = {},
 }) => async (dispatch, getState, { schema, Request, clientDB }) => {
   let isLocalUpdate = true;
@@ -55,13 +56,16 @@ export const loadCurrentData = ({
       const undefiendCopyStore = [];
 
       if (noCorsClient && _.isNull(requestError)) {
-        const sortedCopyStore = copyStore.every(it => it.createdAt)
-          ? copyStore.sort((a, b) => {
-              const aDate = moment(a.createdAt).unix();
-              const bDate = moment(b.createdAt).unix();
-              return bDate - aDate;
-            })
-          : copyStore;
+        const sortedCopyStore =
+          !sortBy && copyStore.every(it => it.createdAt)
+            ? copyStore.sort((a, b) => {
+                const aDate = moment(a.createdAt).unix();
+                const bDate = moment(b.createdAt).unix();
+                return bDate - aDate;
+              })
+            : sortBy
+            ? copyStore.sort((a, b) => a[sortBy] - b[sortBy])
+            : copyStore;
 
         dispatch(
           saveComponentStateAction({ [storeLoad]: sortedCopyStore, load: true, path: pathValid, isPartData }),
@@ -120,13 +124,16 @@ export const loadCurrentData = ({
 
         if (requestError !== null) await dispatch(errorRequstAction(null));
 
-        const sortedCopyStore = copyStore.every(it => it.createdAt)
-          ? copyStore.sort((a, b) => {
-              const aDate = moment(a.createdAt).unix();
-              const bDate = moment(b.createdAt).unix();
-              return bDate - aDate;
-            })
-          : copyStore;
+        const sortedCopyStore =
+          !sortBy && copyStore.every(it => it.createdAt)
+            ? copyStore.sort((a, b) => {
+                const aDate = moment(a.createdAt).unix();
+                const bDate = moment(b.createdAt).unix();
+                return bDate - aDate;
+              })
+            : sortBy
+            ? copyStore.sort((a, b) => a[sortBy] - b[sortBy])
+            : copyStore;
 
         const data = { [storeLoad]: sortedCopyStore, load: true, path: pathValid, isPartData };
         await dispatch(saveComponentStateAction(data));

@@ -190,6 +190,7 @@ export const wikiTree = new Schema(
     level: { type: Number, required: true },
     path: { type: String, reuired: true },
     parentId: { type: String, required: true },
+    index: { type: Number, required: true },
     accessGroups: { type: [String], required: true },
   },
   {

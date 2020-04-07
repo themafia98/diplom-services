@@ -3,13 +3,15 @@ import config from '../config.json';
 import Request from '../Models/Rest';
 import Schema from '../Models/Schema';
 import { clientDB } from './ClientSideDatabase';
+import TreeBuilder from './TreeBuilder';
 
 export const modelMethods = {
-  clientDB,
-  rest: new Request(),
+  TreeBuilder,
+  Schema,
   Request,
+  clientDB,
   config,
-  schemaModel: Schema,
+  rest: new Request(),
   schema: new Schema('no-strict'),
 };
 

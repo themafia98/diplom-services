@@ -42,6 +42,12 @@ class WikiModule extends React.PureComponent {
   };
 
   componentDidUpdate = async () => {
+    const { metadata = [] } = this.props;
+    const { TreeBuilder } = this.context;
+
+    const root = metadata.filter(node => node && node.parentId === 'root');
+    const childs = metadata.filter(node => node && node.parentId !== 'root');
+
     this.fetchTree();
   };
 
@@ -111,25 +117,27 @@ class WikiModule extends React.PureComponent {
         useStore: true,
         methodQuery: 'get_all',
         methodRequst: 'GET',
+        sortBy: 'index',
       });
     }
   };
 
-  onCreate = async event => {
+  onCreateRootNode = async event => {
     const { node } = this.state;
     const { metadata = [] } = this.props;
     const { Request } = this.context;
     if (!Request) return;
     try {
-      const index = metadata?.length + 1;
+      const index = ++metadata.filter(node => node && node.parentId === 'root').length;
       const rest = new Request();
       const res = await rest.sendRequest('/wiki/createLeaf', 'PUT', {
         type: 'wikiTree',
         item: {
           ...node,
-          level: 2,
-          path: `0-1-${1}`,
-          parentId: metadata[0]._id,
+          level: 1,
+          path: `0-${index}`,
+          index,
+          parentId: 'root',
         },
       });
 
@@ -164,43 +172,20 @@ class WikiModule extends React.PureComponent {
     });
   };
 
-  buildTree = (rootNodeList, nodeListChildren, index = 0, currentId = 'root') => {
-    const rootNodeListCopy = [...rootNodeList];
-    const nodeListChildrenCopy = [...nodeListChildren];
-    const node = rootNodeList[index];
-
-    if (!node || (node && _.isEmpty(node))) {
-      return rootNodeList;
-    }
-
-    const { _id: nodeRootId } = node;
-
-    const children = nodeListChildren.filter((node, index) => {
-      if (node?.parentId === nodeRootId) {
-        delete nodeListChildrenCopy[index];
-        return {
-          ...node,
-          children: [],
-        };
-      }
-
-      return false;
-    });
-
-    rootNodeListCopy[index] = {
-      ...rootNodeListCopy[index],
-      children,
-    };
-
-    return this.buildTree(rootNodeListCopy, nodeListChildrenCopy.filter(Boolean), index + 1);
+  /**
+   * @param {Array<object>} rootNodeList
+   * @param {Array<object>} nodeListChildren
+   */
+  buildTree = (rootNodeList, nodeListChildren) => {
+    const { TreeBuilder } = this.context;
+    return new TreeBuilder(nodeListChildren).buildTree(rootNodeList);
   };
 
+  /**
+   * @param {Array<object>} nodeList
+   */
   getTreeData = nodeList => {
     if (!Array.isArray(nodeList)) return [];
-    const parseTreeArray = [];
-
-    let isDone = false;
-    let currentLevel = 1;
 
     const rootNodesList = nodeList.filter(node => node?.parentId === 'root');
     const nodeListChildren = nodeList.filter(node => node?.parentId !== 'root');
@@ -241,10 +226,6 @@ class WikiModule extends React.PureComponent {
       });
 
     return loop(listData);
-
-    // return metadata.map(node => {
-    //   return <TreeNode title={node?.title} key={node?.path}></TreeNode>;
-    // });
   };
 
   onSearch = ({ target: { value: searchValue = '' } }) => {
@@ -272,22 +253,12 @@ class WikiModule extends React.PureComponent {
       </Menu>
     );
 
-    // TODO: antd tree example
-    //   <TreeNode title="Главная страница" key="0-0">
-    //   <TreeNode title="Глобальные уведомления" key="0-0-0" isLeaf />
-    //   <TreeNode title="Таблица сотрудников" key="0-0-1" isLeaf />
-    // </TreeNode>
-    // <TreeNode title="Кабинет" key="0-1">
-    //   <TreeNode title="Карточка пользователся" key="0-1-0" isLeaf />
-    //   <TreeNode title="Журнал активности" key="0-1-1" isLeaf />
-    // </TreeNode>
-
     return (
       <React.Fragment>
         <div className="wikiModule">
           <TitleModule classNameTitle="wikiModuleTitle" title="Википедия системы" />
           <Button
-            disabled={true || isLoadingState}
+            disabled={isLoadingState}
             onClick={this.onVisibleModalChange}
             type="primary"
             className="createNode"
@@ -319,7 +290,7 @@ class WikiModule extends React.PureComponent {
         <ModalWindow
           defaultView={true}
           visibility={visibleModal}
-          onOkey={this.onCreate}
+          onOkey={this.onCreateRootNode}
           onReject={this.onVisibleModalChange}
           content={
             <div className="modal-content">
