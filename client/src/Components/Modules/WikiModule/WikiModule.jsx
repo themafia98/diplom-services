@@ -42,12 +42,6 @@ class WikiModule extends React.PureComponent {
   };
 
   componentDidUpdate = async () => {
-    const { metadata = [] } = this.props;
-    const { TreeBuilder } = this.context;
-
-    const root = metadata.filter(node => node && node.parentId === 'root');
-    const childs = metadata.filter(node => node && node.parentId !== 'root');
-
     this.fetchTree();
   };
 
