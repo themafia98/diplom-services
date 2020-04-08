@@ -116,30 +116,34 @@ class WikiModule extends React.PureComponent {
     }
   };
 
-  onCreateRootNode = async event => {
+  onCreateNode = async (item = null, event) => {
     const { node } = this.state;
     const { metadata = [] } = this.props;
     const { Request } = this.context;
     if (!Request) return;
     try {
-      const index = ++metadata.filter(node => node && node.parentId === 'root').length;
+      const indexId = !item ? 'root' : item?.parentId;
+      const index = ++metadata.filter(node => node && node.parentId === indexId).length;
       const rest = new Request();
       const res = await rest.sendRequest('/wiki/createLeaf', 'PUT', {
         type: 'wikiTree',
-        item: {
-          ...node,
-          level: 1,
-          path: `0-${index}`,
-          index,
-          parentId: 'root',
-        },
+        item: !item
+          ? {
+              ...node,
+              level: 1,
+              path: `0-${index}`,
+              index,
+              parentId: 'root',
+            }
+          : item,
       });
 
       if (res.status !== 200) {
         throw new Error('Bad create');
       }
 
-      this.onVisibleModalChange(this.fetchTree.bind(this, '', true));
+      if (!item) this.onVisibleModalChange(this.fetchTree.bind(this, '', true));
+      else this.fetchTree('', true);
     } catch (error) {
       console.error(error);
       message.error('Ошибка создания новой ветки');
@@ -187,6 +191,33 @@ class WikiModule extends React.PureComponent {
     return this.buildTree(rootNodesList, nodeListChildren);
   };
 
+  onDropdownEvent = (sign = '', id = '', event) => {
+    if (!sign || !id) return;
+    const { metadata = [] } = this.props;
+
+    const item = metadata.find(node => node?._id === id);
+
+    if (!item) {
+      message.error('Ветка не найдена');
+      return;
+    }
+
+    const index = ++metadata.filter(node => node?.parentId === id).length;
+
+    if (sign === 'add') {
+      this.onCreateNode(
+        {
+          title: `testLEaf${Math.random()}`,
+          level: item.level ? item.level + 1 : 1,
+          path: `${item?.path}-${index}`,
+          index,
+          parentId: id,
+        },
+        event,
+      );
+    }
+  };
+
   renderTree = () => {
     const { searchValue, expandedKeys, autoExpandParent } = this.state;
     const { metadata = [] } = this.props;
@@ -199,20 +230,39 @@ class WikiModule extends React.PureComponent {
           ...it,
           children: it?.children ? it.children : [],
         };
+
+        const menu = (
+          <Menu>
+            <Menu.Item onMouseDown={this.onDropdownEvent.bind(this, 'add', it?._id)} key={`add${it?._id}`}>
+              Добавить ветку
+            </Menu.Item>
+            <Menu.Item
+              onMouseDown={this.onDropdownEvent.bind(this, 'delete', it?._id)}
+              key={`delete${it?._id}`}
+            >
+              Удалить ветку
+            </Menu.Item>
+          </Menu>
+        );
+
         const index = item.title.indexOf(searchValue);
         const beforeStr = item.title.substr(0, index);
         const afterStr = item.title.substr(index + searchValue.length);
         const title =
           index > -1 ? (
-            <span>
-              {beforeStr}
-              <span style={{ color: 'blue' }} className="site-tree-search-value">
-                {searchValue}
+            <Dropdown overlay={menu} trigger={['contextMenu']}>
+              <span>
+                {beforeStr}
+                <span style={{ color: 'blue' }} className="site-tree-search-value">
+                  {searchValue}
+                </span>
+                {afterStr}
               </span>
-              {afterStr}
-            </span>
+            </Dropdown>
           ) : (
-            <span>{item?.title}</span>
+            <Dropdown overlay={menu} trigger={['contextMenu']}>
+              <span>{item?.title}</span>
+            </Dropdown>
           );
         if (item?.children) {
           return { title, key: item?.path, children: loop(item.children) };
@@ -239,13 +289,6 @@ class WikiModule extends React.PureComponent {
     const { _id: key = '', path } = selectedNode || {};
     const { metadata = [], router: { shouldUpdate = false } = {} } = this.props;
     const isLoading = isLoadingState || (shouldUpdate && !metadata?.length);
-
-    const menu = (
-      <Menu>
-        <Menu.Item key="1">Добавить ветку</Menu.Item>
-        <Menu.Item key="2">Удалить ветку</Menu.Item>
-      </Menu>
-    );
 
     return (
       <React.Fragment>
@@ -284,7 +327,7 @@ class WikiModule extends React.PureComponent {
         <ModalWindow
           defaultView={true}
           visibility={visibleModal}
-          onOkey={this.onCreateRootNode}
+          onOkey={this.onCreateNode.bind(this, null)}
           onReject={this.onVisibleModalChange}
           content={
             <div className="modal-content">
