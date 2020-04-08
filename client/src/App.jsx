@@ -121,27 +121,36 @@ class App extends React.Component {
     if (config.forceUpdate === true || config.forceUpdate === 'true') forceUpdateDetectedInit();
   };
 
+  withoutIE = children => {
+    return (
+      <React.Fragment>
+        <RenderInBrowser ie only>
+          <div className="ie-only">
+            <p>Приложение не поддерживает браузер IE, предлагаем установить более современные браузеры.</p>
+          </div>
+        </RenderInBrowser>
+        <RenderInBrowser except ie>
+          {children}
+        </RenderInBrowser>
+      </React.Fragment>
+    );
+  };
+
   render() {
     const { loadState, authLoad } = this.state;
+    const { config: { supportIE = true } = {} } = this.context;
     const { onLogoutAction } = this.props;
 
-    //   <RenderInBrowser ie only>
-    //   <div className="ie-only">
-    //     <p>Приложение не поддерживает браузер IE, предлагаем установить более современные браузеры.</p>
-    //   </div>
-    // </RenderInBrowser>
-    // <RenderInBrowser except ie>
-    if (loadState) {
-      return (
-        <React.Fragment>
-          <Switch>
-            <Route exact path="/" render={props => <LoginPage {...props} authLoad={authLoad} />} />
-            <Route exact path="/recovory" render={props => <Recovery {...props} />} />
-            <PrivateRoute exact path="/dashboard" onLogoutAction={onLogoutAction} component={Dashboard} />
-          </Switch>
-        </React.Fragment>
-      );
-    } else return <Loader />;
+    const route = (
+      <Switch>
+        <Route exact path="/" render={props => <LoginPage {...props} authLoad={authLoad} />} />
+        <Route exact path="/recovory" render={props => <Recovery {...props} />} />
+        <PrivateRoute exact path="/dashboard" onLogoutAction={onLogoutAction} component={Dashboard} />
+      </Switch>
+    );
+
+    if (loadState) return !supportIE ? this.withoutIE(route) : route;
+    else return <Loader />;
   }
 }
 
