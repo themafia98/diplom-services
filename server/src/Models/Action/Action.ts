@@ -64,7 +64,8 @@ namespace Action {
 
     public async deleteEntity(model: Model<Document>, query: ActionParams): ParserData {
       try {
-        const { multiple = false, mode = '$pullAll', findBy, uid, updateField } = query;
+        const { multiple = false, mode = '$pullAll', findBy, queryParams = {} } = query;
+        const { uid = '', updateField = '', ids = [] } = ({} = <Record<string, string>>queryParams || {});
 
         const isPull = mode === '$pullAll';
         let actionData: Document | null = null;
@@ -75,10 +76,7 @@ namespace Action {
           multiple: boolean = false,
         ): Promise<Record<string, any>> => {
           if (!multiple) return await model.deleteOne(props);
-          else {
-            const { ids = [] } = <Record<string, Array<string>>>props;
-            return await model.deleteMany({ [<string>findBy]: { $in: ids } });
-          }
+          else return await model.deleteMany({ [<string>findBy]: { $in: ids } });
         };
 
         if (isPull) {
@@ -95,7 +93,7 @@ namespace Action {
           const record: ArrayLike<string> = (doc as Record<string, any>)[<string>updateField];
 
           if (Array.isArray(record) && (!record.length || record.length === 0)) {
-            const docResult: Record<string, any> = await runDelete({ [<string>findBy]: findBy });
+            const docResult: Record<string, any> = await runDelete({ [<string>findBy]: findBy }, multiple);
 
             if (docResult.ok) {
               return <Document>docResult;

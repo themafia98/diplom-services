@@ -25,6 +25,20 @@ class ActionWiki implements Action {
     return this.getEntity().createEntity(model, item);
   }
 
+  private async deleteLeafs(actionParam: ActionParams, model: Model<Document>): ParserData {
+    const { ids = [] } = <Record<string, Array<string>>>actionParam || {};
+
+    if (!ids || (ids && !ids?.length)) return null;
+
+    const query: ActionParams = {
+      multiple: true,
+      findBy: '_id',
+      queryParams: { ids },
+    };
+
+    return this.getEntity().deleteEntity(model, query);
+  }
+
   public async run(actionParam: ActionParams): ParserData {
     const { type = 'wikiTree' } = <Record<string, string>>actionParam;
     const model: Model<Document> | null = getModelByName(type, type);
@@ -36,6 +50,8 @@ class ActionWiki implements Action {
       case 'create_leaf':
         return this.createLeaf(actionParam, model);
       default:
+      case 'delete_leafs':
+        return this.deleteLeafs(actionParam, model);
         return null;
     }
   }

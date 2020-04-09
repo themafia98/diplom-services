@@ -130,7 +130,7 @@ export interface MetadataMongo extends Metadata {
 }
 
 export interface ActionParams {
-  [key: string]: number | string | Date | object;
+  [key: string]: boolean | number | string | Date | object;
 }
 
 export interface ResponseDocument {
