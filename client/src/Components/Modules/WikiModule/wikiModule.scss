@@ -84,3 +84,13 @@
     }
   }
 }
+
+.dropdown-action {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  input {
+    width: 60%;
+    margin-right: 5px;
+  }
+}

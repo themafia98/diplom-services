@@ -35,7 +35,11 @@ class WikiModule extends React.PureComponent {
       title: '',
       accessGroup: [],
     },
+    visbileDropdownId: null,
+    visbileDropdown: false,
   };
+
+  titleRef = React.createRef();
 
   componentDidMount = async () => {
     this.fetchTree('didMount');
@@ -193,6 +197,7 @@ class WikiModule extends React.PureComponent {
 
   onDropdownEvent = (sign = '', id = '', event) => {
     if (!sign || !id) return;
+
     const { metadata = [] } = this.props;
 
     const item = metadata.find(node => node?._id === id);
@@ -205,9 +210,12 @@ class WikiModule extends React.PureComponent {
     const index = ++metadata.filter(node => node?.parentId === id).length;
 
     if (sign === 'add') {
+      const { current: { state: { value: title = '' } = {} } = {} } = this.titleRef || {};
+      if (!title) return;
+
       this.onCreateNode(
         {
-          title: `testLEaf${Math.random()}`,
+          title,
           level: item.level ? item.level + 1 : 1,
           path: `${item?.path}-${index}`,
           index,
@@ -218,8 +226,16 @@ class WikiModule extends React.PureComponent {
     }
   };
 
+  onVisibleChange = (id, visible) => {
+    this.setState({
+      ...this.state,
+      visbileDropdownId: visible ? id : null,
+      visbileDropdown: visible,
+    });
+  };
+
   renderTree = () => {
-    const { searchValue, expandedKeys, autoExpandParent } = this.state;
+    const { searchValue, visbileDropdownId = null, visbileDropdown = false } = this.state;
     const { metadata = [] } = this.props;
 
     const listData = this.getTreeData(metadata);
@@ -232,15 +248,22 @@ class WikiModule extends React.PureComponent {
         };
 
         const menu = (
-          <Menu>
-            <Menu.Item onMouseDown={this.onDropdownEvent.bind(this, 'add', it?._id)} key={`add${it?._id}`}>
-              Добавить ветку
+          <Menu className="dropdown-action">
+            <Menu.Item key={`add${it?._id}`}>
+              <Input autoFocus placeholder="название новой ветки" type="text" ref={this.titleRef} />
+              <Button
+                type="primary"
+                className="item-action"
+                onClick={this.onDropdownEvent.bind(this, 'add', it?._id)}
+              >
+                Добавить ветку
+              </Button>
             </Menu.Item>
             <Menu.Item
               onMouseDown={this.onDropdownEvent.bind(this, 'delete', it?._id)}
               key={`delete${it?._id}`}
             >
-              Удалить ветку
+              Удалить выбраную ветку
             </Menu.Item>
           </Menu>
         );
@@ -250,7 +273,12 @@ class WikiModule extends React.PureComponent {
         const afterStr = item.title.substr(index + searchValue.length);
         const title =
           index > -1 ? (
-            <Dropdown overlay={menu} trigger={['contextMenu']}>
+            <Dropdown
+              visible={visbileDropdownId === it?._id && visbileDropdown}
+              onVisibleChange={this.onVisibleChange.bind(this, it?._id)}
+              overlay={menu}
+              trigger={['contextMenu']}
+            >
               <span>
                 {beforeStr}
                 <span style={{ color: 'blue' }} className="site-tree-search-value">
@@ -260,7 +288,12 @@ class WikiModule extends React.PureComponent {
               </span>
             </Dropdown>
           ) : (
-            <Dropdown overlay={menu} trigger={['contextMenu']}>
+            <Dropdown
+              visible={visbileDropdownId === it?._id && visbileDropdown}
+              onVisibleChange={this.onVisibleChange.bind(this, it?._id)}
+              overlay={menu}
+              trigger={['contextMenu']}
+            >
               <span>{item?.title}</span>
             </Dropdown>
           );
