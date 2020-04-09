@@ -52,12 +52,12 @@ class WikiModule extends React.PureComponent {
   onSelect = (keys, event) => {
     const {
       node: { props: { expanded = false } = {} } = {},
-      event: { nativeEvent: { toElement = {} } = {} } = {},
+      event: { nativeEvent: { srcElement = null } = {} } = {},
     } = event || {};
     const { metadata = [] } = this.props;
 
-    const isElement = toElement && toElement?.className;
-    if (isElement && toElement?.className?.includes('ant-dropdown-menu-item-active')) {
+    const isElement = srcElement && srcElement?.className;
+    if (isElement && srcElement?.className?.includes('ant-dropdown-menu-item-active')) {
       return;
     }
 
