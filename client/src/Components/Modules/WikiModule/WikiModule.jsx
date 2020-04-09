@@ -169,6 +169,7 @@ class WikiModule extends React.PureComponent {
       const { data: { response: { metadata: { deletedCount = 0, ok = 0 } = {} } = {} } = {} } = res;
 
       if (deletedCount && ok) this.fetchTree('', true);
+      message.success('Ветка удалена');
     } catch (error) {
       console.error(error);
       message.error('Ошибка удаления ветки');
