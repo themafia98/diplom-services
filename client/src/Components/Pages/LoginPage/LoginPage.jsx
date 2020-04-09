@@ -91,6 +91,10 @@ class LoginPage extends React.Component {
     return this.state.user;
   };
 
+  onKeyDown = ({ key = '' }) => {
+    if (key === 'Enter') this.enterLoading();
+  };
+
   login = null;
   password = null;
 
@@ -110,7 +114,12 @@ class LoginPage extends React.Component {
         <div className="loginPage__loginContainer">
           <h1 className="loginContainer__title">{config['title']}</h1>
           <Logo />
-          <form method="POST" name="loginForm" className="loginContainer__loginForm">
+          <form
+            onKeyDown={this.onKeyDown}
+            method="POST"
+            name="loginForm"
+            className="loginContainer__loginForm"
+          >
             <div className="notificationWrapper">
               {errorMessage ? <p className="errorMessage">{errorMessage}</p> : null}
             </div>

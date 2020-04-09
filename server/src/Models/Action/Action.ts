@@ -92,18 +92,22 @@ namespace Action {
 
           const record: ArrayLike<string> = (doc as Record<string, any>)[<string>updateField];
 
-          if (Array.isArray(record) && (!record.length || record.length === 0)) {
+          if (Array.isArray(record) && (!record?.length || record?.length === 0)) {
             const docResult: Record<string, any> = await runDelete({ [<string>findBy]: findBy }, multiple);
 
-            if (docResult.ok) {
+            if (docResult?.ok) {
               return <Document>docResult;
             } else return null;
           }
 
           return actionData;
-        }
+        } else {
+          const docResult: object = await runDelete({}, multiple);
 
-        return null;
+          if ((<Record<string, boolean>>docResult)?.ok) {
+            return <Document>docResult;
+          } else return null;
+        }
       } catch (err) {
         console.error(err);
         return null;

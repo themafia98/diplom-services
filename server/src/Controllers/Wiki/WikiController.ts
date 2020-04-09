@@ -137,7 +137,61 @@ namespace Wiki {
 
     @Delete({ path: '/deleteLeafs', private: true })
     async deleteLeafs(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
-      return res.sendStatus(200);
+      const params: Params = { methodQuery: 'delete_leafs', status: 'done', done: true, from: 'wiki' };
+      try {
+        const service = server.locals;
+        const body: ActionParams = req.body;
+        const connect = await service.dbm.connection().catch((err: Error) => console.error(err));
+
+        if (!connect) throw new Error('Bad connect');
+
+        const actionDeleteLeafs = new Action.ActionParser({
+          actionPath: 'wiki',
+          actionType: 'delete_leafs',
+        });
+
+        const data: ParserResult = await actionDeleteLeafs.getActionData(body);
+        await service.dbm.disconnect().catch((err: Error) => console.error(err));
+
+        if (!data) {
+          params.status = 'error';
+          params.done = false;
+          res.status(404);
+          return res.json(
+            getResponseJson(
+              'error',
+              { status: 'FAIL', params, done: false, metadata: data },
+              (req as Record<string, any>).start,
+            ),
+          );
+        }
+
+        const { deletedCount = 0, ok = 0 } = <Record<string, any>>data || {};
+
+        return res.json(
+          getResponseJson(
+            'done',
+            { status: 'OK', done: true, params, metadata: { deletedCount, ok } },
+            (req as Record<string, any>).start,
+          ),
+        );
+      } catch (err) {
+        console.error(err);
+        await server.locals.service.dbm.disconnect().catch((err: Error) => console.error(err));
+
+        if (!res.headersSent) {
+          params.done = false;
+          params.status = 'FAIL';
+          res.status(503);
+          return res.json(
+            getResponseJson(
+              err.name,
+              { status: 'Server error', done: false, params, metadata: null },
+              (req as Record<string, any>).start,
+            ),
+          );
+        }
+      }
     }
   }
 }

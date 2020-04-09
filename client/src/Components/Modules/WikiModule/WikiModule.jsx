@@ -155,8 +155,24 @@ class WikiModule extends React.PureComponent {
     }
   };
 
-  onDeleteNode = (body, event) => {
-    console.log('delete action body:', body);
+  onDeleteNode = async (body, event) => {
+    try {
+      const { Request } = this.context;
+      const rest = new Request();
+
+      const res = await rest.sendRequest('/wiki/deleteLeafs', 'DELETE', body, true);
+
+      if (!res || res?.status !== 200) {
+        throw new Error('Bad delete leaf');
+      }
+
+      const { data: { metadata: { deletedCount = 0, ok = 0 } = {} } = {} } = res;
+
+      if (deletedCount && ok) this.fetchTree('', true);
+    } catch (error) {
+      console.error(error);
+      message.error('Ошибка удаления ветки');
+    }
   };
 
   onChangeSelect = value => {

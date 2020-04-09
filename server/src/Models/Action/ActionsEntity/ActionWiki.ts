@@ -26,14 +26,15 @@ class ActionWiki implements Action {
   }
 
   private async deleteLeafs(actionParam: ActionParams, model: Model<Document>): ParserData {
-    const { ids = [] } = <Record<string, Array<string>>>actionParam || {};
+    const { queryParams = null } = <Record<string, Array<string>>>actionParam || {};
 
-    if (!ids || (ids && !ids?.length)) return null;
+    if (!queryParams || (queryParams && _.isEmpty(queryParams))) return null;
 
     const query: ActionParams = {
       multiple: true,
+      mode: 'many',
       findBy: '_id',
-      queryParams: { ids },
+      queryParams,
     };
 
     return this.getEntity().deleteEntity(model, query);
