@@ -54,7 +54,7 @@ class ActionChatRoom implements Action {
     const roomToken: string = (actionParam as Record<string, string>).roomToken;
     const updateField: string = (actionParam as Record<string, string>).updateField;
 
-    const query = { roomToken, uid, updateField };
+    const query = { findBy: roomToken, uid, updateField };
     const actionData: Record<string, any> | null = await this.getEntity().deleteEntity(model, query);
     return <Document | null>actionData;
   }

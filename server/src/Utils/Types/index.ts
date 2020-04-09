@@ -11,6 +11,8 @@ export type collectionOperations = {
   start: Function;
 };
 
+export type limiter = number | null | undefined;
+
 export type actionGet = {
   collection: string;
   param: Object;

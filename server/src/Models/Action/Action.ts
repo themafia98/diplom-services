@@ -2,7 +2,7 @@ import { ActionProps, ActionParams, Actions, Action } from '../../Utils/Interfac
 import { Model, Document } from 'mongoose';
 import _ from 'lodash';
 import ActionEntity from './ActionEntity';
-import { ParserData } from '../../Utils/Types';
+import { ParserData, limiter } from '../../Utils/Types';
 
 /** Actions */
 import ActionLogger from './ActionsEntity/ActionLogger';
@@ -22,7 +22,7 @@ namespace Action {
       super(props);
     }
 
-    public async getAll(model: Model<Document>, actionParam: ActionParams, limit: number | null | undefined) {
+    public async getAll(model: Model<Document>, actionParam: ActionParams, limit: limiter): ParserData {
       try {
         if (actionParam.in && actionParam.where) {
           return await model
@@ -41,7 +41,7 @@ namespace Action {
       }
     }
 
-    public async findOnce(model: Model<Document>, actionParam: ActionParams) {
+    public async findOnce(model: Model<Document>, actionParam: ActionParams): ParserData {
       try {
         const actionData = await model.findOne(actionParam);
         return actionData;
@@ -51,7 +51,7 @@ namespace Action {
       }
     }
 
-    public async createEntity(model: Model<Document>, item: object) {
+    public async createEntity(model: Model<Document>, item: object): ParserData {
       try {
         console.log('create entity:', item);
         const actionData: Document = await model.create(item);
@@ -62,33 +62,50 @@ namespace Action {
       }
     }
 
-    public async deleteEntity(model: Model<Document>, query: ActionParams) {
+    public async deleteEntity(model: Model<Document>, query: ActionParams): ParserData {
       try {
-        const { tokenRoom, uid, updateField } = query;
-        const actionData: Document = await model.update(
-          { tokenRoom },
-          {
-            $pullAll: { [<string>updateField]: [uid] },
-          },
-        );
+        const { multiple = false, mode = '$pullAll', findBy, uid, updateField } = query;
 
-        const roomDoc: Document | null = await model.findOne({ tokenRoom });
+        const isPull = mode === '$pullAll';
+        let actionData: Document | null = null;
+        let doc: Document | null = null;
 
-        if (!roomDoc) {
-          return null;
+        const runDelete: Function = async (
+          props: ActionParams,
+          multiple: boolean = false,
+        ): Promise<Record<string, any>> => {
+          if (!multiple) return await model.deleteOne(props);
+          else {
+            const { ids = [] } = <Record<string, Array<string>>>props;
+            return await model.deleteMany({ [<string>findBy]: { $in: ids } });
+          }
+        };
+
+        if (isPull) {
+          const findByParam = { [<string>findBy]: findBy };
+          const queryUpdate = { [<string>mode]: { [<string>updateField]: [uid] } };
+
+          actionData = await model.update(findByParam, queryUpdate);
+          doc = await model.findOne({ [<string>findBy]: findBy });
+
+          if (!doc) {
+            return null;
+          }
+
+          const record: ArrayLike<string> = (doc as Record<string, any>)[<string>updateField];
+
+          if (Array.isArray(record) && (!record.length || record.length === 0)) {
+            const docResult: Record<string, any> = await runDelete({ [<string>findBy]: findBy });
+
+            if (docResult.ok) {
+              return <Document>docResult;
+            } else return null;
+          }
+
+          return actionData;
         }
 
-        const record: ArrayLike<string> = (roomDoc as Record<string, any>)[<string>updateField];
-
-        if (Array.isArray(record) && (!record.length || record.length === 0)) {
-          const roomDocResult: Record<string, any> = await model.deleteOne({ tokenRoom });
-
-          if (roomDocResult.ok) {
-            return roomDocResult;
-          } else return null;
-        }
-
-        return actionData;
+        return null;
       } catch (err) {
         console.error(err);
         return null;

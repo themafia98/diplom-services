@@ -50,14 +50,8 @@ class WikiModule extends React.PureComponent {
   };
 
   onSelect = (keys, event) => {
-    const { node: { props: { expanded = false } = {} } = {}, nativeEvent: { srcElement = null } = {} } =
-      event || {};
+    const { node: { props: { expanded = false } = {} } = {} } = event || {};
     const { metadata = [] } = this.props;
-
-    const isElement = srcElement && srcElement?.className;
-    if (isElement && srcElement?.className?.includes('ant-dropdown-menu-item-active')) {
-      return;
-    }
 
     if (expanded) {
       this.setState({
@@ -160,6 +154,10 @@ class WikiModule extends React.PureComponent {
     }
   };
 
+  onDeleteNode = (body, event) => {
+    console.log('delete action body:', body);
+  };
+
   onChangeSelect = value => {
     this.setState({
       ...this.state,
@@ -202,6 +200,8 @@ class WikiModule extends React.PureComponent {
   };
 
   onDropdownEvent = (sign = '', id = '', event) => {
+    event.stopPropagation();
+
     if (!sign || !id) return;
 
     const { metadata = [] } = this.props;
@@ -213,11 +213,10 @@ class WikiModule extends React.PureComponent {
       return;
     }
 
-    const index = ++metadata.filter(node => node?.parentId === id).length;
-
     if (sign === 'add') {
       const { current: { state: { value: title = '' } = {} } = {} } = this.titleRef || {};
       if (!title) return;
+      const index = ++metadata.filter(node => node?.parentId === id).length;
 
       this.onCreateNode(
         {
@@ -226,6 +225,26 @@ class WikiModule extends React.PureComponent {
           path: `${item?.path}-${index}`,
           index,
           parentId: id,
+        },
+        event,
+      );
+    } else if (sign === 'delete') {
+      const childrensIds = metadata
+        .map(node => {
+          if (node?.parentId === id) {
+            return node?._id;
+          }
+          return null;
+        })
+        .filter(Boolean);
+
+      const parentId = item?._id;
+
+      this.onDeleteNode(
+        {
+          queryParams: {
+            ids: _.uniq([childrensIds, parentId]),
+          },
         },
         event,
       );
@@ -265,11 +284,10 @@ class WikiModule extends React.PureComponent {
                 Добавить ветку
               </Button>
             </Menu.Item>
-            <Menu.Item
-              onMouseDown={this.onDropdownEvent.bind(this, 'delete', it?._id)}
-              key={`delete${it?._id}`}
-            >
-              Удалить выбраную ветку
+            <Menu.Item key={`delete${it?._id}`}>
+              <Button type="link" onClick={this.onDropdownEvent.bind(this, 'delete', it?._id)}>
+                Удалить выбраную ветку
+              </Button>
             </Menu.Item>
           </Menu>
         );
