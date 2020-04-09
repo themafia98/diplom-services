@@ -1,6 +1,7 @@
 {
   "title": "Controll system",
   "icon": "/img/logo.svg",
+  "supportIE": true,
   "clientDB": {
     "name": "controllSystemDB",
     "version": 3
