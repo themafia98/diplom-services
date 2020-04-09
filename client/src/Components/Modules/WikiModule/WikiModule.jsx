@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
+import Scrollbars from 'react-custom-scrollbars';
 import { loadCurrentData } from '../../../Redux/actions/routerActions/middleware';
 import { Tree, Button, Input, Select, Dropdown, Menu, message, Spin } from 'antd';
 
@@ -368,7 +369,9 @@ class WikiModule extends React.PureComponent {
                     placeholder="Поиск по дереву"
                     onChange={this.onSearch}
                   />
-                  <Tree onSelect={this.onSelect} treeData={this.renderTree()} />
+                  <Scrollbars>
+                    <Tree onSelect={this.onSelect} treeData={this.renderTree()} />
+                  </Scrollbars>
                 </React.Fragment>
               ) : !isLoading ? (
                 <p className="empty-tree">В Wiki ничего нет</p>
