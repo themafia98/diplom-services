@@ -56,7 +56,8 @@ class WikiModule extends React.PureComponent {
     } = event || {};
     const { metadata = [] } = this.props;
 
-    if (toElement?.className.includes('ant-dropdown-menu-item-active')) {
+    const isElement = toElement && toElement?.className;
+    if (isElement && toElement?.className?.includes('ant-dropdown-menu-item-active')) {
       return;
     }
 
