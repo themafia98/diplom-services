@@ -50,10 +50,8 @@ class WikiModule extends React.PureComponent {
   };
 
   onSelect = (keys, event) => {
-    const {
-      node: { props: { expanded = false } = {} } = {},
-      event: { nativeEvent: { srcElement = null } = {} } = {},
-    } = event || {};
+    const { node: { props: { expanded = false } = {} } = {}, nativeEvent: { srcElement = null } = {} } =
+      event || {};
     const { metadata = [] } = this.props;
 
     const isElement = srcElement && srcElement?.className;
