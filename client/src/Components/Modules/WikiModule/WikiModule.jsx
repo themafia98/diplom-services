@@ -244,7 +244,7 @@ class WikiModule extends React.PureComponent {
       this.onDeleteNode(
         {
           queryParams: {
-            ids: _.uniq([childrensIds, parentId]),
+            ids: _.uniq([...childrensIds, parentId]),
           },
         },
         event,
