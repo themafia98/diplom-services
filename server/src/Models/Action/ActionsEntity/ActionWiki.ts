@@ -49,9 +49,9 @@ class ActionWiki implements Action {
         return this.getTreeList(actionParam, model);
       case 'create_leaf':
         return this.createLeaf(actionParam, model);
-      default:
       case 'delete_leafs':
         return this.deleteLeafs(actionParam, model);
+      default:
         return null;
     }
   }
