@@ -166,7 +166,7 @@ class WikiModule extends React.PureComponent {
         throw new Error('Bad delete leaf');
       }
 
-      const { data: { metadata: { deletedCount = 0, ok = 0 } = {} } = {} } = res;
+      const { data: { response: { metadata: { deletedCount = 0, ok = 0 } = {} } = {} } = {} } = res;
 
       if (deletedCount && ok) this.fetchTree('', true);
     } catch (error) {
