@@ -134,6 +134,11 @@ namespace Wiki {
         }
       }
     }
+
+    @Delete({ path: '/deleteLeafs', private: true })
+    async deleteLeafs(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+      return res.sendStatus(200);
+    }
   }
 }
 
