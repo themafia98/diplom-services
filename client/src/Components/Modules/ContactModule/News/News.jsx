@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 import { Pagination, Button, message, Empty, Spin } from 'antd';
 
 import Scrollbars from 'react-custom-scrollbars';
@@ -61,7 +62,7 @@ class News extends React.PureComponent {
     } else setCurrentTab(actionTabs[index]);
   };
 
-  onOpen = key => {
+  onOpen = (openKey = '') => {
     const {
       onOpenPageWithData,
       router: { actionTabs = [], routeData: { contactModule: { news = [] } = {} } = {} } = {},
@@ -69,6 +70,7 @@ class News extends React.PureComponent {
       data = {},
     } = this.props;
     const { config = {} } = this.context;
+    const key = _.isString(openKey) ? openKey.replace('___link', '') : '';
 
     let listdata = data && data.news && Array.isArray(data.news) ? [...data.news] : news;
     const moduleId = 'informationPage';
@@ -80,7 +82,7 @@ class News extends React.PureComponent {
       pathData: { page, moduleId, key },
     });
 
-    const index = actionTabs.findIndex(tab => tab === routeNormalize.path);
+    const index = actionTabs.findIndex(tab => tab.replace('___link', '') === routeNormalize.path);
     const findItem = listdata.find(it => it._id === key);
     const dataFind = findItem ? { ...findItem } : {};
     const isFind = index !== -1;

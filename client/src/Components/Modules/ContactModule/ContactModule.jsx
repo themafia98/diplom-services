@@ -93,8 +93,18 @@ class ContactModule extends React.PureComponent {
     const isBackgroundInfoPage = this.checkBackground('contactModule_informationPage');
     const isBackgroundCreateNews = this.checkBackground('contactModule_createNews');
     const { statusApp = '', router: { routeData = {} } = {}, udata } = this.props;
-    const data = routeData[path] || {};
+
+    const linkPath = _.isString(path) ? path.split('__')[1] || '' : '';
+    const data = routeData[path] || routeData[linkPath] || {};
     const { load = false, news = [] } = routeData['contactModule'] || {};
+
+    const entityLinkProps =
+      linkPath && path.includes('___link')
+        ? {
+            ...data,
+          }
+        : {};
+    const visibleEntity = path.includes('___link') || path === 'contactModule_informationPage';
 
     return (
       <React.Fragment>
@@ -110,11 +120,12 @@ class ContactModule extends React.PureComponent {
             visible={path === 'contactModule_feedback'}
           />
         </TabContainer>
-        <TabContainer isBackground={isBackgroundInfoPage} visible={path === 'contactModule_informationPage'}>
+        <TabContainer isBackground={isBackgroundInfoPage} visible={visibleEntity}>
           <NewsViewPage
             key="newViewPageModule"
             isBackground={isBackgroundInfoPage}
-            visible={path === 'contactModule_informationPage'}
+            visible={visibleEntity}
+            {...entityLinkProps}
           />
         </TabContainer>
         <TabContainer isBackground={isBackgroundCreateNews} visible={path === 'contactModule_createNews'}>

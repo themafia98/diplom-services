@@ -64,6 +64,18 @@ class StreamBox extends React.Component {
           },
         });
 
+        /** TODO: delay hardcode loading, need create multiple loading modules data */
+        onLoadCurrentData({
+          path: 'contactModule',
+          storeLoad: 'news',
+          methodRequst: 'GET',
+          noCorsClient: true,
+          useStore: true,
+          options: {
+            keys: _.uniq(metadata.map(notification => notification?.action?.link)),
+          },
+        });
+
         this.setState({
           streamList: metadata,
         });
@@ -130,13 +142,21 @@ class StreamBox extends React.Component {
           return;
         }
 
-        const activePage = routePathNormalise({
+        const activePageParsed = routePathNormalise({
           pathType: 'moduleItem',
           pathData: { page, moduleId, key },
         });
 
+        const pathParsed =
+          moduleName == 'news'
+            ? activePageParsed?.path.replace(`_${type}Notification`, '_informationPage')
+            : activePageParsed?.path.replace(`_${type}Notification`, '');
+
         onOpenPageWithData({
-          activePage,
+          activePage: {
+            ...activePageParsed,
+            path: pathParsed + '___link',
+          },
           routeDataActive: { ...item },
         });
       }
@@ -177,9 +197,13 @@ class StreamBox extends React.Component {
       type,
       udata: { _id: uid = '' } = {},
       udata: { avatar: myAvatar = null } = {},
+      parentPath = '',
+      parentDataName = '',
+      router: { routeData = {} } = {},
     } = this.props;
     const { streamList = [] } = this.state;
     if (!type) return null;
+    const { [parentPath]: { [parentDataName]: parentDataList = [] } = {} } = routeData || {};
 
     return (
       <Scrollbars style={mode ? { height: 'calc(100% - 100px)' } : null}>
@@ -198,7 +222,7 @@ class StreamBox extends React.Component {
               const { type = '', link = '' } = action;
 
               const isMine = uid === uidCreater;
-              const avatar = isMine ? myAvatar : null;
+              const avatar = isMine ? myAvatar : parentDataList?.find(it => it?._id === uidCreater)?.avatar;
               const isWithTooltip = Boolean(link);
 
               const cardItem = (

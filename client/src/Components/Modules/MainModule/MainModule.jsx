@@ -12,8 +12,13 @@ class MainModule extends React.PureComponent {
     onErrorRequstAction: PropTypes.func.isRequired,
   };
 
+  state = {
+    path: 'mainModule',
+  };
+
   render() {
     const { visible } = this.props;
+    const { path } = this.state;
 
     return (
       <div className="mainModule">
@@ -24,7 +29,7 @@ class MainModule extends React.PureComponent {
         />
         <div className="mainModule_main">
           <div className="col-4 columnModuleLeft">
-            <StreamBox key="streamMain" type={'global'} />
+            <StreamBox parentDataName="users" parentPath={path} key="streamMain" type={'global'} />
           </div>
           <div className="col-8 columnModuleRight">
             <div className="widjects">

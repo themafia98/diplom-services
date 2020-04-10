@@ -49,32 +49,32 @@ export default (state = initialState, action) => {
     }
     case OPEN_PAGE_WITH_DATA: {
       const copyRouteData = { ...state.routeData };
-      const { activePage = {} } = action.payload || {};
+      const {
+        activePage = {},
+        routeDataActive = {},
+        routeDataActive: { key: keyRouteData = '', _id: id = '' } = {},
+      } = action.payload || {};
 
-      if (
-        !activePage ||
-        typeof activePage !== 'object' ||
-        activePage === null ||
-        (activePage &&
-          activePage.key !== action.payload.routeDataActive.key &&
-          activePage &&
-          activePage['moduleId'] &&
-          activePage['moduleId'] !== 'createNews')
-      ) {
+      const isEmptyActivePage = !activePage || !_.isPlainObject(activePage);
+      const isEqualKeys = (activePage && activePage?.key === keyRouteData) || activePage?.key === id;
+      const isValidModuleId = activePage && activePage?.moduleId && activePage?.moduleId !== 'createNews';
+
+      if (isEmptyActivePage || (!isEqualKeys && isValidModuleId)) {
         return { ...state };
       }
 
-      const { path = '' } = action.payload.activePage || {};
+      const { path = '' } = activePage || {};
       if (!path) return { ...state };
 
-      copyRouteData[action.payload.routeDataActive.key || action.payload.routeDataActive] =
-        typeof action.payload.routeDataActive !== 'string' ? action.payload.routeDataActive : {};
+      const validKey = keyRouteData || id || 'undefiendModule';
+
+      copyRouteData[validKey] = !_.isString(routeDataActive) ? routeDataActive : {};
 
       return {
         ...state,
         currentActionTab: path,
         actionTabs: [...state.actionTabs, path],
-        routeDataActive: { ...action.payload.routeDataActive },
+        routeDataActive: { ...routeDataActive },
         routeData: copyRouteData,
       };
     }
