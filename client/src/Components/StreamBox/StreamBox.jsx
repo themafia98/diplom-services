@@ -105,7 +105,8 @@ class StreamBox extends React.Component {
         if (config?.tabsLimit <= actionTabs?.length)
           return message.error(`Максимальное количество вкладок: ${config?.tabsLimit}`);
 
-        const path = `${moduleName}Module_${type}Notification`;
+        const parsedModulePathName = moduleName && moduleName?.includes('news') ? 'contact' : moduleName;
+        const path = `${parsedModulePathName}Module_${type}Notification`;
 
         const { moduleId = '', page = '' } = routeParser({ path });
         if (!moduleId || !page) return;
@@ -123,7 +124,7 @@ class StreamBox extends React.Component {
 
         if (isFind) return setCurrentTab(actionTabs[index]);
 
-        const item = data.find(it => it?.key === key);
+        const item = data.find(it => it?.key === key || it?._id === key);
         if (!item) {
           message.warning('Страница не найдена.');
           return;
