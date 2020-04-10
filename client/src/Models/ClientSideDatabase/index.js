@@ -273,9 +273,14 @@ class ClientSideDatabase {
    */
   getItemByKey(nameStore, key, mode = 'readonly') {
     if (this.getCrashStatus()) return;
-    const tx = this.getDb().transaction([nameStore], mode);
-    const store = tx.objectStore(nameStore);
-    return store.get(key);
+    try {
+      const tx = this.getDb().transaction([nameStore], mode);
+      const store = tx.objectStore(nameStore);
+      return store.get(key);
+    } catch (error) {
+      console.error(error.message);
+      return null;
+    }
 
     /** @Example */
     // const item = clientDB.getItemByKey("jurnalworks", "31232");
@@ -292,9 +297,14 @@ class ClientSideDatabase {
    */
   getAllItems(nameStore, mode = 'readonly') {
     if (this.getCrashStatus()) return;
-    const tx = this.getDb().transaction([nameStore], mode);
-    const store = tx.objectStore(nameStore);
-    return store.getAll();
+    try {
+      const tx = this.getDb().transaction([nameStore], mode);
+      const store = tx.objectStore(nameStore);
+      return store.getAll();
+    } catch (error) {
+      console.error(error.message);
+      return null;
+    }
 
     /** @Example */
     // const items = clientDB.getAllItems("jurnalworks");
@@ -318,6 +328,7 @@ class ClientSideDatabase {
       return store.add(item);
     } catch (err) {
       console.warn(err.message);
+      return null;
     }
 
     /** @Example */
@@ -343,9 +354,14 @@ class ClientSideDatabase {
   updateItem(nameStore, item, pk, mode = 'readwrite') {
     if (this.getCrashStatus()) return;
 
-    const tx = this.getDb().transaction([nameStore], mode);
-    const store = tx.objectStore(nameStore);
-    return store.put(item);
+    try {
+      const tx = this.getDb().transaction([nameStore], mode);
+      const store = tx.objectStore(nameStore);
+      return store.put(item);
+    } catch (error) {
+      console.error(error.message);
+      return null;
+    }
 
     /** @Example */
     // const putAction = clientDB.updateItem("jurnalworks", {
@@ -367,9 +383,14 @@ class ClientSideDatabase {
    */
   deleteItem(nameStore = '', key, mode = 'readwrite') {
     if (this.getCrashStatus()) return;
-    const tx = this.getDb().transaction([nameStore], mode);
-    const store = tx.objectStore(nameStore);
-    return store.delete(key);
+    try {
+      const tx = this.getDb().transaction([nameStore], mode);
+      const store = tx.objectStore(nameStore);
+      return store.delete(key);
+    } catch (error) {
+      console.error(error.message);
+      return null;
+    }
 
     /** @Example */
     // const deleteKey = "1231312asd";

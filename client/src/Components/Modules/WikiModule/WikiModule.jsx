@@ -137,6 +137,7 @@ class WikiModule extends React.PureComponent {
               path: `0-${index}`,
               index,
               parentId: 'root',
+              accessGroups: node?.accessGroups?.length ? [...node.accessGroups] : ['full'],
             }
           : item,
       });

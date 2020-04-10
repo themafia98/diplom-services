@@ -1,3 +1,11 @@
+import moment from 'moment';
+import {
+  USER_SCHEMA,
+  TASK_SCHEMA,
+  TASK_CONTROLL_JURNAL_SCHEMA,
+  WIKI_NODE_TREE,
+} from '../Models/Schema/const';
+
 /**
  * @return {void} void
  */
@@ -101,4 +109,49 @@ const getBase64 = (img, callback) => {
   reader.readAsDataURL(img);
 };
 
-export { forceUpdateDetectedInit, b64toBlob, getBase64 };
+const dataParser = (flag = false, isLocalUpdate = true, dep = {}) => {
+  const {
+    copyStore = [],
+    isPartData = false,
+    storeLoad,
+    methodQuery,
+    schema,
+    clientDB,
+    sortBy,
+    pathValid,
+    requestError,
+  } = dep;
+  let shoudClearError = false;
+  const templateSchema =
+    storeLoad === 'wiki' && methodQuery === 'get_all'
+      ? WIKI_NODE_TREE
+      : storeLoad === 'jurnalworks'
+      ? TASK_CONTROLL_JURNAL_SCHEMA
+      : storeLoad === 'users'
+      ? USER_SCHEMA
+      : storeLoad === 'tasks'
+      ? TASK_SCHEMA
+      : null;
+
+  let storeCopyValid = copyStore.map(it => schema.getSchema(templateSchema, it)).filter(Boolean);
+
+  storeCopyValid.forEach(it => clientDB.updateItem(storeLoad, it));
+
+  if (requestError !== null) shoudClearError = true;
+
+  const sortedCopyStore =
+    !sortBy && copyStore.every(it => it.createdAt)
+      ? copyStore.sort((a, b) => {
+          const aDate = moment(a.createdAt).unix();
+          const bDate = moment(b.createdAt).unix();
+          return bDate - aDate;
+        })
+      : sortBy
+      ? copyStore.sort((a, b) => a[sortBy] - b[sortBy])
+      : copyStore;
+
+  const data = { [storeLoad]: sortedCopyStore, load: true, path: pathValid, isPartData };
+  return { data, shoudClearError };
+};
+
+export { forceUpdateDetectedInit, b64toBlob, getBase64, dataParser };
