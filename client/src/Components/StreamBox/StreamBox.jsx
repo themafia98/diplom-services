@@ -171,7 +171,13 @@ class StreamBox extends React.Component {
   };
 
   render() {
-    const { mode, boxClassName, type, udata: { _id: uid = '' } = {} } = this.props;
+    const {
+      mode,
+      boxClassName,
+      type,
+      udata: { _id: uid = '' } = {},
+      udata: { avatar: myAvatar = null } = {},
+    } = this.props;
     const { streamList = [] } = this.state;
     if (!type) return null;
 
@@ -180,10 +186,19 @@ class StreamBox extends React.Component {
         <div className={clsx('streamBox', boxClassName ? boxClassName : null)}>
           {streamList?.length ? (
             streamList.map((card, index) => {
-              const { _id = '', authorName = '', title = '', message = '', action = {} } = card;
+              const {
+                uidCreater = '',
+                _id = '',
+                authorName = '',
+                title = '',
+                message = '',
+                action = {},
+              } = card;
               const key = _id ? _id : index;
               const { type = '', link = '' } = action;
 
+              const isMine = uid === uidCreater;
+              const avatar = isMine ? myAvatar : null;
               const isWithTooltip = Boolean(link);
 
               const cardItem = (
@@ -195,7 +210,7 @@ class StreamBox extends React.Component {
                   className={clsx('cardStream', mode ? mode : null, !_.isEmpty(action) ? 'withAction' : null)}
                 >
                   <div className="about">
-                    <Avatar size="64" icon="user" />
+                    <Avatar src={`data:image/png;base64,${avatar}`} size="default" icon="user" />
                     <p className="name">{authorName}</p>
                   </div>
                   <p className="card_title">{title}</p>
@@ -225,8 +240,8 @@ class StreamBox extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const { router = {} } = state;
-  return { router };
+  const { router = {}, publicReducer: { udata = {} } = {} } = state;
+  return { router, udata };
 };
 
 const mapDispatchToProps = dispatch => {
