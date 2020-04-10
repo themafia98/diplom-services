@@ -13,6 +13,7 @@ const ChatRoom = props => {
     shouldScroll = false,
     messagesLength,
     messages: msgProps = [],
+    usersList = [],
     tokenRoom = '',
     onClearScroll = null,
     onKeyDown = null,
@@ -36,12 +37,12 @@ const ChatRoom = props => {
         const scrollTop = refScrollbar.current.getScrollTop();
         const scrollHeight = refScrollbar.current.getScrollHeight();
 
-        if (scrollHeight - scrollTop < 350 && isMount) {
+        if (!event) {
+          refScrollbar.current.scrollToBottom();
           return;
         }
 
-        if (!event) {
-          refScrollbar.current.scrollToBottom();
+        if (scrollHeight - scrollTop < 350 && isMount) {
           return;
         }
 
@@ -57,7 +58,7 @@ const ChatRoom = props => {
   useEffect(() => {
     if (messages.length !== msgProps.length) setMessages([...msgProps]);
 
-    scrollHandler();
+    scrollHandler({});
   }, [messages, msgProps, scrollHandler]);
 
   useEffect(() => {
@@ -75,7 +76,7 @@ const ChatRoom = props => {
     if (value !== msg) setMsg(value);
   };
 
-  const _onSubmit = (event, msgValue = null) => {
+  const onSubmit = (event, msgValue = null) => {
     if (_.isNull(msgValue)) {
       if ((event.which || event.keyCode) && (event.which || event.keyCode) !== 13) return;
       if ((event.which || event.keyCode) && (event.which || event.keyCode) === 13) {
@@ -95,6 +96,8 @@ const ChatRoom = props => {
     return messages.map((it, i) => {
       const isMine = uid === it.authorId && uid.includes(it.authorId);
 
+      const avatar = isMine ? myAvatar : usersList.find(user => user?._id === it?.authorId)?.avatar;
+
       const classNames = clsx(i, 'message', isMine ? 'currentUser' : null);
       return (
         <div
@@ -113,8 +116,8 @@ const ChatRoom = props => {
                     onClick={event => redirectUserProfile(event, it.authorId ? it.authorId : null)}
                     className="msg_author"
                   >
-                    <Avatar src={`data:image/png;base64,${isMine ? myAvatar : null}`} size="small" />
-                    {it.displayName}
+                    <Avatar src={`data:image/png;base64,${avatar}`} size="default" />
+                    <span className="displayName">{it.displayName}</span>
                   </span>
                 ) : (
                   <p className="admin_wrapper">{it.displayName}</p>
@@ -141,8 +144,8 @@ const ChatRoom = props => {
           </Scrollbars>
         </div>
       </div>
-      <Textarea value={msg} onChange={onChange} onKeyDown={e => _onSubmit(e)} className="chat-area" />
-      <Button onClick={e => _onSubmit(e, msg)} type="primary">
+      <Textarea value={msg} onChange={onChange} onKeyDown={e => onSubmit(e)} className="chat-area" />
+      <Button onClick={e => onSubmit(e, msg)} type="primary">
         Отправить
       </Button>
     </div>

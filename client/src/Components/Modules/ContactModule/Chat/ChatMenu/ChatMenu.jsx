@@ -75,7 +75,7 @@ const ChatMenu = props => {
       <div className="menuLoading-skeleton">
         <Scrollbars>
           {!socketConnection && !socketErrorStatus ? (
-            generateSkeleton(listdata && listdata.length ? listdata.length : 5)
+            generateSkeleton(listdata && listdata?.length ? listdata?.length : 5)
           ) : (
             <List
               key="list-chat"
@@ -94,9 +94,9 @@ const ChatMenu = props => {
 
                 return (
                   <Item
-                    className={clsx(tokenRoom === it.tokenRoom ? 'activeChat' : null)}
-                    onClick={e => setActiveChatRoom(e, it._id, membersIds, it.tokenRoom)}
-                    key={it._id + i}
+                    className={clsx(tokenRoom?.includes(it?.tokenRoom) ? 'activeChat' : null)}
+                    onClick={e => setActiveChatRoom(e, it?._id, membersIds, it?.tokenRoom)}
+                    key={it?._id + i}
                   >
                     <Meta
                       key={`${it}${i}`}

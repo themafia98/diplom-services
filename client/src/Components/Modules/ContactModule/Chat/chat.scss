@@ -166,6 +166,10 @@
       flex-direction: column;
     }
 
+    &.currentUser {
+      border-radius: 5px 5px 5px 20px;
+    }
+
     .msg_header {
       display: flex;
       align-items: center;
@@ -188,6 +192,12 @@
       align-items: center;
       cursor: pointer;
       font-size: 18px;
+
+      .displayName {
+        padding-left: 5px;
+        cursor: pointer;
+      }
+
       .ant-avatar-sm {
         cursor: pointer;
         width: 17px;
@@ -208,6 +218,7 @@
     }
     .wrapper_msg {
       padding-left: 5px;
+      margin: 10px 0;
       font-size: 16px;
       word-break: break-word;
     }
