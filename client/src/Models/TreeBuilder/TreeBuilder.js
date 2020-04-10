@@ -7,16 +7,21 @@ class TreeBuilder {
 
   /**
    * @param {Array} childrens
+   * @constructor
    */
   constructor(childrens) {
     this.#childrens = [...childrens];
   }
 
+  /**
+   * @public
+   */
   get childrens() {
     return this.#childrens;
   }
 
   /**
+   * @public
    * @param {Array<object>} root
    * @param {number} indexRoot default value 0
    */
