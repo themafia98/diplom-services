@@ -110,7 +110,12 @@ class StreamBox extends React.Component {
         const { moduleId = '', page = '' } = routeParser({ path });
         if (!moduleId || !page) return;
 
-        const moduleParseName = routeData[page][`${moduleName}`] ? `${moduleName}` : `${moduleName}s`;
+        const isExist = routeData[page] && routeData[page][`${moduleName}`];
+        const moduleParseName = isExist
+          ? `${moduleName}`
+          : moduleName[moduleName?.length - 1] === 's'
+          ? moduleName
+          : `${moduleName}s`;
 
         const { [moduleParseName]: data = [] } = routeData[page] || {};
         const index = actionTabs.findIndex(tab => tab.includes(page) && tab.includes(key));
@@ -178,7 +183,7 @@ class StreamBox extends React.Component {
               const key = _id ? _id : index;
               const { type = '', link = '' } = action;
 
-              const isWithTooltip = type.includes('task_link') && link;
+              const isWithTooltip = Boolean(link);
 
               const cardItem = (
                 <div
