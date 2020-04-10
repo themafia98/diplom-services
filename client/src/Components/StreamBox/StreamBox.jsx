@@ -95,35 +95,42 @@ class StreamBox extends React.Component {
       router: { routeData = {}, actionTabs = [] } = {},
     } = this.props;
 
-    const { action: { type = '', link: key = '' } = {} } = streamList[index] || {};
+    const { action: { type: typeAction = '', link: key = '' } = {}, type = '' } = streamList[index] || {};
     const { config = {} } = this.context;
 
-    switch (type) {
-      case 'task_link': {
+    const [moduleName = '', typeCurrentAction = ''] = typeAction.split('_');
+
+    switch (typeCurrentAction) {
+      case 'link': {
         if (config?.tabsLimit <= actionTabs?.length)
           return message.error(`Максимальное количество вкладок: ${config?.tabsLimit}`);
 
-        const path = 'taskModule_globalNotification';
+        const path = `${moduleName}Module_${type}Notification`;
+
         const { moduleId = '', page = '' } = routeParser({ path });
         if (!moduleId || !page) return;
-        const { tasks = [] } = routeData['taskModule'] || {};
+
+        const moduleParseName = routeData[page][`${moduleName}`] ? `${moduleName}` : `${moduleName}s`;
+
+        const { [moduleParseName]: data = [] } = routeData[page] || {};
         const index = actionTabs.findIndex(tab => tab.includes(page) && tab.includes(key));
         const isFind = index !== -1;
 
         if (isFind) return setCurrentTab(actionTabs[index]);
 
-        const item = tasks.find(it => it?.key === key);
+        const item = data.find(it => it?.key === key);
         if (!item) {
           message.warning('Страница не найдена.');
           return;
         }
 
+        const activePage = routePathNormalise({
+          pathType: 'moduleItem',
+          pathData: { page, moduleId, key },
+        });
+
         onOpenPageWithData({
-          // @ts-ignore
-          activePage: routePathNormalise({
-            pathType: 'moduleItem',
-            pathData: { page, moduleId, key },
-          }),
+          activePage,
           routeDataActive: { ...item },
         });
       }
