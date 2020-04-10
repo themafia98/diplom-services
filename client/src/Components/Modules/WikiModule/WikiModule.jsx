@@ -11,9 +11,7 @@ import ModalWindow from '../../ModalWindow';
 import TitleModule from '../../TitleModule';
 import modalContext from '../../../Models/context';
 
-const { TreeNode, DirectoryTree } = Tree;
 const { Option } = Select;
-
 const { Search } = Input;
 
 class WikiModule extends React.PureComponent {

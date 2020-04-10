@@ -7,16 +7,19 @@ import { Button, Avatar } from 'antd';
 import Textarea from '../../../../Textarea';
 import Message from './Message';
 
-const ChatRoom = ({
-  uid = '',
-  shouldScroll = false,
-  messagesLength,
-  messages: msgProps = [],
-  tokenRoom = '',
-  onClearScroll = null,
-  onKeyDown = null,
-  pushMessage = null,
-}) => {
+const ChatRoom = props => {
+  const {
+    uid = '',
+    shouldScroll = false,
+    messagesLength,
+    messages: msgProps = [],
+    tokenRoom = '',
+    onClearScroll = null,
+    onKeyDown = null,
+    pushMessage = null,
+    myAvatar = null,
+  } = props;
+
   const refScrollbar = useRef(null);
   const [isMount, setMount] = useState(false);
   const [token] = useState(tokenRoom);
@@ -90,11 +93,9 @@ const ChatRoom = ({
 
   const renderChat = messages => {
     return messages.map((it, i) => {
-      const classNames = clsx(
-        i,
-        'message',
-        uid === it.authorId && uid.includes(it.authorId) ? 'currentUser' : null,
-      );
+      const isMine = uid === it.authorId && uid.includes(it.authorId);
+
+      const classNames = clsx(i, 'message', isMine ? 'currentUser' : null);
       return (
         <div
           key={`${i}${it.tokenRoom}${it.msg}${it.authorId}${it.displayName}${it._id}`}
@@ -112,7 +113,7 @@ const ChatRoom = ({
                     onClick={event => redirectUserProfile(event, it.authorId ? it.authorId : null)}
                     className="msg_author"
                   >
-                    <Avatar src={`data:image/png;base64,${null}`} size="small" />
+                    <Avatar src={`data:image/png;base64,${isMine ? myAvatar : null}`} size="small" />
                     {it.displayName}
                   </span>
                 ) : (

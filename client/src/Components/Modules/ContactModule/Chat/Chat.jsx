@@ -294,7 +294,7 @@ class Chat extends React.PureComponent {
     );
   };
 
-  parseChatJson = ({ type, mode = 'displayName', item = {} }) => {
+  parseChatJson = ({ type, mode = '', item = {} }) => {
     const { membersIds = [], groupName = '' } = item || {};
 
     const { chat: { usersList = [] } = {} } = this.props;
@@ -314,7 +314,9 @@ class Chat extends React.PureComponent {
       }
 
       const { [mode]: field = '' } = interlocutor || {};
-      return field;
+
+      if (mode) return { field };
+      else return interlocutor;
     }
 
     if (type === 'group') return groupName;
@@ -358,7 +360,7 @@ class Chat extends React.PureComponent {
     const { visible, shouldScroll = false } = this.state;
     const {
       chat: { listdata = [], usersList = [], listdataMsgs = [], chatToken: tokenRoom = null } = {},
-      udata: { _id: uid = '' } = {},
+      udata: { _id: uid = '', avatar: myAvatar = null } = {},
       socketConnection,
       socketErrorStatus,
     } = this.props;
@@ -413,6 +415,7 @@ class Chat extends React.PureComponent {
                   <ChatRoom
                     key={tokenRoom}
                     uid={uid.trim()}
+                    myAvatar={myAvatar}
                     usersList={usersList}
                     onClearScroll={this.onClearScroll}
                     shouldScroll={shouldScroll}

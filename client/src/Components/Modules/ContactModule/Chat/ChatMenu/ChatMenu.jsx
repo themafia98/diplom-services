@@ -83,7 +83,8 @@ const ChatMenu = props => {
               renderItem={(it, i) => {
                 const { membersIds = [], type } = it || {};
 
-                const displayName = parseChatJson({ type, item: it, mode: 'displayName' });
+                const chatJson = parseChatJson({ type, item: it }) || {};
+                const { displayName = '', avatar = null } = chatJson;
 
                 const descriptionChatMenu = false ? (
                   <span className="descriptionChatMenu">{/* lastMsg */}</span>
@@ -99,7 +100,14 @@ const ChatMenu = props => {
                   >
                     <Meta
                       key={`${it}${i}`}
-                      avatar={<Avatar shape="square" size="large" icon="user" />}
+                      avatar={
+                        <Avatar
+                          src={`data:image/png;base64,${avatar}`}
+                          shape="square"
+                          size="large"
+                          icon="user"
+                        />
+                      }
                       title={<p>{`${displayName}`}</p>}
                       description={descriptionChatMenu}
                     />
