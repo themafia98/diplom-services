@@ -1,6 +1,5 @@
 import _ from 'lodash';
-import moment from 'moment';
-import { dataParser, getNormalizedPath, sucessEvent, errorHook } from '../../../../Utils';
+import { dataParser, getNormalizedPath, sucessEvent, errorHook, onlineDataHook } from '../../../../Utils';
 import { saveComponentStateAction, loadFlagAction } from '../';
 import { errorRequstAction, setStatus } from '../../publicActions';
 
@@ -42,80 +41,30 @@ const loadCurrentData = params => async (dispatch, getState, { schema, Request, 
         const request = new Request();
         const res = await request.sendRequest(normalizeReqPath, methodRequst, { methodQuery, options }, true);
 
-        const {
-          data: { response = {} },
-        } = res || {};
+        const [items, error] = request.parseResponse(res);
+        const { dataItems: copyStore = [], responseOptions = {} } = items;
+        const { isPartData } = responseOptions || {};
 
-        const { metadata = [], params: { isPartData = false, fromCache = false } = {} } = response;
+        if (error) throw new Error('Network error');
 
-        let items = [];
+        const dep = {
+          noCorsClient,
+          requestError,
+          copyStore,
+          sortBy,
+          pathValid,
+          isPartData,
+          schema,
+          storeLoad,
+          clientDB,
+          methodQuery,
+          primaryKey,
+          saveComponentStateAction,
+          errorRequstAction,
+          isLocalUpdate,
+        };
 
-        metadata.forEach((doc, index) => _.isNumber(index) && items.push(doc));
-
-        if (items.length) items = items.filter(it => !_.isEmpty(it));
-        else if (fromCache && !items.length) throw new Error('Network error');
-
-        const copyStore = [...items];
-        const undefiendCopyStore = [];
-
-        if (noCorsClient && _.isNull(requestError)) {
-          const dep = {
-            noCorsClient,
-            copyStore,
-            sortBy,
-            pathValid,
-            isPartData,
-            schema,
-          };
-          const { data } = dataParser(false, false, dep);
-          dispatch(saveComponentStateAction(data));
-        }
-
-        if (!_.isNull(requestError)) dispatch(errorRequstAction(null));
-
-        if (storeLoad === 'news') {
-          const data = { [storeLoad]: copyStore, load: true, path: pathValid, isPartData };
-          await dispatch(saveComponentStateAction(data));
-        } else {
-          const cursor = clientDB.getCursor(storeLoad);
-          isLocalUpdate = !_.isNull(cursor);
-          const dep = {
-            copyStore,
-            isPartData,
-            storeLoad,
-            methodQuery,
-            schema,
-            clientDB,
-            sortBy,
-            pathValid,
-            requestError,
-            primaryKey,
-            undefiendCopyStore,
-            saveComponentStateAction,
-            errorRequstAction,
-          };
-
-          if (cursor) cursor.onsuccess = sucessEvent.bind(this, dispatch, dep, '');
-        }
-
-        if (!isLocalUpdate) {
-          const dep = {
-            copyStore,
-            isPartData,
-            storeLoad,
-            methodQuery,
-            schema,
-            clientDB,
-            sortBy,
-            pathValid,
-            requestError,
-          };
-
-          // @ts-ignore
-          const { data, shoudClearError = false } = dataParser(true, false, dep);
-          if (shoudClearError) await dispatch(errorRequstAction(null));
-          await dispatch(saveComponentStateAction(data));
-        }
+        onlineDataHook(dispatch, dep);
       } catch (error) {
         const dep = {
           Request,

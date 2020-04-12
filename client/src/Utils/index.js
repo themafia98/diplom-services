@@ -8,7 +8,7 @@ import namespaceHooks from './Hooks';
  */
 
 const { sucessEvent, forceUpdateDetectedInit } = namespaceEvents;
-const { errorHook } = namespaceHooks;
+const { errorHook, onlineDataHook } = namespaceHooks;
 
 const {
   dataParser,
@@ -29,4 +29,5 @@ export {
   routeParser,
   routePathNormalise,
   errorHook,
+  onlineDataHook,
 };

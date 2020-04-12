@@ -43,6 +43,31 @@ class Request {
     return this.#api;
   }
 
+  parseResponse(requestResponse = {}) {
+    const {
+      data: { response = {} },
+    } = requestResponse || {};
+
+    const { metadata = [], params = {}, params: { fromCache = false } = {} } = response;
+
+    let items = [];
+
+    metadata.forEach((doc, index) => _.isNumber(index) && items.push(doc));
+
+    if (items.length) items = items.filter(it => !_.isEmpty(it));
+    else if (fromCache && !items.length) {
+      return [items, 'Network error'];
+    }
+
+    return [
+      {
+        dataItems: [...items],
+        responseOptions: { ...params },
+      },
+      null,
+    ];
+  }
+
   /** @public
    * @param {function} event function
    * @param {string} mode string
@@ -131,11 +156,11 @@ class Request {
   }
 
   /**
-   * @param {string} url
+   * @param {string} requestUrl
    * @param {any} method
    * @param {any} body
    */
-  sendRequest(url, method, body, auth = false, customHeaders = {}) {
+  sendRequest(requestUrl, method, body, auth = false, customHeaders = {}) {
     const props = auth
       ? {
           headers: {
@@ -155,7 +180,7 @@ class Request {
 
     return axios({
       method,
-      url: this.getApi() + url,
+      url: `${this.getApi()}${requestUrl}`,
       ...props,
     });
   }
