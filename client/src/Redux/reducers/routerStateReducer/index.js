@@ -82,23 +82,70 @@ export default (state = initialState, action) => {
       let copyRouteData = { ...state.routeData };
       const { multiple = false, stateList = null } = action?.payload;
 
+      if (!multiple) {
+      }
+
+      const validationItems = (currentItems, prevItems) => {
+        const items = [...currentItems];
+
+        for (let i = 0; i < prevItems.length; i++) {
+          const item = prevItems[i];
+          const { _id = '' } = item || {};
+
+          const isExist = currentItems.some(prevItem => prevItem._id === _id);
+
+          if (!isExist) items.push(item);
+        }
+        return items;
+      };
+
       if (stateList && Array.isArray(stateList) && multiple) {
-        const modulesState = stateList.reduce((newState, action) => {
-          const { path = '' } = action;
+        const modulesState = stateList.reduce((newState, actionItem) => {
+          const { path = '' } = actionItem;
+
+          let storeName = path.split('Module')[0];
+          storeName = storeName[storeName.length] !== 's' ? `${storeName}s` : storeName;
+
+          let items = actionItem[storeName];
+
+          if (!actionItem[storeName] && storeName.includes('contact')) {
+            items = actionItem['news'];
+          }
+
+          const isExists = state.routeData[path] && state.routeData[path][storeName];
+          if (isExists && actionItem[storeName]) {
+            const isMore = state.routeData[path][storeName]?.length > actionItem[storeName]?.length;
+            const currentTasks = isMore ? state.routeData[path][storeName] : actionItem[storeName];
+            const prevTasks = isMore ? actionItem[storeName] : state.routeData[path][storeName];
+
+            items = validationItems(currentTasks, prevTasks);
+          }
+
           return {
             ...newState,
             [path]: {
-              ...action,
+              ...actionItem,
+              [storeName]: items,
             },
           };
         }, {});
-        return {
-          ...state,
-          routeData: {
-            ...state.routeData,
-            ...modulesState,
-          },
-        };
+
+        const shouldUpdateList = Object.keys(state.routeData).every(key => {
+          const item = state.routeData[key];
+          if (stateList.some(actionItem => key === actionItem.path)) {
+            return state.routeData[key].load;
+          }
+          return true;
+        });
+
+        if (shouldUpdateList)
+          return {
+            ...state,
+            routeData: {
+              ...state.routeData,
+              ...modulesState,
+            },
+          };
       }
 
       const { isPartData = false, shouldUpdate = false, path: pathAction = '' } = action.payload;
@@ -122,26 +169,10 @@ export default (state = initialState, action) => {
       if (copyRouteData[path]?.tasks && state.routeData[path]?.tasks) {
         const isMore = state.routeData[path].tasks.length > copyRouteData[path]?.tasks.length;
 
-        const validationTasks = (currentTasks, prevTasks) => {
-          const tasks = [...currentTasks];
-
-          for (let i = 0; i < prevTasks.length; i++) {
-            const task = prevTasks[i];
-            const { _id = '' } = task || {};
-
-            const isExist = currentTasks.some(prevTask => prevTask._id === _id);
-
-            if (!isExist) {
-              tasks.push(task);
-            }
-          }
-          return tasks;
-        };
-
         const currentTasks = isMore ? state.routeData[path].tasks : copyRouteData[path]?.tasks;
         const prevTasks = isMore ? copyRouteData[path]?.tasks : state.routeData[path].tasks;
 
-        const tasks = validationTasks(currentTasks, prevTasks);
+        const tasks = validationItems(currentTasks, prevTasks);
         copyRouteData = {
           ...copyRouteData,
           [path]: {

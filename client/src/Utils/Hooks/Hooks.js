@@ -91,7 +91,7 @@ const namespaceHooks = {
         errorRequstAction,
       };
 
-      if (cursor) return await sucessEvent(dispatch, dep, '', true, cursor);
+      if (cursor) return await sucessEvent(dispatch, dep, '', multiple, cursor);
     }
 
     if (!isLocalUpdate) {

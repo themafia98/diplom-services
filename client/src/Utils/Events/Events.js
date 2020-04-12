@@ -13,29 +13,30 @@ const namespaceEvents = {
       errorRequstAction,
     } = dep;
 
-    if (mode === 'offline') {
-      const schemaTemplate =
-        storeLoad === 'jurnalworks'
-          ? TASK_CONTROLL_JURNAL_SCHEMA
-          : storeLoad === 'users'
-          ? USER_SCHEMA
-          : storeLoad === 'tasks'
-          ? TASK_SCHEMA
-          : null;
+    if (!multiple)
+      if (mode === 'offline') {
+        const schemaTemplate =
+          storeLoad === 'jurnalworks'
+            ? TASK_CONTROLL_JURNAL_SCHEMA
+            : storeLoad === 'users'
+            ? USER_SCHEMA
+            : storeLoad === 'tasks'
+            ? TASK_SCHEMA
+            : null;
 
-      const itemsCopy = cursor.map(it => schema.getSchema(schemaTemplate, it)).filter(Boolean);
-      const data = {
-        [storeLoad]: itemsCopy,
-        load: true,
-        path: pathValid,
-        mode: 'offline',
-      };
+        const itemsCopy = cursor.map(it => schema.getSchema(schemaTemplate, it)).filter(Boolean);
+        const data = {
+          [storeLoad]: itemsCopy,
+          load: true,
+          path: pathValid,
+          mode: 'offline',
+        };
 
-      if (!multiple) {
-        dispatch(saveComponentStateAction(data));
-        return;
-      } else return data;
-    }
+        if (!multiple) {
+          dispatch(saveComponentStateAction(data));
+          return;
+        } else return data;
+      }
 
     if (!cursor) {
       const { data, shoudClearError = false } = dataParser(true, true, dep);
@@ -61,7 +62,7 @@ const namespaceEvents = {
         undefiendCopyStore.push({ ...copy });
       }
     }
-    return await namespaceEvents.sucessEvent(dispatch, dep, mode, true, await cursor.continue());
+    return await namespaceEvents.sucessEvent(dispatch, dep, mode, multiple, await cursor.continue());
   },
 
   forceUpdateDetectedInit: () => {

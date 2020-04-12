@@ -17,6 +17,9 @@ const loadCurrentData = params => async (dispatch, getState, { schema, Request, 
     options = {},
   } = params;
 
+  if (storeLoad.includes('tasks')) {
+  }
+
   let isLocalUpdate = true;
   const primaryKey = 'uuid';
   const pathValid = path.includes('_') ? path.split('_')[0] : path.split('__')[0];
