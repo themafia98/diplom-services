@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import moment from 'moment';
-import { USER_SCHEMA, TASK_SCHEMA, TASK_CONTROLL_JURNAL_SCHEMA } from '../../../../Models/Schema/const';
-import { dataParser } from '../../../../Utils';
+import { dataParser, getNormalizedPath, sucessEvent } from '../../../../Utils';
 import { saveComponentStateAction, loadFlagAction } from '../';
 import { errorRequstAction, setStatus } from '../../publicActions';
 
@@ -31,9 +30,11 @@ const loadCurrentData = params => async (dispatch, getState, { schema, Request, 
     dispatch(loadFlagAction({ path: pathValid, load: true }));
   }
   if (status === 'online') {
-    const normalizeReqPath = useStore
-      ? `/${startPath}/${storeLoad}/${xhrPath}`.trim().replace('//', '/')
-      : `/${startPath}/${xhrPath}`.trim().replace('//', '/');
+    const normalizeReqPath = getNormalizedPath(useStore, {
+      xhrPath,
+      startPath,
+      storeLoad,
+    });
 
     try {
       const request = new Request();
@@ -78,47 +79,21 @@ const loadCurrentData = params => async (dispatch, getState, { schema, Request, 
       } else {
         const cursor = clientDB.getCursor(storeLoad);
         isLocalUpdate = !_.isNull(cursor);
+        const dep = {
+          copyStore,
+          isPartData,
+          storeLoad,
+          methodQuery,
+          schema,
+          clientDB,
+          sortBy,
+          pathValid,
+          requestError,
+          primaryKey,
+          undefiendCopyStore,
+        };
 
-        if (cursor) {
-          cursor.onsuccess = async event => {
-            const dep = {
-              copyStore,
-              isPartData,
-              storeLoad,
-              methodQuery,
-              schema,
-              clientDB,
-              sortBy,
-              pathValid,
-              requestError,
-            };
-            // @ts-ignore
-            const { target: { result: cursor } = {} } = event;
-
-            if (!cursor) {
-              const { data, shoudClearError = false } = dataParser(true, true, dep);
-              if (shoudClearError) await dispatch(errorRequstAction(null));
-              await dispatch(saveComponentStateAction(data));
-              return;
-            }
-
-            const index = copyStore.findIndex(it => {
-              const isKey = it[primaryKey] || it['key'];
-              const isValid = it[primaryKey] === cursor.key || it['key'] === cursor.key;
-
-              return isKey && isValid;
-            });
-            const iEmpty = index === -1;
-            if (copyStore && iEmpty) {
-              if (cursor.value.modeAdd === 'offline') {
-                const copy = { ...cursor.value, modeAdd: 'online' };
-                cursor.value.modeAdd = 'online';
-                undefiendCopyStore.push({ ...copy });
-              }
-            }
-            cursor.continue();
-          };
-        }
+        if (cursor) cursor.onsuccess = sucessEvent.bind(this, dispatch, dep, '');
       }
 
       if (!isLocalUpdate) {
@@ -163,29 +138,18 @@ const loadCurrentData = params => async (dispatch, getState, { schema, Request, 
   } else {
     if (!noCorsClient) return;
 
-    const items = clientDB.getAllItems(storeLoad);
-    items.onsuccess = event => {
-      const {
-        target: { result },
-      } = event;
-      const schemaTemplate =
-        storeLoad === 'jurnalworks'
-          ? TASK_CONTROLL_JURNAL_SCHEMA
-          : storeLoad === 'users'
-          ? USER_SCHEMA
-          : storeLoad === 'tasks'
-          ? TASK_SCHEMA
-          : null;
-
-      const itemsCopy = result.map(it => schema.getSchema(schemaTemplate, it)).filter(Boolean);
-      const data = saveComponentStateAction({
-        [storeLoad]: itemsCopy,
-        load: true,
-        path: pathValid,
-        mode: 'offline',
-      });
-      dispatch(data);
+    const dep = {
+      storeLoad,
+      methodQuery,
+      schema,
+      clientDB,
+      sortBy,
+      pathValid,
+      requestError,
+      primaryKey,
     };
+    const items = clientDB.getAllItems(storeLoad);
+    items.onsuccess = sucessEvent.bind(this, dispatch, dep, 'offline');
   }
 };
 
@@ -213,9 +177,12 @@ const onMultipleLoadData = params => async (dispatch, getState, { schema, Reques
       } = requestParam;
       let isLocalUpdate = true;
       const pathValid = path.includes('_') ? path.split('_')[0] : path.split('__')[0];
-      const normalizeReqPath = useStore
-        ? `/${startPath}/${storeLoad}/${xhrPath}`.trim().replace('//', '/')
-        : `/${startPath}/${xhrPath}`.trim().replace('//', '/');
+
+      const normalizeReqPath = getNormalizedPath(useStore, {
+        xhrPath,
+        startPath,
+        storeLoad,
+      });
 
       try {
         const request = new Request();
