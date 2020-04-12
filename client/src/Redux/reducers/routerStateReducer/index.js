@@ -82,9 +82,6 @@ export default (state = initialState, action) => {
       let copyRouteData = { ...state.routeData };
       const { multiple = false, stateList = null } = action?.payload;
 
-      if (!multiple) {
-      }
-
       const validationItems = (currentItems, prevItems) => {
         const items = [...currentItems];
 
