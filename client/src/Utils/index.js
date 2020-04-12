@@ -9,7 +9,7 @@ import namespaceHooks from './Hooks';
 
 const { sucessEvent, forceUpdateDetectedInit } = namespaceEvents;
 const { errorHook } = namespaceHooks;
-``;
+
 const {
   dataParser,
   getNormalizedPath,
