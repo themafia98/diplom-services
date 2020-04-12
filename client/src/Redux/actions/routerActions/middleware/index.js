@@ -102,9 +102,6 @@ const loadCurrentData = params => async (dispatch, getState, { schema, Request, 
   }
 };
 
-/** ------------------------ */
-/** TODO: in coming soon... */
-
 const multipleLoadData = params => async (dispatch, getState, { schema, Request, clientDB }) => {
   const { requestsParamsList = [], pipe = true } = params;
 
