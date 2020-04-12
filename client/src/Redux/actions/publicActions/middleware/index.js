@@ -10,154 +10,144 @@ import { TASK_CONTROLL_JURNAL_SCHEMA, USER_SCHEMA, TASK_SCHEMA } from '../../../
  * @param {clientDB} clientDB - IndexedDB methods
  */
 
-const /**
-   * @param {(arg0: { type: string; payload: any; }) => void} dispatch
-   * @param {() => { (): any; new (): any; publicReducer: { requestError: any; status?: "online"; }; }} getState
-   */
-  middlewareCaching = (props = {}) => async (dispatch, getState, { schema, Request, clientDB }) => {
-    const { status = 'online' } = getState().publicReducer;
+const middlewareCaching = (props = {}) => async (dispatch, getState, { schema, Request, clientDB }) => {
+  const { status = 'online' } = getState().publicReducer;
 
-    const { actionType = '', item = {}, depKey = '', depStore = '', store = '', uid = '', type = '' } = props;
+  const { actionType = '', item = {}, depKey = '', depStore = '', store = '', uid = '', type = '' } = props;
 
-    if (status === 'online') {
-      switch (actionType) {
-        case '__setJurnal': {
-          try {
-            const path = `/${depStore}/caching/jurnal`;
-            const rest = new Request();
+  if (status === 'online') {
+    switch (actionType) {
+      case '__setJurnal': {
+        try {
+          const path = `/${depStore}/caching/jurnal`;
+          const body = { queryParams: { depKey, depStore }, item };
+          const rest = new Request();
 
-            const body = { queryParams: { depKey, depStore }, item };
+          const res = await rest.sendRequest(path, 'PUT', body, true);
+          const [items, error] = rest.parseResponse(res);
+          const { dataItems: updaterItem = null } = items;
 
-            const res = await rest.sendRequest(path, 'POST', body, true);
+          if (error) throw new Error(error);
 
-            if (!res || res.status !== 200) throw new Error('Bad update');
+          // const schemTemplate =
+          //   store === 'jurnalworks'
+          //     ? TASK_CONTROLL_JURNAL_SCHEMA
+          //     : store === 'users'
+          //     ? USER_SCHEMA
+          //     : store === 'tasks'
+          //     ? TASK_SCHEMA
+          //     : null;
 
-            const updaterItem = { ...res['data']['response']['metadata'] };
+          // const validHash = [updaterItem]
+          //     .map(it => schema.getSchema(schemTemplate, it))
+          //     .filter(Boolean);
 
-            // const schemTemplate =
-            //   store === 'jurnalworks'
-            //     ? TASK_CONTROLL_JURNAL_SCHEMA
-            //     : store === 'users'
-            //     ? USER_SCHEMA
-            //     : store === 'tasks'
-            //     ? TASK_SCHEMA
-            //     : null;
+          if (updaterItem) {
+            clientDB.addItem(store, updaterItem);
 
-            // const validHash = [updaterItem]
-            //     .map(it => schema.getSchema(schemTemplate, it))
-            //     .filter(Boolean);
-            const validHash = updaterItem;
-
-            if (validHash) {
-              clientDB.addItem(store, validHash);
-
-              dispatch(сachingAction({ data: validHash, load: true, primaryKey: actionType }));
-            } else throw new Error('Invalid data props');
-          } catch (error) {
-            console.error(error);
-            dispatch(errorRequstAction(error.message));
-          }
-
-          break;
+            dispatch(сachingAction({ data: updaterItem, load: true, primaryKey: actionType }));
+          } else throw new Error('Invalid data props');
+        } catch (error) {
+          console.error(error);
+          dispatch(errorRequstAction(error.message));
         }
 
-        default: {
-          try {
+        break;
+      }
+
+      default: {
+        try {
+          const path = `/${depStore}/${type ? type : 'caching'}`;
+          const rest = new Request();
+
+          const body = { queryParams: { uid }, item, actionType };
+
+          const res = await rest.sendRequest(path, 'PUT', body, true);
+          const error = rest.parseResponse(res)[1] || 'bad parse response';
+
+          if (error) throw new Error(error);
+
+          if (type === 'logger') {
+            const actionType = 'get_user_settings_log';
+
             const path = `/${depStore}/${type ? type : 'caching'}`;
             const rest = new Request();
 
-            const body = { queryParams: { uid }, item, actionType };
+            const body = { queryParams: { uid }, actionType };
 
             const res = await rest.sendRequest(path, 'POST', body, true);
+            const [items, error] = rest.parseResponse(res);
+            const { dataItems: updaterItem = null } = items;
 
-            if (!res || res.status !== 200) throw new Error('Bad update');
+            if (error) throw new Error(error);
 
-            if (res.status === 200 && type === 'logger') {
-              const actionType = 'get_user_settings_log';
-
-              const path = `/${depStore}/${type ? type : 'caching'}`;
-              const rest = new Request();
-
-              const body = { queryParams: { uid }, actionType };
-
-              const res = await rest.sendRequest(path, 'POST', body, true);
-
-              if (!res || res.status !== 200) throw new Error('Bad update');
-
-              const updaterItem = { ...res['data']['response']['metadata'] };
-
-              dispatch(сachingAction({ data: updaterItem, load: true, primaryKey: actionType }));
-            }
-          } catch (error) {
-            console.error(error);
-            dispatch(errorRequstAction(error.message));
+            dispatch(сachingAction({ data: updaterItem, load: true, primaryKey: actionType }));
           }
+        } catch (error) {
+          console.error(error);
+          dispatch(errorRequstAction(error.message));
         }
       }
     }
-  };
+  }
+};
 
-const /**
-   * @param {(arg0: { type: string; payload: any; }) => void} dispatch
-   * @param {() => { (): any; new (): any; publicReducer: { requestError: any; status?: "online"; }; }} getState
-   */
-  loadCacheData = (props = {}) => async (dispatch, getState, { schema, Request, clientDB }) => {
-    const {
-      actionType = '', // key
-      depKey = '',
-      depStore = '',
-      store = '',
-    } = props;
+const loadCacheData = (props = {}) => async (dispatch, getState, { schema, Request, clientDB }) => {
+  const {
+    actionType = '', // key
+    depKey = '',
+    depStore = '',
+    store = '',
+  } = props;
 
-    const { status = 'online' } = getState().publicReducer;
+  const { status = 'online' } = getState().publicReducer;
 
-    if (status === 'online') {
-      switch (actionType) {
-        case '__setJurnal': {
-          try {
-            const path = `/${depStore}/caching/list`;
-            const rest = new Request();
+  if (status === 'online') {
+    switch (actionType) {
+      case '__setJurnal': {
+        try {
+          const path = `/${depStore}/caching/list`;
+          const rest = new Request();
 
-            const body = { queryParams: { depKey, store }, actionType };
+          const body = { queryParams: { depKey, store }, actionType };
 
-            const res = await rest.sendRequest(path, 'POST', body, true);
+          const res = await rest.sendRequest(path, 'PUT', body, true);
+          const [items, error] = rest.parseResponse(res);
+          const { dataItems: updaterItem = null } = items;
 
-            if (!res || res.status !== 200) throw new Error('Bad update');
+          if (error) throw new Error(error);
 
-            const updaterItem = { ...res['data']['response']['metadata'] };
+          // const schemTemplate =
+          //   store === 'jurnalworks'
+          //     ? TASK_CONTROLL_JURNAL_SCHEMA
+          //     : store === 'users'
+          //     ? USER_SCHEMA
+          //     : store === 'tasks'
+          //     ? TASK_SCHEMA
+          //     : null;
 
-            // const schemTemplate =
-            //   store === 'jurnalworks'
-            //     ? TASK_CONTROLL_JURNAL_SCHEMA
-            //     : store === 'users'
-            //     ? USER_SCHEMA
-            //     : store === 'tasks'
-            //     ? TASK_SCHEMA
-            //     : null;
+          // const validHash = [updaterItem]
+          //     .map(it => schema.getSchema(schemTemplate, it))
+          //     .filter(Boolean);
 
-            // const validHash = [updaterItem]
-            //     .map(it => schema.getSchema(schemTemplate, it))
-            //     .filter(Boolean);
-            const validHash = updaterItem;
-
-            if (validHash) {
-              clientDB.addItem(store, validHash);
-              dispatch(сachingAction({ data: validHash, load: true, primaryKey: actionType }));
-            } else throw new Error('Invalid data props');
-          } catch (error) {
-            console.error(error);
-            dispatch(errorRequstAction(error.message));
-          }
-
-          break;
+          if (updaterItem) {
+            clientDB.addItem(store, updaterItem);
+            dispatch(сachingAction({ data: updaterItem, load: true, primaryKey: actionType }));
+          } else throw new Error('Invalid data props');
+        } catch (error) {
+          console.error(error);
+          dispatch(errorRequstAction(error.message));
         }
 
-        default: {
-          break;
-        }
+        break;
+      }
+
+      default: {
+        break;
       }
     }
-  };
+  }
+};
 
 /**
  * Middleware
@@ -167,92 +157,82 @@ const /**
  * @param {clientDB} clientDB - IndexedDB methods
  */
 
-const /**
-   * @param {(arg0: { type: string; payload: any; }) => void} dispatch
-   * @param {() => { (): any; new (): any; router: any; publicReducer: { requestError: any; status?: "online"; }; }} getState
+const middlewareUpdate = (props = {}) => async (dispatch, getState, { schema, Request, clientDB }) => {
+  /**
+   * Props
+   * @param {string} id
+   * @param {string} key
+   * @param {string} updateField
+   * @param {Object} item
+   * @param {object | string} updateItem
+   * @param {object} store
+   * @param {string} actionType
    */
-  middlewareUpdate = (props = {}) => async (dispatch, getState, { schema, Request, clientDB }) => {
-    /**
-     * Props
-     * @param {string} id
-     * @param {string} key
-     * @param {string} updateField
-     * @param {Object} item
-     * @param {object | string} updateItem
-     * @param {object} store
-     * @param {string} actionType
-     */
-    const {
-      id = '',
-      key = '',
-      type = 'UPDATE',
-      updateField = '',
-      updateItem,
-      store = {},
-      actionType = 'default',
-    } = props;
+  const {
+    id = '',
+    key = '',
+    type = 'UPDATE',
+    updateField = '',
+    updateItem,
+    store = {},
+    actionType = 'default',
+  } = props;
 
-    const { status = 'online' } = getState().publicReducer;
+  const { status = 'online' } = getState().publicReducer;
 
-    if (status === 'online') {
-      switch (type) {
-        case 'UPDATE': {
-          try {
-            const path =
-              actionType === 'update_many'
-                ? `/system/${store}/update/many`
-                : `/system/${store}/update/single`;
-            const rest = new Request();
+  if (status === 'online') {
+    switch (type) {
+      case 'UPDATE': {
+        try {
+          const isMany = actionType === 'update_many';
+          const path = isMany ? `/system/${store}/update/many` : `/system/${store}/update/single`;
+          const rest = new Request();
 
-            const body = { queryParams: { id, key }, updateItem, updateField };
+          const body = { queryParams: { id, key }, updateItem, updateField };
 
-            const res = await rest.sendRequest(path, 'POST', body, true);
+          const res = await rest.sendRequest(path, 'POST', body, true);
+          const [items, error] = rest.parseResponse(res);
+          const { dataItems: updaterItem = null } = items;
 
-            if (!res || res.status !== 200) throw new Error('Bad update');
+          if (error) throw new Error(error);
 
-            const updaterItem = { ...res['data']['response']['metadata'] };
+          const schemTemplate =
+            store === 'jurnalworks'
+              ? TASK_CONTROLL_JURNAL_SCHEMA
+              : store === 'users'
+              ? USER_SCHEMA
+              : store === 'tasks'
+              ? TASK_SCHEMA
+              : null;
 
-            const schemTemplate =
-              store === 'jurnalworks'
-                ? TASK_CONTROLL_JURNAL_SCHEMA
-                : store === 'users'
-                ? USER_SCHEMA
-                : store === 'tasks'
-                ? TASK_SCHEMA
-                : null;
+          const storeCopy = [updaterItem].map(it => schema.getSchema(schemTemplate, it)).filter(Boolean);
 
-            const storeCopy = [updaterItem].map(it => schema.getSchema(schemTemplate, it)).filter(Boolean);
+          if (storeCopy) {
+            dispatch(
+              updateItemStateAction({
+                updaterItem: updaterItem,
+                type,
+                id,
+              }),
+            );
 
-            if (storeCopy) {
-              dispatch(
-                updateItemStateAction({
-                  updaterItem: updaterItem,
-                  type,
-                  id,
-                }),
-              );
-
-              clientDB.updateItem(store, updaterItem);
-              break;
-            }
-          } catch (error) {
-            console.error(error);
-            dispatch(errorRequstAction(error.message));
+            clientDB.updateItem(store, updaterItem);
             break;
           }
-
+        } catch (error) {
+          console.error(error);
+          dispatch(errorRequstAction(error.message));
           break;
         }
 
-        case 'DELETE': {
-          break;
-        }
+        break;
+      }
 
-        default: {
-          break;
-        }
+      default: {
+        break;
       }
     }
-  };
+  }
+};
 
 export { middlewareCaching, middlewareUpdate, loadCacheData };

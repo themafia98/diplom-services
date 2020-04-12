@@ -10,7 +10,7 @@ import Decorators from '../../Decorators';
 namespace Settings {
   const { getResponseJson } = Utils;
 
-  const { Controller, Post } = Decorators;
+  const { Controller, Post, Put } = Decorators;
 
   @Controller('/settings')
   export class SettingsController {
@@ -103,6 +103,7 @@ namespace Settings {
       }
     }
 
+    @Put({ path: '/logger', private: true })
     @Post({ path: '/logger', private: true })
     async logger(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const body = req.body;

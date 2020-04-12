@@ -38,10 +38,10 @@ const loadCurrentData = params => async (dispatch, getState, { schema, Request, 
       });
 
       try {
-        const request = new Request();
-        const res = await request.sendRequest(normalizeReqPath, methodRequst, { methodQuery, options }, true);
+        const rest = new Request();
+        const res = await rest.sendRequest(normalizeReqPath, methodRequst, { methodQuery, options }, true);
 
-        const [items, error] = request.parseResponse(res);
+        const [items, error] = rest.parseResponse(res);
         const { dataItems: copyStore = [], responseOptions = {} } = items;
         const { isPartData } = responseOptions || {};
 

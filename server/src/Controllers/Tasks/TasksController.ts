@@ -12,6 +12,7 @@ namespace Tasks {
   const Controller = Decorators.Controller;
   const Get = Decorators.Get;
   const Post = Decorators.Post;
+  const Put = Decorators.Put;
 
   @Controller('/tasks')
   export class TasksController {
@@ -165,7 +166,7 @@ namespace Tasks {
       }
     }
 
-    @Post({ path: '/caching/jurnal', private: true })
+    @Put({ path: '/caching/jurnal', private: true })
     public async setJurnalWorks(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const params: Params = {
         methodQuery: 'set_jurnal',
@@ -237,7 +238,7 @@ namespace Tasks {
       }
     }
 
-    @Post({ path: '/caching/list', private: true })
+    @Put({ path: '/caching/list', private: true })
     public async getCachingList(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { queryParams = {}, actionType = '' } = req.body;
       const params: Params = { methodQuery: actionType, status: 'done', done: true, from: 'tasks' };

@@ -45,23 +45,27 @@ class Request {
 
   parseResponse(requestResponse = {}) {
     const {
+      status = 503,
       data: { response = {} },
     } = requestResponse || {};
 
     const { metadata = [], params = {}, params: { fromCache = false } = {} } = response;
-
     let items = [];
+    const isArray = Array.isArray(metadata);
+    if (status !== 200) return [items, 'Bad update'];
 
-    metadata.forEach((doc, index) => _.isNumber(index) && items.push(doc));
+    isArray && metadata.forEach((doc, index) => _.isNumber(index) && items.push(doc));
 
-    if (items.length) items = items.filter(it => !_.isEmpty(it));
-    else if (fromCache && !items.length) {
+    if (isArray && items.length) items = items.filter(it => !_.isEmpty(it));
+    else if (isArray && fromCache && !items.length) {
       return [items, 'Network error'];
     }
 
+    const dataItems = isArray ? [...items] : _.isPlainObject(metadata) ? { ...metadata } : items;
+
     return [
       {
-        dataItems: [...items],
+        dataItems,
         responseOptions: { ...params },
       },
       null,
