@@ -63,11 +63,11 @@ const middlewareCaching = (props = {}) => async (dispatch, getState, { schema, R
           const body = { queryParams: { uid }, item, actionType };
 
           const res = await rest.sendRequest(path, 'PUT', body, true);
-          const error = rest.parseResponse(res)[1] || 'bad parse response';
+          const [items, error] = rest.parseResponse(res) || 'bad parse response';
 
           if (error) throw new Error(error);
 
-          if (type === 'logger') {
+          if (items && type === 'logger') {
             const actionType = 'get_user_settings_log';
 
             const path = `/${depStore}/${type ? type : 'caching'}`;
