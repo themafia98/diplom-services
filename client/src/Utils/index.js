@@ -1,5 +1,6 @@
 import namespaceParser from './Parser';
 import namespaceEvents from './Events';
+import namespaceHooks from './Hooks';
 
 /**
  * Utils
@@ -7,6 +8,8 @@ import namespaceEvents from './Events';
  */
 
 const { sucessEvent, forceUpdateDetectedInit } = namespaceEvents;
+const { errorHook } = namespaceHooks;
+``;
 const {
   dataParser,
   getNormalizedPath,
@@ -25,4 +28,5 @@ export {
   getBase64,
   routeParser,
   routePathNormalise,
+  errorHook,
 };

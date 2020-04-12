@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import moment from 'moment';
-import { dataParser, getNormalizedPath, sucessEvent } from '../../../../Utils';
+import { dataParser, getNormalizedPath, sucessEvent, errorHook } from '../../../../Utils';
 import { saveComponentStateAction, loadFlagAction } from '../';
 import { errorRequstAction, setStatus } from '../../publicActions';
 
@@ -29,129 +29,132 @@ const loadCurrentData = params => async (dispatch, getState, { schema, Request, 
   if (isExist && !router.routeData[pathValid].load) {
     dispatch(loadFlagAction({ path: pathValid, load: true }));
   }
-  if (status === 'online') {
-    const normalizeReqPath = getNormalizedPath(useStore, {
-      xhrPath,
-      startPath,
-      storeLoad,
-    });
 
-    try {
-      const request = new Request();
-      const res = await request.sendRequest(normalizeReqPath, methodRequst, { methodQuery, options }, true);
+  switch (status) {
+    case 'online': {
+      const normalizeReqPath = getNormalizedPath(useStore, {
+        xhrPath,
+        startPath,
+        storeLoad,
+      });
 
-      const {
-        data: { response: { metadata = [], params: { isPartData = false, fromCache = false } = {} } = {} },
-      } = res || {};
+      try {
+        const request = new Request();
+        const res = await request.sendRequest(normalizeReqPath, methodRequst, { methodQuery, options }, true);
 
-      let items = [];
+        const {
+          data: { response = {} },
+        } = res || {};
 
-      metadata.forEach((doc, index) => _.isNumber(index) && items.push(doc));
+        const { metadata = [], params: { isPartData = false, fromCache = false } = {} } = response;
 
-      if (items.length) items = items.filter(it => !_.isEmpty(it));
-      else if (fromCache && !items.length) throw new Error('Network error');
+        let items = [];
 
-      const copyStore = [...items];
-      const undefiendCopyStore = [];
+        metadata.forEach((doc, index) => _.isNumber(index) && items.push(doc));
 
-      if (noCorsClient && _.isNull(requestError)) {
-        const sortedCopyStore =
-          !sortBy && copyStore.every(it => it.createdAt)
-            ? copyStore.sort((a, b) => {
-                const aDate = moment(a.createdAt).unix();
-                const bDate = moment(b.createdAt).unix();
-                return bDate - aDate;
-              })
-            : sortBy
-            ? copyStore.sort((a, b) => a[sortBy] - b[sortBy])
-            : copyStore;
+        if (items.length) items = items.filter(it => !_.isEmpty(it));
+        else if (fromCache && !items.length) throw new Error('Network error');
 
-        dispatch(
-          saveComponentStateAction({ [storeLoad]: sortedCopyStore, load: true, path: pathValid, isPartData }),
-        );
-      }
+        const copyStore = [...items];
+        const undefiendCopyStore = [];
 
-      if (!_.isNull(requestError)) dispatch(errorRequstAction(null));
+        if (noCorsClient && _.isNull(requestError)) {
+          const dep = {
+            noCorsClient,
+            copyStore,
+            sortBy,
+            pathValid,
+            isPartData,
+            schema,
+          };
+          const { data } = dataParser(false, false, dep);
+          dispatch(saveComponentStateAction(data));
+        }
 
-      if (storeLoad === 'news') {
-        const data = { [storeLoad]: copyStore, load: true, path: pathValid, isPartData };
-        await dispatch(saveComponentStateAction(data));
-      } else {
-        const cursor = clientDB.getCursor(storeLoad);
-        isLocalUpdate = !_.isNull(cursor);
+        if (!_.isNull(requestError)) dispatch(errorRequstAction(null));
+
+        if (storeLoad === 'news') {
+          const data = { [storeLoad]: copyStore, load: true, path: pathValid, isPartData };
+          await dispatch(saveComponentStateAction(data));
+        } else {
+          const cursor = clientDB.getCursor(storeLoad);
+          isLocalUpdate = !_.isNull(cursor);
+          const dep = {
+            copyStore,
+            isPartData,
+            storeLoad,
+            methodQuery,
+            schema,
+            clientDB,
+            sortBy,
+            pathValid,
+            requestError,
+            primaryKey,
+            undefiendCopyStore,
+            saveComponentStateAction,
+            errorRequstAction,
+          };
+
+          if (cursor) cursor.onsuccess = sucessEvent.bind(this, dispatch, dep, '');
+        }
+
+        if (!isLocalUpdate) {
+          const dep = {
+            copyStore,
+            isPartData,
+            storeLoad,
+            methodQuery,
+            schema,
+            clientDB,
+            sortBy,
+            pathValid,
+            requestError,
+          };
+
+          // @ts-ignore
+          const { data, shoudClearError = false } = dataParser(true, false, dep);
+          if (shoudClearError) await dispatch(errorRequstAction(null));
+          await dispatch(saveComponentStateAction(data));
+        }
+      } catch (error) {
         const dep = {
-          copyStore,
-          isPartData,
+          Request,
+          setStatus,
+          errorRequstAction,
+          loadCurrentData,
+          getState,
           storeLoad,
-          methodQuery,
-          schema,
-          clientDB,
-          sortBy,
-          pathValid,
-          requestError,
-          primaryKey,
-          undefiendCopyStore,
+          path,
         };
-
-        if (cursor) cursor.onsuccess = sucessEvent.bind(this, dispatch, dep, '');
+        errorHook(error, dispatch, dep);
       }
-
-      if (!isLocalUpdate) {
-        const dep = {
-          copyStore,
-          isPartData,
-          storeLoad,
-          methodQuery,
-          schema,
-          clientDB,
-          sortBy,
-          pathValid,
-          requestError,
-        };
-
-        // @ts-ignore
-        const { data, shoudClearError = false } = dataParser(true, false, dep);
-        if (shoudClearError) await dispatch(errorRequstAction(null));
-        await dispatch(saveComponentStateAction(data));
-      }
-    } catch (error) {
-      console.error(error);
-      if (error.status === 400) {
-        const errorRequest = new Request();
-        dispatch(setStatus({ statusRequst: 'offline' }));
-        dispatch(errorRequstAction(error.message));
-        errorRequest.follow(
-          'offline',
-          statusRequst => {
-            if (getState().publicReducer.status !== statusRequst && statusRequst === 'online') {
-              errorRequest.unfollow();
-
-              dispatch(setStatus({ statusRequst }));
-              dispatch(errorRequstAction(null));
-              dispatch(loadCurrentData({ path, storeLoad }));
-            }
-          },
-          3000,
-        );
-      } else dispatch(errorRequstAction(error.message));
+      return;
     }
-  } else {
-    if (!noCorsClient) return;
 
-    const dep = {
-      storeLoad,
-      methodQuery,
-      schema,
-      clientDB,
-      sortBy,
-      pathValid,
-      requestError,
-      primaryKey,
-    };
-    const items = clientDB.getAllItems(storeLoad);
-    items.onsuccess = sucessEvent.bind(this, dispatch, dep, 'offline');
+    default: {
+      if (!noCorsClient) return;
+
+      const dep = {
+        storeLoad,
+        methodQuery,
+        schema,
+        clientDB,
+        sortBy,
+        pathValid,
+        requestError,
+        primaryKey,
+        saveComponentStateAction,
+        errorRequstAction,
+      };
+      const items = clientDB.getAllItems(storeLoad);
+      items.onsuccess = sucessEvent.bind(this, dispatch, dep, 'offline');
+      return;
+    }
   }
 };
+
+/** ------------------------ */
+/** TODO: in coming soon... */
 
 const onMultipleLoadData = params => async (dispatch, getState, { schema, Request, clientDB }) => {
   const { requestsParamsList = [] } = params;
@@ -201,79 +204,8 @@ const onMultipleLoadData = params => async (dispatch, getState, { schema, Reques
 
         const copyStore = [...items];
         const undefiendCopyStore = [];
-
-        if (noCorsClient && _.isNull(requestError)) {
-          const sortedCopyStore =
-            !sortBy && copyStore.every(it => it.createdAt)
-              ? copyStore.sort((a, b) => {
-                  const aDate = moment(a.createdAt).unix();
-                  const bDate = moment(b.createdAt).unix();
-                  return bDate - aDate;
-                })
-              : sortBy
-              ? copyStore.sort((a, b) => a[sortBy] - b[sortBy])
-              : copyStore;
-
-          responseList.push({ [storeLoad]: sortedCopyStore, load: true, path: pathValid, isPartData });
-          continue;
-        }
-
-        if (!_.isNull(requestError)) await dispatch(errorRequstAction(null));
-
-        if (storeLoad === 'news') {
-          const data = { [storeLoad]: copyStore, load: true, path: pathValid, isPartData };
-          await dispatch(saveComponentStateAction(data));
-        } else {
-          const cursor = clientDB.getCursor(storeLoad);
-          isLocalUpdate = !_.isNull(cursor);
-
-          if (cursor) {
-            cursor.onsuccess = async event => {
-              // @ts-ignore
-              const { target: { result: cursor } = {} } = event;
-
-              if (!cursor) {
-                const dep = {
-                  copyStore,
-                  isPartData,
-                  storeLoad,
-                  methodQuery,
-                  schema,
-                  clientDB,
-                  sortBy,
-                  pathValid,
-                  requestError,
-                };
-                const { data, shoudClearError = false } = dataParser(true, true, dep);
-                if (shoudClearError) await dispatch(errorRequstAction(null));
-                return await dispatch(saveComponentStateAction(data));
-              }
-
-              const index = copyStore.findIndex(it => {
-                const isKey = it[primaryKey] || it['key'];
-                const isValid = it[primaryKey] === cursor.key || it['key'] === cursor.key;
-
-                return isKey && isValid;
-              });
-              const iEmpty = index === -1;
-              if (copyStore && iEmpty) {
-                if (cursor.value.modeAdd === 'offline') {
-                  const copy = { ...cursor.value, modeAdd: 'online' };
-                  cursor.value.modeAdd = 'online';
-                  undefiendCopyStore.push({ ...copy });
-                }
-              }
-              cursor.continue();
-            };
-          }
-        }
-      } catch (error) {
-        console.error(error);
-        dispatch(errorRequstAction(error.message));
-        break;
-      }
+      } catch (error) {}
     }
-  } else {
   }
 };
 
