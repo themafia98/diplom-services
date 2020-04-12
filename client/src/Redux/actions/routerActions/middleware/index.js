@@ -95,9 +95,9 @@ const loadCurrentData = params => async (dispatch, getState, { schema, Request, 
         saveComponentStateAction,
         errorRequstAction,
       };
-      const items = clientDB.getAllItems(storeLoad);
-      items.onsuccess = sucessEvent.bind(this, dispatch, dep, 'offline');
-      return;
+
+      const cursor = await clientDB.getAllItems(storeLoad);
+      return await sucessEvent(dispatch, dep, 'offline', false, cursor);
     }
   }
 };
@@ -105,49 +105,97 @@ const loadCurrentData = params => async (dispatch, getState, { schema, Request, 
 /** ------------------------ */
 /** TODO: in coming soon... */
 
-const onMultipleLoadData = params => async (dispatch, getState, { schema, Request, clientDB }) => {
-  const { requestsParamsList = [] } = params;
+const multipleLoadData = params => async (dispatch, getState, { schema, Request, clientDB }) => {
+  const { requestsParamsList = [], pipe = true } = params;
 
   const router = getState().router;
   const primaryKey = 'uuid';
   const { requestError, status = 'online' } = getState().publicReducer;
-  const responseList = [];
 
   if (status === 'online') {
-    for await (let requestParam of requestsParamsList) {
-      const {
-        useStore = false,
-        storeLoad = '',
-        startPath = '',
-        xhrPath = '',
-        methodRequst = 'POST',
-        methodQuery = 'get_all',
-        options = {},
-        noCorsClient = false,
-        sortBy = '',
-        path = '',
-      } = requestParam;
-      let isLocalUpdate = true;
-      const pathValid = path.includes('_') ? path.split('_')[0] : path.split('__')[0];
+    switch (pipe) {
+      case false: {
+        /** TODO: for future release */
+        return;
+      }
+      default: {
+        const responseList = [];
+        for await (let requestParam of requestsParamsList) {
+          const {
+            useStore = false,
+            storeLoad = '',
+            startPath = '',
+            methodRequst = 'POST',
+            methodQuery = 'get_all',
+            xhrPath = 'list',
+            options = {},
+            noCorsClient = false,
+            sortBy = '',
+            path = '',
+          } = requestParam;
+          let isLocalUpdate = true;
+          const pathValid = path.includes('_') ? path.split('_')[0] : path.split('__')[0];
 
-      const normalizeReqPath = getNormalizedPath(useStore, {
-        xhrPath,
-        startPath,
-        storeLoad,
-      });
+          const normalizeReqPath = getNormalizedPath(useStore, {
+            xhrPath,
+            startPath,
+            storeLoad,
+          });
 
-      try {
-        const request = new Request();
-        const res = await request.sendRequest(normalizeReqPath, methodRequst, { methodQuery, options }, true);
+          try {
+            const rest = new Request();
+            const res = await rest.sendRequest(
+              normalizeReqPath,
+              methodRequst,
+              { methodQuery, options },
+              true,
+            );
 
-        const [items, error] = request.parseResponse(res);
-        const { dataItems: copyStore = [], responseOptions = {} } = items;
-        const { isPartData } = responseOptions || {};
+            const [items, error] = rest.parseResponse(res);
 
-        if (error) throw new Error(error);
-      } catch (error) {}
+            if (error) {
+              console.error(error);
+              break;
+            }
+
+            const { dataItems: copyStore = [], responseOptions = {} } = items;
+            const { isPartData } = responseOptions || {};
+
+            if (error) throw new Error(error);
+
+            const dep = {
+              noCorsClient,
+              requestError,
+              copyStore,
+              sortBy,
+              pathValid,
+              isPartData,
+              schema,
+              storeLoad,
+              clientDB,
+              methodQuery,
+              primaryKey,
+              saveComponentStateAction,
+              errorRequstAction,
+              isLocalUpdate,
+            };
+
+            responseList.push({ parsedItems: items, dep });
+          } catch (error) {}
+        }
+        let hookData = [];
+        for await (let res of responseList) {
+          const { dep } = res;
+          const resultHook = await onlineDataHook(dispatch, dep, true);
+          if (resultHook) hookData.push(resultHook);
+        }
+
+        if (hookData.length) {
+          dispatch(saveComponentStateAction({ stateList: [...hookData], multiple: true }));
+        }
+      }
     }
   }
 };
 
-export { loadCurrentData, onMultipleLoadData };
+export { loadCurrentData, multipleLoadData };

@@ -1,8 +1,7 @@
 import { USER_SCHEMA, TASK_SCHEMA, TASK_CONTROLL_JURNAL_SCHEMA } from '../../Models/Schema/const';
 import { dataParser } from '../';
 const namespaceEvents = {
-  sucessEvent: async (dispatch, dep, mode = '', event) => {
-    const { target: { result: cursor = [] } = {} } = event;
+  sucessEvent: async (dispatch, dep, mode = '', multiple = false, cursor = null) => {
     const {
       copyStore,
       primaryKey,
@@ -25,23 +24,27 @@ const namespaceEvents = {
           : null;
 
       const itemsCopy = cursor.map(it => schema.getSchema(schemaTemplate, it)).filter(Boolean);
+      const data = {
+        [storeLoad]: itemsCopy,
+        load: true,
+        path: pathValid,
+        mode: 'offline',
+      };
 
-      dispatch(
-        saveComponentStateAction({
-          [storeLoad]: itemsCopy,
-          load: true,
-          path: pathValid,
-          mode: 'offline',
-        }),
-      );
-      return;
+      if (!multiple) {
+        dispatch(saveComponentStateAction(data));
+        return;
+      } else return data;
     }
 
     if (!cursor) {
       const { data, shoudClearError = false } = dataParser(true, true, dep);
       if (shoudClearError) await dispatch(errorRequstAction(null));
-      await dispatch(saveComponentStateAction(data));
-      return;
+
+      if (!multiple) {
+        dispatch(saveComponentStateAction(data));
+        return;
+      } else return data;
     }
 
     const index = copyStore.findIndex(it => {
@@ -58,7 +61,7 @@ const namespaceEvents = {
         undefiendCopyStore.push({ ...copy });
       }
     }
-    cursor.continue();
+    return await namespaceEvents.sucessEvent(dispatch, dep, mode, true, await cursor.continue());
   },
 
   forceUpdateDetectedInit: () => {

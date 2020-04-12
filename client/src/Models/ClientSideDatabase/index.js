@@ -1,3 +1,4 @@
+import { openDB, deleteDB, wrap, unwrap } from 'idb';
 import _ from 'lodash';
 import config from '../../config.json';
 import { TASK_SCHEMA, USER_SCHEMA, TASK_CONTROLL_JURNAL_SCHEMA, WIKI_NODE_TREE } from '../Schema/const';
@@ -70,8 +71,12 @@ class ClientSideDatabase {
     return this.#schema;
   }
 
-  getDb() {
+  get db() {
     return this.#db;
+  }
+
+  set db(DB) {
+    this.#db = DB;
   }
 
   getInitStatus() {
@@ -84,180 +89,169 @@ class ClientSideDatabase {
 
   async init() {
     if (this.getInitStatus()) return;
-
+    const self = this;
     try {
-      const indexedDatabase = window?.indexedDB;
-      let requestOpen = indexedDatabase.open(this.getName(), this.getVersion());
-      /**
-       * @param {{ target: { result: any; }; }} event
-       */
-      requestOpen.onsuccess = event => {
-        this.#db = event?.target?.result;
-        this.#db.onversionchange = function() {
-          this.getDb().close();
+      self.db = await openDB(this.getName(), this.getVersion(), {
+        blocking() {
+          self.db.close();
           alert('Offline data deprecated, please update page for updating storage.');
-        };
-      };
-      /**
-       * @param {any} event
-       */
-      requestOpen.onerror = event => {
-        /** clear and reload client db if catch error */
-        const deleteIndexedDbEvent = indexedDatabase.deleteDatabase(this.getName());
-        /**
-         * @param {any} event
-         */
-        deleteIndexedDbEvent.onerror = event => {
-          alert('Error. Please clear your browser data or update browser.');
-          console.error(event);
-        };
+        },
+        upgrade(db, oldVersion, newVersion, transaction) {
+          self.db = db;
+          let isUsersObject = false;
+          let isTasksObject = false;
+          let isjurnalWorksObject = false;
+          let isWikiTreeObject = false;
 
-        deleteIndexedDbEvent.onsuccess = ({ result }) => {
-          if (_.isUndefined(result)) {
-            this.updateStateInit(false);
-            this.init().then(() => {
-              console.log('Database sussesfully clear and update after error or rollback');
-            });
-          } else {
-            alert(' Please clear your browser data or update browser.');
+          const newVersionUpdate = newVersion !== oldVersion && oldVersion !== 0;
+
+          if (newVersionUpdate) {
+            indexedDB.deleteDatabase(self.db);
+            return void self.init();
           }
-        };
-      };
-      /**
-       * @param {{ target: { result: any; }; newVersion: any; oldVersion: number; }} event
-       */
-      requestOpen.onupgradeneeded = event => {
-        this.#db = event?.target.result;
-        let isUsersObject = false;
-        let isTasksObject = false;
-        let isjurnalWorksObject = false;
-        let isWikiTreeObject = false;
 
-        const newVersionUpdate = event.newVersion !== event.oldVersion && event.oldVersion !== 0;
+          if (self.db?.objectStoreNames.contains('users') && !newVersionUpdate) isUsersObject = true;
+          if (self.db?.objectStoreNames.contains('wikiTree') && !newVersionUpdate) isWikiTreeObject = true;
+          if (self.db?.objectStoreNames.contains('tasks') && !newVersionUpdate) isTasksObject = true;
+          if (self.db?.objectStoreNames.contains('jurnalworks') && !newVersionUpdate)
+            isjurnalWorksObject = true;
 
-        if (newVersionUpdate) {
-          indexedDB.deleteDatabase(this.#db);
-          return void this.init();
-        }
+          const objectStoreUsers =
+            !isUsersObject && !newVersionUpdate
+              ? self.db?.createObjectStore('users', {
+                  unique: true,
+                  keyPath: '_id',
+                  autoIncrement: true,
+                })
+              : newVersionUpdate
+              ? self.db.transaction.objectStore('users')
+              : null;
 
-        if (this.getDb()?.objectStoreNames.contains('users') && !newVersionUpdate) isUsersObject = true;
-        if (this.getDb()?.objectStoreNames.contains('wikiTree') && !newVersionUpdate) isWikiTreeObject = true;
-        if (this.getDb()?.objectStoreNames.contains('tasks') && !newVersionUpdate) isTasksObject = true;
-        if (this.getDb()?.objectStoreNames.contains('jurnalworks') && !newVersionUpdate)
-          isjurnalWorksObject = true;
+          if (!isUsersObject) {
+            const schemaUsers = self.getSchema()?.getValidateSchema(USER_SCHEMA);
+            const keysUsers = Object.keys(schemaUsers);
 
-        const objectStoreUsers =
-          !isUsersObject && !newVersionUpdate
-            ? this.getDb()?.createObjectStore('users', {
-                unique: true,
-                keyPath: '_id',
-                autoIncrement: true,
-              })
-            : newVersionUpdate
-            ? requestOpen.transaction.objectStore('users')
-            : null;
-
-        if (!isUsersObject) {
-          const schemaUsers = this.getSchema()?.getValidateSchema(USER_SCHEMA);
-          const keysUsers = Object.keys(schemaUsers);
-
-          keysUsers.forEach((key, i) => {
-            if (newVersionUpdate) {
-              const keysIndex = Object.keys(objectStoreUsers.indexNames);
-              const isCanDelete = keysUsers.includes(objectStoreUsers.indexNames[keysIndex[i]]);
-              if (isCanDelete) objectStoreUsers.deleteIndex(key);
-            }
-            objectStoreUsers.createIndex(key, key, {
-              unique: key === '_id' || key === 'email' ? true : false,
+            keysUsers.forEach((key, i) => {
+              if (newVersionUpdate) {
+                const keysIndex = Object.keys(objectStoreUsers.indexNames);
+                const isCanDelete = keysUsers.includes(objectStoreUsers.indexNames[keysIndex[i]]);
+                if (isCanDelete) objectStoreUsers.deleteIndex(key);
+              }
+              objectStoreUsers.createIndex(key, key, {
+                unique: key === '_id' || key === 'email' ? true : false,
+              });
             });
-          });
-        }
+          }
 
-        const objectStoreTasks =
-          !isTasksObject && !newVersionUpdate
-            ? this.getDb().createObjectStore('tasks', {
-                unique: true,
-                keyPath: 'key',
-                autoIncrement: true,
-              })
-            : newVersionUpdate
-            ? requestOpen.transaction.objectStore('tasks')
-            : null;
+          const objectStoreTasks =
+            !isTasksObject && !newVersionUpdate
+              ? self.db.createObjectStore('tasks', {
+                  unique: true,
+                  keyPath: 'key',
+                  autoIncrement: true,
+                })
+              : newVersionUpdate
+              ? self.db.transaction.objectStore('tasks')
+              : null;
 
-        if (!isTasksObject) {
-          const schemaTasks = this.getSchema()?.getValidateSchema(TASK_SCHEMA);
-          const keysTasks = Object.keys(schemaTasks);
+          if (!isTasksObject) {
+            const schemaTasks = self.getSchema()?.getValidateSchema(TASK_SCHEMA);
+            const keysTasks = Object.keys(schemaTasks);
 
-          keysTasks.forEach((key, i) => {
-            if (newVersionUpdate) {
-              const keysIndex = Object.keys(objectStoreTasks.indexNames);
-              const isCanDelete = keysTasks.includes(objectStoreTasks.indexNames[keysIndex[i]]);
-              if (isCanDelete) objectStoreTasks.deleteIndex(key);
-            }
-            objectStoreTasks.createIndex(key, key, {
-              unique: key === 'key' ? true : false,
+            keysTasks.forEach((key, i) => {
+              if (newVersionUpdate) {
+                const keysIndex = Object.keys(objectStoreTasks.indexNames);
+                const isCanDelete = keysTasks.includes(objectStoreTasks.indexNames[keysIndex[i]]);
+                if (isCanDelete) objectStoreTasks.deleteIndex(key);
+              }
+              objectStoreTasks.createIndex(key, key, {
+                unique: key === 'key' ? true : false,
+              });
             });
-          });
-        }
+          }
 
-        const objectStoreWikiTree =
-          !isWikiTreeObject && !newVersionUpdate
-            ? this.getDb().createObjectStore('wikiTree', {
-                unique: true,
-                keyPath: 'key',
-                autoIncrement: true,
-              })
-            : newVersionUpdate
-            ? requestOpen.transaction.objectStore('wikiTree')
-            : null;
+          const objectStoreWikiTree =
+            !isWikiTreeObject && !newVersionUpdate
+              ? self.db.createObjectStore('wikiTree', {
+                  unique: true,
+                  keyPath: 'key',
+                  autoIncrement: true,
+                })
+              : newVersionUpdate
+              ? self.db.transaction.objectStore('wikiTree')
+              : null;
 
-        if (!isWikiTreeObject) {
-          const schemaWikiTree = this.getSchema()?.getValidateSchema(WIKI_NODE_TREE);
-          const keysWikiTree = Object.keys(schemaWikiTree);
+          if (!isWikiTreeObject) {
+            const schemaWikiTree = self.getSchema()?.getValidateSchema(WIKI_NODE_TREE);
+            const keysWikiTree = Object.keys(schemaWikiTree);
 
-          keysWikiTree.forEach((key, i) => {
-            if (newVersionUpdate) {
-              const keysIndex = Object.keys(objectStoreWikiTree.indexNames);
-              const isCanDelete = keysWikiTree.includes(objectStoreWikiTree.indexNames[keysIndex[i]]);
-              if (isCanDelete) objectStoreWikiTree.deleteIndex(key);
-            }
-            objectStoreWikiTree.createIndex(key, key, {
-              unique: key === 'key' ? true : false,
+            keysWikiTree.forEach((key, i) => {
+              if (newVersionUpdate) {
+                const keysIndex = Object.keys(objectStoreWikiTree.indexNames);
+                const isCanDelete = keysWikiTree.includes(objectStoreWikiTree.indexNames[keysIndex[i]]);
+                if (isCanDelete) objectStoreWikiTree.deleteIndex(key);
+              }
+              objectStoreWikiTree.createIndex(key, key, {
+                unique: key === 'key' ? true : false,
+              });
             });
-          });
-        }
+          }
 
-        const objectStorejurnalWorks =
-          !isjurnalWorksObject && !newVersionUpdate
-            ? this.getDb().createObjectStore('jurnalworks', {
-                unique: true,
-                keyPath: 'id',
-                autoIncrement: true,
-              })
-            : newVersionUpdate
-            ? requestOpen.transaction.objectStore('jurnalworks')
-            : null;
+          const objectStorejurnalWorks =
+            !isjurnalWorksObject && !newVersionUpdate
+              ? self.db.createObjectStore('jurnalworks', {
+                  unique: true,
+                  keyPath: 'id',
+                  autoIncrement: true,
+                })
+              : newVersionUpdate
+              ? self.db.transaction.objectStore('jurnalworks')
+              : null;
 
-        if (!isjurnalWorksObject) {
-          const schemajurnalWorks = this.getSchema()?.getValidateSchema(TASK_CONTROLL_JURNAL_SCHEMA);
-          const keysjurnalWorks = Object.keys(schemajurnalWorks);
+          if (!isjurnalWorksObject) {
+            const schemajurnalWorks = self.getSchema()?.getValidateSchema(TASK_CONTROLL_JURNAL_SCHEMA);
+            const keysjurnalWorks = Object.keys(schemajurnalWorks);
 
-          keysjurnalWorks.forEach((key, i) => {
-            if (newVersionUpdate) {
-              const keysIndex = Object.keys(objectStorejurnalWorks.indexNames);
-              const isCanDelete = keysjurnalWorks.includes(objectStorejurnalWorks.indexNames[keysIndex[i]]);
-              if (isCanDelete) objectStorejurnalWorks.deleteIndex(key);
-            }
-            objectStorejurnalWorks.createIndex(key, key, {
-              unique: key === 'id' ? true : false,
+            keysjurnalWorks.forEach((key, i) => {
+              if (newVersionUpdate) {
+                const keysIndex = Object.keys(objectStorejurnalWorks.indexNames);
+                const isCanDelete = keysjurnalWorks.includes(objectStorejurnalWorks.indexNames[keysIndex[i]]);
+                if (isCanDelete) objectStorejurnalWorks.deleteIndex(key);
+              }
+              objectStorejurnalWorks.createIndex(key, key, {
+                unique: key === 'id' ? true : false,
+              });
             });
-          });
-        }
+          }
 
-        if (newVersionUpdate) {
-          console.log('Database update new version.');
-        }
-      };
+          if (newVersionUpdate) {
+            console.log('Database update new version.');
+          }
+        },
+      });
+
+      // } else {
+      //   /** clear and reload client db if catch error */
+      //   const deleteIndexedDbEvent = deleteDB(self.getName());
+      //   /**
+      //    * @param {any} event
+      //    */
+      //   deleteIndexedDbEvent.onerror = event => {
+      //     alert('Error. Please clear your browser data or update browser.');
+      //     console.error(event);
+      //   };
+
+      //   deleteIndexedDbEvent.onsuccess = ({ result }) => {
+      //     if (_.isUndefined(result)) {
+      //       self.updateStateInit(false);
+      //       self.init().then(() => {
+      //         console.log('Database sussesfully clear and update after error or rollback');
+      //       });
+      //     } else {
+      //       alert(' Please clear your browser data or update browser.');
+      //     }
+      //   };
+      // }
 
       this.#isInit = true;
     } catch (e) {
@@ -271,79 +265,47 @@ class ClientSideDatabase {
    * @param {any} nameStore
    * @param {any} key
    */
-  getItemByKey(nameStore, key, mode = 'readonly') {
+  async getItemByKey(nameStore, key, mode = 'readonly') {
     if (this.getCrashStatus()) return;
     try {
-      const tx = this.getDb().transaction([nameStore], mode);
+      const tx = this.db.transaction([nameStore], mode);
       const store = tx.objectStore(nameStore);
-      return store.get(key);
+      return await store.get(key);
     } catch (error) {
       console.error(error.message);
       return null;
     }
-
-    /** @Example */
-    // const item = clientDB.getItemByKey("jurnalworks", "31232");
-    // item.onsuccess = event => {
-    //     const {
-    //         target: { result },
-    //     } = event;
-    //     console.log("By key:", result);
-    // };
   }
 
   /**
    * @param {any} nameStore
    */
-  getAllItems(nameStore, mode = 'readonly') {
+  async getAllItems(nameStore, mode = 'readonly') {
     if (this.getCrashStatus()) return;
     try {
-      const tx = this.getDb().transaction([nameStore], mode);
+      const tx = this.db.transaction([nameStore], mode);
       const store = tx.objectStore(nameStore);
-      return store.getAll();
+      return await store.getAll();
     } catch (error) {
       console.error(error.message);
       return null;
     }
-
-    /** @Example */
-    // const items = clientDB.getAllItems("jurnalworks");
-    // items.onsuccess = event => {
-    //     const {
-    //         target: { result },
-    //     } = event;
-    //     console.log(result);
-    // };
   }
 
   /**
    * @param {any} nameStore
    * @param {any} item
    */
-  addItem(nameStore, item, mode = 'readwrite') {
+  async addItem(nameStore, item, mode = 'readwrite') {
     try {
       if (this.getCrashStatus()) return;
-      const tx = this.getDb().transaction([nameStore], mode);
+      const tx = this.db.transaction([nameStore], mode);
       const store = tx.objectStore(nameStore);
-      return store.add(item);
+      return await store.add(item);
     } catch (err) {
       console.warn(err.message);
       return null;
     }
-
-    /** @Example */
-    // const putAction = clientDB.addItem("jurnalworks", {
-    //     key: "1231312asd",
-    //     timeLost: Math.random(),
-    //     date: null,
-    //     description: null,
-    // });
-    // putAction.onsuccess = event => {
-    //     const {
-    //         target: { result },
-    //     } = event;
-    //     console.log(`Put item ${result} done.`);
-    // };
   }
 
   /**
@@ -351,89 +313,56 @@ class ClientSideDatabase {
    * @param {any} item
    * @param {any} pk
    */
-  updateItem(nameStore, item, pk, mode = 'readwrite') {
+  async updateItem(nameStore, item, pk, mode = 'readwrite') {
     if (this.getCrashStatus()) return;
 
     try {
-      const tx = this.getDb().transaction([nameStore], mode);
+      const tx = this.db.transaction([nameStore], mode);
       const store = tx.objectStore(nameStore);
-      return store.put(item);
+      return await store.put(item);
     } catch (error) {
       console.error(error.message);
       return null;
     }
-
-    /** @Example */
-    // const putAction = clientDB.updateItem("jurnalworks", {
-    //     key: "1231312asd",
-    //     timeLost: Math.random(),
-    //     date: null,
-    //     description: null,
-    // });
-    // putAction.onsuccess = event => {
-    //     const {
-    //         target: { result },
-    //     } = event;
-    //     console.log(`Update item ${result} done.`);
-    // };
   }
 
   /**
    * @param {any} key
    */
-  deleteItem(nameStore = '', key, mode = 'readwrite') {
+  async deleteItem(nameStore = '', key, mode = 'readwrite') {
     if (this.getCrashStatus()) return;
     try {
-      const tx = this.getDb().transaction([nameStore], mode);
+      const tx = this.db.transaction([nameStore], mode);
       const store = tx.objectStore(nameStore);
-      return store.delete(key);
+      return await store.delete(key);
     } catch (error) {
       console.error(error.message);
       return null;
     }
-
-    /** @Example */
-    // const deleteKey = "1231312asd";
-    // const deleteAction = clientDB.deleteItem("jurnalworks", deleteKey);
-    // deleteAction.onsuccess = event => {
-    //     const {
-    //         target: { readyState },
-    //     } = event;
-    //     console.log(`Delete item ${deleteKey} ${readyState}`);
-    // };
   }
 
-  getCursor(nameStore = '', mode = 'readonly') {
+  async getCursor(nameStore = '', mode = 'readonly') {
     if (this.getCrashStatus()) return;
     try {
-      const tx = this.getDb().transaction(nameStore, mode);
+      const tx = this.db.transaction(nameStore, mode);
       const store = tx.objectStore(nameStore);
-      return store.openCursor();
+      return await store.openCursor();
     } catch (error) {
       console.error(error.message);
       return null;
     }
-
-    /** @Example */
-    // const deleteAction = clientDB.getCursor("jurnalworks");
-    // deleteAction.onsuccess = event => {
-    //     const {
-    //         target: { result: cursor },
-    //     } = event;
-    //     if (!cursor) return console.log("cursor end");
-    //     console.log("Cursored at:", cursor.key);
-    //     for (let field in cursor.value) {
-    //         // console.log(cursor.value[field]);
-    //     }
-
-    //     cursor.continue();
-    // };
   }
 
   /**
    * @param {any} nameStore
    */
-  searchItemsByIndexRange(index = null, lowerKey = null, upperKey = null, nameStore, mode = 'readonly') {
+  async searchItemsByIndexRange(
+    index = null,
+    lowerKey = null,
+    upperKey = null,
+    nameStore,
+    mode = 'readonly',
+  ) {
     if (this.getCrashStatus()) return;
     if (_.isNull(lowerKey) && _.isNull(upperKey) && _.isNull(index)) return;
     let searchKeyRange = null;
@@ -442,10 +371,10 @@ class ClientSideDatabase {
     else if (_.isNull(upperKey) && !_.isNull(lowerKey)) searchKeyRange = IDBKeyRange.lowerBound(lowerKey);
     else searchKeyRange = IDBKeyRange.bound(lowerKey, upperKey);
     if (!searchKeyRange) return;
-    const tx = this.getDb().transaction([nameStore], mode);
+    const tx = this.db.transaction([nameStore], mode);
     const store = tx.objectStore(nameStore);
     const searchIndex = store.index(index);
-    return searchIndex.openCursor(searchKeyRange);
+    return await searchIndex.openCursor(searchKeyRange);
 
     /** @Example */
     // const searchByIndexRange = clientDB.searchItemsByIndexRange("timeLost", 0, 0.7, "jurnalworks");
@@ -464,10 +393,7 @@ class ClientSideDatabase {
   }
 }
 
-let clientDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-if (clientDB) {
-  clientDB = new ClientSideDatabase(config.clientDB['name'], config.clientDB['version']);
-  clientDB.init();
-}
+const clientDB = new ClientSideDatabase(config.clientDB['name'], config.clientDB['version']);
+clientDB.init();
 export { clientDB };
 export default ClientSideDatabase;

@@ -11,6 +11,7 @@
         "core-js": "^3.6.4",
         "draft-js-import-html": "^1.4.1",
         "es6-promise": "^4.2.8",
+        "idb": "^5.0.2",
         "isomorphic-fetch": "^2.2.1",
         "lodash": "^4.17.15",
         "moment": "^2.24.0",

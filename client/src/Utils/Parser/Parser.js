@@ -11,7 +11,7 @@ const namespaceParser = {
     const {
       copyStore = [],
       isPartData = false,
-      storeLoad,
+      storeLoad = '',
       methodQuery,
       schema,
       clientDB,
@@ -34,7 +34,7 @@ const namespaceParser = {
           : copyStore;
 
       const data = { [storeLoad]: sortedCopyStore, load: true, path: pathValid, isPartData };
-      return { data };
+      return { data, shouldUpdateState: Boolean(storeLoad) };
     }
 
     let shoudClearError = false;
@@ -67,7 +67,7 @@ const namespaceParser = {
         : copyStore;
 
     const data = { [storeLoad]: sortedCopyStore, load: true, path: pathValid, isPartData };
-    return { data, shoudClearError };
+    return { data, shoudClearError, shouldUpdateState: Boolean(storeLoad) };
   },
 
   getNormalizedPath: (useStore = false, dep = {}) => {

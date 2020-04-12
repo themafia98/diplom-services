@@ -131,7 +131,7 @@ const loadCacheData = (props = {}) => async (dispatch, getState, { schema, Reque
           //     .filter(Boolean);
 
           if (updaterItem) {
-            clientDB.addItem(store, updaterItem);
+            await clientDB.addItem(store, updaterItem);
             dispatch(сachingAction({ data: updaterItem, load: true, primaryKey: actionType }));
           } else throw new Error('Invalid data props');
         } catch (error) {
@@ -216,7 +216,7 @@ const middlewareUpdate = (props = {}) => async (dispatch, getState, { schema, Re
               }),
             );
 
-            clientDB.updateItem(store, updaterItem);
+            await clientDB.updateItem(store, updaterItem);
             break;
           }
         } catch (error) {

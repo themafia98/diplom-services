@@ -80,7 +80,29 @@ export default (state = initialState, action) => {
     }
     case SAVE_STATE: {
       let copyRouteData = { ...state.routeData };
-      const { isPartData = false, shouldUpdate = false, path: pathAction = '' } = action?.payload || {};
+      const { multiple = false, stateList = null } = action?.payload;
+
+      if (stateList && Array.isArray(stateList) && multiple) {
+        const modulesState = stateList.reduce((newState, action) => {
+          const { path = '' } = action;
+          return {
+            ...newState,
+            [path]: {
+              ...action,
+            },
+          };
+        }, {});
+        return {
+          ...state,
+          routeData: {
+            ...state.routeData,
+            ...modulesState,
+          },
+        };
+      }
+
+      const { isPartData = false, shouldUpdate = false, path: pathAction = '' } = action.payload;
+
       let path = pathAction;
       let pathParse = path.split('_');
       if (

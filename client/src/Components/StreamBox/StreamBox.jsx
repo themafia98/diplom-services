@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { loadCurrentData } from '../../Redux/actions/routerActions/middleware';
+import { loadCurrentData, multipleLoadData } from '../../Redux/actions/routerActions/middleware';
 import { addTabAction, openPageWithDataAction, setActiveTabAction } from '../../Redux/actions/routerActions';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
@@ -37,7 +37,7 @@ class StreamBox extends React.Component {
 
   componentDidMount = async () => {
     const { Request } = this.context;
-    const { type = '', onLoadCurrentData } = this.props;
+    const { type = '', onLoadCurrentData, onMultipleLoadData } = this.props;
 
     if (!type) return;
 
@@ -54,7 +54,7 @@ class StreamBox extends React.Component {
           data: { response: { metadata = [] } = {} },
         } = res;
 
-        onLoadCurrentData({
+        const taskRequest = {
           path: 'taskModule',
           storeLoad: 'tasks',
           useStore: true,
@@ -62,10 +62,9 @@ class StreamBox extends React.Component {
           options: {
             keys: _.uniq(metadata.map(notification => notification?.action?.link)),
           },
-        });
+        };
 
-        /** TODO: delay hardcode loading, need create multiple loading modules data */
-        onLoadCurrentData({
+        const contactRequest = {
           path: 'contactModule',
           storeLoad: 'news',
           methodRequst: 'GET',
@@ -74,6 +73,11 @@ class StreamBox extends React.Component {
           options: {
             keys: _.uniq(metadata.map(notification => notification?.action?.link)),
           },
+        };
+
+        onMultipleLoadData({
+          requestsParamsList: [taskRequest, contactRequest],
+          pipe: true,
         });
 
         this.setState({
@@ -273,6 +277,7 @@ const mapDispatchToProps = dispatch => {
     addTab: tab => dispatch(addTabAction(tab)),
     setCurrentTab: tab => dispatch(setActiveTabAction(tab)),
     onLoadCurrentData: props => dispatch(loadCurrentData({ ...props })),
+    onMultipleLoadData: props => dispatch(multipleLoadData(props)),
     onOpenPageWithData: data => dispatch(openPageWithDataAction(data)),
   };
 };

@@ -6,7 +6,7 @@ const namespaceHooks = {
   errorHook: (error, dispatch, dep = {}) => {
     const { Request, setStatus, errorRequstAction, loadCurrentData, getState, storeLoad, path } = dep;
     console.error(error);
-    if (error.status === 400 || error?.message?.toLowerCase().includes('Network error')) {
+    if (error.status === 400 || error?.message?.toLowerCase().includes('network error')) {
       const errorRequest = new Request();
       dispatch(setStatus({ statusRequst: 'offline' }));
       dispatch(errorRequstAction(error.message));
@@ -25,7 +25,7 @@ const namespaceHooks = {
       );
     } else dispatch(errorRequstAction(error.message));
   },
-  onlineDataHook: async (dispatch, dep = {}) => {
+  onlineDataHook: async (dispatch, dep = {}, multiple = false) => {
     const {
       noCorsClient,
       requestError,
@@ -52,15 +52,18 @@ const namespaceHooks = {
         sortBy,
         pathValid,
         isPartData,
+        storeLoad,
         schema,
       };
-      const { data } = dataParser(false, false, dep);
-      dispatch(saveComponentStateAction(data));
+      const { data, shouldUpdateState = true } = dataParser(false, false, dep);
+
+      if (shouldUpdateState && !multiple) dispatch(saveComponentStateAction(data));
+      else if (multiple) return data;
     }
 
     if (!_.isNull(requestError)) dispatch(errorRequstAction(null));
 
-    if (storeLoad === 'news') {
+    if (storeLoad === 'news' && !multiple) {
       await dispatch(
         saveComponentStateAction({
           [storeLoad]: copyStore,
@@ -70,7 +73,7 @@ const namespaceHooks = {
         }),
       );
     } else {
-      const cursor = clientDB.getCursor(storeLoad);
+      const cursor = await clientDB.getCursor(storeLoad);
       isLocalUpdate = !_.isNull(cursor);
       const dep = {
         copyStore,
@@ -88,7 +91,7 @@ const namespaceHooks = {
         errorRequstAction,
       };
 
-      if (cursor) cursor.onsuccess = sucessEvent.bind(this, dispatch, dep, '');
+      if (cursor) return await sucessEvent(dispatch, dep, '', true, cursor);
     }
 
     if (!isLocalUpdate) {
@@ -105,9 +108,10 @@ const namespaceHooks = {
       };
 
       // @ts-ignore
-      const { data, shoudClearError = false } = dataParser(true, false, dep);
+      const { data, shoudClearError = false, shouldUpdateState = true } = dataParser(true, false, dep);
       if (shoudClearError) await dispatch(errorRequstAction(null));
-      await dispatch(saveComponentStateAction(data));
+      if (shouldUpdateState && !multiple) await dispatch(saveComponentStateAction(data));
+      else if (multiple) return data;
     }
   },
 };
