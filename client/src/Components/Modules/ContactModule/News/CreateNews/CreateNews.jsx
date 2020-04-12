@@ -80,6 +80,7 @@ class CreateNews extends React.PureComponent {
               message: `${titleNews}. Добавлена: ${moment().format('MM.DD.YYYY HH:mm')}`,
               action: {
                 type: 'news_link',
+                moduleName: 'contactModule',
                 link: key,
               },
               uidCreater: uid,

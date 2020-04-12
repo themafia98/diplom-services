@@ -7,7 +7,7 @@ import _ from 'lodash';
 import { Avatar, notification, message, Tooltip, Spin } from 'antd';
 import { Scrollbars } from 'react-custom-scrollbars';
 import clsx from 'clsx';
-import { routeParser, routePathNormalise } from '../../Utils';
+import { routeParser, routePathNormalise, buildRequestList } from '../../Utils';
 import modelContext from '../../Models/context';
 
 class StreamBox extends React.Component {
@@ -54,29 +54,14 @@ class StreamBox extends React.Component {
           data: { response: { metadata = [] } = {} },
         } = res;
 
-        const taskRequest = {
-          path: 'taskModule',
-          storeLoad: 'tasks',
-          useStore: true,
-          methodRequst: 'POST',
-          options: {
-            keys: _.uniq(metadata.map(notification => notification?.action?.link)),
-          },
-        };
-
-        const contactRequest = {
-          path: 'contactModule',
-          storeLoad: 'news',
-          methodRequst: 'GET',
-          noCorsClient: true,
-          useStore: true,
-          options: {
-            keys: _.uniq(metadata.map(notification => notification?.action?.link)),
-          },
-        };
+        if (metadata && !metadata.length) {
+          return this.setState({
+            isLoading: true,
+          });
+        }
 
         onMultipleLoadData({
-          requestsParamsList: [taskRequest, contactRequest],
+          requestsParamsList: buildRequestList(metadata),
           pipe: true,
         });
 
@@ -111,30 +96,23 @@ class StreamBox extends React.Component {
       router: { routeData = {}, actionTabs = [] } = {},
     } = this.props;
 
-    const { action: { type: typeAction = '', link: key = '' } = {}, type = '' } = streamList[index] || {};
+    const { action: { type: typeAction = '', link: key = '', moduleName = '' } = {}, type = '' } =
+      streamList[index] || {};
     const { config = {} } = this.context;
 
-    const [moduleName = '', typeCurrentAction = ''] = typeAction.split('_');
+    const [storeName = '', typeCurrentAction = ''] = typeAction.split('_');
 
     switch (typeCurrentAction) {
       case 'link': {
         if (config?.tabsLimit <= actionTabs?.length)
           return message.error(`Максимальное количество вкладок: ${config?.tabsLimit}`);
 
-        const parsedModulePathName = moduleName && moduleName?.includes('news') ? 'contact' : moduleName;
-        const path = `${parsedModulePathName}Module_${type}Notification`;
+        const path = `${moduleName}_${type}Notification`;
 
         const { moduleId = '', page = '' } = routeParser({ path });
         if (!moduleId || !page) return;
 
-        const isExist = routeData[page] && routeData[page][`${moduleName}`];
-        const moduleParseName = isExist
-          ? `${moduleName}`
-          : moduleName[moduleName?.length - 1] === 's'
-          ? moduleName
-          : `${moduleName}s`;
-
-        const { [moduleParseName]: data = [] } = routeData[page] || {};
+        const { [storeName]: data = [] } = routeData[page] || {};
         const index = actionTabs.findIndex(tab => tab.includes(page) && tab.includes(key));
         const isFind = index !== -1;
 
@@ -205,7 +183,7 @@ class StreamBox extends React.Component {
       parentDataName = '',
       router: { routeData = {} } = {},
     } = this.props;
-    const { streamList = [] } = this.state;
+    const { streamList = [], isLoading = false } = this.state;
     if (!type) return null;
     const { [parentPath]: { [parentDataName]: parentDataList = [] } = {} } = routeData || {};
 
@@ -258,8 +236,12 @@ class StreamBox extends React.Component {
                 cardItem
               );
             })
-          ) : (
+          ) : !isLoading ? (
             <Spin size="large" />
+          ) : (
+            <div className="empty-streamBox">
+              <span>Уведомления отсутствуют</span>
+            </div>
           )}
         </div>
       </Scrollbars>

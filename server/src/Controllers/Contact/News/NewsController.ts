@@ -86,6 +86,7 @@ namespace News {
       }
     }
 
+    @Post({ path: '/list', private: true })
     @Get({ path: '/list', private: true })
     public async getNewsList(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const params: Params = { methodQuery: 'get_all', status: 'done', done: true, from: 'news' };
@@ -97,8 +98,11 @@ namespace News {
 
         if (!connect) throw new Error('Bad connect');
 
+        const { options: { limitList = null, keys = null } = {} } = req?.body || {};
+        const actionParams: ActionParams = { queryParams: keys ? { keys } : {}, limitList };
+
         const actionNews = new Action.ActionParser({ actionPath: 'news', actionType: 'get_all' });
-        const data: Readonly<ParserResult> = await actionNews.getActionData({});
+        const data: Readonly<ParserResult> = await actionNews.getActionData(actionParams);
 
         if (!data) {
           params.status = 'error';

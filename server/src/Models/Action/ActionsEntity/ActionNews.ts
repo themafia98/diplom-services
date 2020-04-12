@@ -13,7 +13,18 @@ class ActionNews implements Action {
   }
 
   private getNews(actionParam: ActionParams, model: Model<Document>): ParserData {
-    return this.getEntity().getAll(model, actionParam);
+    const { queryParams, limitList = null } = actionParam || {};
+    const params: ActionParams =
+      _.isEmpty(queryParams) || !(<Record<string, string[]>>queryParams)?.keys
+        ? {}
+        : <ActionParams>queryParams;
+
+    const query = {
+      where: '_id',
+      in: (<Record<string, string[]>>queryParams)?.keys,
+    };
+
+    return this.getEntity().getAll(model, _.isEmpty(params) ? params : query, <number | null>limitList);
   }
 
   private createNews(actionParam: ActionParams, model: Model<Document>): ParserData {

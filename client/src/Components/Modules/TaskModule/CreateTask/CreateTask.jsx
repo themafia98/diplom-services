@@ -267,7 +267,8 @@ class CreateTask extends React.PureComponent {
                     title: 'Новая задача',
                     message: `Создана новая задача № ${key}. ${name}`,
                     action: {
-                      type: 'task_link',
+                      type: 'tasks_link',
+                      moduleName: 'taskModule',
                       link: key,
                     },
                     uidCreater: uid,

@@ -175,6 +175,7 @@ export const notification = new Schema(
     action: {
       type: { type: String, required: true },
       link: { type: String, required: true },
+      moduleName: { type: String, required: true },
     },
     uidCreater: { type: String, required: true },
     authorName: { type: String },

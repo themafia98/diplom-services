@@ -17,6 +17,7 @@ const {
   getBase64,
   routeParser,
   routePathNormalise,
+  buildRequestList,
 } = namespaceParser;
 
 export {
@@ -30,4 +31,5 @@ export {
   routePathNormalise,
   errorHook,
   onlineDataHook,
+  buildRequestList,
 };

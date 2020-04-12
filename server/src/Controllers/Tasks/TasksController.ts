@@ -19,8 +19,6 @@ namespace Tasks {
     @Post({ path: '/list', private: true })
     @Get({ path: '/list', private: true })
     public async getList(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
-      const isWithOptions = req.method.toLowerCase().includes('post');
-
       const params: Params = { methodQuery: 'get_all', status: 'done', done: true, from: 'tasks' };
       try {
         const service = server.locals;

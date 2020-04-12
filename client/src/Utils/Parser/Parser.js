@@ -1,4 +1,5 @@
 import moment from 'moment';
+import _ from 'lodash';
 import {
   WIKI_NODE_TREE,
   USER_SCHEMA,
@@ -165,6 +166,40 @@ const namespaceParser = {
         key,
       };
     }
+  },
+  buildRequestList: (metadata = []) => {
+    if (!metadata || (metadata && !metadata.length)) return metadata;
+
+    const actionTypes = _.uniq(metadata.map(({ action: { type = '' } }) => type));
+    const actionsList = [];
+
+    actionTypes.forEach(actionType => {
+      const action = metadata.filter(({ action: { type = '' } }) => type === actionType);
+      actionsList.push([...action]);
+    });
+
+    if (!actionTypes.length) return actionTypes;
+
+    return actionsList
+      .map(actionsArray => {
+        if (!Array.isArray(actionsArray)) return null;
+        const item = actionsArray[0] || {};
+        const { action = null } = item || {};
+        if (!action) return null;
+        const { type = '', moduleName: path = '', link = '', method = '' } = action;
+        const storeLoad = _.isString(type) ? type.split('_')[0] : '';
+        const methodRequst = method ? method : link ? 'POST' : 'GET';
+        return {
+          path,
+          storeLoad,
+          methodRequst,
+          useStore: Boolean(storeLoad),
+          options: {
+            keys: _.uniq(actionsArray.map(notification => notification?.action?.link)),
+          },
+        };
+      })
+      .filter(Boolean);
   },
 };
 
