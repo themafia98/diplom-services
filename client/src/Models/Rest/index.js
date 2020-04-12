@@ -46,13 +46,14 @@ class Request {
   parseResponse(requestResponse = {}) {
     const {
       status = 503,
+      statusText = 'Bad update',
       data: { response = {} },
     } = requestResponse || {};
-
+    console.log(requestResponse);
     const { metadata = [], params = {}, params: { fromCache = false } = {} } = response;
     let items = [];
     const isArray = Array.isArray(metadata);
-    if (status !== 200) return [items, 'Bad update'];
+    if (status !== 200) return [items, statusText];
 
     isArray && metadata.forEach((doc, index) => _.isNumber(index) && items.push(doc));
 

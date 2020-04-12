@@ -6,7 +6,7 @@ const namespaceHooks = {
   errorHook: (error, dispatch, dep = {}) => {
     const { Request, setStatus, errorRequstAction, loadCurrentData, getState, storeLoad, path } = dep;
     console.error(error);
-    if (error.status === 400) {
+    if (error.status === 400 || error?.message?.toLowerCase().includes('Network error')) {
       const errorRequest = new Request();
       dispatch(setStatus({ statusRequst: 'offline' }));
       dispatch(errorRequstAction(error.message));
