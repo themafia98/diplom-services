@@ -45,7 +45,7 @@ const loadCurrentData = params => async (dispatch, getState, { schema, Request, 
         const { dataItems: copyStore = [], responseOptions = {} } = items;
         const { isPartData } = responseOptions || {};
 
-        if (error) throw new Error('Network error');
+        if (error) throw new Error(error);
 
         const dep = {
           noCorsClient,
@@ -140,19 +140,11 @@ const onMultipleLoadData = params => async (dispatch, getState, { schema, Reques
         const request = new Request();
         const res = await request.sendRequest(normalizeReqPath, methodRequst, { methodQuery, options }, true);
 
-        const {
-          data: { response: { metadata = [], params: { isPartData = false, fromCache = false } = {} } = {} },
-        } = res || {};
+        const [items, error] = request.parseResponse(res);
+        const { dataItems: copyStore = [], responseOptions = {} } = items;
+        const { isPartData } = responseOptions || {};
 
-        let items = [];
-
-        metadata.forEach((doc, index) => _.isNumber(index) && items.push(doc));
-
-        if (items.length) items = items.filter(it => !_.isEmpty(it));
-        else if (fromCache && !items.length) throw new Error('Network error');
-
-        const copyStore = [...items];
-        const undefiendCopyStore = [];
+        if (error) throw new Error(error);
       } catch (error) {}
     }
   }
