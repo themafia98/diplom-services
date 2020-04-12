@@ -63,7 +63,7 @@ const middlewareCaching = (props = {}) => async (dispatch, getState, { schema, R
           const body = { queryParams: { uid }, item, actionType };
 
           const res = await rest.sendRequest(path, 'PUT', body, true);
-          const [items, error] = rest.parseResponse(res) || 'bad parse response';
+          const [items, error] = rest.parseResponse(res);
 
           if (error) throw new Error(error);
 
