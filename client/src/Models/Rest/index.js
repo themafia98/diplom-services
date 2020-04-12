@@ -49,7 +49,7 @@ class Request {
       statusText = 'Bad update',
       data: { response = {} },
     } = requestResponse || {};
-    console.log(requestResponse);
+
     const { metadata = [], params = {}, params: { fromCache = false } = {} } = response;
     let items = [];
     const isArray = Array.isArray(metadata);
