@@ -72,3 +72,8 @@ $cardCount: 6;
 .ant-tooltip {
   max-width: 475px;
 }
+
+.popover-spiner {
+  position: absolute;
+  left: calc(50% - 6px);
+}

@@ -12,7 +12,7 @@ const RightPanel = props => {
     <div className="headerControllers rightPanel">
       <UserPopup udata={udata} goCabinet={goCabinet} />
       <div className="groupControllers">
-        <NotificationPopup notificationDep={notificationDep} />
+        <NotificationPopup udata={udata} notificationDep={notificationDep} />
         <Updater onClick={onUpdate} additionalClassName="updaterDefault" />
         <div onClick={onLogout} className="logout">
           Выйти

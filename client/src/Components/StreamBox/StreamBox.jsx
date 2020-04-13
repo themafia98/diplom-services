@@ -232,7 +232,19 @@ class StreamBox extends React.Component {
     const { [parentPath]: { [parentDataName]: parentDataList = [] } = {} } = routeData || {};
 
     if (type === 'private' && buildItems) {
-      return <Scrollbars style={{ height: listHeight }}>{buildItems(streamList)}</Scrollbars>;
+      return (
+        <Scrollbars style={{ height: listHeight }}>
+          {streamList && streamList?.length ? (
+            buildItems(streamList)
+          ) : !isLoading ? (
+            <Spin className="popover-spiner" size="large" />
+          ) : (
+            <div className="empty-streamBox">
+              <span>Уведомления отсутствуют</span>
+            </div>
+          )}
+        </Scrollbars>
+      );
     }
 
     return (
