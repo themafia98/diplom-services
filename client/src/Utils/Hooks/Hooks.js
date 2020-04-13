@@ -63,36 +63,10 @@ const namespaceHooks = {
 
     if (!_.isNull(requestError)) dispatch(errorRequstAction(null));
 
-    if (storeLoad === 'news' && !multiple) {
-      await dispatch(
-        saveComponentStateAction({
-          [storeLoad]: copyStore,
-          load: true,
-          path: pathValid,
-          isPartData,
-        }),
-      );
-    } else {
-      const cursor = await clientDB.getCursor(storeLoad);
-      isLocalUpdate = !_.isNull(cursor);
-      const dep = {
-        copyStore,
-        isPartData,
-        storeLoad,
-        methodQuery,
-        schema,
-        clientDB,
-        sortBy,
-        pathValid,
-        requestError,
-        primaryKey,
-        undefiendCopyStore,
-        saveComponentStateAction,
-        errorRequstAction,
-      };
+    const cursor = await clientDB.getCursor(storeLoad);
+    isLocalUpdate = !_.isNull(cursor);
 
-      if (cursor) return await sucessEvent(dispatch, dep, '', multiple, cursor);
-    }
+    if (cursor) return await sucessEvent(dispatch, dep, '', multiple, cursor);
 
     if (!isLocalUpdate) {
       const dep = {

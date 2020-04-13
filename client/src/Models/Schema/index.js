@@ -78,6 +78,7 @@ class Schema {
         };
       case NEWS_SCHEMA:
         return {
+          _id: null,
           title: null,
           content: null, // { entityMap: null,blocks: null }
         };
@@ -87,6 +88,7 @@ class Schema {
           title: null,
           level: null,
           path: null,
+          index: null,
           parentId: null,
           accessGroups: null,
         };
@@ -122,23 +124,45 @@ class Schema {
    * @param {Array<null>} schema
    * @return {boolean}
    */
-  validateSchema(data, schema) {
+  validateSchema(keysData, keysSchema, data) {
     //
-    if (!_.isArray(data) || !_.isArray(schema)) return false;
+    if (!_.isArray(keysData) || !_.isArray(keysSchema)) return false;
+    let validLenth = keysData.length;
 
-    const isFind = schema.findIndex(it => it === 'modeAdd') !== -1;
-    const isFindBoth = isFind && data.findIndex(it => it === 'modeAdd') !== -1;
+    const isFind = keysSchema.findIndex(it => it === 'modeAdd') !== -1;
+    const isFindBoth = isFind && keysData.findIndex(it => it === 'modeAdd' && _.isString(data[it])) !== -1;
+    if (isFindBoth) validLenth--;
+
+    const isCreated = keysData.findIndex(it => it === 'createdAt' && _.isString(data[it])) !== -1;
+    if (isCreated) validLenth--;
+
+    const isUpdated = keysData.findIndex(it => it === 'updatedAt' && _.isString(data[it])) !== -1;
+    if (isUpdated) validLenth--;
+
+    const isVersion = keysData.findIndex(it => it === '__v' && _.isNumber(data[it])) !== -1;
+    if (isVersion) validLenth--;
+
     if (
-      (isFindBoth && data.length !== schema.length) ||
-      (isFind && !isFindBoth && data.length + 1 !== schema.length) ||
-      (!isFind && data.length !== schema.length)
+      (isFindBoth && keysData.length !== keysSchema.length) ||
+      (isFind && !isFindBoth && keysData.length + 1 !== keysSchema.length) ||
+      (!isFind && keysSchema.length !== validLenth)
     ) {
       return false;
     }
 
     return this.getMode() !== 'no-strict'
-      ? data.every((dataKey, i) => dataKey === schema[i])
-      : data.every(dataKey => schema.findIndex(it => it === dataKey) !== -1);
+      ? keysData.every((dataKey, i) => dataKey === keysSchema[i])
+      : keysData.every(dataKey => {
+          if (
+            dataKey !== 'modeAdd' &&
+            dataKey !== 'createdAt' &&
+            dataKey !== 'updatedAt' &&
+            dataKey !== '__v'
+          ) {
+            return keysSchema.findIndex(it => it === dataKey) !== -1;
+          }
+          return true;
+        });
   }
 
   /**
@@ -150,6 +174,7 @@ class Schema {
     if (!_.isObject(data)) return null;
     if (!_.isString(type)) return null;
     if (_.isNull(data)) return null;
+
     let keysSchema = null;
     const keysData = Object.keys(data);
 
@@ -157,7 +182,7 @@ class Schema {
     if (schema) keysSchema = Object.keys(schema);
     else return null;
 
-    if (this.validateSchema(keysData, keysSchema, this.getMode())) {
+    if (this.validateSchema(keysData, keysSchema, data)) {
       return { ...data };
     } else return null;
   }

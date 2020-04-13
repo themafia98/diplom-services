@@ -5,6 +5,7 @@ import {
   USER_SCHEMA,
   TASK_SCHEMA,
   TASK_CONTROLL_JURNAL_SCHEMA,
+  NEWS_SCHEMA,
 } from '../../Models/Schema/const';
 
 const namespaceParser = {
@@ -48,6 +49,8 @@ const namespaceParser = {
         ? USER_SCHEMA
         : storeLoad === 'tasks'
         ? TASK_SCHEMA
+        : storeLoad === 'news'
+        ? NEWS_SCHEMA
         : null;
 
     let storeCopyValid = copyStore.map(it => schema.getSchema(templateSchema, it)).filter(Boolean);
@@ -57,15 +60,15 @@ const namespaceParser = {
     if (requestError !== null) shoudClearError = true;
 
     const sortedCopyStore =
-      !sortBy && copyStore.every(it => it.createdAt)
-        ? copyStore.sort((a, b) => {
+      !sortBy && storeCopyValid.every(it => it.createdAt)
+        ? storeCopyValid.sort((a, b) => {
             const aDate = moment(a.createdAt).unix();
             const bDate = moment(b.createdAt).unix();
             return bDate - aDate;
           })
         : sortBy
-        ? copyStore.sort((a, b) => a[sortBy] - b[sortBy])
-        : copyStore;
+        ? storeCopyValid.sort((a, b) => a[sortBy] - b[sortBy])
+        : storeCopyValid;
 
     const data = { [storeLoad]: sortedCopyStore, load: true, path: pathValid, isPartData };
     return { data, shoudClearError, shouldUpdateState: Boolean(storeLoad) };

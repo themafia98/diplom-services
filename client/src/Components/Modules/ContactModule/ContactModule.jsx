@@ -30,7 +30,7 @@ class ContactModule extends React.PureComponent {
         path,
         storeLoad: 'news',
         methodRequst: 'GET',
-        noCorsClient: true,
+        noCorsClient: false,
         useStore: true,
       });
     }
@@ -44,7 +44,7 @@ class ContactModule extends React.PureComponent {
         path,
         storeLoad: 'news',
         methodRequst: 'GET',
-        noCorsClient: true,
+        noCorsClient: false,
         useStore: true,
       });
     }

@@ -1,7 +1,13 @@
 import { openDB, deleteDB, wrap, unwrap } from 'idb';
 import _ from 'lodash';
 import config from '../../config.json';
-import { TASK_SCHEMA, USER_SCHEMA, TASK_CONTROLL_JURNAL_SCHEMA, WIKI_NODE_TREE } from '../Schema/const';
+import {
+  TASK_SCHEMA,
+  USER_SCHEMA,
+  TASK_CONTROLL_JURNAL_SCHEMA,
+  WIKI_NODE_TREE,
+  NEWS_SCHEMA,
+} from '../Schema/const';
 import Schema from '../Schema';
 
 class ClientSideDatabase {
@@ -87,34 +93,50 @@ class ClientSideDatabase {
     return this.#version;
   }
 
+  isContains(name) {
+    return this.db?.objectStoreNames?.contains(name);
+  }
+
   async init() {
     if (this.getInitStatus()) return;
     const self = this;
     try {
-      self.db = await openDB(this.getName(), this.getVersion(), {
-        blocking() {
-          self.db.close();
-          alert('Offline data deprecated, please update page for updating storage.');
+      self.db = await openDB(self.getName(), self.getVersion(), {
+        async blocking() {
+          self.updateStateInit(false);
+          await self.db.close();
+          return await self.init();
         },
-        upgrade(db, oldVersion, newVersion, transaction) {
+        async upgrade(
+          db = self?.db,
+          oldVersion = self.db.version,
+          newVersion = ++self.db.version,
+          transaction = self.db.transaction,
+        ) {
           self.db = db;
           let isUsersObject = false;
           let isTasksObject = false;
           let isjurnalWorksObject = false;
           let isWikiTreeObject = false;
+          let isNewsObject = false;
 
           const newVersionUpdate = newVersion !== oldVersion && oldVersion !== 0;
 
           if (newVersionUpdate) {
-            indexedDB.deleteDatabase(self.db);
-            return void self.init();
+            return await deleteDB(self.getName(), {
+              async blocked() {
+                self.updateStateInit(false);
+                console.log('Database sussesfully clear and update after error or rollback');
+                return await self.init();
+              },
+            });
           }
 
-          if (self.db?.objectStoreNames.contains('users') && !newVersionUpdate) isUsersObject = true;
-          if (self.db?.objectStoreNames.contains('wikiTree') && !newVersionUpdate) isWikiTreeObject = true;
-          if (self.db?.objectStoreNames.contains('tasks') && !newVersionUpdate) isTasksObject = true;
-          if (self.db?.objectStoreNames.contains('jurnalworks') && !newVersionUpdate)
-            isjurnalWorksObject = true;
+          if (self.isContains('users') && !newVersionUpdate) isUsersObject = true;
+          if (self.isContains('wikiTree') && !newVersionUpdate) isWikiTreeObject = true;
+          if (self.isContains('tasks') && !newVersionUpdate) isTasksObject = true;
+          if (self.isContains('news') && !newVersionUpdate) isNewsObject = true;
+          if (self.isContains('jurnalworks') && !newVersionUpdate) isjurnalWorksObject = true;
 
           const objectStoreUsers =
             !isUsersObject && !newVersionUpdate
@@ -174,7 +196,7 @@ class ClientSideDatabase {
             !isWikiTreeObject && !newVersionUpdate
               ? self.db.createObjectStore('wikiTree', {
                   unique: true,
-                  keyPath: 'key',
+                  keyPath: '_id',
                   autoIncrement: true,
                 })
               : newVersionUpdate
@@ -192,6 +214,33 @@ class ClientSideDatabase {
                 if (isCanDelete) objectStoreWikiTree.deleteIndex(key);
               }
               objectStoreWikiTree.createIndex(key, key, {
+                unique: key === 'key' ? true : false,
+              });
+            });
+          }
+
+          const objectStoreNews =
+            !isNewsObject && !newVersionUpdate
+              ? self.db.createObjectStore('news', {
+                  unique: true,
+                  keyPath: '_id',
+                  autoIncrement: true,
+                })
+              : newVersionUpdate
+              ? self.db.transaction.objectStore('news')
+              : null;
+
+          if (!isNewsObject) {
+            const schemaNews = self.getSchema()?.getValidateSchema(NEWS_SCHEMA);
+            const keysNews = Object.keys(schemaNews);
+
+            keysNews.forEach((key, i) => {
+              if (newVersionUpdate) {
+                const keysIndex = Object.keys(objectStoreNews.indexNames);
+                const isCanDelete = keysNews.includes(objectStoreNews.indexNames[keysIndex[i]]);
+                if (isCanDelete) objectStoreNews.deleteIndex(key);
+              }
+              objectStoreNews.createIndex(key, key, {
                 unique: key === 'key' ? true : false,
               });
             });
@@ -229,29 +278,6 @@ class ClientSideDatabase {
           }
         },
       });
-
-      // } else {
-      //   /** clear and reload client db if catch error */
-      //   const deleteIndexedDbEvent = deleteDB(self.getName());
-      //   /**
-      //    * @param {any} event
-      //    */
-      //   deleteIndexedDbEvent.onerror = event => {
-      //     alert('Error. Please clear your browser data or update browser.');
-      //     console.error(event);
-      //   };
-
-      //   deleteIndexedDbEvent.onsuccess = ({ result }) => {
-      //     if (_.isUndefined(result)) {
-      //       self.updateStateInit(false);
-      //       self.init().then(() => {
-      //         console.log('Database sussesfully clear and update after error or rollback');
-      //       });
-      //     } else {
-      //       alert(' Please clear your browser data or update browser.');
-      //     }
-      //   };
-      // }
 
       this.#isInit = true;
     } catch (e) {
@@ -344,9 +370,7 @@ class ClientSideDatabase {
   async getCursor(nameStore = '', mode = 'readonly') {
     if (this.getCrashStatus()) return;
     try {
-      const tx = this.db.transaction(nameStore, mode);
-      const store = tx.objectStore(nameStore);
-      return await store.openCursor();
+      return await this.db.transaction(nameStore, mode).store.openCursor();
     } catch (error) {
       console.error(error.message);
       return null;
