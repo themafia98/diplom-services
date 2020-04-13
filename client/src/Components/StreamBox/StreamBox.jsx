@@ -102,13 +102,22 @@ class StreamBox extends React.Component {
   };
 
   onRunAction = index => {
-    const { streamList } = this.state;
+    const { streamList: streamListState = [] } = this.state;
     const {
       addTab,
       setCurrentTab,
       onOpenPageWithData,
       router: { routeData = {}, actionTabs = [] } = {},
+      store = '',
+      streamModule = '',
+      streamStore = '',
     } = this.props;
+
+    const streamList = store
+      ? routeData[streamModule] && routeData[streamModule][streamStore]
+        ? routeData[streamModule][streamStore]
+        : []
+      : streamListState;
 
     const { action: { type: typeAction = '', link: key = '', moduleName = '' } = {}, type = '' } =
       streamList[index] || {};
