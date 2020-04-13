@@ -15,7 +15,7 @@ class ActionNotification implements Action {
 
   public runGlobal(actionParam: ActionParams, model: Model<Document>): any {
     const actionType: string = this.getEntity().getActionType();
-
+    const { methodQuery = {} } = <Record<string, object>>actionParam;
     if (actionType.includes('set')) {
       const { item = null } = <Record<string, object>>actionParam;
 
@@ -26,7 +26,9 @@ class ActionNotification implements Action {
       return this.getEntity().createEntity(model, item);
     }
 
-    return this.getEntity().getAll(model, { type: 'global' });
+    console.log('additionalQuery:', methodQuery);
+
+    return this.getEntity().getAll(model, { type: 'global', ...methodQuery });
   }
 
   public runMass(actionParam: ActionParams, model: Model<Document>): any {}

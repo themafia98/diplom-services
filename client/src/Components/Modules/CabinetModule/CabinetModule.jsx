@@ -5,6 +5,7 @@ import _ from 'lodash';
 import { Modal, Upload, message, Icon, Button } from 'antd';
 import { b64toBlob } from '../../../Utils';
 import { updateUdata } from '../../../Redux/actions/publicActions';
+import { saveComponentStateAction } from '../../../Redux/actions/routerActions';
 import UserCard from '../../UserCard';
 import TitleModule from '../../TitleModule';
 import StreamBox from '../../StreamBox';
@@ -107,7 +108,7 @@ class CabinetModule extends React.PureComponent {
   render() {
     const { visible, imageUrl } = this.state;
     const { rest } = this.context;
-    const { udata: { _id: uid = '', avatar = '' } = {} } = this.props;
+    const { udata: { _id: uid = '', avatar = '' } = {}, onSaveComponentState } = this.props;
 
     const uidUser = uid;
 
@@ -135,7 +136,17 @@ class CabinetModule extends React.PureComponent {
           </div>
           <div className="col-6">
             <p className="lastActivity">Последняя активность</p>
-            <StreamBox boxClassName="streamActivityCabinet" mode="activity" />
+            <StreamBox
+              type={'global'}
+              isSingleLoading={true}
+              streamStore="streamList"
+              streamModule="cabinetModule"
+              store="redux"
+              onSaveComponentState={onSaveComponentState}
+              filterStream="uidCreater"
+              boxClassName="streamActivityCabinet"
+              mode="activity"
+            />
           </div>
         </div>
         <Modal
@@ -182,6 +193,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    onSaveComponentState: data => dispatch(saveComponentStateAction(data)),
     onUpdateUdata: payload => dispatch(updateUdata(payload)),
   };
 };

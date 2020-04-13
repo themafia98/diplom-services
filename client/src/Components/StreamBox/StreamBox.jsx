@@ -37,15 +37,24 @@ class StreamBox extends React.Component {
 
   componentDidMount = async () => {
     const { Request } = this.context;
-    const { type = '', onLoadCurrentData, onMultipleLoadData } = this.props;
+    const {
+      type = '',
+      onMultipleLoadData,
+      isSingleLoading = false,
+      onSaveComponentState,
+      streamStore,
+      streamModule,
+    } = this.props;
 
     if (!type) return;
 
     const onLoadingStreamList = async () => {
+      const { filterStream = '', udata: { _id: uid = '' } = {} } = this.props;
       try {
         const rest = new Request();
         const res = await rest.sendRequest(`/system/${type}/notification`, 'POST', {
           actionType: 'get_notifications',
+          methodQuery: filterStream ? { [filterStream]: uid } : {},
         });
 
         if (res.status !== 200) throw new Error('Bad get notification request');
@@ -65,9 +74,14 @@ class StreamBox extends React.Component {
           pipe: true,
         });
 
-        this.setState({
-          streamList: metadata,
-        });
+        if (!_.isFunction(onSaveComponentState)) this.setState({ streamList: metadata });
+        else
+          onSaveComponentState({
+            [streamStore]: metadata,
+            load: true,
+            path: streamModule,
+            mode: 'online',
+          });
       } catch (error) {
         console.error(error);
         notification.error({
@@ -78,7 +92,7 @@ class StreamBox extends React.Component {
     };
 
     await onLoadingStreamList();
-    this.onLoadingInterval = setInterval(onLoadingStreamList, 30000);
+    if (!isSingleLoading) this.onLoadingInterval = setInterval(onLoadingStreamList, 30000);
   };
 
   componentWillUnmount = () => {
@@ -182,8 +196,18 @@ class StreamBox extends React.Component {
       parentPath = '',
       parentDataName = '',
       router: { routeData = {} } = {},
+      streamModule = '',
+      streamStore = '',
+      store = null,
     } = this.props;
-    const { streamList = [], isLoading = false } = this.state;
+    const { streamList: streamListState = [], isLoading = false } = this.state;
+
+    const streamList = store
+      ? routeData[streamModule] && routeData[streamModule][streamStore]
+        ? routeData[streamModule][streamStore]
+        : []
+      : streamListState;
+
     if (!type) return null;
     const { [parentPath]: { [parentDataName]: parentDataList = [] } = {} } = routeData || {};
 
