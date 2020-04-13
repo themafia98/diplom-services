@@ -115,6 +115,7 @@ class WikiModule extends React.PureComponent {
         methodQuery: 'get_all',
         methodRequst: 'GET',
         sortBy: 'index',
+        indStoreName: 'wikiTree',
       });
     }
   };

@@ -15,6 +15,7 @@ const loadCurrentData = params => async (dispatch, getState, { schema, Request, 
     noCorsClient = false,
     sortBy = '',
     options = {},
+    indStoreName = '',
   } = params;
 
   let isLocalUpdate = true;
@@ -62,6 +63,7 @@ const loadCurrentData = params => async (dispatch, getState, { schema, Request, 
           saveComponentStateAction,
           errorRequstAction,
           isLocalUpdate,
+          indStoreName,
         };
 
         onlineDataHook(dispatch, dep);
@@ -96,7 +98,7 @@ const loadCurrentData = params => async (dispatch, getState, { schema, Request, 
         errorRequstAction,
       };
 
-      const cursor = await clientDB.getAllItems(storeLoad);
+      const cursor = await clientDB.getAllItems(indStoreName ? indStoreName : storeLoad);
       return await sucessEvent(dispatch, dep, 'offline', false, cursor);
     }
   }

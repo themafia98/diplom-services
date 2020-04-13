@@ -41,6 +41,7 @@ const namespaceHooks = {
       saveComponentStateAction,
       errorRequstAction,
       isLocalUpdate: localUpdateStat,
+      indStoreName,
     } = dep;
     const undefiendCopyStore = [];
     let isLocalUpdate = localUpdateStat;
@@ -63,7 +64,7 @@ const namespaceHooks = {
 
     if (!_.isNull(requestError)) dispatch(errorRequstAction(null));
 
-    const cursor = await clientDB.getCursor(storeLoad);
+    const cursor = await clientDB.getCursor(indStoreName ? indStoreName : storeLoad);
     isLocalUpdate = !_.isNull(cursor);
 
     if (cursor) return await sucessEvent(dispatch, dep, '', multiple, cursor);
