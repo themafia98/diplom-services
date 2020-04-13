@@ -120,6 +120,21 @@ class Schema {
   }
 
   /**
+   *
+   * @param {string} value
+   * @returns {boolean}
+   */
+  isPublicKey(value) {
+    if (Array.isArray(value) || _.isPlainObject(value)) {
+      if (_.isPlainObject(value)) {
+        return Object.keys(value).every(val => val !== 'createdAt' && val !== 'updatedAt' && val !== '__v');
+      }
+      return value.every(val => val !== 'createdAt' && val !== 'updatedAt' && val !== '__v');
+    }
+    return value !== 'createdAt' && value !== 'updatedAt' && value !== '__v';
+  }
+
+  /**
    * Schema
    * @param {Array<string>} data
    * @param {Array<null>} schema
@@ -154,12 +169,7 @@ class Schema {
     return this.getMode() !== 'no-strict'
       ? keysData.every((dataKey, i) => dataKey === keysSchema[i])
       : keysData.every(dataKey => {
-          if (
-            dataKey !== 'modeAdd' &&
-            dataKey !== 'createdAt' &&
-            dataKey !== 'updatedAt' &&
-            dataKey !== '__v'
-          ) {
+          if (dataKey !== 'modeAdd' && this.isPublicKey(dataKey)) {
             return keysSchema.findIndex(it => it === dataKey) !== -1;
           }
           return true;

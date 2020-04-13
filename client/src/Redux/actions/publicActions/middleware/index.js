@@ -216,7 +216,7 @@ const middlewareUpdate = (props = {}) => async (dispatch, getState, { schema, Re
               }),
             );
 
-            await clientDB.updateItem(store, updaterItem);
+            if (schema.isPublicKey(updaterItem)) await clientDB.updateItem(store, updaterItem);
             break;
           }
         } catch (error) {

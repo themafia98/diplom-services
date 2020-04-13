@@ -55,7 +55,7 @@ const namespaceParser = {
 
     let storeCopyValid = copyStore.map(it => schema.getSchema(templateSchema, it)).filter(Boolean);
 
-    storeCopyValid.forEach(it => clientDB.updateItem(storeLoad, it));
+    storeCopyValid.forEach(it => schema.isPublicKey(it) && clientDB.updateItem(storeLoad, it));
 
     if (requestError !== null) shoudClearError = true;
 
