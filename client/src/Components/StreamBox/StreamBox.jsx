@@ -49,7 +49,12 @@ class StreamBox extends React.Component {
     if (!type) return;
 
     const onLoadingStreamList = async () => {
-      const { filterStream = '', udata: { _id: uid = '' } = {} } = this.props;
+      const {
+        filterStream = '',
+        udata: { _id: uid = '' } = {},
+        setCounter = null,
+        type: typeStream = '',
+      } = this.props;
       try {
         const rest = new Request();
         const res = await rest.sendRequest(`/system/${type}/notification`, 'POST', {
@@ -73,6 +78,10 @@ class StreamBox extends React.Component {
           requestsParamsList: buildRequestList(metadata),
           pipe: true,
         });
+
+        if (typeStream === 'private' && setCounter && metadata?.length) {
+          setCounter(metadata.length);
+        }
 
         if (!_.isFunction(onSaveComponentState)) this.setState({ streamList: metadata });
         else
@@ -208,6 +217,8 @@ class StreamBox extends React.Component {
       streamModule = '',
       streamStore = '',
       store = null,
+      buildItems = null,
+      listHeight = null,
     } = this.props;
     const { streamList: streamListState = [], isLoading = false } = this.state;
 
@@ -220,8 +231,12 @@ class StreamBox extends React.Component {
     if (!type) return null;
     const { [parentPath]: { [parentDataName]: parentDataList = [] } = {} } = routeData || {};
 
+    if (type === 'private' && buildItems) {
+      return <Scrollbars style={{ height: listHeight }}>{buildItems(streamList)}</Scrollbars>;
+    }
+
     return (
-      <Scrollbars style={mode ? { height: 'calc(100% - 100px)' } : null}>
+      <Scrollbars style={mode ? { height: listHeight ? listHeight : 'calc(100% - 100px)' } : null}>
         <div className={clsx('streamBox', boxClassName ? boxClassName : null)}>
           {streamList?.length ? (
             streamList.map((card, index) => {

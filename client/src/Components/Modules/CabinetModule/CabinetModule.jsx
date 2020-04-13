@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { Modal, Upload, message, Icon, Button } from 'antd';
-import { b64toBlob } from '../../../Utils';
 import { updateUdata } from '../../../Redux/actions/publicActions';
 import { saveComponentStateAction } from '../../../Redux/actions/routerActions';
 import UserCard from '../../UserCard';
@@ -137,7 +136,7 @@ class CabinetModule extends React.PureComponent {
           <div className="col-6">
             <p className="lastActivity">Последняя активность</p>
             <StreamBox
-              type={'global'}
+              type="global"
               isSingleLoading={true}
               streamStore="streamList"
               streamModule="cabinetModule"

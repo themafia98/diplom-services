@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { Layout } from 'antd';
+import { saveComponentStateAction } from '../../Redux/actions/routerActions';
 import Tab from './Tab';
 import RightPanel from './RightPanel';
 
@@ -76,7 +77,23 @@ class HeaderView extends React.PureComponent {
   };
 
   render() {
-    const { actionTabs = ['mainModule'], goCabinet, status, shouldUpdate, logout, udata } = this.props;
+    const {
+      actionTabs = ['mainModule'],
+      goCabinet,
+      status,
+      shouldUpdate,
+      logout,
+      udata,
+      onSaveComponentState,
+    } = this.props;
+
+    const notificationDep = {
+      streamStore: 'streamList',
+      streamModule: 'system',
+      store: 'redux',
+      filterStream: 'uidCreater',
+      onSaveComponentState,
+    };
 
     return (
       <Header>
@@ -88,6 +105,7 @@ class HeaderView extends React.PureComponent {
           goCabinet={goCabinet}
           onLogout={logout}
           onUpdate={this.update}
+          notificationDep={notificationDep}
         />
       </Header>
     );
@@ -105,5 +123,11 @@ const mapStateTopProps = state => {
   };
 };
 
-export default connect(mapStateTopProps)(HeaderView);
+const mapDispatchToProps = dispatch => {
+  return {
+    onSaveComponentState: data => dispatch(saveComponentStateAction(data)),
+  };
+};
+
+export default connect(mapStateTopProps, mapDispatchToProps)(HeaderView);
 export { HeaderView };

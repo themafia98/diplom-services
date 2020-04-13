@@ -5,12 +5,14 @@ import UserPopup from '../../UserPopup';
 import NotificationPopup from '../../NotificationPopup';
 import Status from './Status';
 
-const RightPanel = ({ onUpdate, onLogout, goCabinet, status, shouldUpdate, udata = {} }) => {
+const RightPanel = props => {
+  const { onUpdate, onLogout, goCabinet, status, shouldUpdate, udata = {}, notificationDep = {} } = props;
+
   return (
     <div className="headerControllers rightPanel">
       <UserPopup udata={udata} goCabinet={goCabinet} />
       <div className="groupControllers">
-        <NotificationPopup />
+        <NotificationPopup notificationDep={notificationDep} />
         <Updater onClick={onUpdate} additionalClassName="updaterDefault" />
         <div onClick={onLogout} className="logout">
           Выйти

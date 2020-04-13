@@ -9,7 +9,9 @@ const NotificationItem = ({ image = false, content = '' }) => {
           <Avatar shape="circle" type="small" icon="user" />
         </div>
       ) : null}
-      <span className={clsx('notificationItem__content', image ? 'left' : null)}>{content}</span>
+      <span className={clsx('notificationItem__content', image ? 'left' : null)}>
+        {content.replace(/,/, '\n')}
+      </span>
     </div>
   );
 };
