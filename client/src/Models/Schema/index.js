@@ -74,6 +74,7 @@ class Schema {
           position: null,
           rules: null,
           accept: null,
+          avatar: null,
           modeAdd: 'any',
         };
       case NEWS_SCHEMA:
@@ -141,6 +142,8 @@ class Schema {
 
     const isVersion = keysData.findIndex(it => it === '__v' && _.isNumber(data[it])) !== -1;
     if (isVersion) validLenth--;
+
+    debugger;
 
     if (
       (isFindBoth && keysData.length !== keysSchema.length) ||
