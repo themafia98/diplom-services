@@ -143,8 +143,6 @@ class Schema {
     const isVersion = keysData.findIndex(it => it === '__v' && _.isNumber(data[it])) !== -1;
     if (isVersion) validLenth--;
 
-    debugger;
-
     if (
       (isFindBoth && keysData.length !== keysSchema.length) ||
       (isFind && !isFindBoth && keysData.length + 1 !== keysSchema.length) ||
