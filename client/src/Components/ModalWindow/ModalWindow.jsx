@@ -114,7 +114,7 @@ class ModalWindow extends React.PureComponent {
       onCaching,
       onUpdate,
       routeDataActive = {},
-      routeDataActive: { key = null } = {},
+      routeDataActive: { key = null, name: nameTask = '' } = {},
       actionType = null,
       keyTask = null,
       onCancelEditModeContent,
@@ -170,11 +170,44 @@ class ModalWindow extends React.PureComponent {
     } else if ((visible && mode === 'jur' && this.validation() && !typeValue) || typeValue === 'jur') {
       const item = { ...jurnal, depKey: keyTask, editor: 'Павел Петрович' };
 
+      const jurnalCopy = { ...jurnal };
+      const { Request } = this.context;
+      const { udata: { _id: uid, displayName } = {} } = this.props;
+
       if (onCaching) {
-        onCaching({ item, actionType, depStore: 'tasks', store: 'jurnalworks' }).then(() =>
-          this.handleCancel(),
-        );
+        await onCaching({ item, actionType, depStore: 'tasks', store: 'jurnalworks' });
+        this.handleCancel();
       }
+
+      const rest = new Request();
+      rest
+        .sendRequest(
+          `/system/global/notification`,
+          'POST',
+          {
+            actionType: 'set_notification',
+            item: {
+              type: 'global',
+              title: 'Списание времени в журнал',
+              message: `
+                Работа над задачей ${nameTask}, 
+                время затрачено: ${jurnalCopy?.timeLost},
+                описание: ${jurnalCopy.description}. Дата: ${jurnalCopy?.date}`,
+              action: {
+                type: 'tasks_link',
+                moduleName: 'taskModule',
+                link: key,
+              },
+              uidCreater: uid,
+              authorName: displayName,
+            },
+          },
+          true,
+        )
+        .catch(error => {
+          console.error(error);
+          message.error('Ошибка глобального уведомления');
+        });
 
       return this.setState({
         ...this.state,

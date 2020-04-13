@@ -526,6 +526,7 @@ class TaskView extends React.PureComponent {
             onCancelEditModeContent={this.onCancelEditModeContent}
             onUpdateEditable={this.onUpdateEditable}
             statusTaskValue={status ? status : null}
+            udata={udata}
           />
           <div className="taskView">
             <div className="col-6 col-taskDescription">
