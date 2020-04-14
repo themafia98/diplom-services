@@ -493,6 +493,10 @@ namespace System {
       try {
         const dbm = server.locals.dbm;
 
+        if (type !== 'private' || <string>type !== 'global') {
+          throw new TypeError('Bad type notification');
+        }
+
         if (req.body && !_.isEmpty(req.body)) {
           const body: object = req.body;
           const { actionType = '' } = <Record<string, any>>body;
