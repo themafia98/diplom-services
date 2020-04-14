@@ -44,26 +44,26 @@ class StreamBox extends React.Component {
       onSaveComponentState,
       streamStore,
       streamModule,
+      filterStream = '',
+      udata: { _id: uid = '' } = {},
+      setCounter = null,
     } = this.props;
 
     if (!type) return;
 
     const onLoadingStreamList = async () => {
-      const {
-        filterStream = '',
-        udata: { _id: uid = '' } = {},
-        setCounter = null,
-        type: typeStream = '',
-      } = this.props;
       try {
-        if (((!filterStream || !uid) && typeStream.includes('private')) || !typeStream) {
+        if (((!filterStream || !uid) && type.includes('private')) || !type) {
           return;
         }
+
+        const methodQuery = filterStream && uid ? { [filterStream]: uid } : {};
+        if (type === 'private' && _.isEmpty(methodQuery)) return;
 
         const rest = new Request();
         const res = await rest.sendRequest(`/system/${type}/notification`, 'POST', {
           actionType: 'get_notifications',
-          methodQuery: filterStream ? { [filterStream]: uid } : {},
+          methodQuery,
         });
 
         if (res.status !== 200) throw new Error('Bad get notification request');
@@ -77,7 +77,7 @@ class StreamBox extends React.Component {
           pipe: true,
         });
 
-        if (typeStream === 'private' && setCounter && metadata?.length) {
+        if (type === 'private' && setCounter && metadata?.length) {
           setCounter(metadata.length);
         }
 
@@ -85,7 +85,7 @@ class StreamBox extends React.Component {
           return this.setState({ streamList: metadata, isLoading: true });
         }
 
-        const path = typeStream === 'private' ? `${streamModule}#private` : streamModule;
+        const path = type === 'private' ? `${streamModule}#private` : streamModule;
 
         await onSaveComponentState({
           [streamStore]: metadata,
