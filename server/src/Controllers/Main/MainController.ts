@@ -480,11 +480,11 @@ namespace System {
       }
     }
 
-    @Post({ path: '/:actionType/notification', private: true })
+    @Post({ path: '/:type/notification', private: true })
     public async notification(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
-      const { actionType = '' } = req.params;
+      const { type = '' } = req.params;
       const params: Params = {
-        methodQuery: actionType,
+        methodQuery: type,
         status: 'done',
         done: true,
         from: 'notification',
@@ -505,7 +505,7 @@ namespace System {
             actionType,
           });
 
-          const data: ParserResult = await createNotificationAction.getActionData(req.body);
+          const data: ParserResult = await createNotificationAction.getActionData({ ...req.body, type });
 
           if (data) {
             const sortData = Array.isArray(data) ? data.reverse() : data;

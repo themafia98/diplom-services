@@ -69,6 +69,7 @@ class NotificationPopup extends React.PureComponent {
     const content = (
       <div className="notificationContent">
         <StreamBox
+          key="private_stream"
           type="private"
           setCounter={this.setCounter}
           buildItems={this.buildItems}

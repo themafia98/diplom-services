@@ -36,21 +36,18 @@ export type schemaConfig = {
   name: string;
   schemaType: string;
 };
+
 export type BuilderResponse = Promise<DocumentQuery<any, Document> | object | null>;
-
 export type ResRequest = Promise<Response | void>;
-
 export type Decorator = <Function extends ClassDecorator>(target: object, propKey?: string) => void;
-
 export type FileTransportInstance = winston.transports.FileTransportInstance;
-
 export type docResponse = string | number | object | null | Array<any> | any;
-
 export type ActionData = Promise<Array<Document>> | null | Document | Promise<Document>;
+export type DocCompared = Document | Document[];
+export type FileEdit = FileMetadata | DeleteFile | ListFolderResult | BinaryType;
 
-export type ParserData = Promise<
-  Document | Document[] | null | files.FileMetadata | files.ListFolderResult | files.DeleteResult
->;
+export type ParserData = Promise<DocCompared | FileEdit | null>;
+export type ParserResult = DocCompared | FileEdit | null;
 
 export type transOptions = {
   service?: string;
@@ -59,12 +56,3 @@ export type transOptions = {
   host?: string;
   port?: number;
 };
-
-export type ParserResult =
-  | Document
-  | Document[]
-  | null
-  | files.FileMetadata
-  | files.ListFolderResult
-  | BinaryType
-  | files.DeleteResult;

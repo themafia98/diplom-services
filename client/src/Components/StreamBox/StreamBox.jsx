@@ -88,7 +88,7 @@ class StreamBox extends React.Component {
           onSaveComponentState({
             [streamStore]: metadata,
             load: true,
-            path: streamModule,
+            path: `${streamModule}#private`,
             mode: 'online',
           });
       } catch (error) {
@@ -120,11 +120,14 @@ class StreamBox extends React.Component {
       store = '',
       streamModule = '',
       streamStore = '',
+      type: typeStream = '',
     } = this.props;
 
+    const nameModuleStream = typeStream === 'private' ? `${streamModule}#private` : streamModule;
+
     const streamList = store
-      ? routeData[streamModule] && routeData[streamModule][streamStore]
-        ? routeData[streamModule][streamStore]
+      ? routeData[nameModuleStream] && routeData[nameModuleStream][streamStore]
+        ? routeData[nameModuleStream][streamStore]
         : []
       : streamListState;
 
@@ -222,9 +225,11 @@ class StreamBox extends React.Component {
     } = this.props;
     const { streamList: streamListState = [], isLoading = false } = this.state;
 
+    const nameModuleStream = type === 'private' ? `${streamModule}#private` : streamModule;
+
     const streamList = store
-      ? routeData[streamModule] && routeData[streamModule][streamStore]
-        ? routeData[streamModule][streamStore]
+      ? routeData[nameModuleStream] && routeData[nameModuleStream][streamStore]
+        ? routeData[nameModuleStream][streamStore]
         : []
       : streamListState;
 
