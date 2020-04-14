@@ -8,27 +8,40 @@ class NotificationPopup extends React.PureComponent {
   state = {
     counter: 0,
     defaultVisible: true,
+    isLoad: false,
   };
 
   static contextType = modelContext;
 
-  componentDidMount = async () => {
+  componentDidMount = () => {
+    this.fetchNotification();
+  };
+
+  componentDidUpdate = () => {
+    this.fetchNotification();
+  };
+
+  fetchNotification = async () => {
     const { Request } = this.context;
-    const {
-      notificationDep = {},
-      udata: { _id: uid },
-      type = 'private',
-    } = this.props;
+    const { notificationDep = {}, udata: { _id: uid } = {}, type = 'private' } = this.props;
+    const { isLoad = false } = this.state;
     const { filterStream = '' } = notificationDep;
     const rest = new Request();
+
+    if (!filterStream || isLoad) return;
 
     try {
       const res = await rest.sendRequest(`/system/${type}/notification`, 'POST', {
         actionType: 'get_notifications',
-        methodQuery: filterStream ? { [filterStream]: uid } : {},
+        methodQuery: _.isString(filterStream) ? { [filterStream]: uid } : {},
       });
 
-      if (res.status !== 200) throw new Error('Bad get notification request');
+      this.setState({
+        ...this.state,
+        isLoad: true,
+      });
+
+      if (res.status !== 200 && res.status !== 404) throw new Error('Bad get notification request');
 
       const {
         data: { response: { metadata = [] } = {} },
@@ -37,10 +50,6 @@ class NotificationPopup extends React.PureComponent {
       if (metadata && metadata?.length) this.setCounter(metadata.length);
     } catch (error) {
       console.error(error);
-      notification.error({
-        message: 'Stream error',
-        description: 'Bad request',
-      });
     }
   };
 
