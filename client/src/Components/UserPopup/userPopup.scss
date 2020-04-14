@@ -1,7 +1,16 @@
 .userPopup {
+  height: 100%;
   .userPopupMain {
+    height: 100%;
     .userName_link {
-      white-space: nowrap;
+      word-break: break-all;
+      white-space: normal;
+      line-height: 1;
+      display: flex;
+      margin-right: -18px;
+      height: 100%;
+      justify-content: center;
+      align-items: center;
       color: #1890ff;
       transition: color 0.3s;
       background-color: transparent;
@@ -9,9 +18,9 @@
       text-decoration: none;
       outline: 0;
       font-weight: bold;
-      line-height: 64px;
       margin: 0;
       padding-left: 1px;
+
       &:hover {
         color: #40a9ff;
       }
