@@ -68,7 +68,9 @@ class StreamBox extends React.Component {
           methodQuery,
         });
 
-        if (res.status !== 200) throw new Error('Bad get notification request');
+        if (res.status !== 200 && res.status !== 404) {
+          throw new Error('Bad get notification request');
+        }
 
         const {
           data: { response: { metadata = [] } = {} },
@@ -98,11 +100,12 @@ class StreamBox extends React.Component {
         this.setState({ isLoading: true });
       } catch (error) {
         console.error(error);
-        if (error?.status !== 404)
+        if (error.status && error.status !== 404) {
           notification.error({
-            message: 'Stream error',
-            description: 'Bad request',
+            message: 'Оишбка загрузки уведомлений',
+            description: error.message,
           });
+        }
       }
     };
 
