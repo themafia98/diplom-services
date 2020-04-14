@@ -57,10 +57,13 @@ class NotificationPopup extends React.PureComponent {
   };
 
   setCounter = value => {
-    this.setState({
-      ...this.state,
-      counter: value,
-    });
+    const { counter: counterState = 0 } = this.state;
+
+    if (counterState !== value)
+      this.setState({
+        ...this.state,
+        counter: value,
+      });
   };
 
   render() {

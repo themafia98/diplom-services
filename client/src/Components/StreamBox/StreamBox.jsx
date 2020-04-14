@@ -78,7 +78,7 @@ class StreamBox extends React.Component {
         });
 
         if (type === 'private' && setCounter && metadata?.length) {
-          setCounter(metadata.length);
+          setCounter(metadata?.length);
         }
 
         if (!_.isFunction(onSaveComponentState)) {
