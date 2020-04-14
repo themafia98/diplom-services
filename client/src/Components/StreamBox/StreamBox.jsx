@@ -68,12 +68,6 @@ class StreamBox extends React.Component {
           data: { response: { metadata = [] } = {} },
         } = res;
 
-        if (metadata && !metadata.length) {
-          return this.setState({
-            isLoading: true,
-          });
-        }
-
         onMultipleLoadData({
           requestsParamsList: buildRequestList(metadata),
           pipe: true,
@@ -83,14 +77,18 @@ class StreamBox extends React.Component {
           setCounter(metadata.length);
         }
 
-        if (!_.isFunction(onSaveComponentState)) this.setState({ streamList: metadata });
-        else
-          onSaveComponentState({
-            [streamStore]: metadata,
-            load: true,
-            path: `${streamModule}#private`,
-            mode: 'online',
-          });
+        if (!_.isFunction(onSaveComponentState)) {
+          return this.setState({ streamList: metadata, isLoading: true });
+        }
+
+        await onSaveComponentState({
+          [streamStore]: metadata,
+          load: true,
+          path: `${streamModule}#private`,
+          mode: 'online',
+        });
+
+        this.setState({ isLoading: true });
       } catch (error) {
         console.error(error);
         notification.error({
