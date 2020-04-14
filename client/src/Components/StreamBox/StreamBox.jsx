@@ -56,6 +56,10 @@ class StreamBox extends React.Component {
         type: typeStream = '',
       } = this.props;
       try {
+        if (((!filterStream || !uid) && typeStream.includes('private')) || !typeStream) {
+          return;
+        }
+
         const rest = new Request();
         const res = await rest.sendRequest(`/system/${type}/notification`, 'POST', {
           actionType: 'get_notifications',
@@ -81,11 +85,12 @@ class StreamBox extends React.Component {
           return this.setState({ streamList: metadata, isLoading: true });
         }
 
+        const path = typeStream === 'private' ? `${streamModule}#private` : streamModule;
+
         await onSaveComponentState({
           [streamStore]: metadata,
           load: true,
-          path: typeStream === 'private' ? `${streamModule}#private` : streamModule,
-          mode: 'online',
+          path,
         });
 
         this.setState({ isLoading: true });
