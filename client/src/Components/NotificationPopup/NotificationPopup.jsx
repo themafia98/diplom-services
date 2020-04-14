@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import Scrollbars from 'react-custom-scrollbars';
 import { Icon, Badge, Popover, notification } from 'antd';
 import NotificationItem from './NotificationItem';
