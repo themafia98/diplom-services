@@ -84,7 +84,7 @@ class StreamBox extends React.Component {
         await onSaveComponentState({
           [streamStore]: metadata,
           load: true,
-          path: `${streamModule}#private`,
+          path: typeStream === 'private' ? `${streamModule}#private` : streamModule,
           mode: 'online',
         });
 
