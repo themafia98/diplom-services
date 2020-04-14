@@ -83,6 +83,10 @@ class SettingsModule extends React.PureComponent {
         type: 'logger',
       });
       onSetStatus(false);
+      this.setState({
+        ...this.state,
+        isLoadingLogs: true,
+      });
     }
 
     if (this.refWrapper && this.refColumn) {
