@@ -31,27 +31,29 @@ class NotificationPopup extends React.PureComponent {
 
     if (!filterStream || isLoad) return;
 
-    try {
-      const res = await rest.sendRequest(`/system/${type}/notification`, 'POST', {
-        actionType: 'get_notifications',
-        methodQuery: _.isString(filterStream) ? { [filterStream]: uid } : {},
-      });
+    this.setState(
+      state => {
+        return { ...state, isLoad: true };
+      },
+      async () => {
+        try {
+          const res = await rest.sendRequest(`/system/${type}/notification`, 'POST', {
+            actionType: 'get_notifications',
+            methodQuery: _.isString(filterStream) ? { [filterStream]: uid } : {},
+          });
 
-      this.setState({
-        ...this.state,
-        isLoad: true,
-      });
+          if (res.status !== 200 && res.status !== 404) throw new Error('Bad get notification request');
 
-      if (res.status !== 200 && res.status !== 404) throw new Error('Bad get notification request');
+          const {
+            data: { response: { metadata = [] } = {} },
+          } = res;
 
-      const {
-        data: { response: { metadata = [] } = {} },
-      } = res;
-
-      if (metadata && metadata?.length) this.setCounter(metadata.length);
-    } catch (error) {
-      console.error(error);
-    }
+          if (metadata && metadata?.length) this.setCounter(metadata.length);
+        } catch (error) {
+          console.error(error);
+        }
+      },
+    );
   };
 
   buildItems = items => {
