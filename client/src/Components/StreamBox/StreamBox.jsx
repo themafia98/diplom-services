@@ -68,7 +68,7 @@ class StreamBox extends React.Component {
           data: { response: { metadata = [] } = {} },
         } = res;
 
-        onMultipleLoadData({
+        await onMultipleLoadData({
           requestsParamsList: buildRequestList(metadata),
           pipe: true,
         });
