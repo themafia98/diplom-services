@@ -3,6 +3,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import Output from '../../Output';
 import { Table, message, Input, Button, Icon } from 'antd';
+import modelContext from '../../../Models/context';
 
 class DynamicTable extends React.PureComponent {
   state = {
@@ -16,6 +17,8 @@ class DynamicTable extends React.PureComponent {
     filteredInfo: [],
     sortedInfo: [],
   };
+
+  static contextType = modelContext;
 
   getConfigColumns = () => {
     const { sortedInfo } = this.state;

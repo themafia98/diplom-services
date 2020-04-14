@@ -27,8 +27,9 @@ class HeaderView extends React.PureComponent {
   componentDidUpdate = () => {
     const { sizeParent, size, length } = this.state;
     const { tabArray = [] } = this.props;
+    const MARGIN_TAB = 5;
 
-    const sizes = sizeParent / tabArray.length;
+    const sizes = sizeParent / tabArray.length - MARGIN_TAB;
     const counter = ~~(sizeParent / size);
 
     if (_.isNull(sizeParent) && this.wrapper) {
