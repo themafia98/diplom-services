@@ -493,7 +493,7 @@ namespace System {
       try {
         const dbm = server.locals.dbm;
 
-        if (type !== 'private' || <string>type !== 'global') {
+        if (type !== 'private' && type !== 'global') {
           throw new TypeError('Bad type notification');
         }
 
@@ -548,7 +548,7 @@ namespace System {
           res.status(503);
           return res.json(
             getResponseJson(
-              err.name,
+              `${err.name}: ${err.message}`,
               { status: 'FAIL', params, done: false, metadata: 'Server error' },
               (req as Record<string, any>).start,
             ),
