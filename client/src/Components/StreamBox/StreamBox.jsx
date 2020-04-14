@@ -100,12 +100,6 @@ class StreamBox extends React.Component {
         this.setState({ isLoading: true });
       } catch (error) {
         console.error(error);
-        if (error.status && error.status !== 404) {
-          notification.error({
-            message: 'Оишбка загрузки уведомлений',
-            description: error.message,
-          });
-        }
       }
     };
 
