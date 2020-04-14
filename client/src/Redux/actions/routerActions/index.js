@@ -12,90 +12,63 @@ import {
 
 import { setLogoutTabs } from '../tabActions';
 
-export /**
- * @param {any} state
- */
-const addTabAction = state => {
+export const addTabAction = state => {
   return {
     type: ADD_TAB,
     payload: state,
   };
 };
 
-export /**
- * @param {any} state
- */
-const shouldUpdateAction = state => {
+export const shouldUpdateAction = state => {
   return {
     type: SET_UPDATE,
     payload: state,
   };
 };
 
-export /**
- * @param {any} state
- */
-const setActiveTabAction = state => {
+export const setActiveTabAction = state => {
   return {
     type: SET_ACTIVE_TAB,
     payload: state,
   };
 };
 
-export /**
- * @param {any} state
- */
-const openPageWithDataAction = state => {
+export const openPageWithDataAction = state => {
   return {
     type: OPEN_PAGE_WITH_DATA,
     payload: state,
   };
 };
 
-export /**
- * @param {any} state
- */
-const removeTabAction = state => {
+export const removeTabAction = state => {
   return {
     type: REMOVE_TAB,
     payload: state,
   };
 };
 
-export /**
- * @param {undefined} [state]
- */
-const logoutRouterAction = state => {
+export const logoutRouterAction = state => {
   return {
     type: LOGOUT,
     payload: state,
   };
 };
 
-export /**
- * @param {{ [x: string]: any; load: boolean; path: string; news?: any[]; mode?: string; }} state
- */
-const saveComponentStateAction = state => {
+export const saveComponentStateAction = state => {
   return {
     type: SAVE_STATE,
     payload: state,
   };
 };
 
-export /**
- * @param {{ updaterItem: any; type: any; id: any; }} state
- */
-const updateItemStateAction = state => {
+export const updateItemStateAction = state => {
   return {
     type: UPDATE_ITEM,
     payload: state,
   };
 };
 
-export /**
- * @param {{ path: string; load: boolean; }} state
- */
-const loadFlagAction = state => {
+export const loadFlagAction = state => {
   return {
     type: SET_FLAG_LOAD_DATA,
     payload: state,
@@ -104,13 +77,7 @@ const loadFlagAction = state => {
 
 // middlewares
 
-export const logoutAction = () =>
-  /**
-   * @param {(arg0: { type: string; payload: any; }) => void} dispatch
-   */
-  {
-    return dispatch => {
-      dispatch(setLogoutTabs());
-      dispatch(logoutRouterAction());
-    };
-  };
+export const logoutAction = () => dispatch => {
+  dispatch(setLogoutTabs());
+  dispatch(logoutRouterAction());
+};

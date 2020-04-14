@@ -56,8 +56,10 @@ class StreamBox extends React.Component {
         if (((!filterStream || !uid) && type.includes('private')) || !type) {
           return;
         }
-
-        const methodQuery = filterStream && uid ? { [filterStream]: uid } : {};
+        /**
+         * @type {{ [x: string]: number | string }}
+         */
+        let methodQuery = filterStream && uid ? { [filterStream]: uid } : {};
         if (type === 'private' && _.isEmpty(methodQuery)) return;
 
         const rest = new Request();

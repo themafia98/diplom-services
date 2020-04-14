@@ -25,9 +25,11 @@ namespace Action {
     public async getAll(model: Model<Document>, actionParam: ActionParams, limit: limiter): ParserData {
       try {
         if (actionParam.in && actionParam.where) {
+          const { and = [{}] } = <Record<string, Array<object>>>actionParam;
           return await model
             .find()
             .where(actionParam.where)
+            .and(and)
             .in((<Record<string, any[]>>actionParam).in)
             .limit(<number>limit);
         }

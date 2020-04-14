@@ -21,6 +21,7 @@ export type actionGet = {
 export type ListFolderResult = files.ListFolderResult | null;
 export type FileMetadata = files.FileMetadata | null;
 export type DeleteFile = files.DeleteResult;
+export type Entity = Document | null;
 
 export type paramAction = {
   from?: string;
