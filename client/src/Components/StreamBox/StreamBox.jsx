@@ -60,7 +60,7 @@ class StreamBox extends React.Component {
          * @type {{ [x: string]: number | string }}
          */
         let methodQuery = filterStream && uid ? { [filterStream]: uid } : {};
-        if (type === 'private' && _.isEmpty(methodQuery)) return;
+        if (type.includes('private') && _.isEmpty(methodQuery)) return;
 
         const rest = new Request();
         const res = await rest.sendRequest(`/system/${type}/notification`, 'POST', {
@@ -98,10 +98,11 @@ class StreamBox extends React.Component {
         this.setState({ isLoading: true });
       } catch (error) {
         console.error(error);
-        notification.error({
-          message: 'Stream error',
-          description: 'Bad request',
-        });
+        if (error?.status !== 404)
+          notification.error({
+            message: 'Stream error',
+            description: 'Bad request',
+          });
       }
     };
 
