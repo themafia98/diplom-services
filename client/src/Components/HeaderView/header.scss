@@ -2,6 +2,8 @@ header {
   $boxTab: 100%;
 
   &.ant-layout-header {
+    display: flex;
+    justify-content: space-between;
     padding: 0;
     background-color: $headerColor;
   }
@@ -17,7 +19,7 @@ header {
     &.tabsMenu {
       display: flex;
       align-items: center;
-      width: $boxTab;
+      //width: $boxTab;
       height: 100%;
       padding: 0;
       margin: 0;
