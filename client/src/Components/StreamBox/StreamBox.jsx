@@ -39,8 +39,6 @@ class StreamBox extends React.Component {
     const { type = '', isSingleLoading = false, setCounter, visiblePopover, isLoadPopover } = this.props;
     const shouldUpdatePrivate = setCounter && visiblePopover && !isLoadPopover;
 
-    if (shouldUpdatePrivate) this.onLoadingStreamList(true);
-
     if (!type) return;
 
     await this.onLoadingStreamList(shouldUpdatePrivate);
