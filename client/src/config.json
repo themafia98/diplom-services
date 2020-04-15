@@ -26,6 +26,9 @@
   "statist": {
     "limitListTasks": 200
   },
+  "settings": {
+    "includeChangeEmail": false
+  },
   "menu": [
     {
       "EUID": "mainModule",
