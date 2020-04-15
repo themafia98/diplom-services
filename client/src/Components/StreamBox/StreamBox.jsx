@@ -71,6 +71,25 @@ class StreamBox extends React.Component {
     this.fetchNotification();
   };
 
+  updateRead = async ids => {
+    try {
+      const { Request } = this.context;
+      const rest = new Request();
+      const res = await rest.sendRequest(`/system/notification/update/many`, 'POST', {
+        actionType: 'get_notifications',
+        query: { ids, updateProps: { isRead: true } },
+      });
+      const {
+        data: { response: { metadata: metadataReadable = {} } = {} },
+      } = res;
+
+      return metadataReadable;
+    } catch (error) {
+      console.error(error);
+      return { ok: 0 };
+    }
+  };
+
   fetchNotification = async () => {
     try {
       const { Request } = this.context;
@@ -120,17 +139,16 @@ class StreamBox extends React.Component {
       });
 
       if (shouldUpdatePrivate || (type === 'private' && metadata?.length)) {
-        const ids = metadata.filter(it => !it?.isRead);
-        const res = await rest.sendRequest(`/system/notification/update/many`, 'POST', {
-          actionType: 'get_notifications',
-          query: { ids, updateProps: { isRead: true } },
-        });
+        const ids = metadata
+          .map(it => {
+            if (!it?.isRead) return it?._id;
+            else return null;
+          })
+          .filter(Boolean);
 
-        const {
-          data: { response: { metadata: metadataReadable = [] } = {} },
-        } = res;
+        const { count = ids?.length } = await this.updateRead(ids);
 
-        if (setCounter) setCounter(metadataReadable?.filter(it => it?.isRead === false)?.length);
+        if (setCounter) setCounter(-count, 'calc');
       }
 
       if (!_.isFunction(onSaveComponentState)) {

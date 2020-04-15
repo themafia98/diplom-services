@@ -1,5 +1,5 @@
 import { ActionProps, ActionParams, Actions, Action } from '../../Utils/Interfaces';
-import { Model, Document } from 'mongoose';
+import { Model, Document, Mongoose, mongo, Types } from 'mongoose';
 import _ from 'lodash';
 import ActionEntity from './ActionEntity';
 import { ParserData, limiter } from '../../Utils/Types';
@@ -55,7 +55,6 @@ namespace Action {
 
     public async createEntity(model: Model<Document>, item: object): ParserData {
       try {
-        console.log('create entity:', item);
         const actionData: Document = await model.create(item);
         return actionData;
       } catch (err) {
@@ -122,7 +121,20 @@ namespace Action {
 
         switch (queryType) {
           case 'many': {
-            return null;
+            const { ids = [], updateProps = {}, returnType = 'default' } = (<Record<string, any>>(
+              actionParam
+            )).query;
+            const parsedIds = ids.map((id: string) => Types.ObjectId(id));
+
+            const actionData: Document = await model.updateMany(
+              { _id: { $in: parsedIds } },
+              { $set: { ...updateProps } },
+              { multi: true },
+            );
+            const { ok = 0, nModified = 0 } = <Record<string, any>>actionData || {};
+
+            if (returnType === 'arrayItems') return await model.find({ _id: { $in: ids } });
+            else return { status: Boolean(ok), count: nModified };
           }
           default: {
             const { _id } = query;

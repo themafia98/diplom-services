@@ -169,10 +169,11 @@ export const chatRoom = new Schema(
 
 export const notification = new Schema(
   {
+    key: { type: String, required: false },
     type: { type: String, required: true },
     title: { type: String, required: true },
     message: { type: String, required: true },
-    isRead: { type: Boolean, require: false },
+    isRead: { type: Boolean, require: true },
     action: {
       type: { type: String, required: true },
       link: { type: String, required: true },

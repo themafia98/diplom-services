@@ -3,6 +3,22 @@ import { files } from 'dropbox';
 import { DocumentQuery, Document } from 'mongoose';
 import { Response } from 'express';
 
+export type limiter = number | null | undefined;
+export type ListFolderResult = files.ListFolderResult | null;
+export type FileMetadata = files.FileMetadata | null;
+export type DeleteFile = files.DeleteResult;
+export type Entity = Document | null;
+export type BuilderResponse = Promise<DocumentQuery<any, Document> | object | null>;
+export type ResRequest = Promise<Response | void>;
+export type Decorator = <Function extends ClassDecorator>(target: object, propKey?: string) => void;
+export type FileTransportInstance = winston.transports.FileTransportInstance;
+export type docResponse = string | number | object | null | Array<any> | any;
+export type ActionData = Promise<Array<Document>> | null | Document | Promise<Document>;
+export type DocCompared = Document | Document[];
+export type FileEdit = FileMetadata | DeleteFile | ListFolderResult | BinaryType;
+export type ParserData = Promise<DocCompared | FileEdit | null | object | Blob>;
+export type ParserResult = DocCompared | FileEdit | null | object;
+
 export type collectionOperations = {
   get: Function;
   set: Function;
@@ -11,18 +27,10 @@ export type collectionOperations = {
   start: Function;
 };
 
-export type limiter = number | null | undefined;
-
 export type actionGet = {
   collection: string;
   param: Object;
 };
-
-export type ListFolderResult = files.ListFolderResult | null;
-export type FileMetadata = files.FileMetadata | null;
-export type DeleteFile = files.DeleteResult;
-export type Entity = Document | null;
-
 export type paramAction = {
   from?: string;
   method?: string;
@@ -32,23 +40,10 @@ export type paramAction = {
   body?: object;
   methodQuery?: string;
 };
-
 export type schemaConfig = {
   name: string;
   schemaType: string;
 };
-
-export type BuilderResponse = Promise<DocumentQuery<any, Document> | object | null>;
-export type ResRequest = Promise<Response | void>;
-export type Decorator = <Function extends ClassDecorator>(target: object, propKey?: string) => void;
-export type FileTransportInstance = winston.transports.FileTransportInstance;
-export type docResponse = string | number | object | null | Array<any> | any;
-export type ActionData = Promise<Array<Document>> | null | Document | Promise<Document>;
-export type DocCompared = Document | Document[];
-export type FileEdit = FileMetadata | DeleteFile | ListFolderResult | BinaryType;
-
-export type ParserData = Promise<DocCompared | FileEdit | null>;
-export type ParserResult = DocCompared | FileEdit | null;
 
 export type transOptions = {
   service?: string;
