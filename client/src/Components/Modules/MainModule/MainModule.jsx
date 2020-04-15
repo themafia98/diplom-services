@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Calendar } from 'antd';
-
+import modelContext from '../../../Models/context';
 import ClockWidjet from '../../ClockWidjet/index';
 import TableView from '../../TableView';
 import StreamBox from '../../StreamBox';
@@ -12,6 +12,8 @@ class MainModule extends React.PureComponent {
     onErrorRequstAction: PropTypes.func.isRequired,
   };
 
+  static contextType = modelContext;
+
   state = {
     path: 'mainModule',
   };
@@ -19,7 +21,11 @@ class MainModule extends React.PureComponent {
   render() {
     const { visible } = this.props;
     const { path } = this.state;
-
+    const {
+      config: {
+        visibilityWidjets: { mainModule: { clockVisibility = true, calendarVisiblity = true } = {} } = {},
+      } = {},
+    } = this.context;
     return (
       <div className="mainModule">
         <TitleModule
@@ -33,9 +39,8 @@ class MainModule extends React.PureComponent {
           </div>
           <div className="col-8 columnModuleRight">
             <div className="widjects">
-              {/* <WeatherWidjet onErrorRequstAction={onErrorRequstAction} ket="weatherWidjet" /> */}
-              <ClockWidjet />
-              <Calendar className="mainModule_calendar" fullscreen={false} />
+              {clockVisibility ? <ClockWidjet /> : null}
+              {calendarVisiblity ? <Calendar className="mainModule_calendar" fullscreen={false} /> : null}
             </div>
             <div className="tableViw__wrapper">
               <TableView visible={visible} key="mainModule_table" path="mainModule__table" />

@@ -6,13 +6,25 @@
     "name": "controllSystemDB",
     "version": 1
   },
+  "appActive": true,
+  "regInclude": true,
+  "recovoryInclude": true,
   "forceUpdate": false,
+  "visibilityWidjets": {
+    "mainModule": {
+      "clockVisibility": true,
+      "calendarVisiblity": true
+    }
+  },
   "msTimeoutLoading": 0,
   "IntervalPrivateNotifications": 7000,
   "intervalNotification": 30000,
   "tabsLimit": 40,
   "task": {
     "limitList": 20
+  },
+  "statist": {
+    "limitListTasks": 200
   },
   "menu": [
     {
@@ -106,5 +118,6 @@
       "ICON": "build",
       "PARENT_CODE": null
     }
-  ]
+  ],
+  "unactiveAppMsg": "Приложение времено отключено, возможно ведутся тех.работы. Попробуйте позже."
 }

@@ -22,13 +22,17 @@ class StatisticsModule extends React.PureComponent {
       onLoadCurrentData,
       visible,
     } = this.props;
+    const { config: { statist: { limitListTasks = 5000 } = {} } = {} } = this.context;
 
     if (visible) {
       onLoadCurrentData({
         path: 'taskModule',
         storeLoad: 'tasks',
         useStore: true,
-        methodRequst: 'GET',
+        methodRequst: 'POST',
+        options: {
+          limitList: limitListTasks,
+        },
       });
     }
   };

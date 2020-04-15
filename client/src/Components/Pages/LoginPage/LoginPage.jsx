@@ -105,7 +105,7 @@ class LoginPage extends React.Component {
     const { refLogin, refPassword, enterLoading } = this;
     const { authLoad = false } = this.props;
     const { loading, errorMessage, loginAuth } = this.state;
-    const { config = {} } = this.context;
+    const { config = {}, config: { regInclude = false, recovoryInclude = false } = {} } = this.context;
 
     if (authLoad || loginAuth) return <Redirect to="/dashboard" />;
 
@@ -141,10 +141,12 @@ class LoginPage extends React.Component {
             >
               Войти
             </Button>
-            <ModalWindow mode="reg" />
-            <NavLink aria-label="recovory-link" className="recovory-link" to="/recovory">
-              Восстановление доступа
-            </NavLink>
+            {regInclude ? <ModalWindow mode="reg" /> : null}
+            {recovoryInclude ? (
+              <NavLink aria-label="recovory-link" className="recovory-link" to="/recovory">
+                Восстановление доступа
+              </NavLink>
+            ) : null}
           </form>
         </div>
       </div>

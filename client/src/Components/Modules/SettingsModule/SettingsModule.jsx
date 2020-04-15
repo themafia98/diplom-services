@@ -133,13 +133,14 @@ class SettingsModule extends React.PureComponent {
   };
 
   onChangeInput = ({ target = {} }, key) => {
+    const { config: { settings: { includeChangeEmail = false } = {} } = {} } = this.context;
     const { haveChanges = [] } = this.state;
     const filterChanges = [...haveChanges];
     if (!filterChanges.includes(key)) {
       filterChanges.push(key);
     }
 
-    if (target?.dataset?.id === 'email') {
+    if (includeChangeEmail && target?.dataset?.id === 'email') {
       this.setState({
         ...this.state,
         haveChanges: !filterChanges.length ? [key] : filterChanges,
@@ -179,8 +180,8 @@ class SettingsModule extends React.PureComponent {
       const { Request = {} } = this.context;
       const { udata: { _id: uid = '' } = {}, onUpdateUdata = null, onCaching = null } = this.props;
       const { emailValue: newEmail = '', telValue: newPhone = '', haveChanges } = this.state;
-
-      if (!newEmail || !/\w+@\w+\.\D+/i.test(newEmail)) {
+      const { config: { settings: { includeChangeEmail = false } = {} } = {} } = this.context;
+      if (includeChangeEmail && (!newEmail || !/\w+@\w+\.\D+/i.test(newEmail))) {
         message.error('Формат почты не соблюден');
         return;
       }
@@ -190,11 +191,13 @@ class SettingsModule extends React.PureComponent {
         return;
       }
 
-      const queryParams = {
-        newEmail,
-        newPhone,
-        uid,
-      };
+      const queryParams = includeChangeEmail
+        ? {
+            newEmail,
+            newPhone,
+            uid,
+          }
+        : { newPhone, uid };
       const rest = new Request();
       const res = await rest.sendRequest('/settings/common', 'POST', { queryParams }, true);
 
@@ -203,7 +206,7 @@ class SettingsModule extends React.PureComponent {
       }
 
       if (onUpdateUdata) {
-        onUpdateUdata({ email: newEmail, phone: newPhone });
+        onUpdateUdata(includeChangeEmail ? { email: newEmail, phone: newPhone } : { phone: newPhone });
       }
 
       this.setState({
@@ -326,6 +329,7 @@ class SettingsModule extends React.PureComponent {
   render() {
     const { emailValue, telValue, haveChanges, oldPassword, newPassword } = this.state;
     const { settingsLogs = {}, shouldUpdate } = this.props;
+    const { config: { settings: { includeChangeEmail = false } = {} } = {} } = this.context;
     const text = ` A dog is a type of domesticated animal.`;
 
     const readonlyPassword = haveChanges.includes('password_new') && haveChanges.includes('password_old');
@@ -367,15 +371,17 @@ class SettingsModule extends React.PureComponent {
             </Panel>
             <Panel onChange={this.onUpdate} header="Общие настройки" key="common">
               <div className="settingsPanel--center-flex">
-                <div className="configWrapper flexWrapper">
-                  <span>Сменить почту:</span>
-                  <Input
-                    data-id="email"
-                    allowClear
-                    value={emailValue}
-                    onChange={e => this.onChangeInput(e, 'commonEmail')}
-                  />
-                </div>
+                {includeChangeEmail ? (
+                  <div className="configWrapper flexWrapper">
+                    <span>Сменить почту:</span>
+                    <Input
+                      data-id="email"
+                      allowClear
+                      value={emailValue}
+                      onChange={e => this.onChangeInput(e, 'commonEmail')}
+                    />
+                  </div>
+                ) : null}
                 <div className="configWrapper flexWrapper">
                   <span>Сменить телефон:</span>
                   <Input

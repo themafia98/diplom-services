@@ -43,7 +43,8 @@ class App extends React.Component {
       router: { currentActionTab = '', actionTabs = [] } = {},
       onLoadUdata,
     } = this.props;
-    const { config = {}, Request } = this.context;
+    const { config = {}, Request, config: { appActive = true } = {} } = this.context;
+    if (!appActive) return;
     const rest = new Request();
 
     return this.setState({ authLoad: true, loadState: true }, async () => {
@@ -106,7 +107,8 @@ class App extends React.Component {
   };
 
   componentDidMount = () => {
-    const { config = {}, Request } = this.context;
+    const { config = {}, Request, config: { appActive = true } = {} } = this.context;
+    if (!appActive) return;
     const rest = new Request();
     rest
       .authCheck()
@@ -140,8 +142,12 @@ class App extends React.Component {
 
   render() {
     const { loadState, authLoad } = this.state;
-    const { config: { supportIE = true } = {} } = this.context;
+    const { config: { supportIE = true, appActive = true, unactiveAppMsg = '' } = {} } = this.context;
     const { onLogoutAction } = this.props;
+
+    if (!appActive) {
+      return <div className="app-unactive">{unactiveAppMsg}</div>;
+    }
 
     const route = (
       <Switch>
