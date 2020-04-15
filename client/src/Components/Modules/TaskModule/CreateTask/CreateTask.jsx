@@ -265,6 +265,7 @@ class CreateTask extends React.PureComponent {
                   item: {
                     type: 'global',
                     title: 'Новая задача',
+                    isRead: false,
                     message: `Создана новая задача № ${key}. ${name}`,
                     action: {
                       type: 'tasks_link',

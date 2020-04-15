@@ -118,15 +118,24 @@ namespace Action {
 
     public async updateEntity(model: Model<Document>, query: ActionParams): ParserData {
       try {
-        const { _id } = query;
-        const updateProps = <Record<string, any>>query.updateProps;
-        const actionData: Document = await model.updateOne(
-          { _id },
-          {
-            ...updateProps,
-          },
-        );
-        return actionData;
+        const { queryType = 'single', actionParam = null /** params for multiple update */ } = query;
+
+        switch (queryType) {
+          case 'many': {
+            return null;
+          }
+          default: {
+            const { _id } = query;
+            const updateProps = <Record<string, any>>query.updateProps;
+            const actionData: Document = await model.updateOne(
+              { _id },
+              {
+                ...updateProps,
+              },
+            );
+            return actionData;
+          }
+        }
       } catch (err) {
         console.error(err);
         return null;

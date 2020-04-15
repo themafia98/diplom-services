@@ -189,6 +189,7 @@ class ModalWindow extends React.PureComponent {
             item: {
               type: 'global',
               title: 'Списание времени в журнал',
+              isRead: false,
               message: `
                 Работа над задачей ${nameTask}, 
                 время затрачено: ${jurnalCopy?.timeLost},

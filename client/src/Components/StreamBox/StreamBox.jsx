@@ -120,7 +120,17 @@ class StreamBox extends React.Component {
       });
 
       if (shouldUpdatePrivate || (type === 'private' && metadata?.length)) {
-        if (setCounter) setCounter(metadata?.length);
+        const ids = metadata.filter(it => !it?.isRead);
+        const res = await rest.sendRequest(`/system/notification/update/many`, 'POST', {
+          actionType: 'get_notifications',
+          query: { ids, updateProps: { isRead: true } },
+        });
+
+        const {
+          data: { response: { metadata: metadataReadable = [] } = {} },
+        } = res;
+
+        if (setCounter) setCounter(metadataReadable?.filter(it => it?.isRead === false)?.length);
       }
 
       if (!_.isFunction(onSaveComponentState)) {

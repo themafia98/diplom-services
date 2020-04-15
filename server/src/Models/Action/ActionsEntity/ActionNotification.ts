@@ -47,11 +47,21 @@ class ActionNotification implements Action {
     return await this.getEntity().getAll(model, { type: concactType, ...methodQuery });
   }
 
+  private async updateManu(actionParam: ActionParams, model: Model<Document>): ParserData {
+    const methodQuery = { queryType: 'many', actionParam };
+
+    return await this.getEntity().updateEntity(model, methodQuery);
+  }
+
   public async run(actionParam: ActionParams): ParserData {
     const model: Model<Document> | null = getModelByName('notification', 'notification');
     if (!model) return null;
 
     const actionType: string = this.getEntity().getActionType();
+
+    if (actionType === 'update_many') {
+      return await this.updateManu(actionParam, model);
+    }
 
     if (actionType.includes('set')) return this.create(model, actionParam);
 

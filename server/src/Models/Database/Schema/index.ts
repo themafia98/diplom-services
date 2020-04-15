@@ -172,6 +172,7 @@ export const notification = new Schema(
     type: { type: String, required: true },
     title: { type: String, required: true },
     message: { type: String, required: true },
+    isRead: { type: Boolean, require: false },
     action: {
       type: { type: String, required: true },
       link: { type: String, required: true },
