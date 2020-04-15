@@ -36,80 +36,110 @@ class StreamBox extends React.Component {
   onLoadingInterval = null;
 
   componentDidMount = async () => {
-    const { Request } = this.context;
-    const {
-      type = '',
-      onMultipleLoadData,
-      isSingleLoading = false,
-      onSaveComponentState,
-      streamStore,
-      streamModule,
-      filterStream = '',
-      udata: { _id: uid = '' } = {},
-      setCounter = null,
-    } = this.props;
+    const { type = '', isSingleLoading = false, setCounter, visiblePopover, isLoadPopover } = this.props;
+    const shouldUpdatePrivate = setCounter && visiblePopover && !isLoadPopover;
+
+    if (shouldUpdatePrivate) this.onLoadingStreamList(true);
 
     if (!type) return;
 
-    const onLoadingStreamList = async () => {
-      try {
-        if (((!filterStream || !uid) && type.includes('private')) || !type) {
-          return;
-        }
-        /**
-         * @type {{ [x: string]: number | string }}
-         */
-        let methodQuery = filterStream && uid ? { [filterStream]: uid } : {};
-        if (type.includes('private') && _.isEmpty(methodQuery)) return;
+    await this.onLoadingStreamList(shouldUpdatePrivate);
+    if (!isSingleLoading) this.onLoadingInterval = setInterval(this.fetchNotification, 30000);
+  };
 
-        const rest = new Request();
-        const res = await rest.sendRequest(`/system/${type}/notification`, 'POST', {
-          actionType: 'get_notifications',
-          methodQuery,
-        });
+  componentDidUpdate = () => {
+    const { setCounter, visiblePopover, isLoadPopover } = this.props;
+    const shouldUpdatePrivate = setCounter && visiblePopover && !isLoadPopover;
 
-        if (res.status !== 200 && res.status !== 404) {
-          throw new Error('Bad get notification request');
-        }
-
-        const {
-          data: { response: { metadata = [] } = {} },
-        } = res;
-
-        await onMultipleLoadData({
-          requestsParamsList: buildRequestList(metadata),
-          pipe: true,
-        });
-
-        if (type === 'private' && metadata?.length) {
-          if (setCounter) setCounter(metadata?.length);
-        }
-
-        if (!_.isFunction(onSaveComponentState)) {
-          return this.setState({ streamList: metadata, isLoading: true });
-        }
-
-        const path = type === 'private' ? `${streamModule}#private` : streamModule;
-
-        await onSaveComponentState({
-          [streamStore]: metadata,
-          load: true,
-          path,
-        });
-
-        this.setState({ isLoading: true });
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    await onLoadingStreamList();
-    if (!isSingleLoading) this.onLoadingInterval = setInterval(onLoadingStreamList, 30000);
+    if (shouldUpdatePrivate) this.onLoadingStreamList(true);
   };
 
   componentWillUnmount = () => {
     if (this.onLoadingInterval) {
       clearInterval(this.onLoadingInterval);
+    }
+  };
+
+  onLoadingStreamList = async (shouldUpdatePrivate = false) => {
+    const { type = '', filterStream = '', udata: { _id: uid = '' } = {} } = this.props;
+
+    const isPrivate = type.includes('private');
+
+    if (((!filterStream || !uid) && isPrivate) || !type || (!shouldUpdatePrivate && isPrivate)) {
+      return;
+    }
+
+    if (!shouldUpdatePrivate && isPrivate) return;
+    this.fetchNotification();
+  };
+
+  fetchNotification = async () => {
+    try {
+      const { Request } = this.context;
+      const {
+        type = '',
+        onMultipleLoadData,
+        onSaveComponentState,
+        streamStore,
+        streamModule,
+        filterStream,
+        setCounter = null,
+        visiblePopover,
+        isLoadPopover,
+        onLoadPopover,
+        udata: { _id: uid = '' } = {},
+      } = this.props;
+
+      const shouldUpdatePrivate = setCounter && visiblePopover && !isLoadPopover;
+
+      /**
+       * @type {{ [x: string]: number | string }}
+       */
+      let methodQuery = filterStream && uid ? { [filterStream]: uid } : {};
+      if (type.includes('private') && _.isEmpty(methodQuery)) return;
+
+      if (shouldUpdatePrivate && onLoadPopover) {
+        onLoadPopover();
+      }
+
+      const rest = new Request();
+      const res = await rest.sendRequest(`/system/${type}/notification`, 'POST', {
+        actionType: 'get_notifications',
+        methodQuery,
+      });
+
+      if (res.status !== 200 && res.status !== 404) {
+        throw new Error('Bad get notification request');
+      }
+
+      const {
+        data: { response: { metadata = [] } = {} },
+      } = res;
+
+      await onMultipleLoadData({
+        requestsParamsList: buildRequestList(metadata),
+        pipe: true,
+      });
+
+      if (shouldUpdatePrivate || (type === 'private' && metadata?.length)) {
+        if (setCounter) setCounter(metadata?.length);
+      }
+
+      if (!_.isFunction(onSaveComponentState)) {
+        return this.setState({ streamList: metadata, isLoading: true });
+      }
+
+      const path = type === 'private' ? `${streamModule}#private` : streamModule;
+
+      await onSaveComponentState({
+        [streamStore]: metadata,
+        load: true,
+        path,
+      });
+
+      this.setState({ isLoading: true });
+    } catch (error) {
+      console.error(error);
     }
   };
 

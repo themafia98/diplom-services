@@ -9,7 +9,8 @@ class NotificationPopup extends React.PureComponent {
   state = {
     counter: 0,
     defaultVisible: true,
-    isLoad: false,
+    isLoadPopover: false,
+    visible: false,
   };
 
   static contextType = modelContext;
@@ -18,22 +19,18 @@ class NotificationPopup extends React.PureComponent {
     this.fetchNotification();
   };
 
-  componentDidUpdate = () => {
-    this.fetchNotification();
-  };
-
   fetchNotification = async () => {
     const { Request } = this.context;
     const { notificationDep = {}, udata: { _id: uid } = {}, type = 'private' } = this.props;
-    const { isLoad = false } = this.state;
+    const { isLoadPopover = false } = this.state;
     const { filterStream = '' } = notificationDep;
     const rest = new Request();
 
-    if (!filterStream || isLoad) return;
+    if (!filterStream || isLoadPopover || !uid) return;
 
     this.setState(
       state => {
-        return { ...state, isLoad: true };
+        return { ...state, isLoadPopover: true };
       },
       async () => {
         try {
@@ -69,24 +66,43 @@ class NotificationPopup extends React.PureComponent {
   };
 
   setCounter = value => {
-    const { counter: counterState = 0 } = this.state;
+    const { counter: counterState = 0, isLoadPopover = false } = this.state;
 
-    if (counterState !== value)
+    if (counterState !== value || !isLoadPopover)
       this.setState({
         ...this.state,
         counter: value,
+        isLoadPopover: true,
       });
+  };
+
+  onLoadPopover = event => {
+    this.setState({
+      ...this.state,
+      isLoadPopover: true,
+    });
+  };
+
+  onVisibleChange = visible => {
+    this.setState({
+      ...this.state,
+      visible,
+      isLoadPopover: !visible,
+    });
   };
 
   render() {
     const { notificationDep = {} } = this.props;
-    const { counter } = this.state;
+    const { counter, visible, isLoadPopover = false } = this.state;
     const content = (
       <div className="notificationContent">
         <StreamBox
-          key="private_stream"
+          key="private_streamBox"
           type="private"
           setCounter={this.setCounter}
+          visiblePopover={visible}
+          isLoadPopover={isLoadPopover}
+          onLoadPopover={this.onLoadPopover}
           buildItems={this.buildItems}
           {...notificationDep}
           listHeight="200px"
@@ -99,6 +115,8 @@ class NotificationPopup extends React.PureComponent {
         <div className="notificationControllers">
           <Badge className="notificationCounter" count={counter} />
           <Popover
+            onVisibleChange={this.onVisibleChange}
+            visible={visible}
             className="notificationBox"
             placement="bottom"
             title={

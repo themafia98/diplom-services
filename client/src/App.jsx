@@ -36,7 +36,7 @@ class App extends React.Component {
     publicReducer: PropTypes.object.isRequired,
   };
 
-  loadAppSession = () => {
+  loadAppSession = async () => {
     const {
       addTab,
       setCurrentTab,
@@ -77,19 +77,21 @@ class App extends React.Component {
 
         if (!isFind) {
           if (isUserData) {
-            onLoadUdata(udata)
-              .then(() => {
-                addTab(routeParser({ path }));
-              })
-              .catch(error => console.error(error));
+            try {
+              await onLoadUdata(udata);
+              addTab(routeParser({ path }));
+            } catch (error) {
+              console.log(error);
+            }
           } else rest.signOut();
         } else if (currentActionTab !== path) {
           if (isUserData) {
-            onLoadUdata(udata)
-              .then(() => {
-                setCurrentTab(path);
-              })
-              .catch(error => console.error(error));
+            try {
+              await onLoadUdata(udata);
+              setCurrentTab(path);
+            } catch (error) {
+              console.log(error);
+            }
           } else rest.signOut();
         }
       } catch (error) {
