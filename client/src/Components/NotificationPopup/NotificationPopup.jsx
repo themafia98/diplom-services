@@ -15,10 +15,22 @@ class NotificationPopup extends React.PureComponent {
   };
 
   static contextType = modelContext;
+  intervalNotif = null;
 
   componentDidMount = () => {
     const { isCounter } = this.state;
+    const { config: { IntervalPrivateNotifications = 10000 } = {} } = this.context;
     if (isCounter) this.fetchNotification();
+    this.intervalNotif = setInterval(
+      this.fetchNotification.bind(this, false, true),
+      IntervalPrivateNotifications,
+    );
+  };
+
+  componentWillUnmount = () => {
+    if (this.intervalNotif) {
+      clearInterval(this.intervalNotif);
+    }
   };
 
   componentDidUpdate = () => {
@@ -26,43 +38,43 @@ class NotificationPopup extends React.PureComponent {
     if (isCounter) this.fetchNotification();
   };
 
-  fetchNotification = async (isCounter = false) => {
-    const { Request } = this.context;
+  getNotifications = async () => {
+    try {
+      const { Request } = this.context;
+      const { notificationDep = {}, udata: { _id: uid } = {}, type = 'private' } = this.props;
+      const { filterStream = '' } = notificationDep;
+      const rest = new Request();
+      const res = await rest.sendRequest(`/system/${type}/notification`, 'POST', {
+        actionType: 'get_notifications',
+        methodQuery: _.isString(filterStream) ? { [filterStream]: uid } : {},
+      });
+
+      if (res.status !== 200 && res.status !== 404) throw new Error('Bad get notification request');
+
+      const {
+        data: { response: { metadata = [] } = {} },
+      } = res;
+
+      if (metadata && metadata?.length) this.setCounter(metadata.filter(it => it?.isRead === false).length);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  fetchNotification = async (isCounter = false, shoudUpdate = false) => {
     const { notificationDep = {}, udata: { _id: uid } = {}, type = 'private' } = this.props;
     const { isLoadPopover = false } = this.state;
     const { filterStream = '' } = notificationDep;
-    const rest = new Request();
 
-    if (!filterStream || (isLoadPopover && !isCounter) || !uid) return;
+    if (shoudUpdate) return this.getNotifications();
 
-    this.setState(
-      state => {
-        return { ...state, isLoadPopover: true, isCounter: false };
-      },
-      async () => {
-        try {
-          const res = await rest.sendRequest(`/system/${type}/notification`, 'POST', {
-            actionType: 'get_notifications',
-            methodQuery: _.isString(filterStream) ? { [filterStream]: uid } : {},
-          });
+    if (!shoudUpdate && (!filterStream || (isLoadPopover && !isCounter) || !uid)) return;
 
-          if (res.status !== 200 && res.status !== 404) throw new Error('Bad get notification request');
-
-          const {
-            data: { response: { metadata = [] } = {} },
-          } = res;
-
-          if (metadata && metadata?.length)
-            this.setCounter(metadata.filter(it => it?.isRead === false).length);
-        } catch (error) {
-          console.error(error);
-        }
-      },
-    );
+    this.setState({ ...this.state, isLoadPopover: true, isCounter: false }, this.getNotifications);
   };
 
   buildItems = items => {
-    return items.map(it => {
+    return items.reverse().map(it => {
       const { _id: id = '' } = it;
       return (
         <div key={`wrapper${id}`} className="itemWrapper">
@@ -130,7 +142,7 @@ class NotificationPopup extends React.PureComponent {
             title={
               <div className="headerPopover">
                 <span className="title">Уведомления</span>
-                <span className="counter">{`Непрочитано уведомлений: ${counter}`}</span>
+                {counter ? <span className="counter">{`Непрочитано уведомлений: ${counter}`}</span> : null}
               </div>
             }
             content={content}

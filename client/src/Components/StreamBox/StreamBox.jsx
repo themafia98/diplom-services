@@ -38,11 +38,12 @@ class StreamBox extends React.Component {
   componentDidMount = async () => {
     const { type = '', isSingleLoading = false, setCounter, visiblePopover, isLoadPopover } = this.props;
     const shouldUpdatePrivate = setCounter && visiblePopover && !isLoadPopover;
-
+    const { config: { intervalNotification = 30000 } = {} } = this.context;
     if (!type) return;
 
     await this.onLoadingStreamList(shouldUpdatePrivate);
-    if (!isSingleLoading) this.onLoadingInterval = setInterval(this.fetchNotification, 30000);
+    if (!isSingleLoading)
+      this.onLoadingInterval = setInterval(this.fetchNotification.bind(this, true), intervalNotification);
   };
 
   componentDidUpdate = () => {
@@ -90,7 +91,7 @@ class StreamBox extends React.Component {
     }
   };
 
-  fetchNotification = async () => {
+  fetchNotification = async (shoudUpdate = false) => {
     try {
       const { Request } = this.context;
       const {

@@ -8,6 +8,8 @@
   },
   "forceUpdate": false,
   "msTimeoutLoading": 0,
+  "IntervalPrivateNotifications": 7000,
+  "intervalNotification": 30000,
   "tabsLimit": 40,
   "task": {
     "limitList": 20
