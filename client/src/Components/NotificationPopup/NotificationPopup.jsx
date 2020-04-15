@@ -10,27 +10,34 @@ class NotificationPopup extends React.PureComponent {
     counter: 0,
     defaultVisible: true,
     isLoadPopover: false,
+    isCounter: true,
     visible: false,
   };
 
   static contextType = modelContext;
 
   componentDidMount = () => {
-    this.fetchNotification();
+    const { isCounter } = this.state;
+    if (isCounter) this.fetchNotification();
   };
 
-  fetchNotification = async () => {
+  componentDidUpdate = () => {
+    const { isCounter } = this.state;
+    if (isCounter) this.fetchNotification();
+  };
+
+  fetchNotification = async (isCounter = false) => {
     const { Request } = this.context;
     const { notificationDep = {}, udata: { _id: uid } = {}, type = 'private' } = this.props;
     const { isLoadPopover = false } = this.state;
     const { filterStream = '' } = notificationDep;
     const rest = new Request();
 
-    if (!filterStream || isLoadPopover || !uid) return;
+    if (!filterStream || (isLoadPopover && !isCounter) || !uid) return;
 
     this.setState(
       state => {
-        return { ...state, isLoadPopover: true };
+        return { ...state, isLoadPopover: true, isCounter: false };
       },
       async () => {
         try {
