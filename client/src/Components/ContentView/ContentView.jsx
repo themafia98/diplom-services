@@ -156,11 +156,12 @@ class ContentView extends React.Component {
               rest={rest}
               onErrorRequstAction={onErrorRequstAction}
               loaderMethods={loaderMethods}
+              setCurrentTab={setCurrentTab}
               key="mainModule"
             />
           </TabContainer>
           <TabContainer
-            key="cabinetModule"
+            key={path?.includes('personal') ? 'cabinetModulePersonal' : 'cabinetModule'}
             isBackground={this.getBackground('cabinetModule')}
             visible={path.startsWith('cabinetModule')}
           >
@@ -170,7 +171,7 @@ class ContentView extends React.Component {
               loaderMethods={loaderMethods}
               onErrorRequstAction={onErrorRequstAction}
               path={path}
-              key="cabinetModule"
+              key={path?.includes('personal') ? 'cabinetModulePersonal' : 'cabinetModule'}
             />
           </TabContainer>
           <TabContainer

@@ -93,8 +93,6 @@ class Output extends React.PureComponent {
     let type = 'deafult';
     if (path.split('__')[1]) type = 'itemTab';
 
-    removeTab({ path, type: type });
-
     if (!isFind) {
       onOpenPageWithData({
         activePage,

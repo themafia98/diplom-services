@@ -19,7 +19,7 @@ class MainModule extends React.PureComponent {
   };
 
   render() {
-    const { visible } = this.props;
+    const { visible, setCurrentTab } = this.props;
     const { path } = this.state;
     const {
       config: {
@@ -35,7 +35,7 @@ class MainModule extends React.PureComponent {
         />
         <div className="mainModule_main">
           <div className="col-4 columnModuleLeft">
-            <StreamBox parentDataName="users" parentPath={path} key="streamMain" type={'global'} />
+            <StreamBox parentDataName="users" parentPath={path} key="streamMain" type="global" />
           </div>
           <div className="col-8 columnModuleRight">
             <div className="widjects">
@@ -43,7 +43,12 @@ class MainModule extends React.PureComponent {
               {calendarVisiblity ? <Calendar className="mainModule_calendar" fullscreen={false} /> : null}
             </div>
             <div className="tableViw__wrapper">
-              <TableView visible={visible} key="mainModule_table" path="mainModule__table" />
+              <TableView
+                setCurrentTab={setCurrentTab}
+                visible={visible}
+                key="mainModule_table"
+                path="mainModule__table"
+              />
             </div>
           </div>
         </div>

@@ -25,7 +25,7 @@ class TableView extends React.Component {
   static contextType = modelContext;
 
   static propTypes = {
-    setCurrentTab: PropTypes.func,
+    setCurrentTab: PropTypes.func.isRequired,
     height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     tasks: PropTypes.array,
     path: PropTypes.string,
@@ -122,7 +122,7 @@ class TableView extends React.Component {
                 <td></td>
               </tr>
             </thead>
-            <tbody>
+            <tbody style={{ overflow: 'scroll' }}>
               {isUsers ? (
                 this.getRowsTable(currentData.users)
               ) : isLoad || requestError ? (
