@@ -191,9 +191,9 @@ class ModalWindow extends React.PureComponent {
               title: 'Списание времени в журнал',
               isRead: false,
               message: `
-                Работа над задачей ${nameTask}, 
-                время затрачено: ${jurnalCopy?.timeLost},
-                описание: ${jurnalCopy.description}. Дата: ${jurnalCopy?.date}`,
+                Работа над задачей ${nameTask}.
+                Время затрачено: ${jurnalCopy?.timeLost}.
+                Описание: ${jurnalCopy.description}. Дата: ${jurnalCopy?.date}`,
               action: {
                 type: 'tasks_link',
                 moduleName: 'taskModule',

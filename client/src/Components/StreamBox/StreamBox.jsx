@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import { loadCurrentData, multipleLoadData } from '../../Redux/actions/routerActions/middleware';
 import { addTabAction, openPageWithDataAction, setActiveTabAction } from '../../Redux/actions/routerActions';
 import PropTypes from 'prop-types';
@@ -158,7 +159,14 @@ class StreamBox extends React.Component {
       const path = type === 'private' ? `${streamModule}#private` : streamModule;
 
       await onSaveComponentState({
-        [streamStore]: metadata,
+        [streamStore]:
+          type === 'private'
+            ? metadata.sort((a, b) => {
+                const aDate = moment(a.createdAt).unix();
+                const bDate = moment(b.createdAt).unix();
+                return bDate - aDate;
+              })
+            : metadata,
         load: true,
         path,
       });

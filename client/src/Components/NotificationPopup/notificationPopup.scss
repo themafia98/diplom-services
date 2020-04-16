@@ -21,11 +21,7 @@
 }
 
 .itemWrapper {
-  cursor: pointer;
   padding: 10px 20px;
-  &:hover {
-    background-color: #6495ed;
-  }
 }
 
 .ant-popover-title {
@@ -48,13 +44,28 @@
 .notificationContent {
   max-height: 300px;
   min-width: 100px;
+
   .notificationItem {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+
+    .author,
+    .title_author {
+      margin: 0;
+    }
+
+    .title_author {
+      text-align: center;
+    }
 
     .notificationItem__content {
       padding-left: 5px;
       word-break: break-all;
+      &:hover {
+        color: #fff;
+        cursor: pointer;
+        background-color: #6495ed;
+      }
     }
 
     &.centerContent {

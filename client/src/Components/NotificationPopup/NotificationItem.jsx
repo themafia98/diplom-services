@@ -1,7 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
 import { Avatar } from 'antd';
-const NotificationItem = ({ image = false, content = '' }) => {
+const NotificationItem = ({ image = false, content = '', authorName = '' }) => {
   return (
     <div className={clsx('notificationItem', image ? null : 'centerContent')}>
       {image ? (
@@ -9,9 +9,13 @@ const NotificationItem = ({ image = false, content = '' }) => {
           <Avatar shape="circle" type="small" icon="user" />
         </div>
       ) : null}
-      <span className={clsx('notificationItem__content', image ? 'left' : null)}>
-        {content.replace(/,/, '\n')}
-      </span>
+      <span className={clsx('notificationItem__content', image ? 'left' : null)}>{content}</span>
+      {authorName ? (
+        <React.Fragment>
+          <p className="title_author">Автор уведомления:</p>
+          <p className="author">{authorName}</p>
+        </React.Fragment>
+      ) : null}
     </div>
   );
 };
