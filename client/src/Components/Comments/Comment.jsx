@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 //import moment from "moment";
 
-const Comment = ({ onDelete, rules, it, userId = '', uId = '' }) => {
-  const [key] = useState(it.id ? it.id : Math.random());
+const Comment = ({ onDelete = null, rules = false, it = {}, userId = '', uId = '' }) => {
+  const [key] = useState(it?.id ? it.id : Math.random());
 
   const onDeleteEvent = event => {
     onDelete(event, key);
@@ -20,10 +20,10 @@ const Comment = ({ onDelete, rules, it, userId = '', uId = '' }) => {
         </span>
       ) : null}
       <span className="aboutCommentSender">
-        <span className="timeComment">&nbsp;{it.time}.</span>
-        &nbsp;<span className="sender_name">{`${it.username}`}</span> написал:
+        <span className="timeComment">&nbsp;{it?.time}.</span>
+        &nbsp;<span className="sender_name">{`${it?.username}`}</span> написал:
       </span>
-      <span className="commentContet">{it.message}</span>
+      <span className="commentContet">{it?.message}</span>
     </p>
   );
 };
