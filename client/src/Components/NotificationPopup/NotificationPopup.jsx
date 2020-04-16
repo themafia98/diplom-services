@@ -73,11 +73,12 @@ class NotificationPopup extends React.PureComponent {
     this.setState({ ...this.state, isLoadPopover: true, isCounter: false }, this.getNotifications);
   };
 
-  buildItems = items => {
+  buildItems = (items, onRunAction) => {
     return items.reverse().map(it => {
-      const { _id: id = '' } = it;
+      const { _id: id = '', index = Math.random() } = it || {};
+
       return (
-        <div key={`wrapper${id}`} className="itemWrapper">
+        <div onClick={onRunAction.bind(this, index)} key={`wrapper${id}`} className="itemWrapper">
           <NotificationItem key={id} image={it?.image} content={it?.message} />
           <hr />
         </div>

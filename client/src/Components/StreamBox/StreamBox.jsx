@@ -299,7 +299,7 @@ class StreamBox extends React.Component {
       return (
         <Scrollbars style={{ height: listHeight }}>
           {streamList && streamList?.length ? (
-            buildItems(streamList)
+            buildItems(streamList, this.onRunAction)
           ) : !isLoading ? (
             <Spin className="popover-spiner" size="large" />
           ) : (
