@@ -93,9 +93,20 @@ class Output extends React.PureComponent {
     } else {
       const output = (
         <div className="output" ref={this.parentRef}>
-          <span ref={this.childRef} className={className ? className : null}>
-            {children}
-          </span>
+          {typeOutput === 'link' ? (
+            <Button
+              onClick={this.onOpenLink.bind(this, { action, id })}
+              type={typeOutput}
+              ref={this.childRef}
+              className={className ? className : null}
+            >
+              {children}
+            </Button>
+          ) : (
+            <span ref={this.childRef} className={className ? className : null}>
+              {children}
+            </span>
+          )}
         </div>
       );
       if (!showTooltip) return output;
