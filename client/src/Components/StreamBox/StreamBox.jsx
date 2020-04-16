@@ -139,7 +139,7 @@ class StreamBox extends React.Component {
         pipe: true,
       });
 
-      if (shouldUpdatePrivate || (type === 'private' && metadata?.length)) {
+      if (visiblePopover && (shouldUpdatePrivate || (type === 'private' && metadata?.length))) {
         const ids = metadata
           .map(it => {
             if (!it?.isRead) return it?._id;
@@ -148,7 +148,6 @@ class StreamBox extends React.Component {
           .filter(Boolean);
 
         const { count = ids?.length } = await this.updateRead(ids);
-
         if (setCounter) setCounter(-count, 'calc');
       }
 
