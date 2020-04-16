@@ -154,12 +154,12 @@ class Dashboard extends React.PureComponent {
     if (keys.length && !shouldUpdate) this.setState({ showLoader: true });
   };
 
-  getTavName = (metadata = {}, DATAKEY = '') => {
+  getTabName = (metadata = {}, DATAKEY = '') => {
     /** @type {Record<string, object | string>} */
     const { listdata = {}, title = '', name = '', displayName = '' } = metadata || {};
     const { title: titleListdata = '' } = listdata || {};
     const isName = DATAKEY && name;
-    debugger;
+
     return isName
       ? name
       : title
@@ -181,7 +181,7 @@ class Dashboard extends React.PureComponent {
         const PAGEDATA = routeParser({ pageType: 'page', path: tabsCopy[i] });
         const PARENT_CODE = PAGEDATA['page'];
         const DATAKEY = PAGEDATA['pageChild'] || PAGEDATA['page'] || '';
-        const VALUE = this.getTavName(routeData[DATAKEY], DATAKEY);
+        const VALUE = this.getTabName(routeData[DATAKEY], DATAKEY);
         tabItem = { EUID: PAGEDATA['path'] || tabsCopy[i], PARENT_CODE, DATAKEY, VALUE };
       }
       if (tabItem) tabsArray.push({ ...tabItem });
