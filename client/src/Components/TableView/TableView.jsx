@@ -127,13 +127,13 @@ class TableView extends React.Component {
                 this.getRowsTable(currentData.users)
               ) : isLoad || requestError ? (
                 <tr>
-                  <td colSpan="5">
+                  <td colSpan={5}>
                     <Empty description={<span>Данных нету</span>} className="emptyTable" />
                   </td>
                 </tr>
               ) : (
                 <tr>
-                  <td colSpan="5">
+                  <td colSpan={5}>
                     <Spin size="large" />
                   </td>
                 </tr>
