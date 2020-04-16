@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Tooltip } from 'antd';
+import { Tooltip, Button } from 'antd';
 import _ from 'lodash';
 
 class Output extends React.PureComponent {
@@ -17,8 +17,11 @@ class Output extends React.PureComponent {
 
   componentDidMount = () => {
     const { showTooltip, widthChild, widthParent } = this.state;
+    const { typeOutput } = this.props;
     if (_.isNull(widthChild) && _.isNull(widthParent) && !showTooltip && this.child && this.parent) {
-      const childW = this.child.getBoundingClientRect().width;
+      const children = typeOutput === 'link' ? this.child?.buttonNode?.firstChild : this.child;
+
+      const childW = children.getBoundingClientRect().width;
       const parentW = this.parent.getBoundingClientRect().width;
       this.setState({
         ...this.state,
@@ -31,8 +34,11 @@ class Output extends React.PureComponent {
 
   componentDidUpdate = () => {
     const { showTooltip, widthChild, widthParent } = this.state;
+    const { typeOutput } = this.props;
     if (!_.isNull(widthChild) && !_.isNull(widthParent) && this.child && this.parent) {
-      const childW = this.child.getBoundingClientRect().width;
+      const children = typeOutput === 'link' ? this.child?.buttonNode?.firstChild : this.child;
+
+      const childW = children.getBoundingClientRect().width;
       const parentW = this.parent.getBoundingClientRect().width;
 
       const showTooltipUpdate = childW > parentW;
@@ -48,16 +54,32 @@ class Output extends React.PureComponent {
     }
   };
 
+  onOpenLink = ({ id = null, action = null }) => {
+    console.log('id:', id);
+    console.log('action', action);
+  };
+
   render() {
-    const { className, children, type } = this.props;
+    const { className, children, type, typeOutput = '', id = null, action = null } = this.props;
     const { showTooltip } = this.state;
     if (type === 'table') {
       const output = (
         <td>
           <div className="output" ref={this.parentRef}>
-            <span ref={this.childRef} className={className ? className : null}>
-              {children}
-            </span>
+            {typeOutput === 'link' ? (
+              <Button
+                onClick={this.onOpenLink.bind(this, { action, id })}
+                type={typeOutput}
+                ref={this.childRef}
+                className={className ? className : null}
+              >
+                {children}
+              </Button>
+            ) : (
+              <span ref={this.childRef} className={className ? className : null}>
+                {children}
+              </span>
+            )}
           </div>
         </td>
       );

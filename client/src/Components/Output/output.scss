@@ -19,6 +19,12 @@
 .pointerTooltip {
   .output {
     padding-left: 8px;
+    button {
+      width: 100%;
+      overflow: hidden;
+      padding: 0;
+      text-overflow: ellipsis;
+    }
   }
   cursor: pointer;
   span {

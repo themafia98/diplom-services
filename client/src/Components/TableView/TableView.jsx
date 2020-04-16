@@ -183,7 +183,14 @@ class TableView extends React.Component {
           <Output key={`${id}${it.status}status`} type="table" className="status">
             {it.status || 'Скрыт'}
           </Output>
-          <Output key={`${id}${it.displayName}}nameSurname`} type="table" className="nameSurname">
+          <Output
+            id={it?._id}
+            action={'cabinet'}
+            typeOutput="link"
+            key={`${id}${it.displayName}}nameSurname`}
+            type="table"
+            className="nameSurname"
+          >
             {`${it.displayName}`}
           </Output>
           <Output key={`${id}${it.departament}departament`} type="table" className="departament">
