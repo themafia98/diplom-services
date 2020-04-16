@@ -52,18 +52,21 @@ class HeaderView extends React.PureComponent {
 
   renderTabs = items => {
     const { size = 160 } = this.state;
-    const { activeTabEUID = 'mainModule', cbMenuTabHandler } = this.props;
+    const { activeTabEUID = 'mainModule', cbMenuTabHandler, routeData = {} } = this.props;
 
     return (
       <ul ref={this.refWrapper} className="tabsMenu">
         {items.map(item => {
+          const isExist = routeData && routeData[item?.VALUE];
+          const { displayName = '' } =
+            activeTabEUID?.includes('cabinet') && isExist ? routeData[item?.VALUE] : {};
           return (
             <Tab
               hendlerTab={cbMenuTabHandler}
               active={activeTabEUID === item.EUID}
               key={item.EUID}
               itemKey={item.EUID}
-              value={item.VALUE}
+              value={displayName ? displayName : item.VALUE}
               sizeTab={size}
             />
           );
@@ -115,12 +118,13 @@ class HeaderView extends React.PureComponent {
 
 const mapStateTopProps = state => {
   const { status = 'online', udata = {} } = state.publicReducer;
-  const { shouldUpdate = false } = state.router;
+  const { shouldUpdate = false, routeData = {} } = state.router;
   return {
     tabArray: state.router.actionTabs,
     shouldUpdate,
     status,
     udata,
+    routeData,
   };
 };
 
