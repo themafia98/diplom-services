@@ -66,7 +66,7 @@ class Output extends React.PureComponent {
       const output = (
         <td>
           <div className="output" ref={this.parentRef}>
-            {typeOutput === 'link' ? (
+            {typeOutput ? (
               <Button
                 onClick={this.onOpenLink.bind(this, { action, id })}
                 type={typeOutput}
@@ -93,7 +93,7 @@ class Output extends React.PureComponent {
     } else {
       const output = (
         <div className="output" ref={this.parentRef}>
-          {typeOutput === 'link' ? (
+          {typeOutput ? (
             <Button
               onClick={this.onOpenLink.bind(this, { action, id })}
               type={typeOutput}
