@@ -4,6 +4,20 @@
   text-overflow: ellipsis;
   text-align: center;
 
+  button {
+    cursor: pointer;
+    &.nameSurname:hover {
+      color: #337ec4;
+    }
+  }
+
+  &.withType {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    cursor: pointer;
+  }
+
   .active {
     color: $active;
   }

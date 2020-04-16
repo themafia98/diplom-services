@@ -11,7 +11,7 @@ import { routePathNormalise, routeParser } from '../../Utils';
 import Output from '../Output';
 import DynamicTable from './DynamicTable';
 
-import { openPageWithDataAction } from '../../Redux/actions/routerActions';
+import { openPageWithDataAction, removeTabAction } from '../../Redux/actions/routerActions';
 import { loadCurrentData } from '../../Redux/actions/routerActions/middleware';
 import modelContext from '../../Models/context';
 
@@ -90,11 +90,11 @@ class TableView extends React.Component {
       flag,
       router,
       publicReducer: { requestError },
+      udata = {},
       height: heightProps,
       visible,
       onOpenPageWithData,
       setCurrentTab,
-      udata = {},
       loaderMethods = {},
     } = this.props;
 
@@ -177,6 +177,7 @@ class TableView extends React.Component {
   };
 
   getRowsTable = arrayData => {
+    const { router, removeTab, onOpenPageWithData, setCurrentTab, udata = {} } = this.props;
     return arrayData.map((it, id) => {
       return (
         <tr className="contentTr" key={`${id}contentTr`}>
@@ -187,6 +188,12 @@ class TableView extends React.Component {
             id={it?._id}
             action={'cabinet'}
             typeOutput="link"
+            router={router}
+            removeTab={removeTab}
+            currentData={it}
+            udata={udata}
+            onOpenPageWithData={onOpenPageWithData}
+            setCurrentTab={setCurrentTab}
             key={`${id}${it.displayName}}nameSurname`}
             type="table"
             className="nameSurname"
@@ -219,14 +226,17 @@ class TableView extends React.Component {
 }
 
 const mapStateToProps = state => {
+  const { udata = {} } = state.publicReducer;
   return {
     router: state.router,
     publicReducer: state.publicReducer,
+    udata,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
+    removeTab: tab => dispatch(removeTabAction(tab)),
     onOpenPageWithData: data => dispatch(openPageWithDataAction(data)),
     onLoadCurrentData: props => dispatch(loadCurrentData({ ...props })),
   };

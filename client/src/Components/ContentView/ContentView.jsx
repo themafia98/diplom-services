@@ -160,16 +160,17 @@ class ContentView extends React.Component {
             />
           </TabContainer>
           <TabContainer
-            key="cabinet"
+            key="cabinetModule"
             isBackground={this.getBackground('cabinetModule')}
-            visible={path === 'cabinetModule'}
+            visible={path.startsWith('cabinetModule')}
           >
             <CabinetModule
-              visible={path === 'cabinetModule'}
+              visible={path.startsWith('cabinetModule')}
               rest={rest}
               loaderMethods={loaderMethods}
               onErrorRequstAction={onErrorRequstAction}
-              key="cabinet"
+              path={path}
+              key="cabinetModule"
             />
           </TabContainer>
           <TabContainer

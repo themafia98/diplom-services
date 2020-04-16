@@ -106,9 +106,11 @@ class StreamBox extends React.Component {
         visiblePopover,
         isLoadPopover,
         onLoadPopover,
-        udata: { _id: uid = '' } = {},
+        personalUid = null,
+        udata: { _id = '' } = {},
       } = this.props;
 
+      const uid = !personalUid ? _id : personalUid;
       const shouldUpdatePrivate = setCounter && visiblePopover && !isLoadPopover;
 
       /**
@@ -279,7 +281,7 @@ class StreamBox extends React.Component {
       mode,
       boxClassName,
       type,
-      udata: { _id: uid = '' } = {},
+      udata: { _id = '' } = {},
       udata: { avatar: myAvatar = null } = {},
       parentPath = '',
       parentDataName = '',
@@ -289,7 +291,10 @@ class StreamBox extends React.Component {
       store = null,
       buildItems = null,
       listHeight = null,
+      personalUid = null,
     } = this.props;
+
+    const uid = !personalUid ? _id : personalUid;
     const { streamList: streamListState = [], isLoading = false } = this.state;
 
     const nameModuleStream = type === 'private' ? `${streamModule}#private` : streamModule;
@@ -332,8 +337,8 @@ class StreamBox extends React.Component {
                 message = '',
                 action = {},
               } = card;
-              const key = _id ? _id : index;
-              const { type = '', link = '' } = action;
+
+              const { link = '' } = action;
 
               const isMine = uid === uidCreater;
               const avatar = isMine ? myAvatar : parentDataList?.find(it => it?._id === uidCreater)?.avatar;

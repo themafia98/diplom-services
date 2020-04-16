@@ -13,6 +13,7 @@ const { Dragger } = Upload;
 
 class CabinetModule extends React.PureComponent {
   state = {
+    modePage: null,
     imageUrl: null,
     loading: false,
     filesArray: [],
@@ -23,6 +24,22 @@ class CabinetModule extends React.PureComponent {
 
   static propTypes = {
     onErrorRequstAction: PropTypes.func.isRequired,
+  };
+
+  static getDerivedStateFromProps = (props, state) => {
+    const { path = '' } = props || {};
+    const { modePage = '' } = state || {};
+
+    const isPersonalPage = path && path.includes('personalPage');
+
+    if (isPersonalPage && modePage !== 'personal') {
+      return {
+        ...state,
+        modePage: 'personal',
+      };
+    }
+
+    return state;
   };
 
   showModal = event => {
@@ -105,11 +122,12 @@ class CabinetModule extends React.PureComponent {
   };
 
   render() {
-    const { visible, imageUrl } = this.state;
+    const { visible, imageUrl, modePage = '' } = this.state;
     const { rest } = this.context;
-    const { udata: { _id: uid = '', avatar = '' } = {}, onSaveComponentState } = this.props;
+    const { udata = {}, routeDataActive = {}, onSaveComponentState } = this.props;
+    const isPersonal = modePage === 'personal';
 
-    const uidUser = uid;
+    const { _id: uidUser = '', avatar = '' } = isPersonal ? routeDataActive : udata;
 
     const props = {
       name: 'avatar',
@@ -128,10 +146,19 @@ class CabinetModule extends React.PureComponent {
 
     return (
       <div className="cabinetModule">
-        <TitleModule additional="Профиль" classNameTitle="cabinetModuleTitle" title="Личный кабинет" />
+        <TitleModule
+          additional="Профиль"
+          classNameTitle="cabinetModuleTitle"
+          title={!isPersonal ? 'Личный кабинет' : 'Карточка сотрудника'}
+        />
         <div className="cabinetModule_main">
           <div className="col-6">
-            <UserCard imageUrl={avatar} cdShowModal={this.showModal} />
+            <UserCard
+              personalData={routeDataActive}
+              modePage={modePage}
+              imageUrl={avatar}
+              cdShowModal={this.showModal}
+            />
           </div>
           <div className="col-6">
             <p className="lastActivity">Последняя активность</p>
@@ -143,6 +170,7 @@ class CabinetModule extends React.PureComponent {
               store="redux"
               onSaveComponentState={onSaveComponentState}
               filterStream="uidCreater"
+              personalUid={isPersonal ? uidUser : null}
               boxClassName="streamActivityCabinet"
               mode="activity"
             />
@@ -184,9 +212,12 @@ class CabinetModule extends React.PureComponent {
 
 const mapStateToProps = state => {
   const { udata = {} } = state.publicReducer;
+  const { routeData = {}, routeDataActive = {} } = state?.router || {};
 
   return {
     udata,
+    routeData,
+    routeDataActive,
   };
 };
 

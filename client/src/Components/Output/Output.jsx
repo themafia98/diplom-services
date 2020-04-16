@@ -1,7 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Tooltip, Button } from 'antd';
+import clsx from 'clsx';
+import { routePathNormalise } from '../../Utils';
+import { Tooltip, Button, message } from 'antd';
 import _ from 'lodash';
+import modelContext from '../../Models/context';
 
 class Output extends React.PureComponent {
   state = {
@@ -9,6 +12,8 @@ class Output extends React.PureComponent {
     widthChild: null,
     widthParent: null,
   };
+
+  static contextType = modelContext;
 
   child = null;
   parent = null;
@@ -54,9 +59,50 @@ class Output extends React.PureComponent {
     }
   };
 
-  onOpenLink = ({ id = null, action = null }) => {
-    console.log('id:', id);
-    console.log('action', action);
+  onOpenLink = ({ id: key = null, action = null }) => {
+    const {
+      udata: { _id: uid = '' } = {},
+      router: { actionTabs = [] } = {},
+      currentData = {},
+      removeTab,
+      onOpenPageWithData,
+      setCurrentTab,
+    } = this.props;
+
+    const isCurrentUser = uid === key;
+    const { config = {} } = this.context;
+
+    if (config.tabsLimit <= actionTabs.length)
+      return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
+
+    const page = `${action}Module`;
+    const moduleId = !isCurrentUser ? 'personalPage' : '';
+    const path = !isCurrentUser ? `${page}_${moduleId}__${key}` : page;
+
+    // @ts-ignore
+    const activePage = routePathNormalise({
+      pathType: isCurrentUser ? 'module' : 'moduleItem',
+      pathData: { page, moduleId, key },
+    });
+
+    if (!key || !page) return;
+
+    const index = actionTabs.findIndex(tab => tab.includes(page) && tab.includes(key));
+    const isFind = index !== -1;
+
+    let type = 'deafult';
+    if (path.split('__')[1]) type = 'itemTab';
+
+    removeTab({ path, type: type });
+
+    if (!isFind) {
+      onOpenPageWithData({
+        activePage,
+        routeDataActive: { ...currentData, key },
+      });
+    } else {
+      setCurrentTab(actionTabs[index]);
+    }
   };
 
   render() {
@@ -65,7 +111,7 @@ class Output extends React.PureComponent {
     if (type === 'table') {
       const output = (
         <td>
-          <div className="output" ref={this.parentRef}>
+          <div className={clsx('output', typeOutput ? 'withType' : null)} ref={this.parentRef}>
             {typeOutput ? (
               <Button
                 onClick={this.onOpenLink.bind(this, { action, id })}

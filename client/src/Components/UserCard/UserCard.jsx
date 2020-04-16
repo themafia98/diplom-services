@@ -11,14 +11,29 @@ import imageCard from './wallpaper_user.jpg';
 const { Item: MenuItem } = Menu;
 
 class UserCard extends React.Component {
+  state = {
+    visibilityModal: false,
+  };
   static propTypes = {
     cbShowModal: PropTypes.func,
   };
 
   static contextType = modelContext;
 
-  state = {
-    visibilityModal: false,
+  static getDerivedStateFromProps = (props, state) => {
+    const { modePage: modePageProps = '' } = props || {};
+    const { modePage = '' } = state;
+
+    const isPersonalPage = modePageProps && modePageProps.includes('personal');
+
+    if (isPersonalPage && modePage !== modePageProps) {
+      return {
+        ...state,
+        modePage: 'personal',
+      };
+    }
+
+    return state;
   };
 
   showEditSummary = () => {
@@ -66,18 +81,25 @@ class UserCard extends React.Component {
   };
 
   render() {
-    const { visibilityModal = false } = this.state;
-    const { udata = {}, cdShowModal, imageUrl = '' } = this.props;
+    const { visibilityModal = false, modePage = '' } = this.state;
+    const { udata = {}, cdShowModal, imageUrl = '', personalData = {} } = this.props;
+    const isPersonalPage = modePage === 'personal';
+    const {
+      displayName = '',
+      departament = '',
+      email = '',
+      isOnline = false,
+      summary = '',
+      phone = '',
+    } = isPersonalPage ? personalData : udata;
 
-    const isMine = true;
-
-    const menu = (
+    const menu = isPersonalPage ? (
       <Menu>
         <MenuItem onClick={cdShowModal ? cdShowModal : null} key="photoChange">
           Сменить аватар
         </MenuItem>
       </Menu>
-    );
+    ) : null;
 
     const background = {
       backgroundImage: `url("${imageCard}")`,
@@ -89,9 +111,9 @@ class UserCard extends React.Component {
           <div style={background} className="wallpaper"></div>
           <div className="mainContentCard">
             <div className="col-6">
-              {isMine ? (
+              {!isPersonalPage ? (
                 <Tooltip trigger="hover" title="ПКМ - смена фотографии">
-                  <Dropdown overlay={menu} trigger={['contextMenu']}>
+                  <Dropdown disabled={isPersonalPage} overlay={menu} trigger={['contextMenu']}>
                     <Avatar
                       src={imageUrl ? `data:image/png;base64,${imageUrl}` : null}
                       className="userLogo"
@@ -101,67 +123,74 @@ class UserCard extends React.Component {
                   </Dropdown>
                 </Tooltip>
               ) : (
-                <Avatar className="userLogo" size={84} icon="user" />
+                <Avatar
+                  src={imageUrl ? `data:image/png;base64,${imageUrl}` : null}
+                  className="userLogo"
+                  size={84}
+                  icon="user"
+                />
               )}
               <div className="mainInformUser">
                 <div className="mainInformUser__main">
-                  <p className="name">{udata.displayName ? udata.displayName : 'Unknown'}</p>
-                  <p className="position">{udata.departament ? udata.departament : ''}</p>
+                  <p className="name">{displayName ? displayName : 'Unknown'}</p>
+                  <p className="position">{departament ? departament : ''}</p>
                 </div>
                 <div className="mainInformUser__controllers">
-                  {udata.email ? (
-                    <Button title={udata.email} className="controller" type="primary" icon="mail"></Button>
+                  {email ? (
+                    <Button title={email} className="controller" type="primary" icon="mail"></Button>
                   ) : null}
-                  {udata.isOnline ? (
-                    <Button className="controller" type="primary" icon="wechat"></Button>
-                  ) : null}
+                  {isOnline ? <Button className="controller" type="primary" icon="wechat"></Button> : null}
                 </div>
               </div>
             </div>
             <div className="col-6 summary_wrapper">
-              <div className="canEditSummary">
-                <Tooltip title="Редактировать описание">
-                  <Icon onClick={this.showEditSummary} type="edit" />
-                </Tooltip>
-              </div>
-              {udata.summary ? (
+              {!isPersonalPage ? (
+                <div className="canEditSummary">
+                  <Tooltip title="Редактировать описание">
+                    <Icon onClick={this.showEditSummary} type="edit" />
+                  </Tooltip>
+                </div>
+              ) : null}
+              {summary ? (
                 <Popover
                   overlayStyle={{
                     maxWidth: '500px',
                   }}
                   placement="top"
-                  content={<p className="summary-popover">{udata.summary}</p>}
+                  content={<p className="summary-popover">{summary}</p>}
                   trigger="click"
                 >
-                  <p className="summary">{udata.summary}</p>
+                  <p className="summary">{summary}</p>
                 </Popover>
               ) : (
-                <p className="summary">{udata.summary}</p>
+                <p className="summary">{summary}</p>
               )}
               <div className="contact">
-                {udata.email ? (
+                {email ? (
                   <div className="email">
-                    <Icon type="mail" /> <span>{udata.email}</span>
+                    <Icon type="mail" /> <span>{email}</span>
                   </div>
                 ) : null}
-                {udata.phone ? (
+                {phone ? (
                   <div className="phone">
-                    <Icon type="phone" /> <span>{udata.phone}</span>
+                    <Icon type="phone" /> <span>{phone}</span>
                   </div>
                 ) : null}
               </div>
             </div>
           </div>
         </div>
-        <ModalWindow
-          title="Редактирование описания"
-          defaultView={true}
-          maxLength={600}
-          visibility={visibilityModal}
-          onReject={this.onRejectEditSummary}
-          onOkey={this.onSubmitSummary}
-          defaultValue={udata.summary}
-        />
+        {!isPersonalPage ? (
+          <ModalWindow
+            title="Редактирование описания"
+            defaultView={true}
+            maxLength={600}
+            visibility={visibilityModal}
+            onReject={this.onRejectEditSummary}
+            onOkey={this.onSubmitSummary}
+            defaultValue={udata.summary}
+          />
+        ) : null}
       </React.Fragment>
     );
   }
