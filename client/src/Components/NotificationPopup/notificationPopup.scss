@@ -23,6 +23,9 @@
 .itemWrapper {
   cursor: pointer;
   padding: 10px 20px;
+  &:hover {
+    background-color: #6495ed;
+  }
 }
 
 .ant-popover-title {
