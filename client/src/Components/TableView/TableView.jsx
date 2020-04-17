@@ -1,10 +1,8 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { tableViewType } from './types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { Icon, Empty, Spin, Tooltip } from 'antd';
-
-import Loader from '../Loader';
 import Scrollbars from 'react-custom-scrollbars';
 
 import { routePathNormalise, routeParser } from '../../Utils';
@@ -23,18 +21,7 @@ class TableView extends React.Component {
   };
 
   static contextType = modelContext;
-
-  static propTypes = {
-    setCurrentTab: PropTypes.func.isRequired,
-    height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    tasks: PropTypes.array,
-    path: PropTypes.string,
-    data: PropTypes.object,
-    flag: PropTypes.bool,
-    user: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-    router: PropTypes.object.isRequired,
-    publicReducer: PropTypes.object.isRequired,
-  };
+  static propTypes = tableViewType;
 
   componentDidUpdate = prevProps => {
     const { path, onLoadCurrentData } = this.props;

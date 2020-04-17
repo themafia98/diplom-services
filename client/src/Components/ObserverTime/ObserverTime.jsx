@@ -1,7 +1,7 @@
 import React from 'react';
+import { observerTimeType } from './types';
 import Scrollbars from 'react-custom-scrollbars';
 import _ from 'lodash';
-import PropTypes from 'prop-types';
 import moment from 'moment';
 import TitleModule from '../TitleModule';
 import { Timeline, Spin } from 'antd';
@@ -42,8 +42,8 @@ const ObserverTime = props => {
     </React.Fragment>
   );
 };
-
-ObserverTime.propTypes = {
-  title: PropTypes.string,
+ObserverTime.defaultProps = {
+  title: '',
 };
+ObserverTime.propTypes = observerTimeType;
 export default ObserverTime;

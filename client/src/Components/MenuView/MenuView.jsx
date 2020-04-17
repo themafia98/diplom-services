@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { menuViewType } from './types';
 import _ from 'lodash';
 import { Menu, Layout, Icon } from 'antd';
 
@@ -66,13 +66,6 @@ const MenuView = ({ collapsed, cbOnCollapse, items, cbMenuHandler, activeTabEUID
   );
 };
 
-MenuView.propTypes = {
-  collapsed: PropTypes.bool.isRequired,
-  cbOnCollapse: PropTypes.func.isRequired,
-  items: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.object.isRequired).isRequired, () => null]),
-  cbMenuHandler: PropTypes.func.isRequired,
-  activeTabEUID: PropTypes.string.isRequired,
-  cbGoMain: PropTypes.func.isRequired,
-};
+MenuView.propTypes = menuViewType;
 
 export default MenuView;

@@ -24,6 +24,9 @@ const RightPanel = props => {
   );
 };
 
+RightPanel.defaultProps = {
+  active: true,
+};
 RightPanel.propTypes = rightPanelType;
 
 export default RightPanel;

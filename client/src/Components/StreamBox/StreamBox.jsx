@@ -1,9 +1,9 @@
 import React from 'react';
+import { streamBoxType } from './types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { loadCurrentData, multipleLoadData } from '../../Redux/actions/routerActions/middleware';
 import { addTabAction, openPageWithDataAction, setActiveTabAction } from '../../Redux/actions/routerActions';
-import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { Avatar, notification, message, Tooltip, Spin } from 'antd';
 import { Scrollbars } from 'react-custom-scrollbars';
@@ -17,10 +17,7 @@ class StreamBox extends React.Component {
     streamList: [],
   };
 
-  static propTypes = {
-    mode: PropTypes.string,
-    boxClassName: PropTypes.string,
-  };
+  static propTypes = streamBoxType;
 
   static contextType = modelContext;
 

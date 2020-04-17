@@ -1,21 +1,21 @@
 import React from 'react';
 import clsx from 'clsx';
 
-class TabContainer extends React.PureComponent {
-  render() {
-    const { isBackground, visible, children, className = '' } = this.props;
+const TabContainer = props => {
+  const { isBackground, visible, children, className = '' } = props;
 
-    if (isBackground || visible) {
-      return (
+  return (
+    <React.Fragment>
+      {isBackground || visible ? (
         <div
           key={children.key + 'tab'}
           className={clsx('tabContainer', visible ? 'visible' : 'hidden', className ? className : null)}
         >
           {children}
         </div>
-      );
-    } else return null;
-  }
-}
+      ) : null}
+    </React.Fragment>
+  );
+};
 
 export default TabContainer;

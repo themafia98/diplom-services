@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { editableModalType } from '../types';
 import _ from 'lodash';
 import { Modal, Tooltip, message } from 'antd';
 
@@ -69,4 +70,5 @@ const SimpleEditableModal = props => {
   );
 };
 
+SimpleEditableModal.propTypes = editableModalType;
 export default SimpleEditableModal;

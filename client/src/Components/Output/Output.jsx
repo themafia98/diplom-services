@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { outputType } from './types';
 import clsx from 'clsx';
 import { routePathNormalise } from '../../Utils';
 import { Tooltip, Button, message } from 'antd';
@@ -14,6 +14,7 @@ class Output extends React.PureComponent {
   };
 
   static contextType = modelContext;
+  static propTypes = outputType;
 
   child = null;
   parent = null;
@@ -163,11 +164,5 @@ class Output extends React.PureComponent {
     }
   }
 }
-
-Output.propTypes = {
-  className: PropTypes.string,
-  children: PropTypes.oneOfType([PropTypes.object, PropTypes.string, () => null]),
-  type: PropTypes.string,
-};
 
 export default Output;

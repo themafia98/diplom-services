@@ -18,9 +18,13 @@ export const tabType = {
 };
 
 export const rightPanelType = {
-  hendlerTab: func.isRequired,
   active: bool.isRequired,
   itemKey: oneOfType([PropTypes.string, number, () => null]),
   value: oneOfType([PropTypes.string, number, () => null]),
   sizeTab: oneOfType([string, number]),
+};
+
+export const statusType = {
+  statusApp: string.isRequired,
+  shouldUpdate: bool.isRequired,
 };

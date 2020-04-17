@@ -1,4 +1,5 @@
 import React from 'react';
+import { statusType } from '../../types';
 import clsx from 'clsx';
 import { Icon } from 'antd';
 
@@ -10,5 +11,7 @@ const Status = ({ statusApp = '', shouldUpdate = false }) => {
     </div>
   );
 };
+
+Status.propTypes = statusType;
 
 export default Status;

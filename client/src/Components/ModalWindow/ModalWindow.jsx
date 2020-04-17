@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { modalWindowType } from './types';
 import clsx from 'clsx';
 import axios from 'axios';
 import _ from 'lodash';
@@ -39,26 +39,7 @@ class ModalWindow extends React.PureComponent {
   };
 
   static contextType = modelContext;
-
-  static propTypes = {
-    onCaching: PropTypes.func,
-    actionType: PropTypes.string,
-    routeDataActive: PropTypes.object,
-    mode: PropTypes.string,
-    path: PropTypes.string,
-    typeRequst: PropTypes.string,
-    keyTask: PropTypes.string,
-    accessStatus: PropTypes.array,
-    onUpdate: PropTypes.func,
-    onEdit: PropTypes.func,
-    onRejectEdit: PropTypes.func,
-    modeControll: PropTypes.string,
-    editableContent: PropTypes.string,
-    modeEditContent: PropTypes.bool,
-    onCancelEditModeContent: PropTypes.func,
-    onUpdateEditable: PropTypes.func,
-    statusTaskValue: PropTypes.string,
-  };
+  static propTypes = modalWindowType;
 
   onMessage = event => {
     message.warning('Вы в режиме редактирования карточки.');

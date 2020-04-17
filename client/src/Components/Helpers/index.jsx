@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
-import PropTypes from 'prop-types';
+import { privateType } from './types';
 import { Route } from 'react-router-dom';
 import Loader from '../Loader';
 import modelsContext from '../../Models/context';
@@ -55,8 +55,6 @@ const PrivateRoute = ({ component: Component, onLogoutAction, ...routeProps }) =
   return <Route exact {...routeProps} render={props => route} />;
 };
 
-PrivateRoute.propTypes = {
-  component: PropTypes.object.isRequired,
-};
+PrivateRoute.propTypes = privateType;
 
 export { PrivateRoute };

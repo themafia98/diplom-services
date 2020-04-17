@@ -1,7 +1,7 @@
 import React from 'react';
+import { notificationPopupType } from './types';
 import _ from 'lodash';
-import Scrollbars from 'react-custom-scrollbars';
-import { Icon, Badge, Popover, notification } from 'antd';
+import { Icon, Badge, Popover } from 'antd';
 import NotificationItem from './NotificationItem';
 import StreamBox from '../StreamBox';
 import modelContext from '../../Models/context';
@@ -14,7 +14,13 @@ class NotificationPopup extends React.PureComponent {
     visible: false,
   };
 
+  static defaultProps = {
+    type: 'private',
+  };
+
   static contextType = modelContext;
+  static propTypes = notificationPopupType;
+
   intervalNotif = null;
 
   componentDidMount = () => {
@@ -62,7 +68,7 @@ class NotificationPopup extends React.PureComponent {
   };
 
   fetchNotification = async (isCounter = false, shoudUpdate = false) => {
-    const { notificationDep = {}, udata: { _id: uid } = {}, type = 'private' } = this.props;
+    const { notificationDep = {}, udata: { _id: uid } = {} } = this.props;
     const { isLoadPopover = false } = this.state;
     const { filterStream = '' } = notificationDep;
 
