@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-//import moment from "moment";
+import { commentType } from './types';
 
 const Comment = ({ onDelete = null, rules = false, it = {}, userId = '', uId = '' }) => {
   const [key] = useState(it?.id ? it.id : Math.random());
@@ -28,10 +27,6 @@ const Comment = ({ onDelete = null, rules = false, it = {}, userId = '', uId = '
   );
 };
 
-Comment.propTypes = {
-  rules: PropTypes.bool.isRequired,
-  it: PropTypes.object.isRequired,
-  onDelete: PropTypes.func.isRequired,
-};
+Comment.propTypes = commentType;
 
 export default Comment;

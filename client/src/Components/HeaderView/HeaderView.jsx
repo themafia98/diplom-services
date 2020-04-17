@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { headerViewType } from './types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { Layout } from 'antd';
@@ -16,13 +16,7 @@ class HeaderView extends React.PureComponent {
     sizeParent: null,
   };
 
-  static propTypes = {
-    dashboardStrem: PropTypes.object.isRequired,
-    cbMenuTabHandler: PropTypes.func.isRequired,
-    activeTabEUID: PropTypes.string.isRequired,
-    actionTabs: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]).isRequired,
-    logout: PropTypes.func.isRequired,
-  };
+  static propTypes = headerViewType;
 
   componentDidUpdate = () => {
     const { sizeParent, size, length } = this.state;

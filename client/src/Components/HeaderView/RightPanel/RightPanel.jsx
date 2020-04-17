@@ -1,4 +1,5 @@
 import React from 'react';
+import { rightPanelType } from '../types';
 import Updater from '../../Updater';
 import UserPopup from '../../UserPopup';
 
@@ -22,4 +23,7 @@ const RightPanel = props => {
     </div>
   );
 };
+
+RightPanel.propTypes = rightPanelType;
+
 export default RightPanel;

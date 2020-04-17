@@ -1,17 +1,10 @@
 import React from 'react';
+import { tabType } from './types';
 import clsx from 'clsx';
-import PropTypes from 'prop-types';
-
 import { Icon, Tooltip } from 'antd';
 
 class Tab extends React.PureComponent {
-  static propTypes = {
-    hendlerTab: PropTypes.func.isRequired,
-    active: PropTypes.bool.isRequired,
-    itemKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number, () => null]),
-    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, () => null]),
-    sizeTab: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  };
+  static propTypes = tabType;
 
   eventHandler = event => {
     const { hendlerTab: callbackHendlerTab, itemKey } = this.props;

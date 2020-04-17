@@ -1,4 +1,5 @@
 import React from 'react';
+import { fileType } from './types';
 import uuid from 'uuid/v4';
 import { Upload, Icon, message } from 'antd';
 const { Dragger } = Upload;
@@ -7,6 +8,8 @@ class File extends React.Component {
   state = {
     filesArray: null,
   };
+
+  static propTypes = fileType;
 
   static getDerivedStateFromProps = (props, state) => {
     const isArray = Array.isArray(props.filesArray) && Array.isArray(state.filesArray);

@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { drawerViewerType } from './types';
 import { Drawer } from 'antd';
 class DrawerViewer extends React.PureComponent {
   state = {};
@@ -9,9 +9,6 @@ class DrawerViewer extends React.PureComponent {
   }
 }
 
-DrawerViewer.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  visible: PropTypes.bool.isRequired,
-};
+DrawerViewer.propTypes = drawerViewerType;
 
 export default DrawerViewer;

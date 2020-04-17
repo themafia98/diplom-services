@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { contentViewType } from './types';
 import _ from 'lodash';
 import { Layout } from 'antd';
 
@@ -25,13 +25,7 @@ class ContentView extends React.Component {
     key: null,
   };
 
-  static propTypes = {
-    dashboardStrem: PropTypes.object.isRequired,
-    setCurrentTab: PropTypes.func.isRequired,
-    updateLoader: PropTypes.func.isRequired,
-    onErrorRequstAction: PropTypes.func.isRequired,
-    path: PropTypes.string.isRequired,
-  };
+  static propTypes = contentViewType;
 
   componentDidMount = () => {
     const { dashboardStrem = null } = this.props;

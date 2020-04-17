@@ -36,6 +36,7 @@ class WikiModule extends React.PureComponent {
     },
     visbileDropdownId: null,
     visbileDropdown: false,
+    selectedNodeMetadta: null,
   };
 
   titleRef = React.createRef();
@@ -49,22 +50,19 @@ class WikiModule extends React.PureComponent {
   };
 
   onSelect = (keys, event) => {
-    const { node: { props: { expanded = false } = {} } = {} } = event || {};
     const { metadata = [] } = this.props;
+    let selectedNodeMetadata = null;
+    let selectedNode = null;
 
-    if (expanded) {
-      this.setState({
-        ...this.state,
-        selectedNode: null,
-      });
-      return;
+    if (keys?.length) {
+      selectedNode = keys[0];
+      selectedNodeMetadata = metadata.find(meta => meta?.path === selectedNode);
     }
-
-    const selectedNodeItem = metadata.find(node => node?.path === keys[0]);
 
     this.setState({
       ...this.state,
-      selectedNode: selectedNodeItem ? { ...selectedNodeItem } : null,
+      selectedNode,
+      selectedNodeMetadata,
     });
   };
 
@@ -120,7 +118,7 @@ class WikiModule extends React.PureComponent {
     }
   };
 
-  onCreateNode = async (item = null, event) => {
+  onCreateNode = async (item = null) => {
     const { node } = this.state;
     const { metadata = [] } = this.props;
     const { Request } = this.context;
@@ -147,7 +145,7 @@ class WikiModule extends React.PureComponent {
         throw new Error('Bad create');
       }
 
-      if (!item) this.onVisibleModalChange(this.fetchTree.bind(this, '', true));
+      if (!item) this.onVisibleModalChange(this.fetchTree.bind(this, null, true));
       else this.fetchTree('', true);
     } catch (error) {
       console.error(error);
@@ -177,12 +175,14 @@ class WikiModule extends React.PureComponent {
   };
 
   onChangeSelect = value => {
-    this.setState({
-      ...this.state,
-      node: {
-        ...this.state.node,
-        accessGroup: value,
-      },
+    this.setState(state => {
+      return {
+        ...state,
+        node: {
+          ...state.node,
+          accessGroup: value,
+        },
+      };
     });
   };
 
@@ -359,9 +359,10 @@ class WikiModule extends React.PureComponent {
       visibleModal = false,
       node: { title = '', accessGroup = [] },
       isLoading: isLoadingState,
-      selectedNode = null,
+      selectedNodeMetadata = null,
+      selectedNode = '',
     } = this.state;
-    const { _id: key = '', path } = selectedNode || {};
+    const { _id: key = '', path = '' } = selectedNodeMetadata || {};
     const { metadata = [], router: { shouldUpdate = false } = {} } = this.props;
     const isLoading = isLoadingState || (shouldUpdate && !metadata?.length);
 
@@ -397,7 +398,9 @@ class WikiModule extends React.PureComponent {
               )}
             </div>
             <div className="col-6">
-              {selectedNode ? <WikiPage key={key} selectedNode={selectedNode} /> : null}
+              {selectedNode ? (
+                <WikiPage key={key} metadata={selectedNodeMetadata} selectedNode={selectedNode} />
+              ) : null}
             </div>
           </div>
         </div>

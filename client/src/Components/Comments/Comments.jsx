@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { commentsContainerType } from './types';
 import Scrollbars from 'react-custom-scrollbars';
 import _ from 'lodash';
 import uuid from 'uuid/v4';
@@ -15,11 +15,7 @@ class Comments extends React.PureComponent {
     value: null,
   };
 
-  static propTypes = {
-    rules: PropTypes.bool.isRequired,
-    onUpdate: PropTypes.func.isRequired,
-    data: PropTypes.object.isRequired,
-  };
+  static propTypes = commentsContainerType;
 
   addCommentsDelay = _.debounce(async event => {
     try {
