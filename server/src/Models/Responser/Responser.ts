@@ -98,7 +98,7 @@ class Responser implements ResponseBuilder {
     );
   }
 
-  async emit(): Promise<Response> {
+  public async emit(): Promise<Response> {
     if (this.res.headersSent) return this.res;
     if (this.status) this.res.status(this.status);
     if (this.dbm) await this.dbm.disconnect().catch((err: Error) => console.error(err));
