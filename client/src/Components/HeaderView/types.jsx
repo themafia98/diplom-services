@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-const { object, func, string, array, bool, oneOfType, number } = PropTypes;
+const { object, func, string, array, bool, oneOfType, number, oneOf } = PropTypes;
 
 export const headerViewType = {
   dashboardStrem: object.isRequired,
@@ -12,15 +12,15 @@ export const headerViewType = {
 export const tabType = {
   hendlerTab: func.isRequired,
   active: bool.isRequired,
-  itemKey: oneOfType([string, number, () => null]),
-  value: oneOfType([string, number, () => null]),
+  itemKey: oneOfType([string, number, oneOf([null])]),
+  value: oneOfType([string, number, oneOf([null])]),
   sizeTab: oneOfType([string, number]),
 };
 
 export const rightPanelType = {
   active: bool.isRequired,
-  itemKey: oneOfType([PropTypes.string, number, () => null]),
-  value: oneOfType([PropTypes.string, number, () => null]),
+  itemKey: oneOfType([PropTypes.string, number, oneOf([null])]),
+  value: oneOfType([PropTypes.string, number, oneOf([null])]),
   sizeTab: oneOfType([string, number]),
 };
 
