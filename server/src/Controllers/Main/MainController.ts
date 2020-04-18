@@ -1,14 +1,14 @@
-import { NextFunction, Response, Request } from 'express';
+import { NextFunction, Response, Request, response } from 'express';
 import _ from 'lodash';
 import { Document } from 'mongoose';
 import { App, Params, FileApi } from '../../Utils/Interfaces';
 import { ParserResult, ResRequest } from '../../Utils/Types';
 import Utils from '../../Utils';
+import Responser from '../../Models/Responser';
 import Decorators from '../../Decorators';
 import Action from '../../Models/Action';
 
 namespace System {
-  const { getResponseJson } = Utils;
   const Controller = Decorators.Controller;
   const Delete = Decorators.Delete;
   const Post = Decorators.Post;
@@ -17,11 +17,10 @@ namespace System {
   export class SystemData {
     @Get({ path: '/userList', private: true })
     async getUsersList(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+      const { dbm } = server.locals;
       const params: Params = { methodQuery: 'get_all', status: 'done', done: true, from: 'users' };
       try {
-        const service = server.locals;
-        const connect = await service.dbm.connection().catch((err: Error) => console.error(err));
-
+        const connect = await dbm.connection().catch((err: Error) => console.error(err));
         if (!connect) throw new Error('Bad connect');
 
         const actionUserList = new Action.ActionParser({
@@ -30,51 +29,26 @@ namespace System {
         });
         const data: ParserResult = await actionUserList.getActionData({});
 
-        await service.dbm.disconnect().catch((err: Error) => console.error(err));
-
         if (!data) {
           params.status = 'error';
           params.done = false;
-          res.status(404);
-          return res.json(
-            getResponseJson(
-              'error',
-              { status: 'FAIL', params, done: false, metadata: data },
-              (req as Record<string, any>).start,
-            ),
-          );
+          return new Responser(res, req, params, null, 404, [], dbm).emit();
         }
 
         const metadata: ArrayLike<object> = Utils.parsePublicData(data);
 
-        return res.json(
-          getResponseJson(
-            'done',
-            { status: 'OK', done: true, params, metadata },
-            (req as Record<string, any>).start,
-          ),
-        );
+        return new Responser(res, req, params, null, 200, metadata, dbm).emit();
       } catch (err) {
         console.error(err);
-        await server.locals.service.dbm.disconnect().catch((err: Error) => console.error(err));
-
-        if (!res.headersSent) {
-          params.done = false;
-          params.status = 'FAIL';
-          res.status(503);
-          return res.json(
-            getResponseJson(
-              err.name,
-              { status: 'Server error', done: false, params, metadata: null },
-              (req as Record<string, any>).start,
-            ),
-          );
-        }
+        params.done = false;
+        params.status = 'FAIL';
+        return new Responser(res, req, params, err, 503, [], dbm).emit();
       }
     }
 
     @Post({ path: '/:module/file', private: true, file: true })
     public async saveFile(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+      const { dbm } = server.locals;
       const { module: moduleName = '' } = req.params;
       const params: Params = {
         methodQuery: 'save_file',
@@ -85,72 +59,51 @@ namespace System {
 
       try {
         const files = Array.isArray(req.files) ? req.files : null;
+        if (!files) throw new Error('Bad file');
 
-        if (files) {
-          const store: FileApi = server.locals.dropbox;
-          let responseSave: Array<object | null> = [];
+        const store: FileApi = server.locals.dropbox;
+        let responseSave: Array<object | null> = [];
 
-          for await (let file of files) {
-            const [filename, entityId] = file.fieldname.split('__');
-            const parseOriginalName = file.originalname.split(/\./gi);
-            const ext = parseOriginalName[parseOriginalName.length - 1];
+        for await (let file of files) {
+          const [filename, entityId] = file.fieldname.split('__');
+          const parseOriginalName = file.originalname.split(/\./gi);
+          const ext = parseOriginalName[parseOriginalName.length - 1];
 
-            const path: string = `/${moduleName}/${entityId}/${file.originalname}`;
-            const result = await store.saveFile({ path, contents: file.buffer });
+          const path: string = `/${moduleName}/${entityId}/${file.originalname}`;
+          const result = await store.saveFile({ path, contents: file.buffer });
 
-            if (result) {
-              responseSave.push({
-                name: result.name,
-                isSave: true,
-              });
-            } else {
-              responseSave.push({
-                name: `${filename}.${ext}`,
-                isSave: false,
-              });
-            }
+          if (result) {
+            responseSave.push({
+              name: result.name,
+              isSave: true,
+            });
+          } else {
+            responseSave.push({
+              name: `${filename}.${ext}`,
+              isSave: false,
+            });
           }
-
-          responseSave = responseSave.filter(Boolean);
-
-          if (responseSave.length)
-            return res.json(
-              getResponseJson(
-                'done',
-                { status: 'OK', done: true, params, metadata: responseSave },
-                (req as Record<string, any>).start,
-              ),
-            );
-          else throw new Error(`fail save files in ${moduleName}`);
-        } else {
-          params.done = false;
-          res.status(404);
-          return res.json(
-            getResponseJson(
-              'error action save_file task',
-              { status: 'FAIL', params, done: false, metadata: [] },
-              (req as Record<string, any>).start,
-            ),
-          );
         }
+
+        responseSave = responseSave.filter(Boolean);
+
+        if (!responseSave?.length) {
+          params.done = false;
+          params.status = 'FAIL';
+          return new Responser(res, req, params, null, 404, [], dbm).emit();
+        }
+
+        return new Responser(res, req, params, null, 200, responseSave, dbm).emit();
       } catch (err) {
         params.done = false;
         console.log(err.message);
-        if (!res.headersSent) {
-          res.status(503);
-          return res.json(
-            getResponseJson(
-              err.name,
-              { status: 'FAIL', done: false, params, metadata: 'Server error' },
-              (req as Record<string, any>).start,
-            ),
-          );
-        }
+        return new Responser(res, req, params, err, 503, [], dbm).emit();
       }
     }
 
     @Post({ path: '/:module/load/file', private: true })
     public async loadTaskFiles(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+      const { dbm } = server.locals;
       const { module: moduleName = '' } = req.params;
       const params: Params = {
         methodQuery: 'load_files',
@@ -166,48 +119,29 @@ namespace System {
           store: <FileApi>server.locals.dropbox,
         });
 
-        const actionData: ParserResult = await downloadAction.getActionData({
+        const data: ParserResult = await downloadAction.getActionData({
           body: req.body,
           moduleName,
         });
 
-        if (!actionData) {
+        if (!data) {
           params.done = false;
-
-          return res.json(
-            getResponseJson(
-              `error action load_files ${moduleName}`,
-              { status: 'FAIL', params, done: false, metadata: [] },
-              (req as Record<string, any>).start,
-            ),
-          );
-        } else {
-          return res.json(
-            getResponseJson(
-              'done',
-              { status: 'OK', done: true, params, metadata: (<Document[]>actionData).entries },
-              (req as Record<string, any>).start,
-            ),
-          );
+          params.status = 'FAIL';
+          return new Responser(res, req, params, null, 404, [], dbm).emit();
         }
+
+        const metadata: ParserResult = (<Document[]>data).entries;
+        return new Responser(res, req, params, null, 200, metadata, dbm).emit();
       } catch (err) {
         params.done = false;
         console.error(err);
-        if (!res.headersSent) {
-          res.status(503);
-          return res.json(
-            getResponseJson(
-              err.name,
-              { status: 'FAIL', params, done: false, metadata: 'Server error' },
-              (req as Record<string, any>).start,
-            ),
-          );
-        }
+        return new Responser(res, req, params, err, 503, [], dbm).emit();
       }
     }
 
     @Get({ path: '/:module/download/:entityId/:filename', private: true })
     public async downloadFile(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+      const { dbm } = server.locals;
       const { entityId = '', filename = '', module: moduleName = '' } = req.params;
       const params: Params = {
         methodQuery: 'download_files',
@@ -216,55 +150,46 @@ namespace System {
         from: 'tasks',
       };
 
-      if (entityId && filename) {
-        try {
-          const dropbox: FileApi = server.locals.dropbox;
-          const downloadAction = new Action.ActionParser({
-            actionPath: 'global',
-            actionType: 'download_files',
-            store: dropbox,
-          });
-
-          const actionData: ParserResult = await downloadAction.getActionData({
-            entityId,
-            moduleName,
-            filename,
-          });
-
-          const isBinary: Boolean = actionData && (actionData as Record<string, any>).fileBinary;
-          const fileBinary: BinaryType = isBinary ? (actionData as Record<string, any>).fileBinary : null;
-
-          if (!actionData) {
-            params.done = false;
-            return res.json(
-              getResponseJson(
-                `download_files fail in ${moduleName}`,
-                { status: 'FAIL', params, done: true, metadata: fileBinary },
-                (req as Record<string, any>).start,
-              ),
-            );
-          } else if (fileBinary) {
-            return res.send(Buffer.from(fileBinary));
-          }
-        } catch (err) {
-          console.error(err);
+      try {
+        if (!entityId || !filename) {
           params.done = false;
-          if (!res.headersSent) {
-            res.status(503);
-            return res.json(
-              getResponseJson(
-                err.name,
-                { status: 'FAIL', params, done: false, metadata: 'Server error' },
-                (req as Record<string, any>).start,
-              ),
-            );
-          }
+          params.status = 'FAIL NAME';
+          return new Responser(res, req, params, null, 404, [], dbm).emit();
         }
-      } else return res.sendStatus(404);
+
+        const dropbox: FileApi = server.locals.dropbox;
+        const downloadAction = new Action.ActionParser({
+          actionPath: 'global',
+          actionType: 'download_files',
+          store: dropbox,
+        });
+
+        const actionData: ParserResult = await downloadAction.getActionData({
+          entityId,
+          moduleName,
+          filename,
+        });
+
+        const isBinary: Boolean = actionData && (actionData as Record<string, any>).fileBinary;
+        const fileBinary: BinaryType = isBinary ? (actionData as Record<string, any>).fileBinary : null;
+
+        if (!actionData || !fileBinary) {
+          params.done = false;
+          params.status = 'FAIL';
+          return new Responser(res, req, params, null, 404, fileBinary, dbm).emit();
+        }
+
+        return res.send(Buffer.from(fileBinary));
+      } catch (err) {
+        console.error(err);
+        params.done = false;
+        return new Responser(res, req, params, err, 503, [], dbm).emit();
+      }
     }
 
     @Delete({ path: '/:module/delete/file', private: true })
     public async deleteTaskFile(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+      const { dbm } = server.locals;
       const { module: moduleName = '' } = req.params;
       const params: Params = {
         methodQuery: 'delete_file',
@@ -287,46 +212,22 @@ namespace System {
 
         if (!actionData) {
           params.done = false;
-          res.status(404);
-          return res.json(
-            getResponseJson(
-              'error action delete_file task',
-              { status: 'FAIL', params, done: false, metadata: [] },
-              (req as Record<string, any>).start,
-            ),
-          );
-        } else {
-          return res.json(
-            getResponseJson(
-              'done',
-              {
-                status: 'OK',
-                done: true,
-                params,
-                metadata: (actionData as Record<string, any>).metadata,
-              },
-              (req as Record<string, any>).start,
-            ),
-          );
+          params.status = 'FAIL';
+          return new Responser(res, req, params, null, 404, [], dbm).emit();
         }
+
+        return new Responser(res, req, { ...req.body, ...params }, null, 200, actionData, dbm).emit();
       } catch (err) {
-        params.done = false;
         console.error(err);
-        if (!res.headersSent) {
-          res.status(503);
-          return res.json(
-            getResponseJson(
-              err.name,
-              { status: 'FAIL', params, done: false, metadata: 'Server error' },
-              (req as Record<string, any>).start,
-            ),
-          );
-        }
+        params.status = 'FAIL';
+        params.done = false;
+        return new Responser(res, req, params, err, 503, [], dbm).emit();
       }
     }
 
     @Post({ path: '/:module/update/single', private: true })
     public async updateSingle(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+      const { dbm } = server.locals;
       const { module: moduleName = '' } = req.params;
       const body: object = req.body;
       const params: Params = {
@@ -336,75 +237,45 @@ namespace System {
         from: moduleName,
       };
       try {
-        const dbm = server.locals.dbm;
+        if (!req.body || _.isEmpty(req.body)) {
+          params.done = false;
+          params.status = 'FAIL BODY';
+          return new Responser(res, req, params, null, 404, [], dbm).emit();
+        }
 
-        if (req.body && !_.isEmpty(req.body)) {
-          const connect = await dbm.connection().catch((err: Error) => console.error(err));
+        const connect = await dbm.connection().catch((err: Error) => console.error(err));
 
-          if (!connect) throw new Error('Bad connect');
+        if (!connect) throw new Error('Bad connect');
 
-          const createTaskAction = new Action.ActionParser({
-            actionPath: moduleName,
-            actionType: 'update_single',
-            body,
-          });
+        const createTaskAction = new Action.ActionParser({
+          actionPath: moduleName,
+          actionType: 'update_single',
+          body,
+        });
 
-          const data: ParserResult = await createTaskAction.getActionData(req.body);
+        const data: ParserResult = await createTaskAction.getActionData(req.body);
 
-          await dbm.disconnect().catch((err: Error) => console.error(err));
-
-          if (!data) {
-            params.status = 'error';
-            params.done = false;
-            res.status(404);
-            return res.json(
-              getResponseJson(
-                `error set_single ${moduleName}`,
-                { status: 'FAIL', params: { body, ...params }, done: false, metadata: data },
-                (req as Record<string, any>).start,
-              ),
-            );
-          }
-
-          const meta = <ArrayLike<object>>Utils.parsePublicData(<ParserResult>[data]);
-          const metadata: ArrayLike<object> = Array.isArray(meta) && meta[0] ? meta[0] : null;
-
-          return res.json(
-            getResponseJson(
-              'done',
-              { status: 'OK', done: true, params: { body, ...params }, metadata },
-              (req as Record<string, any>).start,
-            ),
-          );
-        } else if (!res.headersSent) {
+        if (!data) {
           params.done = false;
           params.status = 'FAIL';
-          res.status(404);
-          return res.json(
-            getResponseJson(
-              'Bad body request',
-              { status: 'FAIL', params: { body, ...params }, done: false, metadata: null },
-              (req as Record<string, any>).start,
-            ),
-          );
+          return new Responser(res, req, params, null, 404, data, dbm).emit();
         }
+
+        const meta = <ArrayLike<object>>Utils.parsePublicData(<ParserResult>[data]);
+        const metadata: ArrayLike<object> = Array.isArray(meta) && meta[0] ? meta[0] : null;
+
+        return new Responser(res, req, { ...req.body, ...params }, null, 200, metadata, dbm).emit();
       } catch (err) {
         console.log(err.message);
-        if (!res.headersSent) {
-          res.status(503);
-          return res.json(
-            getResponseJson(
-              err.name,
-              { status: 'FAIL', params, done: false, metadata: 'Server error' },
-              (req as Record<string, any>).start,
-            ),
-          );
-        }
+        params.status = 'FAIL';
+        params.done = false;
+        return new Responser(res, req, params, err, 503, [], dbm).emit();
       }
     }
 
     @Post({ path: '/:module/update/many', private: true })
     public async updateMany(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+      const { dbm } = server.locals;
       const { module: moduleName = '' } = req.params;
       const params: Params = {
         methodQuery: 'update_many',
@@ -414,74 +285,46 @@ namespace System {
       };
 
       try {
-        const dbm = server.locals.dbm;
+        if (!req.body || _.isEmpty(req.body)) {
+          params.done = false;
+          params.status = 'FAIL BODY';
+          return new Responser(res, req, params, null, 404, [], dbm).emit();
+        }
 
-        if (req.body && !_.isEmpty(req.body)) {
-          const body: object = req.body;
-          const connect = await dbm.connection().catch((err: Error) => console.error(err));
+        const body: object = req.body;
+        const connect = await dbm.connection().catch((err: Error) => console.error(err));
 
-          if (!connect) throw new Error('Bad connect');
+        if (!connect) throw new Error('Bad connect');
 
-          const createTaskAction = new Action.ActionParser({
-            actionPath: moduleName,
-            actionType: 'update_many',
-            body,
-          });
+        const createTaskAction = new Action.ActionParser({
+          actionPath: moduleName,
+          actionType: 'update_many',
+          body,
+        });
 
-          const data: ParserResult = await createTaskAction.getActionData(req.body);
+        const data: ParserResult = await createTaskAction.getActionData(req.body);
 
-          if (!data) {
-            params.status = 'error';
-            res.status(404);
-            return res.json(
-              getResponseJson(
-                `error update_many ${moduleName}`,
-                { status: 'FAIL', params, done: false, metadata: data },
-                (req as Record<string, any>).start,
-              ),
-            );
-          }
-
-          const meta = <ArrayLike<object>>Utils.parsePublicData(<ParserResult>[data]);
-
-          const metadata: ArrayLike<object> = Array.isArray(meta) && meta[0] ? meta[0] : null;
-
-          return res.json(
-            getResponseJson(
-              'done',
-              { status: 'OK', done: true, params, metadata },
-              (req as Record<string, any>).start,
-            ),
-          );
-        } else if (!res.headersSent) {
+        if (!data) {
           params.done = false;
           params.status = 'FAIL';
-          res.status(404);
-          return res.json(
-            getResponseJson(
-              'Bad body request',
-              { status: 'FAIL', params, done: false, metadata: null },
-              (req as Record<string, any>).start,
-            ),
-          );
+          return new Responser(res, req, params, null, 404, [], dbm).emit();
         }
+
+        const meta = <ArrayLike<object>>Utils.parsePublicData(<ParserResult>[data]);
+        const metadata: ArrayLike<object> = Array.isArray(meta) && meta[0] ? meta[0] : null;
+
+        return new Responser(res, req, params, null, 200, metadata, dbm).emit();
       } catch (err) {
         console.error(err.message);
-        if (!res.headersSent) {
-          res.status(503);
-          return res.json(
-            getResponseJson(
-              err.name,
-              { status: 'FAIL', params, done: false, metadata: 'Server error' },
-              (req as Record<string, any>).start,
-            ),
-          );
-        }
+        params.status = 'FAIL';
+        params.done = false;
+        return new Responser(res, req, params, err, 503, [], dbm).emit();
       }
     }
 
     @Post({ path: '/:type/notification', private: true })
     public async notification(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+      const { dbm } = server.locals;
       const { type = '' } = req.params;
       const params: Params = {
         methodQuery: type,
@@ -491,69 +334,41 @@ namespace System {
       };
 
       try {
-        const dbm = server.locals.dbm;
-
         if (type !== 'private' && type !== 'global') {
           throw new TypeError('Bad type notification');
         }
 
-        if (req.body && !_.isEmpty(req.body)) {
-          const body: object = req.body;
-          const { actionType = '' } = <Record<string, any>>body;
-          const connect = await dbm.connection().catch((err: Error) => console.error(err));
+        if (!req.body || _.isEmpty(req.body)) {
+          params.done = false;
+          params.status = 'FAIL BODY';
+          return new Responser(res, req, params, null, 404, [], dbm).emit();
+        }
+        const body: object = req.body;
+        const { actionType = '' } = <Record<string, any>>body;
+        const connect = await dbm.connection().catch((err: Error) => console.error(err));
 
-          if (!connect) throw new Error('Bad connect');
+        if (!connect) throw new Error('Bad connect');
 
-          const createNotificationAction = new Action.ActionParser({
-            actionPath: 'notification',
-            actionType,
-          });
+        const createNotificationAction = new Action.ActionParser({
+          actionPath: 'notification',
+          actionType,
+        });
 
-          const data: ParserResult = await createNotificationAction.getActionData({ ...req.body, type });
+        const data: ParserResult = await createNotificationAction.getActionData({ ...req.body, type });
 
-          if (data) {
-            const sortData = Array.isArray(data) ? data.reverse() : data;
-            return res.json(
-              getResponseJson(
-                'done',
-                { status: 'OK', done: true, params: { ...params }, metadata: sortData },
-                (req as Record<string, any>).start,
-              ),
-            );
-          } else {
-            params.status = 'error';
-            res.status(404);
-            return res.json(
-              getResponseJson(
-                `error get_notification`,
-                { status: 'FAIL', params, done: false, metadata: data },
-                (req as Record<string, any>).start,
-              ),
-            );
-          }
-        } else if (!res.headersSent) {
+        if (!data) {
           params.done = false;
           params.status = 'FAIL';
-          return res.json(
-            getResponseJson(
-              'Bad body request',
-              { status: 'FAIL', params, done: false, metadata: null },
-              (req as Record<string, any>).start,
-            ),
-          );
+          return new Responser(res, req, params, null, 404, [], dbm).emit();
         }
+
+        const sortData = Array.isArray(data) ? data.reverse() : data;
+        return new Responser(res, req, params, null, 200, sortData, dbm).emit();
       } catch (err) {
         console.error(err.message);
-        if (!res.headersSent) {
-          res.status(503);
-          return res.json(
-            getResponseJson(
-              `${err.name}: ${err.message}`,
-              { status: 'FAIL', params, done: false, metadata: 'Server error' },
-              (req as Record<string, any>).start,
-            ),
-          );
-        }
+        params.status = 'FAIL';
+        params.done = false;
+        return new Responser(res, req, params, err, 503, [], dbm).emit();
       }
     }
   }

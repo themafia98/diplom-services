@@ -1,9 +1,17 @@
-import { NextFunction } from 'express';
+import { NextFunction, Response, Request } from 'express';
 import multer from 'multer';
 import winston from 'winston';
 import { model, Schema, Model, Document } from 'mongoose';
+import Database from '../Models/Database';
 import { getSchemaByName } from '../Models/Database/Schema';
-import { RouteDefinition, ResponseDocument, ResponseJson, WsWorker, ActionParams } from './Interfaces';
+import {
+  RouteDefinition,
+  ResponseDocument,
+  ResponseJson,
+  WsWorker,
+  ActionParams,
+  Params,
+} from './Interfaces';
 import { FileTransportInstance, docResponse, ParserResult } from './Types';
 
 namespace Utils {
@@ -126,6 +134,49 @@ namespace Utils {
       uptime: process.uptime(),
       responseTime: responseTime(start),
     };
+  };
+
+  /** @deprecated 18.04.20 */
+  export const responser = async (
+    res: Response,
+    req: Request,
+    params: Params,
+    err: Error | null,
+    status: number = 200,
+    metadata: ParserResult = null,
+    dbm: Readonly<Database.ManagmentDatabase> | null = null,
+  ): Promise<Response> => {
+    console.warn('deprecated responser, use new Responser class');
+    if (res.headersSent) return res;
+    if (status) res.status(status);
+    if (dbm) await dbm.disconnect().catch((err: Error) => console.error(err));
+
+    switch (status) {
+      case 200:
+        return res.json(
+          getResponseJson(
+            params?.methodQuery,
+            { params, metadata, done: true, status: 'OK' },
+            (<Record<string, any>>req).start,
+          ),
+        );
+      case 503:
+        return res.json(
+          getResponseJson(
+            (<Error>err)?.name,
+            { metadata: 'Server error', params, done: false, status: 'FAIL' },
+            (req as Record<string, any>).start,
+          ),
+        );
+      default:
+        return res.json(
+          getResponseJson(
+            `error or status not connected to responser, ${params?.methodQuery}`,
+            { status: params?.status, params, done: false, metadata },
+            (req as Record<string, any>).start,
+          ),
+        );
+    }
   };
 
   export const isImage = (buffer: Buffer): boolean => {

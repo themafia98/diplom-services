@@ -1,4 +1,5 @@
 import { NextFunction, Response, Request } from 'express';
+import Responser from '../../../Models/Responser';
 import { App, Params, ActionParams } from '../../../Utils/Interfaces';
 import { ParserResult, Decorator, ResRequest } from '../../../Utils/Types';
 import Utils from '../../../Utils';
@@ -15,10 +16,11 @@ namespace News {
   export class NewsController {
     @Post({ path: '/createNews', private: true })
     public async createNews(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+      const service = server.locals;
+      const { dbm } = service;
       try {
         const bodyRequest = <Record<string, any>>req.body;
-        const service = server.locals;
-        const connect = await service.dbm.connection().catch((err: Error) => {
+        const connect = await dbm.connection().catch((err: Error) => {
           console.error(err);
         });
 
@@ -41,58 +43,35 @@ namespace News {
 
         if (!data) {
           params.status = 'error';
-          res.status(404);
-          return res.json(
-            getResponseJson(
-              'error',
-              { status: 'FAIL', params, done: false, metadata: [] },
-              (req as Record<string, any>).start,
-            ),
-          );
+          return new Responser(res, req, params, null, 404, [], dbm).emit();
         }
 
-        await service.dbm.disconnect().catch((err: Error) => console.error(err));
-
-        return res.json(
-          getResponseJson(
-            'done',
-            { status: 'OK', params, done: true, metadata: data },
-            (req as Record<string, any>).start,
-          ),
-        );
+        return new Responser(res, req, params, null, 200, data, dbm).emit();
       } catch (err) {
         console.error(err);
-        if (!res.headersSent) {
-          const bodyRequest = <Record<string, any>>req.body;
-          const {
-            queryParams: { actionType = '' },
-          } = bodyRequest;
+        const bodyRequest = <Record<string, any>>req.body;
+        const {
+          queryParams: { actionType = '' },
+        } = bodyRequest;
 
-          const params: Params = {
-            methodQuery: actionType,
-            status: 'done',
-            done: true,
-            from: 'news',
-          };
-          res.status(503);
-          return res.json(
-            getResponseJson(
-              err.name,
-              { status: 'Server error', params, done: false, metadata: [] },
-              (req as Record<string, any>).start,
-            ),
-          );
-        }
+        const params: Params = {
+          methodQuery: actionType,
+          status: 'done',
+          done: true,
+          from: 'news',
+        };
+        return new Responser(res, req, params, err, 503, [], dbm).emit();
       }
     }
 
     @Post({ path: '/list', private: true })
     @Get({ path: '/list', private: true })
     public async getNewsList(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+      const service = server.locals;
+      const { dbm } = service;
       const params: Params = { methodQuery: 'get_all', status: 'done', done: true, from: 'news' };
       try {
-        const service = server.locals;
-        const connect = await service.dbm.connection().catch((err: Error) => {
+        const connect = await dbm.connection().catch((err: Error) => {
           console.error(err);
         });
 
@@ -106,39 +85,16 @@ namespace News {
 
         if (!data) {
           params.status = 'error';
-          res.status(404);
-          return res.json(
-            getResponseJson(
-              'error',
-              { status: 'FAIL', done: false, params, metadata: [] },
-              (req as Record<string, any>).start,
-            ),
-          );
+          return new Responser(res, req, params, null, 404, [], dbm).emit();
         }
 
-        await service.dbm.disconnect().catch((err: Error) => console.error(err));
-
-        return res.json(
-          getResponseJson(
-            'done',
-            { status: 'OK', done: true, params, metadata: data },
-            (req as Record<string, any>).start,
-          ),
-        );
+        return new Responser(res, req, params, null, 200, data, dbm).emit();
       } catch (err) {
         console.error(err);
-        if (!res.headersSent) {
-          params.done = false;
-          params.status = 'FAIL';
-          res.status(503);
-          return res.json(
-            getResponseJson(
-              err.name,
-              { status: 'Server error', params, done: false, metadata: [] },
-              (req as Record<string, any>).start,
-            ),
-          );
-        }
+        params.done = false;
+        params.status = 'FAIL';
+        res.status(503);
+        return new Responser(res, req, params, err, 503, []).emit();
       }
     }
   }

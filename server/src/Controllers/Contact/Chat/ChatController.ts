@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import Responser from '../../../Models/Responser';
 import { App } from '../../../Utils/Interfaces';
 import { ParserResult, ResRequest } from '../../../Utils/Types';
 import { NextFunction, Request, Response } from 'express';
@@ -33,7 +34,7 @@ namespace Chat {
   export class ChatController {
     @Post({ path: '/loadChats', private: true })
     public async loadChats(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
-      const { body: { actionPath = '', actionType = '', queryParams = {} } = {} } = req;
+      const { body: { actionPath = '', actionType = '', queryParams: params = {} } = {} } = req;
 
       try {
         if (!actionPath || !actionType) {
@@ -41,21 +42,13 @@ namespace Chat {
         }
 
         const actionLoadChats = new Action.ActionParser({ actionPath, actionType });
-        const data: ParserResult = await actionLoadChats.getActionData(queryParams);
+        const data: ParserResult = await actionLoadChats.getActionData(params);
 
-        if (!data) {
-          throw new TypeError('Bad action data');
-        }
+        if (!data) throw new TypeError('Bad action data');
 
         const filterData: ArrayLike<object> = parsePublicData(data);
 
-        return res.json(
-          getResponseJson(
-            'done',
-            { params: { ...queryParams }, metadata: filterData, status: 'done', done: true },
-            (req as Record<string, any>).start,
-          ),
-        );
+        return new Responser(res, req, params, null, 200, filterData).emit();
       } catch (err) {
         console.error(err);
         if (!res.headersSent) res.sendStatus(503);
@@ -64,7 +57,7 @@ namespace Chat {
 
     @Put({ path: '/createRoom', private: true })
     public async createRoom(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
-      const { body: { actionPath = '', actionType = '', queryParams = {} } = {} } = req;
+      const { body: { actionPath = '', actionType = '', queryParams: params = {} } = {} } = req;
 
       try {
         if (!actionPath || !actionType) {
@@ -72,19 +65,11 @@ namespace Chat {
         }
 
         const actionCreateRoom = new Action.ActionParser({ actionPath, actionType });
-        const data: ParserResult = await actionCreateRoom.getActionData(queryParams);
+        const data: ParserResult = await actionCreateRoom.getActionData(params);
 
-        if (!data) {
-          throw new TypeError('Bad action data');
-        }
+        if (!data) throw new TypeError('Bad action data');
 
-        return res.json(
-          getResponseJson(
-            'done',
-            { params: { ...queryParams }, metadata: data, status: 'done', done: true },
-            (req as Record<string, any>).start,
-          ),
-        );
+        return new Responser(res, req, params, null, 200, data).emit();
       } catch (err) {
         console.error(err);
         if (!res.headersSent) res.sendStatus(503);
@@ -93,7 +78,7 @@ namespace Chat {
 
     @Delete({ path: '/leaveRoom', private: true })
     async leaveRoom(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
-      const { body: { queryParams = {} } = {} } = req;
+      const { body: { queryParams: params = {} } = {} } = req;
       const actionType: string = 'chatRoom';
       const actionPath: string = 'leave_room';
       try {
@@ -103,19 +88,13 @@ namespace Chat {
 
         const leaveRoomAction = new Action.ActionParser({ actionPath, actionType });
 
-        const data: ParserResult = await leaveRoomAction.getActionData(queryParams);
+        const data: ParserResult = await leaveRoomAction.getActionData(params);
 
         if (!data) {
           throw new TypeError('Bad action data');
         }
 
-        return res.json(
-          getResponseJson(
-            'done',
-            { params: { ...queryParams }, metadata: data, status: 'done', done: true },
-            (req as Record<string, any>).start,
-          ),
-        );
+        return new Responser(res, req, params, null, 200, data).emit();
       } catch (err) {
         console.error(err);
         if (!res.headersSent) res.sendStatus(503);
@@ -125,29 +104,22 @@ namespace Chat {
     @Post({ path: '/load/tokenData', private: true })
     async loadTokenData(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const {
-        body: { queryParams = {}, options: { actionPath: aPath = '', actionType: aType = '' } = {} } = {},
+        body: {
+          queryParams: params = {},
+          options: { actionPath: aPath = '', actionType: aType = '' } = {},
+        } = {},
       } = req;
       const actionType: string = aType ? aType : 'get_msg_by_token';
       const actionPath: string = aPath ? aPath : 'chatMsg';
       try {
-        if (!actionPath || !actionType) {
-          throw new Error('Invalid action chat');
-        }
+        if (!actionPath || !actionType) throw new Error('Invalid action chat');
 
         const actionCreateRoom = new Action.ActionParser({ actionPath, actionType });
-        const data: ParserResult = await actionCreateRoom.getActionData(queryParams);
+        const data: ParserResult = await actionCreateRoom.getActionData(params);
 
-        if (!data) {
-          throw new TypeError('Bad action data');
-        }
+        if (!data) throw new TypeError('Bad action data');
 
-        return res.json(
-          getResponseJson(
-            'done',
-            { params: { ...queryParams }, metadata: data, status: 'done', done: true },
-            (req as Record<string, any>).start,
-          ),
-        );
+        return new Responser(res, req, params, null, 200, data).emit();
       } catch (err) {
         console.error(err);
         if (!res.headersSent) res.sendStatus(503);

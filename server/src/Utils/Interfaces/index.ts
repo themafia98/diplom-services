@@ -4,6 +4,7 @@ import {
   Request as RequestExpress,
   Response,
   NextFunction,
+  response,
 } from 'express';
 import nodemailer, { SendMailOptions, Transporter, createTransport } from 'nodemailer';
 import { Dropbox, files } from 'dropbox';
@@ -211,4 +212,8 @@ export interface WsWorker {
   getWorkerId(): number;
   getWorker(id: number): socketio.Server;
   getWorkersArray(): Array<socketio.Server>;
+}
+
+export interface ResponseBuilder {
+  emit(): Promise<Response>;
 }

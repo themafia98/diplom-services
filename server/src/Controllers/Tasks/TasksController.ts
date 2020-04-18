@@ -1,14 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 import _ from 'lodash';
 import Utils from '../../Utils';
-import { App, Params, ResponseDocument, ActionParams } from '../../Utils/Interfaces';
-import { ResRequest, docResponse, ParserResult } from '../../Utils/Types';
-
+import { App, Params, ActionParams } from '../../Utils/Interfaces';
+import { ResRequest, ParserResult } from '../../Utils/Types';
+import Responser from '../../Models/Responser';
 import Action from '../../Models/Action';
 import Decorators from '../../Decorators';
 
 namespace Tasks {
-  const { getResponseJson } = Utils;
+  const { parsePublicData } = Utils;
   const Controller = Decorators.Controller;
   const Get = Decorators.Get;
   const Post = Decorators.Post;
@@ -19,10 +19,10 @@ namespace Tasks {
     @Post({ path: '/list', private: true })
     @Get({ path: '/list', private: true })
     public async getList(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+      const { dbm } = server.locals;
       const params: Params = { methodQuery: 'get_all', status: 'done', done: true, from: 'tasks' };
       try {
-        const service = server.locals;
-        const connect = await service.dbm.connection().catch((err: Error) => {
+        const connect = await dbm.connection().catch((err: Error) => {
           console.error(err);
         });
 
@@ -34,60 +34,31 @@ namespace Tasks {
         const actionTasks = new Action.ActionParser({ actionPath: 'tasks', actionType: 'get_all' });
         const data: ParserResult = await actionTasks.getActionData(actionParams);
         const isPartData: boolean = Boolean(keys);
+
         if (!data) {
-          params.status = 'error';
-
-          return res.json(
-            getResponseJson(
-              'error',
-              { params, metadata: data, isPartData, status: 'FAIL', done: false },
-              (req as Record<string, any>).start,
-            ),
-          );
+          params.done = false;
+          params.status = 'FAIL';
+          return new Responser(res, req, params, null, 404, [], dbm).emit();
         }
-
-        await service.dbm.disconnect().catch((err: Error) => console.error(err));
 
         let metadata: ArrayLike<object> = [];
 
         if (data && Array.isArray(data)) {
-          metadata = data
-            .map((it: docResponse) => {
-              const item: ResponseDocument = it['_doc'] || it;
-
-              return Object.keys(item).reduce((obj: ResponseDocument, key: string): object => {
-                if (!key.includes('password') && !key.includes('At') && !key.includes('__v')) {
-                  obj[key] = item[key];
-                }
-                return obj;
-              }, {});
-            })
-            .filter(Boolean);
+          metadata = parsePublicData(data);
         }
         (<Record<string, any>>params).isPartData = isPartData;
-        return res.json(
-          getResponseJson(
-            'done',
-            { params, metadata, done: true, status: 'OK' },
-            (req as Record<string, any>).start,
-          ),
-        );
+        return new Responser(res, req, params, null, 200, metadata, dbm).emit();
       } catch (err) {
         console.error(err);
-        if (!res.headersSent) {
-          return res.json(
-            getResponseJson(
-              err.name,
-              { metadata: 'Server error', params, done: false, status: 'FAIL' },
-              (req as Record<string, any>).start,
-            ),
-          );
-        }
+        params.status = 'FAIL';
+        params.done = false;
+        return new Responser(res, req, params, err, 503, [], dbm).emit();
       }
     }
 
     @Post({ path: '/createTask', private: true })
     public async create(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+      const { dbm } = server.locals;
       const params: Params = {
         methodQuery: 'set_single',
         status: 'done',
@@ -95,77 +66,45 @@ namespace Tasks {
         from: 'users',
       };
       try {
-        const dbm = server.locals.dbm;
-
-        if (req.body && !_.isEmpty(req.body)) {
-          const param: object = req.body.param;
-
-          const connect = await dbm.connection().catch((err: Error) => console.error(err));
-
-          if (!connect) throw new Error('Bad connect');
-
-          const createTaskAction = new Action.ActionParser({
-            actionPath: 'tasks',
-            actionType: 'set_single',
-          });
-
-          const data: ParserResult = await createTaskAction.getActionData(req.body);
-
-          await dbm.disconnect().catch((err: Error) => console.error(err));
-
-          if (!data) {
-            params.status = 'error';
-
-            return res.json(
-              getResponseJson(
-                'error set_single task',
-                { status: 'FAIL', params, done: false, metadata: data },
-                (req as Record<string, any>).start,
-              ),
-            );
-          }
-
-          const meta = <ArrayLike<object>>Utils.parsePublicData(<ParserResult>[data]);
-
-          const metadata: ArrayLike<object> = Array.isArray(meta) && meta[0] ? meta[0] : null;
-
-          return res.json(
-            getResponseJson(
-              'done',
-              { status: 'OK', done: true, params, metadata },
-              (req as Record<string, any>).start,
-            ),
-          );
-        } else if (!res.headersSent) {
-          return res.json(
-            getResponseJson(
-              'error',
-              {
-                status: 'FAIL',
-                params: { body: req.body, ...params },
-                done: false,
-                metadata: 'Body empty',
-              },
-              (req as Record<string, any>).start,
-            ),
-          );
+        if (!req.body || _.isEmpty(req.body)) {
+          params.done = false;
+          params.status = 'FAIL BODY';
+          return new Responser(res, req, params, null, 404, [], dbm).emit();
         }
+
+        const param: object = req.body.param;
+        const connect = await dbm.connection().catch((err: Error) => console.error(err));
+
+        if (!connect) throw new Error('Bad connect');
+
+        const createTaskAction = new Action.ActionParser({
+          actionPath: 'tasks',
+          actionType: 'set_single',
+        });
+
+        const data: ParserResult = await createTaskAction.getActionData(req.body);
+
+        if (!data) {
+          params.done = false;
+          params.status = 'FAIL';
+          return new Responser(res, req, params, null, 404, [], dbm).emit();
+        }
+
+        const meta: ArrayLike<object> = parsePublicData(<ParserResult>[data]);
+        const metadata: ArrayLike<object> = Array.isArray(meta) && meta[0] ? meta[0] : null;
+
+        return new Responser(res, req, params, null, 200, metadata, dbm).emit();
       } catch (err) {
         console.log(err.message);
-        if (!res.headersSent) {
-          return res.json(
-            getResponseJson(
-              err.name,
-              { status: 'FAIL', params, done: false, metadata: 'Server error' },
-              (req as Record<string, any>).start,
-            ),
-          );
-        }
+        params.status = 'FAIL';
+        params.done = false;
+        return new Responser(res, req, params, err, 503, [], dbm).emit();
       }
     }
 
     @Put({ path: '/caching/jurnal', private: true })
     public async setJurnalWorks(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+      const { dbm } = server.locals;
       const params: Params = {
         methodQuery: 'set_jurnal',
         status: 'done',
@@ -173,76 +112,50 @@ namespace Tasks {
         from: 'jurnalworks',
       };
       try {
-        const dbm = server.locals.dbm;
-
-        if (req.body && !_.isEmpty(req.body)) {
-          const body: object = req.body;
-          const connect = await dbm.connection().catch((err: Error) => console.error(err));
-
-          if (!connect) throw new Error('Bad connect');
-
-          const createJurnalAction = new Action.ActionParser({
-            actionPath: 'jurnalworks',
-            actionType: 'set_jurnal',
-            body,
-          });
-
-          const data: ParserResult = await createJurnalAction.getActionData(req.body);
-          await dbm.disconnect().catch((err: Error) => console.error(err));
-
-          if (!data) {
-            params.status = 'error';
-            params.done = false;
-
-            return res.json(
-              getResponseJson(
-                'error set_jurnal action',
-                { status: 'FAIL', params, done: false, metadata: data },
-                (req as Record<string, any>).start,
-              ),
-            );
-          }
-
-          const meta = <ArrayLike<object>>Utils.parsePublicData(<ParserResult>[data]);
-          const metadata: ArrayLike<object> = Array.isArray(meta) && meta[0] ? meta[0] : null;
-
-          return res.json(
-            getResponseJson(
-              'done',
-              { status: 'OK', done: true, params, metadata },
-              (req as Record<string, any>).start,
-            ),
-          );
-        } else if (!res.headersSent) {
-          return res.json(
-            getResponseJson(
-              'error',
-              { status: 'FAIL', params, done: false, metadata: null },
-              (req as Record<string, any>).start,
-            ),
-          );
+        if (!req.body || _.isEmpty(req.body)) {
+          params.done = false;
+          params.status = 'FAIL BODY';
+          return new Responser(res, req, params, null, 404, [], dbm).emit();
         }
+
+        const body: object = req.body;
+        const connect = await dbm.connection().catch((err: Error) => console.error(err));
+
+        if (!connect) throw new Error('Bad connect');
+
+        const createJurnalAction = new Action.ActionParser({
+          actionPath: 'jurnalworks',
+          actionType: 'set_jurnal',
+          body,
+        });
+
+        const data: ParserResult = await createJurnalAction.getActionData(req.body);
+
+        if (!data) {
+          params.done = false;
+          params.status = 'FAIL';
+          return new Responser(res, req, params, null, 404, [], dbm).emit();
+        }
+
+        const meta: ArrayLike<object> = parsePublicData(<ParserResult>[data]);
+        const metadata: ArrayLike<object> = Array.isArray(meta) && meta[0] ? meta[0] : null;
+
+        return new Responser(res, req, params, null, 200, metadata, dbm).emit();
       } catch (err) {
         console.log(err.message);
-        if (!res.headersSent) {
-          return res.json(
-            getResponseJson(
-              err.name,
-              { status: 'FAIL', params, done: false, metadata: 'Server error' },
-              (req as Record<string, any>).start,
-            ),
-          );
-        }
+        params.status = 'FAIL';
+        params.done = false;
+        return new Responser(res, req, params, err, 503, [], dbm).emit();
       }
     }
 
     @Put({ path: '/caching/list', private: true })
     public async getCachingList(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+      const { dbm } = server.locals;
       const { queryParams = {}, actionType = '' } = req.body;
       const params: Params = { methodQuery: actionType, status: 'done', done: true, from: 'tasks' };
       try {
-        const service = server.locals;
-        const connect = await service.dbm.connection().catch((err: Error) => {
+        const connect = await dbm.connection().catch((err: Error) => {
           console.error(err);
         });
 
@@ -254,55 +167,22 @@ namespace Tasks {
         const data: ParserResult = await actionTasks.getActionData(queryParams);
 
         if (!data) {
-          params.status = 'error';
-
-          return res.json(
-            getResponseJson(
-              'error',
-              { params, status: 'FAIL', done: false, metadata: data },
-              (req as Record<string, any>).start,
-            ),
-          );
+          params.done = false;
+          params.status = 'FAIL';
+          return new Responser(res, req, params, null, 404, [], dbm).emit();
         }
 
-        await service.dbm.disconnect().catch((err: Error) => console.error(err));
-
-        let metadata: Array<docResponse> = [];
-
+        let metadata: ArrayLike<object> = [];
         if (data && Array.isArray(data)) {
-          metadata = data
-            .map((it: docResponse) => {
-              const item: ResponseDocument = it['_doc'] || it;
-
-              return Object.keys(item).reduce((obj: ResponseDocument, key: string): object => {
-                if (!key.includes('password') && !key.includes('At') && !key.includes('__v')) {
-                  obj[key] = item[key];
-                }
-                return obj;
-              }, {});
-            })
-            .filter(Boolean);
+          metadata = parsePublicData(data);
         }
 
-        return res.json(
-          getResponseJson(
-            'done',
-            { params, metadata, status: 'OK', done: true },
-            (req as Record<string, any>).start,
-          ),
-        );
+        return new Responser(res, req, params, null, 200, metadata, dbm).emit();
       } catch (err) {
-        params.done = false;
         console.error(err);
-        if (!res.headersSent) {
-          return res.json(
-            getResponseJson(
-              err.name,
-              { metadata: 'Server error', status: 'FAIL', done: false, params },
-              (req as Record<string, any>).start,
-            ),
-          );
-        }
+        params.status = 'FAIL';
+        params.done = false;
+        return new Responser(res, req, params, err, 503, [], dbm).emit();
       }
     }
   }

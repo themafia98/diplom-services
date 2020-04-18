@@ -2,20 +2,19 @@ import { NextFunction, Response, Request } from 'express';
 import _ from 'lodash';
 import { App, Params, ActionParams } from '../../Utils/Interfaces';
 import { ParserResult, ResRequest } from '../../Utils/Types';
+import Responser from '../../Models/Responser';
 
-import Utils from '../../Utils';
 import Action from '../../Models/Action';
 import Decorators from '../../Decorators';
 
 namespace Settings {
-  const { getResponseJson } = Utils;
-
   const { Controller, Post, Put } = Decorators;
 
   @Controller('/settings')
   export class SettingsController {
     @Post({ path: '/password', private: true })
     public async passwordChaged(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+      const { dbm } = server.locals;
       const params: Params = {
         methodQuery: 'change_password',
         from: 'users',
@@ -39,28 +38,19 @@ namespace Settings {
         const actionParams: ActionParams = { queryParams };
         const data: ParserResult = await changePasswordAction.getActionData(actionParams);
 
-        if (!data) {
-          throw new Error('Invalid change_password action data');
-        }
-
-        return res.sendStatus(200);
+        if (!data) throw new Error('Invalid change_password action data');
+        else return res.sendStatus(200);
       } catch (err) {
         console.error(err);
-        if (!res.headersSent) {
-          res.status(503);
-          return res.json(
-            getResponseJson(
-              'Server error',
-              { params, status: 'FAIL', done: false, metadata: [] },
-              (<Record<string, any>>req).start,
-            ),
-          );
-        }
+        params.done = false;
+        params.status = 'FAIL';
+        return new Responser(res, req, params, err, 503, [], dbm).emit();
       }
     }
 
     @Post({ path: '/common', private: true })
     public async commonSettings(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+      const { dbm } = server.locals;
       const params: Params = {
         methodQuery: 'common_changes',
         from: 'users',
@@ -83,29 +73,20 @@ namespace Settings {
         const actionParams: ActionParams = { queryParams };
         const data: ParserResult = await changePasswordAction.getActionData(actionParams);
 
-        if (!data) {
-          throw new Error('Invalid action data');
-        }
-
-        return res.sendStatus(200);
+        if (!data) throw new Error('Invalid action data');
+        else return res.sendStatus(200);
       } catch (err) {
         console.error(err);
-        if (!res.headersSent) {
-          res.status(503);
-          return res.json(
-            getResponseJson(
-              'Server error',
-              { params, status: 'FAIL', done: false, metadata: [] },
-              (<Record<string, any>>req).start,
-            ),
-          );
-        }
+        params.status = 'FAIL';
+        params.done = false;
+        return new Responser(res, req, params, err, 503, [], dbm).emit();
       }
     }
 
     @Put({ path: '/logger', private: true })
     @Post({ path: '/logger', private: true })
     async logger(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+      const { dbm } = server.locals;
       const body = req.body;
       const actionType: string = body.actionType;
       const params: Params = {
@@ -129,31 +110,16 @@ namespace Settings {
 
         const data: ParserResult = await settingsLogger.getActionData(body);
 
-        if (!data) {
-          throw new Error('Invalid action data');
-        }
+        if (!data) throw new Error('Invalid action data');
 
         if (!actionType.includes('get')) return res.sendStatus(200);
 
-        return res.json(
-          getResponseJson(
-            actionType,
-            { done: true, status: 'OK', metadata: data, params },
-            (<Record<string, any>>req).start,
-          ),
-        );
+        return new Responser(res, req, params, null, 200, data, dbm).emit();
       } catch (err) {
         console.error(err);
-        if (!res.headersSent) {
-          res.status(503);
-          return res.json(
-            getResponseJson(
-              'Server error',
-              { params, status: 'FAIL', done: false, metadata: [] },
-              (<Record<string, any>>req).start,
-            ),
-          );
-        }
+        params.status = 'FAIL';
+        params.done = false;
+        return new Responser(res, req, params, err, 503, [], dbm).emit();
       }
     }
   }
