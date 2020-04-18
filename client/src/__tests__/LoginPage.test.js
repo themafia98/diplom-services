@@ -26,7 +26,7 @@ describe('<LoginPage /> template', () => {
     expect(LoginPageWrapper.find('.enterSystem').prop('loading')).toEqual(true);
     expect(toJson(LoginPageWrapper)).toMatchSnapshot();
 
-    expect(LoginPageWrapper.find('NavLink').simulate('click', [])).toBeTruthy();
+    expect(LoginPageWrapper.find('.recovory-link').simulate('click', [])).toBeTruthy();
     expect(toJson(LoginPageWrapper)).toMatchSnapshot();
   });
 });

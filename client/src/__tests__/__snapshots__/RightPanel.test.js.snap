@@ -10,9 +10,14 @@ exports[`<RightPanel /> template should be render 1`] = `
   <div
     className="groupControllers"
   >
-    <NotificationPopup />
+    <NotificationPopup
+      notificationDep={Object {}}
+      type="private"
+      udata={Object {}}
+    />
     <Updater
       additionalClassName="updaterDefault"
+      className=""
       onClick={[Function]}
     />
     <div

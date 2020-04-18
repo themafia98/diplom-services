@@ -44,6 +44,7 @@ exports[`<TaskModule /> template Should be render 1`] = `
       visible={true}
     >
       <TaskModuleList
+        data={Object {}}
         height={null}
         isBackground={false}
         key="taskList"
@@ -70,6 +71,7 @@ exports[`<TaskModule /> template Should be render 1`] = `
       visible={false}
     >
       <TaskModuleMyList
+        data={Object {}}
         height={null}
         isBackground={false}
         key="myListTask"
@@ -97,9 +99,11 @@ exports[`<TaskModule /> template Should be render 1`] = `
       visible={false}
     >
       <TaskModuleCalendar
+        data={Object {}}
         height={null}
         isBackground={false}
         key="calendarTaskModule"
+        loaderMethods={Object {}}
         onOpenPageWithData={[Function]}
         router={
           Object {
