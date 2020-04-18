@@ -103,7 +103,7 @@ class UserCard extends React.Component {
     const background = {
       backgroundImage: `url("${imageCard}")`,
     };
-    debugger;
+
     return (
       <React.Fragment>
         <div className="userCard">
