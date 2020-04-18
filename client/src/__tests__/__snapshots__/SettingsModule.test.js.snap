@@ -5,6 +5,8 @@ exports[`<SettingsModule /> template Should be render 1`] = `
   className="settingsModule"
 >
   <TitleModule
+    additional=""
+    className=""
     classNameTitle="settingsModuleTitle"
     title="Настройки"
   />
@@ -100,20 +102,6 @@ exports[`<SettingsModule /> template Should be render 1`] = `
               <div
                 className="settingsPanel--center-flex"
               >
-                <div
-                  className="configWrapper flexWrapper"
-                >
-                  <span>
-                    Сменить почту:
-                  </span>
-                  <Input
-                    allowClear={true}
-                    data-id="email"
-                    onChange={[Function]}
-                    type="text"
-                    value={null}
-                  />
-                </div>
                 <div
                   className="configWrapper flexWrapper"
                 >
@@ -242,6 +230,7 @@ exports[`<SettingsModule /> template Should be render 1`] = `
       <ObserverTime
         isLoading={true}
         settingsLogs={Object {}}
+        title=""
       />
     </div>
   </div>
@@ -253,6 +242,8 @@ exports[`<SettingsModule /> template Should be render 2`] = `
   className="settingsModule"
 >
   <TitleModule
+    additional=""
+    className=""
     classNameTitle="settingsModuleTitle"
     title="Настройки"
   />
@@ -348,20 +339,6 @@ exports[`<SettingsModule /> template Should be render 2`] = `
               <div
                 className="settingsPanel--center-flex"
               >
-                <div
-                  className="configWrapper flexWrapper"
-                >
-                  <span>
-                    Сменить почту:
-                  </span>
-                  <Input
-                    allowClear={true}
-                    data-id="email"
-                    onChange={[Function]}
-                    type="text"
-                    value={null}
-                  />
-                </div>
                 <div
                   className="configWrapper flexWrapper"
                 >
@@ -490,6 +467,7 @@ exports[`<SettingsModule /> template Should be render 2`] = `
       <ObserverTime
         isLoading={true}
         settingsLogs={Object {}}
+        title=""
       />
     </div>
   </div>

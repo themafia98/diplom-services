@@ -375,7 +375,7 @@ class WikiModule extends React.PureComponent {
             Создать новую ветку
           </Button>
           <div className="wikiModule__main">
-            <div className="col-6">
+            <div className="col-4">
               {metadata.length ? (
                 <React.Fragment>
                   <Search
@@ -393,7 +393,7 @@ class WikiModule extends React.PureComponent {
                 <Spin size="large" />
               )}
             </div>
-            <div className="col-6">
+            <div className="col-8">
               {selectedNode ? (
                 <WikiPage key={key} metadata={selectedNodeMetadata} selectedNode={selectedNode} />
               ) : null}

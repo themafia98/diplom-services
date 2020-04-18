@@ -10,7 +10,6 @@ import Service from '../Models/Service';
 namespace DropboxStorage {
   export class DropboxManager extends Service<Dropbox> implements FileApi {
     /**
-     *
      * @param props init service
      */
     constructor(props: DropboxAccess) {
@@ -38,7 +37,6 @@ namespace DropboxStorage {
 
     /**
      * Delete file im application store
-     *
      */
     public async deleteFile(path: string): Promise<files.DeleteResult | null> {
       try {

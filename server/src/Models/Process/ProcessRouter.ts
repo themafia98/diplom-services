@@ -1,6 +1,5 @@
 import cluster, { Worker } from 'cluster';
-import { Server as WebSocketServer, Socket } from 'socket.io';
-import { WorkerDataProps, WsWorker } from '../../Utils/Interfaces';
+import { WsWorker } from '../../Utils/Interfaces';
 import chalk from 'chalk';
 
 class ProcessRouter {

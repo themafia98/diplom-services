@@ -238,8 +238,12 @@ exports[`<ModalWindow /> Should works with mode 4`] = `
     <Textarea
       className="editContentDescription"
       defaultValue=""
+      editor={false}
       key="textAreaEdit"
+      name=""
       onChange={[Function]}
+      onClick={null}
+      onKeyDown={null}
       row={10}
       value=""
     />
@@ -373,8 +377,12 @@ exports[`<ModalWindow /> Should works with mode 6`] = `
     <Textarea
       className="editContentDescription"
       defaultValue=""
+      editor={false}
       key="textAreaEdit"
+      name=""
       onChange={[Function]}
+      onClick={null}
+      onKeyDown={null}
       row={10}
       value=""
     />

@@ -1,0 +1,11 @@
+.wikiPage {
+  display: flex;
+  flex-direction: column;
+  .wikiPage__title {
+    text-align: center;
+    width: 100%;
+  }
+  .wikiPage-content {
+    position: relative;
+  }
+}

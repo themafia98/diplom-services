@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { udataType } from '../../types';
-const { string, func, bool, object } = PropTypes;
+const { string, func, bool } = PropTypes;
 
 export const streamBoxType = {
   mode: string.isRequired,

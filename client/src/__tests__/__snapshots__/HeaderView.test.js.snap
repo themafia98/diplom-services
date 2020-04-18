@@ -14,6 +14,16 @@ exports[`<HeaderView /> and children Should render 1`] = `
     />
   </ul>
   <RightPanel
+    active={true}
+    notificationDep={
+      Object {
+        "filterStream": "uidCreater",
+        "onSaveComponentState": undefined,
+        "store": "redux",
+        "streamModule": "system",
+        "streamStore": "streamList",
+      }
+    }
     onLogout={[Function]}
     onUpdate={[Function]}
   />
@@ -34,6 +44,16 @@ exports[`<HeaderView /> and children Should render 2`] = `
     />
   </ul>
   <RightPanel
+    active={true}
+    notificationDep={
+      Object {
+        "filterStream": "uidCreater",
+        "onSaveComponentState": undefined,
+        "store": "redux",
+        "streamModule": "system",
+        "streamStore": "streamList",
+      }
+    }
     onLogout={[Function]}
     onUpdate={[Function]}
   />

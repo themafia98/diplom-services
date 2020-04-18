@@ -39,6 +39,7 @@ exports[`<TableView /> Should TableView render dep on path 1`] = `
           "status": "online",
         }
       }
+      removeTab={[Function]}
       router={
         Object {
           "actionTabs": Array [
@@ -51,7 +52,9 @@ exports[`<TableView /> Should TableView render dep on path 1`] = `
       }
       setCurrentTab={[Function]}
       tasks={Array []}
+      udata={Object {}}
       user={Object {}}
+      visible={false}
     />
   </Connect(TableView)>
 </Provider>
@@ -96,6 +99,7 @@ exports[`<TableView /> Should TableView render dep on path 2`] = `
           "status": "online",
         }
       }
+      removeTab={[Function]}
       router={
         Object {
           "actionTabs": Array [
@@ -108,7 +112,9 @@ exports[`<TableView /> Should TableView render dep on path 2`] = `
       }
       setCurrentTab={[Function]}
       tasks={Array []}
+      udata={Object {}}
       user={Object {}}
+      visible={false}
     >
       <DynamicTable
         flag={true}
@@ -130,9 +136,10 @@ exports[`<TableView /> Should TableView render dep on path 2`] = `
           }
         }
         setCurrentTab={[Function]}
-        tasks={null}
+        tasks={Array []}
         udata={Object {}}
         user={Object {}}
+        visible={false}
       >
         <withStore(Table)
           columns={

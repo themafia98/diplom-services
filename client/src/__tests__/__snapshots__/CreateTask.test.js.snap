@@ -23,6 +23,7 @@ exports[`<CreateTask /> template Should be render 1`] = `
   >
     <TitleModule
       additional="Форма создания задачи"
+      className=""
       classNameTitle="createTaskTitle"
       title="Новая задача"
     />
@@ -110,10 +111,16 @@ exports[`<CreateTask /> template Should be render 1`] = `
             </label>
             <Textarea
               className=""
+              defaultValue=""
+              editor={false}
               key="createTextare"
               name="description"
               onChange={[Function]}
+              onClick={null}
+              onKeyDown={null}
+              row={5}
               rows={8}
+              value=""
             />
             <label>
               Прикрепить файлы: 
@@ -128,8 +135,8 @@ exports[`<CreateTask /> template Should be render 1`] = `
               className=""
               defaultValue={
                 Array [
-                  "2020-04-01T21:00:00.000Z",
-                  "2020-04-01T21:00:00.000Z",
+                  "2020-04-17T21:00:00.000Z",
+                  "2020-04-17T21:00:00.000Z",
                 ]
               }
               format="DD.MM.YYYY"
@@ -185,6 +192,7 @@ exports[`<CreateTask /> template Should be render 2`] = `
   >
     <TitleModule
       additional="Форма создания задачи"
+      className=""
       classNameTitle="createTaskTitle"
       title="Новая задача"
     />
@@ -272,10 +280,16 @@ exports[`<CreateTask /> template Should be render 2`] = `
             </label>
             <Textarea
               className=""
+              defaultValue=""
+              editor={false}
               key="createTextare"
               name="description"
               onChange={[Function]}
+              onClick={null}
+              onKeyDown={null}
+              row={5}
               rows={8}
+              value=""
             />
             <label>
               Прикрепить файлы: 
@@ -290,8 +304,8 @@ exports[`<CreateTask /> template Should be render 2`] = `
               className=""
               defaultValue={
                 Array [
-                  "2020-04-01T21:00:00.000Z",
-                  "2020-04-01T21:00:00.000Z",
+                  "2020-04-17T21:00:00.000Z",
+                  "2020-04-17T21:00:00.000Z",
                 ]
               }
               format="DD.MM.YYYY"

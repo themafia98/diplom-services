@@ -399,25 +399,10 @@ class ClientSideDatabase {
     const store = tx.objectStore(nameStore);
     const searchIndex = store.index(index);
     return await searchIndex.openCursor(searchKeyRange);
-
-    /** @Example */
-    // const searchByIndexRange = clientDB.searchItemsByIndexRange("timeLost", 0, 0.7, "jurnalworks");
-    // searchByIndexRange.onsuccess = event => {
-    //     const {
-    //         target: { result: cursor },
-    //     } = event;
-    //     if (!cursor) return console.log("cursor end");
-    //     console.log("SearchByIndexRande. Cursored at:", cursor.key);
-    //     for (let field in cursor.value) {
-    //         // console.log(cursor.value[field]);
-    //     }
-
-    //     cursor.continue();
-    // };
   }
 }
 
 const clientDB = new ClientSideDatabase(config.clientDB['name'], config.clientDB['version']);
-clientDB.init();
+if (process.env.NODE_ENV !== 'test') clientDB.init();
 export { clientDB };
 export default ClientSideDatabase;

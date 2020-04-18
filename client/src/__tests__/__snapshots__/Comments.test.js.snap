@@ -46,9 +46,14 @@ exports[`<ContentView /> Should render component 1`] = `
   >
     <Textarea
       className="comments_textarea_fild"
+      defaultValue=""
+      editor={false}
       key="comments_textarea_fild"
+      name=""
       onChange={[Function]}
+      onClick={null}
       onKeyDown={[Function]}
+      row={5}
       rows={4}
       value={null}
     />
@@ -114,9 +119,14 @@ exports[`<ContentView /> Should render component 2`] = `
   >
     <Textarea
       className="comments_textarea_fild"
+      defaultValue=""
+      editor={false}
       key="comments_textarea_fild"
+      name=""
       onChange={[Function]}
+      onClick={null}
       onKeyDown={[Function]}
+      row={5}
       rows={4}
       value={null}
     />
@@ -182,9 +192,14 @@ exports[`<ContentView /> Should render component 3`] = `
   >
     <Textarea
       className="comments_textarea_fild"
+      defaultValue=""
+      editor={false}
       key="comments_textarea_fild"
+      name=""
       onChange={[Function]}
+      onClick={null}
       onKeyDown={[Function]}
+      row={5}
       rows={4}
       value={null}
     />
@@ -250,9 +265,14 @@ exports[`<ContentView /> Should render component 4`] = `
   >
     <Textarea
       className="comments_textarea_fild"
+      defaultValue=""
+      editor={false}
       key="comments_textarea_fild"
+      name=""
       onChange={[Function]}
+      onClick={null}
       onKeyDown={[Function]}
+      row={5}
       rows={4}
       value={null}
     />
