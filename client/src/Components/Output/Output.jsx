@@ -15,6 +15,12 @@ class Output extends React.PureComponent {
 
   static contextType = modelContext;
   static propTypes = outputType;
+  static defaultProps = {
+    children: '',
+    id: '',
+    action: '',
+    typeOutput: '',
+  };
 
   child = null;
   parent = null;
@@ -105,7 +111,7 @@ class Output extends React.PureComponent {
   };
 
   render() {
-    const { className, children, type, typeOutput = '', id = null, action = null } = this.props;
+    const { className, children, type, typeOutput, id, action } = this.props;
     const { showTooltip } = this.state;
     if (type === 'table') {
       const output = (
