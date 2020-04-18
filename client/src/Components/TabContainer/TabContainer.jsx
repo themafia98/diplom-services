@@ -1,4 +1,5 @@
 import React from 'react';
+import { tabContainerType } from './types';
 import clsx from 'clsx';
 
 const TabContainer = props => {
@@ -17,5 +18,10 @@ const TabContainer = props => {
     </React.Fragment>
   );
 };
-
+TabContainer.defaultProps = {
+  className: 'module',
+  isBackground: false,
+  visible: false,
+};
+TabContainer.propTypes = tabContainerType;
 export default TabContainer;

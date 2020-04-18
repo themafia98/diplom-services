@@ -2,19 +2,11 @@ import React from 'react';
 import clsx from 'clsx';
 import { Input } from 'antd';
 import EditorTextarea from './EditorTextarea';
+import { textAreaType } from './types';
 const { TextArea } = Input;
 
-const Textarea = ({
-  value = null,
-  className = null,
-  row = 5,
-  onKeyDown = null,
-  onClick = null,
-  onChange = null,
-  editor = false,
-  defaultValue = '',
-  name = null,
-}) => {
+const Textarea = props => {
+  const { row, value, className, defaultValue, name, onKeyDown, onClick, onChange, editor } = props;
   const valueProps = value || value === '' ? { value } : {};
 
   return (
@@ -35,4 +27,17 @@ const Textarea = ({
     </React.Fragment>
   );
 };
+Textarea.defaultProps = {
+  row: 5,
+  value: '',
+  className: '',
+  defaultValue: '',
+  name: '',
+  onKeyDown: null,
+  onClick: null,
+  onChange: null,
+  editor: false,
+};
+
+Textarea.propTypes = textAreaType;
 export default Textarea;

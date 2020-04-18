@@ -1,12 +1,13 @@
 import PropTypes from 'prop-types';
+import { udataType } from '../../types';
 const { string, func, bool, object } = PropTypes;
 
 export const streamBoxType = {
-  mode: string,
-  boxClassName: string,
+  mode: string.isRequired,
   type: string.isRequired,
+  visiblePopover: bool.isRequired,
+  isLoadPopover: bool.isRequired,
+  udata: udataType.isRequired,
   setCounter: func,
-  visiblePopover: bool,
-  isLoadPopover: bool,
-  udata: object,
+  boxClassName: string,
 };

@@ -22,16 +22,21 @@ class TableView extends React.Component {
 
   static contextType = modelContext;
   static propTypes = tableViewType;
+  static defaultProps = {
+    tasks: [],
+    flag: false,
+    visible: false,
+  };
 
   componentDidUpdate = prevProps => {
-    const { path, onLoadCurrentData } = this.props;
+    const { path, onLoadCurrentData, visible = false } = this.props;
     const { path: validPath = '', page = '', itemId = '' } = routeParser({
       pageType: 'moduleItem',
       path,
     });
 
-    if (prevProps.visible !== this.props.visible && page === 'mainModule' && itemId === 'table') {
-      if (this.props.visible)
+    if (prevProps.visible !== visible && page === 'mainModule' && itemId === 'table') {
+      if (visible)
         onLoadCurrentData({
           path: validPath ? validPath : '',
           xhrPath: 'userList',
@@ -88,7 +93,7 @@ class TableView extends React.Component {
     const { routeData } = router;
     const routePathData = router.currentActionTab.split('_')[0];
     const currentData = routeData[routePathData];
-    const tasks = currentData ? currentData.tasks : null;
+    const tasks = currentData ? currentData.tasks : [];
 
     const height = heightProps - 250;
 

@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
-const { func, string, object, array, bool, number, oneOfType } = PropTypes;
+import { udataType } from '../../types';
+const { func, string, object, array, bool, number, oneOfType, oneOf } = PropTypes;
 
 export const modalWindowType = {
   onCaching: func,
@@ -19,7 +20,7 @@ export const modalWindowType = {
   onCancelEditModeContent: func,
   onUpdateEditable: func,
   statusTaskValue: string,
-  udata: object,
+  udata: udataType,
 };
 
 export const editableModalType = {
@@ -27,11 +28,11 @@ export const editableModalType = {
   title: string,
   onReject: func,
   onOkey: func,
-  defaultValue: oneOfType([string, () => null]),
   showTooltip: bool,
-  maxLength: string,
   Component: object,
-  content: oneOfType([object, string, number, () => null]),
+  maxLength: oneOfType([string, number]),
+  defaultValue: oneOfType([string, oneOf([null])]),
+  content: oneOfType([object, string, number, oneOf([null])]),
 };
 
 export const formRegType = {

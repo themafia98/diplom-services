@@ -20,7 +20,7 @@ class TaskModuleMyList extends React.PureComponent {
           <TableView
             setCurrentTab={setCurrentTab}
             height={height}
-            tasks={data ? data.tasks : null}
+            tasks={data ? data.tasks : []}
             data={data}
             flag={true}
             udata={udata}

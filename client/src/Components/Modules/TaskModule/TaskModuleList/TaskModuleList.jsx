@@ -22,7 +22,7 @@ class TaskModuleList extends React.PureComponent {
             setCurrentTab={setCurrentTab}
             height={height}
             router={router}
-            tasks={data ? data.tasks : null}
+            tasks={data ? data.tasks : []}
             path="searchTable"
           />
         </div>

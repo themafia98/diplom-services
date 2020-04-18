@@ -1,4 +1,5 @@
 import React from 'react';
+import { dynamicTableType } from '../types';
 import _ from 'lodash';
 import moment from 'moment';
 import Output from '../../Output';
@@ -19,6 +20,7 @@ class DynamicTable extends React.PureComponent {
   };
 
   static contextType = modelContext;
+  static propTypes = dynamicTableType;
 
   getConfigColumns = () => {
     const { sortedInfo } = this.state;
@@ -267,7 +269,7 @@ class DynamicTable extends React.PureComponent {
     const { tasks, flag, udata, height, loading: loadingProps = false } = this.props;
 
     let tasksCopy = null;
-    if (tasks) tasksCopy = [...tasks];
+    if (tasks?.length) tasksCopy = [...tasks];
     let data = tasksCopy;
     const columns = this.getConfigColumns();
 

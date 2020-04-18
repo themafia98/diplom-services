@@ -1,8 +1,9 @@
 import React from 'react';
+import { titleType } from './types';
 import clsx from 'clsx';
-import PropTypes from 'prop-types';
 
-const TitleModule = ({ title = '', className = '', classNameTitle = '', additional = '' }) => {
+const TitleModule = props => {
+  const { title, className, classNameTitle, additional } = props;
   return (
     <div className={clsx('titleModule', className ? className : null)}>
       <p className={clsx('titleModule_title', classNameTitle ? classNameTitle : null)}>{title}</p>
@@ -11,11 +12,11 @@ const TitleModule = ({ title = '', className = '', classNameTitle = '', addition
   );
 };
 
-TitleModule.propTypes = {
-  title: PropTypes.string,
-  className: PropTypes.string,
-  classNameTitle: PropTypes.string,
-  additional: PropTypes.string,
+TitleModule.defaultProps = {
+  title: '',
+  className: '',
+  classNameTitle: '',
+  additional: '',
 };
-
+TitleModule.propTypes = titleType;
 export default TitleModule;

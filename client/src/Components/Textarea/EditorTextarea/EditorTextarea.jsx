@@ -1,4 +1,5 @@
 import React from 'react';
+import { editorTextareaType } from '../types';
 import clsx from 'clsx';
 import { stateFromHTML } from 'draft-js-import-html';
 import { convertFromRaw } from 'draft-js';
@@ -15,9 +16,17 @@ class EditorTextarea extends React.Component {
   };
 
   static contextType = modelContext;
+  static propTypes = editorTextareaType;
+  static defaultProps = {
+    disabled: false,
+    readOnly: false,
+    clear: false,
+    mode: '',
+    contentType: {},
+  };
 
   componentDidMount = () => {
-    const { contentState = null } = this.props;
+    const { contentState = {} } = this.props;
     if (contentState && (!_.isEmpty(contentState) || _.isString(contentState))) {
       try {
         this.setState({

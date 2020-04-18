@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { udataType } from '../../types';
 const { bool, object, func, string } = PropTypes;
 
 export const commentType = {
@@ -13,5 +14,5 @@ export const commentsContainerType = {
   rules: bool.isRequired,
   onUpdate: func.isRequired,
   data: object.isRequired,
-  udata: object.isRequired,
+  udata: udataType.isRequired,
 };

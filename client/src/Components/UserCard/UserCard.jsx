@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { userCardType } from './types';
 import { connect } from 'react-redux';
 import { updateUdata } from '../../Redux/actions/publicActions';
 import { Avatar, Button, Icon, Dropdown, Menu, Tooltip, message, Popover } from 'antd';
@@ -14,10 +14,7 @@ class UserCard extends React.Component {
   state = {
     visibilityModal: false,
   };
-  static propTypes = {
-    cbShowModal: PropTypes.func,
-  };
-
+  static propTypes = userCardType;
   static contextType = modelContext;
 
   static getDerivedStateFromProps = (props, state) => {

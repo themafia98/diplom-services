@@ -18,8 +18,12 @@ class StreamBox extends React.Component {
   };
 
   static propTypes = streamBoxType;
-
   static contextType = modelContext;
+  static defaultProps = {
+    mode: '',
+    visiblePopover: false,
+    isLoadPopover: false,
+  };
 
   static getDerivedStateFromProps = (props, state) => {
     if (_.isNull(state.type) && props.type) {

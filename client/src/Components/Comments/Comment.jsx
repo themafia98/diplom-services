@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { commentType } from './types';
 
-const Comment = ({ onDelete = null, rules = false, it = {}, userId = '', uId = '' }) => {
+const Comment = props => {
+  const { onDelete, rules, it, userId, uId } = props;
   const [key] = useState(it?.id ? it.id : Math.random());
 
   const onDeleteEvent = event => {
@@ -26,7 +27,12 @@ const Comment = ({ onDelete = null, rules = false, it = {}, userId = '', uId = '
     </p>
   );
 };
-
+Comment.defaultProps = {
+  onDelete: null,
+  rules: false,
+  it: {},
+  userId: '',
+  uId: '',
+};
 Comment.propTypes = commentType;
-
 export default Comment;

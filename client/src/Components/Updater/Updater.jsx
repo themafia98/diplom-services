@@ -1,10 +1,11 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { updaterType } from './types';
 import updater from './updater.png';
 import { Tooltip } from 'antd';
 import clsx from 'clsx';
 
-const Updater = ({ className = '', additionalClassName = '', onClick = null }) => {
+const Updater = props => {
+  const { className, additionalClassName, onClick } = props;
   return (
     <div className={clsx('updater', className ? className : null)}>
       <Tooltip title="Обновить" placement="bottom">
@@ -19,10 +20,10 @@ const Updater = ({ className = '', additionalClassName = '', onClick = null }) =
   );
 };
 
-Updater.propTypes = {
-  className: PropTypes.string,
-  additionalClassName: PropTypes.string,
-  onClick: PropTypes.func.isRequired,
+Updater.defaultProps = {
+  className: '',
+  additionalClassName: '',
+  onClick: null,
 };
-
+Updater.propTypes = updaterType;
 export default Updater;
