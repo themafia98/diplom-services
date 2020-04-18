@@ -85,9 +85,13 @@ class Responser implements ResponseBuilder {
           ),
         );
       default:
+        const status: string =
+          this.status === 404
+            ? 'Not found'
+            : `error or status not connected to responser, ${this.params?.methodQuery}`;
         return this.res.json(
           getResponseJson(
-            `error or status not connected to responser, ${this.params?.methodQuery}`,
+            status,
             { status: this.params?.status, params: this.params, done: false, metadata: this.metadata },
             (this.req as Record<string, any>).start,
           ),
