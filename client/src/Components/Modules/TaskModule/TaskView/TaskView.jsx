@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { taskViewType } from '../types';
 import clsx from 'clsx';
 import _ from 'lodash';
 import moment from 'moment';
@@ -47,14 +47,7 @@ class TaskView extends React.PureComponent {
   };
 
   static contextType = modelContext;
-
-  static propTypes = {
-    onCaching: PropTypes.func.isRequired,
-    onUpdate: PropTypes.func.isRequired,
-    height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    onLoadCurrentData: PropTypes.func,
-    data: PropTypes.oneOfType([PropTypes.object, () => null]),
-  };
+  static propTypes = taskViewType;
 
   /**
    * @param {{ uuid: any; key: any; }} props
@@ -117,6 +110,7 @@ class TaskView extends React.PureComponent {
     const {
       router: { routeDataActive = {} },
     } = this.props;
+
     const { Request = {} } = this.context;
 
     if ((!isLoadingFiles && routeDataActive['_id']) || shouldRefresh) {

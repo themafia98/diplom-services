@@ -1,18 +1,22 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { taskModuleListType } from '../types';
 import TableView from '../../../TableView';
 import TitleModule from '../../../TitleModule';
 
 class TaskModuleList extends React.PureComponent {
-  static propTypes = {
-    setCurrentTab: PropTypes.func.isRequired,
-    height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    data: PropTypes.oneOfType([PropTypes.object, () => null]),
-    user: PropTypes.oneOfType([PropTypes.object, PropTypes.string, () => null]),
+  static propTypes = taskModuleListType;
+  static defaultProps = {
+    router: {},
+    data: {},
+    height: 0,
+    setCurrentTab: null,
+    loaderMethods: {},
+    isBackground: false,
+    visible: false,
   };
 
   render() {
-    const { router, data = null, height, setCurrentTab, loaderMethods = {} } = this.props;
+    const { router, data, height, setCurrentTab, loaderMethods } = this.props;
     return (
       <div className="taskModule_all">
         <TitleModule additional="Все задачи" classNameTitle="taskModuleTittle" title="Список всех задач" />
@@ -30,4 +34,5 @@ class TaskModuleList extends React.PureComponent {
     );
   }
 }
+
 export default TaskModuleList;

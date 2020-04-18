@@ -1,18 +1,24 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { taskModuleMyListType } from '../types';
 import TableView from '../../../TableView';
 import TitleModule from '../../../TitleModule';
 
 class TaskModuleMyList extends React.PureComponent {
-  static propTypes = {
-    setCurrentTab: PropTypes.func.isRequired,
-    height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    data: PropTypes.oneOfType([PropTypes.object, () => null]),
+  refModuleTask = React.createRef();
+  static propTypes = taskModuleMyListType;
+  static defaultProps = {
+    router: {},
+    udata: {},
+    data: {},
+    height: 0,
+    setCurrentTab: null,
+    loaderMethods: {},
+    isBackground: false,
+    visible: false,
   };
 
   render() {
-    const { udata = {}, data = null, height, setCurrentTab } = this.props;
-
+    const { udata, data, height, setCurrentTab } = this.props;
     return (
       <div ref={this.refModuleTask} className="taskModule_all">
         <TitleModule additional="Мои задачи" classNameTitle="taskModuleTittle" title="Список моих задач" />

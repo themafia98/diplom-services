@@ -1,25 +1,22 @@
 import React from 'react';
+import { taskModuleCalendarType } from '../types';
 import _ from 'lodash';
-import PropTypes from 'prop-types';
 import Scrollbars from 'react-custom-scrollbars';
 import moment from 'moment';
 import TitleModule from '../../../TitleModule';
 import { Calendar, Popover, Button, message } from 'antd';
 
 import modelContext from '../../../../Models/context';
-
 import { routePathNormalise } from '../../../../Utils';
 import Output from '../../../Output';
 
 class TaskModuleCalendar extends React.PureComponent {
-  static propTypes = {
-    setCurrentTab: PropTypes.func.isRequired,
-    onOpenPageWithData: PropTypes.func.isRequired,
-    height: PropTypes.oneOfType([PropTypes.string, PropTypes.number, () => null]),
-    router: PropTypes.object.isRequired,
-  };
-
+  static propTypes = taskModuleCalendarType;
   static contextType = modelContext;
+  static defaultProps = {
+    data: {},
+    loaderMethods: {},
+  };
 
   onClick = event => {
     const {
@@ -124,7 +121,6 @@ class TaskModuleCalendar extends React.PureComponent {
   };
 
   render() {
-    // const { height } = this.props;
     return (
       <Scrollbars>
         <div className="taskModuleCalendar">

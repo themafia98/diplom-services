@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { taskModuleType } from './types';
 import _ from 'lodash';
 
 import { connect } from 'react-redux';
@@ -27,16 +27,7 @@ class TaskModule extends React.PureComponent {
   };
 
   static contextType = modelContext;
-
-  static propTypes = {
-    onErrorRequstAction: PropTypes.func.isRequired,
-    path: PropTypes.string.isRequired,
-    addTab: PropTypes.func.isRequired,
-    onOpenPageWithData: PropTypes.func.isRequired,
-    onLoadCurrentData: PropTypes.func.isRequired,
-    publicReducer: PropTypes.object.isRequired,
-    router: PropTypes.object.isRequired,
-  };
+  static propTypes = taskModuleType;
 
   static getDerivedStateFromProps = (props, state) => {
     if (props.path !== state.path) {
@@ -92,13 +83,14 @@ class TaskModule extends React.PureComponent {
     window.removeEventListener('resize', this.recalcHeight.bind(this));
   };
 
-  componentDidUpdate = prevProps => {
+  componentDidUpdate = () => {
     const {
       visible,
       onLoadCurrentData,
       path,
       router: { shouldUpdate = false, routeData = {} },
     } = this.props;
+
     const { config } = this.context || {};
     const { limitList = 20 } = config?.task || {};
 
@@ -255,6 +247,7 @@ class TaskModule extends React.PureComponent {
               onOpenPageWithData={onOpenPageWithData}
               height={heightController ? height - heightController : height}
               router={router}
+              loaderMethods={loaderMethods}
             />
           </TabContainer>
           <TabContainer
