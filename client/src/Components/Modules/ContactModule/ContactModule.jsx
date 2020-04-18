@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { contactModuleType } from './types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
@@ -13,10 +13,7 @@ import NewsViewPage from './News/NewsViewPage';
 import CreateNews from './News/CreateNews';
 
 class ContactModule extends React.PureComponent {
-  static propTypes = {
-    onErrorRequstAction: PropTypes.func.isRequired,
-    path: PropTypes.string.isRequired,
-  };
+  static propTypes = contactModuleType;
 
   state = {
     isLoading: false,

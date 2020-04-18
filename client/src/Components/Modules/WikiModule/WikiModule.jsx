@@ -1,7 +1,7 @@
 import React from 'react';
+import { wikiModuleType } from './types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import PropTypes from 'prop-types';
 import Scrollbars from 'react-custom-scrollbars';
 import { loadCurrentData } from '../../../Redux/actions/routerActions/middleware';
 import { Tree, Button, Input, Select, Dropdown, Menu, message, Spin } from 'antd';
@@ -15,11 +15,7 @@ const { Option } = Select;
 const { Search } = Input;
 
 class WikiModule extends React.PureComponent {
-  static propTypes = {
-    onErrorRequstAction: PropTypes.func.isRequired,
-    path: PropTypes.string.isRequired,
-  };
-
+  static propTypes = wikiModuleType;
   static contextType = modalContext;
 
   state = {

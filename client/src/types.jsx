@@ -2,16 +2,16 @@ import PropTypes from 'prop-types';
 const { array, bool, string, object, shape } = PropTypes;
 
 export const udataType = shape({
-  _id: string.isRequired,
-  email: string.isRequired,
-  summary: string.isRequired,
-  displayName: string.isRequired,
-  departament: string.isRequired,
-  isOnline: bool.isRequired,
-  phone: string.isRequired,
-  rules: string.isRequired,
-  accept: bool.isRequired,
-  avatar: string.isRequired,
+  _id: string,
+  email: string,
+  summary: string,
+  displayName: string,
+  departament: string,
+  isOnline: bool,
+  phone: string,
+  rules: string,
+  accept: bool,
+  avatar: string,
 });
 
 export const contentType = shape({
@@ -19,4 +19,17 @@ export const contentType = shape({
   blocks: array.isRequired,
 });
 
+export const newsItemType = shape({
+  _id: string.isRequired,
+  title: string.isRequired,
+  content: contentType.isRequired,
+});
+
 export const emptyShape = shape({});
+
+export const appType = {
+  addTab: PropTypes.func.isRequired,
+  onSetStatus: PropTypes.func.isRequired,
+  router: PropTypes.object.isRequired,
+  publicReducer: PropTypes.object.isRequired,
+};

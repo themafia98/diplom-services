@@ -1,14 +1,11 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { customersModuleType } from './types';
 
 import TabContainer from '../../TabContainer';
 import Contacts from './Contacts';
 
 class CustomersModule extends React.PureComponent {
-  static propTypes = {
-    onErrorRequstAction: PropTypes.func.isRequired,
-    path: PropTypes.string.isRequired,
-  };
+  static propTypes = customersModuleType;
 
   checkBackground = path => {
     const { actionTabs = [] } = this.props;

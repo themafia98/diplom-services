@@ -1,15 +1,16 @@
 import React, { useState, useContext } from 'react';
+import { newsViewType } from '../../types';
 import _ from 'lodash';
 import uuid from 'uuid/v4';
 
 import TitleModule from '../../../../TitleModule';
 import EditorTextarea from '../../../../Textarea/EditorTextarea';
-
 import modelContext from '../../../../../Models/context';
 
-const NewsViewPage = ({ content: contentEntity = null, title = '', id: _id = uuid() }) => {
+const NewsViewPage = props => {
+  const { content: contentEntity, title, id: _id } = props;
   const { schema = {} } = useContext(modelContext);
-  const [id] = useState(_id ? _id : uuid());
+  const [id] = useState(_id);
 
   const getNormalizeContent = () => {
     const content = Object.keys(contentEntity).reduce((data, key) => {
@@ -36,6 +37,7 @@ const NewsViewPage = ({ content: contentEntity = null, title = '', id: _id = uui
     return content;
   };
 
+  const isValidContent = contentEntity && contentEntity?.blocks && contentEntity?.entityMap;
   return (
     <div className="newsView-page">
       <TitleModule classNameTitle="tittle_contactModule_pageNews" title={title ? title : `Новость № ${id}`} />
@@ -43,11 +45,19 @@ const NewsViewPage = ({ content: contentEntity = null, title = '', id: _id = uui
         <EditorTextarea
           key={id}
           readOnly={true}
-          contentState={contentEntity ? getNormalizeContent() : schema.getEditorJSON()}
+          contentState={isValidContent ? getNormalizeContent() : schema.getEditorJSON()}
         />
       </div>
     </div>
   );
 };
 
+NewsViewPage.defaultProps = {
+  visible: false,
+  isBackground: false,
+  content: {},
+  title: '',
+  id: uuid(),
+};
+NewsViewPage.propTypes = newsViewType;
 export default NewsViewPage;

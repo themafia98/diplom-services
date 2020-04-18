@@ -1,6 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
-import PropTypes from 'prop-types';
+import { loginType } from './types';
 import { Redirect, NavLink } from 'react-router-dom';
 import { Button, Input } from 'antd';
 import { connect } from 'react-redux';
@@ -20,10 +20,9 @@ class LoginPage extends React.Component {
   };
 
   static contextType = modelContext;
-
-  static propTypes = {
-    addTab: PropTypes.func.isRequired,
-    router: PropTypes.object.isRequired,
+  static propTypes = loginType;
+  static defaultProps = {
+    authLoad: false,
   };
 
   enterLoading = event => {

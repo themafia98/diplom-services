@@ -1,10 +1,11 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { barType } from '../types';
 import { Spin } from 'antd';
 import moment from 'moment';
 import { ResponsiveBar } from '@nivo/bar';
 
-const Bar = ({ isPartData, data, dateList }) => {
+const Bar = props => {
+  const { isPartData, data, dateList } = props;
   if (!data || !data?.length || isPartData) return <Spin size="large" />;
 
   const buildingBar = () => {
@@ -148,7 +149,5 @@ const Bar = ({ isPartData, data, dateList }) => {
   );
 };
 
-Bar.propTypes = {
-  data: PropTypes.array.isRequired,
-};
+Bar.propTypes = barType;
 export default Bar;

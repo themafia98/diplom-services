@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { appType } from './types';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import RenderInBrowser from 'react-render-in-browser';
@@ -28,13 +28,7 @@ class App extends React.Component {
   };
 
   static contextType = modelContext;
-
-  static propTypes = {
-    addTab: PropTypes.func.isRequired,
-    onSetStatus: PropTypes.func.isRequired,
-    router: PropTypes.object.isRequired,
-    publicReducer: PropTypes.object.isRequired,
-  };
+  static propTypes = appType;
 
   loadAppSession = async () => {
     const {

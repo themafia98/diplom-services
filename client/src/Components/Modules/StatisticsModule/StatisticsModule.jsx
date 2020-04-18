@@ -1,6 +1,6 @@
 import React from 'react';
+import { statisticsModuleType } from './types';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 import data from './data.json';
 import { loadCurrentData } from '../../../Redux/actions/routerActions/middleware';
 import Bar from './Charts/Bar';
@@ -9,19 +9,12 @@ import TitleModule from '../../TitleModule';
 import modelContext from '../../../Models/context';
 
 class StatisticsModule extends React.PureComponent {
-  static propTypes = {
-    onErrorRequstAction: PropTypes.func.isRequired,
-    path: PropTypes.string.isRequired,
-  };
+  static propTypes = statisticsModuleType;
 
   static contextType = modelContext;
 
   componentDidMount = () => {
-    const {
-      router: { routeData = {} },
-      onLoadCurrentData,
-      visible,
-    } = this.props;
+    const { onLoadCurrentData, visible } = this.props;
     const { config: { statist: { limitListTasks = 5000 } = {} } = {} } = this.context;
 
     if (visible) {

@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { dashboardType } from './types';
 import { Redirect } from 'react-router-dom';
 import { EventEmitter } from 'events';
 import _ from 'lodash';
@@ -39,17 +39,7 @@ class Dashboard extends React.PureComponent {
   };
 
   static contextType = modelContext;
-
-  static propTypes = {
-    addTab: PropTypes.func.isRequired,
-    removeTab: PropTypes.func.isRequired,
-    setCurrentTab: PropTypes.func.isRequired,
-    onLoadCurrentData: PropTypes.func.isRequired,
-    onErrorRequstAction: PropTypes.func.isRequired,
-    onLogoutAction: PropTypes.func.isRequired,
-    router: PropTypes.object.isRequired,
-    publicReducer: PropTypes.object.isRequired,
-  };
+  static propTypes = dashboardType;
 
   componentDidMount = () => {
     if (deferredPrompt) {

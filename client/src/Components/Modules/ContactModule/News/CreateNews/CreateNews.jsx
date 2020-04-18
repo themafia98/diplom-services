@@ -1,4 +1,5 @@
 import React from 'react';
+import { createNewsType } from '../../types';
 import moment from 'moment';
 import TitleModule from '../../../../TitleModule';
 import EditorTextarea from '../../../../Textarea/EditorTextarea';
@@ -11,6 +12,7 @@ class CreateNews extends React.PureComponent {
   };
 
   static contextType = modelContext;
+  static propTypes = createNewsType;
 
   setEditorValue = event => {
     this.setState({

@@ -1,4 +1,5 @@
 import React from 'react';
+import { contactsType } from '../types';
 import _ from 'lodash';
 import TitleModule from '../../../TitleModule';
 import modelContext from '../../../../Models/context';
@@ -17,6 +18,7 @@ class Contacts extends React.PureComponent {
   };
 
   static contextType = modelContext;
+  static propTypes = contactsType;
 
   loadedRowsMap = {};
 
@@ -37,21 +39,20 @@ class Contacts extends React.PureComponent {
   };
 
   componentDidUpdate = () => {
-    const {
-      onSetStatus,
-      visible,
-      path = '',
-      router: { currentActionTab = '', shouldUpdate = false } = {},
-    } = this.props;
-
-    if (visible && false) {
-      this.fetchData(res => {
-        this.setState({
-          data: res?.metadata,
-          isLoadingModule: false,
-        });
-      });
-    }
+    // const {
+    //   onSetStatus,
+    //   visible,
+    //   path = '',
+    //   router: { currentActionTab = '', shouldUpdate = false } = {},
+    // } = this.props;
+    // if (visible && false) {
+    //   this.fetchData(res => {
+    //     this.setState({
+    //       data: res?.metadata,
+    //       isLoadingModule: false,
+    //     });
+    //   });
+    // }
   };
 
   fetchData = async callback => {

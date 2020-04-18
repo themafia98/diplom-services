@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { mainModuleType } from './types';
 import { Calendar } from 'antd';
 import modelContext from '../../../Models/context';
 import ClockWidjet from '../../ClockWidjet/index';
@@ -8,10 +8,7 @@ import StreamBox from '../../StreamBox';
 import TitleModule from '../../TitleModule';
 
 class MainModule extends React.PureComponent {
-  static propTypes = {
-    onErrorRequstAction: PropTypes.func.isRequired,
-  };
-
+  static propTypes = mainModuleType;
   static contextType = modelContext;
 
   state = {

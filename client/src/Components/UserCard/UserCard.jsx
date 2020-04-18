@@ -90,18 +90,20 @@ class UserCard extends React.Component {
       phone = '',
     } = isPersonalPage ? personalData : udata;
 
-    const menu = isPersonalPage ? (
+    const menu = !isPersonalPage ? (
       <Menu>
         <MenuItem onClick={cdShowModal ? cdShowModal : null} key="photoChange">
           Сменить аватар
         </MenuItem>
       </Menu>
-    ) : null;
+    ) : (
+      <div>No action</div>
+    );
 
     const background = {
       backgroundImage: `url("${imageCard}")`,
     };
-
+    debugger;
     return (
       <React.Fragment>
         <div className="userCard">

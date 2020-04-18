@@ -1,4 +1,5 @@
 import React from 'react';
+import { newsType } from '../types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { Pagination, Button, message, Empty, Spin } from 'antd';
@@ -26,9 +27,11 @@ class News extends React.PureComponent {
   };
 
   static contextType = modelContext;
+  static propTypes = newsType;
 
   componentDidUpdate = () => {
     const { load, isLoading } = this.state;
+
     if (load && isLoading) {
       this.setState({
         ...this.state,

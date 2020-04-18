@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { settingsModuleType } from './types';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { saveComponentStateAction } from '../../../Redux/actions/routerActions';
@@ -25,13 +25,7 @@ class SettingsModule extends React.PureComponent {
     phone: false,
   };
 
-  static propTypes = {
-    onErrorRequstAction: PropTypes.func.isRequired,
-    path: PropTypes.string.isRequired,
-    onSaveComponentState: PropTypes.func.isRequired,
-    router: PropTypes.object.isRequired,
-  };
-
+  static propTypes = settingsModuleType;
   static contextType = modelContext;
 
   static getDerivedStateFromProps = (props, state) => {

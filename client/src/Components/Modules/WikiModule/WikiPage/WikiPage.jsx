@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { wikiPageTypes } from './types';
+import { wikiPageTypes } from '../types';
 import modelContext from '../../../../Models/context';
 
 const WikiPage = props => {

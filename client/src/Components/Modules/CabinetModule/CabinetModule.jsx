@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import { cabinetType } from './types';
 import _ from 'lodash';
 import { Modal, Upload, message, Icon, Button } from 'antd';
 import { updateUdata } from '../../../Redux/actions/publicActions';
@@ -13,7 +13,7 @@ const { Dragger } = Upload;
 
 class CabinetModule extends React.PureComponent {
   state = {
-    modePage: null,
+    modePage: '',
     imageUrl: null,
     loading: false,
     filesArray: [],
@@ -21,9 +21,9 @@ class CabinetModule extends React.PureComponent {
   };
 
   static contextType = modelContext;
-
-  static propTypes = {
-    onErrorRequstAction: PropTypes.func.isRequired,
+  static propTypes = cabinetType;
+  static defaultProps = {
+    modePage: '',
   };
 
   static getDerivedStateFromProps = (props, state) => {
