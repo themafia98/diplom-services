@@ -62,6 +62,42 @@ class Responser implements ResponseBuilder {
     return this.db;
   }
 
+  private getErrorStatus(): string {
+    if (this.status === 404) return 'Not found';
+    else return `error or status not connected to responser, ${this.params?.methodQuery}`;
+  }
+
+  private async doneResponse(): Promise<Response> {
+    return this.res.json(
+      getResponseJson(
+        this.params?.methodQuery,
+        { params: this.params, metadata: this.metadata, done: true, status: 'OK' },
+        (<Record<string, any>>this.req).start,
+      ),
+    );
+  }
+
+  private async serverErrorResponse(): Promise<Response> {
+    return this.res.json(
+      getResponseJson(
+        (<Error>this.err)?.name,
+        { metadata: 'Server error', params: this.params, done: false, status: 'FAIL' },
+        (this.req as Record<string, any>).start,
+      ),
+    );
+  }
+
+  private async errorResponse(): Promise<Response> {
+    const status: string = this.getErrorStatus();
+    return this.res.json(
+      getResponseJson(
+        status,
+        { status: this.params?.status, params: this.params, done: false, metadata: this.metadata },
+        (this.req as Record<string, any>).start,
+      ),
+    );
+  }
+
   async emit(): Promise<Response> {
     if (this.res.headersSent) return this.res;
     if (this.status) this.res.status(this.status);
@@ -69,33 +105,11 @@ class Responser implements ResponseBuilder {
 
     switch (this.status) {
       case 200:
-        return this.res.json(
-          getResponseJson(
-            this.params?.methodQuery,
-            { params: this.params, metadata: this.metadata, done: true, status: 'OK' },
-            (<Record<string, any>>this.req).start,
-          ),
-        );
+        return this.doneResponse();
       case 503:
-        return this.res.json(
-          getResponseJson(
-            (<Error>this.err)?.name,
-            { metadata: 'Server error', params: this.params, done: false, status: 'FAIL' },
-            (this.req as Record<string, any>).start,
-          ),
-        );
+        return this.serverErrorResponse();
       default:
-        const status: string =
-          this.status === 404
-            ? 'Not found'
-            : `error or status not connected to responser, ${this.params?.methodQuery}`;
-        return this.res.json(
-          getResponseJson(
-            status,
-            { status: this.params?.status, params: this.params, done: false, metadata: this.metadata },
-            (this.req as Record<string, any>).start,
-          ),
-        );
+        return this.errorResponse();
     }
   }
 }
