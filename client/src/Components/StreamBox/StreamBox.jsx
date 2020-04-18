@@ -75,6 +75,7 @@ class StreamBox extends React.Component {
   };
 
   updateRead = async ids => {
+    if (Array.isArray(ids) && !ids.length) return { ok: 1, count: 0 };
     try {
       const { Request } = this.context;
       const rest = new Request();
