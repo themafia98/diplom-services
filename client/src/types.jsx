@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-const { shape, string, bool } = PropTypes;
+const { array, bool, string, object, shape } = PropTypes;
 
 export const udataType = shape({
   _id: string.isRequired,
@@ -13,3 +13,10 @@ export const udataType = shape({
   accept: bool.isRequired,
   avatar: string.isRequired,
 });
+
+export const contentType = shape({
+  entityMap: object.isRequired,
+  blocks: array.isRequired,
+});
+
+export const emptyShape = shape({});

@@ -1,11 +1,6 @@
 import PropTypes from 'prop-types';
-const { number, array, bool, string, func, oneOfType, oneOf, object, shape } = PropTypes;
-
-const contentType = shape({
-  entityMap: object.isRequired,
-  blocks: array.isRequired,
-});
-const emptyShape = shape({});
+import { contentType, emptyShape } from '../../types';
+const { number, bool, string, func, oneOfType, oneOf } = PropTypes;
 
 export const textAreaType = {
   row: oneOfType([number.isRequired, string.isRequired]).isRequired,
