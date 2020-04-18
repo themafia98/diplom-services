@@ -8,9 +8,10 @@ import {
 } from 'express';
 import nodemailer, { SendMailOptions, Transporter, createTransport } from 'nodemailer';
 import { Dropbox, files } from 'dropbox';
-import { transOptions, ParserData } from '../Types';
+import { transOptions, ParserData, ParserResult } from '../Types';
 import socketio from 'socket.io';
 import mongoose, { Mongoose, Connection, Model, Document } from 'mongoose';
+import Database from '../../Models/Database.ts';
 
 export interface ServerRun {
   isPrivateRoute(req: Request, res: Response, next: NextFunction): Response | void;
@@ -215,5 +216,11 @@ export interface WsWorker {
 }
 
 export interface ResponseBuilder {
+  res: Response;
+  req: Request;
+  err: Error | null;
+  status: number;
+  metadata: ParserResult;
+  dbm: Readonly<Database.ManagmentDatabase> | null;
   emit(): Promise<Response>;
 }

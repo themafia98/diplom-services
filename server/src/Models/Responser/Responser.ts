@@ -34,31 +34,31 @@ class Responser implements ResponseBuilder {
     this.db = dbm;
   }
 
-  get res(): Response {
+  public get res(): Response {
     return this.response;
   }
 
-  get req(): Request {
+  public get req(): Request {
     return this.request;
   }
 
-  get params(): Params {
+  public get params(): Params {
     return this.paramsList;
   }
 
-  get err(): Error | null {
+  public get err(): Error | null {
     return this.error;
   }
 
-  get status(): number {
+  public get status(): number {
     return this.statusResponse;
   }
 
-  get metadata(): ParserResult {
+  public get metadata(): ParserResult {
     return this.data;
   }
 
-  get dbm(): Readonly<Database.ManagmentDatabase> | null {
+  public get dbm(): Readonly<Database.ManagmentDatabase> | null {
     return this.db;
   }
 
