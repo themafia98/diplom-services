@@ -11,7 +11,7 @@ import { Dropbox, files } from 'dropbox';
 import { transOptions, ParserData, ParserResult } from '../Types';
 import socketio from 'socket.io';
 import mongoose, { Mongoose, Connection, Model, Document } from 'mongoose';
-import Database from '../../Models/Database.ts';
+import Database from '../../Models/Database';
 
 export interface ServerRun {
   isPrivateRoute(req: Request, res: Response, next: NextFunction): Response | void;
