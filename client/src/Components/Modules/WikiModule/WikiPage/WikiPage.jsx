@@ -61,7 +61,6 @@ const WikiPage = props => {
 
   const onChangeStateEditor = (event, data) => {
     if (!event && data) {
-      debugger;
       const {
         content: contentNew,
         _id: pageIdNew,
