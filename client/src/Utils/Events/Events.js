@@ -1,4 +1,4 @@
-import { getStoreSchema } from './utils';
+import { getStoreSchema } from '../utilsHook';
 import { dataParser } from '../';
 
 /** Events */

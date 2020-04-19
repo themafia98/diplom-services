@@ -1,12 +1,7 @@
 import moment from 'moment';
 import _ from 'lodash';
-import {
-  WIKI_NODE_TREE,
-  USER_SCHEMA,
-  TASK_SCHEMA,
-  TASK_CONTROLL_JURNAL_SCHEMA,
-  NEWS_SCHEMA,
-} from '../../Models/Schema/const';
+import { runNoCorsParser } from './utils';
+import { getStoreSchema } from '../utilsHook';
 
 const dataParser = (flag = false, isLocalUpdate = true, dep = {}) => {
   const {
@@ -23,37 +18,13 @@ const dataParser = (flag = false, isLocalUpdate = true, dep = {}) => {
   } = dep;
 
   if (noCorsClient) {
-    const sortedCopyStore =
-      !sortBy && copyStore.every(it => it.createdAt)
-        ? copyStore.sort((a, b) => {
-            const aDate = moment(a.createdAt).unix();
-            const bDate = moment(b.createdAt).unix();
-            return bDate - aDate;
-          })
-        : sortBy
-        ? copyStore.sort((a, b) => a[sortBy] - b[sortBy])
-        : copyStore;
-
-    const data = { [storeLoad]: sortedCopyStore, load: true, path: pathValid, isPartData };
-    return { data, shouldUpdateState: Boolean(storeLoad) };
+    return runNoCorsParser(copyStore, sortBy, storeLoad, pathValid, isPartData);
   }
 
   let shoudClearError = false;
-  const templateSchema =
-    storeLoad === 'wiki' && methodQuery === 'get_all'
-      ? WIKI_NODE_TREE
-      : storeLoad === 'jurnalworks'
-      ? TASK_CONTROLL_JURNAL_SCHEMA
-      : storeLoad === 'users'
-      ? USER_SCHEMA
-      : storeLoad === 'tasks'
-      ? TASK_SCHEMA
-      : storeLoad === 'news'
-      ? NEWS_SCHEMA
-      : null;
+  const templateSchema = getStoreSchema(storeLoad, methodQuery);
 
   let storeCopyValid = copyStore.map(it => schema.getSchema(templateSchema, it)).filter(Boolean);
-
   storeCopyValid.forEach(it => schema.isPublicKey(it) && clientDB.updateItem(storeLoad, it));
 
   if (requestError !== null) shoudClearError = true;
