@@ -2,5 +2,4 @@
 
 _Employee Monitoring System_
 
-![GitHub Logo](/nodeJS_diagram.pmg)
-Format: ![Alt Text](url)
+![Node.js diagram response](/nodeJS_diagram.png)
