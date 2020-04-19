@@ -10,9 +10,9 @@
       "type": "image/x-icon"
     },
     {
-      "src": "img/logo.svg",
+      "src": "img/icon.png",
       "sizes": "144x144",
-      "type": "image/svg"
+      "type": "image/png"
     },
     {
       "src": "img/loader.gif",
