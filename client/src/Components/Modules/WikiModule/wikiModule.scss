@@ -13,6 +13,14 @@
       width: 60%;
     }
 
+    .wikiPage-content {
+      div.editor-wrapper {
+        div.rdw-editor-main {
+          resize: none;
+        }
+      }
+    }
+
     .empty-tree {
       margin: 10px;
       font-size: 19px;

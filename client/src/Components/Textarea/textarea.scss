@@ -36,3 +36,18 @@ textarea {
     }
   }
 }
+
+div.editor-wrapper {
+  div.rdw-editor-main {
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+  }
+}

@@ -115,13 +115,18 @@ class WikiModule extends React.PureComponent {
   };
 
   onCreateNode = async (item = null) => {
-    const { node } = this.state;
+    const { node: nodeState = {} } = this.state;
     const { metadata = [] } = this.props;
     const { Request } = this.context;
     if (!Request) return;
     try {
+      const node = !nodeState?.parentId ? { ...nodeState, parentId: 'root' } : { ...nodeState };
       const indexId = !item ? 'root' : item?.parentId;
-      const index = ++metadata.filter(node => node && node.parentId === indexId).length;
+      if (_.isNull(indexId)) {
+        message.error('Ошибка создания ветки или функция не доступна.');
+        return this.onVisibleModalChange();
+      }
+      const index = ++metadata.filter(nodeMeta => nodeMeta?.parentId === indexId).length;
       const rest = new Request();
       const res = await rest.sendRequest('/wiki/createLeaf', 'PUT', {
         type: 'wikiTree',
@@ -131,7 +136,6 @@ class WikiModule extends React.PureComponent {
               level: 1,
               path: `0-${index}`,
               index,
-              parentId: 'root',
               accessGroups: node?.accessGroups?.length ? [...node.accessGroups] : ['full'],
             }
           : item,

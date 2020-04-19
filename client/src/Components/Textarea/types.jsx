@@ -11,6 +11,10 @@ export const textAreaType = {
   onKeyDown: oneOfType([oneOf([null]).isRequired, func.isRequired]),
   onClick: oneOfType([oneOf([null]).isRequired, func.isRequired]),
   onChange: oneOfType([oneOf([null]).isRequired, func.isRequired]),
+  shouldDisplayButton: bool,
+  contentState: contentType,
+  buttonName: string,
+  editorKey: string,
   editor: bool.isRequired,
 };
 
@@ -21,5 +25,8 @@ export const editorTextareaType = {
   readOnly: bool.isRequired,
   clearStatus: func,
   onPublish: func,
+  onChange: func,
+  shouldDisplayButton: bool,
+  buttonName: string,
   contentType: oneOfType([emptyShape.isRequired, contentType.isRequired]).isRequired,
 };
