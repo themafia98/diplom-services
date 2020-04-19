@@ -14,6 +14,7 @@ namespace Wiki {
   const Delete = Decorators.Delete;
   const Put = Decorators.Put;
   const Get = Decorators.Get;
+  const Post = Decorators.Post;
 
   @Controller('/wiki')
   export class WikiController {
@@ -114,6 +115,38 @@ namespace Wiki {
         const metadata: Record<string, number> = { deletedCount, ok };
 
         return new Responser(res, req, params, null, 200, metadata, dbm).emit();
+      } catch (err) {
+        console.error(err);
+        params.status = 'FAIL';
+        params.done = false;
+        return new Responser(res, req, params, err, 503, [], dbm).emit();
+      }
+    }
+
+    @Post({ path: '/wikiPage', private: true })
+    async getWikiPage(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+      const { dbm } = server.locals;
+      const params: Params = { methodQuery: 'wiki_page', status: 'done', done: true, from: 'wiki' };
+      try {
+        const body: ActionParams = req.body;
+        const connect = await dbm.connection().catch((err: Error) => console.error(err));
+
+        if (!connect) throw new Error('Bad connect');
+
+        const actionWikiPage = new Action.ActionParser({
+          actionPath: 'wiki',
+          actionType: 'wiki_page',
+        });
+
+        const data: ParserResult = await actionWikiPage.getActionData(body);
+
+        if (!data) {
+          params.done = false;
+          params.status = 'FAIL';
+          return new Responser(res, req, params, null, 404, [], dbm).emit();
+        }
+
+        return new Responser(res, req, params, null, 200, data, dbm).emit();
       } catch (err) {
         console.error(err);
         params.status = 'FAIL';

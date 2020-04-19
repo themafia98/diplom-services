@@ -21,13 +21,12 @@ const onlineDataHook = async (dispatch, dep = {}, multiple = false) => {
     storeLoad,
     clientDB,
     methodQuery,
-    primaryKey,
     saveComponentStateAction,
     errorRequstAction,
     isLocalUpdate: localUpdateStat,
     indStoreName,
   } = dep;
-  const undefiendCopyStore = [];
+
   let isLocalUpdate = localUpdateStat;
 
   if (noCorsClient && _.isNull(requestError)) {

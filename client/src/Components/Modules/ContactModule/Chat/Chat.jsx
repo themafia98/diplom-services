@@ -17,8 +17,6 @@ import {
 } from '../../../../Redux/actions/socketActions/middleware';
 
 import ChatModel from '../../../../Models/Chat';
-
-import Loader from '../../../Loader';
 import ChatModal from './ChatRoom/ChatModal';
 import TitleModule from '../../../TitleModule';
 import ChatRoom from './ChatRoom';

@@ -5,16 +5,7 @@ import { dataParser } from '../';
 /** Utils hooks */
 
 const runBadNetworkAction = (dispatch, error, dep) => {
-  const {
-    Request,
-    setStatus,
-    path,
-    storeLoad,
-    errorRequstAction,
-    loadCurrentData,
-    getState,
-    storpatheLoad,
-  } = dep;
+  const { Request, setStatus, path, storeLoad, errorRequstAction, loadCurrentData, getState } = dep;
   const errorRequest = new Request();
   dispatch(setStatus({ statusRequst: 'offline' }));
   dispatch(errorRequstAction(error.message));
@@ -34,16 +25,7 @@ const runBadNetworkAction = (dispatch, error, dep) => {
 };
 
 const runNoCorsAction = (dispatch, dep, multiple) => {
-  const {
-    saveComponentStateAction,
-    noCorsClient,
-    copyStore,
-    sortBy,
-    pathValid,
-    isPartData,
-    storeLoad,
-    schema,
-  } = dep;
+  const { saveComponentStateAction } = dep;
   const { data, shouldUpdateState = true } = dataParser(false, false, dep);
 
   if (shouldUpdateState && !multiple) {

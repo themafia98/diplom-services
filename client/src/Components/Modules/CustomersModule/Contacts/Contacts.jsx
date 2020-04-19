@@ -1,6 +1,5 @@
 import React from 'react';
 import { contactsType } from '../types';
-import _ from 'lodash';
 import TitleModule from '../../../TitleModule';
 import modelContext from '../../../../Models/context';
 import WindowScroller from 'react-virtualized/dist/commonjs/WindowScroller';
@@ -99,7 +98,7 @@ class Contacts extends React.PureComponent {
       <List.Item key={key} style={style}>
         <List.Item.Meta
           avatar={<Avatar src={`data:image/png;base64,${item?.avatar}`} />}
-          title={<a href="#">{item?.displayName}</a>}
+          title={<p>{item?.displayName}</p>}
           description={
             <div className="item-desccription">
               {item?.email ? <p>{item.email}</p> : null}

@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useCallback } from 'react';
 import { wikiPageTypes } from '../types';
 import modelContext from '../../../../Models/context';
 import { Spin } from 'antd';
@@ -13,12 +13,13 @@ const WikiPage = props => {
   const [node] = useState(selectedNode);
   const [nodeMetadata] = useState(metadata);
 
-  const fetchWikiPage = async () => {
+  const fetchWikiPageMethod = async () => {
     try {
       const { Request } = models;
       const { _id, path, accessGroups = [] } = nodeMetadata;
       const rest = new Request();
       const queryParams = {
+        type: 'wikiPage',
         methodQuery: {
           _id,
           accessGroups,
@@ -47,9 +48,11 @@ const WikiPage = props => {
     }
   };
 
+  const fetchWikiPage = useCallback(fetchWikiPageMethod, []);
+
   useEffect(() => {
     fetchWikiPage();
-  }, [node, nodeMetadata]);
+  }, [node, nodeMetadata, fetchWikiPage]);
 
   const { title = '' } = nodeMetadata || {};
 

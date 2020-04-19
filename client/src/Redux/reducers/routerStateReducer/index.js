@@ -128,7 +128,6 @@ export default (state = initialState, action) => {
         }, {});
 
         const shouldUpdateList = Object.keys(state.routeData).every(key => {
-          const item = state.routeData[key];
           if (stateList.some(actionItem => key === actionItem.path)) {
             return state.routeData[key].load;
           }

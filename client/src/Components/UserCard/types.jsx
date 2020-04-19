@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { udataType } from '../../types';
-const { func, string, shape, oneOf, oneOfType, object } = PropTypes;
+const { func, string, oneOf, oneOfType, object } = PropTypes;
 
 export const userCardType = {
   personalData: object.isRequired,

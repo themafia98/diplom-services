@@ -1,6 +1,6 @@
 import { Model, Document } from 'mongoose';
 import { ActionParams, Actions, Action } from '../../../Utils/Interfaces';
-import { ParserData } from '../../../Utils/Types';
+import { ParserData, ParserResult } from '../../../Utils/Types';
 import Utils from '../../../Utils';
 import _ from 'lodash';
 
@@ -40,6 +40,10 @@ class ActionWiki implements Action {
     return this.getEntity().deleteEntity(model, query);
   }
 
+  private async getWikiPage(actionParam: ActionParams, model: Model<Document>): ParserData {
+    return null;
+  }
+
   public async run(actionParam: ActionParams): ParserData {
     const { type = 'wikiTree' } = <Record<string, string>>actionParam;
     const model: Model<Document> | null = getModelByName(type, type);
@@ -52,6 +56,8 @@ class ActionWiki implements Action {
         return this.createLeaf(actionParam, model);
       case 'delete_leafs':
         return this.deleteLeafs(actionParam, model);
+      case 'wiki_page':
+        return this.getWikiPage(actionParam, model);
       default:
         return null;
     }

@@ -1,5 +1,4 @@
-import _ from 'lodash';
-import { dataParser, getNormalizedPath, sucessEvent, errorHook, onlineDataHook } from '../../../../Utils';
+import { getNormalizedPath, sucessEvent, errorHook, onlineDataHook } from '../../../../Utils';
 import { saveComponentStateAction, loadFlagAction } from '../';
 import { errorRequstAction, setStatus } from '../../publicActions';
 
@@ -107,7 +106,6 @@ const loadCurrentData = params => async (dispatch, getState, { schema, Request, 
 const multipleLoadData = params => async (dispatch, getState, { schema, Request, clientDB }) => {
   const { requestsParamsList = [], pipe = true } = params;
 
-  const router = getState().router;
   const primaryKey = 'uuid';
   const { requestError, status = 'online' } = getState().publicReducer;
 

@@ -7,7 +7,7 @@ import modelContext from '../../../Models/context';
 const Recovory = props => {
   const { Request } = useContext(modelContext);
   const [status, setStatus] = useState(null);
-  const [mode, setMode] = useState('emailMode');
+  const [mode] = useState('emailMode');
   const [recovoryField, setField] = useState('');
 
   const onChange = ({ currentTarget: { value = '' } = {} }) => {
@@ -41,19 +41,9 @@ const Recovory = props => {
     }
   };
 
-  const onChangeMode = () => {
-    if (mode === 'emailMode') setMode('loginMode');
-    else setMode('emailMode');
-
-    setField('');
-    setStatus('');
-  };
-
   const OnLocation = () => {
     window.location.assign('/');
   };
-
-  const msgLink = mode === 'emailMode' ? 'Я не помню почту' : 'Я не помню логин';
 
   return (
     <div className="recovory">

@@ -280,65 +280,68 @@ class WikiModule extends React.PureComponent {
     const listData = this.getTreeData(metadata);
 
     const loop = data =>
-      data.map(it => {
-        const item = {
-          ...it,
-          children: it?.children ? it.children : [],
-        };
+      data
+        .map(it => {
+          const item = {
+            ...it,
+            children: it?.children ? it.children : [],
+          };
 
-        const menu = (
-          <Menu className="dropdown-action">
-            <Menu.Item key={`add${it?._id}`}>
-              <Input autoFocus placeholder="название новой ветки" type="text" ref={this.titleRef} />
-              <Button
-                type="primary"
-                className="item-action"
-                onClick={this.onDropdownEvent.bind(this, 'add', it?._id)}
-              >
-                Добавить ветку
-              </Button>
-            </Menu.Item>
-            <Menu.Item key={`delete${it?._id}`}>
-              <Button type="link" onClick={this.onDropdownEvent.bind(this, 'delete', it?._id)}>
-                Удалить выбраную ветку
-              </Button>
-            </Menu.Item>
-          </Menu>
-        );
-
-        const index = item.title.indexOf(searchValue);
-        const beforeStr = item.title.substr(0, index);
-        const afterStr = item.title.substr(index + searchValue.length);
-        const title =
-          index > -1 ? (
-            <Dropdown
-              visible={visbileDropdownId === it?._id && visbileDropdown}
-              onVisibleChange={this.onVisibleChange.bind(this, it?._id)}
-              overlay={menu}
-              trigger={['contextMenu']}
-            >
-              <span>
-                {beforeStr}
-                <span style={{ color: 'blue' }} className="site-tree-search-value">
-                  {searchValue}
-                </span>
-                {afterStr}
-              </span>
-            </Dropdown>
-          ) : (
-            <Dropdown
-              visible={visbileDropdownId === it?._id && visbileDropdown}
-              onVisibleChange={this.onVisibleChange.bind(this, it?._id)}
-              overlay={menu}
-              trigger={['contextMenu']}
-            >
-              <span>{item?.title}</span>
-            </Dropdown>
+          const menu = (
+            <Menu className="dropdown-action">
+              <Menu.Item key={`add${it?._id}`}>
+                <Input autoFocus placeholder="название новой ветки" type="text" ref={this.titleRef} />
+                <Button
+                  type="primary"
+                  className="item-action"
+                  onClick={this.onDropdownEvent.bind(this, 'add', it?._id)}
+                >
+                  Добавить ветку
+                </Button>
+              </Menu.Item>
+              <Menu.Item key={`delete${it?._id}`}>
+                <Button type="link" onClick={this.onDropdownEvent.bind(this, 'delete', it?._id)}>
+                  Удалить выбраную ветку
+                </Button>
+              </Menu.Item>
+            </Menu>
           );
-        if (item?.children) {
-          return { title, key: item?.path, children: loop(item.children) };
-        }
-      });
+
+          const index = item.title.indexOf(searchValue);
+          const beforeStr = item.title.substr(0, index);
+          const afterStr = item.title.substr(index + searchValue.length);
+          const title =
+            index > -1 ? (
+              <Dropdown
+                visible={visbileDropdownId === it?._id && visbileDropdown}
+                onVisibleChange={this.onVisibleChange.bind(this, it?._id)}
+                overlay={menu}
+                trigger={['contextMenu']}
+              >
+                <span>
+                  {beforeStr}
+                  <span style={{ color: 'blue' }} className="site-tree-search-value">
+                    {searchValue}
+                  </span>
+                  {afterStr}
+                </span>
+              </Dropdown>
+            ) : (
+              <Dropdown
+                visible={visbileDropdownId === it?._id && visbileDropdown}
+                onVisibleChange={this.onVisibleChange.bind(this, it?._id)}
+                overlay={menu}
+                trigger={['contextMenu']}
+              >
+                <span>{item?.title}</span>
+              </Dropdown>
+            );
+          if (item?.children) {
+            return { title, key: item?.path, children: loop(item.children) };
+          }
+          return null;
+        })
+        .filter(Boolean);
 
     return loop(listData);
   };
@@ -358,7 +361,7 @@ class WikiModule extends React.PureComponent {
       selectedNodeMetadata = null,
       selectedNode = '',
     } = this.state;
-    const { _id: key = '', path = '' } = selectedNodeMetadata || {};
+    const { _id: key = '' } = selectedNodeMetadata || {};
     const { metadata = [], router: { shouldUpdate = false } = {} } = this.props;
     const isLoading = isLoadingState || (shouldUpdate && !metadata?.length);
 

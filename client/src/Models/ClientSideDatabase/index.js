@@ -1,4 +1,4 @@
-import { openDB, deleteDB, wrap, unwrap } from 'idb';
+import { openDB, deleteDB } from 'idb';
 import _ from 'lodash';
 import config from '../../config.json';
 import {

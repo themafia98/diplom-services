@@ -266,7 +266,7 @@ class DynamicTable extends React.PureComponent {
 
   render() {
     const { loading, pagination } = this.state;
-    const { tasks, flag, udata, height, loading: loadingProps = false } = this.props;
+    const { tasks, flag, udata, height } = this.props;
 
     let tasksCopy = null;
     if (tasks?.length) tasksCopy = [...tasks];

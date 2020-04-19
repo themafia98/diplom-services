@@ -71,7 +71,6 @@ class Output extends React.PureComponent {
       udata: { _id: uid = '' } = {},
       router: { actionTabs = [] } = {},
       currentData = {},
-      removeTab,
       onOpenPageWithData,
       setCurrentTab,
     } = this.props;
@@ -84,7 +83,6 @@ class Output extends React.PureComponent {
 
     const page = `${action}Module`;
     const moduleId = !isCurrentUser ? 'personalPage' : '';
-    const path = !isCurrentUser ? `${page}_${moduleId}__${key}` : page;
 
     // @ts-ignore
     const activePage = routePathNormalise({
@@ -96,9 +94,6 @@ class Output extends React.PureComponent {
 
     const index = actionTabs.findIndex(tab => tab.includes(page) && tab.includes(key));
     const isFind = index !== -1;
-
-    let type = 'deafult';
-    if (path.split('__')[1]) type = 'itemTab';
 
     if (!isFind) {
       onOpenPageWithData({

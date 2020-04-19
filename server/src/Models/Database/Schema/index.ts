@@ -201,13 +201,13 @@ export const wikiTree = new Schema(
   },
 );
 
-export const wikiContent = new Schema(
+export const wikiPage = new Schema(
   {
     treeId: { type: String, required: true },
     lastEditName: { type: String, required: true },
     content: {
       entityMap: { type: Object, required: true, default: {} },
-      blocks: { type: Array, required: true },
+      blocks: { type: Array, required: true, default: [] },
     },
   },
   { timestamps: true },
@@ -235,8 +235,8 @@ export const getSchemaByName = (name: string): Schema | null => {
       return notification;
     case 'wikiTree':
       return wikiTree;
-    case 'wikiContent':
-      return wikiContent;
+    case 'wikiPage':
+      return wikiPage;
     default:
       return null;
   }

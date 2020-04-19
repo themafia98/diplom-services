@@ -5,7 +5,7 @@ import moment from 'moment';
 import { loadCurrentData, multipleLoadData } from '../../Redux/actions/routerActions/middleware';
 import { addTabAction, openPageWithDataAction, setActiveTabAction } from '../../Redux/actions/routerActions';
 import _ from 'lodash';
-import { Avatar, notification, message, Tooltip, Spin } from 'antd';
+import { Avatar, message, Tooltip, Spin } from 'antd';
 import { Scrollbars } from 'react-custom-scrollbars';
 import clsx from 'clsx';
 import { routeParser, routePathNormalise, buildRequestList } from '../../Utils';
@@ -184,7 +184,6 @@ class StreamBox extends React.Component {
   onRunAction = index => {
     const { streamList: streamListState = [] } = this.state;
     const {
-      addTab,
       setCurrentTab,
       onOpenPageWithData,
       router: { routeData = {}, actionTabs = [] } = {},
@@ -236,7 +235,7 @@ class StreamBox extends React.Component {
         });
 
         const pathParsed =
-          moduleName == 'news'
+          moduleName === 'news'
             ? activePageParsed?.path.replace(`_${type}Notification`, '_informationPage')
             : activePageParsed?.path.replace(`_${type}Notification`, '');
 
@@ -247,11 +246,12 @@ class StreamBox extends React.Component {
           },
           routeDataActive: { ...item },
         });
+        break;
       }
-      default: {
-        return;
-      }
+      default:
+        break;
     }
+    return;
   };
 
   /**
