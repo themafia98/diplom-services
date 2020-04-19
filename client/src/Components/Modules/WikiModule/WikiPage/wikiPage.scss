@@ -7,5 +7,14 @@
   }
   .wikiPage-content {
     position: relative;
+    .rdw-editor-main {
+      background-color: #fff;
+      .DraftEditor-root {
+        height: 48vh;
+        .DraftEditor-editorContainer {
+          height: 48vh;
+        }
+      }
+    }
   }
 }

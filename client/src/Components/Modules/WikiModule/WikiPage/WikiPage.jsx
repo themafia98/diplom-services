@@ -1,13 +1,20 @@
 import React, { useState, useContext, useEffect, useCallback } from 'react';
+import uuid from 'uuid/v4';
+import Textarea from '../../../Textarea';
 import { wikiPageTypes } from '../types';
 import modelContext from '../../../../Models/context';
-import { Spin } from 'antd';
+import { Spin, Button } from 'antd';
+import moment from 'moment';
 
 const WikiPage = props => {
-  const { selectedNode = null, metadata = null } = props;
+  const { selectedNode = null, metadata = null, onChangeWikiPage } = props;
   const models = useContext(modelContext);
 
-  const [data, setResponse] = useState(null);
+  const [pageId, setPageId] = useState(`${uuid()}_virtualPage`);
+  const [lastEditName, setLastEdit] = useState(null);
+  const [lastEditDate, setLastEditDate] = useState(null);
+  const [readOnly, setReadOnly] = useState(true);
+  const [content, setContent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [statusPage, setStatus] = useState(0);
   const [node] = useState(selectedNode);
@@ -39,13 +46,31 @@ const WikiPage = props => {
       }
 
       const { data: { response = {} } = {} } = res || {};
-      setResponse(response);
+      const { content: contentState, pageId, lastEditName } = response;
+
       setLoading(false);
+      setPageId(pageId);
+      setLastEdit(lastEditName);
+      setContent(contentState);
     } catch (error) {
       console.error(error.messsage);
       if (statusPage) setStatus(0);
       setLoading(false);
     }
+  };
+
+  const onChangeStateEditor = () => {
+    setReadOnly(!readOnly);
+  };
+
+  const onSubmitChanges = () => {
+    const paramsState = {
+      pageId,
+      lastEditName,
+      content,
+      lastEditDate: moment().format('DD.MM.YYYY HH:mm:ss'),
+    };
+    if (onChangeWikiPage) onChangeWikiPage(paramsState, onChangeStateEditor);
   };
 
   const fetchWikiPage = useCallback(fetchWikiPageMethod, []);
@@ -56,11 +81,35 @@ const WikiPage = props => {
 
   const { title = '' } = nodeMetadata || {};
 
+  const editorButton = (
+    <Button onClick={onChangeStateEditor} type="primary">
+      Редактировать страницу
+    </Button>
+  );
+
   return (
     <div className="wikiPage">
       <h2 className="wikiPage__title">{title}</h2>
       <div className="wikiPage-content">
-        {loading ? <Spin size="large" /> : data ? <div>Тут ничего нет</div> : <p>{JSON.stringify(data)}</p>}
+        {loading ? (
+          <Spin size="large" />
+        ) : !content && readOnly ? (
+          <div className="empty-wikiPage">
+            {editorButton}
+            <div className="empty-wikiPage__msg">Тут ничего нет</div>
+          </div>
+        ) : (
+          <div className="wikiPage-content">
+            <Textarea editor={true} editorKey={pageId} readOnly={readOnly} contentState={content} />
+            {!readOnly ? (
+              <Button type="primary" onClick={onSubmitChanges}>
+                Принять изменения
+              </Button>
+            ) : content && readOnly ? (
+              editorButton
+            ) : null}
+          </div>
+        )}
       </div>
     </div>
   );

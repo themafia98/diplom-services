@@ -6,13 +6,14 @@ import { textAreaType } from './types';
 const { TextArea } = Input;
 
 const Textarea = props => {
-  const { row, value, className, defaultValue, name, onKeyDown, onClick, onChange, editor } = props;
+  const { row, value, className, name, onKeyDown, onClick, onChange, editor, editorKey = null } = props;
   const valueProps = value || value === '' ? { value } : {};
+  const propsKey = editorKey ? { key: editorKey } : {};
 
   return (
     <React.Fragment>
       {editor ? (
-        <EditorTextarea defaultValue={defaultValue} onChange={onChange} {...valueProps} />
+        <EditorTextarea {...propsKey} {...props} />
       ) : (
         <TextArea
           className={clsx(className, 'defaultTextArea')}

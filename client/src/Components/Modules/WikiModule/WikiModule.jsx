@@ -353,6 +353,15 @@ class WikiModule extends React.PureComponent {
     });
   };
 
+  /**
+   * @param {object} paramsState
+   * @param {Function|null} callback
+   */
+  onChangeWikiPage = (paramsState, callback = null) => {
+    console.log(paramsState);
+    if (callback) callback();
+  };
+
   render() {
     const {
       visibleModal = false,
@@ -398,7 +407,12 @@ class WikiModule extends React.PureComponent {
             </div>
             <div className="col-8">
               {selectedNode ? (
-                <WikiPage key={key} metadata={selectedNodeMetadata} selectedNode={selectedNode} />
+                <WikiPage
+                  key={key}
+                  onChangeWikiPage={this.onChangeWikiPage}
+                  metadata={selectedNodeMetadata}
+                  selectedNode={selectedNode}
+                />
               ) : null}
             </div>
           </div>
