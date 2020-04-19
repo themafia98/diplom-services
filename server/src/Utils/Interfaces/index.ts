@@ -196,7 +196,11 @@ export interface Actions extends EntityActionApi {
   getAll(model: Model<Document>, actionParam: ActionParams, limit?: number | null | undefined): Promise<any>;
   createEntity(model: Model<Document>, item: object): Promise<any>;
   deleteEntity(model: Model<Document>, query: ActionParams): Promise<any>;
-  updateEntity(model: Model<Document>, query: ActionParams): Promise<any>;
+  updateEntity(
+    model: Model<Document>,
+    query: ActionParams,
+    options?: Record<string, null | boolean>,
+  ): Promise<any>;
   findOnce(model: Model<Document>, actionParam: ActionParams): Promise<any>;
 }
 

@@ -357,9 +357,21 @@ class WikiModule extends React.PureComponent {
    * @param {object} paramsState
    * @param {Function|null} callback
    */
-  onChangeWikiPage = (paramsState, callback = null) => {
-    console.log(paramsState);
-    if (callback) callback();
+  onChangeWikiPage = async (paramsState, callback = null) => {
+    try {
+      const { Request } = this.context;
+      const rest = new Request();
+      const res = await rest.sendRequest('/system/wiki/update/single', 'POST', paramsState, true);
+      const { data: { response = {} } = {} } = res || {};
+      if (res?.status !== 200 && res?.status !== 404) {
+        throw new Error(`Bad fetch update wikiPage. ${paramsState}`);
+      }
+      const { metadata = {} } = response || {};
+      if (callback) callback(null, metadata);
+    } catch (error) {
+      console.error(error);
+      if (callback) callback(null);
+    }
   };
 
   render() {
@@ -371,7 +383,7 @@ class WikiModule extends React.PureComponent {
       selectedNode = '',
     } = this.state;
     const { _id: key = '' } = selectedNodeMetadata || {};
-    const { metadata = [], router: { shouldUpdate = false } = {} } = this.props;
+    const { metadata = [], router: { shouldUpdate = false } = {}, udata = {} } = this.props;
     const isLoading = isLoadingState || (shouldUpdate && !metadata?.length);
 
     return (
@@ -409,6 +421,7 @@ class WikiModule extends React.PureComponent {
               {selectedNode ? (
                 <WikiPage
                   key={key}
+                  udata={udata}
                   onChangeWikiPage={this.onChangeWikiPage}
                   metadata={selectedNodeMetadata}
                   selectedNode={selectedNode}

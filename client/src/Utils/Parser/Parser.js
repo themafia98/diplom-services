@@ -178,6 +178,19 @@ const buildRequestList = (metadata = []) => {
     .filter(Boolean);
 };
 
+const getValidContent = contentState => {
+  /** Validation for drawer lib */
+  if (!contentState) return null;
+
+  const validContentState = {
+    ...contentState,
+  };
+
+  if (!contentState?.blocks) validContentState.blocks = [];
+  if (!contentState?.entityMap) validContentState.entityMap = {};
+  return validContentState;
+};
+
 const namespaceParser = {
   dataParser,
   getNormalizedPath,
@@ -186,6 +199,7 @@ const namespaceParser = {
   routeParser,
   routePathNormalise,
   buildRequestList,
+  getValidContent,
 };
 
 export default namespaceParser;

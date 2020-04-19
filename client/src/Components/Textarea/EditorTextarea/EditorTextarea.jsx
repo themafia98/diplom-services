@@ -54,7 +54,10 @@ class EditorTextarea extends React.Component {
   };
 
   onContentStateChange = contentState => {
-    this.setState({ contentState: contentState });
+    const { onChange = null } = this.props;
+    this.setState({ contentState: contentState }, () => {
+      if (onChange) onChange(contentState);
+    });
   };
 
   handlePastedText = (text, html, editorState) => {

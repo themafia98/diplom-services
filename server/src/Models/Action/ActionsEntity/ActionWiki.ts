@@ -1,4 +1,4 @@
-import { Model, Document } from 'mongoose';
+import { Model, Document, Types } from 'mongoose';
 import { ActionParams, Actions, Action } from '../../../Utils/Interfaces';
 import { ParserData, ParserResult } from '../../../Utils/Types';
 import Utils from '../../../Utils';
@@ -41,7 +41,32 @@ class ActionWiki implements Action {
   }
 
   private async getWikiPage(actionParam: ActionParams, model: Model<Document>): ParserData {
-    return null;
+    const { methodQuery = {} } = actionParam as Record<string, ActionParams>;
+    return await this.getEntity().findOnce(model, methodQuery);
+  }
+
+  private async update(actionParam: ActionParams, model: Model<Document>): ParserData {
+    try {
+      const { queryParams = {}, updateItem: updateProps = {} } = actionParam as Record<string, object>;
+      const { pageId: _id } = queryParams as Record<string, string>;
+      const isVirtual = _id.includes('virtual');
+
+      if (isVirtual) {
+        const actionData: ParserData = await this.getEntity().createEntity(model, updateProps);
+        return actionData;
+      }
+
+      const queryFind: ActionParams = { _id: Types.ObjectId(_id) };
+      const query: ActionParams = { _id: Types.ObjectId(_id), updateProps };
+
+      await this.getEntity().updateEntity(model, query);
+      const actionData: Document = await this.getEntity().findOnce(model, queryFind);
+
+      return actionData;
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
   }
 
   public async run(actionParam: ActionParams): ParserData {
@@ -56,6 +81,8 @@ class ActionWiki implements Action {
         return this.createLeaf(actionParam, model);
       case 'delete_leafs':
         return this.deleteLeafs(actionParam, model);
+      case 'update_single':
+        return this.update(actionParam, model);
       case 'wiki_page':
         return this.getWikiPage(actionParam, model);
       default:

@@ -2,7 +2,7 @@ import { ActionProps, ActionParams, Actions, Action } from '../../Utils/Interfac
 import { Model, Document, Mongoose, mongo, Types } from 'mongoose';
 import _ from 'lodash';
 import ActionEntity from './ActionEntity';
-import { ParserData, limiter } from '../../Utils/Types';
+import { ParserData, limiter, OptionsUpdate } from '../../Utils/Types';
 
 /** Actions */
 import ActionLogger from './ActionsEntity/ActionLogger';
@@ -45,6 +45,7 @@ namespace Action {
 
     public async findOnce(model: Model<Document>, actionParam: ActionParams): ParserData {
       try {
+        console.log('find actionParam:', actionParam);
         const actionData = await model.findOne(actionParam);
         return actionData;
       } catch (err) {
@@ -115,7 +116,11 @@ namespace Action {
       }
     }
 
-    public async updateEntity(model: Model<Document>, query: ActionParams): ParserData {
+    public async updateEntity(
+      model: Model<Document>,
+      query: ActionParams,
+      options: OptionsUpdate = {},
+    ): ParserData {
       try {
         const { queryType = 'single', actionParam = null /** params for multiple update */ } = query;
 
@@ -129,7 +134,7 @@ namespace Action {
             const actionData: Document = await model.updateMany(
               { _id: { $in: parsedIds } },
               { $set: { ...updateProps } },
-              { multi: true },
+              { multi: true, ...options },
             );
             const { ok = 0, nModified = 0 } = <Record<string, any>>actionData || {};
 
@@ -138,12 +143,16 @@ namespace Action {
           }
           default: {
             const { _id } = query;
-            const updateProps = <Record<string, any>>query.updateProps;
+            const updateProps: Record<string, any> = _.isPlainObject(query.updateProps)
+              ? <Record<string, object>>query.updateProps
+              : { updateProps: query.updateProps };
+
             const actionData: Document = await model.updateOne(
-              { _id },
+              _id ? { _id } : {},
               {
                 ...updateProps,
               },
+              options,
             );
             return actionData;
           }

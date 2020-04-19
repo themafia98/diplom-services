@@ -205,6 +205,7 @@ export const wikiPage = new Schema(
   {
     treeId: { type: String, required: true },
     lastEditName: { type: String, required: true },
+    lastEditDate: { type: String, required: true },
     content: {
       entityMap: { type: Object, required: true, default: {} },
       blocks: { type: Array, required: true, default: [] },

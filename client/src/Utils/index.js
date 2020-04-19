@@ -18,6 +18,7 @@ const {
   routeParser,
   routePathNormalise,
   buildRequestList,
+  getValidContent,
 } = namespaceParser;
 
 export {
@@ -32,4 +33,5 @@ export {
   errorHook,
   onlineDataHook,
   buildRequestList,
+  getValidContent,
 };

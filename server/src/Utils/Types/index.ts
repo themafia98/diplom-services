@@ -18,6 +18,7 @@ export type DocCompared = Document | Document[];
 export type FileEdit = FileMetadata | DeleteFile | ListFolderResult | BinaryType;
 export type ParserData = Promise<DocCompared | FileEdit | null | object | Blob>;
 export type ParserResult = DocCompared | FileEdit | null | object;
+export type OptionsUpdate = Record<string, boolean | null>;
 
 export type collectionOperations = {
   get: Function;

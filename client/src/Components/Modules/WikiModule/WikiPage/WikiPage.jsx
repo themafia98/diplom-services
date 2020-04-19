@@ -1,16 +1,17 @@
 import React, { useState, useContext, useEffect, useCallback } from 'react';
 import uuid from 'uuid/v4';
+import { getValidContent } from '../../../../Utils';
 import Textarea from '../../../Textarea';
 import { wikiPageTypes } from '../types';
 import modelContext from '../../../../Models/context';
-import { Spin, Button } from 'antd';
+import { Spin, Button, message } from 'antd';
 import moment from 'moment';
 
 const WikiPage = props => {
-  const { selectedNode = null, metadata = null, onChangeWikiPage } = props;
+  const { selectedNode = null, metadata = null, onChangeWikiPage, udata: { displayName = '' } = {} } = props;
   const models = useContext(modelContext);
 
-  const [pageId, setPageId] = useState(`${uuid()}_virtualPage`);
+  const [pageId, setPageId] = useState(`${uuid()}_virtual`);
   const [lastEditName, setLastEdit] = useState(null);
   const [lastEditDate, setLastEditDate] = useState(null);
   const [readOnly, setReadOnly] = useState(true);
@@ -25,33 +26,32 @@ const WikiPage = props => {
       const { Request } = models;
       const { _id, path, accessGroups = [] } = nodeMetadata;
       const rest = new Request();
-      const queryParams = {
+      const query = {
         type: 'wikiPage',
         methodQuery: {
-          _id,
-          accessGroups,
+          treeId: _id,
         },
         params: {
-          idEntity: _id,
+          treeId: _id,
           accessGroups,
           path,
         },
       };
 
       if (!loading) setLoading(true);
-      const res = await rest.sendRequest('/wiki/wikiPage', 'POST', queryParams, true);
+      const res = await rest.sendRequest('/wiki/wikiPage', 'POST', query, true);
 
-      if (res.status !== 200 || res.status !== 404) {
+      if (res.status !== 200 && res.status !== 404) {
         throw new Error('bad fetch wikiPage data');
       }
 
-      const { data: { response = {} } = {} } = res || {};
-      const { content: contentState, pageId, lastEditName } = response;
+      const { data: { response: { metadata = {} } = {} } = {} } = res || {};
+      const { content: contentState = {}, _id: pageId, lastEditName } = metadata || {};
 
       setLoading(false);
       setPageId(pageId);
       setLastEdit(lastEditName);
-      setContent(contentState);
+      setContent(getValidContent(contentState));
     } catch (error) {
       console.error(error.messsage);
       if (statusPage) setStatus(0);
@@ -59,16 +59,46 @@ const WikiPage = props => {
     }
   };
 
-  const onChangeStateEditor = () => {
+  const onChangeStateEditor = (event, data) => {
+    if (!event && data) {
+      debugger;
+      const {
+        content: contentNew,
+        _id: pageIdNew,
+        lastEditDate: lastEditDateNew,
+        lastEditName: lastEditNameNew,
+      } = data || {};
+      setPageId(pageIdNew);
+      setLastEdit(lastEditNameNew);
+      setContent(getValidContent(contentNew));
+      setLastEditDate(lastEditDateNew);
+    }
+
     setReadOnly(!readOnly);
   };
 
+  const onChangeContent = draftContent => {
+    setContent(draftContent);
+  };
+
   const onSubmitChanges = () => {
+    const { _id: treeId } = nodeMetadata;
+    if (!treeId) {
+      onChangeStateEditor();
+      message.error('TreeId not found');
+      return;
+    }
     const paramsState = {
-      pageId,
-      lastEditName,
-      content,
-      lastEditDate: moment().format('DD.MM.YYYY HH:mm:ss'),
+      type: 'wikiPage',
+      queryParams: {
+        pageId,
+      },
+      updateItem: {
+        treeId,
+        lastEditName: displayName,
+        lastEditDate: moment().format('DD.MM.YYYY HH:mm:ss'),
+        content,
+      },
     };
     if (onChangeWikiPage) onChangeWikiPage(paramsState, onChangeStateEditor);
   };
@@ -100,7 +130,13 @@ const WikiPage = props => {
           </div>
         ) : (
           <div className="wikiPage-content">
-            <Textarea editor={true} editorKey={pageId} readOnly={readOnly} contentState={content} />
+            <Textarea
+              editor={true}
+              onChange={onChangeContent}
+              editorKey={pageId}
+              readOnly={readOnly}
+              contentState={content}
+            />
             {!readOnly ? (
               <Button type="primary" onClick={onSubmitChanges}>
                 Принять изменения
