@@ -139,7 +139,7 @@ namespace Wiki {
         });
 
         const data: ParserResult = await actionWikiPage.getActionData(body);
-        console.log('data controller:', data);
+
         if (!data) {
           params.done = false;
           params.status = 'FAIL';

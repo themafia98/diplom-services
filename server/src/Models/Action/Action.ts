@@ -45,7 +45,6 @@ namespace Action {
 
     public async findOnce(model: Model<Document>, actionParam: ActionParams): ParserData {
       try {
-        console.log('find actionParam:', actionParam);
         const actionData = await model.findOne(actionParam);
         return actionData;
       } catch (err) {

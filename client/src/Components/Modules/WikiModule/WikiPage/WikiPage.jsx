@@ -76,8 +76,8 @@ const WikiPage = props => {
     setReadOnly(!readOnly);
   };
 
-  const onChangeContent = draftContent => {
-    setContent(draftContent);
+  const onChangeContent = contentDrawer => {
+    setContent(contentDrawer);
   };
 
   const onSubmitChanges = () => {
@@ -135,14 +135,10 @@ const WikiPage = props => {
               editorKey={pageId}
               readOnly={readOnly}
               contentState={content}
+              shouldDisplayButton={true}
+              onPublish={!readOnly ? onSubmitChanges : content && readOnly ? onChangeStateEditor : null}
+              buttonName={content && readOnly ? 'Редактировать страницу' : 'Принять изменения'}
             />
-            {!readOnly ? (
-              <Button type="primary" onClick={onSubmitChanges}>
-                Принять изменения
-              </Button>
-            ) : content && readOnly ? (
-              editorButton
-            ) : null}
           </div>
         )}
       </div>

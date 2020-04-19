@@ -3,6 +3,7 @@ import { editorTextareaType } from '../types';
 import clsx from 'clsx';
 import { stateFromHTML } from 'draft-js-import-html';
 import { convertFromRaw } from 'draft-js';
+import { getValidContent } from '../../../Utils';
 import { Editor } from 'react-draft-wysiwyg';
 import _ from 'lodash';
 
@@ -23,6 +24,18 @@ class EditorTextarea extends React.Component {
     clear: false,
     mode: '',
     contentType: {},
+  };
+
+  static getDerivedStateFromProps = (props, state) => {
+    const { onChange = null, contentState = null } = props;
+
+    if (_.isFunction(onChange) && contentState) {
+      return {
+        ...state,
+        contentState: getValidContent(contentState),
+      };
+    }
+    return state;
   };
 
   componentDidMount = () => {
@@ -55,9 +68,9 @@ class EditorTextarea extends React.Component {
 
   onContentStateChange = contentState => {
     const { onChange = null } = this.props;
-    this.setState({ contentState: contentState }, () => {
-      if (onChange) onChange(contentState);
-    });
+
+    if (onChange) onChange(contentState);
+    else this.setState({ contentState: contentState });
   };
 
   handlePastedText = (text, html, editorState) => {
@@ -66,7 +79,14 @@ class EditorTextarea extends React.Component {
 
   render() {
     const { contentState = null } = this.state;
-    const { mode = '', onPublish = null, readOnly = false, disabled = false } = this.props;
+    const {
+      mode = '',
+      onPublish = null,
+      readOnly = false,
+      disabled = false,
+      buttonName = '',
+      shouldDisplayButton = false,
+    } = this.props;
 
     const readOnlyProps =
       readOnly && contentState
@@ -74,7 +94,7 @@ class EditorTextarea extends React.Component {
             contentState,
           }
         : {};
-
+    const classNameButton = buttonName ? 'customButton-editor' : 'createNews-button';
     return (
       <div className={clsx('content', readOnly ? 'readOnly' : null)}>
         <Editor
@@ -87,14 +107,14 @@ class EditorTextarea extends React.Component {
           {...readOnlyProps}
           onContentStateChange={this.onContentStateChange}
         />
-        {mode === 'createNewsEdit' && !readOnly ? (
+        {(mode === 'createNewsEdit' && !readOnly) || shouldDisplayButton ? (
           <Button
             disabled={disabled}
             onClick={onPublish ? onPublish.bind(this, contentState) : null}
-            className="createNews-button"
+            className={classNameButton}
             type="primary"
           >
-            Опубликовать
+            {buttonName ? buttonName : 'Опубликовать'}
           </Button>
         ) : null}
       </div>
