@@ -1,94 +1,74 @@
 import _ from 'lodash';
-import { sucessEvent } from '../';
-import { dataParser } from '../';
+import { runLocalUpdateAction, runBadNetworkAction, runRefreshIndexedDb, runNoCorsAction } from './utils';
 
-const namespaceHooks = {
-  errorHook: (error, dispatch, dep = {}) => {
-    const { Request, setStatus, errorRequstAction, loadCurrentData, getState, storeLoad, path } = dep;
-    console.error(error);
-    if (error.status === 400 || error?.message?.toLowerCase().includes('network error')) {
-      const errorRequest = new Request();
-      dispatch(setStatus({ statusRequst: 'offline' }));
-      dispatch(errorRequstAction(error.message));
-      errorRequest.follow(
-        'offline',
-        statusRequst => {
-          if (getState().publicReducer.status !== statusRequst && statusRequst === 'online') {
-            errorRequest.unfollow();
+/** Hooks */
+const errorHook = (error, dispatch, dep = {}) => {
+  const { errorRequstAction } = dep;
+  if (error.status === 400 || error?.message?.toLowerCase().includes('network error')) {
+    runBadNetworkAction(dispatch, error, dep);
+  } else dispatch(errorRequstAction(error.message));
+};
 
-            dispatch(setStatus({ statusRequst }));
-            dispatch(errorRequstAction(null));
-            dispatch(loadCurrentData({ path, storeLoad }));
-          }
-        },
-        3000,
-      );
-    } else dispatch(errorRequstAction(error.message));
-  },
-  onlineDataHook: async (dispatch, dep = {}, multiple = false) => {
-    const {
-      noCorsClient,
-      requestError,
+const onlineDataHook = async (dispatch, dep = {}, multiple = false) => {
+  const {
+    noCorsClient,
+    requestError,
+    copyStore,
+    sortBy,
+    pathValid,
+    isPartData,
+    schema,
+    storeLoad,
+    clientDB,
+    methodQuery,
+    primaryKey,
+    saveComponentStateAction,
+    errorRequstAction,
+    isLocalUpdate: localUpdateStat,
+    indStoreName,
+  } = dep;
+  const undefiendCopyStore = [];
+  let isLocalUpdate = localUpdateStat;
+
+  if (noCorsClient && _.isNull(requestError)) {
+    const [isDone, data] = runNoCorsAction(dispatch, dep, multiple);
+    if (isDone) return data;
+  }
+
+  if (!_.isNull(requestError)) dispatch(errorRequstAction(null));
+  const currentStore = indStoreName ? indStoreName : storeLoad;
+  const [cursor, eventResult, shouldUpdate] = await runRefreshIndexedDb(
+    dispatch,
+    currentStore,
+    dep,
+    multiple,
+  );
+  isLocalUpdate = shouldUpdate;
+  if (cursor) return eventResult;
+
+  if (!isLocalUpdate) {
+    const depParser = {
       copyStore,
+      isPartData,
+      storeLoad,
+      methodQuery,
+      schema,
+      clientDB,
       sortBy,
       pathValid,
-      isPartData,
-      schema,
-      storeLoad,
-      clientDB,
-      methodQuery,
-      primaryKey,
+      requestError,
+    };
+    const depAction = {
       saveComponentStateAction,
       errorRequstAction,
-      isLocalUpdate: localUpdateStat,
-      indStoreName,
-    } = dep;
-    const undefiendCopyStore = [];
-    let isLocalUpdate = localUpdateStat;
+    };
+    runLocalUpdateAction(dispatch, depAction, depParser, multiple);
+  }
+};
 
-    if (noCorsClient && _.isNull(requestError)) {
-      const dep = {
-        noCorsClient,
-        copyStore,
-        sortBy,
-        pathValid,
-        isPartData,
-        storeLoad,
-        schema,
-      };
-      const { data, shouldUpdateState = true } = dataParser(false, false, dep);
-
-      if (shouldUpdateState && !multiple) dispatch(saveComponentStateAction(data));
-      else if (multiple) return data;
-    }
-
-    if (!_.isNull(requestError)) dispatch(errorRequstAction(null));
-
-    const cursor = await clientDB.getCursor(indStoreName ? indStoreName : storeLoad);
-    isLocalUpdate = !_.isNull(cursor);
-
-    if (cursor) return await sucessEvent(dispatch, dep, '', multiple, cursor);
-
-    if (!isLocalUpdate) {
-      const dep = {
-        copyStore,
-        isPartData,
-        storeLoad,
-        methodQuery,
-        schema,
-        clientDB,
-        sortBy,
-        pathValid,
-        requestError,
-      };
-
-      // @ts-ignore
-      const { data, shoudClearError = false, shouldUpdateState = true } = dataParser(true, false, dep);
-      if (shoudClearError) await dispatch(errorRequstAction(null));
-      if (shouldUpdateState && !multiple) await dispatch(saveComponentStateAction(data));
-      else if (multiple) return data;
-    }
-  },
+const namespaceHooks = {
+  errorHook,
+  onlineDataHook,
 };
 
 export default namespaceHooks;

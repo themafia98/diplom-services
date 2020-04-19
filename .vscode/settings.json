@@ -37,5 +37,6 @@
   "appService.zipIgnorePattern": ["node_modules{,/**}", ".vscode{,/**}"],
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
-  }
+  },
+  "javascript.implicitProjectConfig.checkJs": false
 }

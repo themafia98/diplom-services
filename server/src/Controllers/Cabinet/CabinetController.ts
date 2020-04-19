@@ -14,6 +14,7 @@ namespace Cabinet {
   export class CabinetController {
     @Post({ path: '/:uid/loadAvatar', private: true, file: true })
     public async loadAvatar(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+      const { dbm } = server.locals;
       const params: Params = {
         methodQuery: 'update_avatar',
         from: 'users',
@@ -36,7 +37,6 @@ namespace Cabinet {
           throw new Error('Bad convert to base64');
         }
 
-        const dbm = server.locals.dbm;
         const connect = await dbm.connection().catch((err: Error) => console.error(err));
         if (!connect) throw new Error('Bad connect');
 
