@@ -17,4 +17,5 @@ export const dashboardType = {
   onErrorRequstAction: func.isRequired,
   onLogoutAction: func.isRequired,
   onShoudUpdate: func.isRequired,
+  onShowGuide: func.isRequired,
 };

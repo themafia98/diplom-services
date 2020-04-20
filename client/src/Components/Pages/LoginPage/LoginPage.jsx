@@ -4,7 +4,7 @@ import { loginType } from './types';
 import { Redirect, NavLink } from 'react-router-dom';
 import { Button, Input } from 'antd';
 import { connect } from 'react-redux';
-import { showGuile, loadUdata } from '../../../Redux/actions/publicActions';
+import { loadUdata } from '../../../Redux/actions/publicActions';
 import { addTabAction, setActiveTabAction } from '../../../Redux/actions/routerActions';
 
 import Logo from '../../Logo';
@@ -25,7 +25,7 @@ class LoginPage extends React.Component {
     authLoad: false,
   };
 
-  enterLoading = event => {
+  enterLoading = (event) => {
     const { addTab, onLoadUdata } = this.props;
 
     const { Request, config = {} } = this.context;
@@ -46,7 +46,7 @@ class LoginPage extends React.Component {
           },
           false,
         )
-        .then(res => {
+        .then((res) => {
           if (res.status === 200 && res.data && res.data['user'].token) {
             localStorage.setItem('token', JSON.stringify(res.data['user'].token));
             this.setState({
@@ -60,7 +60,7 @@ class LoginPage extends React.Component {
             }, {});
 
             let path = 'mainModule';
-            const defaultModule = config.menu.find(item => item['SIGN'] === 'default');
+            const defaultModule = config.menu.find((item) => item['SIGN'] === 'default');
             if (defaultModule) path = defaultModule.EUID;
 
             onLoadUdata(udataObj);
@@ -68,7 +68,7 @@ class LoginPage extends React.Component {
             addTab(path);
           } else throw new Error(res.status);
         })
-        .catch(error => {
+        .catch((error) => {
           const {
             response: { data = '' },
           } = error || {};
@@ -97,8 +97,8 @@ class LoginPage extends React.Component {
   login = null;
   password = null;
 
-  refLogin = node => (this.login = node);
-  refPassword = node => (this.password = node);
+  refLogin = (node) => (this.login = node);
+  refPassword = (node) => (this.password = node);
 
   render() {
     const { refLogin, refPassword, enterLoading } = this;
@@ -153,7 +153,7 @@ class LoginPage extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { udata = {} } = state.publicReducer || {};
   return {
     router: { ...state.router },
@@ -161,12 +161,11 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    addTab: tab => dispatch(addTabAction(tab)),
-    onShowGuide: show => dispatch(showGuile(show)),
-    setCurrentTab: tab => dispatch(setActiveTabAction(tab)),
-    onLoadUdata: async udata => await dispatch(loadUdata(udata)),
+    addTab: (tab) => dispatch(addTabAction(tab)),
+    setCurrentTab: (tab) => dispatch(setActiveTabAction(tab)),
+    onLoadUdata: async (udata) => await dispatch(loadUdata(udata)),
   };
 };
 

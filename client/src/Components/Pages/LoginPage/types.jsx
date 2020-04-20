@@ -10,7 +10,6 @@ export const loginType = {
   match: object.isRequired,
   authLoad: bool.isRequired,
   udata: udataType.isRequired,
-  onShowGuide: func.isRequired,
   setCurrentTab: func.isRequired,
   onLoadUdata: func.isRequired,
 };

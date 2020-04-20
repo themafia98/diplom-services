@@ -14,7 +14,7 @@ import {
   shouldUpdateAction,
 } from '../../../Redux/actions/routerActions';
 import { loadCurrentData } from '../../../Redux/actions/routerActions/middleware';
-import { errorRequstAction, clearCache, setStatus } from '../../../Redux/actions/publicActions';
+import { errorRequstAction, clearCache, setStatus, showGuile } from '../../../Redux/actions/publicActions';
 import { routeParser } from '../../../Utils';
 
 import Loader from '../../Loader';
@@ -68,9 +68,9 @@ class Dashboard extends React.PureComponent {
       const copyRouteData = { ...routeData };
       let currentArray = currentActionTab.split('_' || '__');
       let regExp = new RegExp(currentArray[0], 'gi');
-      let keys = Object.keys(copyRouteData).filter(key => /Module/gi.test(key) && regExp.test(key));
+      let keys = Object.keys(copyRouteData).filter((key) => /Module/gi.test(key) && regExp.test(key));
 
-      if (keys.every(key => copyRouteData[key].load === true) || requestError === 'Network error') {
+      if (keys.every((key) => copyRouteData[key].load === true) || requestError === 'Network error') {
         return setTimeout(() => {
           this.setState({
             status: status,
@@ -113,24 +113,24 @@ class Dashboard extends React.PureComponent {
     }
   };
 
-  onCollapse = collapsed => {
+  onCollapse = (collapsed) => {
     this.setState({ ...this.state, collapsed });
   };
 
-  logout = async event => {
+  logout = async (event) => {
     const { rest } = this.props;
     if (rest) {
       await rest.signOut();
     }
   };
 
-  closeGuild = event => {
+  closeGuild = (event) => {
     this.setState({
       guideVisible: false,
     });
   };
 
-  updateLoader = event => {
+  updateLoader = (event) => {
     const {
       router,
       router: { currentActionTab, shouldUpdate },
@@ -139,7 +139,7 @@ class Dashboard extends React.PureComponent {
     const copyRouteData = { ...routeData };
     let currentArray = currentActionTab.split('_' || '__');
     let regExp = new RegExp(currentArray[0], 'gi');
-    let keys = Object.keys(copyRouteData).filter(key => /Module/gi.test(key) && regExp.test(key));
+    let keys = Object.keys(copyRouteData).filter((key) => /Module/gi.test(key) && regExp.test(key));
 
     if (keys.length && !shouldUpdate) this.setState({ showLoader: true });
   };
@@ -166,7 +166,7 @@ class Dashboard extends React.PureComponent {
     const tabsCopy = [...tabs];
     const tabsArray = [];
     for (let i = 0; i < tabsCopy.length; i++) {
-      let tabItem = Array.isArray(menu) ? menu.find(tab => tab.EUID === tabsCopy[i]) : null;
+      let tabItem = Array.isArray(menu) ? menu.find((tab) => tab.EUID === tabsCopy[i]) : null;
       if (!tabItem) {
         const PAGEDATA = routeParser({ pageType: 'page', path: tabsCopy[i] });
         const PARENT_CODE = PAGEDATA['page'];
@@ -179,7 +179,7 @@ class Dashboard extends React.PureComponent {
     return tabsArray;
   };
 
-  goHome = event => {
+  goHome = (event) => {
     const { addTab, setCurrentTab, router: { currentActionTab = '', actionTabs = [] } = {} } = this.props;
     const { config = {} } = this.context;
     if (currentActionTab === 'mainModule') return;
@@ -187,12 +187,12 @@ class Dashboard extends React.PureComponent {
     if (config.tabsLimit <= actionTabs.length)
       return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
 
-    let tabItem = actionTabs.find(tab => tab === 'mainModule');
+    let tabItem = actionTabs.find((tab) => tab === 'mainModule');
     if (!tabItem) addTab('mainModule');
     else setCurrentTab('mainModule');
   };
 
-  goCabinet = event => {
+  goCabinet = (event) => {
     const { addTab, setCurrentTab, router: { currentActionTab = '', actionTabs = [] } = {} } = this.props;
     const { config = {} } = this.context;
     if (currentActionTab === 'cabinetModule') return;
@@ -200,7 +200,7 @@ class Dashboard extends React.PureComponent {
     if (config.tabsLimit <= actionTabs.length)
       return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
 
-    let tabItem = actionTabs.find(tab => tab === 'cabinetModule');
+    let tabItem = actionTabs.find((tab) => tab === 'cabinetModule');
     if (!tabItem) addTab('cabinetModule');
     else setCurrentTab('cabinetModule');
   };
@@ -217,7 +217,7 @@ class Dashboard extends React.PureComponent {
     } = this.props;
 
     const actionTabsCopy = [...actionTabs];
-    const isFind = actionTabsCopy.findIndex(tab => tab === path) !== -1;
+    const isFind = actionTabsCopy.findIndex((tab) => tab === path) !== -1;
 
     if (mode === 'open') {
       if (!isFind && config.tabsLimit <= actionTabsCopy.length)
@@ -258,8 +258,9 @@ class Dashboard extends React.PureComponent {
     //let notif = new Notification(notifTitle, options);
   };
 
-  installApp = event => {
-    Notification.requestPermission().then(function(result) {
+  installApp = (event) => {
+    const { onShowGuide = null } = this.props;
+    Notification.requestPermission().then(function (result) {
       if (result === 'granted') {
         this.randomNotification();
       }
@@ -273,13 +274,14 @@ class Dashboard extends React.PureComponent {
     }
     deferredPrompt.prompt();
 
-    deferredPrompt.userChoice.then(choiceResult => {
+    deferredPrompt.userChoice.then((choiceResult) => {
       if (choiceResult.outcome === 'accepted') {
         console.log('PWA setup accepted');
         // hide our user interface that shows our A2HS button
       } else {
         console.log('PWA setup rejected');
       }
+      if (onShowGuide) onShowGuide(false);
       deferredPrompt = null;
     });
   };
@@ -370,7 +372,7 @@ class Dashboard extends React.PureComponent {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { firstConnect = false, udata = {} } = state.publicReducer;
   return {
     router: { ...state.router },
@@ -380,21 +382,22 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    addTab: tab => dispatch(addTabAction(tab)),
-    removeTab: tab => dispatch(removeTabAction(tab)),
-    onSetStatus: status => dispatch(setStatus(status)),
-    onClearCache: props => dispatch(clearCache(props)),
-    setCurrentTab: tab => dispatch(setActiveTabAction(tab)),
+    addTab: (tab) => dispatch(addTabAction(tab)),
+    onShowGuide: (show) => dispatch(showGuile(show)),
+    removeTab: (tab) => dispatch(removeTabAction(tab)),
+    onSetStatus: (status) => dispatch(setStatus(status)),
+    onClearCache: (props) => dispatch(clearCache(props)),
+    setCurrentTab: (tab) => dispatch(setActiveTabAction(tab)),
     onLoadCurrentData: ({ path, storeLoad }) => dispatch(loadCurrentData({ path, storeLoad })),
-    onErrorRequstAction: async error => await errorRequstAction(error),
-    onShoudUpdate: async update => await shouldUpdateAction(update),
+    onErrorRequstAction: async (error) => await errorRequstAction(error),
+    onShoudUpdate: async (update) => await shouldUpdateAction(update),
     onLogoutAction: async () => await dispatch(logoutAction()),
   };
 };
 
-window.addEventListener('beforeinstallprompt', e => {
+window.addEventListener('beforeinstallprompt', (e) => {
   // Prevent Chrome 67 and earlier from automatically showing the prompt
   e.preventDefault();
   // Stash the event so it can be triggered later.
@@ -402,7 +405,7 @@ window.addEventListener('beforeinstallprompt', e => {
   console.log('install');
 });
 
-window.addEventListener('appinstalled', evt => {
+window.addEventListener('appinstalled', (evt) => {
   console.log('appinstalled fired', evt);
 });
 

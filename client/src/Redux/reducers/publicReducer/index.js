@@ -11,7 +11,7 @@ import {
 const initialState = {
   status: 'online',
   prewStatus: 'online',
-  firstConnect: false,
+  firstConnect: true,
   requestError: null,
   udata: {},
   caches: {},
@@ -65,7 +65,7 @@ export default (state = initialState, action) => {
       let keys = null;
 
       //const isObjects = typeof data === "object" && data !== null && Object.keys(data).length > 1;
-      const isObjectsArray = !Object.keys(data).every(key => isNaN(Number(key)));
+      const isObjectsArray = !Object.keys(data).every((key) => isNaN(Number(key)));
 
       const validData = isObjectsArray
         ? Object.entries(data)
@@ -75,7 +75,7 @@ export default (state = initialState, action) => {
 
       if (validData.length > 1) {
         keys = [];
-        validData.forEach(item => {
+        validData.forEach((item) => {
           if (pk) {
             keys.push(`${item.depKey}${item._id}${primaryKey}${pk}`);
           } else keys.push(`${item.depKey}${item._id}${primaryKey}`);
@@ -85,7 +85,7 @@ export default (state = initialState, action) => {
         const _items = {};
 
         let i = 0;
-        keys.forEach(value => {
+        keys.forEach((value) => {
           _items[value] = { ...validData[i] };
           i += 1;
         });
