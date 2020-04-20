@@ -41,11 +41,11 @@ class ModalWindow extends React.PureComponent {
   static contextType = modelContext;
   static propTypes = modalWindowType;
 
-  onMessage = event => {
+  onMessage = (event) => {
     message.warning('Вы в режиме редактирования карточки.');
   };
 
-  onChangeDescription = event => {
+  onChangeDescription = (event) => {
     const { currentTarget: { value: valueTarget = '' } = {} } = event;
     const { description = {} } = this.state;
 
@@ -59,7 +59,7 @@ class ModalWindow extends React.PureComponent {
       });
   };
 
-  showModal = event => {
+  showModal = (event) => {
     const { mode } = this.props;
     const { currentTarget = {} } = event;
     let type = mode;
@@ -76,7 +76,7 @@ class ModalWindow extends React.PureComponent {
     });
   };
 
-  handleOk = async event => {
+  handleOk = async (event) => {
     const {
       name,
       password,
@@ -134,7 +134,7 @@ class ModalWindow extends React.PureComponent {
         item: { ...routeDataActive },
         store: 'tasks',
       })
-        .then(res => {
+        .then((res) => {
           onCancelEditModeContent(event);
           this.setState({
             ...this.state,
@@ -145,7 +145,7 @@ class ModalWindow extends React.PureComponent {
           });
           message.success('Описание изменено.');
         })
-        .catch(error => {
+        .catch((error) => {
           message.error('Ошибка редактирования.');
         });
     } else if ((visible && mode === 'jur' && this.validation() && !typeValue) || typeValue === 'jur') {
@@ -186,7 +186,7 @@ class ModalWindow extends React.PureComponent {
           },
           true,
         )
-        .catch(error => {
+        .catch((error) => {
           console.error(error);
           message.error('Ошибка глобального уведомления');
         });
@@ -219,7 +219,7 @@ class ModalWindow extends React.PureComponent {
         item: { ...routeDataActive },
         store: 'tasks',
       })
-        .then(res => {
+        .then((res) => {
           this.setState({
             ...this.state,
             visible: false,
@@ -229,13 +229,13 @@ class ModalWindow extends React.PureComponent {
           });
           message.success('Статус изменен.');
         })
-        .catch(error => {
+        .catch((error) => {
           message.error('Ошибка редактирования.');
         });
     }
   };
 
-  handleCancel = event => {
+  handleCancel = (event) => {
     this.setState({
       ...this.state,
       visible: false,
@@ -247,14 +247,14 @@ class ModalWindow extends React.PureComponent {
     });
   };
 
-  onChangeSelect = event => {
+  onChangeSelect = (event) => {
     const { type } = this.state;
     if (type === 'statusTask') {
       this.setState({ ...this.state, taskStatus: event });
     } else this.setState({ ...this.state, departament: event });
   };
 
-  onChange = event => {
+  onChange = (event) => {
     const { target } = event;
     if (target.className.split(' ')[1] === 'surname') {
       this.setState({
@@ -319,7 +319,7 @@ class ModalWindow extends React.PureComponent {
     else return false;
   };
 
-  onChangeTask = event => {
+  onChangeTask = (event) => {
     if (!event) return;
 
     const { target = {}, _isValid = null } = event;

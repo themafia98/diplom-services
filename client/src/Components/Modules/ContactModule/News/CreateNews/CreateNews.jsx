@@ -14,14 +14,14 @@ class CreateNews extends React.PureComponent {
   static contextType = modelContext;
   static propTypes = createNewsType;
 
-  setEditorValue = event => {
+  setEditorValue = (event) => {
     this.setState({
       editorValue: event,
     });
   };
 
   // @ts-ignore
-  clearStatus = event => {
+  clearStatus = (event) => {
     const { clear } = this.state;
     if (clear)
       this.setState({
@@ -36,7 +36,7 @@ class CreateNews extends React.PureComponent {
     });
   };
 
-  onPublish = async contentState => {
+  onPublish = async (contentState) => {
     const { statusApp = '', udata: { displayName = '', _id: uid = '' } = {} } = this.props;
     const { titleNews = '' } = this.state;
     const { Request } = this.context;

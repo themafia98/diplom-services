@@ -24,13 +24,13 @@ const dataParser = (flag = false, isLocalUpdate = true, dep = {}) => {
   let shoudClearError = false;
   const templateSchema = getStoreSchema(storeLoad, methodQuery);
 
-  let storeCopyValid = copyStore.map(it => schema.getSchema(templateSchema, it)).filter(Boolean);
-  storeCopyValid.forEach(it => schema.isPublicKey(it) && clientDB.updateItem(storeLoad, it));
+  let storeCopyValid = copyStore.map((it) => schema.getSchema(templateSchema, it)).filter(Boolean);
+  storeCopyValid.forEach((it) => schema.isPublicKey(it) && clientDB.updateItem(storeLoad, it));
 
   if (requestError !== null) shoudClearError = true;
 
   const sortedCopyStore =
-    !sortBy && storeCopyValid.every(it => it.createdAt)
+    !sortBy && storeCopyValid.every((it) => it.createdAt)
       ? storeCopyValid.sort((a, b) => {
           const aDate = moment(a.createdAt).unix();
           const bDate = moment(b.createdAt).unix();
@@ -149,7 +149,7 @@ const buildRequestList = (metadata = []) => {
   const actionTypes = _.uniq(metadata.map(({ action: { type = '' } }) => type));
   const actionsList = [];
 
-  actionTypes.forEach(actionType => {
+  actionTypes.forEach((actionType) => {
     const action = metadata.filter(({ action: { type = '' } }) => type === actionType);
     actionsList.push([...action]);
   });
@@ -157,7 +157,7 @@ const buildRequestList = (metadata = []) => {
   if (!actionTypes.length) return actionTypes;
 
   return actionsList
-    .map(actionsArray => {
+    .map((actionsArray) => {
       if (!Array.isArray(actionsArray)) return null;
       const item = actionsArray[0] || {};
       const { action = null } = item || {};
@@ -171,14 +171,14 @@ const buildRequestList = (metadata = []) => {
         methodRequst,
         useStore: Boolean(storeLoad),
         options: {
-          keys: _.uniq(actionsArray.map(notification => notification?.action?.link)),
+          keys: _.uniq(actionsArray.map((notification) => notification?.action?.link)),
         },
       };
     })
     .filter(Boolean);
 };
 
-const getValidContent = contentState => {
+const getValidContent = (contentState) => {
   /** Validation for drawer lib */
   if (!contentState) return null;
 

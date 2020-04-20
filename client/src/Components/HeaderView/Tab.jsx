@@ -6,13 +6,13 @@ import { Icon, Tooltip } from 'antd';
 class Tab extends React.PureComponent {
   static propTypes = tabType;
 
-  eventHandler = event => {
+  eventHandler = (event) => {
     const { hendlerTab: callbackHendlerTab, itemKey } = this.props;
     event.stopPropagation();
     callbackHendlerTab(event, itemKey, 'open');
   };
 
-  eventCloseHandler = event => {
+  eventCloseHandler = (event) => {
     const { hendlerTab: callbackHendlerTab, itemKey } = this.props;
     event.stopPropagation();
     if (itemKey === 'mainModule') return;
@@ -21,7 +21,7 @@ class Tab extends React.PureComponent {
   };
 
   tab = null;
-  tabRef = node => (this.tab = node);
+  tabRef = (node) => (this.tab = node);
 
   render() {
     const { value, active, hendlerTab: callbackHendlerTab, itemKey, sizeTab = 10 } = this.props;

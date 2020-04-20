@@ -136,22 +136,22 @@ class DynamicTable extends React.PureComponent {
     this.setState({ searchText: selectedKeys[0], searchedColumn: dataIndex });
   };
 
-  handleReset = clearFilters => {
+  handleReset = (clearFilters) => {
     clearFilters();
     this.setState({ searchText: '' });
   };
 
-  getColumn = dataIndex => ({
+  getColumn = (dataIndex) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => {
       return (
         <div style={{ padding: 8 }}>
           <Input
-            ref={node => {
+            ref={(node) => {
               this.searchInput = node;
             }}
             placeholder={`Поиск по ${dataIndex}`}
             value={selectedKeys[0]}
-            onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+            onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
             onPressEnter={() => this.handleSearch(selectedKeys, confirm)}
             style={{ width: 188, marginBottom: 8, display: 'block' }}
           />
@@ -170,20 +170,17 @@ class DynamicTable extends React.PureComponent {
         </div>
       );
     },
-    filterIcon: filtered => <Icon type="search" style={{ color: filtered ? '#1890ff' : undefined }} />,
+    filterIcon: (filtered) => <Icon type="search" style={{ color: filtered ? '#1890ff' : undefined }} />,
     onFilter: (value, record) => {
-      const filterText = record[dataIndex]
-        .toString()
-        .toLowerCase()
-        .includes(value.toLowerCase());
+      const filterText = record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
       return filterText;
     },
-    onFilterDropdownVisibleChange: visible => {
+    onFilterDropdownVisibleChange: (visible) => {
       if (visible) {
         setTimeout(() => this.searchInput.select());
       }
     },
-    render: text => {
+    render: (text) => {
       const isDateString = _.isArray(text) && moment(text[0], 'DD.MM.YYYY')?._isValid;
       const isArrayEditors = _.isArray(text) && !isDateString;
       const className =
@@ -205,7 +202,7 @@ class DynamicTable extends React.PureComponent {
     },
   });
 
-  onClickRow = record => {
+  onClickRow = (record) => {
     return {
       onClick: () => {
         const {
@@ -226,7 +223,7 @@ class DynamicTable extends React.PureComponent {
         const { moduleId = '', page = '' } = routeParser({ path });
         if (!moduleId || !page) return;
 
-        const index = actionTabs.findIndex(tab => tab.includes(page) && tab.includes(key));
+        const index = actionTabs.findIndex((tab) => tab.includes(page) && tab.includes(key));
         const isFind = index !== -1;
 
         if (!isFind) {
@@ -277,10 +274,10 @@ class DynamicTable extends React.PureComponent {
       data =
         flag && data?.length
           ? data
-              .map(it => {
+              .map((it) => {
                 if (
                   !_.isNull(it.editor) &&
-                  it.editor.some(editor => {
+                  it.editor.some((editor) => {
                     return editor === udata.displayName;
                   })
                 )

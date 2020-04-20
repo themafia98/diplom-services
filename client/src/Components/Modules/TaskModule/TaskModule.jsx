@@ -133,10 +133,10 @@ class TaskModule extends React.PureComponent {
 
   moduleTask = null;
   controller = null;
-  refModuleTask = node => (this.moduleTask = node);
-  refControllers = node => (this.controller = node);
+  refModuleTask = (node) => (this.moduleTask = node);
+  refControllers = (node) => (this.controller = node);
 
-  handlerNewTask = event => {
+  handlerNewTask = (event) => {
     const {
       addTab,
       setCurrentTab,
@@ -148,7 +148,7 @@ class TaskModule extends React.PureComponent {
       if (config.tabsLimit <= actionTabs.length)
         return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
       const path = 'taskModule_createTask';
-      const isFind = actionTabs.findIndex(tab => tab === path) !== -1;
+      const isFind = actionTabs.findIndex((tab) => tab === path) !== -1;
 
       if (!isFind) addTab(routeParser({ path }));
       else if (currentActionTab !== path) setCurrentTab(path);
@@ -157,10 +157,10 @@ class TaskModule extends React.PureComponent {
 
   checkBackground = (path, mode = 'default') => {
     const { actionTabs = [] } = this.props;
-    if (mode === 'default') return actionTabs.some(actionTab => actionTab === path);
+    if (mode === 'default') return actionTabs.some((actionTab) => actionTab === path);
   };
 
-  getTaskByPath = path => {
+  getTaskByPath = (path) => {
     if (path) {
       const { height, heightController } = this.state;
       const isList = path === 'taskModule_myTasks' || path === 'taskModule_all';
@@ -303,7 +303,7 @@ class TaskModule extends React.PureComponent {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { udata = {} } = state.publicReducer;
 
   return {
@@ -313,13 +313,13 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    addTab: tab => dispatch(addTabAction(tab)),
-    removeTab: tab => dispatch(removeTabAction(tab)),
-    onOpenPageWithData: data => dispatch(openPageWithDataAction(data)),
-    onLoadCacheData: props => dispatch(loadCacheData(props)),
-    onLoadCurrentData: props => dispatch(loadCurrentData({ ...props })),
+    addTab: (tab) => dispatch(addTabAction(tab)),
+    removeTab: (tab) => dispatch(removeTabAction(tab)),
+    onOpenPageWithData: (data) => dispatch(openPageWithDataAction(data)),
+    onLoadCacheData: (props) => dispatch(loadCacheData(props)),
+    onLoadCurrentData: (props) => dispatch(loadCurrentData({ ...props })),
   };
 };
 export { TaskModule };

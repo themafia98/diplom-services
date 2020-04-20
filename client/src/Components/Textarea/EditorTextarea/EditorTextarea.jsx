@@ -66,7 +66,7 @@ class EditorTextarea extends React.Component {
     }
   };
 
-  onContentStateChange = contentState => {
+  onContentStateChange = (contentState) => {
     const { onChange = null } = this.props;
 
     if (onChange) onChange(contentState);

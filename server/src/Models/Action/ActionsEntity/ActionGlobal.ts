@@ -18,9 +18,7 @@ class ActionGlobal implements Action {
     const moduleName: string = (actionParam as Record<string, string>).moduleName;
 
     const path: string = `/${moduleName}/${entityId}/`;
-    const files: files.ListFolderResult | null = await this.getEntity()
-      .getStore()
-      .getFilesByPath(path);
+    const files: files.ListFolderResult | null = await this.getEntity().getStore().getFilesByPath(path);
     return files;
   }
 
@@ -32,9 +30,7 @@ class ActionGlobal implements Action {
 
     const path: string = `${store}${url.split('download')[1]}` || '';
 
-    const deleteFile: files.DeleteResult | null = await this.getEntity()
-      .getStore()
-      .deleteFile(path);
+    const deleteFile: files.DeleteResult | null = await this.getEntity().getStore().deleteFile(path);
 
     if (!deleteFile) return null;
     else return deleteFile;
@@ -47,9 +43,7 @@ class ActionGlobal implements Action {
 
     const path: string = `/${moduleName}/${entityId}/${filename}`;
 
-    const file: files.FileMetadata | null = await this.getEntity()
-      .getStore()
-      .downloadFile(path);
+    const file: files.FileMetadata | null = await this.getEntity().getStore().downloadFile(path);
     return file;
   }
 

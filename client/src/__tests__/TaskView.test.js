@@ -32,7 +32,7 @@ describe('<TaskView /> template', () => {
 
     const keys = Object.keys(card);
 
-    keys.forEach(keyCard => {
+    keys.forEach((keyCard) => {
       if (keyCard === 'description') {
         expect(TaskViewWrapper.find('.descriptionContent').prop('children')).toEqual(card[keyCard]);
       } else if (keyCard === 'date') {

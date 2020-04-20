@@ -27,7 +27,7 @@ class Contacts extends React.PureComponent {
         isLoadingModule: true,
       },
       () => {
-        this.fetchData(res => {
+        this.fetchData((res) => {
           this.setState({
             data: res?.metadata,
             isLoadingModule: false,
@@ -54,7 +54,7 @@ class Contacts extends React.PureComponent {
     // }
   };
 
-  fetchData = async callback => {
+  fetchData = async (callback) => {
     const { Request } = this.context;
     try {
       const rest = new Request();

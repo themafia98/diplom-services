@@ -3,7 +3,7 @@ import moment from 'moment';
 
 const runNoCorsParser = (copyStore, sortBy, storeLoad, pathValid, isPartData) => {
   const sortedCopyStore =
-    !sortBy && copyStore.every(it => it.createdAt)
+    !sortBy && copyStore.every((it) => it.createdAt)
       ? copyStore.sort((a, b) => {
           const aDate = moment(a.createdAt).unix();
           const bDate = moment(b.createdAt).unix();

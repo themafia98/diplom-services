@@ -14,7 +14,7 @@ class ErrorBoundary extends React.Component {
     return { hasError: true, error: error };
   }
 
-  update = event => {
+  update = (event) => {
     this.setState({
       hasError: false,
       eventId: null,
@@ -23,14 +23,14 @@ class ErrorBoundary extends React.Component {
   };
 
   componentDidCatch(error, errorInfo) {
-    Sentry.withScope(scope => {
+    Sentry.withScope((scope) => {
       scope.setExtras(errorInfo);
       const eventId = Sentry.captureException(error);
       this.setState({ eventId });
     });
   }
 
-  logger = event => {
+  logger = (event) => {
     Sentry.showReportDialog({ eventId: this.state.eventId });
   };
 

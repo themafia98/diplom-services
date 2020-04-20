@@ -26,7 +26,7 @@ const userSchema = new Schema(
 
 userSchema
   .virtual('password')
-  .set(async function(password: string): Promise<void> {
+  .set(async function (password: string): Promise<void> {
     this._plainPassword = password;
     if (password) {
       this.passwordHash = bcrypt.hashSync(<string>password, 10);
@@ -35,17 +35,17 @@ userSchema
       this.passwordHash = undefined;
     }
   })
-  .get(function() {
+  .get(function () {
     return <string>this._plainPassword;
   });
 
-userSchema.methods.checkPassword = async function(password: string): Promise<boolean> {
+userSchema.methods.checkPassword = async function (password: string): Promise<boolean> {
   if (!password) return false;
 
   return await bcrypt.compare(password, this.passwordHash);
 };
 
-userSchema.methods.changePassword = async function(password: string): Promise<string | null> {
+userSchema.methods.changePassword = async function (password: string): Promise<string | null> {
   try {
     const passwordHash: string = bcrypt.hashSync(<string>password, 10);
 
@@ -58,7 +58,7 @@ userSchema.methods.changePassword = async function(password: string): Promise<st
   }
 };
 
-userSchema.methods.generateJWT = function(): any {
+userSchema.methods.generateJWT = function (): any {
   const today = new Date();
   const expirationDate = new Date(<Date>today);
   expirationDate.setDate(today.getDate() + 30);
@@ -73,7 +73,7 @@ userSchema.methods.generateJWT = function(): any {
   );
 };
 
-userSchema.methods.toAuthJSON = function() {
+userSchema.methods.toAuthJSON = function () {
   return {
     _id: this._id,
     email: this.email,

@@ -7,12 +7,12 @@ import Contacts from './Contacts';
 class CustomersModule extends React.PureComponent {
   static propTypes = customersModuleType;
 
-  checkBackground = path => {
+  checkBackground = (path) => {
     const { actionTabs = [] } = this.props;
-    return actionTabs.some(actionTab => actionTab.startsWith(path) || actionTab === path);
+    return actionTabs.some((actionTab) => actionTab.startsWith(path) || actionTab === path);
   };
 
-  getComponentByPath = path => {
+  getComponentByPath = (path) => {
     const { router = {}, onSetStatus } = this.props;
     if (path) {
       const isBackgroundContacts = this.checkBackground('customersModule_contacts');

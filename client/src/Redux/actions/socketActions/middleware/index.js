@@ -14,7 +14,7 @@ const /**
    * @param {(arg0: { type: string; payload: any; }) => void} dispatch
    * @param {() => { (): any; new (): any; socketReducer: {}; publicReducer: {}; }} getState
    */
-  loadActiveChats = payload => async (dispatch, getState, { schema, Request, clientDB }) => {
+  loadActiveChats = (payload) => async (dispatch, getState, { schema, Request, clientDB }) => {
     const {
       path = '',
       actionPath = '',
@@ -68,9 +68,9 @@ const /**
       const { udata: { _id: uidState = '' } = {} } = getState().publicReducer || {};
       let activeChatRoom = null;
       if (shouldRefresh) {
-        activeChatRoom = listdata.find(room => {
+        activeChatRoom = listdata.find((room) => {
           const { membersIds = [] } = room || {};
-          const findResult = membersIds.every(id => {
+          const findResult = membersIds.every((id) => {
             if (id === isFake || id === uidState) {
               return true;
             }
@@ -83,7 +83,7 @@ const /**
 
       dispatch(
         onLoadActiveChats({
-          usersList: usersList.filter(user => user._id !== uidState),
+          usersList: usersList.filter((user) => user._id !== uidState),
           activeChatRoom,
           shouldLoadingMessage: activeChatRoom && shouldRefresh,
           listdata,
@@ -132,7 +132,7 @@ const /**
 
       const rest = new Request();
 
-      const configToken = listdata.find(config => config && config.tokenRoom === token) || null;
+      const configToken = listdata.find((config) => config && config.tokenRoom === token) || null;
 
       if (!configToken) {
         throw new Error('Bad config token');
@@ -183,7 +183,7 @@ const /**
    * @param {(arg0: { type: string; payload: any; }) => void} dispatch
    * @param {() => { (): any; new (): any; socketReducer: {}; publicReducer: {}; }} getState
    */
-  updateRooms = payload => async (dispatch, getState, { schema, Request, clientDB }) => {
+  updateRooms = (payload) => async (dispatch, getState, { schema, Request, clientDB }) => {
     try {
       const { room: { tokenRoom: token = '', membersIds = [] } = {}, fullUpdate = false, activeModule } =
         payload || {};
@@ -194,8 +194,8 @@ const /**
 
       let shouldAdd = false;
       if (Array.isArray(membersIds) && membersIds.length && fullUpdate) {
-        if (!membersIds.some(id => id === uidState)) {
-          shouldAdd = !membersIds.some(id => id === uidState);
+        if (!membersIds.some((id) => id === uidState)) {
+          shouldAdd = !membersIds.some((id) => id === uidState);
         }
       }
 
@@ -238,7 +238,7 @@ const /**
           /**
            * @param {{ _id: string; }} user
            */
-          usersList: usersList.filter(user => user._id !== uidState),
+          usersList: usersList.filter((user) => user._id !== uidState),
           listdata: normalizeRooms,
           options: {
             socket: {

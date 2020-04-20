@@ -9,13 +9,13 @@ const { Sider } = Layout;
 const { SubMenu } = Menu;
 
 const MenuView = ({ collapsed, cbOnCollapse, items, cbMenuHandler, activeTabEUID, cbGoMain }) => {
-  const renderMenu = items => {
-    const parent = items.filter(parentItem => {
+  const renderMenu = (items) => {
+    const parent = items.filter((parentItem) => {
       return _.isNull(parentItem.PARENT_CODE);
     });
 
-    return parent.map(item => {
-      const children = items.filter(childParentItem => {
+    return parent.map((item) => {
+      const children = items.filter((childParentItem) => {
         return item.EUID === childParentItem.PARENT_CODE;
       });
       if (children.length > 0) {
@@ -30,7 +30,7 @@ const MenuView = ({ collapsed, cbOnCollapse, items, cbMenuHandler, activeTabEUID
               </span>
             }
           >
-            {children.map(child => (
+            {children.map((child) => (
               <Menu.Item onClick={cbMenuHandler} key={child.EUID}>
                 {child.VALUE}
               </Menu.Item>

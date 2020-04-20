@@ -53,9 +53,9 @@ class ContactModule extends React.PureComponent {
       actionTabs = [],
     } = this.props;
 
-    const filterActionTab = actionTabs.filter(tab => tab.includes('_informationPage__'));
+    const filterActionTab = actionTabs.filter((tab) => tab.includes('_informationPage__'));
     const itemsKeys = filterActionTab
-      .map(it => {
+      .map((it) => {
         const route = routeParser({ pageType: 'moduleItem', path: it });
         if (typeof route !== 'string' && route.itemId) {
           return route.itemId;
@@ -64,7 +64,7 @@ class ContactModule extends React.PureComponent {
       .filter(Boolean);
 
     return itemsKeys
-      .map(key => {
+      .map((key) => {
         const route = routeParser({ pageType: 'moduleItem', path: currentActionTab });
 
         if (!_.isEmpty(listdata) && keyEntity && key) {
@@ -79,12 +79,12 @@ class ContactModule extends React.PureComponent {
       .filter(Boolean);
   };
 
-  checkBackground = path => {
+  checkBackground = (path) => {
     const { actionTabs = [] } = this.props;
-    return actionTabs.some(actionTab => actionTab.startsWith(path) || actionTab === path);
+    return actionTabs.some((actionTab) => actionTab.startsWith(path) || actionTab === path);
   };
 
-  getContactContentByPath = path => {
+  getContactContentByPath = (path) => {
     const isBackgroundChat = this.checkBackground('contactModule_chat');
     const isBackgrounNews = this.checkBackground('contactModule_feedback');
     const isBackgroundInfoPage = this.checkBackground('contactModule_informationPage');
@@ -150,7 +150,7 @@ class ContactModule extends React.PureComponent {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const {
     router = {},
     publicReducer: { udata = {} },
@@ -158,9 +158,9 @@ const mapStateToProps = state => {
   return { router, udata };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    onLoadCurrentData: props => dispatch(loadCurrentData({ ...props })),
+    onLoadCurrentData: (props) => dispatch(loadCurrentData({ ...props })),
   };
 };
 

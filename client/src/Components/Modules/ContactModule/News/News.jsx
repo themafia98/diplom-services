@@ -41,7 +41,7 @@ class News extends React.PureComponent {
   };
 
   // @ts-ignore
-  onOpenCreateNews = event => {
+  onOpenCreateNews = (event) => {
     const { onOpenPageWithData, router: { actionTabs = [] } = {}, setCurrentTab } = this.props;
     const moduleId = 'createNews';
     const page = 'contactModule';
@@ -52,7 +52,7 @@ class News extends React.PureComponent {
       pathData: { page, moduleId },
     });
 
-    const index = actionTabs.findIndex(tab => tab === routeNormalize.path);
+    const index = actionTabs.findIndex((tab) => tab === routeNormalize.path);
     const isFind = index !== -1;
 
     if (!isFind) {
@@ -85,8 +85,8 @@ class News extends React.PureComponent {
       pathData: { page, moduleId, key },
     });
 
-    const index = actionTabs.findIndex(tab => tab.replace('___link', '') === routeNormalize.path);
-    const findItem = listdata.find(it => it._id === key);
+    const index = actionTabs.findIndex((tab) => tab.replace('___link', '') === routeNormalize.path);
+    const findItem = listdata.find((it) => it._id === key);
     const dataFind = findItem ? { ...findItem } : {};
     const isFind = index !== -1;
 
@@ -100,7 +100,7 @@ class News extends React.PureComponent {
     } else setCurrentTab(actionTabs[index]);
   };
 
-  renderNewsBlock = currentPage => {
+  renderNewsBlock = (currentPage) => {
     const {
       router: { routeData: { contactModule: { news = [] } = {} } = {} },
     } = this.props;
@@ -128,7 +128,7 @@ class News extends React.PureComponent {
       .filter(Boolean);
   };
 
-  onChange = pageNumber => {
+  onChange = (pageNumber) => {
     const { currentPage } = this.state;
     if (currentPage !== pageNumber)
       this.setState({
@@ -182,7 +182,7 @@ class News extends React.PureComponent {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { publicReducer: { status: statusApp = '' } = {}, router = {} } = state;
   return {
     router,
@@ -190,11 +190,11 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispathToProps = dispatch => {
+const mapDispathToProps = (dispatch) => {
   return {
-    onOpenPageWithData: data => dispatch(openPageWithDataAction(data)),
-    setCurrentTab: tab => dispatch(setActiveTabAction(tab)),
-    onCaching: async props => await dispatch(middlewareCaching(props)),
+    onOpenPageWithData: (data) => dispatch(openPageWithDataAction(data)),
+    setCurrentTab: (tab) => dispatch(setActiveTabAction(tab)),
+    onCaching: async (props) => await dispatch(middlewareCaching(props)),
   };
 };
 

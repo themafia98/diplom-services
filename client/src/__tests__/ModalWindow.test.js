@@ -30,7 +30,7 @@ describe('<ModalWindow />', () => {
     expect(toJson(ModalWindowWrapper)).toMatchSnapshot();
     expect(ModalWindowWrapper.find('Button').text()).toEqual('Регистрация');
 
-    ModalWindowWrapper.find('Button').forEach(node => {
+    ModalWindowWrapper.find('Button').forEach((node) => {
       expect(node.simulate('click', [])).toBeTruthy();
     });
 

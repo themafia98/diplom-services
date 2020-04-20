@@ -53,7 +53,7 @@ class Chat extends React.PureComponent {
     }
   };
 
-  componentDidUpdate = prevProps => {
+  componentDidUpdate = (prevProps) => {
     const {
       socketConnection,
       tokenRoom = '',
@@ -115,7 +115,7 @@ class Chat extends React.PureComponent {
   /**
    * @param {object} msgObj
    */
-  addMsg = msgObj => {
+  addMsg = (msgObj) => {
     const { onAddMsg } = this.props;
     if (_.isObject(msgObj)) onAddMsg(msgObj);
   };
@@ -123,7 +123,7 @@ class Chat extends React.PureComponent {
   /**
    * @param {object} entity
    */
-  updateFakeRoom = entity => {
+  updateFakeRoom = (entity) => {
     const { onUpdateRoom = null } = this.props;
     const { room = {}, msg = {} } = entity || {};
 
@@ -132,7 +132,7 @@ class Chat extends React.PureComponent {
     onUpdateRoom({ room, msg });
   };
 
-  connection = socketConnection => {
+  connection = (socketConnection) => {
     const {
       chat: { chatToken: tokenRoom = null } = {},
       udata: { _id: uid } = {},
@@ -179,14 +179,14 @@ class Chat extends React.PureComponent {
     });
   };
 
-  onCreateRoom = event => {
+  onCreateRoom = (event) => {
     this.setState({
       ...this.state,
       visible: true,
     });
   };
 
-  onClearScroll = evt => {
+  onClearScroll = (evt) => {
     const { shouldScroll = false } = this.state;
 
     if (shouldScroll)
@@ -268,7 +268,7 @@ class Chat extends React.PureComponent {
   /**
    * @param {boolean} visible
    */
-  renderModal = visible => {
+  renderModal = (visible) => {
     const {
       chat: { usersList = [], listdata = [] } = {},
       udata: { _id: uid } = {},
@@ -305,10 +305,10 @@ class Chat extends React.PureComponent {
       if (membersIds.length < 2) return null;
 
       const InterlocutorId = membersIds[1];
-      let interlocutor = usersList.find(user => user._id === InterlocutorId) || null;
+      let interlocutor = usersList.find((user) => user._id === InterlocutorId) || null;
 
       if (!interlocutor) {
-        interlocutor = usersList.find(user => user._id === membersIds[0]) || {};
+        interlocutor = usersList.find((user) => user._id === membersIds[0]) || {};
       }
 
       const { [mode]: field = '' } = interlocutor || {};
@@ -326,14 +326,14 @@ class Chat extends React.PureComponent {
       udata: { displayName = '' } = {},
     } = this.props;
 
-    const room = listdata.find(room => {
+    const room = listdata.find((room) => {
       return room.tokenRoom && room.tokenRoom === tokenRoom;
     });
 
     const { membersIds = [] } = room || {};
 
     const names = usersList
-      .map(it => {
+      .map((it) => {
         if (membersIds.includes(it._id)) {
           return it.displayName;
         }
@@ -441,7 +441,7 @@ class Chat extends React.PureComponent {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const {
     chat = {},
     chat: { chatToken: tokenRoom = null, isFake: interlocutorIdFakeRoom = null } = {},
@@ -463,15 +463,15 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    onAddMsg: async payload => dispatch(addMsg(payload)),
-    onLoadActiveChats: async payload => dispatch(loadActiveChats(payload)),
-    onSetSocketConnection: status => dispatch(setSocketConnection(status)),
+    onAddMsg: async (payload) => dispatch(addMsg(payload)),
+    onLoadActiveChats: async (payload) => dispatch(loadActiveChats(payload)),
+    onSetSocketConnection: (status) => dispatch(setSocketConnection(status)),
     onLoadingDataByToken: (token, listdata, moduleName, isFake) => {
       dispatch(loadingDataByToken(token, listdata, moduleName, isFake));
     },
-    onUpdateRoom: payload => dispatch(updateRooms(payload)),
+    onUpdateRoom: (payload) => dispatch(updateRooms(payload)),
   };
 };
 

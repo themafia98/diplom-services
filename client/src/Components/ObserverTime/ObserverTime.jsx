@@ -6,7 +6,7 @@ import moment from 'moment';
 import TitleModule from '../TitleModule';
 import { Timeline, Spin } from 'antd';
 
-const ObserverTime = props => {
+const ObserverTime = (props) => {
   const { title = '', settingsLogs = [], isLoading = false } = props;
 
   const renderLogs = (settingsLogs = []) => {
@@ -17,9 +17,7 @@ const ObserverTime = props => {
       return (
         <Timeline.Item key={index + _id}>
           {message}
-          {moment(date)
-            .locale(navigator.language)
-            .format('LLL')}
+          {moment(date).locale(navigator.language).format('LLL')}
         </Timeline.Item>
       );
     });

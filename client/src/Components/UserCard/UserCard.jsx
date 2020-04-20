@@ -71,7 +71,7 @@ class UserCard extends React.Component {
     }
   };
 
-  onRejectEditSummary = event => {
+  onRejectEditSummary = (event) => {
     this.setState({
       visibilityModal: false,
     });
@@ -195,14 +195,14 @@ class UserCard extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { udata = {} } = state.publicReducer;
   return { udata };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    onUpdateUdata: udata => dispatch(updateUdata(udata)),
+    onUpdateUdata: (udata) => dispatch(updateUdata(udata)),
   };
 };
 

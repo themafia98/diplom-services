@@ -42,15 +42,15 @@ class HeaderView extends React.PureComponent {
   };
 
   wrapper = null;
-  refWrapper = node => (this.wrapper = node);
+  refWrapper = (node) => (this.wrapper = node);
 
-  renderTabs = items => {
+  renderTabs = (items) => {
     const { size = 160 } = this.state;
     const { activeTabEUID = 'mainModule', cbMenuTabHandler } = this.props;
 
     return (
       <ul ref={this.refWrapper} className="tabsMenu">
-        {items.map(item => {
+        {items.map((item) => {
           return (
             <Tab
               hendlerTab={cbMenuTabHandler}
@@ -107,7 +107,7 @@ class HeaderView extends React.PureComponent {
   }
 }
 
-const mapStateTopProps = state => {
+const mapStateTopProps = (state) => {
   const { status = 'online', udata = {} } = state.publicReducer;
   const { shouldUpdate = false, routeData = {} } = state.router;
   return {
@@ -119,9 +119,9 @@ const mapStateTopProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    onSaveComponentState: data => dispatch(saveComponentStateAction(data)),
+    onSaveComponentState: (data) => dispatch(saveComponentStateAction(data)),
   };
 };
 

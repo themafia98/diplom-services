@@ -6,7 +6,7 @@ import UserPopup from '../../UserPopup';
 import NotificationPopup from '../../NotificationPopup';
 import Status from './Status';
 
-const RightPanel = props => {
+const RightPanel = (props) => {
   const { onUpdate, onLogout, goCabinet, status, shouldUpdate, udata = {}, notificationDep = {} } = props;
 
   return (

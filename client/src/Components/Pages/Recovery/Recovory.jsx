@@ -4,7 +4,7 @@ import { Button, Input } from 'antd';
 
 import modelContext from '../../../Models/context';
 
-const Recovory = props => {
+const Recovory = (props) => {
   const { Request } = useContext(modelContext);
   const [status, setStatus] = useState(null);
   const [mode] = useState('emailMode');

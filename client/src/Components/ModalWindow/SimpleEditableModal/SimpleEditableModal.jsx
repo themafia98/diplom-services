@@ -5,7 +5,7 @@ import { Modal, Tooltip, message } from 'antd';
 
 import Textarea from '../../Textarea';
 
-const SimpleEditableModal = props => {
+const SimpleEditableModal = (props) => {
   const {
     visibility = true,
     title = '',
@@ -31,19 +31,19 @@ const SimpleEditableModal = props => {
     if (val !== value) setValue(val);
   };
 
-  const onCancel = event => {
+  const onCancel = (event) => {
     if (onReject) {
       onReject(event);
     }
   };
 
-  const onSubmit = event => {
+  const onSubmit = (event) => {
     if (onOkey) {
       onOkey(event, value);
     }
   };
 
-  const withTooltip = component => {
+  const withTooltip = (component) => {
     if (value)
       return (
         <Tooltip trigger="hover" title={value}>

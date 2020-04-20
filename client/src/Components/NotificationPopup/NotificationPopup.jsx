@@ -61,7 +61,7 @@ class NotificationPopup extends React.PureComponent {
         data: { response: { metadata = [] } = {} },
       } = res;
 
-      if (metadata && metadata?.length) this.setCounter(metadata.filter(it => it?.isRead === false).length);
+      if (metadata && metadata?.length) this.setCounter(metadata.filter((it) => it?.isRead === false).length);
     } catch (error) {
       console.error(error);
     }
@@ -79,7 +79,7 @@ class NotificationPopup extends React.PureComponent {
     this.setState({ ...this.state, isLoadPopover: true, isCounter: false }, this.getNotifications);
   };
 
-  parseContent = message => {
+  parseContent = (message) => {
     return _.isString(message) ? message : null;
   };
 
@@ -107,14 +107,14 @@ class NotificationPopup extends React.PureComponent {
       });
   };
 
-  onLoadPopover = event => {
+  onLoadPopover = (event) => {
     this.setState({
       ...this.state,
       isLoadPopover: true,
     });
   };
 
-  onVisibleChange = visible => {
+  onVisibleChange = (visible) => {
     this.setState({
       ...this.state,
       visible,

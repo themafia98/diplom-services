@@ -29,7 +29,7 @@ class TreeBuilder {
     if (!root.length || !root[indexRoot]) return root;
 
     const currentNode = root[indexRoot];
-    const childNodes = this.childrens.filter(child => child.parentId === currentNode._id);
+    const childNodes = this.childrens.filter((child) => child.parentId === currentNode._id);
 
     currentNode.children = this.buildTree(childNodes);
     return this.buildTree(root, indexRoot + 1);

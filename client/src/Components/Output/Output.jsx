@@ -24,8 +24,8 @@ class Output extends React.PureComponent {
 
   child = null;
   parent = null;
-  childRef = node => (this.child = node);
-  parentRef = node => (this.parent = node);
+  childRef = (node) => (this.child = node);
+  parentRef = (node) => (this.parent = node);
 
   componentDidMount = () => {
     const { showTooltip, widthChild, widthParent } = this.state;
@@ -92,7 +92,7 @@ class Output extends React.PureComponent {
 
     if (!key || !page) return;
 
-    const index = actionTabs.findIndex(tab => tab.includes(page) && tab.includes(key));
+    const index = actionTabs.findIndex((tab) => tab.includes(page) && tab.includes(key));
     const isFind = index !== -1;
 
     if (!isFind) {

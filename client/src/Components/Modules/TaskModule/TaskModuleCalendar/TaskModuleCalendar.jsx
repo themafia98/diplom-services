@@ -18,7 +18,7 @@ class TaskModuleCalendar extends React.PureComponent {
     loaderMethods: {},
   };
 
-  onClick = event => {
+  onClick = (event) => {
     const {
       onOpenPageWithData,
       router: { routeData = {}, currentActionTab = '', actionTabs = [] } = {},
@@ -37,11 +37,11 @@ class TaskModuleCalendar extends React.PureComponent {
 
     if (_.isEmpty(routeNormalize)) return;
 
-    const index = actionTabs.findIndex(tab => tab === routeNormalize.page || tab === routeNormalize.path);
+    const index = actionTabs.findIndex((tab) => tab === routeNormalize.page || tab === routeNormalize.path);
     const isFind = index !== -1;
 
     if (!isFind) {
-      const item = tasks.find(it => it.key === record);
+      const item = tasks.find((it) => it.key === record);
       if (!item) return;
 
       if (config.tabsLimit <= actionTabs.length)
@@ -58,16 +58,14 @@ class TaskModuleCalendar extends React.PureComponent {
       setCurrentTab(actionTabs[index]);
     }
   };
-  getListData = value => {
+  getListData = (value) => {
     const { router: { routeData = {}, currentActionTab = '' } = {} } = this.props;
     const { tasks = [] } = routeData[currentActionTab] || routeData['taskModule'] || {};
-    let valueDate = moment(value.toString())
-      .format('DD.MM.YYYY')
-      .trim();
+    let valueDate = moment(value.toString()).format('DD.MM.YYYY').trim();
     let dateArrayTask =
       tasks && tasks
         ? tasks
-            .map(it => {
+            .map((it) => {
               if (valueDate === it.date[1] && it.date[0] === it.date[1])
                 return { ...it, name: `Конец и начало срока: ${it.name}`, key: it.key };
               if (valueDate === it.date[1]) return { ...it, name: `Конец срока: ${it.name}`, key: it.key };
@@ -78,7 +76,7 @@ class TaskModuleCalendar extends React.PureComponent {
         : null;
 
     const listData = Array.isArray(dateArrayTask)
-      ? dateArrayTask.map(it => {
+      ? dateArrayTask.map((it) => {
           return { type: 'success', content: it.name, key: it.key };
         })
       : [];
@@ -86,9 +84,9 @@ class TaskModuleCalendar extends React.PureComponent {
     return listData || [];
   };
 
-  dateCellRender = value => {
+  dateCellRender = (value) => {
     const listData = this.getListData(value);
-    const content = listData.map(item => {
+    const content = listData.map((item) => {
       return (
         <li className={item.key} onClick={this.onClick} key={item.key}>
           <Output>{item.content}</Output>

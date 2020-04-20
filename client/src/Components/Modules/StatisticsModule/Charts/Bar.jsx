@@ -4,7 +4,7 @@ import { Spin } from 'antd';
 import moment from 'moment';
 import { ResponsiveBar } from '@nivo/bar';
 
-const Bar = props => {
+const Bar = (props) => {
   const { isPartData, data, dateList } = props;
   if (!data || !data?.length || isPartData) return <Spin size="large" />;
 
@@ -23,14 +23,8 @@ const Bar = props => {
         const dateStart = it.date[0].split(/\./gi)[1] - 1;
         const dateEnd = it.date[1].split(/\./gi)[1] - 1;
 
-        const titleMonthStart = moment()
-          .month(dateStart)
-          .locale('ru')
-          .format('MMM');
-        const titleMonthEnd = moment()
-          .month(dateEnd)
-          .locale('ru')
-          .format('MMM');
+        const titleMonthStart = moment().month(dateStart).locale('ru').format('MMM');
+        const titleMonthEnd = moment().month(dateEnd).locale('ru').format('MMM');
 
         if (titleMonthStart !== dateList[i] && titleMonthEnd !== dateList[i]) {
           continue;

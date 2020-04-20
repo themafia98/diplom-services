@@ -18,7 +18,7 @@ describe('<MenuView />', () => {
     const MenuViewWrapper = shallow(<MenuView {...props} />);
     expect(toJson(MenuViewWrapper)).toMatchSnapshot();
 
-    MenuViewWrapper.find('.menuItem').forEach(node => {
+    MenuViewWrapper.find('.menuItem').forEach((node) => {
       expect(node.hasClass('menuItem')).toBeTruthy();
       expect(node.exists()).toBeTruthy();
     });

@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { Card, Button } from 'antd';
 import clsx from 'clsx';
 
-const NewsCard = props => {
+const NewsCard = (props) => {
   const { onClick, className, data } = props;
 
   if (!data || _.isEmpty(data)) return null;

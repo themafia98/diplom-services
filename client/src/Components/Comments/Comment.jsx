@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { commentType } from './types';
 
-const Comment = props => {
+const Comment = (props) => {
   const { onDelete, rules, it, userId, uId } = props;
   const [key] = useState(it?.id ? it.id : Math.random());
 
-  const onDeleteEvent = event => {
+  const onDeleteEvent = (event) => {
     onDelete(event, key);
   };
 

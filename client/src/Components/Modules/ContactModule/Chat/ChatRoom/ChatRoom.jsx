@@ -7,7 +7,7 @@ import { Button, Avatar } from 'antd';
 import Textarea from '../../../../Textarea';
 import Message from './Message';
 
-const ChatRoom = props => {
+const ChatRoom = (props) => {
   const {
     uid = '',
     shouldScroll = false,
@@ -32,7 +32,7 @@ const ChatRoom = props => {
   };
 
   const scrollHandler = useCallback(
-    event => {
+    (event) => {
       if (refScrollbar && refScrollbar.current) {
         const scrollTop = refScrollbar.current.getScrollTop();
         const scrollHeight = refScrollbar.current.getScrollHeight();
@@ -71,7 +71,7 @@ const ChatRoom = props => {
     if (shouldScroll) scrollHandler(true);
   }, [messagesLength, shouldScroll, scrollHandler]);
 
-  const onChange = event => {
+  const onChange = (event) => {
     const { currentTarget: { value = '' } = {} } = event;
     if (value !== msg) setMsg(value);
   };
@@ -92,11 +92,11 @@ const ChatRoom = props => {
     }
   };
 
-  const renderChat = messages => {
+  const renderChat = (messages) => {
     return messages.map((it, i) => {
       const isMine = uid === it.authorId && uid.includes(it.authorId);
 
-      const avatar = isMine ? myAvatar : usersList.find(user => user?._id === it?.authorId)?.avatar;
+      const avatar = isMine ? myAvatar : usersList.find((user) => user?._id === it?.authorId)?.avatar;
 
       const classNames = clsx(i, 'message', isMine ? 'currentUser' : null);
       return (
@@ -113,7 +113,7 @@ const ChatRoom = props => {
               <div className="msg_header">
                 {it.displayName !== 'System' ? (
                   <span
-                    onClick={event => redirectUserProfile(event, it.authorId ? it.authorId : null)}
+                    onClick={(event) => redirectUserProfile(event, it.authorId ? it.authorId : null)}
                     className="msg_author"
                   >
                     <Avatar src={`data:image/png;base64,${avatar}`} size="default" />
@@ -144,8 +144,8 @@ const ChatRoom = props => {
           </Scrollbars>
         </div>
       </div>
-      <Textarea value={msg} onChange={onChange} onKeyDown={e => onSubmit(e)} className="chat-area" />
-      <Button onClick={e => onSubmit(e, msg)} type="primary">
+      <Textarea value={msg} onChange={onChange} onKeyDown={(e) => onSubmit(e)} className="chat-area" />
+      <Button onClick={(e) => onSubmit(e, msg)} type="primary">
         Отправить
       </Button>
     </div>

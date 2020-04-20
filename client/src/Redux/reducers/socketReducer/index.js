@@ -97,7 +97,7 @@ export default (state = initialState, action) => {
       const messages = [...state.chat.listdataMsgs[chatToken]];
 
       const validMessages = messages
-        .map(msgItem => {
+        .map((msgItem) => {
           if (msgItem._id !== msg._id) {
             return msgItem;
           }
@@ -138,7 +138,7 @@ export default (state = initialState, action) => {
 
       let sortListdata = [...listdata].sort((a, b) => Date(a.date) - Date(b.date));
       const duplicateFixed = sortListdata
-        .filter(item => {
+        .filter((item) => {
           const isExists = item && item.tokenRoom;
           const findItem = isExists ? item.tokenRoom === tokenRoom : null;
           if (findItem) return item;
@@ -146,11 +146,11 @@ export default (state = initialState, action) => {
         })
         .filter(Boolean);
 
-      const fakeItem = duplicateFixed.find(it => it?.tokenRoom?.include('__fakeRoom'));
+      const fakeItem = duplicateFixed.find((it) => it?.tokenRoom?.include('__fakeRoom'));
 
       sortListdata = fakeItem
         ? sortListdata
-            .map(it => {
+            .map((it) => {
               if (it?.tokenRoom?.include('__fakeRoom')) {
                 return null;
               }

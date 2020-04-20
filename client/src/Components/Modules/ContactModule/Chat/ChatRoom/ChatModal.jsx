@@ -62,7 +62,7 @@ class ChatModal extends React.PureComponent {
   /**
    * @param {any} eventData
    */
-  onChangeSelect = eventData => {
+  onChangeSelect = (eventData) => {
     this.setState({
       ...this.state,
       membersIds: _.isString(eventData) ? [eventData] : eventData,
@@ -72,7 +72,7 @@ class ChatModal extends React.PureComponent {
   /**
    * @param {string} eventType
    */
-  onChangeType = eventType => {
+  onChangeType = (eventType) => {
     const { membersIds = [] } = this.state;
     const isMore = eventType === 'single' && membersIds.length > 1;
 
@@ -86,7 +86,7 @@ class ChatModal extends React.PureComponent {
   /**
    * @param {HTMLElement} node
    */
-  groupNameRefFunc = node => (this.groupNameRef = node);
+  groupNameRefFunc = (node) => (this.groupNameRef = node);
 
   render() {
     const { confirmLoading, type = 'single', membersIds = [] } = this.state;
@@ -137,7 +137,7 @@ class ChatModal extends React.PureComponent {
             value={valueUser}
           >
             {usersList && usersList.length
-              ? usersList.map(it => (
+              ? usersList.map((it) => (
                   <Option key={it._id} value={it._id} label={it.displayName}>
                     <span>{it.displayName}</span>
                   </Option>

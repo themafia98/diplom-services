@@ -127,9 +127,9 @@ class Schema {
   isPublicKey(value) {
     if (Array.isArray(value) || _.isPlainObject(value)) {
       if (_.isPlainObject(value)) {
-        return Object.keys(value).every(val => val !== 'createdAt' && val !== 'updatedAt' && val !== '__v');
+        return Object.keys(value).every((val) => val !== 'createdAt' && val !== 'updatedAt' && val !== '__v');
       }
-      return value.every(val => val !== 'createdAt' && val !== 'updatedAt' && val !== '__v');
+      return value.every((val) => val !== 'createdAt' && val !== 'updatedAt' && val !== '__v');
     }
     return value !== 'createdAt' && value !== 'updatedAt' && value !== '__v';
   }
@@ -145,17 +145,17 @@ class Schema {
     if (!_.isArray(keysData) || !_.isArray(keysSchema)) return false;
     let validLenth = keysData.length;
 
-    const isFind = keysSchema.findIndex(it => it === 'modeAdd') !== -1;
-    const isFindBoth = isFind && keysData.findIndex(it => it === 'modeAdd' && _.isString(data[it])) !== -1;
+    const isFind = keysSchema.findIndex((it) => it === 'modeAdd') !== -1;
+    const isFindBoth = isFind && keysData.findIndex((it) => it === 'modeAdd' && _.isString(data[it])) !== -1;
     if (isFindBoth) validLenth--;
 
-    const isCreated = keysData.findIndex(it => it === 'createdAt' && _.isString(data[it])) !== -1;
+    const isCreated = keysData.findIndex((it) => it === 'createdAt' && _.isString(data[it])) !== -1;
     if (isCreated) validLenth--;
 
-    const isUpdated = keysData.findIndex(it => it === 'updatedAt' && _.isString(data[it])) !== -1;
+    const isUpdated = keysData.findIndex((it) => it === 'updatedAt' && _.isString(data[it])) !== -1;
     if (isUpdated) validLenth--;
 
-    const isVersion = keysData.findIndex(it => it === '__v' && _.isNumber(data[it])) !== -1;
+    const isVersion = keysData.findIndex((it) => it === '__v' && _.isNumber(data[it])) !== -1;
     if (isVersion) validLenth--;
 
     if (
@@ -168,9 +168,9 @@ class Schema {
 
     return this.getMode() !== 'no-strict'
       ? keysData.every((dataKey, i) => dataKey === keysSchema[i])
-      : keysData.every(dataKey => {
+      : keysData.every((dataKey) => {
           if (dataKey !== 'modeAdd' && this.isPublicKey(dataKey)) {
-            return keysSchema.findIndex(it => it === dataKey) !== -1;
+            return keysSchema.findIndex((it) => it === dataKey) !== -1;
           }
           return true;
         });

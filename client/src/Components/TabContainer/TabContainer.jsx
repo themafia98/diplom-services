@@ -2,7 +2,7 @@ import React from 'react';
 import { tabContainerType } from './types';
 import clsx from 'clsx';
 
-const TabContainer = props => {
+const TabContainer = (props) => {
   const { isBackground, visible, children, className = '' } = props;
 
   return (

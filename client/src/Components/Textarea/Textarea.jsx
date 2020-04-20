@@ -5,7 +5,7 @@ import EditorTextarea from './EditorTextarea';
 import { textAreaType } from './types';
 const { TextArea } = Input;
 
-const Textarea = props => {
+const Textarea = (props) => {
   const { row, value, className, name, onKeyDown, onClick, onChange, editor, editorKey = null } = props;
   const valueProps = value || value === '' ? { value } : {};
   const propsKey = editorKey ? { key: editorKey } : {};

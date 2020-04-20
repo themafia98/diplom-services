@@ -28,7 +28,7 @@ namespace Database {
           useUnifiedTopology: true,
           keepAlive: true,
         },
-        err => {
+        (err) => {
           if (err) console.error(err);
         },
       );

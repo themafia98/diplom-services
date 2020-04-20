@@ -205,7 +205,7 @@ const middlewareUpdate = (props = {}) => async (dispatch, getState, { schema, Re
               ? TASK_SCHEMA
               : null;
 
-          const storeCopy = [updaterItem].map(it => schema.getSchema(schemTemplate, it)).filter(Boolean);
+          const storeCopy = [updaterItem].map((it) => schema.getSchema(schemTemplate, it)).filter(Boolean);
 
           if (storeCopy) {
             dispatch(

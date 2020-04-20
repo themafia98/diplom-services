@@ -85,7 +85,7 @@ namespace Utils {
     isPrivateRoute: Function,
     wsWorkerManager: WsWorker,
   ) => {
-    controllers.forEach(controller => {
+    controllers.forEach((controller) => {
       // This is our instantiated class
       const instance: Record<string, any> = new controller();
       const prefix = Reflect.getMetadata('prefix', controller);
@@ -93,7 +93,7 @@ namespace Utils {
       const routes: Array<RouteDefinition> = Reflect.getMetadata('routes', controller);
 
       // Iterate over all routes and register them to our express application
-      routes.forEach(route => {
+      routes.forEach((route) => {
         const isWs = route.ws;
         const isFile = route.file;
         const isPrivate = route.private;
@@ -214,7 +214,7 @@ namespace Utils {
 
               const accept: Array<string> = <Array<string>>item[mode] || [];
 
-              if (accept.some(rule => rule === rules)) return it;
+              if (accept.some((rule) => rule === rules)) return it;
             } else {
               if (!rules) return null;
 

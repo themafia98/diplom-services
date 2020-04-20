@@ -74,7 +74,7 @@ class StreamBox extends React.Component {
     this.fetchNotification();
   };
 
-  updateRead = async ids => {
+  updateRead = async (ids) => {
     if (Array.isArray(ids) && !ids.length) return { ok: 1, count: 0 };
     try {
       const { Request } = this.context;
@@ -146,7 +146,7 @@ class StreamBox extends React.Component {
 
       if (visiblePopover && (shouldUpdatePrivate || (type === 'private' && metadata?.length))) {
         const ids = metadata
-          .map(it => {
+          .map((it) => {
             if (!it?.isRead) return it?._id;
             else return null;
           })
@@ -181,7 +181,7 @@ class StreamBox extends React.Component {
     }
   };
 
-  onRunAction = index => {
+  onRunAction = (index) => {
     const { streamList: streamListState = [] } = this.state;
     const {
       setCurrentTab,
@@ -218,12 +218,12 @@ class StreamBox extends React.Component {
         if (!moduleId || !page) return;
 
         const { [storeName]: data = [] } = routeData[page] || {};
-        const index = actionTabs.findIndex(tab => tab.includes(page) && tab.includes(key));
+        const index = actionTabs.findIndex((tab) => tab.includes(page) && tab.includes(key));
         const isFind = index !== -1;
 
         if (isFind) return setCurrentTab(actionTabs[index]);
 
-        const item = data.find(it => it?.key === key || it?._id === key);
+        const item = data.find((it) => it?.key === key || it?._id === key);
         if (!item) {
           message.warning('Страница не найдена.');
           return;
@@ -257,7 +257,7 @@ class StreamBox extends React.Component {
   /**
    * @param {string} id
    */
-  onMouseEnter = id => {
+  onMouseEnter = (id) => {
     const { idTooltipActive = '' } = this.state;
 
     if (!idTooltipActive || idTooltipActive === id) {
@@ -270,7 +270,7 @@ class StreamBox extends React.Component {
   /**
    * @param {string} id
    */
-  onMouseLeave = id => {
+  onMouseLeave = (id) => {
     const { idTooltipActive = '' } = this.state;
     if (idTooltipActive === id)
       this.setState({
@@ -343,7 +343,7 @@ class StreamBox extends React.Component {
               const { link = '' } = action;
 
               const isMine = uid === uidCreater;
-              const avatar = isMine ? myAvatar : parentDataList?.find(it => it?._id === uidCreater)?.avatar;
+              const avatar = isMine ? myAvatar : parentDataList?.find((it) => it?._id === uidCreater)?.avatar;
               const isWithTooltip = Boolean(link);
 
               const cardItem = (
@@ -388,18 +388,18 @@ class StreamBox extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { router = {}, publicReducer: { udata = {} } = {} } = state;
   return { router, udata };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    addTab: tab => dispatch(addTabAction(tab)),
-    setCurrentTab: tab => dispatch(setActiveTabAction(tab)),
-    onLoadCurrentData: props => dispatch(loadCurrentData({ ...props })),
-    onMultipleLoadData: props => dispatch(multipleLoadData(props)),
-    onOpenPageWithData: data => dispatch(openPageWithDataAction(data)),
+    addTab: (tab) => dispatch(addTabAction(tab)),
+    setCurrentTab: (tab) => dispatch(setActiveTabAction(tab)),
+    onLoadCurrentData: (props) => dispatch(loadCurrentData({ ...props })),
+    onMultipleLoadData: (props) => dispatch(multipleLoadData(props)),
+    onOpenPageWithData: (data) => dispatch(openPageWithDataAction(data)),
   };
 };
 
