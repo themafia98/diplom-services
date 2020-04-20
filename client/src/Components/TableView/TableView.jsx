@@ -2,7 +2,7 @@ import React from 'react';
 import { tableViewType } from './types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { Icon, Empty, Spin, Tooltip } from 'antd';
+import { Empty, Spin, Tooltip, Icon } from 'antd';
 import Scrollbars from 'react-custom-scrollbars';
 
 import { routePathNormalise, routeParser } from '../../Utils';
@@ -28,7 +28,7 @@ class TableView extends React.Component {
     visible: false,
   };
 
-  componentDidUpdate = prevProps => {
+  componentDidUpdate = (prevProps) => {
     const { path, onLoadCurrentData, visible = false } = this.props;
     const { path: validPath = '', page = '', itemId = '' } = routeParser({
       pageType: 'moduleItem',
@@ -68,7 +68,7 @@ class TableView extends React.Component {
     window.removeEventListener('resize', this.setSizeWindow);
   };
 
-  setSizeWindow = event => {
+  setSizeWindow = (event) => {
     if (window.innerWidth <= 1450 && _.isNull(this.state.isScroll)) this.setState({ isScroll: true });
     else if (this.state.isScroll && window.innerWidth > 1200) this.setState({ isScroll: null });
   };
@@ -76,7 +76,7 @@ class TableView extends React.Component {
   /**
    * @param {string} path
    */
-  getComponentByPath = path => {
+  getComponentByPath = (path) => {
     const {
       user,
       flag,
@@ -160,7 +160,7 @@ class TableView extends React.Component {
     return null;
   };
 
-  onMail = email => {
+  onMail = (email) => {
     if (!email || !_.isString(email)) return;
     const a = document.createElement('a');
     a.href = `mailto:${email}`;
@@ -168,7 +168,7 @@ class TableView extends React.Component {
     a.remove();
   };
 
-  getRowsTable = arrayData => {
+  getRowsTable = (arrayData) => {
     const { router, removeTab, onOpenPageWithData, setCurrentTab, udata = {} } = this.props;
     return arrayData.map((it, id) => {
       return (
@@ -217,7 +217,7 @@ class TableView extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { udata = {} } = state.publicReducer;
   return {
     router: state.router,
@@ -226,11 +226,11 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    removeTab: tab => dispatch(removeTabAction(tab)),
-    onOpenPageWithData: data => dispatch(openPageWithDataAction(data)),
-    onLoadCurrentData: props => dispatch(loadCurrentData({ ...props })),
+    removeTab: (tab) => dispatch(removeTabAction(tab)),
+    onOpenPageWithData: (data) => dispatch(openPageWithDataAction(data)),
+    onLoadCurrentData: (props) => dispatch(loadCurrentData({ ...props })),
   };
 };
 

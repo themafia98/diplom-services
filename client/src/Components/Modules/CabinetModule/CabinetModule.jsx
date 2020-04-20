@@ -42,11 +42,11 @@ class CabinetModule extends React.PureComponent {
     return state;
   };
 
-  showModal = event => {
+  showModal = (event) => {
     this.setState({ ...this.state, visible: true });
   };
 
-  hideModal = event => {
+  hideModal = (event) => {
     this.setState({
       ...this.state,
       visible: false,
@@ -56,15 +56,15 @@ class CabinetModule extends React.PureComponent {
     });
   };
 
-  beforeUpload = file => {
+  beforeUpload = (file) => {
     const isJpgOrPng = file.type.startsWith('image/');
     if (!isJpgOrPng) {
-      this.setState(state => ({ ...state, loading: !state.loading, disabled: false, error: true }));
+      this.setState((state) => ({ ...state, loading: !state.loading, disabled: false, error: true }));
       message.error('Вы можете загрузить только изображение.');
     }
     const isLt2M = file.size / 1024 / 1024 < 5;
     if (!isLt2M) {
-      this.setState(state => ({ ...state, loading: !state.loading, disabled: false, error: true }));
+      this.setState((state) => ({ ...state, loading: !state.loading, disabled: false, error: true }));
       message.error('Изображение должно быть меньше 5 мб.');
     }
     return isJpgOrPng && isLt2M;
@@ -88,14 +88,14 @@ class CabinetModule extends React.PureComponent {
     );
   };
 
-  reset = event => {
+  reset = (event) => {
     this.setState({ ...this.state, imageUrl: null, loading: false, disabled: false });
   };
 
   /**
    * @param {{ file: any; }} info
    */
-  onChangeFile = info => {
+  onChangeFile = (info) => {
     const { status } = info.file;
     if (status !== 'uploading') {
       this.setState({ disabled: false });
@@ -210,7 +210,7 @@ class CabinetModule extends React.PureComponent {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { udata = {} } = state.publicReducer;
   const { routeData = {}, routeDataActive = {} } = state?.router || {};
 
@@ -221,10 +221,10 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    onSaveComponentState: data => dispatch(saveComponentStateAction(data)),
-    onUpdateUdata: payload => dispatch(updateUdata(payload)),
+    onSaveComponentState: (data) => dispatch(saveComponentStateAction(data)),
+    onUpdateUdata: (payload) => dispatch(updateUdata(payload)),
   };
 };
 

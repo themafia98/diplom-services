@@ -3,11 +3,11 @@ import clsx from 'clsx';
 import _ from 'lodash';
 import Scrollbars from 'react-custom-scrollbars';
 import { Skeleton, List, Avatar, Button } from 'antd';
-import uuid from 'uuid';
+import uuid from 'uuid/v4';
 
 const { Item: { Meta } = {}, Item = {} } = List || {};
 
-const ChatMenu = props => {
+const ChatMenu = (props) => {
   const {
     socketConnection,
     socketErrorStatus,
@@ -47,13 +47,13 @@ const ChatMenu = props => {
   }, [usersList.length, iDs.length]);
 
   useEffect(() => {
-    const singleRooms = listdata.filter(room => room.type === 'single');
+    const singleRooms = listdata.filter((room) => room.type === 'single');
 
     const rooms = [];
     for (let j = 0; j < usersList.length; j++) {
       const user = usersList[j];
 
-      const room = singleRooms.find(room => room.membersIds.includes(user._id)) || null;
+      const room = singleRooms.find((room) => room.membersIds.includes(user._id)) || null;
 
       if (!room) {
         rooms.push({
@@ -95,7 +95,7 @@ const ChatMenu = props => {
                 return (
                   <Item
                     className={clsx(tokenRoom?.includes(it?.tokenRoom) ? 'activeChat' : null)}
-                    onClick={e => setActiveChatRoom(e, it?._id, membersIds, it?.tokenRoom)}
+                    onClick={(e) => setActiveChatRoom(e, it?._id, membersIds, it?.tokenRoom)}
                     key={it?._id + i}
                   >
                     <Meta

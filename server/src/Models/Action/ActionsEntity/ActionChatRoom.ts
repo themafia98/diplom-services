@@ -1,5 +1,5 @@
 import { Model, Document } from 'mongoose';
-import uuid from 'uuid';
+import uuid from 'uuid/v4';
 import { ActionParams, Actions, Action } from '../../../Utils/Interfaces';
 import { ParserData } from '../../../Utils/Types';
 import Utils from '../../../Utils';

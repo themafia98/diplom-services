@@ -36,6 +36,7 @@ import wsWorkerManager from '../../Utils/instanseWs';
 import wsEvents from '../../Controllers/Contact/Chat/wsEvents';
 
 import limiter from '../../config/limiter';
+import { ObjectId } from 'mongodb';
 
 namespace Http {
   const LocalStrategy = passportLocal.Strategy;
@@ -112,17 +113,22 @@ namespace Http {
             try {
               const connect = await dbm.connection();
               if (!connect) throw new Error('Bad connect');
-              UserModel.findOne({ email }, async (err: Error, user: Record<string, any>) => {
+              const result = await UserModel.findOne({ email });
+              if (!result) {
                 await dbm.disconnect().catch((err: Error) => console.error(err));
-                if (err) return done(err);
-                else if (!user || !user.checkPassword(password)) {
-                  return done(null, false, {
-                    message: 'Нет такого пользователя или пароль неверен.',
-                  });
-                } else {
-                  return done(null, user);
-                }
-              });
+              }
+              const userResult = await UserModel.findOne({ email });
+              if (!userResult) {
+                await dbm.disconnect().catch((err: Error) => console.error(err));
+                return done(userResult);
+              }
+
+              if (!(<any>userResult).checkPassword(password)) {
+                return done(null, false, {
+                  message: 'Нет такого пользователя или пароль неверен.',
+                });
+              }
+              return done(null, userResult);
             } catch (err) {
               console.error(err);
               return done(err);
@@ -137,52 +143,42 @@ namespace Http {
       };
 
       passport.use(
-        new jwt.Strategy(<StrategyOptions>jwtOptions, async function(
-          payload: Partial<{ id: string }>,
+        new jwt.Strategy(<StrategyOptions>jwtOptions, async function (
+          payload: Record<string, ObjectId>,
           done: Function,
         ) {
           try {
+            const { id } = payload || {};
             const connect = await dbm.connection();
             if (!connect) throw new Error('bad connection');
-            UserModel.findOne(payload.id, async (err: Error, user: Record<string, any>) => {
-              await dbm.disconnect().catch((err: Error) => console.error(err));
 
-              if (err) {
-                return done(err);
-              }
-              if (user) {
-                done(null, user);
-              } else {
-                done(null, false);
-              }
-            });
+            const result = await UserModel.findOne(id);
+            if (!result) return done(result);
+            else return done(null, result);
           } catch (err) {
             return done(err);
           }
         }),
       );
 
-      passport.serializeUser((user: Partial<{ id: string }>, done: Function) => {
-        done(null, user.id);
+      passport.serializeUser((user: Record<string, ObjectId>, done: Function) => {
+        const { id } = user || {};
+        done(null, id);
       });
 
       passport.deserializeUser(async (id: string, done: Function) => {
         try {
           const connect = await dbm.connection();
           if (!connect) throw new Error('Bad connect');
-          await UserModel.findById(id, async (err: Error, user: Record<string, any>) => {
-            if (err) {
-              console.log(err);
-              console.log(user);
-            }
+          const result = await UserModel.findById(id);
+          if (!result) {
             await dbm.disconnect().catch((err: Error) => console.error(err));
-            done(err, user);
-          }).catch(err => {
-            done(err, null);
-          });
+            console.log('deserializeUser error');
+          }
+          done(null, result);
         } catch (err) {
           console.error(err);
-          return done(err);
+          return done(err, null);
         }
       });
     }
