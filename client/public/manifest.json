@@ -10,22 +10,22 @@
       "type": "image/x-icon"
     },
     {
-      "src": "img/icon.png",
+      "src": "icon.png",
       "sizes": "144x144",
       "type": "image/png"
     },
     {
-      "src": "img/loader.gif",
+      "src": "loader.gif",
       "sizes": "256x256",
       "type": "image/gif"
     },
     {
-      "src": "img/icon-512.gif",
+      "src": "icon-512.gif",
       "sizes": "512x512",
       "type": "image/png"
     },
     {
-      "src": "img/logo.svg",
+      "src": "logo.svg",
       "sizes": "any",
       "type": "image/svg"
     }
