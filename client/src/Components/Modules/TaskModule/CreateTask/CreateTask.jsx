@@ -9,7 +9,7 @@ import { Button, Input, Select, DatePicker, message } from 'antd';
 
 import Textarea from '../../../Textarea';
 import File from '../../../File';
-import uuid from 'uuid/v4';
+import { v4 as uuid } from 'uuid';
 
 import { routePathNormalise, routeParser } from '../../../../Utils';
 import modelContext from '../../../../Models/context';
@@ -57,7 +57,7 @@ class CreateTask extends React.PureComponent {
         const { data: { response: { metadata = [] } = {} } = {} } = response || {};
 
         const filteredUsers = metadata
-          .map(user => {
+          .map((user) => {
             const { _id = '', displayName = '' } = user;
 
             if (!user || !_id || !displayName) return null;
@@ -132,7 +132,7 @@ class CreateTask extends React.PureComponent {
     if (isUpdate) {
       const keyCopy = Object.keys(copyErrorBundleState);
       let newCopyErrorBundle = {};
-      keyCopy.forEach(key => {
+      keyCopy.forEach((key) => {
         if (copyErrorBundleState[key] !== null) newCopyErrorBundle[key] = copyErrorBundleState[key];
       });
       this.setState({ ...this.state, errorBundle: { ...newCopyErrorBundle } });
@@ -145,7 +145,7 @@ class CreateTask extends React.PureComponent {
     }
   };
 
-  onChangeHandler = event => {
+  onChangeHandler = (event) => {
     const { target = null } = event;
     if (_.isNull(target)) return;
     if (!_.isNull(target) && target.name === 'name')
@@ -157,7 +157,7 @@ class CreateTask extends React.PureComponent {
       });
   };
 
-  onChangeTextArea = event => {
+  onChangeTextArea = (event) => {
     const { target } = event;
     this.setState({ ...this.state, card: { ...this.state.card, description: target.value } });
   };
@@ -168,32 +168,32 @@ class CreateTask extends React.PureComponent {
     }
   };
 
-  onChangeHandlerSelectEditor = eventArray => {
+  onChangeHandlerSelectEditor = (eventArray) => {
     if (!_.isArray(eventArray) || eventArray === this.state.card.editor) return;
     else return this.setState({ ...this.state, card: { ...this.state.card, editor: eventArray } });
   };
 
-  onChangeHandlerSelectPriority = eventString => {
+  onChangeHandlerSelectPriority = (eventString) => {
     if (!_.isString(eventString) || eventString === this.state.priority) return;
     else {
       this.setState({ ...this.state, card: { ...this.state.card, priority: eventString } });
     }
   };
 
-  offlineMode = validHash => {
+  offlineMode = (validHash) => {
     const offlineValidHash = { ...validHash, modeAdd: 'offline' };
     const { clientDB = {} } = this.context;
     const putAction = clientDB.addItem('tasks', offlineValidHash);
 
     if (putAction)
-      putAction.onsuccess = event => {
+      putAction.onsuccess = (event) => {
         this.setState({ ...this.state, card: { ...this.state.card, key: uuid() }, load: false }, () =>
           message.success(`Задача создана.`),
         );
       };
   };
 
-  handlerCreateTask = async event => {
+  handlerCreateTask = async (event) => {
     const {
       statusApp = '',
       onOpenPageWithData,
@@ -208,10 +208,10 @@ class CreateTask extends React.PureComponent {
 
     let keys = Object.keys(this.state.card);
 
-    if (keys.every(key => _.isNull(this.state.card[key]))) return;
+    if (keys.every((key) => _.isNull(this.state.card[key]))) return;
 
     const validHashCopy = [{ ...this.state.card }];
-    const validHash = validHashCopy.map(it => schema.getSchema(CREATE_TASK_SCHEMA, it)).filter(Boolean)[0];
+    const validHash = validHashCopy.map((it) => schema.getSchema(CREATE_TASK_SCHEMA, it)).filter(Boolean)[0];
 
     if (!validHash) return message.error('Не валидные данные.');
 
@@ -278,7 +278,7 @@ class CreateTask extends React.PureComponent {
                 },
                 true,
               )
-              .catch(error => {
+              .catch((error) => {
                 console.error(error);
                 message.error('Ошибка глобального уведомления');
               });
@@ -289,7 +289,7 @@ class CreateTask extends React.PureComponent {
             const { moduleId = '', page = '' } = routeParser({ path });
             if (!moduleId || !page) return;
 
-            const index = actionTabs.findIndex(tab => tab.includes(page) && tab.includes(key));
+            const index = actionTabs.findIndex((tab) => tab.includes(page) && tab.includes(key));
             const isFind = index !== -1;
 
             let type = 'deafult';
@@ -382,7 +382,7 @@ class CreateTask extends React.PureComponent {
                     optionLabelProp="label"
                   >
                     {filteredUsers && filteredUsers.length
-                      ? filteredUsers.map(it => (
+                      ? filteredUsers.map((it) => (
                           <Option value={it.displayName} label={it.displayName}>
                             <span>{it.displayName}</span>
                           </Option>
