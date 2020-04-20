@@ -1,4 +1,6 @@
 import _ from 'lodash';
+import { clientDB } from '../../Models/ClientSideDatabase';
+import { IDBPDatabase } from 'idb';
 import { runLocalUpdateAction, runBadNetworkAction, runRefreshIndexedDb, runNoCorsAction } from './utils';
 
 /** Hooks */
@@ -65,9 +67,19 @@ const onlineDataHook = async (dispatch, dep = {}, multiple = false) => {
   }
 };
 
+/**
+ * @param {string} store
+ * @param {Array<object>} syncData
+ */
+const syncData = async (store = '', syncData = []) => {
+  const localDataList = await clientDB.getAllItems(store);
+  return _.uniqBy([...syncData, ...localDataList], '_id');
+};
+
 const namespaceHooks = {
   errorHook,
   onlineDataHook,
+  syncData,
 };
 
 export default namespaceHooks;

@@ -1,6 +1,6 @@
 import generator from 'generate-password';
 import _ from 'lodash';
-import { Model, Document } from 'mongoose';
+import { Model, Document, Types } from 'mongoose';
 import { ActionParams, Actions, Action } from '../../../Utils/Interfaces';
 import { ParserData } from '../../../Utils/Types';
 import Utils from '../../../Utils';
@@ -43,7 +43,7 @@ class ActionUsers implements Action {
       }
 
       const res = await this.getEntity().updateEntity(model, {
-        _id,
+        _id: Types.ObjectId(_id),
         updateProps: { passwordHash },
       });
 
@@ -60,7 +60,7 @@ class ActionUsers implements Action {
     const { oldPassword = '', newPassword = '', uid = '' } = queryParams || {};
 
     const checkProps = {
-      _id: uid,
+      _id: Types.ObjectId(uid),
     };
 
     const result: Record<string, any> | null = await this.getEntity().findOnce(model, {
@@ -79,8 +79,8 @@ class ActionUsers implements Action {
       return null;
     }
 
-    const { _id } = result || {};
-
+    const { _id: id } = result || {};
+    const _id = Types.ObjectId(id);
     const password: string = newPassword;
     const passwordHash: string | null = await result.changePassword(password);
 
@@ -104,7 +104,7 @@ class ActionUsers implements Action {
     }
 
     const checkProps = {
-      _id: uid,
+      _id: Types.ObjectId(uid),
     };
 
     const result: Record<string, any> | null = await this.getEntity().findOnce(model, {
@@ -116,8 +116,8 @@ class ActionUsers implements Action {
       return null;
     }
 
-    const { _id } = result || {};
-
+    const { _id: id } = result || {};
+    const _id = Types.ObjectId(id);
     const email: string = newEmail ? newEmail : null;
     const phone: string = newPhone ? newPhone : null;
 
@@ -136,8 +136,8 @@ class ActionUsers implements Action {
   private async updateSingle(actionParam: ActionParams, model: Model<Document>): ParserData {
     try {
       const { queryParams = {}, updateItem: updateProps = '' } = actionParam;
-      const _id: string = (queryParams as Record<string, string>).uid;
-
+      const id: string = (queryParams as Record<string, string>).uid;
+      const _id = Types.ObjectId(id);
       const query: ActionParams = { _id, updateProps };
 
       await this.getEntity().updateEntity(model, query);

@@ -106,7 +106,7 @@ class SettingsModule extends React.PureComponent {
       return onSaveComponentState({ ...this.state, path: path });
   };
 
-  hideMail = event => {
+  hideMail = (event) => {
     if (event !== this.state.mail) {
       this.setState({
         ...this.state,
@@ -116,7 +116,7 @@ class SettingsModule extends React.PureComponent {
     }
   };
 
-  hidePhone = event => {
+  hidePhone = (event) => {
     if (event !== this.state.phone) {
       this.setState({
         ...this.state,
@@ -169,7 +169,7 @@ class SettingsModule extends React.PureComponent {
     }
   };
 
-  onChangeCommon = async keyChange => {
+  onChangeCommon = async (keyChange) => {
     try {
       const { Request = {} } = this.context;
       const { udata: { _id: uid = '' } = {}, onUpdateUdata = null, onCaching = null } = this.props;
@@ -204,7 +204,7 @@ class SettingsModule extends React.PureComponent {
       }
 
       this.setState({
-        haveChanges: this.state.haveChanges.filter(it => {
+        haveChanges: this.state.haveChanges.filter((it) => {
           if (it !== keyChange) return true;
           else return false;
         }),
@@ -249,7 +249,7 @@ class SettingsModule extends React.PureComponent {
     }
   };
 
-  onChangePassword = async keyChange => {
+  onChangePassword = async (keyChange) => {
     try {
       const { Request = {} } = this.context;
       const { udata: { _id: uid = '' } = {}, onCaching } = this.props;
@@ -277,7 +277,7 @@ class SettingsModule extends React.PureComponent {
       }
 
       this.setState({
-        haveChanges: this.state.haveChanges.filter(it => {
+        haveChanges: this.state.haveChanges.filter((it) => {
           if (it !== keyChange) return true;
           else return false;
         }),
@@ -317,8 +317,8 @@ class SettingsModule extends React.PureComponent {
 
   refWrapper = null;
   refColumn = null;
-  refFunc = node => (this.refWrapper = node);
-  refColumnFunc = node => (this.refColumn = node);
+  refFunc = (node) => (this.refWrapper = node);
+  refColumnFunc = (node) => (this.refColumn = node);
 
   render() {
     const { emailValue, telValue, haveChanges, oldPassword, newPassword } = this.state;
@@ -341,7 +341,7 @@ class SettingsModule extends React.PureComponent {
                   type="password"
                   allowClear
                   value={oldPassword}
-                  onChange={e => this.onChangeInput(e, 'password_old')}
+                  onChange={(e) => this.onChangeInput(e, 'password_old')}
                 />
               </div>
               <div className="configWrapper flexWrapper">
@@ -351,11 +351,11 @@ class SettingsModule extends React.PureComponent {
                   type="password"
                   allowClear
                   value={newPassword}
-                  onChange={e => this.onChangeInput(e, 'password_new')}
+                  onChange={(e) => this.onChangeInput(e, 'password_new')}
                 />
               </div>
               <Button
-                onClick={e => this.onSaveSettings(e, 'password')}
+                onClick={(e) => this.onSaveSettings(e, 'password')}
                 className="submit"
                 type="primary"
                 disabled={!readonlyPassword}
@@ -372,7 +372,7 @@ class SettingsModule extends React.PureComponent {
                       data-id="email"
                       allowClear
                       value={emailValue}
-                      onChange={e => this.onChangeInput(e, 'commonEmail')}
+                      onChange={(e) => this.onChangeInput(e, 'commonEmail')}
                     />
                   </div>
                 ) : null}
@@ -383,12 +383,12 @@ class SettingsModule extends React.PureComponent {
                     type="tel"
                     allowClear
                     value={telValue}
-                    onChange={e => this.onChangeInput(e, 'commonPhone')}
+                    onChange={(e) => this.onChangeInput(e, 'commonPhone')}
                   />
                 </div>
               </div>
               <Button
-                onClick={e => this.onSaveSettings(e, 'common')}
+                onClick={(e) => this.onSaveSettings(e, 'common')}
                 className="submit"
                 type="primary"
                 disabled={!readonlyCommon}
@@ -407,7 +407,7 @@ class SettingsModule extends React.PureComponent {
                 <span className="configTitle">Скрывать телефон</span>
               </div>
               <Button
-                onClick={e => this.onSaveSettings(e, 'profile')}
+                onClick={(e) => this.onSaveSettings(e, 'profile')}
                 className="submit"
                 type="primary"
                 disabled={!haveChanges.includes('profile')}
@@ -428,7 +428,7 @@ class SettingsModule extends React.PureComponent {
                 </Panel>
               </Collapse>
               <Button
-                onClick={e => this.onSaveSettings(e, 'access')}
+                onClick={(e) => this.onSaveSettings(e, 'access')}
                 className="submit"
                 type="primary"
                 disabled={!haveChanges.includes('profile')}
@@ -456,7 +456,7 @@ class SettingsModule extends React.PureComponent {
     );
   }
 }
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const {
     publicReducer: { udata = {}, caches = {} } = {},
     router: { shouldUpdate = false, currentActionTab = '' } = {},
@@ -472,7 +472,7 @@ const mapStateToProps = state => {
 
   if (!_.isEmpty(filterLogs)) {
     settingsLogs = Object.keys(filterLogs)
-      .map(logKey => {
+      .map((logKey) => {
         return {
           ...filterLogs[logKey],
           date: new Date(filterLogs[logKey].date),
@@ -489,12 +489,12 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    onSaveComponentState: data => dispatch(saveComponentStateAction(data)),
-    onUpdateUdata: payload => dispatch(updateUdata(payload)),
-    onCaching: props => dispatch(middlewareCaching(props)),
-    onSetStatus: props => dispatch(setStatus(props)),
+    onSaveComponentState: (data) => dispatch(saveComponentStateAction(data)),
+    onUpdateUdata: (payload) => dispatch(updateUdata(payload)),
+    onCaching: (props) => dispatch(middlewareCaching(props)),
+    onSetStatus: (props) => dispatch(setStatus(props)),
   };
 };
 
