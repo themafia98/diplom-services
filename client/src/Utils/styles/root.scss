@@ -71,26 +71,44 @@ body {
 
 .col-fullscreen {
   flex: 0 0 100%;
+  &.viewport-max {
+    max-width: 100%;
+  }
 }
 
 .col-8 {
   flex: 0 0 66.777%;
+  &.viewport-max {
+    max-width: 66.777%;
+  }
 }
 
 .col-6 {
   flex: 0 0 50%;
+  &.viewport-max {
+    max-width: 50%;
+  }
 }
 
 .col-4 {
   flex: 0 0 33.333%;
+  &.viewport-max {
+    max-width: 33.333%;
+  }
 }
 
 .col-chat-menu {
   flex: 0 0 20%;
+  &.viewport-max {
+    max-width: 20%;
+  }
 }
 
 .col-chat-content {
   flex: 0 0 80%;
+  &.viewport-max {
+    max-width: 80%;
+  }
 }
 
 p,

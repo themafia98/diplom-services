@@ -52,7 +52,7 @@ class WikiModule extends React.PureComponent {
 
     if (keys?.length) {
       selectedNode = keys[0];
-      selectedNodeMetadata = metadata.find(meta => meta?.path === selectedNode);
+      selectedNodeMetadata = metadata.find((meta) => meta?.path === selectedNode);
     }
 
     this.setState({
@@ -62,9 +62,9 @@ class WikiModule extends React.PureComponent {
     });
   };
 
-  onVisibleModalChange = callback => {
+  onVisibleModalChange = (callback) => {
     this.setState(
-      state => {
+      (state) => {
         return {
           ...state,
           visibleModal: !state?.visibleModal,
@@ -126,7 +126,7 @@ class WikiModule extends React.PureComponent {
         message.error('Ошибка создания ветки или функция не доступна.');
         return this.onVisibleModalChange();
       }
-      const index = ++metadata.filter(nodeMeta => nodeMeta?.parentId === indexId).length;
+      const index = ++metadata.filter((nodeMeta) => nodeMeta?.parentId === indexId).length;
       const rest = new Request();
       const res = await rest.sendRequest('/wiki/createLeaf', 'PUT', {
         type: 'wikiTree',
@@ -174,8 +174,8 @@ class WikiModule extends React.PureComponent {
     }
   };
 
-  onChangeSelect = value => {
-    this.setState(state => {
+  onChangeSelect = (value) => {
+    this.setState((state) => {
       return {
         ...state,
         node: {
@@ -208,11 +208,11 @@ class WikiModule extends React.PureComponent {
   /**
    * @param {Array<object>} nodeList
    */
-  getTreeData = nodeList => {
+  getTreeData = (nodeList) => {
     if (!Array.isArray(nodeList)) return [];
 
-    const rootNodesList = nodeList.filter(node => node?.parentId === 'root');
-    const nodeListChildren = nodeList.filter(node => node?.parentId !== 'root');
+    const rootNodesList = nodeList.filter((node) => node?.parentId === 'root');
+    const nodeListChildren = nodeList.filter((node) => node?.parentId !== 'root');
 
     return this.buildTree(rootNodesList, nodeListChildren);
   };
@@ -224,7 +224,7 @@ class WikiModule extends React.PureComponent {
 
     const { metadata = [] } = this.props;
 
-    const item = metadata.find(node => node?._id === id);
+    const item = metadata.find((node) => node?._id === id);
 
     if (!item) {
       message.error('Ветка не найдена');
@@ -234,7 +234,7 @@ class WikiModule extends React.PureComponent {
     if (sign === 'add') {
       const { current: { state: { value: title = '' } = {} } = {} } = this.titleRef || {};
       if (!title) return;
-      const index = ++metadata.filter(node => node?.parentId === id).length;
+      const index = ++metadata.filter((node) => node?.parentId === id).length;
 
       this.onCreateNode(
         {
@@ -248,7 +248,7 @@ class WikiModule extends React.PureComponent {
       );
     } else if (sign === 'delete') {
       const childrensIds = metadata
-        .map(node => {
+        .map((node) => {
           if (node?.parentId === id) {
             return node?._id;
           }
@@ -283,9 +283,9 @@ class WikiModule extends React.PureComponent {
 
     const listData = this.getTreeData(metadata);
 
-    const loop = data =>
+    const loop = (data) =>
       data
-        .map(it => {
+        .map((it) => {
           const item = {
             ...it,
             children: it?.children ? it.children : [],
@@ -393,15 +393,17 @@ class WikiModule extends React.PureComponent {
     return (
       <React.Fragment>
         <div className="wikiModule">
-          <TitleModule classNameTitle="wikiModuleTitle" title="Википедия системы" />
-          <Button
-            disabled={isLoadingState}
-            onClick={this.onVisibleModalChange}
-            type="primary"
-            className="createNode"
-          >
-            Создать новую ветку
-          </Button>
+          <div className="wikiModule__controlls">
+            <TitleModule classNameTitle="wikiModuleTitle" title="Википедия системы" />
+            <Button
+              disabled={isLoadingState}
+              onClick={this.onVisibleModalChange}
+              type="primary"
+              className="createNode"
+            >
+              Создать новую ветку
+            </Button>
+          </div>
           <div className="wikiModule__main">
             <div className="col-4">
               {metadata.length ? (
@@ -421,7 +423,7 @@ class WikiModule extends React.PureComponent {
                 <Spin size="large" />
               )}
             </div>
-            <div className="col-8">
+            <div className="col-8 viewport-max">
               {selectedNode ? (
                 <WikiPage
                   key={key}
@@ -463,7 +465,7 @@ class WikiModule extends React.PureComponent {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const {
     router,
     router: { routeData = {} } = {},
@@ -479,9 +481,9 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    onLoadCurrentData: props => dispatch(loadCurrentData(props)),
+    onLoadCurrentData: (props) => dispatch(loadCurrentData(props)),
   };
 };
 
