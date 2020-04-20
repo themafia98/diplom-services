@@ -38,7 +38,7 @@ class TaskView extends React.PureComponent {
       description: null,
       date: null,
     },
-    actionType: '__setJurnal',
+    actionType: '__getJurnal',
     isLoadingFiles: false,
     filesArray: [],
     filteredUsers: [],

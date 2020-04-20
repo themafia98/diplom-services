@@ -36,7 +36,7 @@ class ActionJurnal implements Action {
     if (!model) return null;
 
     switch (this.getEntity().getActionType()) {
-      case '__setJurnal':
+      case '__getJurnal':
         // Get jurnal action. Starts with '__set' journals key becouse
         // set for synchronize with client key
         return this.getJurnal(actionParam, model);

@@ -1,4 +1,5 @@
 import { сachingAction, errorRequstAction } from '../';
+import { cachingHook, getterCacheHook } from '../../../../Utils';
 import { updateItemStateAction } from '../../routerActions';
 import { TASK_CONTROLL_JURNAL_SCHEMA, USER_SCHEMA, TASK_SCHEMA } from '../../../../Models/Schema/const';
 
@@ -6,89 +7,51 @@ import { TASK_CONTROLL_JURNAL_SCHEMA, USER_SCHEMA, TASK_SCHEMA } from '../../../
  * Middleware
  * @param {object} props
  * @param {object} schema - validator
- * @param {object} Request - http requests
- * @param {clientDB} clientDB - IndexedDB methods
+ * @param {Function} Request - http requests
+ * @param {object} clientDB - IndexedDB methods
  */
 
-const middlewareCaching = (props = {}) => async (dispatch, getState, { schema, Request, clientDB }) => {
+const middlewareCaching = (props) => async (dispatch, getState, { schema, Request, clientDB }) => {
   const { status = 'online' } = getState().publicReducer;
-
   const { actionType = '', item = {}, depKey = '', depStore = '', store = '', uid = '', type = '' } = props;
+  const isOnline = status === 'online';
+  try {
+    if (!isOnline) return;
+    debugger;
+    const depActions = {
+      errorRequstAction,
+      сachingAction,
+    };
 
-  if (status === 'online') {
-    switch (actionType) {
-      case '__setJurnal': {
-        try {
-          const path = `/${depStore}/caching/jurnal`;
-          const body = { queryParams: { depKey, depStore }, item };
-          const rest = new Request();
-
-          const res = await rest.sendRequest(path, 'PUT', body, true);
-          const [items, error] = rest.parseResponse(res);
-          const { dataItems: updaterItem = null } = items;
-
-          if (error) throw new Error(error);
-
-          // const schemTemplate =
-          //   store === 'jurnalworks'
-          //     ? TASK_CONTROLL_JURNAL_SCHEMA
-          //     : store === 'users'
-          //     ? USER_SCHEMA
-          //     : store === 'tasks'
-          //     ? TASK_SCHEMA
-          //     : null;
-
-          // const validHash = [updaterItem]
-          //     .map(it => schema.getSchema(schemTemplate, it))
-          //     .filter(Boolean);
-
-          if (updaterItem) {
-            clientDB.addItem(store, updaterItem);
-
-            dispatch(сachingAction({ data: updaterItem, load: true, primaryKey: actionType }));
-          } else throw new Error('Invalid data props');
-        } catch (error) {
-          console.error(error);
-          dispatch(errorRequstAction(error.message));
-        }
-
-        break;
-      }
-
-      default: {
-        try {
-          const path = `/${depStore}/${type ? type : 'caching'}`;
-          const rest = new Request();
-
-          const body = { queryParams: { uid }, item, actionType };
-
-          const res = await rest.sendRequest(path, 'PUT', body, true);
-          const [items, error] = rest.parseResponse(res);
-
-          if (error) throw new Error(error);
-
-          if (items && type === 'logger') {
-            const actionType = 'get_user_settings_log';
-
-            const path = `/${depStore}/${type ? type : 'caching'}`;
-            const rest = new Request();
-
-            const body = { queryParams: { uid }, actionType };
-
-            const res = await rest.sendRequest(path, 'POST', body, true);
-            const [items, error] = rest.parseResponse(res);
-            const { dataItems: updaterItem = null } = items;
-
-            if (error) throw new Error(error);
-
-            dispatch(сachingAction({ data: updaterItem, load: true, primaryKey: actionType }));
-          }
-        } catch (error) {
-          console.error(error);
-          dispatch(errorRequstAction(error.message));
-        }
-      }
+    if (actionType.includes('__get')) {
+      /** cahing items middleware */
+      const dep = {
+        depStore,
+        depKey,
+        item,
+        store,
+        actionType,
+        clientDB,
+        schema,
+        Request,
+      };
+      await cachingHook(dispatch, dep, depActions);
+      return;
     }
+
+    /** default middleware function */
+    const dep = {
+      depStore,
+      item,
+      type,
+      actionType,
+      uid,
+      Request,
+    };
+    await getterCacheHook(dispatch, dep, depActions);
+  } catch (error) {
+    console.error(error);
+    dispatch(errorRequstAction(error.message));
   }
 };
 
@@ -104,7 +67,7 @@ const loadCacheData = (props = {}) => async (dispatch, getState, { schema, Reque
 
   if (status === 'online') {
     switch (actionType) {
-      case '__setJurnal': {
+      case '__getJurnal': {
         try {
           const path = `/${depStore}/caching/list`;
           const rest = new Request();

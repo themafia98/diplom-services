@@ -8,7 +8,7 @@ import namespaceHooks from './Hooks';
  */
 
 const { sucessEvent, forceUpdateDetectedInit } = namespaceEvents;
-const { errorHook, onlineDataHook } = namespaceHooks;
+const { errorHook, onlineDataHook, cachingHook, getterCacheHook } = namespaceHooks;
 
 const {
   dataParser,
@@ -34,4 +34,6 @@ export {
   onlineDataHook,
   buildRequestList,
   getValidContent,
+  cachingHook,
+  getterCacheHook,
 };

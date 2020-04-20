@@ -391,8 +391,8 @@ const mapDispatchToProps = (dispatch) => {
     onClearCache: (props) => dispatch(clearCache(props)),
     setCurrentTab: (tab) => dispatch(setActiveTabAction(tab)),
     onLoadCurrentData: ({ path, storeLoad }) => dispatch(loadCurrentData({ path, storeLoad })),
-    onErrorRequstAction: async (error) => await errorRequstAction(error),
-    onShoudUpdate: async (update) => await shouldUpdateAction(update),
+    onErrorRequstAction: async (error) => await dispatch(errorRequstAction(error)),
+    onShoudUpdate: async (update) => await dispatch(shouldUpdateAction(update)),
     onLogoutAction: async () => await dispatch(logoutAction()),
   };
 };
