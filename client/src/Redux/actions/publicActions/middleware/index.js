@@ -17,7 +17,7 @@ const middlewareCaching = (props) => async (dispatch, getState, { schema, Reques
   const isOnline = status === 'online';
   try {
     if (!isOnline) return;
-    debugger;
+
     const depActions = {
       errorRequstAction,
       сachingAction,
