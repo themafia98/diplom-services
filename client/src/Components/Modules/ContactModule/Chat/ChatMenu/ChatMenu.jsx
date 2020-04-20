@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import _ from 'lodash';
 import Scrollbars from 'react-custom-scrollbars';
 import { Skeleton, List, Avatar, Button } from 'antd';
-import uuid from 'uuid/v4';
+import { v4 as uuid } from 'uuid';
 
 const { Item: { Meta } = {}, Item = {} } = List || {};
 

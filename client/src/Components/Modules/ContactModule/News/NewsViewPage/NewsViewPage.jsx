@@ -1,13 +1,13 @@
 import React, { useState, useContext } from 'react';
 import { newsViewType } from '../../types';
 import _ from 'lodash';
-import uuid from 'uuid/v4';
+import { v4 as uuid } from 'uuid';
 
 import TitleModule from '../../../../TitleModule';
 import EditorTextarea from '../../../../Textarea/EditorTextarea';
 import modelContext from '../../../../../Models/context';
 
-const NewsViewPage = props => {
+const NewsViewPage = (props) => {
   const { content: contentEntity, title, id: _id } = props;
   const { schema = {} } = useContext(modelContext);
   const [id] = useState(_id);

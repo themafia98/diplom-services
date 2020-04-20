@@ -15,7 +15,7 @@ import ContactModule from '../Modules/ContactModule';
 import CustomersModule from '../Modules/CustomersModule';
 import WikiModule from '../Modules/WikiModule';
 
-import uuid from 'uuid/v4';
+import { v4 as uuid } from 'uuid';
 
 const { Content } = Layout;
 
@@ -84,15 +84,15 @@ class ContentView extends React.Component {
   /**
    * @param {string} path
    */
-  checkBackground = path => {
+  checkBackground = (path) => {
     const { actionTabs = [] } = this.props;
     /**
      * @param {string} actionTab
      */
-    return actionTabs.some(actionTab => actionTab.startsWith(path) || actionTab === path);
+    return actionTabs.some((actionTab) => actionTab.startsWith(path) || actionTab === path);
   };
 
-  updateFunction = _.debounce(forceUpdate => {
+  updateFunction = _.debounce((forceUpdate) => {
     const { updateLoader } = this.props;
     this.setState({ ...this.state, key: uuid() }, () => {
       if (forceUpdate) {
@@ -101,7 +101,7 @@ class ContentView extends React.Component {
     });
   }, 300);
 
-  disableF5 = event => {
+  disableF5 = (event) => {
     if ((event.which || event.keyCode) === 113) {
       return this.setState({ ...this.state, drawerView: !this.state.drawerView });
     }

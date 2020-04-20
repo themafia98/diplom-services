@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect, useCallback } from 'react';
-import uuid from 'uuid/v4';
+import { v4 as uuid } from 'uuid';
 import { getValidContent } from '../../../../Utils';
 import Textarea from '../../../Textarea';
 import { wikiPageTypes } from '../types';
@@ -7,7 +7,7 @@ import modelContext from '../../../../Models/context';
 import { Spin, Button, message } from 'antd';
 import moment from 'moment';
 
-const WikiPage = props => {
+const WikiPage = (props) => {
   const { selectedNode = null, metadata = null, onChangeWikiPage, udata: { displayName = '' } = {} } = props;
   const models = useContext(modelContext);
 
@@ -76,7 +76,7 @@ const WikiPage = props => {
     setReadOnly(!readOnly);
   };
 
-  const onChangeContent = contentDrawer => {
+  const onChangeContent = (contentDrawer) => {
     setContent(contentDrawer);
   };
 

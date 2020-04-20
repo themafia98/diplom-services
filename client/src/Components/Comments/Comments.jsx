@@ -2,7 +2,7 @@ import React from 'react';
 import { commentsContainerType } from './types';
 import Scrollbars from 'react-custom-scrollbars';
 import _ from 'lodash';
-import uuid from 'uuid/v4';
+import { v4 as uuid } from 'uuid';
 import moment from 'moment';
 import { Button, Empty, message, notification } from 'antd';
 
@@ -17,7 +17,7 @@ class Comments extends React.PureComponent {
 
   static propTypes = commentsContainerType;
 
-  addCommentsDelay = _.debounce(async event => {
+  addCommentsDelay = _.debounce(async (event) => {
     try {
       const { value: msg = '' } = this.state;
       const {
@@ -69,7 +69,7 @@ class Comments extends React.PureComponent {
     }
   }, 500);
 
-  addComments = event => {
+  addComments = (event) => {
     if ((event.which || event.keyCode) && (event.which || event.keyCode) !== 13) return;
     if ((event.which || event.keyCode) && (event.which || event.keyCode) === 13) {
       event.preventDefault();
@@ -79,7 +79,7 @@ class Comments extends React.PureComponent {
 
   onDelete = (event, idComment) => {
     const { onUpdate, data: { _id: id = '', key = '', comments = [] } = {}, data = {} } = this.props;
-    const filterComments = comments.filter(it => it.id !== idComment);
+    const filterComments = comments.filter((it) => it.id !== idComment);
     onUpdate({
       id,
       key,
@@ -89,12 +89,12 @@ class Comments extends React.PureComponent {
       updateField: 'comments',
     })
       .then(() => message.success('Коментарий удален.'))
-      .catch(error => {
+      .catch((error) => {
         message.error('Не удалось удалить коментарий.');
       });
   };
 
-  onChange = event => {
+  onChange = (event) => {
     const { target: { value = '' } = {} } = event;
     this.setState({
       ...this.state,
@@ -105,7 +105,7 @@ class Comments extends React.PureComponent {
   renderComments(commentsArray) {
     const { rules, udata: { _id: userId = '' } = {} } = this.props;
     if (commentsArray.length && Array.isArray(commentsArray))
-      return commentsArray.map(it => (
+      return commentsArray.map((it) => (
         <Comment
           key={it.id}
           rules={rules}

@@ -11,7 +11,7 @@ import { TASK_SCHEMA } from '../../../../Models/Schema/const';
 
 import { middlewareCaching, middlewareUpdate } from '../../../../Redux/actions/publicActions/middleware';
 
-import uuid from 'uuid/v4';
+import { v4 as uuid } from 'uuid';
 
 import ModalWindow from '../../../ModalWindow';
 import Output from '../../../Output';
@@ -78,7 +78,7 @@ class TaskView extends React.PureComponent {
           const { data: { response: { metadata = [] } = {} } = {} } = response || {};
 
           const filteredUsers = metadata
-            .map(user => {
+            .map((user) => {
               const { _id = '', displayName = '' } = user;
 
               if (!user || !_id || !displayName) return null;
@@ -136,7 +136,7 @@ class TaskView extends React.PureComponent {
               const { metadata: filesArray } = response;
 
               this.setState({
-                filesArray: filesArray.map(it => {
+                filesArray: filesArray.map((it) => {
                   const { name, path_display: url, id: uid } = it;
                   const [module, taskId, filename] = url.slice(1).split(/\//gi);
 
@@ -162,7 +162,7 @@ class TaskView extends React.PureComponent {
    * @param {any} status
    */
   onAddFileList = (fileList, status) => {
-    const shouldRefresh = fileList.every(it => it.status === 'done');
+    const shouldRefresh = fileList.every((it) => it.status === 'done');
     this.setState({
       filesArray: [...fileList],
       shouldRefresh,
@@ -172,7 +172,7 @@ class TaskView extends React.PureComponent {
   /**
    * @param {{ uid: any; }} file
    */
-  onRemoveFile = async file => {
+  onRemoveFile = async (file) => {
     try {
       const { filesArray } = this.state;
       const { Request = {} } = this.context;
@@ -200,7 +200,7 @@ class TaskView extends React.PureComponent {
 
         this.setState(
           {
-            filesArray: filesArray.filter(it => it.uid !== idResponse),
+            filesArray: filesArray.filter((it) => it.uid !== idResponse),
           },
           () => {
             message.success('Файл успешно удален');
@@ -213,7 +213,7 @@ class TaskView extends React.PureComponent {
     }
   };
 
-  onEdit = event => {
+  onEdit = (event) => {
     const {
       router: { routeDataActive = {} },
     } = this.props;
@@ -225,7 +225,7 @@ class TaskView extends React.PureComponent {
     });
   };
 
-  onRejectEdit = event => {
+  onRejectEdit = (event) => {
     this.setState({
       ...this.state,
       modeControll: 'default',
@@ -243,7 +243,7 @@ class TaskView extends React.PureComponent {
     });
   };
 
-  onChangeEditableStart = event => {
+  onChangeEditableStart = (event) => {
     const dateString = event && event._d ? moment(event._d, 'DD.MM.YYYY').format('DD.MM.YYYY') : null;
     const { modeControllEdit: { date = [] } = {} } = this.state;
     const newDate = [...date];
@@ -259,7 +259,7 @@ class TaskView extends React.PureComponent {
     });
   };
 
-  onChangeEditableEnd = event => {
+  onChangeEditableEnd = (event) => {
     const dateString = event && event._d ? moment(event._d, 'DD.MM.YYYY').format('DD.MM.YYYY') : null;
     const { modeControllEdit: { date = [] } = {} } = this.state;
     const newDate = [...date];
@@ -274,7 +274,7 @@ class TaskView extends React.PureComponent {
     });
   };
 
-  onChangeEditable = event => {
+  onChangeEditable = (event) => {
     const { currentTarget = {}, currentTarget: { value = '' } = {} } = event;
     if (_.isObject(event) && currentTarget && !_.isEmpty(currentTarget)) {
       return this.setState({
@@ -298,7 +298,7 @@ class TaskView extends React.PureComponent {
       }
     } else if (typeof event === 'string') {
       const arrayStatus = ['Открыт', 'Выполнен', 'Закрыт', 'В работе'];
-      if (arrayStatus.some(it => it === event)) {
+      if (arrayStatus.some((it) => it === event)) {
         return this.setState({
           ...this.state,
           modeEditContent: false,
@@ -320,13 +320,13 @@ class TaskView extends React.PureComponent {
     }
   };
 
-  onUpdateEditable = event => {
+  onUpdateEditable = (event) => {
     const { onUpdate, router: { routeDataActive = {} } = {}, path = '' } = this.props;
     const { modeControllEdit = {} } = this.state;
     const validHashCopy = [{ ...modeControllEdit }];
     const { schema = {} } = this.context;
 
-    const validHash = validHashCopy.map(it => schema.getSchema(TASK_SCHEMA, it)).filter(Boolean)[0];
+    const validHash = validHashCopy.map((it) => schema.getSchema(TASK_SCHEMA, it)).filter(Boolean)[0];
 
     if (validHash)
       onUpdate({
@@ -343,26 +343,26 @@ class TaskView extends React.PureComponent {
           this.onRejectEdit(event);
           message.success('Задача обновлена.');
         })
-        .catch(error => {
+        .catch((error) => {
           message.error('Ошибка обновления задачи.');
         });
   };
 
-  onCancelEditModeContent = event => {
+  onCancelEditModeContent = (event) => {
     this.setState({
       ...this.state,
       modeEditContent: false,
     });
   };
 
-  onEditContentMode = event => {
+  onEditContentMode = (event) => {
     this.setState({
       ...this.state,
       modeEditContent: true,
     });
   };
 
-  showModalWorkJur = event => {
+  showModalWorkJur = (event) => {
     this.setState({
       ...this.state,
       mode: 'jur',
@@ -393,7 +393,7 @@ class TaskView extends React.PureComponent {
     const { publicReducer: { caches = null } = {} } = this.props;
 
     return _.uniq(jurnalDataKeys)
-      .map(key => {
+      .map((key) => {
         const item = caches[key];
         const date = item && Array.isArray(item.date) ? item.date[0] : 'Invalid date';
 
@@ -467,7 +467,7 @@ class TaskView extends React.PureComponent {
     if (caches && actionType && routeDataActive && key) {
       const keys = Object.keys(caches);
 
-      jurnalDataKeys = keys.filter(keyData => keyData.includes(actionType) && keyData.includes(key));
+      jurnalDataKeys = keys.filter((keyData) => keyData.includes(actionType) && keyData.includes(key));
     }
 
     const accessStatus = _.uniq([
@@ -552,7 +552,7 @@ class TaskView extends React.PureComponent {
                         name="priority"
                         type="text"
                       >
-                        {accessStatus.map(it => (
+                        {accessStatus.map((it) => (
                           <Option key={it} value={it}>
                             {it}
                           </Option>
@@ -572,7 +572,7 @@ class TaskView extends React.PureComponent {
                         name="priority"
                         type="text"
                       >
-                        {accessPriority.map(it => (
+                        {accessPriority.map((it) => (
                           <Option key={it} value={it}>
                             {it}
                           </Option>
@@ -603,7 +603,7 @@ class TaskView extends React.PureComponent {
                         placeholder="выберете исполнителя"
                         optionLabelProp="label"
                       >
-                        {filteredUsers.map(it => (
+                        {filteredUsers.map((it) => (
                           <Option key={it._id} value={it.displayName} label={it.displayName}>
                             <span>{it.displayName}</span>
                           </Option>
@@ -702,7 +702,7 @@ class TaskView extends React.PureComponent {
   }
 }
 
-const mapStateTopProps = state => {
+const mapStateTopProps = (state) => {
   const { router = {}, publicReducer = {}, publicReducer: { udata = {} } = {} } = state || {};
 
   return {
@@ -712,10 +712,10 @@ const mapStateTopProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    onCaching: async props => await dispatch(middlewareCaching(props)),
-    onUpdate: props => dispatch(middlewareUpdate({ ...props })),
+    onCaching: async (props) => await dispatch(middlewareCaching(props)),
+    onUpdate: (props) => dispatch(middlewareUpdate({ ...props })),
   };
 };
 

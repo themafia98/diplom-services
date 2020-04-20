@@ -1,6 +1,6 @@
 import React from 'react';
 import { fileType } from './types';
-import uuid from 'uuid/v4';
+import { v4 as uuid } from 'uuid';
 import { Upload, Icon, message } from 'antd';
 const { Dragger } = Upload;
 
@@ -28,7 +28,7 @@ class File extends React.Component {
     return state;
   };
 
-  onChange = info => {
+  onChange = (info) => {
     const { status } = info.file;
     const { onAddFileList } = this.props;
 
@@ -45,7 +45,7 @@ class File extends React.Component {
     }
   };
 
-  onRemove = file => {
+  onRemove = (file) => {
     const { onRemoveFile = null } = this.props;
     if (onRemoveFile) onRemoveFile(file);
   };
