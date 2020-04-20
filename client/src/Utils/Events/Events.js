@@ -12,17 +12,19 @@ const sucessEvent = async (dispatch, dep, mode = '', multiple = false, cursor = 
     pathValid,
     saveComponentStateAction,
     errorRequstAction,
+    params,
   } = dep;
 
   if (mode === 'offline') {
     const schemaTemplate = getStoreSchema(storeLoad);
 
-    const itemsCopy = cursor.map(it => schema.getSchema(schemaTemplate, it)).filter(Boolean);
+    const itemsCopy = cursor.map((it) => schema.getSchema(schemaTemplate, it)).filter(Boolean);
     const data = {
       [storeLoad]: itemsCopy,
       load: true,
       path: pathValid,
       mode: 'offline',
+      params,
     };
 
     if (!multiple) {
@@ -32,16 +34,16 @@ const sucessEvent = async (dispatch, dep, mode = '', multiple = false, cursor = 
   }
 
   if (!cursor) {
-    const { data, shoudClearError = false } = dataParser(true, true, dep);
+    const { data = {}, shoudClearError = false } = dataParser(true, true, dep);
     if (shoudClearError) await dispatch(errorRequstAction(null));
 
     if (!multiple) {
-      dispatch(saveComponentStateAction(data));
+      dispatch(saveComponentStateAction({ ...data, params }));
       return;
     } else return data;
   }
 
-  const index = copyStore.findIndex(it => {
+  const index = copyStore.findIndex((it) => {
     const isKey = it[primaryKey] || it['key'];
     const isValid = it[primaryKey] === cursor.key || it['key'] === cursor.key;
 
@@ -59,7 +61,7 @@ const sucessEvent = async (dispatch, dep, mode = '', multiple = false, cursor = 
 };
 
 const forceUpdateDetectedInit = () => {
-  window.addEventListener('beforeunload', event => {
+  window.addEventListener('beforeunload', (event) => {
     event.returnValue = `Are you sure you want to leave?`;
   });
 };

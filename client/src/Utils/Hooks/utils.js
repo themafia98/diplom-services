@@ -5,19 +5,24 @@ import { dataParser } from '../';
 /** Utils hooks */
 
 const runBadNetworkAction = (dispatch, error, dep) => {
-  const { Request, setStatus, path, storeLoad, errorRequstAction, loadCurrentData, getState } = dep;
+  const { Request, setStatus, errorRequstAction, loadCurrentData, getState, params } = dep;
   const errorRequest = new Request();
   dispatch(setStatus({ statusRequst: 'offline' }));
   dispatch(errorRequstAction(error.message));
   errorRequest.follow(
     'offline',
-    statusRequst => {
-      if (getState().publicReducer.status !== statusRequst && statusRequst === 'online') {
+    (statusRequst) => {
+      const state = getState();
+      const { publicReducer: { status = '' } = {}, router = {} } = state;
+      if (status !== statusRequst && statusRequst === 'online') {
+        const { path, routeData = {} } = router;
+        const currentModule = path && routeData[path] ? routeData[path] : {};
+        const requestParams = !currentModule?.params ? {} : currentModule.params;
         errorRequest.unfollow();
 
         dispatch(setStatus({ statusRequst }));
-        dispatch(errorRequstAction(null));
-        dispatch(loadCurrentData({ path, storeLoad }));
+
+        dispatch(loadCurrentData({ ...requestParams }));
       }
     },
     3000,
@@ -25,11 +30,11 @@ const runBadNetworkAction = (dispatch, error, dep) => {
 };
 
 const runNoCorsAction = (dispatch, dep, multiple) => {
-  const { saveComponentStateAction } = dep;
-  const { data, shouldUpdateState = true } = dataParser(false, false, dep);
+  const { saveComponentStateAction, params = {} } = dep;
+  const { data = {}, shouldUpdateState = true } = dataParser(false, false, dep);
 
   if (shouldUpdateState && !multiple) {
-    dispatch(saveComponentStateAction(data));
+    dispatch(saveComponentStateAction({ ...data, params }));
     return [false, null];
   }
 
@@ -49,10 +54,10 @@ const runRefreshIndexedDb = async (dispatch, storeName, dep, multiple) => {
 };
 
 const runLocalUpdateAction = async (dispatch, depAction, depParser, multiple) => {
-  const { errorRequstAction, saveComponentStateAction } = depAction;
+  const { errorRequstAction, saveComponentStateAction, params = {} } = depAction;
   const { data, shoudClearError = false, shouldUpdateState = true } = dataParser(true, false, depParser);
   if (shoudClearError) await dispatch(errorRequstAction(null));
-  if (shouldUpdateState && !multiple) await dispatch(saveComponentStateAction(data));
+  if (shouldUpdateState && !multiple) await dispatch(saveComponentStateAction({ ...data, params }));
   else if (multiple) return data;
 };
 

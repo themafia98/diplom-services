@@ -2,7 +2,7 @@ import { getNormalizedPath, sucessEvent, errorHook, onlineDataHook } from '../..
 import { saveComponentStateAction, loadFlagAction } from '../';
 import { errorRequstAction, setStatus } from '../../publicActions';
 
-const loadCurrentData = params => async (dispatch, getState, { schema, Request, clientDB }) => {
+const loadCurrentData = (params) => async (dispatch, getState, { schema, Request, clientDB }) => {
   const {
     path = '',
     startPath = '',
@@ -59,6 +59,7 @@ const loadCurrentData = params => async (dispatch, getState, { schema, Request, 
           clientDB,
           methodQuery,
           primaryKey,
+          params,
           saveComponentStateAction,
           errorRequstAction,
           isLocalUpdate,
@@ -70,6 +71,7 @@ const loadCurrentData = params => async (dispatch, getState, { schema, Request, 
         const dep = {
           Request,
           setStatus,
+          params,
           errorRequstAction,
           loadCurrentData,
           getState,
@@ -82,14 +84,13 @@ const loadCurrentData = params => async (dispatch, getState, { schema, Request, 
     }
 
     default: {
-      if (!noCorsClient) return;
-
       const dep = {
         storeLoad,
         methodQuery,
         schema,
         clientDB,
         sortBy,
+        params,
         pathValid,
         requestError,
         primaryKey,
@@ -103,7 +104,7 @@ const loadCurrentData = params => async (dispatch, getState, { schema, Request, 
   }
 };
 
-const multipleLoadData = params => async (dispatch, getState, { schema, Request, clientDB }) => {
+const multipleLoadData = (params) => async (dispatch, getState, { schema, Request, clientDB }) => {
   const { requestsParamsList = [], pipe = true } = params;
 
   const primaryKey = 'uuid';

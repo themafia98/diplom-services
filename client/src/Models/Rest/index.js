@@ -57,7 +57,7 @@ class Request {
 
     isArray && metadata.forEach((doc, index) => _.isNumber(index) && items.push(doc));
 
-    if (isArray && items.length) items = items.filter(it => !_.isEmpty(it));
+    if (isArray && items.length) items = items.filter((it) => !_.isEmpty(it));
     else if (isArray && fromCache && !items.length) {
       return [items, 'Network error'];
     }
@@ -128,12 +128,15 @@ class Request {
         const testRequst = new XMLHttpRequest();
         const api = this.getTestAPI(true);
         testRequst.open('GET', api);
-        testRequst.onload = function() {
+        testRequst.onload = function () {
           if (this.status === 200 || this.status === 204) {
             resolve('online');
           } else {
             reject('offline');
           }
+        };
+        testRequst.onerror = function () {
+          reject('offline');
         };
         testRequst.send();
       });
@@ -220,11 +223,11 @@ class Request {
         },
         credentials: 'include',
       })
-      .then(res => {
+      .then((res) => {
         if (res.status === 200) this.restartApp();
         else throw new Error('invalid logout');
       })
-      .catch(error => console.error(error));
+      .catch((error) => console.error(error));
   };
 }
 

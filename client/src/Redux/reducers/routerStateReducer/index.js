@@ -80,7 +80,7 @@ export default (state = initialState, action) => {
     }
     case SAVE_STATE: {
       let copyRouteData = { ...state.routeData };
-      const { multiple = false, stateList = null } = action?.payload;
+      const { multiple = false, stateList = null, params: paramsAction = {} } = action?.payload;
 
       const validationItems = (currentItems, prevItems) => {
         const items = [...currentItems];
@@ -89,7 +89,7 @@ export default (state = initialState, action) => {
           const item = prevItems[i];
           const { _id = '' } = item || {};
 
-          const isExist = currentItems.some(prevItem => prevItem._id === _id);
+          const isExist = currentItems.some((prevItem) => prevItem._id === _id);
 
           if (!isExist) items.push(item);
         }
@@ -117,18 +117,21 @@ export default (state = initialState, action) => {
 
             items = validationItems(currentTasks, prevTasks);
           }
+          const isEmptyParams = JSON.stringify(paramsAction) === '{}' && state.routeData[path];
+          const params = isEmptyParams ? state.routeData[path]?.params : paramsAction;
 
           return {
             ...newState,
             [path]: {
               ...actionItem,
               [storeName]: items,
+              params,
             },
           };
         }, {});
 
-        const shouldUpdateList = Object.keys(state.routeData).every(key => {
-          if (stateList.some(actionItem => key === actionItem.path)) {
+        const shouldUpdateList = Object.keys(state.routeData).every((key) => {
+          if (stateList.some((actionItem) => key === actionItem.path)) {
             return state.routeData[key].load;
           }
           return true;
@@ -314,8 +317,8 @@ export default (state = initialState, action) => {
         }
       }
 
-      const indexFind = state.actionTabs.findIndex(it => it === state.currentActionTab);
-      const currentFind = filterArray.findIndex(tab => tab === currentActionTab);
+      const indexFind = state.actionTabs.findIndex((it) => it === state.currentActionTab);
+      const currentFind = filterArray.findIndex((tab) => tab === currentActionTab);
       const nextTab = currentFind !== -1 ? currentActionTab : filterArray[indexFind - 1];
 
       const uuid =
