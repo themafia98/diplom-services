@@ -4,7 +4,7 @@ import { Route } from 'react-router-dom';
 import Loader from '../Loader';
 import modelsContext from '../../Models/context';
 
-const PrivateRoute = ({ component: Component, onLogoutAction, ...routeProps }) => {
+const PrivateRoute = ({ component: Component, onLogoutAction, onSetStatus, ...routeProps }) => {
   /**
    * @type {import('react').MutableRefObject}
    */
@@ -13,15 +13,17 @@ const PrivateRoute = ({ component: Component, onLogoutAction, ...routeProps }) =
   const { rest } = useContext(modelsContext);
 
   const [route, setRoute] = useState(<Loader />);
+  /** @type {[number|null, Function|null]} */
   const [status, setStatus] = useState(null);
   const [init, setInit] = useState(null);
 
   const getRoutersFunc = async () => {
     await rest
       .authCheck()
-      .then(res => {
+      .then((res) => {
         if (res.status === 200) {
           if (res.status !== status) {
+            onSetStatus('online');
             setRoute(<Component rest={rest} />);
             setStatus(res.status);
           }
@@ -29,8 +31,12 @@ const PrivateRoute = ({ component: Component, onLogoutAction, ...routeProps }) =
           rest.restartApp();
         }
       })
-      .catch(err => {
-        rest.restartApp();
+      .catch((err) => {
+        if (err?.message.toLowerCase().includes('network error')) {
+          console.warn(err);
+          setStatus(522);
+          onSetStatus('offline');
+        } else rest.restartApp();
       });
   };
 
@@ -52,7 +58,7 @@ const PrivateRoute = ({ component: Component, onLogoutAction, ...routeProps }) =
     }
     return () => clearTimer();
   }, [getRouters, status, init, clearTimer, startTimer]);
-  return <Route exact {...routeProps} render={props => route} />;
+  return <Route exact {...routeProps} render={(props) => route} />;
 };
 
 PrivateRoute.propTypes = privateType;

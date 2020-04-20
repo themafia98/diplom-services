@@ -50,11 +50,11 @@ class App extends React.Component {
         }
 
         let path = 'mainModule';
-        const defaultModule = config.menu.find(item => item['SIGN'] === 'default');
+        const defaultModule = config.menu.find((item) => item['SIGN'] === 'default');
         if (defaultModule) path = defaultModule.EUID;
 
         const actionTabsCopy = [...actionTabs];
-        const isFind = actionTabsCopy.findIndex(tab => tab === path) !== -1;
+        const isFind = actionTabsCopy.findIndex((tab) => tab === path) !== -1;
 
         const { data: { user = {} } = {} } = res || {};
 
@@ -106,20 +106,20 @@ class App extends React.Component {
     const rest = new Request();
     rest
       .authCheck()
-      .then(res => {
+      .then((res) => {
         if (res.status === 200) {
           this.loadAppSession();
         } else {
           throw new Error(res.message);
         }
       })
-      .catch(err => {
+      .catch((err) => {
         this.loadApp();
       });
     if (config.forceUpdate === true || config.forceUpdate === 'true') forceUpdateDetectedInit();
   };
 
-  withoutIE = children => {
+  withoutIE = (children) => {
     return (
       <React.Fragment>
         <RenderInBrowser ie only>
@@ -137,17 +137,22 @@ class App extends React.Component {
   render() {
     const { loadState, authLoad } = this.state;
     const { config: { supportIE = true, appActive = true, unactiveAppMsg = '' } = {} } = this.context;
-    const { onLogoutAction } = this.props;
+    const { onLogoutAction, onSetStatus } = this.props;
 
     if (!appActive) {
       return <div className="app-unactive">{unactiveAppMsg}</div>;
     }
 
+    const privateActions = {
+      onSetStatus,
+      onLogoutAction,
+    };
+
     const route = (
       <Switch>
-        <Route exact path="/" render={props => <LoginPage {...props} authLoad={authLoad} />} />
-        <Route exact path="/recovory" render={props => <Recovery {...props} />} />
-        <PrivateRoute exact path="/dashboard" onLogoutAction={onLogoutAction} component={Dashboard} />
+        <Route exact path="/" render={(props) => <LoginPage {...props} authLoad={authLoad} />} />
+        <Route exact path="/recovory" render={(props) => <Recovery {...props} />} />
+        <PrivateRoute exact path="/dashboard" {...privateActions} component={Dashboard} />
       </Switch>
     );
 
@@ -156,7 +161,7 @@ class App extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { udata = {} } = state.publicReducer || {};
   return {
     router: { ...state.router },
@@ -165,13 +170,13 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    addTab: async tab => await dispatch(addTabAction(tab)),
-    onSetStatus: status => dispatch(setStatus({ statusRequst: status })),
-    setCurrentTab: tab => dispatch(setActiveTabAction(tab)),
+    addTab: async (tab) => await dispatch(addTabAction(tab)),
+    onSetStatus: (status) => dispatch(setStatus({ statusRequst: status })),
+    setCurrentTab: (tab) => dispatch(setActiveTabAction(tab)),
     onLogoutAction: async () => await dispatch(logoutAction()),
-    onLoadUdata: async udata => await dispatch(loadUdata(udata)),
+    onLoadUdata: async (udata) => await dispatch(loadUdata(udata)),
   };
 };
 
