@@ -1,4 +1,4 @@
-import { getNormalizedPath, sucessEvent, errorHook, onlineDataHook } from '../../../../Utils';
+import { getNormalizedPath, sucessEvent, errorHook, coreUpdaterDataHook } from '../../../../Utils';
 import { saveComponentStateAction, loadFlagAction } from '../';
 import { errorRequstAction, setStatus } from '../../publicActions';
 
@@ -66,7 +66,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
           indStoreName,
         };
 
-        onlineDataHook(dispatch, dep);
+        coreUpdaterDataHook(dispatch, dep);
       } catch (error) {
         const dep = {
           Request,
@@ -184,7 +184,7 @@ const multipleLoadData = (params) => async (dispatch, getState, { schema, Reques
         let hookData = [];
         for await (let res of responseList) {
           const { dep } = res;
-          const resultHook = await onlineDataHook(dispatch, dep, true);
+          const resultHook = await coreUpdaterDataHook(dispatch, dep, true);
           if (resultHook) hookData.push(resultHook);
         }
 

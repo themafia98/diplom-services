@@ -5,7 +5,7 @@ import { dataParser } from '../';
 /** Utils hooks */
 
 const runBadNetworkAction = (dispatch, error, dep) => {
-  const { Request, setStatus, errorRequstAction, loadCurrentData, getState, params } = dep;
+  const { Request, setStatus, errorRequstAction, loadCurrentData, getState } = dep;
   const errorRequest = new Request();
   dispatch(setStatus({ statusRequst: 'offline' }));
   dispatch(errorRequstAction(error.message));
@@ -61,4 +61,4 @@ const runLocalUpdateAction = async (dispatch, depAction, depParser, multiple) =>
   else if (multiple) return data;
 };
 
-export { runLocalUpdateAction, runBadNetworkAction, runRefreshIndexedDb, runNoCorsAction };
+export default { runLocalUpdateAction, runBadNetworkAction, runRefreshIndexedDb, runNoCorsAction };

@@ -1,5 +1,6 @@
 import moment from 'moment';
 import _ from 'lodash';
+import { clientDB } from '../../Models/ClientSideDatabase';
 import { runNoCorsParser } from './utils';
 import { getStoreSchema } from '../utilsHook';
 
@@ -191,6 +192,15 @@ const getValidContent = (contentState) => {
   return validContentState;
 };
 
+/**
+ * @param {string} store
+ * @param {Array<object>} syncData
+ */
+const syncData = async (store = '', syncData = []) => {
+  const localDataList = await clientDB.getAllItems(store);
+  return _.uniqBy([...syncData, ...localDataList], '_id');
+};
+
 const namespaceParser = {
   dataParser,
   getNormalizedPath,
@@ -200,6 +210,7 @@ const namespaceParser = {
   routePathNormalise,
   buildRequestList,
   getValidContent,
+  syncData,
 };
 
 export default namespaceParser;

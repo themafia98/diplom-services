@@ -1,5 +1,5 @@
 import { сachingAction, errorRequstAction } from '../';
-import { cachingHook, getterCacheHook } from '../../../../Utils';
+import { cachingHook, getterCacheHook, errorHook } from '../../../../Utils';
 import { updateItemStateAction } from '../../routerActions';
 import { TASK_CONTROLL_JURNAL_SCHEMA, USER_SCHEMA, TASK_SCHEMA } from '../../../../Models/Schema/const';
 
@@ -15,28 +15,35 @@ const middlewareCaching = (props) => async (dispatch, getState, { schema, Reques
   const { status = 'online' } = getState().publicReducer;
   const { actionType = '', item = {}, depKey = '', depStore = '', store = '', uid = '', type = '' } = props;
   const isOnline = status === 'online';
+
+  const depActions = {
+    errorRequstAction,
+    сachingAction,
+  };
+
   try {
-    if (!isOnline) return;
-
-    const depActions = {
-      errorRequstAction,
-      сachingAction,
-    };
-
-    if (actionType.includes('__get')) {
+    if (actionType?.includes('__get')) {
       /** cahing items middleware */
+
+      const path = `/${depStore}/caching/jurnal`;
+      const body = { queryParams: { depKey, depStore }, item };
+      const rest = new Request();
+
+      const res = await rest.sendRequest(path, 'PUT', body, true);
+      const [items, error] = rest.parseResponse(res);
+      const { dataItems = null } = items;
+
+      if (error) throw new Error(error);
+
       const dep = {
-        depStore,
-        depKey,
-        item,
         store,
         actionType,
         clientDB,
         schema,
-        Request,
+        dataItems,
       };
+
       await cachingHook(dispatch, dep, depActions);
-      return;
     }
 
     /** default middleware function */
@@ -48,10 +55,21 @@ const middlewareCaching = (props) => async (dispatch, getState, { schema, Reques
       uid,
       Request,
     };
+
     await getterCacheHook(dispatch, dep, depActions);
   } catch (error) {
+    const depError = {
+      depStore,
+      depKey,
+      item,
+      store,
+      actionType,
+      clientDB,
+      schema,
+      Request,
+    };
     console.error(error);
-    dispatch(errorRequstAction(error.message));
+    errorHook(error, dispatch, depError);
   }
 };
 
@@ -63,52 +81,36 @@ const loadCacheData = (props = {}) => async (dispatch, getState, { schema, Reque
     store = '',
   } = props;
 
-  const { status = 'online' } = getState().publicReducer;
+  const depActions = {
+    errorRequstAction,
+    сachingAction,
+  };
 
-  if (status === 'online') {
-    switch (actionType) {
-      case '__getJurnal': {
-        try {
-          const path = `/${depStore}/caching/list`;
-          const rest = new Request();
+  try {
+    const path = `/${depStore}/caching/list`;
+    const rest = new Request();
 
-          const body = { queryParams: { depKey, store }, actionType };
+    const body = { queryParams: { depKey, store }, actionType };
 
-          const res = await rest.sendRequest(path, 'PUT', body, true);
-          const [items, error] = rest.parseResponse(res);
-          const { dataItems: updaterItem = null } = items;
+    const res = await rest.sendRequest(path, 'PUT', body, true);
+    const [items, error] = rest.parseResponse(res);
+    const { dataItems = null } = items;
 
-          if (error) throw new Error(error);
+    if (error) throw new Error(error);
 
-          // const schemTemplate =
-          //   store === 'jurnalworks'
-          //     ? TASK_CONTROLL_JURNAL_SCHEMA
-          //     : store === 'users'
-          //     ? USER_SCHEMA
-          //     : store === 'tasks'
-          //     ? TASK_SCHEMA
-          //     : null;
+    const dep = {
+      depStore,
+      dataItems,
+      actionType,
+      store,
+      schema,
+      clientDB,
+    };
 
-          // const validHash = [updaterItem]
-          //     .map(it => schema.getSchema(schemTemplate, it))
-          //     .filter(Boolean);
-
-          if (updaterItem) {
-            await clientDB.addItem(store, updaterItem);
-            dispatch(сachingAction({ data: updaterItem, load: true, primaryKey: actionType }));
-          } else throw new Error('Invalid data props');
-        } catch (error) {
-          console.error(error);
-          dispatch(errorRequstAction(error.message));
-        }
-
-        break;
-      }
-
-      default: {
-        break;
-      }
-    }
+    await getterCacheHook(dispatch, dep, depActions, 'afterLoading');
+  } catch (error) {
+    console.error(error);
+    dispatch(errorRequstAction(error.message));
   }
 };
 
