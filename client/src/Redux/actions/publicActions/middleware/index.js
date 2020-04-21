@@ -7,7 +7,6 @@ import {
   updateEntityHook,
 } from '../../../../Utils';
 import { updateItemStateAction } from '../../routerActions';
-import { TASK_CONTROLL_JURNAL_SCHEMA, USER_SCHEMA, TASK_SCHEMA } from '../../../../Models/Schema/const';
 
 /**
  * Middleware
@@ -154,6 +153,9 @@ const middlewareUpdate = (props = {}) => async (dispatch, getState, { schema, Re
    */
   const { id = '', key = '', updateField = '', updateItem, store = {}, actionType = 'default' } = props;
 
+  /**
+   * update by @property {string} key more prioritized than @property {string} id
+   */
   try {
     const isMany = actionType === 'update_many';
     const path = isMany ? `/system/${store}/update/many` : `/system/${store}/update/single`;
@@ -166,7 +168,7 @@ const middlewareUpdate = (props = {}) => async (dispatch, getState, { schema, Re
     const { dataItems = null } = items;
 
     if (error) throw new Error(error);
-    const dep = { store, schema, dataItems, id, updateItemStateAction };
+    const dep = { store, schema, dataItems, id: key ? key : id, updateItemStateAction };
 
     await updateEntityHook(dispatch, dep);
   } catch (error) {

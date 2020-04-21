@@ -49,11 +49,8 @@ class TaskView extends React.PureComponent {
   static contextType = modelContext;
   static propTypes = taskViewType;
 
-  /**
-   * @param {{ uuid: any; key: any; }} props
-   * @param {{ key: any; }} state
-   */
   static getDerivedStateFromProps = (props, state) => {
+    debugger;
     if (props.uuid !== state.key) return { ...state, key: props.key };
     else return state;
   };
@@ -67,7 +64,9 @@ class TaskView extends React.PureComponent {
     } = this.props;
     const { Request = {} } = this.context;
     const { actionType } = this.state;
+
     const idTask = !_.isEmpty(routeDataActive) && key ? key : keyProps ? keyProps : '';
+
     if (_.isEmpty(caches) || (key && !caches[key]) || (!key && onLoadCacheData)) {
       onLoadCacheData({ actionType, depKey: idTask, depStore: 'tasks', store: 'jurnalworks' });
       try {
@@ -101,10 +100,6 @@ class TaskView extends React.PureComponent {
     }
   };
 
-  /**
-   * @param {any} props
-   * @param {any} state
-   */
   componentDidUpdate = async (props, state) => {
     const { isLoadingFiles = false, shouldRefresh = false } = this.state;
     const {
@@ -113,7 +108,7 @@ class TaskView extends React.PureComponent {
 
     const { rest } = this.context;
 
-    if ((!isLoadingFiles && routeDataActive['_id']) || shouldRefresh) {
+    if ((!isLoadingFiles && routeDataActive?._id) || shouldRefresh) {
       try {
         this.setState(
           {
@@ -123,7 +118,7 @@ class TaskView extends React.PureComponent {
           async () => {
             const fileLoaderBody = {
               queryParams: {
-                entityId: routeDataActive['_id'],
+                entityId: routeDataActive._id,
               },
             };
 
@@ -313,7 +308,7 @@ class TaskView extends React.PureComponent {
     }
   };
 
-  onUpdateEditable = (event) => {
+  onUpdateEditable = async (event) => {
     const { onUpdate, router: { routeDataActive = {} } = {}, path = '' } = this.props;
     const { modeControllEdit = {} } = this.state;
     const validHashCopy = [{ ...modeControllEdit }];
@@ -321,41 +316,41 @@ class TaskView extends React.PureComponent {
 
     const validHash = validHashCopy.map((it) => schema?.getSchema(TASK_SCHEMA, it)).filter(Boolean)[0];
 
-    if (validHash)
-      onUpdate({
+    if (!validHash) return;
+    const { _id: id = '', key = '' } = modeControllEdit || {};
+    try {
+      await onUpdate({
+        id,
+        key,
         path,
-        type: 'UPDATE',
+        updateBy: 'key',
         actionType: 'update_many',
-        id: modeControllEdit['_id'],
-        key: modeControllEdit['key'] || '',
         updateItem: { ...validHash },
         item: { ...routeDataActive },
         store: 'tasks',
-      })
-        .then(() => {
-          this.onRejectEdit(event);
-          message.success('Задача обновлена.');
-        })
-        .catch((error) => {
-          message.error('Ошибка обновления задачи.');
-        });
+      });
+      this.onRejectEdit(event);
+      message.success('Задача обновлена.');
+    } catch (error) {
+      message.error('Ошибка обновления задачи.');
+    }
   };
 
-  onCancelEditModeContent = (event) => {
+  onCancelEditModeContent = () => {
     this.setState({
       ...this.state,
       modeEditContent: false,
     });
   };
 
-  onEditContentMode = (event) => {
+  onEditContentMode = () => {
     this.setState({
       ...this.state,
       modeEditContent: true,
     });
   };
 
-  showModalWorkJur = (event) => {
+  showModalWorkJur = () => {
     this.setState({
       ...this.state,
       mode: 'jur',
@@ -364,17 +359,15 @@ class TaskView extends React.PureComponent {
     });
   };
 
-  calcSumWorkTime = (jurnalDataKeys = []) => {
-    const { publicReducer: { caches = null } = {} } = this.props;
-
-    return _.uniq(jurnalDataKeys)
-      .reduce((startValue, key) => {
-        const normalizeValue = caches[key].timeLost.toString().toLowerCase();
+  calcSumWorkTime = (cahcesJurnalList = []) => {
+    return cahcesJurnalList
+      .reduce((startValue, item) => {
+        const normalizeValue = item.timeLost.toString().toLowerCase();
 
         if (normalizeValue.includes('h') || normalizeValue.includes('ч')) {
-          startValue += parseFloat(caches[key].timeLost);
+          startValue += parseFloat(normalizeValue.split(/h|ч/i)[0]);
         } else if (normalizeValue.includes('m') || normalizeValue.includes('м')) {
-          startValue += parseFloat(caches[key].timeLost) / 60;
+          startValue += parseFloat(normalizeValue.split(/m|м/i)[0].split(' ')[1]) / 60;
         }
 
         return startValue;
@@ -382,45 +375,35 @@ class TaskView extends React.PureComponent {
       .toFixed(1);
   };
 
-  renderWorkJurnal = (jurnalDataKeys = []) => {
-    const { publicReducer: { caches = null } = {} } = this.props;
-
-    return _.uniq(jurnalDataKeys)
-      .map((key) => {
-        const item = caches[key];
+  renderWorkJurnal = (cahcesJurnalList = []) => {
+    return cahcesJurnalList
+      .map((item) => {
         const date = item && Array.isArray(item.date) ? item.date[0] : 'Invalid date';
 
         return (
-          <div key={key} className="jurnalItem">
-            <p>
-              <span className="title">Затрачено времени:</span>{' '}
-              {item && item.timeLost ? item.timeLost : item[0] ? item[0].timeLost : 'не установлено'}
+          <div key={item?._id} className="jurnalItem">
+            <p className="timeLost">
+              <span className="title">Затрачено времени:</span>
+              {item?.timeLost ? item.timeLost : item[0] ? item[0]?.timeLost : 'не установлено'}
             </p>
-            <p>
-              <span className="title">Дата:</span>{' '}
-              {item && item.date && date !== 'Invalid date'
-                ? date
-                : item[0]
-                ? item[0].date
-                : 'не установлено'}
+            <p className="date">
+              <span className="title">Дата:</span>
+              {item?.date && date !== 'Invalid date' ? date : item[0] ? item[0].date : 'не установлено'}
             </p>
-            <p>
+            <p className="comment">
               <span className="title">Коментарии:</span>
             </p>
             <p>
-              {item && item.description
+              {item?.description
                 ? item.description
-                : Array.isArray(item)
-                ? item[0] && item[0].description
-                  ? item[0].description
-                  : 'не установлено'
+                : Array.isArray(item) && item[0]?.description
+                ? item[0].description
                 : 'не установлено'}
             </p>
           </div>
         );
       })
-      .filter(Boolean)
-      .sort((a, b) => (a.date && b.date ? moment(a.date).valueOf() - moment(b.date).valueOf() : a - b));
+      .filter(Boolean);
   };
 
   render() {
@@ -430,6 +413,7 @@ class TaskView extends React.PureComponent {
       onUpdate,
       publicReducer: { caches = null } = {},
       path,
+      uuid,
       udata = {},
     } = this.props;
 
@@ -456,12 +440,7 @@ class TaskView extends React.PureComponent {
 
     const { rest = {} } = this.context;
 
-    let jurnalDataKeys = null;
-    if (caches && actionType && routeDataActive && key) {
-      const keys = Object.keys(caches);
-
-      jurnalDataKeys = keys.filter((keyData) => keyData.includes(actionType) && keyData.includes(key));
-    }
+    const cahcesJurnalList = _.toArray(caches).filter((item) => item?.depKey === uuid);
 
     const accessStatus = _.uniq([
       modeControllEdit.status ? status : status ? status : null,
@@ -645,7 +624,7 @@ class TaskView extends React.PureComponent {
                     ) : null}
                   </Descriptions.Item>
                   <Descriptions.Item label="Затрачено времени">
-                    <Output>{`${this.calcSumWorkTime(jurnalDataKeys)} ч`}</Output>
+                    <Output>{`${this.calcSumWorkTime(cahcesJurnalList)} ч`}</Output>
                   </Descriptions.Item>
                 </Descriptions>
                 <div className="descriptionTask">
@@ -681,10 +660,10 @@ class TaskView extends React.PureComponent {
             <div className="col-6 col-taskDescription">
               <TitleModule classNameTitle="historyTaskTitle" title="Журнал работы" />
               <Scrollbars>
-                {!jurnalDataKeys ? (
+                {!cahcesJurnalList?.length ? (
                   <Empty description={<span>Нету данных в журнале</span>} />
                 ) : (
-                  this.renderWorkJurnal(jurnalDataKeys)
+                  this.renderWorkJurnal(cahcesJurnalList)
                 )}
               </Scrollbars>
             </div>

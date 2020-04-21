@@ -7,7 +7,7 @@ import Utils from '../../Utils';
 import Responser from '../../Models/Responser';
 import Decorators from '../../Decorators';
 import Action from '../../Models/Action';
-import Database from '../../Models/Database.ts';
+import Database from '../../Models/Database';
 
 namespace System {
   const Controller = Decorators.Controller;
