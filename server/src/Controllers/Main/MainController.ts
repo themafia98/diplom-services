@@ -7,6 +7,7 @@ import Utils from '../../Utils';
 import Responser from '../../Models/Responser';
 import Decorators from '../../Decorators';
 import Action from '../../Models/Action';
+import Database from '../../Models/Database.ts';
 
 namespace System {
   const Controller = Decorators.Controller;
@@ -190,7 +191,8 @@ namespace System {
 
     @Delete({ path: '/:module/delete/file', private: true })
     public async deleteTaskFile(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
-      const { dbm } = server.locals;
+      const { dbm } = <Record<string, Readonly<Database.ManagmentDatabase>>>server.locals;
+      const { dropbpx: store } = <Record<string, FileApi>>server.locals;
       const { module: moduleName = '' } = req.params;
       const params: Params = {
         methodQuery: 'delete_file',
@@ -203,7 +205,7 @@ namespace System {
         const deleteFileAction = new Action.ActionParser({
           actionPath: 'global',
           actionType: 'delete_file',
-          store: <FileApi>server.locals.dropbox,
+          store,
         });
 
         const actionData: ParserResult = await deleteFileAction.getActionData({
