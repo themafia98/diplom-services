@@ -48,6 +48,7 @@ class Comments extends React.PureComponent {
         await onUpdate({
           key,
           id,
+          updateBy: 'key',
           updateItem: [...comments, comment],
           updateField: 'comments',
           store: 'tasks',
@@ -85,6 +86,7 @@ class Comments extends React.PureComponent {
       key,
       item: data,
       store: 'tasks',
+      updateBy: 'key',
       updateItem: filterComments,
       updateField: 'comments',
     })

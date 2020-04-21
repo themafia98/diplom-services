@@ -127,7 +127,8 @@ class ModalWindow extends React.PureComponent {
     } else if (mode === 'jur' && modeEditContent) {
       onUpdate({
         key,
-        id: routeDataActive['_id'],
+        updateBy: 'key',
+        id: routeDataActive?._id,
         updateItem: valueDescription,
         updateField: 'description',
         item: { ...routeDataActive },
@@ -201,8 +202,9 @@ class ModalWindow extends React.PureComponent {
       }
       onUpdate({
         path,
-        id: routeDataActive['_id'],
+        id: routeDataActive?._id,
         key,
+        updateBy: 'key',
         updateItem: taskStatus,
         updateField: 'status',
         item: { ...routeDataActive },
