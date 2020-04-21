@@ -194,11 +194,40 @@ export default (state = initialState, action) => {
     }
 
     case UPDATE_ITEM: {
-      const { routeDataActive } = state;
-      const { id, updateBy } = action.payload;
+      const { routeDataActive, currentActionTab = '', routeData = {} } = state;
+      const { id, updateBy = '_id', updaterItem = {}, store = state?.path.split('__')[0] } = action.payload;
+
       const isExist = routeDataActive && routeDataActive[updateBy];
+      const currentModule = currentActionTab.split('__')[0];
+
+      const isExistModule = Boolean(routeData[currentModule]);
+      const isExistStore = isExistModule ? Boolean(routeData[currentModule][store]) : null;
 
       const updateCurrent = isExist && routeDataActive[updateBy] === id ? true : false;
+      const dataList = isExistStore && isExistModule ? routeData[currentModule][store] : [];
+
+      const newStore =
+        Array.isArray(dataList) && dataList?.length
+          ? dataList.map((item) => {
+              if (item[updateBy] && item[updateBy] !== id) return item;
+              const isObject = updaterItem && typeof updaterItem === 'object';
+              return isObject
+                ? {
+                    ...updaterItem,
+                  }
+                : updaterItem;
+            })
+          : null;
+
+      const updateCurrentModule =
+        newStore && newStore.length
+          ? {
+              [currentModule]: {
+                ...routeData[currentModule],
+                [store]: newStore,
+              },
+            }
+          : {};
 
       return {
         ...state,
@@ -209,6 +238,7 @@ export default (state = initialState, action) => {
           : {},
         routeData: {
           ...state.routeData,
+          ...updateCurrentModule,
           [action.payload.id]: { ...action.payload.updaterItem },
         },
       };

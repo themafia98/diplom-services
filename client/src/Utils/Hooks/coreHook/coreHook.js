@@ -76,6 +76,7 @@ const updateEntityHook = async (dispatch, dep = {}) => {
       updaterItem: dataItems,
       type: 'UPDATE',
       updateBy,
+      store,
       id,
     }),
   );
