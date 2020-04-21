@@ -1,5 +1,7 @@
 import _ from 'lodash';
+import { clientDB } from '../../../Models/ClientSideDatabase';
 import utilsHooks from '../utils';
+import { getStoreSchema } from '../../utilsHook';
 
 const { runLocalUpdateAction, runRefreshIndexedDb, runNoCorsAction, runBadNetworkAction } = utilsHooks;
 
@@ -59,6 +61,27 @@ const coreUpdaterDataHook = async (dispatch, dep = {}, multiple = false) => {
   }
 };
 
+const updateEntityHook = async (dispatch, dep = {}) => {
+  const { store, schema, dataItems, id, updateItemStateAction } = dep;
+
+  const schemTemplate = getStoreSchema(store);
+
+  const dataList = Array.isArray(dataItems) ? dataItems : [dataItems];
+  const storeCopy = dataList.map((it) => schema?.getSchema(schemTemplate, it)).filter(Boolean);
+
+  if (!storeCopy) return;
+
+  dispatch(
+    updateItemStateAction({
+      updaterItem: dataItems,
+      type: 'UPDATE',
+      id,
+    }),
+  );
+
+  if (schema?.isPublicKey(dataItems)) await clientDB.updateItem(store, dataItems);
+};
+
 const errorHook = (error, dispatch, dep = {}) => {
   const { errorRequstAction } = dep;
   if (error.status === 400 || error?.message?.toLowerCase().includes('network error')) {
@@ -69,4 +92,5 @@ const errorHook = (error, dispatch, dep = {}) => {
 export default {
   coreUpdaterDataHook,
   errorHook,
+  updateEntityHook,
 };

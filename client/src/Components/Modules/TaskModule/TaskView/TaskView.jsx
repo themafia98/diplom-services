@@ -326,7 +326,7 @@ class TaskView extends React.PureComponent {
     const validHashCopy = [{ ...modeControllEdit }];
     const { schema = {} } = this.context;
 
-    const validHash = validHashCopy.map((it) => schema.getSchema(TASK_SCHEMA, it)).filter(Boolean)[0];
+    const validHash = validHashCopy.map((it) => schema?.getSchema(TASK_SCHEMA, it)).filter(Boolean)[0];
 
     if (validHash)
       onUpdate({

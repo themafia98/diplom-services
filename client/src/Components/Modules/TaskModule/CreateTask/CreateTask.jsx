@@ -212,7 +212,7 @@ class CreateTask extends React.PureComponent {
     if (keys.every((key) => _.isNull(this.state.card[key]))) return;
 
     const validHashCopy = [{ ...this.state.card }];
-    const validHash = validHashCopy.map((it) => schema.getSchema(CREATE_TASK_SCHEMA, it)).filter(Boolean)[0];
+    const validHash = validHashCopy.map((it) => schema?.getSchema(CREATE_TASK_SCHEMA, it)).filter(Boolean)[0];
 
     if (!validHash) return message.error('Не валидные данные.');
 

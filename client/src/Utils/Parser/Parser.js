@@ -25,7 +25,7 @@ const dataParser = (flag = false, isLocalUpdate = true, dep = {}) => {
   let shoudClearError = false;
   const templateSchema = getStoreSchema(storeLoad, methodQuery);
 
-  let storeCopyValid = copyStore.map((it) => schema.getSchema(templateSchema, it)).filter(Boolean);
+  let storeCopyValid = copyStore.map((it) => schema?.getSchema(templateSchema, it)).filter(Boolean);
   storeCopyValid.forEach((it) => schema.isPublicKey(it) && clientDB.updateItem(storeLoad, it));
 
   if (requestError !== null) shoudClearError = true;

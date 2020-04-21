@@ -307,7 +307,7 @@ class ModalWindow extends React.PureComponent {
     }
     if (!_valid) return _valid;
 
-    const validData = schema.getSchema(TASK_CONTROLL_JURNAL_SCHEMA, {
+    const validData = schema?.getSchema(TASK_CONTROLL_JURNAL_SCHEMA, {
       depKey: keyTask,
       timeLost: timeLost,
       editor: '',

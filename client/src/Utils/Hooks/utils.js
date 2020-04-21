@@ -6,10 +6,18 @@ import { dataParser } from '../';
 
 const runBadNetworkAction = (dispatch, error, dep) => {
   const { Request, setStatus, errorRequstAction, loadCurrentData, getState } = dep;
-  const errorRequest = new Request();
-  dispatch(setStatus({ statusRequst: 'offline' }));
+  if (!loadCurrentData && !errorRequstAction) return;
+
+  if (!loadCurrentData && errorRequstAction) {
+    dispatch(errorRequstAction(error.message));
+    if (setStatus) dispatch(setStatus({ statusRequst: 'offline' }));
+  }
+
+  if (setStatus) dispatch(setStatus({ statusRequst: 'offline' }));
+  else return;
   dispatch(errorRequstAction(error.message));
-  errorRequest.follow(
+  const errorRequest = new Request();
+  new Request().follow(
     'offline',
     (statusRequst) => {
       const state = getState();

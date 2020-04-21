@@ -18,7 +18,7 @@ const sucessEvent = async (dispatch, dep, mode = '', multiple = false, cursor = 
   if (mode === 'offline') {
     const schemaTemplate = getStoreSchema(storeLoad);
 
-    const itemsCopy = cursor.map((it) => schema.getSchema(schemaTemplate, it)).filter(Boolean);
+    const itemsCopy = cursor.map((it) => schema?.getSchema(schemaTemplate, it)).filter(Boolean);
     const data = {
       [storeLoad]: itemsCopy,
       load: true,
