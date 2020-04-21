@@ -1,6 +1,7 @@
 import namespaceParser from './Parser';
 import namespaceEvents from './Events';
 import namespaceHooks from './Hooks';
+import namespaceTools from './Tools';
 
 /**
  * Utils
@@ -28,6 +29,8 @@ const {
   getValidContent,
 } = namespaceParser;
 
+const { createNotification, createEntity, deleteFile, loadFile } = namespaceTools;
+
 export {
   dataParser,
   getNormalizedPath,
@@ -45,4 +48,8 @@ export {
   getterCacheHook,
   putterCacheHook,
   updateEntityHook,
+  createNotification,
+  createEntity,
+  deleteFile,
+  loadFile,
 };

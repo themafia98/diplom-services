@@ -6,7 +6,7 @@ import moment from 'moment';
 import { Descriptions, Empty, Input, Select, DatePicker, message } from 'antd';
 import { connect } from 'react-redux';
 import Scrollbars from 'react-custom-scrollbars';
-
+import { deleteFile, loadFile } from '../../../../Utils';
 import { TASK_SCHEMA } from '../../../../Models/Schema/const';
 
 import { middlewareCaching, middlewareUpdate } from '../../../../Redux/actions/publicActions/middleware';
@@ -111,7 +111,7 @@ class TaskView extends React.PureComponent {
       router: { routeDataActive = {} },
     } = this.props;
 
-    const { Request = {} } = this.context;
+    const { rest } = this.context;
 
     if ((!isLoadingFiles && routeDataActive['_id']) || shouldRefresh) {
       try {
@@ -121,18 +121,14 @@ class TaskView extends React.PureComponent {
             isLoadingFiles: true,
           },
           async () => {
-            const rest = new Request();
-            const { data: { response = null } = {} } = await rest.sendRequest(
-              '/system/tasks/load/file',
-              'POST',
-              {
-                queryParams: {
-                  entityId: routeDataActive['_id'],
-                },
+            const fileLoaderBody = {
+              queryParams: {
+                entityId: routeDataActive['_id'],
               },
-            );
+            };
 
-            if (response && response.done) {
+            const { data: { response = null } = {} } = await loadFile('tasks', fileLoaderBody);
+            if (response && response?.done) {
               const { metadata: filesArray } = response;
 
               this.setState({
@@ -178,16 +174,13 @@ class TaskView extends React.PureComponent {
       const { Request = {} } = this.context;
       if (!file) return;
 
-      const rest = new Request();
-      const { data: { response = null } = {} } = await rest.sendRequest(
-        `/system/tasks/delete/file`,
-        'DELETE',
-        {
-          queryParams: {
-            file,
-          },
+      const deleteFileBody = {
+        queryParams: {
+          file,
         },
-      );
+      };
+
+      const { data: { response = null } = {} } = await deleteFile('tasks', deleteFileBody);
 
       if (response && response.done) {
         const { metadata = {} } = response;

@@ -11,7 +11,7 @@ import Textarea from '../../../Textarea';
 import File from '../../../File';
 import { v4 as uuid } from 'uuid';
 
-import { routePathNormalise, routeParser } from '../../../../Utils';
+import { routePathNormalise, routeParser, createEntity, createNotification } from '../../../../Utils';
 import modelContext from '../../../../Models/context';
 
 import { CREATE_TASK_SCHEMA } from '../../../../Models/Schema/const';
@@ -226,8 +226,7 @@ class CreateTask extends React.PureComponent {
       try {
         if (statusApp === 'offline') this.offlineMode(validHash);
 
-        const request = new Request();
-        const res = await request.sendRequest('/tasks/createTask', 'POST', validHash, true);
+        const res = await createEntity('tasks', validHash, 5);
 
         if (res.status !== 200) {
           console.error(res);
@@ -256,33 +255,27 @@ class CreateTask extends React.PureComponent {
             const { key = '' } = metadata[0] || metadata || {};
             if (!key) return;
 
-            const rest = new Request();
-            rest
-              .sendRequest(
-                `/system/global/notification`,
-                'POST',
-                {
-                  actionType: 'set_notification',
-                  item: {
-                    type: 'global',
-                    title: 'Новая задача',
-                    isRead: false,
-                    message: `Создана новая задача № ${key}. ${name}`,
-                    action: {
-                      type: 'tasks_link',
-                      moduleName: 'taskModule',
-                      link: key,
-                    },
-                    uidCreater: uid,
-                    authorName: displayName,
-                  },
+            const itemNotification = {
+              actionType: 'set_notification',
+              item: {
+                type: 'global',
+                title: 'Новая задача',
+                isRead: false,
+                message: `Создана новая задача № ${key}. ${name}`,
+                action: {
+                  type: 'tasks_link',
+                  moduleName: 'taskModule',
+                  link: key,
                 },
-                true,
-              )
-              .catch((error) => {
-                console.error(error);
-                message.error('Ошибка глобального уведомления');
-              });
+                uidCreater: uid,
+                authorName: displayName,
+              },
+            };
+
+            createNotification('global', itemNotification).catch((error) => {
+              console.error(error);
+              message.error('Ошибка глобального уведомления');
+            });
 
             if (config.tabsLimit <= actionTabs.length)
               return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);

@@ -5,9 +5,8 @@ import axios from 'axios';
 import _ from 'lodash';
 import moment from 'moment';
 import { Modal, Button, Dropdown, Icon, Menu, Input, DatePicker, message, Select } from 'antd';
-
 import { TASK_CONTROLL_JURNAL_SCHEMA } from '../../Models/Schema/const';
-
+import { createNotification } from '../../Utils';
 import SimpleEditableModal from './SimpleEditableModal';
 import RegistrationModal from './RegistrationModal';
 import Textarea from '../Textarea';
@@ -159,37 +158,27 @@ class ModalWindow extends React.PureComponent {
         await onCaching({ item, actionType, depStore: 'tasks', store: 'jurnalworks' });
         this.handleCancel();
       }
-
-      const rest = new Request();
-      rest
-        .sendRequest(
-          `/system/global/notification`,
-          'POST',
-          {
-            actionType: 'set_notification',
-            item: {
-              type: 'global',
-              title: 'Списание времени в журнал',
-              isRead: false,
-              message: `
+      const itemNotification = {
+        type: 'global',
+        title: 'Списание времени в журнал',
+        isRead: false,
+        message: `
                 Работа над задачей ${nameTask}.
                 Время затрачено: ${jurnalCopy?.timeLost}.
                 Описание: ${jurnalCopy.description}. Дата: ${jurnalCopy?.date}`,
-              action: {
-                type: 'tasks_link',
-                moduleName: 'taskModule',
-                link: key,
-              },
-              uidCreater: uid,
-              authorName: displayName,
-            },
-          },
-          true,
-        )
-        .catch((error) => {
-          console.error(error);
-          message.error('Ошибка глобального уведомления');
-        });
+        action: {
+          type: 'tasks_link',
+          moduleName: 'taskModule',
+          link: key,
+        },
+        uidCreater: uid,
+        authorName: displayName,
+      };
+
+      createNotification('global', itemNotification).catch((error) => {
+        console.error(error);
+        message.error('Ошибка глобального уведомления');
+      });
 
       return this.setState({
         ...this.state,

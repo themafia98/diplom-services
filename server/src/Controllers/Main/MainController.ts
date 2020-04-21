@@ -13,6 +13,7 @@ namespace System {
   const Delete = Decorators.Delete;
   const Post = Decorators.Post;
   const Get = Decorators.Get;
+  const Put = Decorators.Put;
   @Controller('/system')
   export class SystemData {
     @Get({ path: '/userList', private: true })
@@ -101,7 +102,7 @@ namespace System {
       }
     }
 
-    @Post({ path: '/:module/load/file', private: true })
+    @Put({ path: '/:module/load/file', private: true })
     public async loadTaskFiles(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { dbm } = server.locals;
       const { module: moduleName = '' } = req.params;

@@ -5,6 +5,9 @@ import TitleModule from '../../../../TitleModule';
 import EditorTextarea from '../../../../Textarea/EditorTextarea';
 import { message, notification, Input } from 'antd';
 import modelContext from '../../../../../Models/context';
+
+import { createNotification, createEntity } from '../../../../../Utils';
+
 class CreateNews extends React.PureComponent {
   state = {
     titleNews: '',
@@ -50,48 +53,42 @@ class CreateNews extends React.PureComponent {
 
     if (statusApp === 'online') {
       try {
-        const rest = new Request();
-        const res = await rest.sendRequest(
-          '/news/createNews',
-          'POST',
-          {
-            queryParams: {
-              actionPath: 'news',
-              actionType: 'create_single_news',
-            },
-            metadata: { title: titleNews, content: contentState },
+        const body = {
+          queryParams: {
+            actionPath: 'news',
+            actionType: 'create_single_news',
           },
-          true,
-        );
-
-        const { response: { metadata: { _id: key = '' } = {}, params: { done = false } = {} } = {} } =
-          res.data || {};
+          metadata: { title: titleNews, content: contentState },
+        };
+        const res = await createEntity('news', body);
+        const { data: { response = {} } = {} } = res || {};
+        const { metadata: { _id: key = '' } = {}, params: { done = false } = {} } = response;
 
         if (!done) {
           throw new Error('Bad create news');
         }
 
-        rest.sendRequest(
-          `/system/global/notification`,
-          'POST',
-          {
-            actionType: 'set_notification',
-            item: {
-              type: 'global',
-              title: 'Новость',
-              isRead: false,
-              message: `${titleNews}. Добавлена: ${moment().format('MM.DD.YYYY HH:mm')}`,
-              action: {
-                type: 'news_link',
-                moduleName: 'contactModule',
-                link: key,
-              },
-              uidCreater: uid,
-              authorName: displayName,
+        const itemNotification = {
+          actionType: 'set_notification',
+          item: {
+            type: 'global',
+            title: 'Новость',
+            isRead: false,
+            message: `${titleNews}. Добавлена: ${moment().format('MM.DD.YYYY HH:mm')}`,
+            action: {
+              type: 'news_link',
+              moduleName: 'contactModule',
+              link: key,
             },
+            uidCreater: uid,
+            authorName: displayName,
           },
-          true,
-        );
+        };
+
+        createNotification('global', itemNotification).catch((error) => {
+          console.error(error);
+          message.error('Error create notification');
+        });
 
         this.setState(
           {
