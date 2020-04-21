@@ -376,6 +376,7 @@ class TaskView extends React.PureComponent {
 
   renderWorkJurnal = (cahcesJurnalList = []) => {
     return cahcesJurnalList
+      .sort((a, b) => moment(a?.date).unix() + moment(b?.date).unix())
       .map((item) => {
         const date = item && Array.isArray(item.date) ? item.date[0] : 'Invalid date';
 
