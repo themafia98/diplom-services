@@ -1,5 +1,5 @@
 import { сachingAction, errorRequstAction } from '../';
-import { cachingHook, getterCacheHook, errorHook } from '../../../../Utils';
+import { cachingHook, getterCacheHook, putterCacheHook, errorHook } from '../../../../Utils';
 import { updateItemStateAction } from '../../routerActions';
 import { TASK_CONTROLL_JURNAL_SCHEMA, USER_SCHEMA, TASK_SCHEMA } from '../../../../Models/Schema/const';
 
@@ -14,7 +14,6 @@ import { TASK_CONTROLL_JURNAL_SCHEMA, USER_SCHEMA, TASK_SCHEMA } from '../../../
 const middlewareCaching = (props) => async (dispatch, getState, { schema, Request, clientDB }) => {
   const { status = 'online' } = getState().publicReducer;
   const { actionType = '', item = {}, depKey = '', depStore = '', store = '', uid = '', type = '' } = props;
-  const isOnline = status === 'online';
 
   const depActions = {
     errorRequstAction,
@@ -44,6 +43,7 @@ const middlewareCaching = (props) => async (dispatch, getState, { schema, Reques
       };
 
       await cachingHook(dispatch, dep, depActions);
+      return;
     }
 
     /** default middleware function */
@@ -56,7 +56,7 @@ const middlewareCaching = (props) => async (dispatch, getState, { schema, Reques
       Request,
     };
 
-    await getterCacheHook(dispatch, dep, depActions);
+    await putterCacheHook(dispatch, dep, depActions);
   } catch (error) {
     const depError = {
       depStore,
@@ -73,7 +73,7 @@ const middlewareCaching = (props) => async (dispatch, getState, { schema, Reques
   }
 };
 
-const loadCacheData = (props = {}) => async (dispatch, getState, { schema, Request, clientDB }) => {
+const loadCacheData = (props) => async (dispatch, getState, { schema, Request, clientDB }) => {
   const {
     actionType = '', // key
     depKey = '',
@@ -107,10 +107,19 @@ const loadCacheData = (props = {}) => async (dispatch, getState, { schema, Reque
       clientDB,
     };
 
-    await getterCacheHook(dispatch, dep, depActions, 'afterLoading');
+    await getterCacheHook(dispatch, dep, depActions);
   } catch (error) {
+    const depError = {
+      depStore,
+      depKey,
+      store,
+      actionType,
+      clientDB,
+      schema,
+      Request,
+    };
     console.error(error);
-    dispatch(errorRequstAction(error.message));
+    errorHook(error, dispatch, depError);
   }
 };
 
@@ -133,70 +142,49 @@ const middlewareUpdate = (props = {}) => async (dispatch, getState, { schema, Re
    * @param {object} store
    * @param {string} actionType
    */
-  const {
-    id = '',
-    key = '',
-    type = 'UPDATE',
-    updateField = '',
-    updateItem,
-    store = {},
-    actionType = 'default',
-  } = props;
+  const { id = '', key = '', updateField = '', updateItem, store = {}, actionType = 'default' } = props;
 
   const { status = 'online' } = getState().publicReducer;
 
-  if (status === 'online') {
-    switch (type) {
-      case 'UPDATE': {
-        try {
-          const isMany = actionType === 'update_many';
-          const path = isMany ? `/system/${store}/update/many` : `/system/${store}/update/single`;
-          const rest = new Request();
+  if (status !== 'online') return;
+  try {
+    const isMany = actionType === 'update_many';
+    const path = isMany ? `/system/${store}/update/many` : `/system/${store}/update/single`;
+    const rest = new Request();
 
-          const body = { queryParams: { id, key }, updateItem, updateField };
+    const body = { queryParams: { id, key }, updateItem, updateField };
 
-          const res = await rest.sendRequest(path, 'POST', body, true);
-          const [items, error] = rest.parseResponse(res);
-          const { dataItems: updaterItem = null } = items;
+    const res = await rest.sendRequest(path, 'POST', body, true);
+    const [items, error] = rest.parseResponse(res);
+    const { dataItems: updaterItem = null } = items;
 
-          if (error) throw new Error(error);
+    if (error) throw new Error(error);
 
-          const schemTemplate =
-            store === 'jurnalworks'
-              ? TASK_CONTROLL_JURNAL_SCHEMA
-              : store === 'users'
-              ? USER_SCHEMA
-              : store === 'tasks'
-              ? TASK_SCHEMA
-              : null;
+    const schemTemplate =
+      store === 'jurnalworks'
+        ? TASK_CONTROLL_JURNAL_SCHEMA
+        : store === 'users'
+        ? USER_SCHEMA
+        : store === 'tasks'
+        ? TASK_SCHEMA
+        : null;
 
-          const storeCopy = [updaterItem].map((it) => schema.getSchema(schemTemplate, it)).filter(Boolean);
+    const storeCopy = [updaterItem].map((it) => schema.getSchema(schemTemplate, it)).filter(Boolean);
 
-          if (storeCopy) {
-            dispatch(
-              updateItemStateAction({
-                updaterItem: updaterItem,
-                type,
-                id,
-              }),
-            );
+    if (storeCopy) {
+      dispatch(
+        updateItemStateAction({
+          updaterItem: updaterItem,
+          type: 'UPDATE',
+          id,
+        }),
+      );
 
-            if (schema.isPublicKey(updaterItem)) await clientDB.updateItem(store, updaterItem);
-            break;
-          }
-        } catch (error) {
-          console.error(error);
-          dispatch(errorRequstAction(error.message));
-          break;
-        }
-
-        break;
-      }
-
-      default: {
-        break;
-      }
+      if (schema.isPublicKey(updaterItem)) await clientDB.updateItem(store, updaterItem);
     }
+  } catch (error) {
+    console.error(error);
+    dispatch(errorRequstAction(error.message));
   }
 };
 

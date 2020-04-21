@@ -110,87 +110,82 @@ const multipleLoadData = (params) => async (dispatch, getState, { schema, Reques
   const primaryKey = 'uuid';
   const { requestError, status = 'online' } = getState().publicReducer;
 
-  if (status === 'online') {
-    switch (pipe) {
-      case false: {
-        /** TODO: for future release */
-        return;
-      }
-      default: {
-        const responseList = [];
-        for await (let requestParam of requestsParamsList) {
-          const {
-            useStore = false,
-            storeLoad = '',
-            startPath = '',
-            methodRequst = 'POST',
-            methodQuery = 'get_all',
-            xhrPath = 'list',
-            options = {},
-            noCorsClient = false,
-            sortBy = '',
-            path = '',
-          } = requestParam;
-          let isLocalUpdate = true;
-          const pathValid = path.includes('_') ? path.split('_')[0] : path.split('__')[0];
+  if (status !== 'online') return;
 
-          const normalizeReqPath = getNormalizedPath(useStore, {
-            xhrPath,
-            startPath,
+  switch (pipe) {
+    case false: {
+      /** TODO: for future release */
+      return;
+    }
+    default: {
+      const responseList = [];
+      for await (let requestParam of requestsParamsList) {
+        const {
+          useStore = false,
+          storeLoad = '',
+          startPath = '',
+          methodRequst = 'POST',
+          methodQuery = 'get_all',
+          xhrPath = 'list',
+          options = {},
+          noCorsClient = false,
+          sortBy = '',
+          path = '',
+        } = requestParam;
+        let isLocalUpdate = true;
+        const pathValid = path.includes('_') ? path.split('_')[0] : path.split('__')[0];
+
+        const normalizeReqPath = getNormalizedPath(useStore, {
+          xhrPath,
+          startPath,
+          storeLoad,
+        });
+
+        try {
+          const rest = new Request();
+          const res = await rest.sendRequest(normalizeReqPath, methodRequst, { methodQuery, options }, true);
+
+          const [items, error] = rest.parseResponse(res);
+
+          if (error) {
+            console.error(error);
+            break;
+          }
+
+          const { dataItems: copyStore = [], responseOptions = {} } = items;
+          const { isPartData } = responseOptions || {};
+
+          if (error) throw new Error(error);
+
+          const dep = {
+            noCorsClient,
+            requestError,
+            copyStore,
+            sortBy,
+            pathValid,
+            isPartData,
+            schema,
             storeLoad,
-          });
+            clientDB,
+            methodQuery,
+            primaryKey,
+            saveComponentStateAction,
+            errorRequstAction,
+            isLocalUpdate,
+          };
 
-          try {
-            const rest = new Request();
-            const res = await rest.sendRequest(
-              normalizeReqPath,
-              methodRequst,
-              { methodQuery, options },
-              true,
-            );
+          responseList.push({ parsedItems: items, dep });
+        } catch (error) {}
+      }
+      let hookData = [];
+      for await (let res of responseList) {
+        const { dep } = res;
+        const resultHook = await coreUpdaterDataHook(dispatch, dep, true);
+        if (resultHook) hookData.push(resultHook);
+      }
 
-            const [items, error] = rest.parseResponse(res);
-
-            if (error) {
-              console.error(error);
-              break;
-            }
-
-            const { dataItems: copyStore = [], responseOptions = {} } = items;
-            const { isPartData } = responseOptions || {};
-
-            if (error) throw new Error(error);
-
-            const dep = {
-              noCorsClient,
-              requestError,
-              copyStore,
-              sortBy,
-              pathValid,
-              isPartData,
-              schema,
-              storeLoad,
-              clientDB,
-              methodQuery,
-              primaryKey,
-              saveComponentStateAction,
-              errorRequstAction,
-              isLocalUpdate,
-            };
-
-            responseList.push({ parsedItems: items, dep });
-          } catch (error) {}
-        }
-        let hookData = [];
-        for await (let res of responseList) {
-          const { dep } = res;
-          const resultHook = await coreUpdaterDataHook(dispatch, dep, true);
-          if (resultHook) hookData.push(resultHook);
-        }
-
-        if (hookData.length) {
-          dispatch(saveComponentStateAction({ stateList: [...hookData], multiple: true }));
-        }
+      if (hookData.length) {
+        dispatch(saveComponentStateAction({ stateList: [...hookData], multiple: true }));
       }
     }
   }

@@ -1,7 +1,7 @@
 import namespaceCacheHook from './cacheHook';
 import namespaceCoreHook from './coreHook';
 
-const { cachingHook, getterCacheHook } = namespaceCacheHook;
+const { cachingHook, getterCacheHook, putterCacheHook } = namespaceCacheHook;
 const { coreUpdaterDataHook, errorHook } = namespaceCoreHook;
 
 /** Hooks exports */
@@ -11,6 +11,7 @@ const namespaceHooks = {
   coreUpdaterDataHook,
   cachingHook,
   getterCacheHook,
+  putterCacheHook,
 };
 
 export default namespaceHooks;

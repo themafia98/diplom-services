@@ -25,26 +25,11 @@ const cachingHook = async (dispatch, dep = {}, depActions = {}) => {
   }
 };
 
-const getterCacheHook = async (dispatch, dep = {}, depActions = {}, typeHook = 'afterLoading') => {
-  const { dataItems, actionType, store, schema, clientDB } = dep;
+const putterCacheHook = async (dispatch, dep = {}, depActions = {}) => {
+  const { depStore, item = {}, type, uid, Request, actionType } = dep;
   const { errorRequstAction, сachingAction } = depActions;
 
   try {
-    if (typeHook === 'afterLoading') {
-      const schemTemplate = getStoreSchema(store);
-
-      const dataList = Array.isArray(dataItems) ? dataItems : [dataItems];
-      const validHash = dataList.map((it) => schema?.getSchema(schemTemplate, it)).filter(Boolean);
-
-      if (validHash || (!schemTemplate && dataItems)) {
-        await clientDB.addItem(store, !schemTemplate ? dataItems : validHash);
-        dispatch(сachingAction({ data: validHash, load: true, primaryKey: actionType }));
-      } else throw new Error('Invalid data props');
-      return;
-    }
-
-    const { depStore, item = {}, type, uid, Request } = dep;
-
     const path = `/${depStore}/${type ? type : 'caching'}`;
     const rest = new Request();
 
@@ -77,4 +62,24 @@ const getterCacheHook = async (dispatch, dep = {}, depActions = {}, typeHook = '
   }
 };
 
-export default { cachingHook, getterCacheHook };
+const getterCacheHook = async (dispatch, dep = {}, depActions = {}) => {
+  const { dataItems, actionType, store, schema, clientDB } = dep;
+  const { errorRequstAction, сachingAction } = depActions;
+
+  try {
+    const schemTemplate = getStoreSchema(store);
+
+    const dataList = Array.isArray(dataItems) ? dataItems : [dataItems];
+    const validHash = dataList.map((it) => schema?.getSchema(schemTemplate, it)).filter(Boolean);
+
+    if (validHash || (!schemTemplate && dataItems)) {
+      await clientDB.addItem(store, !schemTemplate ? dataItems : validHash);
+      dispatch(сachingAction({ data: validHash, load: true, primaryKey: actionType }));
+    } else throw new Error('Invalid data props');
+  } catch (error) {
+    console.error(error);
+    dispatch(errorRequstAction(error.message));
+  }
+};
+
+export default { cachingHook, getterCacheHook, putterCacheHook };
