@@ -211,12 +211,6 @@ namespace System {
           store: `/${moduleName}`,
         });
 
-        if (!actionData) {
-          params.done = false;
-          params.status = 'FAIL';
-          return new Responser(res, req, params, null, 404, [], dbm).emit();
-        }
-
         return new Responser(res, req, { ...req.body, ...params }, null, 200, actionData, dbm).emit();
       } catch (err) {
         console.error(err);
