@@ -50,7 +50,6 @@ class TaskView extends React.PureComponent {
   static propTypes = taskViewType;
 
   static getDerivedStateFromProps = (props, state) => {
-    debugger;
     if (props.uuid !== state.key) return { ...state, key: props.key };
     else return state;
   };
@@ -363,11 +362,11 @@ class TaskView extends React.PureComponent {
     return cahcesJurnalList
       .reduce((startValue, item) => {
         const normalizeValue = item.timeLost.toString().toLowerCase();
-
+        /** TODO: fix calculate */
         if (normalizeValue.includes('h') || normalizeValue.includes('ч')) {
           startValue += parseFloat(normalizeValue.split(/h|ч/i)[0]);
         } else if (normalizeValue.includes('m') || normalizeValue.includes('м')) {
-          startValue += parseFloat(normalizeValue.split(/m|м/i)[0].split(' ')[1]) / 60;
+          startValue += parseFloat(normalizeValue.split(/m|м/i)[0]) / 60;
         }
 
         return startValue;
