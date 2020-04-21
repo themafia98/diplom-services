@@ -14,13 +14,13 @@ const createEntity = async (storeName = '', body = {}, sliceCreaterNumber = 0) =
   return await rest.sendRequest(`/${storeName}/${createPath.slice(sliceCreaterNumber)}`, 'POST', body, true);
 };
 
-const deleteFile = async (store = '', body) => {
+const deleteFile = async (store = '', body = {}) => {
   if (!store || _.isEmpty(body)) return;
   const rest = new Request();
   return await rest.sendRequest(`/system/${store}/delete/file`, 'DELETE', body, true);
 };
 
-const loadFile = async (store = '', body) => {
+const loadFile = async (store = '', body = {}) => {
   if (!store || _.isEmpty(body)) return;
   const rest = new Request();
   return await rest.sendRequest(`/system/${store}/load/file`, 'PUT', body, true);
