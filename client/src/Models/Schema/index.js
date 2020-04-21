@@ -28,39 +28,37 @@ class Schema {
     switch (type) {
       case TASK_SCHEMA:
         return {
+          _id: null,
           editor: null,
           date: null,
           comments: null, // array [{ id: null, username: null, message: null }]
-          _id: null,
           key: null,
           status: null,
           name: null,
           priority: null,
           author: null,
           description: null,
-          modeAdd: 'any',
         };
       case CREATE_TASK_SCHEMA:
         return {
+          key: null,
           editor: null,
           date: null,
           comments: null,
-          key: null,
           status: null,
           name: null,
           priority: null,
           author: null,
           description: null,
-          modeAdd: 'any',
         };
       case TASK_CONTROLL_JURNAL_SCHEMA:
         return {
+          _id: null,
           depKey: null,
           timeLost: null,
           editor: null,
           date: null,
           description: null,
-          modeAdd: 'any',
         };
       case USER_SCHEMA:
         return {
@@ -75,7 +73,6 @@ class Schema {
           rules: null,
           accept: null,
           avatar: null,
-          modeAdd: 'any',
         };
       case NEWS_SCHEMA:
         return {
@@ -141,13 +138,11 @@ class Schema {
    * @return {boolean}
    */
   validateSchema(keysData, keysSchema, data) {
-    //
     if (!_.isArray(keysData) || !_.isArray(keysSchema)) return false;
     let validLenth = keysData.length;
 
-    const isFind = keysSchema.findIndex((it) => it === 'modeAdd') !== -1;
-    const isFindBoth = isFind && keysData.findIndex((it) => it === 'modeAdd' && _.isString(data[it])) !== -1;
-    if (isFindBoth) validLenth--;
+    const isFindMode = keysData.findIndex((it) => it === 'modeAdd' && _.isString(data[it])) !== -1;
+    if (isFindMode) validLenth--;
 
     const isCreated = keysData.findIndex((it) => it === 'createdAt' && _.isString(data[it])) !== -1;
     if (isCreated) validLenth--;
@@ -158,13 +153,7 @@ class Schema {
     const isVersion = keysData.findIndex((it) => it === '__v' && _.isNumber(data[it])) !== -1;
     if (isVersion) validLenth--;
 
-    if (
-      (isFindBoth && keysData.length !== keysSchema.length) ||
-      (isFind && !isFindBoth && keysData.length + 1 !== keysSchema.length) ||
-      (!isFind && keysSchema.length !== validLenth)
-    ) {
-      return false;
-    }
+    if (keysSchema.length !== validLenth) return false;
 
     return this.getMode() !== 'no-strict'
       ? keysData.every((dataKey, i) => dataKey === keysSchema[i])

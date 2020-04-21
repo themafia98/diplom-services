@@ -159,6 +159,7 @@ class CreateTask extends React.PureComponent {
 
   onChangeTextArea = (event) => {
     const { target } = event;
+
     this.setState({ ...this.state, card: { ...this.state.card, description: target.value } });
   };
 
@@ -338,9 +339,13 @@ class CreateTask extends React.PureComponent {
 
   render() {
     const dateFormat = 'DD.MM.YYYY';
-    const { errorBundle, filteredUsers = [] } = this.state;
+    const {
+      errorBundle,
+      filteredUsers = [],
+      card: { description: descriptionValue = '' },
+    } = this.state;
     const { rest } = this.context;
-    // const { height } = this.props;
+
     return (
       <Scrollbars>
         <div className="createTask">
@@ -395,6 +400,7 @@ class CreateTask extends React.PureComponent {
                     className={clsx(!_.isEmpty(errorBundle) && errorBundle.description ? 'isError' : null)}
                     name="description"
                     onChange={this.onChangeHandler}
+                    value={descriptionValue}
                     rows={8}
                   />
                   <label>Прикрепить файлы: </label>
