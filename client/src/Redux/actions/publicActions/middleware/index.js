@@ -17,8 +17,16 @@ import { updateItemStateAction } from '../../routerActions';
  */
 
 const middlewareCaching = (props) => async (dispatch, getState, { schema, Request, clientDB }) => {
-  const { status = 'online' } = getState().publicReducer;
-  const { actionType = '', item = {}, depKey = '', depStore = '', store = '', uid = '', type = '' } = props;
+  const {
+    actionType = '',
+    item = {},
+    depKey = '',
+    depStore = '',
+    store = '',
+    uid = '',
+    type = '',
+    updateBy = '_id',
+  } = props;
 
   const depActions = {
     errorRequstAction,
@@ -45,6 +53,7 @@ const middlewareCaching = (props) => async (dispatch, getState, { schema, Reques
         clientDB,
         schema,
         dataItems,
+        updateBy,
       };
 
       await cachingHook(dispatch, dep, depActions);
@@ -86,6 +95,7 @@ const loadCacheData = (props) => async (dispatch, getState, { schema, Request, c
     depKey = '',
     depStore = '',
     store = '',
+    updateBy = '_id',
   } = props;
 
   const depActions = {
@@ -112,6 +122,7 @@ const loadCacheData = (props) => async (dispatch, getState, { schema, Request, c
       store,
       schema,
       clientDB,
+      updateBy,
     };
 
     await getterCacheHook(dispatch, dep, depActions);
@@ -124,6 +135,7 @@ const loadCacheData = (props) => async (dispatch, getState, { schema, Request, c
       clientDB,
       schema,
       Request,
+      updateBy,
       errorRequstAction,
       setStatus,
     };
@@ -151,7 +163,15 @@ const middlewareUpdate = (props = {}) => async (dispatch, getState, { schema, Re
    * @param {object} store
    * @param {string} actionType
    */
-  const { id = '', key = '', updateField = '', updateItem, store = {}, actionType = 'default' } = props;
+  const {
+    id = '',
+    key = '',
+    updateField = '',
+    updateItem,
+    store = {},
+    actionType = 'default',
+    updateBy = '_id',
+  } = props;
 
   /**
    * update by @property {string} key more prioritized than @property {string} id
@@ -168,7 +188,7 @@ const middlewareUpdate = (props = {}) => async (dispatch, getState, { schema, Re
     const { dataItems = null } = items;
 
     if (error) throw new Error(error);
-    const dep = { store, schema, dataItems, id: key ? key : id, updateItemStateAction };
+    const dep = { updateBy, store, schema, dataItems, id: key ? key : id, updateItemStateAction };
 
     await updateEntityHook(dispatch, dep);
   } catch (error) {

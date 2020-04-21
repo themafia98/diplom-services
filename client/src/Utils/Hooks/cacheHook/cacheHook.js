@@ -1,7 +1,7 @@
 import { getStoreSchema } from '../../utilsHook';
 
 const cachingHook = async (dispatch, dep = {}, depActions = {}) => {
-  const { dataItems = {}, store, actionType, clientDB, schema } = dep;
+  const { dataItems = {}, store, actionType, clientDB, schema, updateBy } = dep;
   const { сachingAction, errorRequstAction } = depActions;
 
   try {
@@ -16,6 +16,7 @@ const cachingHook = async (dispatch, dep = {}, depActions = {}) => {
           data: schemTemplate ? validHash : dataItems,
           load: true,
           primaryKey: actionType,
+          updateBy,
         }),
       );
     } else throw new Error('Invalid data props');
@@ -26,7 +27,7 @@ const cachingHook = async (dispatch, dep = {}, depActions = {}) => {
 };
 
 const putterCacheHook = async (dispatch, dep = {}, depActions = {}) => {
-  const { depStore, item = {}, type, uid, Request, actionType } = dep;
+  const { depStore, item = {}, type, uid, Request, actionType, updateBy = '' } = dep;
   const { errorRequstAction, сachingAction } = depActions;
 
   try {
@@ -54,7 +55,7 @@ const putterCacheHook = async (dispatch, dep = {}, depActions = {}) => {
 
       if (error) throw new Error(error);
 
-      dispatch(сachingAction({ data: updaterItem, load: true, primaryKey: actionType }));
+      dispatch(сachingAction({ data: updaterItem, load: true, primaryKey: actionType, updateBy }));
     }
   } catch (error) {
     console.error(error);
@@ -63,7 +64,7 @@ const putterCacheHook = async (dispatch, dep = {}, depActions = {}) => {
 };
 
 const getterCacheHook = async (dispatch, dep = {}, depActions = {}) => {
-  const { dataItems, actionType, store, schema, clientDB } = dep;
+  const { dataItems, actionType, store, schema, clientDB, updateBy } = dep;
   const { errorRequstAction, сachingAction } = depActions;
 
   try {
@@ -74,7 +75,7 @@ const getterCacheHook = async (dispatch, dep = {}, depActions = {}) => {
 
     if (validHash || (!schemTemplate && dataItems)) {
       await clientDB.addItem(store, !schemTemplate ? dataItems : validHash);
-      dispatch(сachingAction({ data: validHash, load: true, primaryKey: actionType }));
+      dispatch(сachingAction({ data: validHash, load: true, primaryKey: actionType, updateBy }));
     } else throw new Error('Invalid data props');
   } catch (error) {
     console.error(error);

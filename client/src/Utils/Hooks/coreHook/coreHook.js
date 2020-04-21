@@ -62,7 +62,7 @@ const coreUpdaterDataHook = async (dispatch, dep = {}, multiple = false) => {
 };
 
 const updateEntityHook = async (dispatch, dep = {}) => {
-  const { store, schema, dataItems, id, updateItemStateAction } = dep;
+  const { store, schema, dataItems, id, updateItemStateAction, updateBy = '' } = dep;
 
   const schemTemplate = getStoreSchema(store);
 
@@ -75,6 +75,7 @@ const updateEntityHook = async (dispatch, dep = {}) => {
     updateItemStateAction({
       updaterItem: dataItems,
       type: 'UPDATE',
+      updateBy,
       id,
     }),
   );

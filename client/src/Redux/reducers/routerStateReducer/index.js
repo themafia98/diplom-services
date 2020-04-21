@@ -195,8 +195,10 @@ export default (state = initialState, action) => {
 
     case UPDATE_ITEM: {
       const { routeDataActive } = state;
+      const { id, updateBy } = action.payload;
+      const isExist = routeDataActive && routeDataActive[updateBy];
 
-      const updateCurrent = routeDataActive && routeDataActive._id === action.payload.id ? true : false;
+      const updateCurrent = isExist && routeDataActive[updateBy] === id ? true : false;
 
       return {
         ...state,

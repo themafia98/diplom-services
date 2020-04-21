@@ -589,11 +589,7 @@ class TaskView extends React.PureComponent {
                     ) : modeControll === 'edit' && modeControllEdit ? (
                       <DatePicker
                         value={moment(
-                          modeControllEdit.date && modeControllEdit.date[0]
-                            ? modeControllEdit.date[0]
-                            : date[0]
-                            ? date[0]
-                            : moment(),
+                          modeControllEdit?.date[0] ? modeControllEdit.date[0] : date[0] ? date[0] : moment(),
                           'DD.MM.YYYY',
                         )}
                         className="dateStartEdit"
@@ -609,11 +605,7 @@ class TaskView extends React.PureComponent {
                     ) : modeControll === 'edit' && modeControllEdit ? (
                       <DatePicker
                         value={moment(
-                          modeControllEdit.date && modeControllEdit.date[1]
-                            ? modeControllEdit.date[1]
-                            : date[1]
-                            ? date[1]
-                            : moment(),
+                          modeControllEdit?.date[1] ? modeControllEdit.date[1] : date[1] ? date[1] : moment(),
                           'DD.MM.YYYY',
                         )}
                         className="dateEndEdit"
