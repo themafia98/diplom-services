@@ -3,10 +3,11 @@ import { getStoreSchema } from '../../utilsHook';
 const cachingHook = async (dispatch, dep = {}, depActions = {}) => {
   const { dataItems = {}, store, actionType, clientDB, schema } = dep;
   const { сachingAction, errorRequstAction } = depActions;
+
   try {
     const schemTemplate = getStoreSchema(store, null);
-
-    const validHash = [dataItems].map((it) => schema?.getSchema(schemTemplate, it)).filter(Boolean);
+    const dataList = Array.isArray(dataItems) ? dataItems : [dataItems];
+    const validHash = dataList.map((it) => schema?.getSchema(schemTemplate, it)).filter(Boolean);
 
     if (validHash || (!schemTemplate && dataItems)) {
       clientDB.addItem(store, validHash);
@@ -24,15 +25,16 @@ const cachingHook = async (dispatch, dep = {}, depActions = {}) => {
   }
 };
 
-const getterCacheHook = async (dispatch, dep = {}, depActions = {}, type = 'afterLoading') => {
+const getterCacheHook = async (dispatch, dep = {}, depActions = {}, typeHook = 'afterLoading') => {
   const { dataItems, actionType, store, schema, clientDB } = dep;
   const { errorRequstAction, сachingAction } = depActions;
 
   try {
-    if (type === 'afterLoading') {
+    if (typeHook === 'afterLoading') {
       const schemTemplate = getStoreSchema(store);
 
-      const validHash = [dataItems].map((it) => schema.getSchema(schemTemplate, it)).filter(Boolean);
+      const dataList = Array.isArray(dataItems) ? dataItems : [dataItems];
+      const validHash = dataList.map((it) => schema?.getSchema(schemTemplate, it)).filter(Boolean);
 
       if (validHash || (!schemTemplate && dataItems)) {
         await clientDB.addItem(store, !schemTemplate ? dataItems : validHash);
