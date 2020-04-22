@@ -61,11 +61,10 @@ export default (state = initialState, action) => {
     case SET_CACHE: {
       const { primaryKey } = action.payload;
       const { pk = null } = action.payload;
-      const { data } = action.payload;
+      const { data, customDepKey = '', union = true } = action.payload;
       const { caches = {} } = state;
       let keys = null;
 
-      //const isObjects = typeof data === "object" && data !== null && Object.keys(data).length > 1;
       const isObjectsArray = !Object.keys(data).every((key) => isNaN(Number(key)));
 
       const validData = isObjectsArray
@@ -78,8 +77,8 @@ export default (state = initialState, action) => {
         keys = [];
         validData.forEach((item) => {
           if (pk) {
-            keys.push(`${item.depKey}${item._id}${primaryKey}${pk}`);
-          } else keys.push(`${item.depKey}${item._id}${primaryKey}`);
+            keys.push(`${customDepKey ? customDepKey : item.depKey}${item._id}${primaryKey}${pk}`);
+          } else keys.push(`${customDepKey ? customDepKey : item.depKey}${item._id}${primaryKey}`);
         });
 
         keys = new Set(keys);
@@ -93,7 +92,7 @@ export default (state = initialState, action) => {
 
         return {
           ...state,
-          caches: { ..._items },
+          caches: !union ? { ..._items } : { ...caches, ..._items },
         };
       } else {
         const key = Object.keys(validData)[0];
@@ -116,7 +115,7 @@ export default (state = initialState, action) => {
         action.payload.type === 'itemTab' ? action.payload.path.split('__')[1] : action.payload.path;
       const { caches = {} } = state || {};
       const copyCahes = { ...caches };
-
+      debugger;
       const filterCaches = Object.keys(copyCahes).reduce((filterObj, key) => {
         if (!key.includes(deleteKey)) {
           filterObj[key] = copyCahes[key];

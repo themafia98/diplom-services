@@ -11,6 +11,7 @@ import { deleteFile, loadFile } from '../../../../Utils';
 import { TASK_SCHEMA } from '../../../../Models/Schema/const';
 
 import { middlewareCaching, middlewareUpdate } from '../../../../Redux/actions/publicActions/middleware';
+import { сachingAction } from '../../../../Redux/actions/publicActions';
 
 import { v4 as uuid } from 'uuid';
 
@@ -58,12 +59,13 @@ class TaskView extends React.PureComponent {
   componentDidMount = async () => {
     const {
       publicReducer: { caches = {} } = {},
-      router: { routeDataActive: { key = '' } = {}, routeDataActive = {} },
+      router: { routeDataActive: { key = '', editor = '' } = {}, routeDataActive = {} },
       onLoadCacheData,
       data: { key: keyProps = '' } = {},
+      onSaveCache = null,
     } = this.props;
     const { Request = {} } = this.context;
-    const { actionType } = this.state;
+    const { actionType, key: taskId } = this.state;
 
     const idTask = !_.isEmpty(routeDataActive) && key ? key : keyProps ? keyProps : '';
 
@@ -89,7 +91,23 @@ class TaskView extends React.PureComponent {
             })
             .filter(Boolean);
 
+          if (onSaveCache) {
+            const data =
+              Array.isArray(editor) && editor?.length
+                ? filteredUsers.filter(({ _id: userId }) => editor.some((value) => value === userId))
+                : filteredUsers;
+
+            onSaveCache({
+              data,
+              load: true,
+              union: true,
+              customDepKey: `taskView#${taskId}`,
+              primaryKey: '__editor',
+            });
+          }
+
           this.setState({
+            ...this.state,
             filteredUsers,
           });
         } else throw new Error('fail load user list');
@@ -112,6 +130,7 @@ class TaskView extends React.PureComponent {
       try {
         this.setState(
           {
+            ...this.state,
             shouldRefresh: false,
             isLoadingFiles: true,
           },
@@ -127,6 +146,7 @@ class TaskView extends React.PureComponent {
               const { metadata: filesArray } = response;
 
               this.setState({
+                ...this.state,
                 filesArray: filesArray.map((it) => {
                   const { name, path_display: url, id: uid } = it;
                   const [module, taskId, filename] = url.slice(1).split(/\//gi);
@@ -155,6 +175,7 @@ class TaskView extends React.PureComponent {
   onAddFileList = (fileList, status) => {
     const shouldRefresh = fileList.every((it) => it.status === 'done');
     this.setState({
+      ...this.state,
       filesArray: [...fileList],
       shouldRefresh,
     });
@@ -188,6 +209,7 @@ class TaskView extends React.PureComponent {
 
         this.setState(
           {
+            ...this.state,
             filesArray: filesArray.filter((it) => it.uid !== idResponse),
           },
           () => {
@@ -446,6 +468,13 @@ class TaskView extends React.PureComponent {
     const { rest = {} } = this.context;
 
     const cahcesJurnalList = _.toArray(caches).filter((item) => item?.depKey === uuid);
+    const cachesEditorList = Object.keys(caches).reduce((list, key) => {
+      if (key.includes(`taskView#${uuid}`)) {
+        list.push({ ...caches[key] });
+        return list;
+      }
+      return list;
+    }, []);
 
     const accessStatus = _.uniq([
       modeControllEdit.status ? status : status ? status : null,
@@ -565,8 +594,8 @@ class TaskView extends React.PureComponent {
                       <Output
                         depModuleName="mainModule"
                         router={router}
-                        links={filteredUsers}
-                        isLink={Boolean(filteredUsers)}
+                        links={filteredUsers?.length ? filteredUsers : cachesEditorList}
+                        isLink={filteredUsers?.length ? Boolean(filteredUsers) : Boolean(cachesEditorList)}
                         list={true}
                         onOpenPageWithData={onOpenPageWithData}
                         setCurrentTab={setCurrentTab}
@@ -689,6 +718,7 @@ const mapStateTopProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     onCaching: async (props) => await dispatch(middlewareCaching(props)),
+    onSaveCache: (props) => dispatch(сachingAction(props)),
     onUpdate: (props) => dispatch(middlewareUpdate({ ...props })),
   };
 };

@@ -85,7 +85,7 @@ class Output extends React.PureComponent {
 
     let currentData = currentDataState;
     const page = `${action}Module`;
-    const moduleId = !isCurrentUser ? 'personalPage' : '';
+    const moduleId = !isCurrentKey ? 'personalPage' : '';
 
     if (!currentDataState && depModuleName && routeData[depModuleName]) {
       const store = action?.includes('cabinet') ? 'users' : action;
@@ -148,6 +148,7 @@ class Output extends React.PureComponent {
     const { showTooltip } = this.state;
     let value = children;
     if (Array.isArray(children) && links) {
+      debugger;
       value = this.renderList(
         links
           .map((link) => {
@@ -156,7 +157,8 @@ class Output extends React.PureComponent {
             }
             return null;
           })
-          .filter(Boolean),
+          .filter(Boolean)
+          .sort((a, b) => a?.displayName - b?.displayName),
       );
     }
     if (type === 'table') {
