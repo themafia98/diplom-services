@@ -72,7 +72,9 @@ class Output extends React.PureComponent {
       udata: { _id: uid = '' } = {},
       router: { actionTabs = [], routeData = {} } = {},
       onOpenPageWithData,
+      currentData: currentDataState = null,
       setCurrentTab,
+      depModuleName = '',
     } = this.props;
 
     const isCurrentUser = uid === key;
@@ -81,12 +83,16 @@ class Output extends React.PureComponent {
     if (config.tabsLimit <= actionTabs.length)
       return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
 
+    let currentData = currentDataState;
     const page = `${action}Module`;
     const moduleId = !isCurrentUser ? 'personalPage' : '';
-    const store = action?.includes('cabinet') ? 'users' : action;
-    const { [store]: storeList = [] } = routeData?.mainModule || {};
 
-    const currentData = storeList.find((it) => it?._id === key) || {};
+    if (!currentDataState && depModuleName && routeData[depModuleName]) {
+      const store = action?.includes('cabinet') ? 'users' : action;
+      const { [store]: storeList = [] } = routeData[depModuleName] || {};
+
+      currentData = storeList.find((it) => it?._id === key) || {};
+    }
     // @ts-ignore
     const activePage = routePathNormalise({
       pathType: isCurrentUser ? 'module' : 'moduleItem',

@@ -563,6 +563,7 @@ class TaskView extends React.PureComponent {
                   <Descriptions.Item label="Исполнитель">
                     {modeControll === 'default' ? (
                       <Output
+                        depModuleName="mainModule"
                         router={router}
                         links={filteredUsers}
                         isLink={Boolean(filteredUsers)}
