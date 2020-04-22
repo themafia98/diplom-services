@@ -74,7 +74,7 @@ class Output extends React.PureComponent {
       onOpenPageWithData,
       setCurrentTab,
     } = this.props;
-    debugger;
+
     const isCurrentUser = uid === key;
     const { config = {} } = this.context;
 
