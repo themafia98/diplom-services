@@ -77,7 +77,7 @@ class Output extends React.PureComponent {
       depModuleName = '',
     } = this.props;
 
-    const isCurrentUser = uid === key;
+    const isCurrentKey = uid === key;
     const { config = {} } = this.context;
 
     if (config.tabsLimit <= actionTabs.length)
@@ -93,15 +93,15 @@ class Output extends React.PureComponent {
 
       currentData = storeList.find((it) => it?._id === key) || {};
     }
-    // @ts-ignore
-    const activePage = routePathNormalise({
-      pathType: isCurrentUser ? 'module' : 'moduleItem',
-      pathData: { page, moduleId, key },
-    });
 
     if (!key || !page || !currentData || (currentData && _.isEmpty(currentData))) {
       return message.warn('По ссылке ничего не найдено.');
     }
+
+    const activePage = routePathNormalise({
+      pathType: isCurrentKey ? 'module' : 'moduleItem',
+      pathData: { page, moduleId, key },
+    });
 
     const index = actionTabs.findIndex((tab) => tab.includes(page) && tab.includes(key));
     const isFind = index !== -1;
