@@ -1,3 +1,4 @@
+// @ts-nocheck
 import _ from 'lodash';
 import { setSocketConnection, onLoadActiveChats, setSocketError, setActiveChatToken, updateRoom } from '../';
 import { errorRequstAction } from '../../publicActions';

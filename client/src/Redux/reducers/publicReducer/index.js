@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   SET_ERROR,
   SET_CACHE,

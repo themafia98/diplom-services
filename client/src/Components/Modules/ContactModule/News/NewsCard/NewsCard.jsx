@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { newsCardType } from '../../types';
 import _ from 'lodash';

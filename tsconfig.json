@@ -33,7 +33,8 @@
     "types": ["node"],
     "typeRoots": ["node_modules/@types", "server/src/types"]
   },
+  "checkJs": false,
   "include": ["server/src/**/*.ts"],
-  "exclude": ["node_modules/**"],
+  "exclude": ["node_modules/**", "client/src/**/*.*"],
   "compileOnSave": false
 }

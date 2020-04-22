@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { SET_LOGOUT_TABS } from './const';
 
 export const setLogoutTabs = (state) => {

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { createNewsType } from '../../types';
 import moment from 'moment';

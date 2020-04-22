@@ -1,3 +1,4 @@
+// @ts-nocheck
 import moment from 'moment';
 import _ from 'lodash';
 import { clientDB } from '../../Models/ClientSideDatabase';

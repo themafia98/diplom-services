@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { taskViewType } from '../types';
 import clsx from 'clsx';

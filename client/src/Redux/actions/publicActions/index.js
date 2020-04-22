@@ -1,3 +1,4 @@
+// @ts-nocheck
 /** Here action constants import */
 import { SET_ERROR, SET_CACHE, SET_STATUS, SHOW_GUIDE, UDATA_LOAD, CLEAR_CACHE, UPDATE_UDATA } from './const';
 

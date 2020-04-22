@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useContext } from 'react';
 import { recovoryType } from './types';
 import { Button, Input } from 'antd';

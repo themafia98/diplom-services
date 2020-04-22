@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { statisticsModuleType } from './types';
 import { connect } from 'react-redux';

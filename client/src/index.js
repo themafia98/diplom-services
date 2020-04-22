@@ -1,3 +1,4 @@
+// @ts-nocheck
 /** IE supports polyfills */
 import 'react-app-polyfill/ie11';
 import 'react-app-polyfill/stable';
@@ -18,9 +19,9 @@ import * as Sentry from '@sentry/browser';
 import Root from './Root';
 import ModelContext, { modelMethods } from './Models/context';
 
-require('es6-promise').polyfill();
-
-Sentry.init({ dsn: process.env.REACT_APP_LOGGER_DSN });
+if (process.env.NODE_ENV === 'production') {
+  Sentry.init({ dsn: process.env.REACT_APP_LOGGER_DSN });
+}
 
 ReactDOM.render(
   <Root>

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { сachingAction, errorRequstAction, setStatus } from '../';
 import {
   cachingHook,

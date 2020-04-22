@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { tabContainerType } from './types';
 import clsx from 'clsx';

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { rightPanelType } from '../types';
 import Updater from '../../Updater';

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { mainModuleType } from './types';
 import { Calendar } from 'antd';

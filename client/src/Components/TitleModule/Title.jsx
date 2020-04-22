@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { titleType } from './types';
 import clsx from 'clsx';

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { getNormalizedPath, sucessEvent, errorHook, coreUpdaterDataHook } from '../../../../Utils';
 import { saveComponentStateAction, loadFlagAction } from '../';
 import { errorRequstAction, setStatus } from '../../publicActions';

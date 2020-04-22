@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { userCardType } from './types';
 import { connect } from 'react-redux';

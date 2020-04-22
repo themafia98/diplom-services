@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   SET_ACTIVE_CHAT_TOKEN,
   SET_SOCKET_CONNECTION,

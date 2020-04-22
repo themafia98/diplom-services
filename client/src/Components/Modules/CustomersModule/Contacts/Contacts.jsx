@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { contactsType } from '../types';
 import TitleModule from '../../../TitleModule';

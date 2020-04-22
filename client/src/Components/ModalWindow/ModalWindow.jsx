@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { modalWindowType } from './types';
 import clsx from 'clsx';

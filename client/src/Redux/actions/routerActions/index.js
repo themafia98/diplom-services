@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   ADD_TAB,
   SET_ACTIVE_TAB,

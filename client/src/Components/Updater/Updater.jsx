@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { updaterType } from './types';
 import updater from './updater.png';

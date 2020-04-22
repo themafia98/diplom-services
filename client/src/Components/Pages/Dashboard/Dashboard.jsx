@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { dashboardType } from './types';
 import { Redirect } from 'react-router-dom';

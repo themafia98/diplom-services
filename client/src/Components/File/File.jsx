@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { fileType } from './types';
 import { v4 as uuid } from 'uuid';

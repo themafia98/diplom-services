@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { drawerViewerType } from './types';
 import { Drawer } from 'antd';

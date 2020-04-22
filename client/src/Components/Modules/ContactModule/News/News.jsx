@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { newsType } from '../types';
 import { connect } from 'react-redux';

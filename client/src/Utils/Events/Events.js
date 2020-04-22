@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { getStoreSchema } from '../utilsHook';
 import { dataParser } from '../';
 

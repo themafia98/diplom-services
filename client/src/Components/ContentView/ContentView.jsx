@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { contentViewType } from './types';
 import _ from 'lodash';
