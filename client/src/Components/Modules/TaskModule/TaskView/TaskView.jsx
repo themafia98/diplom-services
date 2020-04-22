@@ -297,7 +297,6 @@ class TaskView extends React.PureComponent {
       });
     } else if (_.isObject(event)) {
       if (_.isArray(event)) {
-        debugger;
         return this.setState({
           ...this.state,
           modeEditContent: false,

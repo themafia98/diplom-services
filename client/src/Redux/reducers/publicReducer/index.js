@@ -115,7 +115,7 @@ export default (state = initialState, action) => {
         action.payload.type === 'itemTab' ? action.payload.path.split('__')[1] : action.payload.path;
       const { caches = {} } = state || {};
       const copyCahes = { ...caches };
-      debugger;
+
       const filterCaches = Object.keys(copyCahes).reduce((filterObj, key) => {
         if (!key.includes(deleteKey)) {
           filterObj[key] = copyCahes[key];

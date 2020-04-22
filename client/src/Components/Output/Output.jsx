@@ -148,7 +148,6 @@ class Output extends React.PureComponent {
     const { showTooltip } = this.state;
     let value = children;
     if (Array.isArray(children) && links) {
-      debugger;
       value = this.renderList(
         links
           .map((link) => {
