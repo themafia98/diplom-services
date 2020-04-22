@@ -415,6 +415,8 @@ class TaskView extends React.PureComponent {
       path,
       uuid,
       udata = {},
+      onOpenPageWithData,
+      setCurrentTab,
     } = this.props;
 
     const {
@@ -557,12 +559,15 @@ class TaskView extends React.PureComponent {
                   </Descriptions.Item>
                   <Descriptions.Item label="Исполнитель">
                     {modeControll === 'default' ? (
-                      <Output className="editor">
-                        {Array.isArray(editor) && editor.length === 1
-                          ? editor
-                          : Array.isArray(editor) && editor.length > 1
-                          ? editor.join(',')
-                          : null}
+                      <Output
+                        links={filteredUsers}
+                        isLink={Boolean(filteredUsers)}
+                        list={true}
+                        onOpenPageWithData={onOpenPageWithData}
+                        setCurrentTab={setCurrentTab}
+                        className="editor"
+                      >
+                        {editor}
                       </Output>
                     ) : modeControll === 'edit' && modeControllEdit ? (
                       <Select

@@ -4,6 +4,17 @@
   text-overflow: ellipsis;
   text-align: center;
 
+  .list-mode {
+    &.link {
+      display: flex;
+      align-items: flex-start;
+      flex-direction: column;
+    }
+    p {
+      margin: 0;
+    }
+  }
+
   button {
     cursor: pointer;
     &.nameSurname:hover {

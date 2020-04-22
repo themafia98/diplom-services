@@ -74,7 +74,7 @@ class Output extends React.PureComponent {
       onOpenPageWithData,
       setCurrentTab,
     } = this.props;
-
+    debugger;
     const isCurrentUser = uid === key;
     const { config = {} } = this.context;
 
@@ -95,18 +95,37 @@ class Output extends React.PureComponent {
     const index = actionTabs.findIndex((tab) => tab.includes(page) && tab.includes(key));
     const isFind = index !== -1;
 
-    if (!isFind) {
+    if (!isFind && onOpenPageWithData) {
       onOpenPageWithData({
         activePage,
         routeDataActive: { ...currentData, key },
       });
-    } else {
+    } else if (setCurrentTab) {
       setCurrentTab(actionTabs[index]);
     }
   };
 
+  renderList = (items = {}) => {
+    const { links = [] } = this.props;
+    return items.map((it, index) => {
+      const currentEntity = links.find((link) => link?.displayName === it);
+      const { _id = '' } = currentEntity || {};
+
+      return (
+        <Button
+          onClick={_id ? this.onOpenLink.bind(this, { id: _id, action: 'cabinet' }) : null}
+          type="link"
+          key={`${index}${it}`}
+          className="editor"
+        >
+          {it}
+        </Button>
+      );
+    });
+  };
+
   render() {
-    const { className, children, type, typeOutput, id, action } = this.props;
+    const { className, children, type, typeOutput, id, action, list = false, isLink = false } = this.props;
     const { showTooltip } = this.state;
     if (type === 'table') {
       const output = (
@@ -122,8 +141,15 @@ class Output extends React.PureComponent {
                 {children}
               </Button>
             ) : (
-              <span ref={this.childRef} className={className ? className : null}>
-                {children}
+              <span
+                ref={this.childRef}
+                className={clsx(
+                  className ? className : null,
+                  list ? 'list-mode' : null,
+                  isLink ? 'link' : null,
+                )}
+              >
+                {list ? this.renderList(children) : children}
               </span>
             )}
           </div>
@@ -149,8 +175,15 @@ class Output extends React.PureComponent {
               {children}
             </Button>
           ) : (
-            <span ref={this.childRef} className={className ? className : null}>
-              {children}
+            <span
+              ref={this.childRef}
+              className={clsx(
+                className ? className : null,
+                list ? 'list-mode' : null,
+                isLink ? 'link' : null,
+              )}
+            >
+              {list ? this.renderList(children) : children}
             </span>
           )}
         </div>

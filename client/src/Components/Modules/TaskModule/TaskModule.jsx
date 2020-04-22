@@ -283,6 +283,8 @@ class TaskModule extends React.PureComponent {
               height={heightController ? height - heightController : height}
               onLoadCurrentData={onLoadCurrentData}
               onLoadCacheData={onLoadCacheData}
+              onOpenPageWithData={onOpenPageWithData}
+              setCurrentTab={setCurrentTab}
               data={router.routeData[key]}
             />
           </TabContainer>

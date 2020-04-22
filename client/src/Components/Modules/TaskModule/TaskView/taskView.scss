@@ -41,6 +41,12 @@
   .ant-descriptions-row {
     .output {
       text-align: start;
+      word-break: break-word;
+      white-space: normal;
+      span.editor {
+        word-break: break-word;
+        white-space: normal;
+      }
     }
 
     .ant-select,
