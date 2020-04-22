@@ -12,7 +12,7 @@ const createEntity = async (storeName = '', body = {}, sliceCreaterNumber = 0) =
   const rest = new Request();
   const createPath = `${storeName[0].toUpperCase()}${storeName.slice(1)}}`;
   return await rest.sendRequest(
-    `/${storeName}/${createPath.slice(0, sliceCreaterNumber)}`,
+    `/${storeName}/Create${createPath.slice(0, sliceCreaterNumber)}`,
     'POST',
     body,
     true,
