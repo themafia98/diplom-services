@@ -3,7 +3,7 @@ import React from 'react';
 import { outputType } from './types';
 import clsx from 'clsx';
 import { routePathNormalise } from '../../Utils';
-import { Tooltip, Button, message } from 'antd';
+import { Tooltip, Button, message, Spin } from 'antd';
 import _ from 'lodash';
 import modelContext from '../../Models/context';
 
@@ -70,8 +70,7 @@ class Output extends React.PureComponent {
   onOpenLink = ({ id: key = null, action = null }) => {
     const {
       udata: { _id: uid = '' } = {},
-      router: { actionTabs = [] } = {},
-      currentData = {},
+      router: { actionTabs = [], routeData = {} } = {},
       onOpenPageWithData,
       setCurrentTab,
     } = this.props;
@@ -84,14 +83,19 @@ class Output extends React.PureComponent {
 
     const page = `${action}Module`;
     const moduleId = !isCurrentUser ? 'personalPage' : '';
+    const store = action?.includes('cabinet') ? 'users' : action;
+    const { [store]: storeList = [] } = routeData?.mainModule || {};
 
+    const currentData = storeList.find((it) => it?._id === key) || {};
     // @ts-ignore
     const activePage = routePathNormalise({
       pathType: isCurrentUser ? 'module' : 'moduleItem',
       pathData: { page, moduleId, key },
     });
 
-    if (!key || !page) return;
+    if (!key || !page || !currentData || (currentData && _.isEmpty(currentData))) {
+      return message.warn('По ссылке ничего не найдено.');
+    }
 
     const index = actionTabs.findIndex((tab) => tab.includes(page) && tab.includes(key));
     const isFind = index !== -1;
@@ -106,28 +110,49 @@ class Output extends React.PureComponent {
     }
   };
 
-  renderList = (items = {}) => {
-    const { links = [] } = this.props;
+  renderList = (items = []) => {
+    if (items && !items.length) return <Spin size="small" />;
     return items.map((it, index) => {
-      const currentEntity = links.find((link) => link?.displayName === it);
-      const { _id = '' } = currentEntity || {};
-
+      const { displayValue = '', id = '' } = it || {};
       return (
         <Button
-          onClick={_id ? this.onOpenLink.bind(this, { id: _id, action: 'cabinet' }) : null}
+          onClick={id ? this.onOpenLink.bind(this, { id, action: 'cabinet' }) : null}
           type="link"
-          key={`${index}${it}`}
+          key={`${index}${id}`}
           className="editor"
         >
-          {it}
+          {displayValue}
         </Button>
       );
     });
   };
 
   render() {
-    const { className, children, type, typeOutput, id, action, list = false, isLink = false } = this.props;
+    const {
+      links = null,
+      className,
+      children,
+      type,
+      typeOutput,
+      id,
+      action,
+      list = false,
+      isLink = false,
+    } = this.props;
     const { showTooltip } = this.state;
+    let value = children;
+    if (Array.isArray(children) && links) {
+      value = this.renderList(
+        links
+          .map((link) => {
+            if (children.some((child) => child === link?._id)) {
+              return { displayValue: link.displayName, id: link?._id };
+            }
+            return null;
+          })
+          .filter(Boolean),
+      );
+    }
     if (type === 'table') {
       const output = (
         <td>
@@ -139,7 +164,7 @@ class Output extends React.PureComponent {
                 ref={this.childRef}
                 className={className ? className : null}
               >
-                {children}
+                {value}
               </Button>
             ) : (
               <span
@@ -150,7 +175,7 @@ class Output extends React.PureComponent {
                   isLink ? 'link' : null,
                 )}
               >
-                {list ? this.renderList(children) : children}
+                {value}
               </span>
             )}
           </div>
@@ -159,8 +184,8 @@ class Output extends React.PureComponent {
       if (!showTooltip) return output;
       else
         return (
-          <Tooltip className="pointerTooltip" placement="topLeft" title={children}>
-            {output}
+          <Tooltip className="pointerTooltip" placement="topLeft" title={value}>
+            {value}
           </Tooltip>
         );
     } else {
@@ -173,7 +198,7 @@ class Output extends React.PureComponent {
               ref={this.childRef}
               className={className ? className : null}
             >
-              {children}
+              {value}
             </Button>
           ) : (
             <span
@@ -184,7 +209,7 @@ class Output extends React.PureComponent {
                 isLink ? 'link' : null,
               )}
             >
-              {list ? this.renderList(children) : children}
+              {value}
             </span>
           )}
         </div>
@@ -192,8 +217,8 @@ class Output extends React.PureComponent {
       if (!showTooltip) return output;
       else
         return (
-          <Tooltip placement="topLeft" title={children}>
-            {output}
+          <Tooltip placement="topLeft" title={value}>
+            {value}
           </Tooltip>
         );
     }

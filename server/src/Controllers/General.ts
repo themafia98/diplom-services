@@ -7,6 +7,7 @@ import Utils from '../Utils';
 import { Request, App, BodyLogin, Mail } from '../Utils/Interfaces';
 import Action from '../Models/Action';
 import Decorators from '../Decorators';
+import Database from '../Models/Database';
 
 namespace General {
   const { getResponseJson } = Utils;
@@ -16,16 +17,21 @@ namespace General {
   @Controller('/')
   export class Main {
     @Post({ path: '/auth', private: true })
-    public auth(req: Request, res: Response): Response {
-      return res.sendStatus(200);
+    public auth(req: Request, res: Response, next: NextFunction, server: App): Response {
+      try {
+        const { dbm = null } = (server?.locals as Record<string, Readonly<Database.ManagmentDatabase>>) || {};
+        if (dbm) dbm.connection().catch((err) => console.error(err));
+        return res.sendStatus(200);
+      } catch (err) {
+        console.error(err);
+        return res.sendStatus(503);
+      }
     }
 
     @Post({ path: '/reg', private: false })
     public async reg(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       try {
         if (!req.body || (req.body && _.isEmpty(req.body))) throw new Error('Invalid auth data');
-
-        console.log('body:', req.body);
 
         const service = server.locals;
         const connect = await service.dbm.connection();
@@ -52,8 +58,10 @@ namespace General {
     }
 
     @Post({ path: '/login', private: false })
-    public async login(req: Request, res: Response, next: NextFunction) {
+    public async login(req: Request, res: Response, next: NextFunction, server: App) {
+      const { dbm = null } = (server?.locals as Record<string, Readonly<Database.ManagmentDatabase>>) || {};
       const body: BodyLogin = req.body;
+      if (dbm) dbm.connection().catch((err) => console.error(err));
       if (!body || (body && _.isEmpty(body))) return void res.sendStatus(503);
 
       return await passport.authenticate(
@@ -96,7 +104,9 @@ namespace General {
     }
 
     @Post({ path: '/userload', private: true })
-    public async userload(req: Request, res: Response): Promise<Response> {
+    public async userload(req: Request, res: Response, server: App): Promise<Response> {
+      const { dbm = null } = (server?.locals as Record<string, Readonly<Database.ManagmentDatabase>>) || {};
+      if (dbm) dbm.connection().catch((err) => console.error(err));
       if (req.user) return res.json({ user: (req as Record<string, any>).user.toAuthJSON() });
       else {
         res.clearCookie('connect.sid');

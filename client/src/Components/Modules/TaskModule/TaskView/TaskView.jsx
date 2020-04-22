@@ -275,6 +275,7 @@ class TaskView extends React.PureComponent {
       });
     } else if (_.isObject(event)) {
       if (_.isArray(event)) {
+        debugger;
         return this.setState({
           ...this.state,
           modeEditContent: false,
@@ -418,6 +419,7 @@ class TaskView extends React.PureComponent {
       udata = {},
       onOpenPageWithData,
       setCurrentTab,
+      router = {},
     } = this.props;
 
     const {
@@ -561,6 +563,7 @@ class TaskView extends React.PureComponent {
                   <Descriptions.Item label="Исполнитель">
                     {modeControll === 'default' ? (
                       <Output
+                        router={router}
                         links={filteredUsers}
                         isLink={Boolean(filteredUsers)}
                         list={true}
@@ -582,7 +585,7 @@ class TaskView extends React.PureComponent {
                         optionLabelProp="label"
                       >
                         {filteredUsers.map((it) => (
-                          <Option key={it._id} value={it.displayName} label={it.displayName}>
+                          <Option key={it._id} value={it._id} label={it.displayName}>
                             <span>{it.displayName}</span>
                           </Option>
                         ))}
