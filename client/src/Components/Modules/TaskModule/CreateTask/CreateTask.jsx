@@ -226,7 +226,7 @@ class CreateTask extends React.PureComponent {
       try {
         if (statusApp === 'offline') this.offlineMode(validHash);
 
-        const res = await createEntity('tasks', validHash, 5);
+        const res = await createEntity('tasks', validHash, 4);
 
         if (res.status !== 200) {
           console.error(res);
