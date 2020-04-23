@@ -1,12 +1,10 @@
-.tableViw__wrapper {
+.tableView__wrapper {
   width: 100%;
-  position: absolute;
-  bottom: 0;
-  top: 50%;
-  margin: 10px;
+  height: 100%;
+  margin: 0px;
 
   table {
-    width: 92%;
+    width: 95%;
     min-height: 85%;
     max-height: 85%;
     tbody {
@@ -88,18 +86,11 @@
     }
   }
 }
-
-.ant-table-tbody {
-  .ant-table-row {
-    td {
-      td {
-        &.editor,
-        &.author {
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
-      }
-    }
+.editor,
+.author {
+  &.ant-table-column-has-actions.ant-table-column-has-filters.ant-table-column-has-sorters {
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 
@@ -164,7 +155,7 @@
 }
 
 @media screen and (max-width: 960px) {
-  .tableViw__wrapper {
+  .tableView__wrapper {
     table {
       .contentTr {
         td {
@@ -177,8 +168,12 @@
   }
 }
 
+tbody.table-body {
+  overflow: auto;
+}
+
 @media screen and (max-height: 655px) {
-  .tableViw__wrapper {
+  .tableView__wrapper {
     top: 65%;
   }
 }

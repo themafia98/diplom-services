@@ -25,7 +25,7 @@
     .columnModuleRight {
       position: relative;
       display: flex;
-      flex-wrap: wrap;
+      flex-direction: column;
       .widjects {
         display: flex;
         width: 95%;

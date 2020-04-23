@@ -16,6 +16,8 @@ class MainModule extends React.PureComponent {
     path: 'mainModule',
   };
 
+  firstPartRef = React.createRef();
+
   render() {
     const { visible, setCurrentTab } = this.props;
     const { path } = this.state;
@@ -35,14 +37,15 @@ class MainModule extends React.PureComponent {
           <div className="col-4 columnModuleLeft">
             <StreamBox parentDataName="users" parentPath={path} key="streamMain" type="global" />
           </div>
-          <div className="col-8 columnModuleRight">
+          <div ref={this.firstPartRef} className="col-8 columnModuleRight">
             <div className="widjects">
               {clockVisibility ? <ClockWidjet /> : null}
               {calendarVisiblity ? <Calendar className="mainModule_calendar" fullscreen={false} /> : null}
             </div>
-            <div className="tableViw__wrapper">
+            <div className="tableView__wrapper">
               <TableView
                 setCurrentTab={setCurrentTab}
+                firstPartRef={this.firstPartRef}
                 visible={visible}
                 key="mainModule_table"
                 path="mainModule__table"

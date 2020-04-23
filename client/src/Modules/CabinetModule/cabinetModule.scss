@@ -83,36 +83,6 @@
       .columnModuleRight {
         order: -1;
       }
-      .tableViw__wrapper {
-        top: 71%;
-        width: 81%;
-        left: 50%;
-        transform: translate(-50%);
-        margin: 5px;
-        table {
-          width: 93%;
-          td {
-            flex: 0 0 30%;
-            max-width: 30%;
-            min-width: 30%;
-            &:first-child {
-              flex: 0 0 20%;
-              max-width: 20%;
-              min-width: 20%;
-            }
-            &:last-child {
-              flex: 0 0 10%;
-              max-width: 10%;
-              min-width: 10%;
-            }
-            &:nth-child(3) {
-              flex: 0 0 10%;
-              max-width: 10%;
-              min-width: 10%;
-            }
-          }
-        }
-      }
     }
   }
   .col-4 {

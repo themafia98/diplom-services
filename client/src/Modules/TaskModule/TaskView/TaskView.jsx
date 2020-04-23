@@ -381,8 +381,8 @@ class TaskView extends React.PureComponent {
     });
   };
 
-  calcSumWorkTime = (cahcesJurnalList = []) => {
-    return cahcesJurnalList
+  calcSumWorkTime = (cachesJurnalList = []) => {
+    return cachesJurnalList
       .reduce((startValue, item) => {
         const normalizeValue = item.timeLost.toString().toLowerCase();
         /** TODO: fix calculate */
@@ -397,8 +397,8 @@ class TaskView extends React.PureComponent {
       .toFixed(1);
   };
 
-  renderWorkJurnal = (cahcesJurnalList = []) => {
-    return cahcesJurnalList
+  renderWorkJurnal = (cachesJurnalList = []) => {
+    return cachesJurnalList
       .sort((a, b) => moment(a?.date).unix() + moment(b?.date).unix())
       .map((item) => {
         const date = item && Array.isArray(item.date) ? item.date[0] : 'Invalid date';
@@ -429,12 +429,80 @@ class TaskView extends React.PureComponent {
       .filter(Boolean);
   };
 
+  getCacheItemsList = () => {
+    const { publicReducer: { caches = null } = {} } = this.props;
+    const cachesAuthorList = [];
+    const cachesEditorList = [];
+    let cachesJurnalList = [];
+
+    if (caches && typeof caches === 'object') {
+      cachesJurnalList = _.toArray(caches).filter((item) => item?.depKey === uuid);
+
+      for (let [key, value] of Object.entries({ ...caches })) {
+        if (!key.includes(`taskView#${uuid}`)) continue;
+
+        if (key.includes('editor')) {
+          cachesEditorList.push(value);
+          continue;
+        }
+
+        if (key.includes('author')) {
+          cachesAuthorList.push(value);
+        }
+      }
+    }
+    return [cachesAuthorList, cachesEditorList, cachesJurnalList];
+  };
+
+  getAccessStatus = () => {
+    const {
+      router: { routeDataActive = {} },
+    } = this.props;
+    const { status = '' } = routeDataActive;
+    const { modeControllEdit: { status: statusState = '' } = {} } = this.state;
+    return _.uniq([
+      statusState ? status : status ? status : null,
+      'Открыт',
+      'Выполнен',
+      'Закрыт',
+      'В работе',
+    ]).filter(Boolean);
+  };
+
+  getAccessPriority = () => {
+    const {
+      router: { routeDataActive = {} },
+    } = this.props;
+    const { modeControllEdit: { priority: priorityState = '' } = {} } = this.state;
+    const { priority = '' } = routeDataActive;
+
+    return _.uniq([
+      priorityState ? priorityState : priority ? priority : null,
+      'Высокий',
+      'Средний',
+      'Низкий',
+    ]).filter(Boolean);
+  };
+
+  getClassNameByStatus = () => {
+    const {
+      router: { routeDataActive = {} },
+    } = this.props;
+    const { status = '' } = routeDataActive;
+    return status === 'Выполнен'
+      ? 'done'
+      : status === 'Закрыт'
+      ? 'close'
+      : status === 'В работе'
+      ? 'active'
+      : null;
+  };
+
   render() {
     const {
       router: { routeDataActive = {} },
       onCaching,
       onUpdate,
-      publicReducer: { caches = null } = {},
       path,
       uuid,
       udata = {},
@@ -466,40 +534,13 @@ class TaskView extends React.PureComponent {
 
     const { rest = {} } = this.context;
 
-    const cahcesJurnalList = _.toArray(caches).filter((item) => item?.depKey === uuid);
-    const cachesEditorList = Object.keys(caches).reduce((list, key) => {
-      if (key.includes(`taskView#${uuid}`)) {
-        list.push({ ...caches[key] });
-        return list;
-      }
-      return list;
-    }, []);
+    const [cachesAuthorList, cachesEditorList, cachesJurnalList] = this.getCacheItemsList();
+    const accessStatus = this.getAccessStatus();
+    const accessPriority = this.getAccessPriority();
 
-    const accessStatus = _.uniq([
-      modeControllEdit.status ? status : status ? status : null,
-      'Открыт',
-      'Выполнен',
-      'Закрыт',
-      'В работе',
-    ]).filter(Boolean);
-
-    const accessPriority = _.uniq([
-      modeControllEdit.priority ? modeControllEdit.priority : priority ? priority : null,
-      'Высокий',
-      'Средний',
-      'Низкий',
-    ]).filter(Boolean);
     const rulesEdit = true;
 
-    const statusClassName = routeDataActive
-      ? status === 'Выполнен'
-        ? 'done'
-        : status === 'Закрыт'
-        ? 'close'
-        : status === 'В работе'
-        ? 'active'
-        : null
-      : null;
+    const statusClassName = this.getClassNameByStatus();
 
     if (key) {
       return (
@@ -586,7 +627,19 @@ class TaskView extends React.PureComponent {
                     ) : null}
                   </Descriptions.Item>
                   <Descriptions.Item label="Автор задачи">
-                    <Output className="author">{author}</Output>
+                    <Output
+                      className="author"
+                      depModuleName="mainModule"
+                      router={router}
+                      links={filteredUsers?.length ? filteredUsers : cachesEditorList}
+                      isLink={filteredUsers?.length ? Boolean(filteredUsers) : Boolean(cachesAuthorList)}
+                      list={true}
+                      onOpenPageWithData={onOpenPageWithData}
+                      setCurrentTab={setCurrentTab}
+                      className="author"
+                    >
+                      {author}
+                    </Output>
                   </Descriptions.Item>
                   <Descriptions.Item label="Исполнитель">
                     {modeControll === 'default' ? (
@@ -654,7 +707,7 @@ class TaskView extends React.PureComponent {
                     ) : null}
                   </Descriptions.Item>
                   <Descriptions.Item label="Затрачено времени">
-                    <Output>{`${this.calcSumWorkTime(cahcesJurnalList)} ч`}</Output>
+                    <Output>{`${this.calcSumWorkTime(cachesJurnalList)} ч`}</Output>
                   </Descriptions.Item>
                 </Descriptions>
                 <div className="descriptionTask">
@@ -690,10 +743,10 @@ class TaskView extends React.PureComponent {
             <div className="col-6 col-taskDescription">
               <TitleModule classNameTitle="historyTaskTitle" title="Журнал работы" />
               <Scrollbars>
-                {!cahcesJurnalList?.length ? (
+                {!cachesJurnalList?.length ? (
                   <Empty description={<span>Нету данных в журнале</span>} />
                 ) : (
-                  this.renderWorkJurnal(cahcesJurnalList)
+                  this.renderWorkJurnal(cachesJurnalList)
                 )}
               </Scrollbars>
             </div>

@@ -192,7 +192,7 @@ class Output extends React.PureComponent {
       else
         return (
           <Tooltip className="pointerTooltip" placement="topLeft" title={value}>
-            {value}
+            {output}
           </Tooltip>
         );
     } else {
@@ -225,7 +225,7 @@ class Output extends React.PureComponent {
       else
         return (
           <Tooltip placement="topLeft" title={value}>
-            {value}
+            {output}
           </Tooltip>
         );
     }

@@ -23,6 +23,7 @@ class TaskModuleList extends React.PureComponent {
         <TitleModule additional="Все задачи" classNameTitle="taskModuleTittle" title="Список всех задач" />
         <div className="taskModuleAll_main">
           <TableView
+            key="taskModule_tableTask"
             loaderMethods={loaderMethods}
             setCurrentTab={setCurrentTab}
             height={height}

@@ -21,7 +21,7 @@
   "intervalNotification": 30000,
   "tabsLimit": 40,
   "task": {
-    "limitList": 20
+    "limitList": 10
   },
   "statist": {
     "limitListTasks": 200
