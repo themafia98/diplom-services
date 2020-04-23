@@ -5,29 +5,9 @@
 @import './Components/ContentView/contentView.scss';
 @import './Components/HeaderView/header.scss';
 @import './Components/Loader/loader.scss';
-
-@import './Components/Pages/LoginPage/loginPage.scss';
 @import './Components/ErrorBoundary/errorPage.scss';
 @import './Components/ErrorBoundary/errorPage.scss';
-@import './Components/Pages/Dashboard/dashboard.scss';
-@import './Components/Pages/Recovery/recovory.scss';
-
-@import './Components/Modules/MainModule/mainModule.scss';
-@import './Components/Modules/CabinetModule/cabinetModule.scss';
-@import './Components/Modules/CustomersModule/Contacts/contacts.scss';
 @import './Components/TitleModule/titleModule.scss';
-@import './Components/Modules/TaskModule/TaskModuleList/taskModuleList.scss';
-@import './Components/Modules/TaskModule/TaskModuleCalendar/taskModuleCalendar.scss';
-@import './Components/Modules/StatisticsModule/statisticsModule.scss';
-@import './Components/Modules/TaskModule/CreateTask/createTask.scss';
-@import './Components/Modules/ContactModule/Chat/chat.scss';
-@import './Components/Modules/ContactModule/News/news.scss';
-@import './Components/Modules/ContactModule/News/NewsViewPage/newsViewPage.scss';
-@import './Components/Modules/SettingsModule/settingsModule.scss';
-@import './Components/Modules/WikiModule/wikiModule.scss';
-@import './Components/Modules/ContactModule/News/CreateNews/createNews.scss';
-@import './Components/Modules/WikiModule/WikiPage/wikiPage.scss';
-
 @import './Components//StreamBox/streamBox.scss';
 @import './Components/TableView/tableView.scss';
 @import './Components/ModalWindow/modalWindow.scss';
@@ -36,12 +16,29 @@
 @import './Components/ObserverTime/observerTime.scss';
 @import './Components/NotificationPopup/notificationPopup.scss';
 @import './Components/UserPopup/userPopup.scss';
-
-@import './Components/Modules/TaskModule/TaskView/taskView.scss';
 @import './Components/File/file.scss';
 @import './Components/Comments/comments.scss';
 @import './Components/Updater/updater.scss';
-
 @import './Components/Textarea/textarea.scss';
-@import './Components/Modules/ContactModule/News/NewsCard/newsCard.scss';
 @import './Components/HeaderView/RightPanel/rightPanel.scss';
+
+@import './Pages/Dashboard/dashboard.scss';
+@import './Pages/Recovery/recovory.scss';
+@import './Pages/LoginPage/loginPage.scss';
+
+@import './Modules/MainModule/mainModule.scss';
+@import './Modules/CabinetModule/cabinetModule.scss';
+@import './Modules/CustomersModule/Contacts/contacts.scss';
+@import './Modules/TaskModule/TaskModuleList/taskModuleList.scss';
+@import './Modules/TaskModule/TaskModuleCalendar/taskModuleCalendar.scss';
+@import './Modules/StatisticsModule/statisticsModule.scss';
+@import './Modules/TaskModule/CreateTask/createTask.scss';
+@import './Modules/ContactModule/Chat/chat.scss';
+@import './Modules/ContactModule/News/news.scss';
+@import './Modules/ContactModule/News/NewsViewPage/newsViewPage.scss';
+@import './Modules/SettingsModule/settingsModule.scss';
+@import './Modules/WikiModule/wikiModule.scss';
+@import './Modules/ContactModule/News/CreateNews/createNews.scss';
+@import './Modules/WikiModule/WikiPage/wikiPage.scss';
+@import './Modules/TaskModule/TaskView/taskView.scss';
+@import './Modules/ContactModule/News/NewsCard/newsCard.scss';

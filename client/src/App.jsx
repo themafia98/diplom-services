@@ -14,9 +14,9 @@ import { addTabAction, setActiveTabAction, logoutAction } from './Redux/actions/
 import { routeParser } from './Utils';
 
 import Loader from './Components/Loader';
-import Recovery from './Components/Pages/Recovery';
-import LoginPage from './Components/Pages/LoginPage';
-import Dashboard from './Components/Pages/Dashboard';
+import Recovery from './Pages/Recovery';
+import LoginPage from './Pages/LoginPage';
+import Dashboard from './Pages/Dashboard';
 import 'moment/locale/ru';
 import modelContext from './Models/context';
 // import { isMobile } from "react-device-detect";

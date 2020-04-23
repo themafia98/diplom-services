@@ -7,14 +7,14 @@ import { Layout } from 'antd';
 import TabContainer from '../TabContainer';
 import DrawerViewer from '../DrawerViewer';
 
-import MainModule from '../Modules/MainModule';
-import CabinetModule from '../Modules/CabinetModule';
-import TaskModule from '../Modules/TaskModule';
-import StatisticsModule from '../Modules/StatisticsModule';
-import SettingsModule from '../Modules/SettingsModule';
-import ContactModule from '../Modules/ContactModule';
-import CustomersModule from '../Modules/CustomersModule';
-import WikiModule from '../Modules/WikiModule';
+import MainModule from '../../Modules/MainModule';
+import CabinetModule from '../../Modules/CabinetModule';
+import TaskModule from '../../Modules/TaskModule';
+import StatisticsModule from '../../Modules/StatisticsModule';
+import SettingsModule from '../../Modules/SettingsModule';
+import ContactModule from '../../Modules/ContactModule';
+import CustomersModule from '../../Modules/CustomersModule';
+import WikiModule from '../../Modules/WikiModule';
 
 import { v4 as uuid } from 'uuid';
 

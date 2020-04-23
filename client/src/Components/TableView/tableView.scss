@@ -89,6 +89,20 @@
   }
 }
 
+.ant-table-tbody {
+  .ant-table-row {
+    td {
+      td {
+        &.editor,
+        &.author {
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
+    }
+  }
+}
+
 .wrapperLoaderTable {
   .tableLoader {
     width: 100px;
