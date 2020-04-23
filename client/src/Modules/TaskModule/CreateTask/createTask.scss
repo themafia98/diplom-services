@@ -10,6 +10,18 @@
     width: 100%;
     display: flex;
     height: calc(100% - 100px);
+
+    .error-logger {
+      .errors-list {
+        list-style-type: initial;
+
+        .error-item {
+          color: #ff0000;
+          font-weight: bold;
+        }
+      }
+    }
+
     .col-task {
       max-height: 75vh;
       height: 75vh;

@@ -28,7 +28,8 @@ class CreateTask extends React.PureComponent {
       status: 'Открыт',
       name: null,
       priority: 'Средний',
-      author: 'Петрович Павел',
+      uidCreater: null,
+      authorName: null,
       editor: null,
       description: null,
       comments: [],
@@ -44,6 +45,23 @@ class CreateTask extends React.PureComponent {
     onLoadCurrentData: PropTypes.func.isRequired,
 
     statusApp: PropTypes.string.isRequired,
+  };
+
+  static getDerivedStateFromProps = (props, state) => {
+    const { card: { authorName: authorState = null, uidCreater = null } = {} } = state;
+    const { udata: { _id: uid, displayName = '' } = {} } = props;
+    if (_.isNull(uidCreater) && _.isNull(authorState) && uid && displayName) {
+      return {
+        ...state,
+        card: {
+          ...state.card,
+          authorName: displayName,
+          uidCreater: uid,
+        },
+      };
+    }
+
+    return state;
   };
 
   componentDidMount = async () => {
@@ -81,69 +99,44 @@ class CreateTask extends React.PureComponent {
   };
 
   validation = () => {
-    const {
-      card: { key, status, name, priority, author, editor, description, date },
-      errorBundle: errorBundleState,
-    } = this.state;
-    let isUpdate = false;
+    const { card = {}, errorBundle: errorBundleState } = this.state;
     const copyErrorBundleState = { ...errorBundleState };
-    const errorBundle = {};
 
-    if (!key) errorBundle.key = 'Ключ не найден.';
-    else if (!_.isEmpty(copyErrorBundleState) && copyErrorBundleState.key) {
-      isUpdate = true;
-      copyErrorBundleState.key = null;
-    }
-    if (!status) errorBundle.status = 'Статус не найден.';
-    else if (!_.isEmpty(copyErrorBundleState) && copyErrorBundleState.status) {
-      isUpdate = true;
-      copyErrorBundleState.status = null;
-    }
-    if (!name) errorBundle.name = 'Имя не найдено.';
-    else if (!_.isEmpty(copyErrorBundleState) && copyErrorBundleState.name) {
-      isUpdate = true;
-      copyErrorBundleState.name = null;
-    }
-    if (!priority) errorBundle.priority = 'Приоритет не найден.';
-    else if (!_.isEmpty(copyErrorBundleState) && copyErrorBundleState.priority) {
-      isUpdate = true;
-      copyErrorBundleState.priority = null;
-    }
-    if (!author) errorBundle.author = 'Автор не найден.';
-    else if (!_.isEmpty(copyErrorBundleState) && copyErrorBundleState.author) {
-      isUpdate = true;
-      copyErrorBundleState.author = null;
-    }
-    if (!editor) errorBundle.editor = 'Исполнитель(и) не найден(ы).';
-    else if (!_.isEmpty(copyErrorBundleState) && copyErrorBundleState.editor) {
-      isUpdate = true;
-      copyErrorBundleState.editor = null;
-    }
-    if (!description) errorBundle.description = 'Описание задачи не найдено.';
-    else if (!_.isEmpty(copyErrorBundleState) && copyErrorBundleState.description) {
-      isUpdate = true;
-      copyErrorBundleState.description = null;
-    }
-    if (!date.length) errorBundle.date = 'Срок сдачи не найден.';
-    else if (!_.isEmpty(copyErrorBundleState) && copyErrorBundleState.date) {
-      isUpdate = true;
-      copyErrorBundleState.date = null;
+    for (let [key, value] of Object.entries(card)) {
+      if (!value) {
+        copyErrorBundleState[key] = `Значение ${key} не найдено.`;
+        continue;
+      }
+
+      copyErrorBundleState[key] = null;
     }
 
-    if (isUpdate) {
-      const keyCopy = Object.keys(copyErrorBundleState);
-      let newCopyErrorBundle = {};
-      keyCopy.forEach((key) => {
-        if (copyErrorBundleState[key] !== null) newCopyErrorBundle[key] = copyErrorBundleState[key];
-      });
-      this.setState({ ...this.state, errorBundle: { ...newCopyErrorBundle } });
+    let newErrorBundle = {};
+    for (let [key, value] of Object.entries(copyErrorBundleState)) {
+      if (!_.isNull(value)) {
+        newErrorBundle[key] = value;
+        continue;
+      }
     }
-    if (_.isEmpty(errorBundle)) return true;
-    else {
+
+    if (_.isEmpty(newErrorBundle)) return true;
+
+    this.setState({ ...this.state, errorBundle: { ...newErrorBundle } }, () => {
       message.error('Не все поля заполнены!');
-      this.setState({ ...this.state, errorBundle: errorBundle });
-      return;
-    }
+    });
+
+    return false;
+  };
+
+  getErrorLogs = () => {
+    const { errorBundle = {} } = this.state;
+    if (!errorBundle || _.isEmpty(errorBundle)) return null;
+
+    return Object.values(errorBundle).map((value, index) => (
+      <li key={`${value}${index}`} className="error-item">
+        {value}
+      </li>
+    ));
   };
 
   onChangeHandler = (event) => {
@@ -204,7 +197,7 @@ class CreateTask extends React.PureComponent {
       removeTab,
       udata: { _id: uid, displayName = '' },
     } = this.props;
-    const { config = {}, Request = {}, schema = {} } = this.context;
+    const { config = {}, schema = {} } = this.context;
 
     if (!this.validation()) return;
 
@@ -214,11 +207,9 @@ class CreateTask extends React.PureComponent {
 
     const validHashCopy = [{ ...this.state.card }];
     const validHash = validHashCopy.map((it) => schema?.getSchema(CREATE_TASK_SCHEMA, it)).filter(Boolean)[0];
-
     if (!validHash) return message.error('Не валидные данные.');
 
     const parseDateArray = [];
-
     if (parseDateArray.length) validHash.date = parseDateArray;
 
     this.setState({ ...this.state, load: true });
@@ -305,21 +296,6 @@ class CreateTask extends React.PureComponent {
             }
           },
         );
-
-        // if (rest)
-        //     rest.sendRequest("/tasks/createTask", "POST", validHash, true)
-        //         .then((response) => {
-        //             this.setState(
-        //                 { ...this.state, card: { ...this.state.card, key: uuid() }, load: false },
-        //                 () => message.success(`Задача создана.`));
-        //         })
-        //         .catch(err => {
-        //             if (/offline/gi.test(err.message)) {
-        //                 onLoadCurrentData({ path: "taskModule", storeLoad: "tasks" }).then(() => {
-        //                     this.offlineMode(validHash);
-        //                 });
-        //             }
-        //         });
       } catch (error) {
         console.error(error);
         message.success(error.message);
@@ -336,7 +312,7 @@ class CreateTask extends React.PureComponent {
     const {
       errorBundle,
       filteredUsers = [],
-      card: { description: descriptionValue = '' },
+      card: { description: descriptionValue = '', key: keyCard = '' },
     } = this.state;
     const { rest } = this.context;
 
@@ -382,7 +358,7 @@ class CreateTask extends React.PureComponent {
                   >
                     {filteredUsers && filteredUsers.length
                       ? filteredUsers.map((it) => (
-                          <Option value={it.displayName} label={it.displayName}>
+                          <Option value={it._id} label={it.displayName}>
                             <span>{it.displayName}</span>
                           </Option>
                         ))
@@ -398,7 +374,11 @@ class CreateTask extends React.PureComponent {
                     rows={8}
                   />
                   <label>Прикрепить файлы: </label>
-                  <File onAddFileList={null} rest={rest} />
+                  <File
+                    moduleData={{ id: `${keyCard}_virtual`, name: ' taskModule' }}
+                    isLocal={true}
+                    rest={rest}
+                  />
                   <label>Срок сдачи: </label>
                   <RangePicker
                     className={clsx(!_.isEmpty(errorBundle) && errorBundle.date ? 'isError' : null)}
@@ -422,6 +402,9 @@ class CreateTask extends React.PureComponent {
                   </Button>
                 </form>
               </Scrollbars>
+            </div>
+            <div className="col-6 error-logger">
+              <ul className="errors-list">{this.getErrorLogs()}</ul>
             </div>
           </div>
         </div>

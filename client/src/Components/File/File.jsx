@@ -52,14 +52,14 @@ class File extends React.Component {
   };
 
   render() {
-    const { moduleData: { _id = '' } = {}, rest, module = '' } = this.props;
+    const { moduleData: { _id = '' } = {}, rest, module = '', isLocal = false } = this.props;
     const props = {
       name: `${uuid()}__${_id}`,
-      multiple: true,
+      multiple: !isLocal ? true : false,
       withCredentials: true,
-      headers: rest ? rest.getHeaders() : null,
+      headers: rest && isLocal ? rest.getHeaders() : null,
       fileList: this.state.filesArray,
-      action: rest ? `${rest.getApi()}/system/${module}/file` : null,
+      action: rest && isLocal ? `${rest.getApi()}/system/${module}/file` : null,
     };
 
     return (

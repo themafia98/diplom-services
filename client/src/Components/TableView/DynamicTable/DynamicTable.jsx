@@ -79,18 +79,18 @@ class DynamicTable extends React.PureComponent {
       {
         title: 'Автор',
         className: 'author',
-        dataIndex: 'author',
-        key: 'author',
+        dataIndex: 'authorName',
+        key: 'authorName',
         onFilter: (value, record) => {
-          return record.author.includes(value);
+          return record.authorName.includes(value);
         },
-        sorter: (a, b) => a.author.length - b.author.length,
+        sorter: (a, b) => a.authorName.length - b.authorName.length,
         sortOrder: sortedInfo && sortedInfo.columnKey === 'author' && sortedInfo.order,
         sortDirections: ['descend', 'ascend'],
         render: (text, row, index) => {
-          return <Output key={`${text}${row}${index}author`}>{text}</Output>;
+          return <Output key={`${text}${row}${index}authorName`}>{text}</Output>;
         },
-        ...this.getColumn('author'),
+        ...this.getColumn('authorName'),
       },
       {
         title: 'Исполнитель',

@@ -37,7 +37,8 @@ class Schema {
           status: null,
           name: null,
           priority: null,
-          author: null,
+          uidCreater: null,
+          authorName: null,
           description: null,
         };
       case CREATE_TASK_SCHEMA:
@@ -49,7 +50,8 @@ class Schema {
           status: null,
           name: null,
           priority: null,
-          author: null,
+          authorName: null,
+          uidCreater: null,
           description: null,
         };
       case TASK_CONTROLL_JURNAL_SCHEMA:
