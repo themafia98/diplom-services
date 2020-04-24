@@ -216,11 +216,13 @@ class CreateTask extends React.PureComponent {
       removeTab,
       udata: { _id: uid, displayName = '' },
     } = this.props;
-    const { trySubmit = false, card = {} } = this.state;
+    const { trySubmit: trySubmitState = false, card = {} } = this.state;
     const { config = {}, schema = {} } = this.context;
 
     if (!this.validation()) {
-      return this.setState({
+      if (trySubmitState) return;
+
+      this.setState({
         ...this.state,
         trySubmit: true,
       });
