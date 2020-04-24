@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import axios from 'axios';
 import _ from 'lodash';
 import moment from 'moment';
-import { Modal, Button, Dropdown, Icon, Menu, Input, DatePicker, message, Select } from 'antd';
+import { Modal, Button, Dropdown, Icon, Menu, Input, DatePicker, message, Select, Spin, Tooltip } from 'antd';
 import { TASK_CONTROLL_JURNAL_SCHEMA } from '../../Models/Schema/const';
 import { createNotification } from '../../Utils';
 import SimpleEditableModal from './SimpleEditableModal';
@@ -335,6 +335,14 @@ class ModalWindow extends React.PureComponent {
     }
   };
 
+  showLoader = () => {
+    return (
+      <Tooltip mouseEnterDelay={0.1} title="Загрузка или обновление данных">
+        <Spin type="small" />
+      </Tooltip>
+    );
+  };
+
   render() {
     const {
       mode = '',
@@ -348,6 +356,9 @@ class ModalWindow extends React.PureComponent {
       defaultView = false,
       onCancelEditModeContent = null,
       onUpdateEditable,
+      rulesEdit = true,
+      rulesStatus = true,
+      isLoadList = true,
     } = this.props;
 
     if (defaultView) {
@@ -396,16 +407,20 @@ class ModalWindow extends React.PureComponent {
                 Занести в журнал работы
               </p>
             </Menu.Item>
-            <Menu.Item>
-              <p className="statusTask" onClick={modeControll === 'edit' ? this.onMessage : this.showModal}>
-                Сменить статус задачи
-              </p>
-            </Menu.Item>
-            <Menu.Item>
-              <p className="statusTask" onClick={modeControll === 'edit' ? this.onMessage : onEdit}>
-                Редактировать задачу
-              </p>
-            </Menu.Item>
+            {rulesStatus ? (
+              <Menu.Item>
+                <p className="statusTask" onClick={modeControll === 'edit' ? this.onMessage : this.showModal}>
+                  Сменить статус задачи
+                </p>
+              </Menu.Item>
+            ) : null}
+            {rulesEdit ? (
+              <Menu.Item>
+                <p className="statusTask" onClick={modeControll === 'edit' ? this.onMessage : onEdit}>
+                  Редактировать задачу
+                </p>
+              </Menu.Item>
+            ) : null}
           </Menu>
         </React.Fragment>
       );
@@ -414,10 +429,12 @@ class ModalWindow extends React.PureComponent {
           return (
             <div className="dropDownWrapper">
               <Dropdown overlay={menu}>
-                <p>
-                  Управление задачей
-                  <Icon type="down" />
-                </p>
+                <>
+                  <p className="action-dropdown-link">
+                    Управление задачей
+                    <Icon type="down" />
+                  </p>
+                </>
               </Dropdown>
               {modeControll === 'edit' ? (
                 <React.Fragment>
@@ -429,6 +446,7 @@ class ModalWindow extends React.PureComponent {
                   </p>
                 </React.Fragment>
               ) : null}
+              {!isLoadList ? this.showLoader() : null}
               <Modal
                 className="modalWindow changeStatus"
                 visible={this.state.visible}
@@ -459,7 +477,7 @@ class ModalWindow extends React.PureComponent {
             <React.Fragment>
               <div className="dropDownWrapper">
                 <Dropdown overlay={menu}>
-                  <p>
+                  <p className="action-dropdown-link">
                     Управление задачей
                     <Icon type="down" />
                   </p>
@@ -474,6 +492,7 @@ class ModalWindow extends React.PureComponent {
                     </p>
                   </React.Fragment>
                 ) : null}
+                {!isLoadList ? this.showLoader() : null}
               </div>
               {mode === 'jur' && modeEditContent ? (
                 <Modal

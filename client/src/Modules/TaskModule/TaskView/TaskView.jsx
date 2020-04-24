@@ -520,9 +520,10 @@ class TaskView extends React.PureComponent {
       : null;
   };
 
-  getModalWindow = (accessStatus) => {
+  getModalWindow = (accessStatus, rulesEdit = true, rulesStatus = false) => {
     const { router: { routeDataActive = {} } = {}, onCaching, onUpdate, path, uuid, udata = {} } = this.props;
-    const { mode, actionType, modeControll, modeEditContent } = this.state;
+    const { mode, actionType, modeControll, modeEditContent, isLoad = false } = this.state;
+
     const { key = '', status = '', description = '' } = routeDataActive || {};
     return (
       <ModalWindow
@@ -545,6 +546,9 @@ class TaskView extends React.PureComponent {
         onUpdateEditable={this.onUpdateEditable}
         statusTaskValue={status ? status : null}
         udata={udata}
+        rulesEdit={rulesEdit}
+        rulesStatus={rulesStatus}
+        isLoadList={isLoad}
       />
     );
   };
@@ -586,7 +590,8 @@ class TaskView extends React.PureComponent {
     const accessStatus = this.getAccessStatus();
     const accessPriority = this.getAccessPriority();
 
-    const rulesEdit = uid === uidCreater; // TODO: delay solution
+    const rulesEdit = uid === uidCreater;
+    const rulesStatus = editor.some((editorId) => editorId === uid) || uid === uidCreater;
 
     const statusClassName = this.getClassNameByStatus();
 
@@ -595,7 +600,7 @@ class TaskView extends React.PureComponent {
     return (
       <Scrollbars>
         <TitleModule classNameTitle="taskModuleTittle" title="Карточка задачи" />
-        {this.getModalWindow(accessStatus)}
+        {this.getModalWindow(accessStatus, rulesEdit, rulesStatus)}
         <div className="taskView">
           <div className="col-6 col-taskDescription">
             <Scrollbars>
