@@ -106,7 +106,7 @@ class UserCard extends React.Component {
     };
 
     return (
-      <React.Fragment>
+      <>
         <div className="userCard">
           <div style={background} className="wallpaper"></div>
           <div className="mainContentCard">
@@ -191,7 +191,7 @@ class UserCard extends React.Component {
             defaultValue={udata.summary}
           />
         ) : null}
-      </React.Fragment>
+      </>
     );
   }
 }

@@ -27,7 +27,7 @@ const ObserverTime = (props) => {
   const isInvalid = !isLoading && (!settingsLogs.length || _.isEmpty(settingsLogs));
 
   return (
-    <React.Fragment>
+    <>
       <TitleModule classNameTitle="observerTitle" title={title ? title : 'История изменений'} />
       <Scrollbars hideTracksWhenNotNeeded={true}>
         <div className="observerWrapper">
@@ -38,7 +38,7 @@ const ObserverTime = (props) => {
           )}
         </div>
       </Scrollbars>
-    </React.Fragment>
+    </>
   );
 };
 ObserverTime.defaultProps = {

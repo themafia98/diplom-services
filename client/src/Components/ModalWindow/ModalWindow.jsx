@@ -372,7 +372,7 @@ class ModalWindow extends React.PureComponent {
     } = this.state;
     if (mode === 'reg') {
       return (
-        <React.Fragment>
+        <>
           {mode === 'reg' ? (
             <Button aria-label="reg-button" type="primary" onClick={this.showModal}>
               Регистрация
@@ -391,7 +391,7 @@ class ModalWindow extends React.PureComponent {
               <div></div>
             )}
           </Modal>
-        </React.Fragment>
+        </>
       );
     } else if (mode === 'jur') {
       const {
@@ -400,7 +400,7 @@ class ModalWindow extends React.PureComponent {
       } = this.state;
       moment.locale('ru');
       const menu = (
-        <React.Fragment>
+        <>
           <Menu>
             <Menu.Item>
               <p className="jur" onClick={modeControll === 'edit' ? this.onMessage : this.showModal}>
@@ -422,7 +422,7 @@ class ModalWindow extends React.PureComponent {
               </Menu.Item>
             ) : null}
           </Menu>
-        </React.Fragment>
+        </>
       );
       switch (typeState) {
         case 'statusTask': {
@@ -437,14 +437,14 @@ class ModalWindow extends React.PureComponent {
                 </>
               </Dropdown>
               {modeControll === 'edit' ? (
-                <React.Fragment>
+                <>
                   <p onClick={onUpdateEditable} className="modeControllEdit">
                     Сохранить изменения
                   </p>
                   <p onClick={onRejectEdit} className="modeControllEditReject">
                     Отмена изменений
                   </p>
-                </React.Fragment>
+                </>
               ) : null}
               {!isLoadList ? this.showLoader() : null}
               <Modal
@@ -474,7 +474,7 @@ class ModalWindow extends React.PureComponent {
 
         default: {
           return (
-            <React.Fragment>
+            <>
               <div className="dropDownWrapper">
                 <Dropdown overlay={menu}>
                   <p className="action-dropdown-link">
@@ -483,14 +483,14 @@ class ModalWindow extends React.PureComponent {
                   </p>
                 </Dropdown>
                 {modeControll === 'edit' ? (
-                  <React.Fragment>
+                  <>
                     <p onClick={onUpdateEditable} className="modeControllEdit">
                       Сохранить изменения
                     </p>
                     <p onClick={onRejectEdit} className="modeControllEditReject">
                       Отмена изменений
                     </p>
-                  </React.Fragment>
+                  </>
                 ) : null}
                 {!isLoadList ? this.showLoader() : null}
               </div>
@@ -549,7 +549,7 @@ class ModalWindow extends React.PureComponent {
                   />
                 </Modal>
               ) : null}
-            </React.Fragment>
+            </>
           );
         }
       }

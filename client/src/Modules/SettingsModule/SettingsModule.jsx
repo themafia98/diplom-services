@@ -331,7 +331,7 @@ class SettingsModule extends React.PureComponent {
     const readonlyCommon = haveChanges.includes('commonEmail') || haveChanges.includes('commonPhone');
 
     const settingsBlock = (
-      <React.Fragment>
+      <>
         <div ref={this.refFunc}>
           <Collapse defaultActiveKey={['common']}>
             <Panel onChange={this.onUpdate} header="Смена пароля" key="password">
@@ -439,7 +439,7 @@ class SettingsModule extends React.PureComponent {
             </Panel>
           </Collapse>
         </div>
-      </React.Fragment>
+      </>
     );
 
     return (

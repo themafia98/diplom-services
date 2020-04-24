@@ -105,7 +105,7 @@ class ContactModule extends React.PureComponent {
     const visibleEntity = path.includes('___link') || path === 'contactModule_informationPage';
 
     return (
-      <React.Fragment>
+      <>
         <TabContainer isBackground={isBackgroundChat} visible={path === 'contactModule_chat'}>
           <Chat key="chatModule" isBackground={isBackgroundChat} visible={path === 'contactModule_chat'} />
         </TabContainer>
@@ -137,7 +137,7 @@ class ContactModule extends React.PureComponent {
           />
         </TabContainer>
         {this.renderNewsView()}
-      </React.Fragment>
+      </>
     );
   };
   render() {

@@ -121,7 +121,7 @@ class App extends React.Component {
 
   withoutIE = (children) => {
     return (
-      <React.Fragment>
+      <>
         <RenderInBrowser ie only>
           <div className="ie-only">
             <p>Приложение не поддерживает браузер IE, предлагаем установить другой браузер.</p>
@@ -130,7 +130,7 @@ class App extends React.Component {
         <RenderInBrowser except ie>
           {children}
         </RenderInBrowser>
-      </React.Fragment>
+      </>
     );
   };
 

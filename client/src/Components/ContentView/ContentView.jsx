@@ -139,7 +139,7 @@ class ContentView extends React.Component {
     if (!key) return <div>no menu</div>;
 
     return (
-      <React.Fragment>
+      <>
         <Content key={key}>
           <TabContainer
             key="mainModule"
@@ -257,7 +257,7 @@ class ContentView extends React.Component {
           </TabContainer>
         </Content>
         <DrawerViewer onClose={this.onClose} visible={drawerView} />
-      </React.Fragment>
+      </>
     );
   }
 }

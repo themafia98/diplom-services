@@ -110,7 +110,7 @@ const ChatRoom = (props) => {
             key={`msg_${i}${it.tokenRoom}${it.msg}${it.authorId}${it.displayName}${it._id}`}
             className="flex-wrapper"
           >
-            <React.Fragment>
+            <>
               <div className="msg_header">
                 {it.displayName !== 'System' ? (
                   <span
@@ -129,7 +129,7 @@ const ChatRoom = (props) => {
                 ) : null}
               </div>
               <p className="wrapper_msg">{it.msg}</p>
-            </React.Fragment>
+            </>
           </Message>
         </div>
       );

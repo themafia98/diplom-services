@@ -143,7 +143,7 @@ class NotificationPopup extends React.PureComponent {
     );
 
     return (
-      <React.Fragment>
+      <>
         <div className="notificationControllers">
           <Badge className="notificationCounter" count={counter} />
           <Popover
@@ -163,7 +163,7 @@ class NotificationPopup extends React.PureComponent {
             <Icon className="alertBell" type="bell" theme="twoTone" />
           </Popover>
         </div>
-      </React.Fragment>
+      </>
     );
   }
 }

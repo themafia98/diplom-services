@@ -308,7 +308,7 @@ class Dashboard extends React.PureComponent {
     const actionTabsData = this.getActionTabs(actionTabs, menuItems);
 
     return (
-      <React.Fragment>
+      <>
         {showLoader ? <Loader className="mainLoader" /> : null}
         <Layout className="layout_menu">
           <MenuView
@@ -359,18 +359,18 @@ class Dashboard extends React.PureComponent {
               >
                 <p>Спасибо что выбрали {config.title ? `${config.title}` : 'нашу систему!'}</p>
 
-                <React.Fragment>
+                <>
                   <p>Вы можете установить приложение на ваш компьютер</p>
 
                   <Button onClick={this.installApp} className="setupButton">
                     Установить приложение
                   </Button>
-                </React.Fragment>
+                </>
               </Modal>
             ) : null}
           </Layout>
         </Layout>
-      </React.Fragment>
+      </>
     );
   }
 }

@@ -12,7 +12,7 @@ const Textarea = (props) => {
   const propsKey = editorKey ? { key: editorKey } : {};
 
   return (
-    <React.Fragment>
+    <>
       {editor ? (
         <EditorTextarea {...propsKey} {...props} />
       ) : (
@@ -26,7 +26,7 @@ const Textarea = (props) => {
           {...valueProps}
         />
       )}
-    </React.Fragment>
+    </>
   );
 };
 Textarea.defaultProps = {

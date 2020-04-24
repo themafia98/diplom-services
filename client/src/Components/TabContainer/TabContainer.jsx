@@ -7,7 +7,7 @@ const TabContainer = (props) => {
   const { isBackground, visible, children, className = '' } = props;
 
   return (
-    <React.Fragment>
+    <>
       {isBackground || visible ? (
         <div
           key={children.key + 'tab'}
@@ -16,7 +16,7 @@ const TabContainer = (props) => {
           {children}
         </div>
       ) : null}
-    </React.Fragment>
+    </>
   );
 };
 TabContainer.defaultProps = {

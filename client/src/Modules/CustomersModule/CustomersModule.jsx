@@ -18,7 +18,7 @@ class CustomersModule extends React.PureComponent {
     if (path) {
       const isBackgroundContacts = this.checkBackground('customersModule_contacts');
       return (
-        <React.Fragment>
+        <>
           <TabContainer isBackground={isBackgroundContacts} visible={path === 'customersModule_contacts'}>
             <Contacts
               key="contacts_module"
@@ -29,7 +29,7 @@ class CustomersModule extends React.PureComponent {
               visible={path === 'customersModule_contacts'}
             />
           </TabContainer>
-        </React.Fragment>
+        </>
       );
     }
   };

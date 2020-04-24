@@ -392,7 +392,7 @@ class WikiModule extends React.PureComponent {
     const isLoading = isLoadingState || (shouldUpdate && !metadata?.length);
 
     return (
-      <React.Fragment>
+      <>
         <div className="wikiModule">
           <div className="wikiModule__controlls">
             <TitleModule classNameTitle="wikiModuleTitle" title="Википедия системы" />
@@ -408,7 +408,7 @@ class WikiModule extends React.PureComponent {
           <div className="wikiModule__main">
             <div className="col-4">
               {metadata.length ? (
-                <React.Fragment>
+                <>
                   <Search
                     className="wikiModule__searchInput"
                     placeholder="Поиск по дереву"
@@ -417,7 +417,7 @@ class WikiModule extends React.PureComponent {
                   <Scrollbars hideTracksWhenNotNeeded={true}>
                     <Tree onSelect={this.onSelect} treeData={this.renderTree()} />
                   </Scrollbars>
-                </React.Fragment>
+                </>
               ) : !isLoading ? (
                 <p className="empty-tree">В Wiki ничего нет</p>
               ) : (
@@ -461,7 +461,7 @@ class WikiModule extends React.PureComponent {
             </div>
           }
         />
-      </React.Fragment>
+      </>
     );
   }
 }

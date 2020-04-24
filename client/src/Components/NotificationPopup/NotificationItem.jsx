@@ -14,10 +14,10 @@ const NotificationItem = ({ image = null, content = '', authorName = '' }) => {
       ) : null}
       <span className={clsx('notificationItem__content', image ? 'left' : null)}>{content}</span>
       {authorName ? (
-        <React.Fragment>
+        <>
           <p className="title_author">Автор уведомления:</p>
           <p className="author">{authorName}</p>
-        </React.Fragment>
+        </>
       ) : null}
     </div>
   );
