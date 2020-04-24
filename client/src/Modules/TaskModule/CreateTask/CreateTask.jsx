@@ -23,6 +23,7 @@ const { RangePicker } = DatePicker;
 class CreateTask extends React.PureComponent {
   state = {
     load: false,
+    trySubmit: false,
     card: {
       key: uuid(),
       status: 'Открыт',
@@ -98,9 +99,11 @@ class CreateTask extends React.PureComponent {
     }
   };
 
-  validation = () => {
-    const { card = {}, errorBundle: errorBundleState } = this.state;
+  validation = _.debounce((onChangeValidation = false) => {
+    const { card = {}, errorBundle: errorBundleState, trySubmit = false } = this.state;
     const copyErrorBundleState = { ...errorBundleState };
+
+    if (!trySubmit && onChangeValidation) return;
 
     for (let [key, value] of Object.entries(card)) {
       if (!value) {
@@ -119,14 +122,15 @@ class CreateTask extends React.PureComponent {
       }
     }
 
-    if (_.isEmpty(newErrorBundle)) return true;
+    if (_.isEmpty(newErrorBundle) && !onChangeValidation) return true;
 
-    this.setState({ ...this.state, errorBundle: { ...newErrorBundle } }, () => {
-      message.error('Не все поля заполнены!');
-    });
+    if (JSON.stringify(newErrorBundle) !== JSON.stringify(errorBundleState))
+      this.setState({ ...this.state, errorBundle: { ...newErrorBundle } }, () => {
+        if (!onChangeValidation) message.error('Не все поля заполнены!');
+      });
 
     return false;
-  };
+  }, 300);
 
   getErrorLogs = () => {
     const { errorBundle = {} } = this.state;
@@ -143,35 +147,50 @@ class CreateTask extends React.PureComponent {
     const { target = null } = event;
     if (_.isNull(target)) return;
     if (!_.isNull(target) && target.name === 'name')
-      return this.setState({ ...this.state, card: { ...this.state.card, name: target.value } });
-    else if (!_.isNull(target) && target.name === 'description')
-      return this.setState({
-        ...this.state,
-        card: { ...this.state.card, description: target.value },
+      return this.setState({ ...this.state, card: { ...this.state.card, name: target.value } }, () => {
+        this.validation(true);
       });
+    else if (!_.isNull(target) && target.name === 'description')
+      return this.setState(
+        {
+          ...this.state,
+          card: { ...this.state.card, description: target.value },
+        },
+        () => {
+          this.validation(true);
+        },
+      );
   };
 
   onChangeTextArea = (event) => {
     const { target } = event;
-
-    this.setState({ ...this.state, card: { ...this.state.card, description: target.value } });
+    this.setState({ ...this.state, card: { ...this.state.card, description: target.value } }, () => {
+      this.validation(true);
+    });
   };
 
   onChangeHandlerDate = (date, dateArray) => {
     if (_.isArray(dateArray) && dateArray !== this.state.date) {
-      return this.setState({ ...this.state, card: { ...this.state.card, date: dateArray } });
+      return this.setState({ ...this.state, card: { ...this.state.card, date: dateArray } }, () => {
+        this.validation(true);
+      });
     }
   };
 
   onChangeHandlerSelectEditor = (eventArray) => {
     if (!_.isArray(eventArray) || eventArray === this.state.card.editor) return;
-    else return this.setState({ ...this.state, card: { ...this.state.card, editor: eventArray } });
+    else
+      return this.setState({ ...this.state, card: { ...this.state.card, editor: eventArray } }, () => {
+        this.validation(true);
+      });
   };
 
   onChangeHandlerSelectPriority = (eventString) => {
     if (!_.isString(eventString) || eventString === this.state.priority) return;
     else {
-      this.setState({ ...this.state, card: { ...this.state.card, priority: eventString } });
+      this.setState({ ...this.state, card: { ...this.state.card, priority: eventString } }, () => {
+        this.validation(true);
+      });
     }
   };
 
@@ -197,15 +216,21 @@ class CreateTask extends React.PureComponent {
       removeTab,
       udata: { _id: uid, displayName = '' },
     } = this.props;
+    const { trySubmit = false, card = {} } = this.state;
     const { config = {}, schema = {} } = this.context;
 
-    if (!this.validation()) return;
+    if (!this.validation()) {
+      return this.setState({
+        ...this.state,
+        trySubmit: true,
+      });
+    }
 
-    let keys = Object.keys(this.state.card);
+    let keys = Object.keys(card);
 
-    if (keys.every((key) => _.isNull(this.state.card[key]))) return;
+    if (keys.every((key) => _.isNull(card[key]))) return;
 
-    const validHashCopy = [{ ...this.state.card }];
+    const validHashCopy = [{ ...card }];
     const validHash = validHashCopy.map((it) => schema?.getSchema(CREATE_TASK_SCHEMA, it)).filter(Boolean)[0];
     if (!validHash) return message.error('Не валидные данные.');
 
@@ -236,7 +261,7 @@ class CreateTask extends React.PureComponent {
         this.setState(
           {
             ...this.state,
-            card: { ...this.state.card, key: uuid() },
+            card: { ...card, key: uuid() },
             load: false,
           },
           () => {
@@ -310,7 +335,7 @@ class CreateTask extends React.PureComponent {
   render() {
     const dateFormat = 'DD.MM.YYYY';
     const {
-      errorBundle,
+      errorBundle = {},
       filteredUsers = [],
       card: { description: descriptionValue = '', key: keyCard = '' },
     } = this.state;
@@ -393,7 +418,7 @@ class CreateTask extends React.PureComponent {
                   />
                   <Button
                     className="submitNewTask"
-                    disabled={this.state.load}
+                    disabled={this.state.load || !_.isEmpty(errorBundle)}
                     onClick={this.handlerCreateTask}
                     loading={this.state.load}
                     type="primary"
