@@ -60,7 +60,10 @@ class TaskView extends React.PureComponent {
   componentDidMount = async () => {
     const {
       publicReducer: { caches = {} } = {},
-      router: { routeDataActive: { key = '', editor = '' } = {}, routeDataActive = {} },
+      router: {
+        routeDataActive: { key = '', editor = '', uidCreater = '', authorName = '' } = {},
+        routeDataActive = {},
+      },
       onLoadCacheData,
       data: { key: keyProps = '' } = {},
       onSaveCache = null,
@@ -71,6 +74,14 @@ class TaskView extends React.PureComponent {
     const idTask = !_.isEmpty(routeDataActive) && key ? key : keyProps ? keyProps : '';
 
     if (_.isEmpty(caches) || (key && !caches[key]) || (!key && onLoadCacheData)) {
+      onSaveCache({
+        data: [{ _id: uidCreater, displayName: authorName }],
+        load: true,
+        union: true,
+        customDepKey: `taskView#${taskId}`,
+        primaryKey: '__author',
+      });
+
       onLoadCacheData({ actionType, depKey: idTask, depStore: 'tasks', store: 'jurnalworks' });
       try {
         const rest = new Request();
@@ -93,13 +104,13 @@ class TaskView extends React.PureComponent {
             .filter(Boolean);
 
           if (onSaveCache) {
-            const data =
+            const dataEditor =
               Array.isArray(editor) && editor?.length
                 ? filteredUsers.filter(({ _id: userId }) => editor.some((value) => value === userId))
                 : filteredUsers;
 
             onSaveCache({
-              data,
+              data: dataEditor,
               load: true,
               union: true,
               customDepKey: `taskView#${taskId}`,
@@ -451,7 +462,7 @@ class TaskView extends React.PureComponent {
           continue;
         }
 
-        if (key.includes('authorName')) {
+        if (key.includes('author')) {
           cachesAuthorList.push(value);
         }
       }
@@ -634,6 +645,7 @@ class TaskView extends React.PureComponent {
                 <Descriptions.Item label="Автор задачи">
                   <Output
                     className="author"
+                    typeOutput="link"
                     depModuleName="mainModule"
                     router={router}
                     links={filteredUsers?.length ? filteredUsers : cachesEditorList}
@@ -641,9 +653,10 @@ class TaskView extends React.PureComponent {
                     list={true}
                     onOpenPageWithData={onOpenPageWithData}
                     setCurrentTab={setCurrentTab}
-                    className="author"
+                    udata={udata}
+                    isStaticList={true}
                   >
-                    {authorName}
+                    {cachesAuthorList?.length ? cachesAuthorList : uidCreater}
                   </Output>
                 </Descriptions.Item>
                 <Descriptions.Item label="Исполнитель">
@@ -657,6 +670,7 @@ class TaskView extends React.PureComponent {
                       onOpenPageWithData={onOpenPageWithData}
                       setCurrentTab={setCurrentTab}
                       className="editor"
+                      udata={udata}
                     >
                       {editor}
                     </Output>

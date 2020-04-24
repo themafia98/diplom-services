@@ -64,7 +64,7 @@ export default (state = initialState, action) => {
       const { data, customDepKey = '', union = true } = action.payload;
       const { caches = {} } = state;
       let keys = null;
-      if (primaryKey === '__editor') debugger;
+
       const isObjectsArray = !Object.keys(data).every((key) => isNaN(Number(key)));
 
       const validData = isObjectsArray

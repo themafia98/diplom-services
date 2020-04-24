@@ -95,7 +95,7 @@ class Output extends React.PureComponent {
     }
 
     if (!key || !page || !currentData || (currentData && _.isEmpty(currentData))) {
-      return message.warn('По ссылке ничего не найдено.');
+      return;
     }
 
     const activePage = routePathNormalise({
@@ -116,18 +116,34 @@ class Output extends React.PureComponent {
     }
   };
 
-  renderList = (items = []) => {
-    if (items && !items.length) return <Spin size="small" />;
-    return items.map((it, index) => {
-      const { displayValue = '', id = '' } = it || {};
+  renderLinks = (item = '') => {
+    if ((Array.isArray(item) && !item.length) || !item) return <Spin size="small" />;
+
+    if (!Array.isArray(item)) {
+      const { displayName = '', _id: id = '' } = item || {};
+
       return (
         <Button
           onClick={id ? this.onOpenLink.bind(this, { id, action: 'cabinet' }) : null}
           type="link"
-          key={`${index}${id}`}
+          key={`${id}-editor`}
           className="editor"
         >
-          {displayValue}
+          {displayName}
+        </Button>
+      );
+    }
+
+    return item.map((it, index) => {
+      const { displayValue = '', displayName = '', _id = '', id = '' } = it || {};
+      return (
+        <Button
+          onClick={id || _id ? this.onOpenLink.bind(this, { id: id ? id : _id, action: 'cabinet' }) : null}
+          type="link"
+          key={`${index}${id ? id : _id}`}
+          className="editor"
+        >
+          {displayValue || displayName}
         </Button>
       );
     });
@@ -144,21 +160,29 @@ class Output extends React.PureComponent {
       action,
       list = false,
       isLink = false,
+      isStaticList = false,
     } = this.props;
     const { showTooltip } = this.state;
     let value = children;
-    if (Array.isArray(children) && links) {
-      value = this.renderList(
-        links
-          .map((link) => {
-            if (children.some((child) => child === link?._id)) {
-              return { displayValue: link.displayName, id: link?._id };
-            }
-            return null;
-          })
-          .filter(Boolean)
-          .sort((a, b) => a?.displayName - b?.displayName),
-      );
+    if (links || isStaticList) {
+      if (Array.isArray(children)) {
+        const linksList = !isStaticList
+          ? links
+              .map((link) => {
+                if (children.some((child) => child === link?._id)) {
+                  return { displayValue: link?.displayName, id: link?._id };
+                }
+                return null;
+              })
+              .filter(Boolean)
+              .sort((a, b) => a?.displayName - b?.displayName)
+          : children.map((link) => {
+              debugger;
+              return { displayValue: link?.displayName, id: link?._id };
+            });
+
+        value = this.renderLinks(linksList);
+      } else return this.renderLinks(links.find((link) => link?._id === children));
     }
     if (type === 'table') {
       const output = (
