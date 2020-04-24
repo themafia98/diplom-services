@@ -222,7 +222,7 @@ class CreateTask extends React.PureComponent {
     if (!this.validation()) {
       if (trySubmitState) return;
 
-      this.setState({
+      return this.setState({
         ...this.state,
         trySubmit: true,
       });
