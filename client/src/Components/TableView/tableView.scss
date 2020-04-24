@@ -127,30 +127,26 @@
   background: unset;
 }
 
+.ant-table-header-column {
+  margin-bottom: 5px !important;
+}
+
 .ant-table-thead > tr > th .ant-table-header-column .ant-table-column-sorters {
   display: flex;
 }
 
 .ant-table-body {
   /* width */
+  overflow-y: overlay !important;
   &::-webkit-scrollbar {
-    width: 15px;
-    border-radius: 3px;
+    width: 6px;
   }
-
-  /* Track */
   &::-webkit-scrollbar-track {
-    background-color: rgba(0, 0, 0, 0.2);
+    background: #f1f1f1;
   }
 
-  /* Handle */
   &::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.2);
-  }
-
-  /* Handle on hover */
-  &::-webkit-scrollbar-thumb:hover {
-    background: #555;
+    background: #888;
   }
 }
 

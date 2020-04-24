@@ -3,7 +3,7 @@ import { dynamicTableType } from '../types';
 import _ from 'lodash';
 import moment from 'moment';
 import Output from '../../Output';
-import { Table, message, Input, Button, Icon } from 'antd';
+import { Table, message, Input, Button, Icon, Empty } from 'antd';
 import modelContext from '../../../Models/context';
 
 class DynamicTable extends React.PureComponent {
@@ -262,6 +262,8 @@ class DynamicTable extends React.PureComponent {
   };
 
   render() {
+    /** sizes: "small" | "default" | "middle"  */
+    const { config: { task: { tableSize = 'default' } = {} } = {} } = this.context;
     const { loading, pagination } = this.state;
     const { tasks, flag, udata, height } = this.props;
 
@@ -289,10 +291,10 @@ class DynamicTable extends React.PureComponent {
     return (
       <Table
         locale={{
-          emptyText: <span>Журнал пуст</span>,
+          emptyText: <Empty image={Empty.PRESENTED_IMAGE_DEFAULT} description="Журнал пуст" />,
         }}
         pagination={pagination}
-        size="medium"
+        size={tableSize}
         scroll={{ y: height }}
         onChange={this.handleTableChange}
         columns={columns}
