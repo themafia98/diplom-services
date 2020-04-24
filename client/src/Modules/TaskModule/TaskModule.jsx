@@ -191,7 +191,7 @@ class TaskModule extends React.PureComponent {
       const key = path.split('__')[1];
 
       return (
-        <Scrollbars>
+        <Scrollbars hideTracksWhenNotNeeded={true}>
           {isList ? (
             <div key="controllers" ref={this.refControllers} className="controllersWrapper">
               <Button className="newTaskButton" onClick={this.handlerNewTask} type="primary">

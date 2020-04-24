@@ -598,12 +598,12 @@ class TaskView extends React.PureComponent {
     if (!key) return <div>This task not found</div>;
 
     return (
-      <Scrollbars>
+      <Scrollbars hideTracksWhenNotNeeded={true}>
         <TitleModule classNameTitle="taskModuleTittle" title="Карточка задачи" />
         {this.getModalWindow(accessStatus, rulesEdit, rulesStatus)}
         <div className="taskView">
           <div className="col-6 col-taskDescription">
-            <Scrollbars>
+            <Scrollbars hideTracksWhenNotNeeded={true}>
               <Descriptions bordered column={{ xxl: 1, xl: 1, lg: 1, d: 1, sm: 1, xs: 1 }}>
                 <Descriptions.Item label="Артикул">
                   <Output className="key">{key}</Output>
@@ -780,7 +780,7 @@ class TaskView extends React.PureComponent {
           </div>
           <div className="col-6 col-taskDescription">
             <TitleModule classNameTitle="historyTaskTitle" title="Журнал работы" />
-            <Scrollbars>
+            <Scrollbars hideTracksWhenNotNeeded={true}>
               {!cachesJurnalList?.length ? (
                 <Empty description={<span>Нету данных в журнале</span>} />
               ) : (

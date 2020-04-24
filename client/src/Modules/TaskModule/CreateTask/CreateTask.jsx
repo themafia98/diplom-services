@@ -344,7 +344,7 @@ class CreateTask extends React.PureComponent {
     const { rest } = this.context;
 
     return (
-      <Scrollbars>
+      <Scrollbars hideTracksWhenNotNeeded={true}>
         <div className="createTask">
           <TitleModule
             additional="Форма создания задачи"
@@ -353,7 +353,7 @@ class CreateTask extends React.PureComponent {
           />
           <div className="createTask__main">
             <div className="col-6 col-task">
-              <Scrollbars autoHide>
+              <Scrollbars hideTracksWhenNotNeeded={true} autoHide>
                 <form className="taskForm" name="taskForm">
                   <label>Название: </label>
                   <Input

@@ -140,7 +140,7 @@ const ChatRoom = (props) => {
     <div key={token} className="chatRoom">
       <div className="chatWindow">
         <div id="containerChat">
-          <Scrollbars ref={refScrollbar}>
+          <Scrollbars hideTracksWhenNotNeeded={true} ref={refScrollbar}>
             <div className="flex-group">{renderChat(messages)}</div>
           </Scrollbars>
         </div>

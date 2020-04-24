@@ -121,7 +121,7 @@ class TaskModuleCalendar extends React.PureComponent {
 
   render() {
     return (
-      <Scrollbars>
+      <Scrollbars hideTracksWhenNotNeeded={true}>
         <div className="taskModuleCalendar">
           <TitleModule classNameTitle="taskModuleTittle" title="Календарь задач" />
           <div className="taskModuleCalendar__main">

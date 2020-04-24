@@ -29,7 +29,7 @@ const ObserverTime = (props) => {
   return (
     <React.Fragment>
       <TitleModule classNameTitle="observerTitle" title={title ? title : 'История изменений'} />
-      <Scrollbars>
+      <Scrollbars hideTracksWhenNotNeeded={true}>
         <div className="observerWrapper">
           {isInvalid ? null : isLoading ? (
             <Spin size="large" />

@@ -414,7 +414,7 @@ class WikiModule extends React.PureComponent {
                     placeholder="Поиск по дереву"
                     onChange={this.onSearch}
                   />
-                  <Scrollbars>
+                  <Scrollbars hideTracksWhenNotNeeded={true}>
                     <Tree onSelect={this.onSelect} treeData={this.renderTree()} />
                   </Scrollbars>
                 </React.Fragment>

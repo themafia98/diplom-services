@@ -5,6 +5,7 @@ import TableView from '../../../Components/TableView';
 import TitleModule from '../../../Components/TitleModule';
 
 class TaskModuleList extends React.PureComponent {
+  refModuleTask = React.createRef();
   static propTypes = taskModuleListType;
   static defaultProps = {
     router: {},
@@ -19,7 +20,7 @@ class TaskModuleList extends React.PureComponent {
   render() {
     const { router, data, height, setCurrentTab, loaderMethods } = this.props;
     return (
-      <div className="taskModule_all">
+      <div ref={this.refModuleTask} className="taskModule_all">
         <TitleModule additional="Все задачи" classNameTitle="taskModuleTittle" title="Список всех задач" />
         <div className="taskModuleAll_main">
           <TableView

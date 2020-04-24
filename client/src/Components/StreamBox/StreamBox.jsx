@@ -313,7 +313,7 @@ class StreamBox extends React.Component {
 
     if (type === 'private' && buildItems) {
       return (
-        <Scrollbars style={{ height: listHeight }}>
+        <Scrollbars hideTracksWhenNotNeeded={true} style={{ height: listHeight }}>
           {streamList && streamList?.length ? (
             buildItems(streamList, this.onRunAction)
           ) : !isLoading ? (
@@ -328,7 +328,10 @@ class StreamBox extends React.Component {
     }
 
     return (
-      <Scrollbars style={mode ? { height: listHeight ? listHeight : 'calc(100% - 100px)' } : null}>
+      <Scrollbars
+        hideTracksWhenNotNeeded={true}
+        style={mode ? { height: listHeight ? listHeight : 'calc(100% - 100px)' } : null}
+      >
         <div className={clsx('streamBox', boxClassName ? boxClassName : null)}>
           {streamList?.length ? (
             streamList.map((card, index) => {

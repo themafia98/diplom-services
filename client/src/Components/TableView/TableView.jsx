@@ -105,7 +105,7 @@ class TableView extends React.Component {
       // const isOffline = currentData && currentData.mode && currentData.mode === "offlineLoading";
 
       return (
-        <Scrollbars style={{ height: `${tableViewHeight}px` }}>
+        <Scrollbars hideTracksWhenNotNeeded={true} style={{ height: `${tableViewHeight}px` }}>
           <table key="mainModule__table">
             <thead className="header-table">
               <tr>

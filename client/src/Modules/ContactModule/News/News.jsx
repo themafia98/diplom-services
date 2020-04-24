@@ -161,7 +161,7 @@ class News extends React.PureComponent {
             Создать новость
           </Button>
         ) : null}
-        <Scrollbars>
+        <Scrollbars hideTracksWhenNotNeeded={true}>
           <TabContainer visible={!isOpen}>
             <div className="news__main">
               <div className="col-fullscreen">

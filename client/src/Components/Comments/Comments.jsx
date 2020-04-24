@@ -126,7 +126,7 @@ class Comments extends React.PureComponent {
     return (
       <div className="comments">
         <div className="commnetsListBox">
-          <Scrollbars>{this.renderComments(comments)}</Scrollbars>
+          <Scrollbars hideTracksWhenNotNeeded={true}>{this.renderComments(comments)}</Scrollbars>
         </div>
         <div className="comments__controllers">
           <Textarea
