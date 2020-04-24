@@ -177,7 +177,6 @@ class Output extends React.PureComponent {
               .filter(Boolean)
               .sort((a, b) => a?.displayName - b?.displayName)
           : children.map((link) => {
-              debugger;
               return { displayValue: link?.displayName, id: link?._id };
             });
 
