@@ -1,10 +1,9 @@
 // @ts-nocheck
 import React from 'react';
 import { taskViewType } from '../types';
-import clsx from 'clsx';
 import _ from 'lodash';
 import moment from 'moment';
-import { Descriptions, Empty, Input, Select, DatePicker, message } from 'antd';
+import { Descriptions, Empty, message } from 'antd';
 import { connect } from 'react-redux';
 import Scrollbars from 'react-custom-scrollbars';
 import { deleteFile, loadFile } from '../../../Utils';
@@ -13,17 +12,12 @@ import { TASK_SCHEMA } from '../../../Models/Schema/const';
 import { middlewareCaching, middlewareUpdate } from '../../../Redux/actions/publicActions/middleware';
 import { сachingAction } from '../../../Redux/actions/publicActions';
 
-import { v4 as uuid } from 'uuid';
-
 import ModalWindow from '../../../Components/ModalWindow';
-import Output from '../../../Components/Output';
 import TitleModule from '../../../Components/TitleModule';
-import Comments from '../../../Components/Comments';
-import File from '../../../Components/File';
 
 import modelContext from '../../../Models/context';
-
-const { Option } = Select;
+import DescriptionTask from './DescriptionTask';
+import renderDescription from './renderDescription';
 
 class TaskView extends React.PureComponent {
   state = {
@@ -52,6 +46,9 @@ class TaskView extends React.PureComponent {
 
   static contextType = modelContext;
   static propTypes = taskViewType;
+  static defaultProps = {
+    columnStyleConfig: { xxl: 1, xl: 1, lg: 1, d: 1, sm: 1, xs: 1 },
+  };
 
   static getDerivedStateFromProps = (props, state) => {
     if (props.uuid !== state.key) return { ...state, key: props.key };
@@ -562,6 +559,7 @@ class TaskView extends React.PureComponent {
       onOpenPageWithData,
       setCurrentTab,
       router = {},
+      columnStyleConfig = {},
     } = this.props;
 
     const {
@@ -578,13 +576,22 @@ class TaskView extends React.PureComponent {
       priority = '',
       name = '',
       uidCreater = '',
-      authorName = '',
       editor = [],
       date = [],
       description = '',
     } = routeDataActive || {};
-
+    const {
+      onChangeEditable,
+      onChangeEditableStart,
+      onChangeEditableEnd,
+      calcSumWorkTime,
+      onEditContentMode,
+      onAddFileList,
+      onRemoveFile,
+    } = this;
     const { rest = {} } = this.context;
+
+    if (!key) return <div>This task not found</div>;
 
     const [cachesAuthorList, cachesEditorList, cachesJurnalList] = this.getCacheItemsList();
     const accessStatus = this.getAccessStatus();
@@ -594,8 +601,49 @@ class TaskView extends React.PureComponent {
     const rulesStatus = editor.some((editorId) => editorId === uid) || uid === uidCreater;
 
     const statusClassName = this.getClassNameByStatus();
+    const renderMethods = {
+      onChangeEditable,
+      onChangeEditableStart,
+      onEditContentMode,
+      onChangeEditableEnd,
+      calcSumWorkTime,
+      onAddFileList,
+      onRemoveFile,
+    };
 
-    if (!key) return <div>This task not found</div>;
+    const desciptionTaskProps = {
+      ...renderMethods,
+      routeDataActive,
+      description,
+      rulesEdit,
+      filesArray,
+      onUpdate,
+      udata,
+      rest,
+    };
+
+    const renderProps = {
+      ...renderMethods,
+      onOpenPageWithData,
+      cachesAuthorList,
+      cachesEditorList,
+      modeControllEdit,
+      statusClassName,
+      accessPriority,
+      setCurrentTab,
+      filteredUsers,
+      modeControll,
+      accessStatus,
+      uidCreater,
+      priority,
+      status,
+      isLoad,
+      router,
+      editor,
+      name,
+      date,
+      key,
+    };
 
     return (
       <Scrollbars hideTracksWhenNotNeeded={true}>
@@ -604,177 +652,11 @@ class TaskView extends React.PureComponent {
         <div className="taskView">
           <div className="col-6 col-taskDescription">
             <Scrollbars hideTracksWhenNotNeeded={true}>
-              <Descriptions bordered column={{ xxl: 1, xl: 1, lg: 1, d: 1, sm: 1, xs: 1 }}>
-                <Descriptions.Item label="Артикул">
-                  <Output className="key">{key}</Output>
-                </Descriptions.Item>
-                <Descriptions.Item label="Название">
-                  {modeControll === 'default' ? (
-                    <Output className="name">{name}</Output>
-                  ) : modeControll === 'edit' && modeControllEdit ? (
-                    <Input
-                      className="nameEdit"
-                      onChange={this.onChangeEditable}
-                      value={modeControllEdit.name}
-                    />
-                  ) : null}
-                </Descriptions.Item>
-                <Descriptions.Item label="Статус">
-                  {modeControll === 'default' ? (
-                    <Output className={clsx('status', statusClassName)}>{status}</Output>
-                  ) : modeControll === 'edit' && modeControllEdit ? (
-                    <Select
-                      className="statusEdit"
-                      value={modeControllEdit.status}
-                      onChange={this.onChangeEditable}
-                      defaultValue={status}
-                      name="priority"
-                      type="text"
-                    >
-                      {accessStatus.map((it) => (
-                        <Option key={it} value={it}>
-                          {it}
-                        </Option>
-                      ))}
-                    </Select>
-                  ) : null}
-                </Descriptions.Item>
-                <Descriptions.Item label="Приоритет">
-                  {modeControll === 'default' ? (
-                    <Output className="priority">{priority}</Output>
-                  ) : modeControll === 'edit' && modeControllEdit ? (
-                    <Select
-                      className="priorityEdit"
-                      value={modeControllEdit.priority}
-                      onChange={this.onChangeEditable}
-                      defaultValue={priority}
-                      name="priority"
-                      type="text"
-                    >
-                      {accessPriority.map((it) => (
-                        <Option key={it} value={it}>
-                          {it}
-                        </Option>
-                      ))}
-                    </Select>
-                  ) : null}
-                </Descriptions.Item>
-                <Descriptions.Item label="Автор задачи">
-                  <Output
-                    className="author"
-                    typeOutput="link"
-                    depModuleName="mainModule"
-                    router={router}
-                    links={filteredUsers?.length ? filteredUsers : cachesEditorList}
-                    isLink={filteredUsers?.length ? Boolean(filteredUsers) : Boolean(cachesAuthorList)}
-                    list={true}
-                    onOpenPageWithData={onOpenPageWithData}
-                    setCurrentTab={setCurrentTab}
-                    udata={udata}
-                    isLoad={isLoad}
-                    isStaticList={true}
-                  >
-                    {cachesAuthorList?.length ? cachesAuthorList : uidCreater}
-                  </Output>
-                </Descriptions.Item>
-                <Descriptions.Item label="Исполнитель">
-                  {modeControll === 'default' ? (
-                    <Output
-                      depModuleName="mainModule"
-                      router={router}
-                      links={filteredUsers?.length ? filteredUsers : cachesEditorList}
-                      isLink={filteredUsers?.length ? Boolean(filteredUsers) : Boolean(cachesEditorList)}
-                      list={true}
-                      onOpenPageWithData={onOpenPageWithData}
-                      setCurrentTab={setCurrentTab}
-                      className="editor"
-                      udata={udata}
-                      isLoad={isLoad}
-                    >
-                      {editor}
-                    </Output>
-                  ) : modeControll === 'edit' && modeControllEdit ? (
-                    <Select
-                      className="editorEdit"
-                      value={modeControllEdit.editor}
-                      onChange={this.onChangeEditable}
-                      name="editor"
-                      mode="multiple"
-                      defaultValue={editor}
-                      placeholder="выберете исполнителя"
-                      optionLabelProp="label"
-                    >
-                      {filteredUsers.map((it) => (
-                        <Option key={it._id} value={it._id} label={it.displayName}>
-                          <span>{it.displayName}</span>
-                        </Option>
-                      ))}
-                    </Select>
-                  ) : null}
-                </Descriptions.Item>
-                <Descriptions.Item label="Дата назначения">
-                  {modeControll === 'default' ? (
-                    <Output className="startDate"> {date[0] ? date[0] : null}</Output>
-                  ) : modeControll === 'edit' && modeControllEdit ? (
-                    <DatePicker
-                      value={moment(
-                        modeControllEdit?.date[0] ? modeControllEdit.date[0] : date[0] ? date[0] : moment(),
-                        'DD.MM.YYYY',
-                      )}
-                      className="dateStartEdit"
-                      onChange={this.onChangeEditableStart}
-                      defaultValue={date[0] ? moment(date[0], 'DD.MM.YYYY') : null}
-                      format="DD.MM.YYYY"
-                    />
-                  ) : null}
-                </Descriptions.Item>
-                <Descriptions.Item label="Дата завершения">
-                  {modeControll === 'default' ? (
-                    <Output className="endDate"> {date[1] ? date[1] : null}</Output>
-                  ) : modeControll === 'edit' && modeControllEdit ? (
-                    <DatePicker
-                      value={moment(
-                        modeControllEdit?.date[1] ? modeControllEdit.date[1] : date[1] ? date[1] : moment(),
-                        'DD.MM.YYYY',
-                      )}
-                      className="dateEndEdit"
-                      onChange={this.onChangeEditableEnd}
-                      defaultValue={date[1] ? moment(date[1], 'DD.MM.YYYY') : null}
-                      format="DD.MM.YYYY"
-                    />
-                  ) : null}
-                </Descriptions.Item>
-                <Descriptions.Item label="Затрачено времени">
-                  <Output>{`${this.calcSumWorkTime(cachesJurnalList)} ч`}</Output>
-                </Descriptions.Item>
+              <Descriptions bordered column={columnStyleConfig}>
+                {renderDescription()(renderProps)}
               </Descriptions>
               <div className="descriptionTask">
-                <p className="descriptionTask__title">Задача</p>
-                <div
-                  onClick={rulesEdit ? this.onEditContentMode : null}
-                  className={clsx('description', 'descriptionTask__content', rulesEdit ? 'editable' : null)}
-                >
-                  <span className="icon-wrapper">
-                    <i className="icon-pencil"></i>
-                  </span>
-                  <Scrollbars style={{ height: '150px' }}>
-                    <span className="descriptionContent">
-                      {description ? description : 'Описания задачи нету.'}
-                    </span>
-                  </Scrollbars>
-                </div>
-
-                <p className="task_file">Дополнительные файлы для задачи</p>
-                <File
-                  filesArray={filesArray}
-                  rest={rest}
-                  onAddFileList={this.onAddFileList}
-                  onRemoveFile={this.onRemoveFile}
-                  moduleData={routeDataActive}
-                  module="tasks"
-                />
-                <p className="descriptionTask__comment">Коментарии</p>
-                <Comments udata={udata} rules={true} onUpdate={onUpdate} data={routeDataActive} />
+                <DescriptionTask {...desciptionTaskProps} />
               </div>
             </Scrollbars>
           </div>
