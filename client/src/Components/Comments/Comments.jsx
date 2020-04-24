@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { commentsContainerType } from './types';
 import Scrollbars from 'react-custom-scrollbars';
@@ -78,22 +79,52 @@ class Comments extends React.PureComponent {
     this.addCommentsDelay(event);
   };
 
-  onDelete = (event, idComment) => {
+  onDelete = async (event, idComment) => {
     const { onUpdate, data: { _id: id = '', key = '', comments = [] } = {}, data = {} } = this.props;
     const filterComments = comments.filter((it) => it.id !== idComment);
-    onUpdate({
-      id,
-      key,
-      item: data,
-      store: 'tasks',
-      updateBy: 'key',
-      updateItem: filterComments,
-      updateField: 'comments',
-    })
-      .then(() => message.success('Коментарий удален.'))
-      .catch((error) => {
-        message.error('Не удалось удалить коментарий.');
+    try {
+      await onUpdate({
+        id,
+        key,
+        item: data,
+        store: 'tasks',
+        updateBy: 'key',
+        updateItem: filterComments,
+        updateField: 'comments',
       });
+      message.success('Коментарий удален.');
+    } catch (error) {
+      message.error('Не удалось удалить коментарий.');
+    }
+  };
+
+  onEdit = async (event, idComment) => {
+    const { onUpdate, data: { _id: id = '', key = '', comments = [] } = {}, data = {} } = this.props;
+    const newComments = comments.map((it) => {
+      const { id: idEntity = '' } = it || {};
+
+      if (idEntity === idComment)
+        return {
+          ...it,
+          message: 'Тестовое редактирование',
+        };
+      else return it;
+    });
+
+    try {
+      await onUpdate({
+        id,
+        key,
+        item: data,
+        store: 'tasks',
+        updateBy: 'key',
+        updateItem: newComments,
+        updateField: 'comments',
+      });
+      message.success('Коментарий обновлен.');
+    } catch (error) {
+      message.error('Не удалось обновить коментарий.');
+    }
   };
 
   onChange = (event) => {
@@ -115,6 +146,7 @@ class Comments extends React.PureComponent {
           uId={it.uId ? it.uId : null}
           userId={userId}
           onDelete={this.onDelete}
+          onEdit={this.onEdit}
         />
       ));
     else return <Empty description={<span>Данных нету</span>} />;

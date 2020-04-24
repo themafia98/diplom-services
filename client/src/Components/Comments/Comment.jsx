@@ -1,22 +1,36 @@
 // @ts-nocheck
 import React, { useState } from 'react';
 import { commentType } from './types';
+import { Icon, Tooltip } from 'antd';
 
 const Comment = (props) => {
-  const { onDelete, rules, it, userId, uId } = props;
+  const { onDelete, onEdit, rules, it, userId, uId } = props;
   const [key] = useState(it?.id ? it.id : Math.random());
 
-  const onDeleteEvent = (event) => {
-    onDelete(event, key);
+  const onAction = (action, event) => {
+    switch (action) {
+      case 'delete':
+        return onDelete(event, key);
+      case 'edit':
+        onEdit(event, key);
+      default:
+        return null;
+    }
   };
 
   return (
     <p className="block-comment">
       {rules ? (
         <span className="commentControllers">
-          <span style={{ display: 'none' }} className="editComment icon-edit"></span>
           {userId === uId ? (
-            <span onClick={onDeleteEvent} className="deleteComment icon-trash-empty"></span>
+            <>
+              <Tooltip mouseEnterDelay={0.3} title="Редактировать сообщение">
+                <Icon type="edit" onClick={onAction.bind(this, 'edit')} className="editComment " />
+              </Tooltip>
+              <Tooltip mouseEnterDelay={0.3} title="Удалить сообщение">
+                <Icon type="delete" onClick={onAction.bind(this, 'delete')} className="deleteComment" />
+              </Tooltip>
+            </>
           ) : null}
         </span>
       ) : null}

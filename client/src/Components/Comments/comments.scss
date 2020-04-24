@@ -21,15 +21,16 @@
         cursor: pointer;
         color: $blueDark;
       }
-      &.icon-edit {
-        top: 0;
-        left: 93%;
-      }
+    }
 
-      &.icon-trash-empty {
-        top: 0;
-        left: 95%;
-      }
+    .deleteComment {
+      top: 0;
+      left: 95%;
+    }
+
+    .editComment {
+      top: 0;
+      left: 92%;
     }
   }
   .comments__controllers {

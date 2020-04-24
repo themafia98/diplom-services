@@ -41,14 +41,12 @@ class News extends React.PureComponent {
     }
   };
 
-  // @ts-ignore
   onOpenCreateNews = (event) => {
     const { onOpenPageWithData, router: { actionTabs = [] } = {}, setCurrentTab } = this.props;
     const moduleId = 'createNews';
     const page = 'contactModule';
     const { config = {} } = this.context;
 
-    // @ts-ignore
     const routeNormalize = routePathNormalise({
       pathData: { page, moduleId },
     });
@@ -80,7 +78,6 @@ class News extends React.PureComponent {
     const moduleId = 'informationPage';
     const page = 'contactModule';
 
-    // @ts-ignore
     const routeNormalize = routePathNormalise({
       pathType: 'moduleItem',
       pathData: { page, moduleId, key },

@@ -24,7 +24,6 @@ class CreateNews extends React.PureComponent {
     });
   };
 
-  // @ts-ignore
   clearStatus = (event) => {
     const { clear } = this.state;
     if (clear)
@@ -101,14 +100,12 @@ class CreateNews extends React.PureComponent {
       } catch (error) {
         console.error(error);
         notification.error({
-          // @ts-ignores
           title: 'Ошибка создания новой новости',
           message: 'Возможно данные повреждены',
         });
       }
     } else
       return notification.error({
-        // @ts-ignore
         title: 'Ошибка сети',
         message: 'Интернет соединение отсутствует',
       });
