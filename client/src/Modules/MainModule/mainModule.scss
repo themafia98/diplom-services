@@ -25,6 +25,7 @@
     .columnModuleRight {
       position: relative;
       display: flex;
+
       flex-direction: column;
       .widjects {
         display: flex;
@@ -38,6 +39,11 @@
         }
       }
     }
+
+    .columnModuleLeft {
+      padding-right: 2em;
+    }
+
     .mainModule_calendar {
       width: 100%;
       display: flex;

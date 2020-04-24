@@ -14,9 +14,33 @@ class MainModule extends React.PureComponent {
 
   state = {
     path: 'mainModule',
+    tableViewHeight: 300,
   };
 
   firstPartRef = React.createRef();
+
+  componentDidMount = () => {
+    window.addEventListener('resize', this.onResizeWindow.bind(this), false);
+  };
+
+  compnentWillUnmount = () => {
+    window.removeEventListener('resize', this.onResizeWindow.bind(this), false);
+  };
+
+  onResizeWindow = () => {
+    const { tableViewHeight = null } = this.state;
+    const { visible = false } = this.props;
+
+    if (!visible) return;
+
+    const newTableViewHeight = window?.innerHeight / 2 - 70;
+    if (tableViewHeight !== newTableViewHeight) {
+      this.setState({
+        ...this.state,
+        tableViewHeight: newTableViewHeight,
+      });
+    }
+  };
 
   render() {
     const { visible, setCurrentTab } = this.props;

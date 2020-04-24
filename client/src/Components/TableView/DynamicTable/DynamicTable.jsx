@@ -288,6 +288,9 @@ class DynamicTable extends React.PureComponent {
           : data;
     return (
       <Table
+        locale={{
+          emptyText: <span>Журнал пуст</span>,
+        }}
         pagination={pagination}
         size="medium"
         scroll={{ y: height }}

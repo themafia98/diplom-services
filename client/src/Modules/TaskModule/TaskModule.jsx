@@ -127,7 +127,7 @@ class TaskModule extends React.PureComponent {
     if (height !== heightForState || heightControllerForState !== heightController)
       this.setState({
         ...this.state,
-        height: heightForState,
+        height: window.innerHeight - 10 > heightForState ? heightForState : window.innerHeight - 15,
         heightController: heightControllerForState,
       });
   };

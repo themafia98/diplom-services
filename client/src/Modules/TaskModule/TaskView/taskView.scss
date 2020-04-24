@@ -67,6 +67,9 @@
       }
       .ant-descriptions-item-content {
         max-width: 300px;
+        button {
+          padding: 0;
+        }
       }
     }
   }

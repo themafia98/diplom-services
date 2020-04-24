@@ -89,10 +89,9 @@ class TableView extends React.Component {
       setCurrentTab,
       loaderMethods = {},
       firstPartRef = null,
+      tableViewHeight = window?.innerHeight / 2 - 70,
     } = this.props;
-    const { current: tableWrapper = null } = firstPartRef || {};
 
-    const { height: heightScrollbarContainer = 450 } = tableWrapper || {};
     const { routeData } = router;
     const routePathData = router.currentActionTab.split('_')[0];
     const currentData = routeData[routePathData];
@@ -106,7 +105,7 @@ class TableView extends React.Component {
       // const isOffline = currentData && currentData.mode && currentData.mode === "offlineLoading";
 
       return (
-        <Scrollbars style={{ height: `270px` }}>
+        <Scrollbars style={{ height: `${tableViewHeight}px` }}>
           <table key="mainModule__table">
             <thead className="header-table">
               <tr>

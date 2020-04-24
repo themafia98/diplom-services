@@ -30,6 +30,7 @@ class TaskView extends React.PureComponent {
     key: this.props.uuid ? this.props.uuid : null,
     mode: 'jur',
     modeControll: 'default',
+    isLoad: false,
     modeControllEdit: {
       key: null,
       status: null,
@@ -120,12 +121,17 @@ class TaskView extends React.PureComponent {
 
           this.setState({
             ...this.state,
+            isLoad: true,
             filteredUsers,
           });
         } else throw new Error('fail load user list');
       } catch (err) {
         message.error('Ошибка загрузки сотрудников.');
         console.error(err);
+        this.setState({
+          ...this.state,
+          isLoad: true,
+        });
       }
     }
   };
@@ -554,7 +560,13 @@ class TaskView extends React.PureComponent {
       router = {},
     } = this.props;
 
-    const { modeControll, modeControllEdit, filesArray = [], filteredUsers = [] } = this.state;
+    const {
+      modeControll,
+      modeControllEdit,
+      filesArray = [],
+      filteredUsers = [],
+      isLoad = false,
+    } = this.state;
 
     const {
       key = '',
@@ -654,6 +666,7 @@ class TaskView extends React.PureComponent {
                     onOpenPageWithData={onOpenPageWithData}
                     setCurrentTab={setCurrentTab}
                     udata={udata}
+                    isLoad={isLoad}
                     isStaticList={true}
                   >
                     {cachesAuthorList?.length ? cachesAuthorList : uidCreater}
@@ -671,6 +684,7 @@ class TaskView extends React.PureComponent {
                       setCurrentTab={setCurrentTab}
                       className="editor"
                       udata={udata}
+                      isLoad={isLoad}
                     >
                       {editor}
                     </Output>

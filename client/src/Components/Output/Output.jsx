@@ -67,7 +67,9 @@ class Output extends React.PureComponent {
     }
   };
 
-  onOpenLink = ({ id: key = null, action = null }) => {
+  onOpenLink = ({ id: key = null, action = null }, event) => {
+    if (event) event.stopPropagation();
+
     const {
       udata: { _id: uid = '' } = {},
       router: { actionTabs = [], routeData = {} } = {},
@@ -103,7 +105,9 @@ class Output extends React.PureComponent {
       pathData: { page, moduleId, key },
     });
 
-    const index = actionTabs.findIndex((tab) => tab.includes(page) && tab.includes(key));
+    const index = actionTabs.findIndex(
+      (tab) => (isCurrentKey && tab === page) || (tab.includes(page) && tab.includes(key)),
+    );
     const isFind = index !== -1;
 
     if (!isFind && onOpenPageWithData) {
@@ -117,14 +121,15 @@ class Output extends React.PureComponent {
   };
 
   renderLinks = (item = '') => {
-    if ((Array.isArray(item) && !item.length) || !item) return <Spin size="small" />;
+    const { isLoad = false } = this.props;
+    if ((!isLoad && Array.isArray(item) && !item.length) || !item) return <Spin size="small" />;
 
     if (!Array.isArray(item)) {
       const { displayName = '', _id: id = '' } = item || {};
 
       return (
         <Button
-          onClick={id ? this.onOpenLink.bind(this, { id, action: 'cabinet' }) : null}
+          onKeyDown={id ? this.onOpenLink.bind(this, { id, action: 'cabinet' }) : null}
           type="link"
           key={`${id}-editor`}
           className="editor"
