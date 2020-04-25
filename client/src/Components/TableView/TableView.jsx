@@ -24,7 +24,7 @@ class TableView extends React.Component {
   static propTypes = tableViewType;
   static defaultProps = {
     tasks: [],
-    filterBy: null,
+    filterBy: '',
     visible: false,
   };
 
@@ -79,7 +79,7 @@ class TableView extends React.Component {
   getComponentByPath = (path) => {
     const {
       user,
-      filterBy = null,
+      filterBy = '',
       router,
       publicReducer: { requestError },
       udata = {},

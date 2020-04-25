@@ -43,7 +43,6 @@ class TaskModule extends React.PureComponent {
 
   componentDidMount = () => {
     const {
-      onLoadCurrentData,
       path = '',
       visible,
       loaderMethods = {},
@@ -51,31 +50,22 @@ class TaskModule extends React.PureComponent {
     } = this.props;
     const { height } = this.state;
     const { onShowLoader } = loaderMethods;
-    const { config } = this.context || {};
-    const { limitList = 20 } = config?.task || {};
 
     const isEmptyTasks = _.isEmpty(routeData[path.split('_')[0]]);
 
     if (_.isNull(height) && !_.isNull(this.moduleTask) && visible) {
       this.recalcHeight();
     }
-    if (visible) {
-      onLoadCurrentData({
-        path,
-        storeLoad: 'tasks',
-        useStore: true,
-        methodRequst: 'POST',
-        options: {
-          limitList,
-        },
-      });
-    }
+    if (visible) this.fetchTaskModule();
 
     if (_.isFunction(onShowLoader) && isEmptyTasks) {
       onShowLoader();
     }
 
-    this.setState({ path });
+    this.setState({
+      ...this.state,
+      path,
+    });
 
     window.addEventListener('resize', this.recalcHeight.bind(this));
   };
@@ -87,13 +77,8 @@ class TaskModule extends React.PureComponent {
   componentDidUpdate = () => {
     const {
       visible,
-      onLoadCurrentData,
-      path,
       router: { shouldUpdate = false, routeData = {} },
     } = this.props;
-
-    const { config } = this.context || {};
-    const { limitList = 20 } = config?.task || {};
 
     const { height } = this.state;
     if (!_.isNull(height) && !_.isNull(this.moduleTask) && visible) {
@@ -101,16 +86,26 @@ class TaskModule extends React.PureComponent {
     }
 
     if (shouldUpdate && visible && !routeData['taskModule']?.load) {
-      onLoadCurrentData({
-        path,
-        storeLoad: 'tasks',
-        useStore: true,
-        methodRequst: 'POST',
-        options: {
-          limitList,
-        },
-      });
+      this.fetchTaskModule();
     }
+  };
+
+  fetchTaskModule = (customOptions = null) => {
+    const { onLoadCurrentData, path } = this.props;
+    const { config } = this.context || {};
+    const { task: { limitList = 0 } = {} } = config || {};
+    const options = customOptions
+      ? customOptions
+      : {
+          limitList,
+        };
+    onLoadCurrentData({
+      path,
+      storeLoad: 'tasks',
+      useStore: true,
+      methodRequst: 'POST',
+      options,
+    });
   };
 
   recalcHeight = () => {
