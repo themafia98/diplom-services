@@ -81,7 +81,7 @@ class TaskModule extends React.PureComponent {
     } = this.props;
 
     const { height } = this.state;
-    if (!_.isNull(height) && !_.isNull(this.moduleTask) && visible) {
+    if (!_.isNull(height) && !_.isNull(this.moduleTask) && !_.isNull(this.controller) && visible) {
       this.recalcHeight();
     }
 
@@ -112,7 +112,9 @@ class TaskModule extends React.PureComponent {
     const { height, heightController, path = '' } = this.state;
     const { router: { currentActionTab = '' } = {} } = this.props;
 
-    if (currentActionTab !== path || !this.moduleTask || !this.controller) {
+    const isExists = this.controller?.current || !this.moduleTask.current;
+
+    if (currentActionTab !== path || !isExists) {
       return;
     }
 
