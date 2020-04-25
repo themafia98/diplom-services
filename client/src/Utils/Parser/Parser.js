@@ -202,11 +202,11 @@ const syncData = async (store = '', syncData = []) => {
   return _.uniqBy([...syncData, ...localDataList], '_id');
 };
 
-const getDataSource = (dataSource = [], filterBy = '', uid = '') => {
+const getDataSource = (dataSource = [], filterBy = '', fid = '') => {
   if (!filterBy) return dataSource;
 
   if (_.isString(filterBy))
-    return dataSource.filter((it) => _.isArray(it[filterBy]) && it[filterBy].some((id) => id === uid));
+    return dataSource.filter((it) => _.isArray(it[filterBy]) && it[filterBy].some((id) => id === fid));
 
   return dataSource.filter((it) => {
     return filterBy.some((filter) => {
@@ -214,8 +214,8 @@ const getDataSource = (dataSource = [], filterBy = '', uid = '') => {
         return false;
       }
 
-      if (_.isString(it[filter])) return it[filter] === uid;
-      else return it[filter].some((id) => id === uid);
+      if (_.isString(it[filter])) return it[filter] === fid;
+      else return it[filter].some((id) => id === fid);
     });
   });
 };
