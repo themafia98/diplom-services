@@ -80,8 +80,7 @@ class TaskModule extends React.PureComponent {
       router: { shouldUpdate = false, routeData = {} },
     } = this.props;
 
-    const { height } = this.state;
-    if (!_.isNull(height) && !_.isNull(this.moduleTask) && !_.isNull(this.controller) && visible) {
+    if (!_.isNull(this.moduleTask) && !_.isNull(this.controller) && visible) {
       this.recalcHeight();
     }
 
@@ -164,6 +163,7 @@ class TaskModule extends React.PureComponent {
       const isList = path === 'taskModule_myTasks' || path === 'taskModule_all';
       const {
         router,
+        router: { routeData = {} } = {},
         publicReducer: { status = null } = {},
         onOpenPageWithData,
         onLoadCurrentData,
@@ -184,7 +184,7 @@ class TaskModule extends React.PureComponent {
 
       const route = routeParser({ pageType: 'moduleItem', path });
       const isBackgroundTaskViewModule = _.isObject(route) && !_.isNull(route);
-
+      const moduleName = path.split('_')[0];
       const key = path.split('__')[1];
 
       return (
@@ -209,6 +209,7 @@ class TaskModule extends React.PureComponent {
               loaderMethods={loaderMethods}
               visible={path === 'taskModule_all'}
               setCurrentTab={setCurrentTab}
+              loading={router?.routeData[moduleName] && router?.routeData[moduleName]?.loading}
               height={heightController ? height - heightController : height}
               data={router?.routeData[path]}
               router={router}
@@ -225,6 +226,7 @@ class TaskModule extends React.PureComponent {
               rest={rest}
               udata={udata}
               router={router}
+              loading={router?.routeData[moduleName] && router?.routeData[moduleName]?.loading}
               loaderMethods={loaderMethods}
               isBackground={isBackgroundTaskModuleMyTasks}
               visible={path === 'taskModule_myTasks'}

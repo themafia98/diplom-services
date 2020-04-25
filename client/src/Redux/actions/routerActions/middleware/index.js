@@ -27,7 +27,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
   const isExist = router.routeData && router.routeData[pathValid];
 
   if (isExist && !router.routeData[pathValid].load) {
-    dispatch(loadFlagAction({ path: pathValid, load: true }));
+    dispatch(loadFlagAction({ path: pathValid, load: true, loading: true }));
   }
 
   switch (status) {
@@ -186,7 +186,7 @@ const multipleLoadData = (params) => async (dispatch, getState, { schema, Reques
       }
 
       if (hookData.length) {
-        dispatch(saveComponentStateAction({ stateList: [...hookData], multiple: true }));
+        dispatch(saveComponentStateAction({ stateList: [...hookData], multiple: true, loading: false }));
       }
     }
   }

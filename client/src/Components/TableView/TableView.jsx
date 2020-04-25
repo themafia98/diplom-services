@@ -88,6 +88,7 @@ class TableView extends React.Component {
       onOpenPageWithData,
       setCurrentTab,
       loaderMethods = {},
+      loading,
       tableViewHeight = window?.innerHeight / 2 - 70,
     } = this.props;
 
@@ -150,8 +151,8 @@ class TableView extends React.Component {
           udata={udata}
           filterBy={filterBy}
           user={user}
-          loading={partDataPath === path && isPartData}
           visible={visible}
+          loading={loading}
           loaderMethods={loaderMethods}
           height={height}
         />

@@ -19,7 +19,7 @@ class TaskModuleMyList extends React.PureComponent {
   };
 
   render() {
-    const { udata, data, height, setCurrentTab } = this.props;
+    const { udata, data, height, setCurrentTab, loading } = this.props;
     const { tasks = [] } = data || {};
     return (
       <div ref={this.refModuleTask} className="taskModule_all">
@@ -30,6 +30,7 @@ class TaskModuleMyList extends React.PureComponent {
             height={height}
             dataSource={tasks}
             data={data}
+            loading={loading}
             filterBy={['editor', 'uidCreater']}
             udata={udata}
             path="searchTable"

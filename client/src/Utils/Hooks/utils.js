@@ -66,7 +66,8 @@ const runLocalUpdateAction = async (dispatch, depAction, depParser, multiple) =>
   const { errorRequstAction, saveComponentStateAction, params = {} } = depAction;
   const { data, shoudClearError = false, shouldUpdateState = true } = dataParser(true, false, depParser);
   if (shoudClearError) await dispatch(errorRequstAction(null));
-  if (shouldUpdateState && !multiple) await dispatch(saveComponentStateAction({ ...data, params }));
+  if (shouldUpdateState && !multiple)
+    await dispatch(saveComponentStateAction({ ...data, loading: false, params }));
   else if (multiple) return data;
 };
 

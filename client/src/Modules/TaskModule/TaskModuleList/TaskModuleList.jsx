@@ -18,7 +18,8 @@ class TaskModuleList extends React.PureComponent {
   };
 
   render() {
-    const { router, data, height, setCurrentTab, loaderMethods } = this.props;
+    const { router, data, height, setCurrentTab, loaderMethods, loading } = this.props;
+
     return (
       <div ref={this.refModuleTask} className="taskModule_all">
         <TitleModule additional="Все задачи" classNameTitle="taskModuleTittle" title="Список всех задач" />
@@ -29,6 +30,7 @@ class TaskModuleList extends React.PureComponent {
             setCurrentTab={setCurrentTab}
             height={height}
             router={router}
+            loading={loading}
             dataSource={data ? data.tasks : []}
             path="searchTable"
           />

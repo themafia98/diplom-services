@@ -10,12 +10,10 @@ import modelContext from '../../../Models/context';
 
 class DynamicTable extends React.PureComponent {
   state = {
-    loading: false,
     pagination: {
       current: 1,
-      paginationState: {
-        pageSize: 20,
-      },
+      pageSize: 5,
+      paginationState: {},
     },
     filteredInfo: [],
     sortedInfo: [],
@@ -252,6 +250,7 @@ class DynamicTable extends React.PureComponent {
     const { pagination: paginationState } = this.state;
     const pager = { paginationState };
     pager.current = pagination.current;
+    console.log(pager);
     const params = {
       filteredInfo: filters,
       sortedInfo: sorter,
@@ -266,14 +265,15 @@ class DynamicTable extends React.PureComponent {
   render() {
     /** sizes: "small" | "default" | "middle"  */
     const { config: { task: { tableSize = 'default' } = {} } = {} } = this.context;
-    const { loading, pagination } = this.state;
+    const { pagination } = this.state;
     const {
       dataSource = [],
       filterBy = '',
       udata: { _id: uid },
       height,
+      loading,
     } = this.props;
-
+    console.log(loading);
     let source = dataSource && dataSource?.length ? getDataSource(dataSource, filterBy, uid) : dataSource;
     const columns = this.getConfigColumns();
 

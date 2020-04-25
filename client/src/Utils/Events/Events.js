@@ -26,6 +26,7 @@ const sucessEvent = async (dispatch, dep, mode = '', multiple = false, cursor = 
       path: pathValid,
       mode: 'offline',
       params,
+      loading: false,
     };
 
     if (!multiple) {
@@ -39,7 +40,7 @@ const sucessEvent = async (dispatch, dep, mode = '', multiple = false, cursor = 
     if (shoudClearError) await dispatch(errorRequstAction(null));
 
     if (!multiple) {
-      dispatch(saveComponentStateAction({ ...data, params }));
+      dispatch(saveComponentStateAction({ ...data, params, loading: false }));
       return;
     } else return data;
   }

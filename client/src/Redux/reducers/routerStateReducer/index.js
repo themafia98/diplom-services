@@ -81,7 +81,7 @@ export default (state = initialState, action) => {
     }
     case SAVE_STATE: {
       let copyRouteData = { ...state.routeData };
-      const { multiple = false, stateList = null, params: paramsAction = {} } = action?.payload;
+      const { multiple = false, stateList = null, params: paramsAction = {}, loading } = action?.payload;
 
       const validationItems = (currentItems, prevItems) => {
         const items = [...currentItems];
@@ -126,6 +126,7 @@ export default (state = initialState, action) => {
             [path]: {
               ...actionItem,
               [storeName]: items,
+              loading,
               params,
             },
           };
@@ -178,11 +179,12 @@ export default (state = initialState, action) => {
           [path]: {
             ...copyRouteData[path],
             load: true,
+            loading,
             tasks,
           },
         };
       }
-
+      copyRouteData[path].loading = loading;
       return {
         ...state,
         path,
@@ -246,7 +248,7 @@ export default (state = initialState, action) => {
     }
     case SET_FLAG_LOAD_DATA: {
       const copyRouteData = { ...state.routeData };
-      const { path, load } = action.payload;
+      const { path, load, loading } = action.payload;
 
       return {
         ...state,
@@ -257,6 +259,7 @@ export default (state = initialState, action) => {
           [path]: {
             ...copyRouteData[path],
             load,
+            loading,
           },
         },
       };
