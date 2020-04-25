@@ -24,7 +24,7 @@ class TableView extends React.Component {
   static propTypes = tableViewType;
   static defaultProps = {
     tasks: [],
-    flag: false,
+    filterBy: null,
     visible: false,
   };
 
@@ -79,7 +79,7 @@ class TableView extends React.Component {
   getComponentByPath = (path) => {
     const {
       user,
-      flag,
+      filterBy = null,
       router,
       publicReducer: { requestError },
       udata = {},
@@ -88,7 +88,6 @@ class TableView extends React.Component {
       onOpenPageWithData,
       setCurrentTab,
       loaderMethods = {},
-      firstPartRef = null,
       tableViewHeight = window?.innerHeight / 2 - 70,
     } = this.props;
 
@@ -144,12 +143,12 @@ class TableView extends React.Component {
           key="dynamicTable"
           routePathNormalise={routePathNormalise}
           routeParser={routeParser}
-          tasks={tasks}
+          dataSource={tasks}
           onOpenPageWithData={onOpenPageWithData}
           router={router}
           setCurrentTab={setCurrentTab}
           udata={udata}
-          flag={flag}
+          filterBy={filterBy}
           user={user}
           loading={partDataPath === path && isPartData}
           visible={visible}

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { dynamicTableType } from '../types';
 import _ from 'lodash';
@@ -261,33 +262,34 @@ class DynamicTable extends React.PureComponent {
     });
   };
 
+  getDataSource = () => {
+    const { dataSource = [], udata: { _id: uid = '' } = {}, filterBy = '' } = this.props;
+    if (!filterBy) return dataSource;
+
+    if (_.isString(filterBy))
+      return dataSource.filter((it) => _.isArray(it[filterBy]) && it[filterBy].some((id) => id === uid));
+
+    return dataSource.filter((it) => {
+      return filterBy.some((filter) => {
+        if (!_.isString(it[filter]) && !_.isArray(it[filter])) {
+          return false;
+        }
+
+        if (_.isString(it[filter])) return it[filter] === uid;
+        else return it[filter].some((id) => id === uid);
+      });
+    });
+  };
+
   render() {
     /** sizes: "small" | "default" | "middle"  */
     const { config: { task: { tableSize = 'default' } = {} } = {} } = this.context;
     const { loading, pagination } = this.state;
-    const { tasks, flag, udata, height } = this.props;
+    const { dataSource = [], udata, height } = this.props;
 
-    let tasksCopy = null;
-    if (tasks?.length) tasksCopy = [...tasks];
-    let data = tasksCopy;
+    let source = dataSource && dataSource?.length ? this.getDataSource() : dataSource;
     const columns = this.getConfigColumns();
 
-    if (data)
-      data =
-        flag && data?.length
-          ? data
-              .map((it) => {
-                if (
-                  !_.isNull(it.editor) &&
-                  it.editor.some((editor) => {
-                    return editor === udata.displayName;
-                  })
-                )
-                  return it;
-                else return null;
-              })
-              .filter(Boolean)
-          : data;
     return (
       <Table
         locale={{
@@ -298,7 +300,7 @@ class DynamicTable extends React.PureComponent {
         scroll={{ y: height }}
         onChange={this.handleTableChange}
         columns={columns}
-        dataSource={data}
+        dataSource={source}
         loading={loading}
         onRow={this.onClickRow}
       />
