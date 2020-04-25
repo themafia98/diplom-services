@@ -202,6 +202,24 @@ const syncData = async (store = '', syncData = []) => {
   return _.uniqBy([...syncData, ...localDataList], '_id');
 };
 
+const getDataSource = (dataSource = [], filterBy = '', uid = '') => {
+  if (!filterBy) return dataSource;
+
+  if (_.isString(filterBy))
+    return dataSource.filter((it) => _.isArray(it[filterBy]) && it[filterBy].some((id) => id === uid));
+
+  return dataSource.filter((it) => {
+    return filterBy.some((filter) => {
+      if (!_.isString(it[filter]) && !_.isArray(it[filter])) {
+        return false;
+      }
+
+      if (_.isString(it[filter])) return it[filter] === uid;
+      else return it[filter].some((id) => id === uid);
+    });
+  });
+};
+
 const namespaceParser = {
   dataParser,
   getNormalizedPath,
@@ -212,6 +230,7 @@ const namespaceParser = {
   buildRequestList,
   getValidContent,
   syncData,
+  getDataSource,
 };
 
 export default namespaceParser;

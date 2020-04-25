@@ -27,6 +27,7 @@ const {
   routePathNormalise,
   buildRequestList,
   getValidContent,
+  getDataSource,
 } = namespaceParser;
 
 const { createNotification, createEntity, deleteFile, loadFile } = namespaceTools;
@@ -52,4 +53,5 @@ export {
   createEntity,
   deleteFile,
   loadFile,
+  getDataSource,
 };

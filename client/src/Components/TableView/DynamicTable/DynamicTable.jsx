@@ -5,6 +5,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import Output from '../../Output';
 import { Table, message, Input, Button, Icon, Empty } from 'antd';
+import { getDataSource } from '../../../Utils';
 import modelContext from '../../../Models/context';
 
 class DynamicTable extends React.PureComponent {
@@ -262,32 +263,18 @@ class DynamicTable extends React.PureComponent {
     });
   };
 
-  getDataSource = () => {
-    const { dataSource = [], udata: { _id: uid = '' } = {}, filterBy = '' } = this.props;
-    if (!filterBy) return dataSource;
-
-    if (_.isString(filterBy))
-      return dataSource.filter((it) => _.isArray(it[filterBy]) && it[filterBy].some((id) => id === uid));
-
-    return dataSource.filter((it) => {
-      return filterBy.some((filter) => {
-        if (!_.isString(it[filter]) && !_.isArray(it[filter])) {
-          return false;
-        }
-
-        if (_.isString(it[filter])) return it[filter] === uid;
-        else return it[filter].some((id) => id === uid);
-      });
-    });
-  };
-
   render() {
     /** sizes: "small" | "default" | "middle"  */
     const { config: { task: { tableSize = 'default' } = {} } = {} } = this.context;
     const { loading, pagination } = this.state;
-    const { dataSource = [], udata, height } = this.props;
+    const {
+      dataSource = [],
+      filterBy = '',
+      udata: { _id: uid },
+      height,
+    } = this.props;
 
-    let source = dataSource && dataSource?.length ? this.getDataSource() : dataSource;
+    let source = dataSource && dataSource?.length ? getDataSource(dataSource, filterBy, uid) : dataSource;
     const columns = this.getConfigColumns();
 
     return (
