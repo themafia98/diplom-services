@@ -55,7 +55,7 @@ class File extends React.Component {
     const { moduleData: { _id = '' } = {}, rest, module = '', isLocal = false } = this.props;
     const props = {
       name: `${uuid()}__${_id}`,
-      multiple: !isLocal ? true : false,
+      multiple: !isLocal,
       withCredentials: true,
       headers: rest && isLocal ? rest.getHeaders() : null,
       fileList: this.state.filesArray,

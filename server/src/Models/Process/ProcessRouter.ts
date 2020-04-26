@@ -3,8 +3,8 @@ import { WsWorker } from '../../Utils/Interfaces';
 import chalk from 'chalk';
 
 class ProcessRouter {
-  private workers: Array<Worker> = [];
-  private wsWorker: WsWorker;
+  private readonly workers: Array<Worker> = [];
+  private readonly wsWorker: WsWorker;
 
   constructor(workers: Array<Worker>, wsWorker: WsWorker) {
     this.workers = workers;

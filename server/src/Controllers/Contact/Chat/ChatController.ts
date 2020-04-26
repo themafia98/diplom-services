@@ -103,15 +103,15 @@ namespace Chat {
 
     @Post({ path: '/load/tokenData', private: true })
     async loadTokenData(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
-      const {
-        body: {
-          queryParams: params = {},
-          options: { actionPath: aPath = '', actionType: aType = '' } = {},
-        } = {},
-      } = req;
-      const actionType: string = aType ? aType : 'get_msg_by_token';
-      const actionPath: string = aPath ? aPath : 'chatMsg';
       try {
+        const {
+          body: {
+            queryParams: params = {},
+            options: { actionPath: aPath = '', actionType: aType = '' } = {},
+          } = {},
+        } = req;
+        const actionType: string = aType ? aType : 'get_msg_by_token';
+        const actionPath: string = aPath ? aPath : 'chatMsg';
         if (!actionPath || !actionType) throw new Error('Invalid action chat');
 
         const actionCreateRoom = new Action.ActionParser({ actionPath, actionType });

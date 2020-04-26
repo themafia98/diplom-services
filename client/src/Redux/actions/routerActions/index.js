@@ -76,8 +76,6 @@ export const loadFlagAction = (state) => {
   };
 };
 
-// middlewares
-
 export const logoutAction = () => (dispatch) => {
   dispatch(setLogoutTabs());
   dispatch(logoutRouterAction());

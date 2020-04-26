@@ -1,6 +1,6 @@
-import { FileApi, DropboxAccess, DownloadDropbox, UploadDropbox } from '../Utils/Interfaces';
+import { DropboxAccess, FileApi } from '../Utils/Interfaces';
 import { Dropbox, files } from 'dropbox';
-import { ListFolderResult, FileMetadata, DeleteFile } from '../Utils/Types';
+import { FileMetadata, ListFolderResult } from '../Utils/Types';
 import Service from '../Models/Service';
 
 /**
@@ -77,11 +77,10 @@ namespace DropboxStorage {
         const path: string = (saveProps as Record<string, any>).path;
         const contents: Buffer = (saveProps as Record<string, any>).contents;
 
-        const response = await this.getService().filesUpload({
+        return await this.getService().filesUpload({
           path,
           contents,
         });
-        return response;
       } catch (err) {
         console.error(err);
         return null;
@@ -89,10 +88,7 @@ namespace DropboxStorage {
     }
 
     /**
-     * @param props for download file from application store
-     * @param {string} moduleName - module dir name
-     * @param {string} filename - download filename
-     * @param {string} ext - extension downloading file
+     * @param fileProps
      */
     public async downloadFileByProps<DownloadDropbox>(fileProps: DownloadDropbox): Promise<FileMetadata> {
       try {
@@ -101,8 +97,7 @@ namespace DropboxStorage {
         const path: string = !cardName
           ? `/${moduleName}/${filename}.${ext}`
           : `/${moduleName}/${cardName}/${filename}.${ext}`;
-        const response: FileMetadata = await this.getService().filesDownload({ path });
-        return response;
+        return await this.getService().filesDownload({ path });
       } catch (err) {
         console.error(err);
         return null;
@@ -115,8 +110,7 @@ namespace DropboxStorage {
      */
     public async downloadFile(path: string): Promise<FileMetadata> {
       try {
-        const response: FileMetadata = await this.getService().filesDownload({ path });
-        return response;
+        return await this.getService().filesDownload({ path });
       } catch (err) {
         console.error(err);
         return null;

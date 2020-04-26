@@ -111,7 +111,7 @@ class TaskModule extends React.PureComponent {
     const { height, heightController, path = '' } = this.state;
     const { router: { currentActionTab = '' } = {} } = this.props;
 
-    const isExists = this.controller?.current || !this.moduleTask.current;
+    const isExists = this.controller?.current || !this.moduleTask?.current;
 
     if (currentActionTab !== path || !isExists) {
       return;
@@ -139,11 +139,11 @@ class TaskModule extends React.PureComponent {
       setCurrentTab,
       router: { currentActionTab, actionTabs },
     } = this.props;
-    const { config = {} } = this.context;
+    const { config: { tabsLimit = 50 } = {} } = this.context;
 
     if (currentActionTab !== 'taskModule_createTask') {
-      if (config.tabsLimit <= actionTabs.length)
-        return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
+      if (tabsLimit <= actionTabs.length)
+        return message.error(`Максимальное количество вкладок: ${tabsLimit}`);
       const path = 'taskModule_createTask';
       const isFind = actionTabs.findIndex((tab) => tab === path) !== -1;
 

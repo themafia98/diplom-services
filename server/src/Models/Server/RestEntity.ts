@@ -3,7 +3,7 @@ import { Rest } from '../../Utils/Interfaces';
 import { Application } from 'express';
 
 abstract class RestEntitiy implements Rest {
-  private port: string;
+  private readonly port: string;
   private rest: Application | undefined;
   private application: null | Application = null;
 

@@ -8,13 +8,13 @@ import Utils from '../../Utils';
 const { getResponseJson } = Utils;
 
 class Responser implements ResponseBuilder {
-  private response: Response;
-  private request: Request;
-  private paramsList: Params;
-  private error: Error | null;
-  private statusResponse: number;
-  private data: ParserResult;
-  private db: Readonly<Database.ManagmentDatabase> | null;
+  private readonly response: Response;
+  private readonly request: Request;
+  private readonly paramsList: Params;
+  private readonly error: Error | null;
+  private readonly statusResponse: number;
+  private readonly data: ParserResult;
+  private readonly db: Readonly<Database.ManagmentDatabase> | null;
 
   constructor(
     res: Response,

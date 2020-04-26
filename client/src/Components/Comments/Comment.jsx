@@ -12,7 +12,7 @@ const Comment = (props) => {
       case 'delete':
         return onDelete(event, key);
       case 'edit':
-        onEdit(event, key);
+        return onEdit(event, key);
       default:
         return null;
     }

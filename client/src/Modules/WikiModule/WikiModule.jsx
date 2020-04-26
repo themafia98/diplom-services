@@ -38,11 +38,11 @@ class WikiModule extends React.PureComponent {
 
   titleRef = React.createRef();
 
-  componentDidMount = async () => {
+  componentDidMount = () => {
     this.fetchTree('didMount');
   };
 
-  componentDidUpdate = async () => {
+  componentDidUpdate = () => {
     this.fetchTree();
   };
 

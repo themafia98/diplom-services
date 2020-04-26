@@ -47,7 +47,7 @@ class ActionNotification implements Action {
     return await this.getEntity().getAll(model, { type: concactType, ...methodQuery });
   }
 
-  private async updateManu(actionParam: ActionParams, model: Model<Document>): ParserData {
+  private async updateMany(actionParam: ActionParams, model: Model<Document>): ParserData {
     const methodQuery = { queryType: 'many', actionParam };
 
     return await this.getEntity().updateEntity(model, methodQuery);
@@ -60,7 +60,7 @@ class ActionNotification implements Action {
     const actionType: string = this.getEntity().getActionType();
 
     if (actionType === 'update_many') {
-      return await this.updateManu(actionParam, model);
+      return await this.updateMany(actionParam, model);
     }
 
     if (actionType.includes('set')) return this.create(model, actionParam);

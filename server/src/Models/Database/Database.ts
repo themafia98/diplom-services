@@ -7,9 +7,9 @@ import { Dbms } from '../../Utils/Interfaces';
 namespace Database {
   dotenv.config();
   export class ManagmentDatabase implements Dbms {
-    private dbClient: string;
-    private connectionString: string;
-    private connect: Promise<typeof mongoose>;
+    private readonly dbClient: string;
+    private readonly connectionString: string;
+    private readonly connect: Promise<typeof mongoose>;
 
     public status: any = null;
 

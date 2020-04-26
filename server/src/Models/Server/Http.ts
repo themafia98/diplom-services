@@ -123,7 +123,7 @@ namespace Http {
                 return done(userResult);
               }
 
-              if (!(<any>userResult).checkPassword(password)) {
+              if (!(await (<any>userResult).checkPassword(password))) {
                 return done(null, false, {
                   message: 'Нет такого пользователя или пароль неверен.',
                 });

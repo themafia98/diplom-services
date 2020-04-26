@@ -6,9 +6,9 @@ import { transOptions } from '../../Utils/Types';
 namespace Mailer {
   export class MailManager implements Mail {
     private transporter: Transporter | null = null;
-    private mailer: typeof nodemailer;
-    private mailSender: SendMailOptions;
-    private mailerConfig: transOptions;
+    private readonly mailer: typeof nodemailer;
+    private readonly mailSender: SendMailOptions;
+    private readonly mailerConfig: transOptions;
 
     constructor(mailer: typeof nodemailer, mailerConfig: transOptions, mailSender: SendMailOptions) {
       this.mailer = mailer;

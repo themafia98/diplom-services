@@ -113,7 +113,7 @@ class TableView extends React.Component {
                 <td className="employee">Сотрудник</td>
                 <td className="department">Отдел</td>
                 <td className="position">Должность</td>
-                <td></td>
+                <td />
               </tr>
             </thead>
             <tbody className="table-body">
@@ -133,7 +133,7 @@ class TableView extends React.Component {
                 </tr>
               )}
             </tbody>
-            <tfoot></tfoot>
+            <tfoot />
           </table>
         </Scrollbars>
       );

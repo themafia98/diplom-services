@@ -36,7 +36,7 @@ const middlewareCaching = (props) => async (dispatch, getState, { schema, Reques
 
   try {
     if (actionType?.includes('__get')) {
-      /** cahing items middleware */
+      /** caching items middleware */
 
       const path = `/${depStore}/caching/jurnal`;
       const body = { queryParams: { depKey, depStore }, item };

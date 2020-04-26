@@ -23,7 +23,7 @@ class MainModule extends React.PureComponent {
     window.addEventListener('resize', this.onResizeWindow.bind(this), false);
   };
 
-  compnentWillUnmount = () => {
+  componentWillUnmount = () => {
     window.removeEventListener('resize', this.onResizeWindow.bind(this), false);
   };
 
@@ -34,7 +34,7 @@ class MainModule extends React.PureComponent {
     if (!visible) return;
 
     const newTableViewHeight = window?.innerHeight / 2 - 70;
-    if (tableViewHeight !== newTableViewHeight) {
+    if (tableViewHeight && Number(tableViewHeight) !== newTableViewHeight) {
       this.setState({
         ...this.state,
         tableViewHeight: newTableViewHeight,

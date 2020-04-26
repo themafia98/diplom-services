@@ -5,7 +5,7 @@ const ClockWidjet = () => {
   const [date, setDate] = useState(new Date());
 
   useEffect(() => {
-    const timer = setInterval(() => setDate(new Date()), 1000);
+    const timer = setInterval(() => setDate((prevState) => new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
 

@@ -6,7 +6,7 @@ namespace RouterInstance {
 
   export class Router implements Route {
     private initialization: boolean = false;
-    private entrypoint: Application;
+    private readonly entrypoint: Application;
     private restClient: RouteExpress = express.Router();
 
     constructor(app: Application) {
@@ -38,7 +38,7 @@ namespace RouterInstance {
     }
 
     public initInstance(path: string): Application {
-      if (this.init === false) {
+      if (!this.init) {
         this.getEntrypoint().use(path, this.getRest());
         this.init = true;
       }

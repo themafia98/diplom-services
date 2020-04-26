@@ -108,7 +108,7 @@ class UserCard extends React.Component {
     return (
       <>
         <div className="userCard">
-          <div style={background} className="wallpaper"></div>
+          <div style={background} className="wallpaper" />
           <div className="mainContentCard">
             <div className="col-6">
               {!isPersonalPage ? (
@@ -136,10 +136,8 @@ class UserCard extends React.Component {
                   <p className="position">{departament ? departament : ''}</p>
                 </div>
                 <div className="mainInformUser__controllers">
-                  {email ? (
-                    <Button title={email} className="controller" type="primary" icon="mail"></Button>
-                  ) : null}
-                  {isOnline ? <Button className="controller" type="primary" icon="wechat"></Button> : null}
+                  {email ? <Button title={email} className="controller" type="primary" icon="mail" /> : null}
+                  {isOnline ? <Button className="controller" type="primary" icon="wechat" /> : null}
                 </div>
               </div>
             </div>

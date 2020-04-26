@@ -95,7 +95,7 @@ class StreamBox extends React.Component {
     }
   };
 
-  fetchNotification = async (shoudUpdate = false) => {
+  fetchNotification = async () => {
     try {
       const { Request } = this.context;
       const {

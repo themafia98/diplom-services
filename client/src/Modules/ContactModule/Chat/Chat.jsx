@@ -242,13 +242,13 @@ class Chat extends React.PureComponent {
     } = this.props;
 
     if (id < 0) {
-      onLoadingDataByToken(token, listdata, 'chat', membersIds[1]);
+      if (onLoadingDataByToken) onLoadingDataByToken(token, listdata, 'chat', membersIds[1]);
       return;
     }
 
     if (chatToken !== token || !token) {
       if (onLoadingDataByToken) {
-        onLoadingDataByToken(token, listdata, 'chat', false);
+        if (onLoadingDataByToken) onLoadingDataByToken(token, listdata, 'chat', false);
         this.chat.getSocket().emit('onChatRoomActive', { token, displayName });
       }
     } else if (!token) message.warning('Чат комната не найдена либо требуется обновить систему.');

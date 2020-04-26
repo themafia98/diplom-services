@@ -161,7 +161,7 @@ class ClientSideDatabase {
                 if (isCanDelete) objectStoreUsers.deleteIndex(key);
               }
               objectStoreUsers.createIndex(key, key, {
-                unique: key === '_id' || key === 'email' ? true : false,
+                unique: key === '_id' || key === 'email',
               });
             });
           }
@@ -188,7 +188,7 @@ class ClientSideDatabase {
                 if (isCanDelete) objectStoreTasks.deleteIndex(key);
               }
               objectStoreTasks.createIndex(key, key, {
-                unique: key === 'key' ? true : false,
+                unique: key === 'key',
               });
             });
           }
@@ -215,7 +215,7 @@ class ClientSideDatabase {
                 if (isCanDelete) objectStoreWikiTree.deleteIndex(key);
               }
               objectStoreWikiTree.createIndex(key, key, {
-                unique: key === 'key' ? true : false,
+                unique: key === 'key',
               });
             });
           }
@@ -242,7 +242,7 @@ class ClientSideDatabase {
                 if (isCanDelete) objectStoreNews.deleteIndex(key);
               }
               objectStoreNews.createIndex(key, key, {
-                unique: key === 'key' ? true : false,
+                unique: key === 'key',
               });
             });
           }
@@ -269,7 +269,7 @@ class ClientSideDatabase {
                 if (isCanDelete) objectStorejurnalWorks.deleteIndex(key);
               }
               objectStorejurnalWorks.createIndex(key, key, {
-                unique: key === 'id' ? true : false,
+                unique: key === 'id',
               });
             });
           }

@@ -136,8 +136,9 @@ class Schema {
 
   /**
    * Schema
-   * @param {Array<string>} data
-   * @param {Array<null>} schema
+   * @param {Array<string>} keysData
+   * @param {Array<object>} keysSchema
+   * @param {Object} data
    * @return {boolean}
    */
   validateSchema(keysData, keysSchema, data) {

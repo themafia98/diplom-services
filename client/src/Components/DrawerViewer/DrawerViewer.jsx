@@ -6,7 +6,7 @@ class DrawerViewer extends React.PureComponent {
   state = {};
   render() {
     const { onClose, visible } = this.props;
-    return <Drawer onClose={onClose} title="Панель администратора" width={720} visible={visible}></Drawer>;
+    return <Drawer onClose={onClose} title="Панель администратора" width={720} visible={visible} />;
   }
 }
 

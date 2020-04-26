@@ -38,23 +38,6 @@ class Contacts extends React.PureComponent {
     );
   };
 
-  componentDidUpdate = () => {
-    // const {
-    //   onSetStatus,
-    //   visible,
-    //   path = '',
-    //   router: { currentActionTab = '', shouldUpdate = false } = {},
-    // } = this.props;
-    // if (visible && false) {
-    //   this.fetchData(res => {
-    //     this.setState({
-    //       data: res?.metadata,
-    //       isLoadingModule: false,
-    //     });
-    //   });
-    // }
-  };
-
   fetchData = async (callback) => {
     const { Request } = this.context;
     try {

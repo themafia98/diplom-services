@@ -8,7 +8,7 @@ const PrivateRoute = ({ component: Component, onLogoutAction, onSetStatus, ...ro
   /**
    * @type {import('react').MutableRefObject}
    */
-  const timerRef = useRef(); // instanse timer
+  const timerRef = useRef(); // instance timer
 
   const { rest } = useContext(modelsContext);
 

@@ -67,7 +67,7 @@ class LoginPage extends React.Component {
             onLoadUdata(udataObj);
 
             addTab(path);
-          } else throw new Error(res.status);
+          } else throw new Error(`${res.status}`);
         })
         .catch((error) => {
           const {

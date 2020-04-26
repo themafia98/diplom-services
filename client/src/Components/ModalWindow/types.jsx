@@ -8,7 +8,6 @@ export const modalWindowType = {
   routeDataActive: object,
   mode: string,
   path: string,
-  typeRequst: string,
   keyTask: string,
   accessStatus: array,
   onUpdate: PropTypes.func,

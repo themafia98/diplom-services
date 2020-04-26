@@ -13,7 +13,7 @@ namespace Settings {
   @Controller('/settings')
   export class SettingsController {
     @Post({ path: '/password', private: true })
-    public async passwordChaged(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    public async passwordChanged(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { dbm } = server.locals;
       const params: Params = {
         methodQuery: 'change_password',

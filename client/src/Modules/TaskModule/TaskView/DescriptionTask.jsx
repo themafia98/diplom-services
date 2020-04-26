@@ -30,7 +30,7 @@ const DescriptionTask = forwardRef(
         className={clsx('description', 'descriptionTask__content', rulesEdit ? 'editable' : null)}
       >
         <span className="icon-wrapper">
-          <i className="icon-pencil"></i>
+          <i className="icon-pencil" />
         </span>
         <Scrollbars style={{ height: '150px' }}>
           <span className="descriptionContent">{description ? description : 'Описания задачи нету.'}</span>

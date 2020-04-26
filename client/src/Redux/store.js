@@ -17,7 +17,7 @@ const composeEnhancers =
     : compose;
 
 const middleware = composeEnhancers(
-  /** @Include moddleware */
+  /** Include middleware */
   applyMiddleware(thunk.withExtraArgument({ schema, Request, clientDB })),
 );
 

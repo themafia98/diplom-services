@@ -388,7 +388,7 @@ class ModalWindow extends React.PureComponent {
             {mode === 'reg' ? (
               <RegistrationModal cbOnChange={this.onChange} cbOnChangeSelect={this.onChangeSelect} />
             ) : (
-              <div></div>
+              <div className="empty" />
             )}
           </Modal>
         </>

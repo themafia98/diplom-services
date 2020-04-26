@@ -43,8 +43,7 @@ class ActionGlobal implements Action {
 
     const path: string = `/${moduleName}/${entityId}/${filename}`;
 
-    const file: files.FileMetadata | null = await this.getEntity().getStore().downloadFile(path);
-    return file;
+    return await this.getEntity().getStore().downloadFile(path);
   }
 
   public async run(actionParam: ActionParams): ParserData {

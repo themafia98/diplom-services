@@ -41,12 +41,10 @@ class ActionChatRoom implements Action {
 
     if (!isValid) return null;
 
-    const actionData: Document | null = await this.getEntity().createEntity(model, {
+    return await this.getEntity().createEntity(model, {
       ...actionParam,
       tokenRoom: uuid(),
     });
-
-    return actionData;
   }
 
   private async leaveRoom(actionParam: ActionParams, model: Model<Document>): ParserData {

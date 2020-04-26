@@ -98,7 +98,7 @@ class Dashboard extends React.PureComponent {
 
     if (
       !_.isNull(requestError) &&
-      requestError[requestError.length - 1] === 'Network error' &&
+      requestError[requestError?.length - 1] === 'Network error' &&
       status === 'offline' &&
       counterError === 0
     ) {
@@ -182,11 +182,10 @@ class Dashboard extends React.PureComponent {
 
   goHome = (event) => {
     const { addTab, setCurrentTab, router: { currentActionTab = '', actionTabs = [] } = {} } = this.props;
-    const { config = {} } = this.context;
+    const { config: { tabsLimit = 50 } = {} } = this.context;
     if (currentActionTab === 'mainModule') return;
 
-    if (config.tabsLimit <= actionTabs.length)
-      return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
+    if (tabsLimit <= actionTabs.length) return message.error(`Максимальное количество вкладок: ${tabsLimit}`);
 
     let tabItem = actionTabs.find((tab) => tab === 'mainModule');
     if (!tabItem) addTab('mainModule');
@@ -195,11 +194,10 @@ class Dashboard extends React.PureComponent {
 
   goCabinet = (event) => {
     const { addTab, setCurrentTab, router: { currentActionTab = '', actionTabs = [] } = {} } = this.props;
-    const { config = {} } = this.context;
+    const { config: { tabsLimit = 50 } = {} } = this.context;
     if (currentActionTab === 'cabinetModule') return;
 
-    if (config.tabsLimit <= actionTabs.length)
-      return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
+    if (tabsLimit <= actionTabs.length) return message.error(`Максимальное количество вкладок: ${tabsLimit}`);
 
     let tabItem = actionTabs.find((tab) => tab === 'cabinetModule');
     if (!tabItem) addTab('cabinetModule');
@@ -208,7 +206,7 @@ class Dashboard extends React.PureComponent {
 
   menuHandler = (event, key, mode = 'open') => {
     const path = event['key'] ? event['key'] : key;
-    const { config = {} } = this.context;
+    const { config: { tabsLimit = 50 } = {} } = this.context;
     const {
       router: { currentActionTab, actionTabs = [] } = {},
       addTab,
@@ -221,8 +219,8 @@ class Dashboard extends React.PureComponent {
     const isFind = actionTabsCopy.findIndex((tab) => tab === path) !== -1;
 
     if (mode === 'open') {
-      if (!isFind && config.tabsLimit <= actionTabsCopy.length)
-        return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
+      if (!isFind && tabsLimit <= actionTabsCopy.length)
+        return message.error(`Максимальное количество вкладок: ${tabsLimit}`);
 
       if (!isFind) addTab(routeParser({ path }));
       else if (currentActionTab !== path) {
@@ -250,22 +248,9 @@ class Dashboard extends React.PureComponent {
     });
   };
 
-  randomNotification = () => {
-    // let notifTitle = "System Controll";
-    // let notifBody = "Hello from System Controll";
-    // let options = {
-    //     body: notifBody
-    // };
-    //let notif = new Notification(notifTitle, options);
-  };
-
   installApp = (event) => {
     const { onShowGuide = null } = this.props;
-    Notification.requestPermission().then(function (result) {
-      if (result === 'granted') {
-        this.randomNotification();
-      }
-    });
+    Notification.requestPermission().then(function (result) {});
 
     if (!deferredPrompt) {
       return notification.error({

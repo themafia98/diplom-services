@@ -278,10 +278,7 @@ class SettingsModule extends React.PureComponent {
       }
 
       this.setState({
-        haveChanges: this.state.haveChanges.filter((it) => {
-          if (it !== keyChange) return true;
-          else return false;
-        }),
+        haveChanges: this.state.haveChanges.filter((it) => it !== keyChange),
       });
 
       const msg = 'Изменение пароля.';

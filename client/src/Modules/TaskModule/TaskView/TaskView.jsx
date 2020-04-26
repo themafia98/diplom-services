@@ -213,7 +213,7 @@ class TaskView extends React.PureComponent {
 
       const { data: { response = null } = {} } = await deleteFile('tasks', deleteFileBody);
 
-      if (response && response.done) {
+      if (response && response?.done) {
         const { metadata = {} } = response;
         const { uid: idClient } = file;
         const { id: idResponse } = metadata;
@@ -403,9 +403,9 @@ class TaskView extends React.PureComponent {
         const normalizeValue = item.timeLost.toString().toLowerCase();
         /** TODO: fix calculate */
         if (normalizeValue.includes('h') || normalizeValue.includes('ч')) {
-          startValue += parseFloat(normalizeValue.split(/h|ч/i)[0]);
+          startValue += parseFloat(normalizeValue.split(/[hч]/i)[0]);
         } else if (normalizeValue.includes('m') || normalizeValue.includes('м')) {
-          startValue += parseFloat(normalizeValue.split(/m|м/i)[0]) / 60;
+          startValue += parseFloat(normalizeValue.split(/[mм]/i)[0]) / 60;
         }
 
         return startValue;

@@ -1,7 +1,7 @@
 import { ServiceManager } from '../../Utils/Interfaces';
 
 abstract class Service<T> implements ServiceManager<T> {
-  constructor(private service: T) {}
+  protected constructor(private service: T) {}
 
   public getService(): T {
     return this.service;

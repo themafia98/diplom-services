@@ -75,7 +75,7 @@ class Request {
   }
 
   /** @public
-   * @param {function} event function
+   * @param {CallableFunction} event function
    * @param {string} mode string
    */
   subscribe(event, mode = 'offline') {
@@ -91,7 +91,7 @@ class Request {
   /** @public
    * @param {string} mode string
    * @param {function} callback function
-   * @param {number} timeout number
+   * @param {number|undefiend} timeout number
    */
   follow(mode = 'offline', callback, timeout = 5000) {
     if (_.isNull(this.followObserver))
@@ -168,6 +168,8 @@ class Request {
    * @param {string} requestUrl
    * @param {any} method
    * @param {any} body
+   * @param {boolean} auth
+   * @param {object} customHeaders
    */
   sendRequest(requestUrl, method, body, auth = false, customHeaders = {}) {
     const props = auth
@@ -215,7 +217,7 @@ class Request {
      * @param {any} error
      */
     await /**
-     * @param {{ status: number; }} res
+     * @param {{ status: number }} res
      */
     axios
       .delete(this.getApi() + '/logout', {

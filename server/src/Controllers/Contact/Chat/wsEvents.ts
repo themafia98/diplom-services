@@ -10,7 +10,7 @@ import { Server as HttpServer } from 'http';
 import { ParserResult } from '../../../Utils/Types';
 
 /**
- * Need upgrade for comunication between workers
+ * Need upgrade for communication between workers
  */
 
 export default (ws: WebSocketWorker, dbm: Readonly<Database.ManagmentDatabase>, server: HttpServer) => {
@@ -36,16 +36,6 @@ export default (ws: WebSocketWorker, dbm: Readonly<Database.ManagmentDatabase>, 
           data: response,
         },
       });
-
-      // (<Record<string, any>>process).send({
-      //     action: "emitSocket",
-      //     payload: {
-      //         event: "updateChatsRooms",
-      //         to: "broadcast",
-      //         socket,
-      //         data: { ...response, fullUpdate: true, activeModule: "chat" }
-      //     }
-      // });
 
       socket.broadcast.emit('updateChatsRooms', {
         ...response,
