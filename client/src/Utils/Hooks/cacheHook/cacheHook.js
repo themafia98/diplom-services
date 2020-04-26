@@ -14,7 +14,7 @@ const cachingHook = async (dispatch, dep = {}, depActions = {}) => {
       clientDB.addItem(store, validHash);
       dispatch(
         сachingAction({
-          data: schemTemplate ? validHash : dataItems,
+          data: schemaTemplate ? validHash : dataItems,
           load: true,
           primaryKey: actionType,
           updateBy,
