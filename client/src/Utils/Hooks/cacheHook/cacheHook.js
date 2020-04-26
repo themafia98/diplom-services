@@ -6,11 +6,11 @@ const cachingHook = async (dispatch, dep = {}, depActions = {}) => {
   const { сachingAction, errorRequstAction } = depActions;
 
   try {
-    const schemTemplate = getStoreSchema(store, null);
+    const schemaTemplate = getStoreSchema(store, null);
     const dataList = Array.isArray(dataItems) ? dataItems : [dataItems];
-    const validHash = dataList.map((it) => schema?.getSchema(schemTemplate, it)).filter(Boolean);
+    const validHash = dataList.map((it) => schema?.getSchema(schemaTemplate, it)).filter(Boolean);
 
-    if (validHash || (!schemTemplate && dataItems)) {
+    if (validHash || (!schemaTemplate && dataItems)) {
       clientDB.addItem(store, validHash);
       dispatch(
         сachingAction({
@@ -69,13 +69,13 @@ const getterCacheHook = async (dispatch, dep = {}, depActions = {}) => {
   const { errorRequstAction, сachingAction } = depActions;
 
   try {
-    const schemTemplate = getStoreSchema(store);
+    const schemaTemplate = getStoreSchema(store);
 
     const dataList = Array.isArray(dataItems) ? dataItems : [dataItems];
-    const validHash = dataList.map((it) => schema?.getSchema(schemTemplate, it)).filter(Boolean);
+    const validHash = dataList.map((it) => schema?.getSchema(schemaTemplate, it)).filter(Boolean);
 
-    if (validHash || (!schemTemplate && dataItems)) {
-      await clientDB.addItem(store, !schemTemplate ? dataItems : validHash);
+    if (validHash || (!schemaTemplate && dataItems)) {
+      await clientDB.addItem(store, !schemaTemplate ? dataItems : validHash);
       dispatch(сachingAction({ data: validHash, load: true, primaryKey: actionType, updateBy }));
     } else throw new Error('Invalid data props');
   } catch (error) {

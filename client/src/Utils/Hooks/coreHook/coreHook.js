@@ -58,17 +58,21 @@ const coreUpdaterDataHook = async (dispatch, dep = {}, multiple = false) => {
       saveComponentStateAction,
       errorRequstAction,
     };
-    runLocalUpdateAction(dispatch, depAction, depParser, multiple);
+    try {
+      await runLocalUpdateAction(dispatch, depAction, depParser, multiple);
+    } catch (error) {
+      console.error(error);
+    }
   }
 };
 
 const updateEntityHook = async (dispatch, dep = {}) => {
   const { store, schema, dataItems, id, updateItemStateAction, updateBy = '' } = dep;
 
-  const schemTemplate = getStoreSchema(store);
+  const schemaTemplate = getStoreSchema(store);
 
   const dataList = Array.isArray(dataItems) ? dataItems : [dataItems];
-  const storeCopy = dataList.map((it) => schema?.getSchema(schemTemplate, it)).filter(Boolean);
+  const storeCopy = dataList.map((it) => schema?.getSchema(schemaTemplate, it)).filter(Boolean);
 
   if (!storeCopy) return;
 

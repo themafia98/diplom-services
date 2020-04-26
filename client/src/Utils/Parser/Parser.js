@@ -23,13 +23,13 @@ const dataParser = (flag = false, isLocalUpdate = true, dep = {}) => {
     return runNoCorsParser(copyStore, sortBy, storeLoad, pathValid, isPartData);
   }
 
-  let shoudClearError = false;
+  let shouldClearError = false;
   const templateSchema = getStoreSchema(storeLoad, methodQuery);
 
   let storeCopyValid = copyStore.map((it) => schema?.getSchema(templateSchema, it)).filter(Boolean);
   storeCopyValid.forEach((it) => schema.isPublicKey(it) && clientDB.updateItem(storeLoad, it));
 
-  if (requestError !== null) shoudClearError = true;
+  if (requestError !== null) shouldClearError = true;
 
   const sortedCopyStore =
     !sortBy && storeCopyValid.every((it) => it.createdAt)
@@ -43,7 +43,7 @@ const dataParser = (flag = false, isLocalUpdate = true, dep = {}) => {
       : storeCopyValid;
 
   const data = { [storeLoad]: sortedCopyStore, load: true, path: pathValid, isPartData };
-  return { data, shoudClearError, shouldUpdateState: Boolean(storeLoad) };
+  return { data, shouldClearError, shouldUpdateState: Boolean(storeLoad) };
 };
 
 const getNormalizedPath = (useStore = false, dep = {}) => {
@@ -55,6 +55,8 @@ const getNormalizedPath = (useStore = false, dep = {}) => {
 
 /**
  * @param {string} b64Data
+ * @param contentType
+ * @param sliceSize
  */
 const b64toBlob = (b64Data, contentType = '', sliceSize = 512) => {
   const byteCharacters = atob(b64Data);
@@ -166,11 +168,11 @@ const buildRequestList = (metadata = []) => {
       if (!action) return null;
       const { type = '', moduleName: path = '', link = '', method = '' } = action;
       const storeLoad = _.isString(type) ? type.split('_')[0] : '';
-      const methodRequst = method ? method : link ? 'POST' : 'GET';
+      const methodRequest = method ? method : link ? 'POST' : 'GET';
       return {
         path,
         storeLoad,
-        methodRequst,
+        methodRequest,
         useStore: Boolean(storeLoad),
         options: {
           keys: _.uniq(actionsArray.map((notification) => notification?.action?.link)),
