@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { getNormalizedPath, sucessEvent, errorHook, coreUpdaterDataHook } from '../../../../Utils';
 import { saveComponentStateAction, loadFlagAction } from '../';
-import { errorRequstAction, setStatus } from '../../publicActions';
+import { errorRequestAction, setStatus } from '../../publicActions';
 
 const loadCurrentData = (params) => async (dispatch, getState, { schema, Request, clientDB }) => {
   const {
@@ -62,7 +62,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
           primaryKey,
           params,
           saveComponentStateAction,
-          errorRequstAction,
+          errorRequestAction,
           isLocalUpdate,
           indStoreName,
         };
@@ -73,7 +73,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
           Request,
           setStatus,
           params,
-          errorRequstAction,
+          errorRequestAction,
           loadCurrentData,
           getState,
           storeLoad,
@@ -96,7 +96,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
         requestError,
         primaryKey,
         saveComponentStateAction,
-        errorRequstAction,
+        errorRequestAction,
       };
 
       const cursor = await clientDB.getAllItems(indStoreName ? indStoreName : storeLoad);
@@ -171,7 +171,7 @@ const multipleLoadData = (params) => async (dispatch, getState, { schema, Reques
             methodQuery,
             primaryKey,
             saveComponentStateAction,
-            errorRequstAction,
+            errorRequestAction,
             isLocalUpdate,
           };
 

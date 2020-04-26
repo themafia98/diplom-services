@@ -3,7 +3,7 @@ import { getStoreSchema } from '../../utilsHook';
 
 const cachingHook = async (dispatch, dep = {}, depActions = {}) => {
   const { dataItems = {}, store, actionType, clientDB, schema, updateBy } = dep;
-  const { сachingAction, errorRequstAction } = depActions;
+  const { сachingAction, errorRequestAction } = depActions;
 
   try {
     const schemaTemplate = getStoreSchema(store, null);
@@ -23,13 +23,13 @@ const cachingHook = async (dispatch, dep = {}, depActions = {}) => {
     } else throw new Error('Invalid data props');
   } catch (error) {
     console.error(error);
-    dispatch(errorRequstAction(error.message));
+    dispatch(errorRequestAction(error.message));
   }
 };
 
 const putterCacheHook = async (dispatch, dep = {}, depActions = {}) => {
   const { depStore, item = {}, type, uid, Request, actionType, updateBy = '' } = dep;
-  const { errorRequstAction, сachingAction } = depActions;
+  const { errorRequestAction, сachingAction } = depActions;
 
   try {
     const path = `/${depStore}/${type ? type : 'caching'}`;
@@ -60,13 +60,13 @@ const putterCacheHook = async (dispatch, dep = {}, depActions = {}) => {
     }
   } catch (error) {
     console.error(error);
-    dispatch(errorRequstAction(error.message));
+    dispatch(errorRequestAction(error.message));
   }
 };
 
 const getterCacheHook = async (dispatch, dep = {}, depActions = {}) => {
   const { dataItems, actionType, store, schema, clientDB, updateBy } = dep;
-  const { errorRequstAction, сachingAction } = depActions;
+  const { errorRequestAction, сachingAction } = depActions;
 
   try {
     const schemaTemplate = getStoreSchema(store);
@@ -80,7 +80,7 @@ const getterCacheHook = async (dispatch, dep = {}, depActions = {}) => {
     } else throw new Error('Invalid data props');
   } catch (error) {
     console.error(error);
-    dispatch(errorRequstAction(error.message));
+    dispatch(errorRequestAction(error.message));
   }
 };
 

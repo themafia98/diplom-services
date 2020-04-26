@@ -119,7 +119,7 @@ class ContentView extends React.Component {
   render() {
     const {
       path,
-      onErrorRequstAction,
+      onErrorRequestAction,
       setCurrentTab,
       actionTabs,
       router,
@@ -149,7 +149,7 @@ class ContentView extends React.Component {
             <MainModule
               visible={path === 'mainModule'}
               rest={rest}
-              onErrorRequstAction={onErrorRequstAction}
+              onErrorRequestAction={onErrorRequestAction}
               loaderMethods={loaderMethods}
               setCurrentTab={setCurrentTab}
               key="mainModule"
@@ -164,7 +164,7 @@ class ContentView extends React.Component {
               visible={path.startsWith('cabinetModule')}
               rest={rest}
               loaderMethods={loaderMethods}
-              onErrorRequstAction={onErrorRequstAction}
+              onErrorRequestAction={onErrorRequestAction}
               path={path}
               key={path?.includes('personal') ? 'cabinetModulePersonal' : 'cabinetModule'}
             />
@@ -177,7 +177,7 @@ class ContentView extends React.Component {
           >
             <TaskModule
               visible={path.startsWith('taskModule')}
-              onErrorRequstAction={onErrorRequstAction}
+              onErrorRequestAction={onErrorRequestAction}
               setCurrentTab={setCurrentTab}
               key="taskModule"
               rest={rest}
@@ -188,7 +188,7 @@ class ContentView extends React.Component {
           <TabContainer isBackground={this.getBackground('wikiModule')} visible={path === 'wikiModule'}>
             <WikiModule
               visible={path === 'wikiModule'}
-              onErrorRequstAction={onErrorRequstAction}
+              onErrorRequestAction={onErrorRequestAction}
               key="wikiModule"
               path={path}
               loaderMethods={loaderMethods}
@@ -208,7 +208,7 @@ class ContentView extends React.Component {
               rest={rest}
               onSetStatus={onSetStatus}
               loaderMethods={loaderMethods}
-              onErrorRequstAction={onErrorRequstAction}
+              onErrorRequestAction={onErrorRequestAction}
               key="contact"
               path={path}
             />
@@ -219,7 +219,7 @@ class ContentView extends React.Component {
           >
             <CustomersModule
               visible={path.startsWith('customersModule')}
-              onErrorRequstAction={onErrorRequstAction}
+              onErrorRequestAction={onErrorRequestAction}
               actionTabs={actionTabs}
               rest={rest}
               onSetStatus={onSetStatus}
@@ -235,7 +235,7 @@ class ContentView extends React.Component {
           >
             <SettingsModule
               visible={path === 'settingsModule'}
-              onErrorRequstAction={onErrorRequstAction}
+              onErrorRequestAction={onErrorRequestAction}
               key="settings"
               loaderMethods={loaderMethods}
               rest={rest}
@@ -248,7 +248,7 @@ class ContentView extends React.Component {
           >
             <StatisticsModule
               visible={path === 'statisticModule'}
-              onErrorRequstAction={onErrorRequstAction}
+              onErrorRequestAction={onErrorRequestAction}
               key="statistic"
               loaderMethods={loaderMethods}
               rest={rest}

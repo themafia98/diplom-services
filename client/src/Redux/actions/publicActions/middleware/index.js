@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { сachingAction, errorRequstAction, setStatus } from '../';
+import { сachingAction, errorRequestAction, setStatus } from '../';
 import {
   cachingHook,
   getterCacheHook,
@@ -30,7 +30,7 @@ const middlewareCaching = (props) => async (dispatch, getState, { schema, Reques
   } = props;
 
   const depActions = {
-    errorRequstAction,
+    errorRequestAction,
     сachingAction,
   };
 
@@ -82,7 +82,7 @@ const middlewareCaching = (props) => async (dispatch, getState, { schema, Reques
       clientDB,
       schema,
       Request,
-      errorRequstAction,
+      errorRequestAction,
       setStatus,
     };
     console.error(error);
@@ -100,7 +100,7 @@ const loadCacheData = (props) => async (dispatch, getState, { schema, Request, c
   } = props;
 
   const depActions = {
-    errorRequstAction,
+    errorRequestAction,
     сachingAction,
   };
 
@@ -137,7 +137,7 @@ const loadCacheData = (props) => async (dispatch, getState, { schema, Request, c
       schema,
       Request,
       updateBy,
-      errorRequstAction,
+      errorRequestAction,
       setStatus,
     };
     console.error(error);
@@ -199,7 +199,7 @@ const middlewareUpdate = (props = {}) => async (dispatch, getState, { schema, Re
       clientDB,
       schema,
       Request,
-      errorRequstAction,
+      errorRequestAction,
       setStatus,
     };
     console.error(error);

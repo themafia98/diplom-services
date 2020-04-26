@@ -11,7 +11,7 @@ describe('<ContentView />', () => {
       dashboardStrem: new EventEmitter(),
       setCurrentTab: () => {},
       updateLoader: () => {},
-      onErrorRequstAction: () => {},
+      onErrorRequestAction: () => {},
       path: 'mainModule',
     };
     const ContentViewWrapper = shallow(<ContentView {...props} />);

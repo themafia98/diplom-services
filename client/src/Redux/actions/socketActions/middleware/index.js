@@ -1,7 +1,7 @@
 // @ts-nocheck
 import _ from 'lodash';
 import { setSocketConnection, onLoadActiveChats, setSocketError, setActiveChatToken, updateRoom } from '../';
-import { errorRequstAction } from '../../publicActions';
+import { errorRequestAction } from '../../publicActions';
 
 /**
  * Middleware
@@ -95,7 +95,7 @@ const loadActiveChats = (payload) => async (dispatch, getState, { schema, Reques
         msg: error.message,
       }),
     );
-    dispatch(errorRequstAction(error.message));
+    dispatch(errorRequestAction(error.message));
   }
 };
 
@@ -168,7 +168,7 @@ const loadingDataByToken = (token, listdata, activeModule, isFake = null) => asy
     );
   } catch (error) {
     console.error(error.message);
-    dispatch(errorRequstAction(error.message));
+    dispatch(errorRequestAction(error.message));
   }
 };
 
@@ -236,7 +236,7 @@ const updateRooms = (payload) => async (dispatch, getState, { schema, Request, c
     );
   } catch (error) {
     console.error(error.message);
-    dispatch(errorRequstAction(error.message));
+    dispatch(errorRequestAction(error.message));
   }
 };
 

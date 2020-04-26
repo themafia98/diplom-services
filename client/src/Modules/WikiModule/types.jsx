@@ -3,7 +3,7 @@ import { udataType } from '../../types';
 const { func, string, oneOf, object, bool, objectOf, array } = PropTypes;
 
 export const wikiModuleType = {
-  onErrorRequstAction: func.isRequired,
+  onErrorRequestAction: func.isRequired,
   path: string.isRequired,
   visible: bool.isRequired,
   loaderMethods: objectOf(func.isRequired).isRequired,

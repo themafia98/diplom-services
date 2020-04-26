@@ -4,7 +4,7 @@ const { func, bool, object, string, objectOf, array } = PropTypes;
 
 export const settingsModuleType = {
   visible: bool.isRequired,
-  onErrorRequstAction: func.isRequired,
+  onErrorRequestAction: func.isRequired,
   loaderMethods: objectOf(func.isRequired).isRequired,
   rest: object.isRequired,
   path: string.isRequired,

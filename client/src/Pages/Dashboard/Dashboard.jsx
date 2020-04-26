@@ -15,7 +15,7 @@ import {
   shouldUpdateAction,
 } from '../../Redux/actions/routerActions';
 import { loadCurrentData } from '../../Redux/actions/routerActions/middleware';
-import { errorRequstAction, clearCache, setStatus, showGuile } from '../../Redux/actions/publicActions';
+import { errorRequestAction, clearCache, setStatus, showGuile } from '../../Redux/actions/publicActions';
 import { routeParser } from '../../Utils';
 
 import Loader from '../../Components/Loader';
@@ -278,7 +278,7 @@ class Dashboard extends React.PureComponent {
       router: { actionTabs = [], currentActionTab, shouldUpdate = false } = {},
       router = {},
       rest,
-      onErrorRequstAction,
+      onErrorRequestAction,
       onShoudUpdate,
       publicReducer = {},
       firstConnect = false,
@@ -328,7 +328,7 @@ class Dashboard extends React.PureComponent {
               onShoudUpdate={onShoudUpdate}
               setCurrentTab={setCurrentTab}
               updateLoader={this.updateLoader}
-              onErrorRequstAction={onErrorRequstAction}
+              onErrorRequestAction={onErrorRequestAction}
               key="contentView"
               rest={rest}
               path={currentActionTab}
@@ -379,7 +379,7 @@ const mapDispatchToProps = (dispatch) => {
     onClearCache: (props) => dispatch(clearCache(props)),
     setCurrentTab: (tab) => dispatch(setActiveTabAction(tab)),
     onLoadCurrentData: ({ path, storeLoad }) => dispatch(loadCurrentData({ path, storeLoad })),
-    onErrorRequstAction: async (error) => await dispatch(errorRequstAction(error)),
+    onErrorRequestAction: async (error) => await dispatch(errorRequestAction(error)),
     onShoudUpdate: async (update) => await dispatch(shouldUpdateAction(update)),
     onLogoutAction: async () => await dispatch(logoutAction()),
   };

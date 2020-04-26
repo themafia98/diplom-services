@@ -6,17 +6,17 @@ import { dataParser } from '../';
 /** Utils hooks */
 
 const runBadNetworkAction = (dispatch, error, dep) => {
-  const { Request, setStatus, errorRequstAction, loadCurrentData, getState } = dep;
-  if (!loadCurrentData && !errorRequstAction) return;
+  const { Request, setStatus, errorRequestAction, loadCurrentData, getState } = dep;
+  if (!loadCurrentData && !errorRequestAction) return;
 
-  if (!loadCurrentData && errorRequstAction) {
-    dispatch(errorRequstAction(error.message));
+  if (!loadCurrentData && errorRequestAction) {
+    dispatch(errorRequestAction(error.message));
     if (setStatus) dispatch(setStatus({ statusRequst: 'offline' }));
   }
 
   if (setStatus) dispatch(setStatus({ statusRequst: 'offline' }));
   else return;
-  dispatch(errorRequstAction(error.message));
+  dispatch(errorRequestAction(error.message));
   const errorRequest = new Request();
   new Request().follow(
     'offline',
@@ -63,9 +63,9 @@ const runRefreshIndexedDb = async (dispatch, storeName, dep, multiple) => {
 };
 
 const runLocalUpdateAction = async (dispatch, depAction, depParser, multiple) => {
-  const { errorRequstAction, saveComponentStateAction, params = {} } = depAction;
+  const { errorRequestAction, saveComponentStateAction, params = {} } = depAction;
   const { data, shoudClearError = false, shouldUpdateState = true } = dataParser(true, false, depParser);
-  if (shoudClearError) await dispatch(errorRequstAction(null));
+  if (shoudClearError) await dispatch(errorRequestAction(null));
   if (shouldUpdateState && !multiple)
     await dispatch(saveComponentStateAction({ ...data, loading: false, params }));
   else if (multiple) return data;

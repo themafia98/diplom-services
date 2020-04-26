@@ -5,7 +5,7 @@ export const contentViewType = {
   dashboardStrem: object.isRequired,
   setCurrentTab: func.isRequired,
   updateLoader: func.isRequired,
-  onErrorRequstAction: func.isRequired,
+  onErrorRequestAction: func.isRequired,
   path: string.isRequired,
   actionTabs: arrayOf(string.isRequired).isRequired,
 };

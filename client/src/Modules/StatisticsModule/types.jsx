@@ -3,7 +3,7 @@ const { func, bool, object, string, arrayOf, objectOf } = PropTypes;
 
 export const statisticsModuleType = {
   visible: bool.isRequired,
-  onErrorRequstAction: func.isRequired,
+  onErrorRequestAction: func.isRequired,
   loaderMethods: objectOf(func.isRequired).isRequired,
   rest: object.isRequired,
   path: string.isRequired,

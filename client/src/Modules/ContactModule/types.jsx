@@ -3,7 +3,7 @@ import { udataType, contentType, emptyShape, newsItemType } from '../../types';
 const { func, string, bool, object, oneOf, arrayOf, objectOf, oneOfType } = PropTypes;
 
 export const contactModuleType = {
-  onErrorRequstAction: func.isRequired,
+  onErrorRequestAction: func.isRequired,
   path: string.isRequired,
   visible: bool.isRequired,
   actionTabs: arrayOf(string.isRequired).isRequired,

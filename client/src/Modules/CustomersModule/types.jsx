@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 const { func, string, bool, object, arrayOf, objectOf } = PropTypes;
 
 export const customersModuleType = {
-  onErrorRequstAction: func.isRequired,
+  onErrorRequestAction: func.isRequired,
   path: string.isRequired,
   visible: bool.isRequired,
   actionTabs: arrayOf(string),

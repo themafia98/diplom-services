@@ -14,7 +14,7 @@ export const dashboardType = {
   onClearCache: func.isRequired,
   setCurrentTab: func.isRequired,
   onLoadCurrentData: func.isRequired,
-  onErrorRequstAction: func.isRequired,
+  onErrorRequestAction: func.isRequired,
   onLogoutAction: func.isRequired,
   onShoudUpdate: func.isRequired,
   onShowGuide: func.isRequired,

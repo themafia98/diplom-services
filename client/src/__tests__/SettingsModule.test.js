@@ -8,7 +8,7 @@ import { SettingsModule } from '../Components/Modules/SettingsModule/SettingsMod
 describe('<SettingsModule /> template', () => {
   test('Should be render', () => {
     const props = {
-      onErrorRequstAction: () => {},
+      onErrorRequestAction: () => {},
       path: 'settingsModule',
       onSaveComponentState: () => {},
       router: { ...initialState.router },

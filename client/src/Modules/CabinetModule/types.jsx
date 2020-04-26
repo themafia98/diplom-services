@@ -12,6 +12,6 @@ export const cabinetType = {
   routeDataActive: object.isRequired,
   onSaveComponentState: func.isRequired,
   onUpdateUdata: func.isRequired,
-  onErrorRequstAction: func.isRequired,
+  onErrorRequestAction: func.isRequired,
   modePage: oneOfType([oneOf([null]), string]).isRequired,
 };

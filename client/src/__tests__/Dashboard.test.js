@@ -11,7 +11,7 @@ describe('<Dashboard /> main page', () => {
       removeTab: () => {},
       setCurrentTab: () => {},
       onLoadCurrentData: () => {},
-      onErrorRequstAction: () => {},
+      onErrorRequestAction: () => {},
       onLogoutAction: () => {},
       publicReducer: {
         status: 'online',

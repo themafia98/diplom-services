@@ -8,7 +8,7 @@ import { TaskModule } from '../Components/Modules/TaskModule/TaskModule';
 describe('<TaskModule /> template', () => {
   test('Should be render', () => {
     const props = {
-      onErrorRequstAction: () => {},
+      onErrorRequestAction: () => {},
       setCurrentTab: () => {},
       path: 'taskModule_all',
       addTab: () => {},

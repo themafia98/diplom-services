@@ -19,7 +19,7 @@ const coreUpdaterDataHook = async (dispatch, dep = {}, multiple = false) => {
     clientDB,
     methodQuery,
     saveComponentStateAction,
-    errorRequstAction,
+    errorRequestAction,
     isLocalUpdate: localUpdateStat,
     indStoreName,
   } = dep;
@@ -31,7 +31,7 @@ const coreUpdaterDataHook = async (dispatch, dep = {}, multiple = false) => {
     if (isDone) return data;
   }
 
-  if (!_.isNull(requestError)) dispatch(errorRequstAction(null));
+  if (!_.isNull(requestError)) dispatch(errorRequestAction(null));
   const currentStore = indStoreName ? indStoreName : storeLoad;
   const [cursor, eventResult, shouldUpdate] = await runRefreshIndexedDb(
     dispatch,
@@ -56,7 +56,7 @@ const coreUpdaterDataHook = async (dispatch, dep = {}, multiple = false) => {
     };
     const depAction = {
       saveComponentStateAction,
-      errorRequstAction,
+      errorRequestAction,
     };
     try {
       await runLocalUpdateAction(dispatch, depAction, depParser, multiple);
@@ -90,10 +90,10 @@ const updateEntityHook = async (dispatch, dep = {}) => {
 };
 
 const errorHook = (error, dispatch, dep = {}) => {
-  const { errorRequstAction } = dep;
+  const { errorRequestAction } = dep;
   if (error.status === 400 || error?.message?.toLowerCase().includes('network error')) {
     runBadNetworkAction(dispatch, error, dep);
-  } else dispatch(errorRequstAction(error.message));
+  } else dispatch(errorRequestAction(error.message));
 };
 
 export default {

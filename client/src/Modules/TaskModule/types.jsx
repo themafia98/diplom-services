@@ -3,7 +3,7 @@ import { udataType, taskEntityType } from '../../types';
 const { func, string, object, bool, objectOf, number, oneOfType, oneOf } = PropTypes;
 
 export const taskModuleType = {
-  onErrorRequstAction: func.isRequired,
+  onErrorRequestAction: func.isRequired,
   onOpenPageWithData: func.isRequired,
   onLoadCurrentData: func.isRequired,
   setCurrentTab: func.isRequired,
