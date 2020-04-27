@@ -85,11 +85,13 @@ class TaskModule extends React.PureComponent {
     }
     const shouldUpdateList = routeData['taskModule'] && routeData['taskModule']?.shouldUpdate;
     if ((shouldUpdate && visible && !routeData['taskModule']?.load) || (visible && shouldUpdateList)) {
-      this.fetchTaskModule();
+      const { saveData = {} } = routeData['taskModule'];
+
+      this.fetchTaskModule(null, saveData);
     }
   };
 
-  fetchTaskModule = (customOptions = null) => {
+  fetchTaskModule = (customOptions = null, saveData = {}) => {
     const { onLoadCurrentData, path } = this.props;
     const { config } = this.context || {};
     const { task: { limitList = 0 } = {} } = config || {};
@@ -97,6 +99,7 @@ class TaskModule extends React.PureComponent {
       ? customOptions
       : {
           limitList,
+          saveData,
         };
     onLoadCurrentData({
       path,
