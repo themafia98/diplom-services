@@ -103,7 +103,7 @@ export default (state = initialState, action) => {
     case SAVE_STATE: {
       let copyRouteData = { ...state.routeData };
       const { multiple = false, stateList = null, params: paramsAction = {}, loading } = action?.payload;
-
+      debugger;
       const validationItems = (currentItems, prevItems) => {
         const items = [...currentItems];
 
@@ -209,8 +209,9 @@ export default (state = initialState, action) => {
           },
         };
       }
-      const currentStateData = state.routeData[path] ? { ...state.routeData[path] } : {};
+      const currentStateData = state.routeData[path] ? { ...action.payload, ...state.routeData[path] } : {};
       copyRouteData[path] = {
+        ...action.payload,
         ...currentStateData,
         loading,
       };
