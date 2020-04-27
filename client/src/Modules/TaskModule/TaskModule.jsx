@@ -83,8 +83,8 @@ class TaskModule extends React.PureComponent {
     if (!_.isNull(this.moduleTask) && !_.isNull(this.controller) && visible) {
       this.recalcHeight();
     }
-
-    if (shouldUpdate && visible && !routeData['taskModule']?.load) {
+    const shouldUpdateList = routeData['taskModule'] && routeData['taskModule']?.shouldUpdate;
+    if ((shouldUpdate && visible && !routeData['taskModule']?.load) || (visible && shouldUpdateList)) {
       this.fetchTaskModule();
     }
   };

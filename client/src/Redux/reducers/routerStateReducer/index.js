@@ -82,13 +82,13 @@ export default (state = initialState, action) => {
     }
 
     case ADD_TO_ROUTE_DATA: {
-      const { path, saveData = {} } = action.payload;
+      const { path, saveData = {}, loading } = action.payload;
       const savedCurrentData = state.routeData[path]
         ? {
             ...state.routeData[path],
           }
         : {};
-      debugger;
+      const shouldUpdate = loading !== undefined ? loading : state.routeData[path]?.loading;
       return {
         ...state,
         routeData: {
@@ -96,6 +96,8 @@ export default (state = initialState, action) => {
           [path]: {
             ...savedCurrentData,
             saveData: { ...saveData },
+            loading: shouldUpdate,
+            shouldUpdate,
           },
         },
       };
@@ -148,6 +150,7 @@ export default (state = initialState, action) => {
               ...currentStateData,
               ...actionItem,
               [storeName]: items,
+              shouldUpdate: false,
               loading,
               params,
             },
@@ -203,16 +206,20 @@ export default (state = initialState, action) => {
           [path]: {
             ...currentStateData,
             ...copyRouteData[path],
+            shouldUpdate: false,
             load: true,
             loading,
             tasks,
           },
         };
       }
-      const currentStateData = state.routeData[path] ? { ...action.payload, ...state.routeData[path] } : {};
+      const currentStateData = state.routeData[path]
+        ? { ...action.payload, ...state.routeData[path], shouldUpdate: false }
+        : {};
       copyRouteData[path] = {
         ...action.payload,
         ...currentStateData,
+        shouldUpdate: false,
         loading,
       };
       return {

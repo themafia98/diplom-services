@@ -253,6 +253,7 @@ class DynamicTable extends React.PureComponent {
     } = this.props;
     onAddRouteData({
       path,
+      loading: true,
       saveData: { pagination, filteredInfo, sortedInfo },
     });
   };
