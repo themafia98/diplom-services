@@ -12,12 +12,26 @@ class DynamicTable extends React.PureComponent {
   state = {
     pagination: {
       current: 1,
-      pageSize: 5,
+      pageSize: 10,
     },
+    counter: null,
   };
 
   static contextType = modelContext;
   static propTypes = dynamicTableType;
+
+  static getDerivedStateFromProps = (props, state) => {
+    const { counter = null } = props;
+    const { counter: counterState = null } = state;
+    if (!_.isNull(counter) && counter !== counterState) {
+      return {
+        ...state,
+        counter,
+      };
+    }
+
+    return state;
+  };
 
   getConfigColumns = () => {
     const { router: { path = '' } = {} } = this.props;
@@ -261,7 +275,7 @@ class DynamicTable extends React.PureComponent {
   render() {
     /** sizes: "small" | "default" | "middle"  */
     const { config: { task: { tableSize = 'default' } = {} } = {} } = this.context;
-    const { pagination: paginationDefault = {} } = this.state;
+    const { pagination: paginationDefault = {}, counter = null } = this.state;
 
     const {
       dataSource = [],
@@ -274,6 +288,11 @@ class DynamicTable extends React.PureComponent {
     const { saveData: { pagination = null } = {} } = currentModuleData || {};
     const pager = pagination ? pagination : paginationDefault;
     pager.paginationState = { ...pager };
+
+    if (counter && pager) {
+      pager.total = counter;
+      pager.paginationState.total = counter;
+    }
 
     let source = dataSource && dataSource?.length ? getDataSource(dataSource, filterBy, uid) : dataSource;
     const columns = this.getConfigColumns();
@@ -289,7 +308,7 @@ class DynamicTable extends React.PureComponent {
         onChange={this.handleTableChange}
         columns={columns}
         dataSource={source}
-        loading={loading}
+        loading={loading || _.isNull(this.state.counter)}
         onRow={this.onClickRow}
       />
     );

@@ -193,7 +193,13 @@ export interface Action {
 }
 
 export interface Actions extends EntityActionApi {
-  getAll(model: Model<Document>, actionParam: ActionParams, limit?: number | null | undefined): Promise<any>;
+  getCounter(model: Model<Document>): Promise<number>;
+  getAll(
+    model: Model<Document>,
+    actionParam: ActionParams,
+    limit?: number | null | undefined,
+    skip?: number,
+  ): Promise<any>;
   createEntity(model: Model<Document>, item: object): Promise<any>;
   deleteEntity(model: Model<Document>, query: ActionParams): Promise<any>;
   updateEntity(
@@ -209,7 +215,7 @@ export interface ResponseJson<T> {
   params: T;
   done: boolean;
   isPartData?: boolean;
-  metadata: object | Array<any> | null | BinaryType | string;
+  metadata: object | Array<any> | null | BinaryType | string | number;
 }
 
 export interface WsWorker {

@@ -93,6 +93,7 @@ class TableView extends React.Component {
       setCurrentTab,
       loaderMethods = {},
       loading,
+      counter = null,
       tableViewHeight = window?.innerHeight / 2 - 70,
       onAddRouteData,
     } = this.props;
@@ -100,7 +101,6 @@ class TableView extends React.Component {
     const { routeData } = router;
     const routePathData = router.currentActionTab.split('_')[0];
     const currentData = routeData[routePathData];
-    const tasks = currentData ? currentData.tasks : [];
 
     const height = heightProps - 250;
 
@@ -143,6 +143,7 @@ class TableView extends React.Component {
       );
     } else if (path === 'searchTable') {
       const { isPartData = false, partDataPath = '' } = router;
+      const { tasks = [] } = currentData || {};
       return (
         <DynamicTable
           key="dynamicTable"
@@ -153,6 +154,7 @@ class TableView extends React.Component {
           router={router}
           setCurrentTab={setCurrentTab}
           udata={udata}
+          counter={counter}
           filterBy={filterBy}
           user={user}
           visible={visible}

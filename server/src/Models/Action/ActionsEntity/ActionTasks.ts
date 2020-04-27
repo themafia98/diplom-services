@@ -27,7 +27,6 @@ class ActionTasks implements Action {
       /** Params for query */
       const { queryParams = {}, updateItem = '' } = actionParam;
       const id: string = (queryParams as Record<string, string>).id;
-      const key: string = (queryParams as Record<string, string>).key;
 
       let updateProps = {};
       let actionData: Document | null = null;
@@ -51,7 +50,8 @@ class ActionTasks implements Action {
   }
 
   private async getTasks(actionParam: ActionParams, model: Model<Document>): ParserData {
-    const { queryParams, limitList = null } = actionParam || {};
+    const { queryParams, limitList = 10, saveData = {} } = actionParam || {};
+    const { pagination = null } = <Record<string, any>>saveData;
     const params: ActionParams =
       _.isEmpty(queryParams) || !(<Record<string, string[]>>queryParams)?.keys
         ? {}
@@ -62,7 +62,10 @@ class ActionTasks implements Action {
       in: (<Record<string, string[]>>queryParams)?.keys,
     };
 
-    return this.getEntity().getAll(model, _.isEmpty(params) ? params : query, <number | null>limitList);
+    const paramsList: ActionParams = _.isEmpty(params) ? params : query;
+    const isPagerParams = pagination && pagination?.current && pagination?.pageSize;
+    const skip: number = isPagerParams && limitList ? (pagination.current - 1) * pagination.pageSize : 0;
+    return this.getEntity().getAll(model, paramsList, <number | null>limitList, skip);
   }
 
   public async run(actionParam: ActionParams): ParserData {
@@ -76,6 +79,8 @@ class ActionTasks implements Action {
         return this.getTasks(actionParam, model);
       case 'set_single':
         return this.createSingleTask(actionParam, model);
+      case 'list_counter':
+        return await this.getEntity().getCounter(model);
       default: {
         if (typeAction.includes('update_')) return this.update(actionParam, model, typeAction);
         return null;

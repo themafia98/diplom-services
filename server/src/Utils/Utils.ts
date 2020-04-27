@@ -125,7 +125,7 @@ namespace Utils {
 
   export const getResponseJson = (
     actionString: string,
-    response: ResponseJson<object | null>,
+    response: ResponseJson<object | null | number>,
     start: Date,
   ): object => {
     return {

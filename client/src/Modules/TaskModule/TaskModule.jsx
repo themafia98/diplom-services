@@ -25,6 +25,7 @@ class TaskModule extends React.PureComponent {
     height: null,
     heightController: null,
     path: null,
+    counter: null,
   };
 
   static contextType = modelContext;
@@ -48,6 +49,7 @@ class TaskModule extends React.PureComponent {
       loaderMethods = {},
       router: { routeData },
     } = this.props;
+    const { config: { task: { limitList = 10 } = {} } = {} } = this.context;
     const { height } = this.state;
     const { onShowLoader } = loaderMethods;
 
@@ -56,7 +58,16 @@ class TaskModule extends React.PureComponent {
     if (_.isNull(height) && !_.isNull(this.moduleTask) && visible) {
       this.recalcHeight();
     }
-    if (visible) this.fetchTaskModule();
+    if (visible) {
+      const saveData = {
+        current: 1,
+        pageSize: limitList,
+      };
+      this.fetchTaskModule(null, {
+        ...saveData,
+        paginationState: saveData,
+      });
+    }
 
     if (_.isFunction(onShowLoader) && isEmptyTasks) {
       onShowLoader();
@@ -91,16 +102,31 @@ class TaskModule extends React.PureComponent {
     }
   };
 
-  fetchTaskModule = (customOptions = null, saveData = {}) => {
+  fetchTaskModule = async (customOptions = null, saveData = {}) => {
     const { onLoadCurrentData, path } = this.props;
-    const { config } = this.context || {};
-    const { task: { limitList = 0 } = {} } = config || {};
+    const { counter = null } = this.state;
+    const { config, Request } = this.context || {};
+    const { task: { limitList = 10 } = {} } = config || {};
     const options = customOptions
       ? customOptions
       : {
           limitList,
           saveData,
         };
+
+    try {
+      const rest = new Request();
+      const res = await rest.sendRequest('/tasks/listCounter', 'GET', null, true);
+      if (res.status !== 200) throw new Error('Bad list');
+      const { data: { response: { metadata = 0 } = {} } = {} } = res || {};
+      if (counter !== metadata)
+        this.setState({
+          counter: metadata,
+        });
+    } catch (error) {
+      console.error(error);
+    }
+
     onLoadCurrentData({
       path,
       storeLoad: 'tasks',
@@ -209,6 +235,7 @@ class TaskModule extends React.PureComponent {
               key="taskList"
               isBackground={isBackgroundTaskModuleAll}
               rest={rest}
+              counter={this.state.counter}
               loaderMethods={loaderMethods}
               visible={path === 'taskModule_all'}
               setCurrentTab={setCurrentTab}
@@ -231,6 +258,7 @@ class TaskModule extends React.PureComponent {
               router={router}
               loading={router?.routeData[moduleName] && router?.routeData[moduleName]?.loading}
               loaderMethods={loaderMethods}
+              counter={this.state.counter}
               isBackground={isBackgroundTaskModuleMyTasks}
               visible={path === 'taskModule_myTasks'}
               setCurrentTab={setCurrentTab}

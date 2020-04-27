@@ -12,6 +12,7 @@ import {
   SET_UPDATE,
   ADD_TO_ROUTE_DATA,
 } from '../../actions/routerActions/const';
+import { validationItems } from '../../../Utils';
 import { SET_STATUS } from '../../actions/publicActions/const';
 
 const initialState = {
@@ -104,21 +105,13 @@ export default (state = initialState, action) => {
     }
     case SAVE_STATE: {
       let copyRouteData = { ...state.routeData };
-      const { multiple = false, stateList = null, params: paramsAction = {}, loading } = action?.payload;
-
-      const validationItems = (currentItems, prevItems) => {
-        const items = [...currentItems];
-
-        for (let i = 0; i < prevItems.length; i++) {
-          const item = prevItems[i];
-          const { _id = '' } = item || {};
-
-          const isExist = currentItems.some((prevItem) => prevItem._id === _id);
-
-          if (!isExist) items.push(item);
-        }
-        return items;
-      };
+      const {
+        multiple = false,
+        stateList = null,
+        params: paramsAction = {},
+        loading,
+        isShouldValidation = false,
+      } = action?.payload;
 
       if (stateList && Array.isArray(stateList) && multiple) {
         const modulesState = stateList.reduce((newState, actionItem) => {
@@ -199,7 +192,10 @@ export default (state = initialState, action) => {
         const currentTasks = isMore ? state.routeData[path].tasks : copyRouteData[path]?.tasks;
         const prevTasks = isMore ? copyRouteData[path]?.tasks : state.routeData[path].tasks;
 
-        const tasks = validationItems(currentTasks, prevTasks);
+        const tasks = isShouldValidation
+          ? validationItems(currentTasks, prevTasks)
+          : copyRouteData[path]?.tasks;
+
         const currentStateData = state.routeData[path] ? { ...state.routeData[path] } : {};
         copyRouteData = {
           ...copyRouteData,
@@ -217,8 +213,8 @@ export default (state = initialState, action) => {
         ? { ...action.payload, ...state.routeData[path], shouldUpdate: false }
         : {};
       copyRouteData[path] = {
-        ...action.payload,
         ...currentStateData,
+        ...action.payload,
         shouldUpdate: false,
         loading,
       };
@@ -347,7 +343,9 @@ export default (state = initialState, action) => {
       return {
         ...state,
         currentActionTab: action.payload,
-        routeDataActive: isDataPage ? { ...currentActive } : { ...state.routeDataActive },
+        routeDataActive: isDataPage
+          ? { ...currentActive }
+          : { ...state.routeData[selectModule], ...state.routeDataActive },
         routeData,
         shouldUpdate,
       };

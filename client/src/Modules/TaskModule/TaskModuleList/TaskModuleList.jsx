@@ -18,7 +18,7 @@ class TaskModuleList extends React.PureComponent {
   };
 
   render() {
-    const { router, data, height, setCurrentTab, loaderMethods, loading } = this.props;
+    const { router, data, height, setCurrentTab, loaderMethods, loading, counter } = this.props;
 
     return (
       <div ref={this.refModuleTask} className="taskModule_all">
@@ -27,6 +27,7 @@ class TaskModuleList extends React.PureComponent {
           <TableView
             key="taskModule_tableTask"
             loaderMethods={loaderMethods}
+            counter={counter}
             setCurrentTab={setCurrentTab}
             height={height}
             router={router}

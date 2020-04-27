@@ -16,8 +16,8 @@ export type docResponse = string | number | object | null | Array<any> | any;
 export type ActionData = Promise<Array<Document>> | null | Document | Promise<Document>;
 export type DocCompared = Document | Document[];
 export type FileEdit = FileMetadata | DeleteFile | ListFolderResult | BinaryType;
-export type ParserData = Promise<DocCompared | FileEdit | null | object | Blob>;
-export type ParserResult = DocCompared | FileEdit | null | object;
+export type ParserData = Promise<DocCompared | FileEdit | number | null | object | Blob>;
+export type ParserResult = DocCompared | FileEdit | null | object | number;
 export type OptionsUpdate = Record<string, boolean | null>;
 
 export type collectionOperations = {

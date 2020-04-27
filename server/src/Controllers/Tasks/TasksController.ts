@@ -26,8 +26,8 @@ namespace Tasks {
           console.error(err);
         });
 
-        const { options: { limitList = null, keys = null } = {} } = req?.body || {};
-        const actionParams: ActionParams = { queryParams: keys ? { keys } : {}, limitList };
+        const { options: { limitList = null, keys = null, saveData = {} } = {} } = req?.body || {};
+        const actionParams: ActionParams = { queryParams: keys ? { keys } : {}, limitList, saveData };
 
         if (!connect) throw new Error('Bad connect');
 
@@ -50,6 +50,42 @@ namespace Tasks {
         return new Responser(res, req, params, null, 200, metadata, dbm).emit();
       } catch (err) {
         console.error(err);
+        params.status = 'FAIL';
+        params.done = false;
+        return new Responser(res, req, params, err, 503, [], dbm).emit();
+      }
+    }
+
+    @Get({ path: '/listCounter', private: true })
+    public async getListCounter(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+      const { dbm } = server.locals;
+      const params: Params = {
+        methodQuery: 'list_counter',
+        status: 'done',
+        done: true,
+        from: 'tasks',
+      };
+      try {
+        const connect = await dbm.connection().catch((err: Error) => console.error(err));
+
+        if (!connect) throw new Error('Bad connect');
+
+        const listCounterAction = new Action.ActionParser({
+          actionPath: 'tasks',
+          actionType: 'list_counter',
+        });
+
+        const data: ParserResult = await listCounterAction.getActionData({});
+
+        if (!data) {
+          params.done = false;
+          params.status = 'FAIL';
+          return new Responser(res, req, params, null, 404, [], dbm).emit();
+        }
+
+        return new Responser(res, req, params, null, 200, data, dbm).emit();
+      } catch (err) {
+        console.log(err.message);
         params.status = 'FAIL';
         params.done = false;
         return new Responser(res, req, params, err, 503, [], dbm).emit();

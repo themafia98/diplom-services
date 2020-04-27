@@ -222,6 +222,20 @@ const getDataSource = (dataSource = [], filterBy = '', fid = '') => {
   });
 };
 
+const validationItems = (currentItems, prevItems) => {
+  const items = [...currentItems];
+
+  for (let i = 0; i < prevItems.length; i++) {
+    const item = prevItems[i];
+    const { _id = '' } = item || {};
+
+    const isExist = currentItems.some((prevItem) => prevItem._id === _id);
+
+    if (!isExist) items.push(item);
+  }
+  return items;
+};
+
 const namespaceParser = {
   dataParser,
   getNormalizedPath,
@@ -233,6 +247,7 @@ const namespaceParser = {
   getValidContent,
   syncData,
   getDataSource,
+  validationItems,
 };
 
 export default namespaceParser;

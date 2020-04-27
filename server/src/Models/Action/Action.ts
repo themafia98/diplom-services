@@ -22,19 +22,40 @@ namespace Action {
       super(props);
     }
 
-    public async getAll(model: Model<Document>, actionParam: ActionParams, limit: limiter): ParserData {
+    public async getCounter(model: Model<Document>): Promise<number> {
+      return await model.collection.count();
+    }
+
+    public async getAll(
+      model: Model<Document>,
+      actionParam: ActionParams,
+      limit: limiter,
+      skip: number = 0,
+    ): ParserData {
       try {
+        const toSkip: number = Math.abs(skip);
+
         if (actionParam.in && actionParam.where) {
           const { and = [{}] } = <Record<string, Array<object>>>actionParam;
           return await model
             .find()
+            .skip(toSkip)
             .where(actionParam.where)
             .and(and)
             .in((<Record<string, any[]>>actionParam).in)
-            .limit(<number>limit);
+            .limit(<number>limit)
+            .sort({
+              createdAt: 'asc',
+            });
         }
 
-        const actionData: Array<Document> = await model.find(actionParam).limit(<number>limit);
+        const actionData: Array<Document> = await model
+          .find(actionParam)
+          .limit(<number>limit)
+          .skip(toSkip)
+          .sort({
+            createdAt: 'asc',
+          });
 
         return actionData;
       } catch (err) {

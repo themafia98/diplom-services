@@ -28,6 +28,7 @@ const {
   buildRequestList,
   getValidContent,
   getDataSource,
+  validationItems,
 } = namespaceParser;
 
 const { createNotification, createEntity, deleteFile, loadFile } = namespaceTools;
@@ -54,4 +55,5 @@ export {
   deleteFile,
   loadFile,
   getDataSource,
+  validationItems,
 };
