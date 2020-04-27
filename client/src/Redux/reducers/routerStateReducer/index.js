@@ -128,11 +128,10 @@ export default (state = initialState, action) => {
 
           const isExists = state.routeData[path] && state.routeData[path][storeName];
           if (isExists && actionItem[storeName]) {
-            const isMore = state.routeData[path][storeName]?.length > actionItem[storeName]?.length;
-            const currentTasks = isMore ? state.routeData[path][storeName] : actionItem[storeName];
-            const prevTasks = isMore ? actionItem[storeName] : state.routeData[path][storeName];
+            const currentTasks = actionItem[storeName];
+            const prevTasks = state.routeData[path][storeName];
 
-            items = validationItems(currentTasks, prevTasks);
+            items = isShouldValidation ? validationItems(currentTasks, prevTasks) : currentTasks;
           }
           const isEmptyParams = JSON.stringify(paramsAction) === '{}' && state.routeData[path];
           const params = isEmptyParams ? state.routeData[path]?.params : paramsAction;
@@ -186,11 +185,12 @@ export default (state = initialState, action) => {
       }
       const isNewPartData = state?.partDataPath === null || state?.partDataPath === path;
 
-      if (copyRouteData[path]?.tasks && state.routeData[path]?.tasks) {
-        const isMore = state.routeData[path].tasks.length > copyRouteData[path]?.tasks.length;
+      let storeName = path.split('Module')[0];
+      storeName = storeName[storeName.length] !== 's' ? `${storeName}s` : storeName;
 
-        const currentTasks = isMore ? state.routeData[path].tasks : copyRouteData[path]?.tasks;
-        const prevTasks = isMore ? copyRouteData[path]?.tasks : state.routeData[path].tasks;
+      if (copyRouteData[path][storeName] && state.routeData[path] && state.routeData[path][storeName]) {
+        const currentTasks = copyRouteData[path]?.tasks;
+        const prevTasks = state.routeData[path].tasks;
 
         const tasks = isShouldValidation
           ? validationItems(currentTasks, prevTasks)

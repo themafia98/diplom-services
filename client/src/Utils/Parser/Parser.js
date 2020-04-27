@@ -147,7 +147,7 @@ const routePathNormalise = ({
     };
   }
 };
-const buildRequestList = (metadata = []) => {
+const buildRequestList = (metadata = [], prefix = '') => {
   if (!metadata || (metadata && !metadata.length)) return metadata;
 
   const actionTypes = _.uniq(metadata.map(({ action: { type = '' } }) => type));
@@ -170,7 +170,7 @@ const buildRequestList = (metadata = []) => {
       const storeLoad = _.isString(type) ? type.split('_')[0] : '';
       const methodRequest = method ? method : link ? 'POST' : 'GET';
       return {
-        path,
+        path: `${path}${prefix}`,
         storeLoad,
         methodRequest,
         useStore: Boolean(storeLoad),
@@ -222,18 +222,8 @@ const getDataSource = (dataSource = [], filterBy = '', fid = '') => {
   });
 };
 
-const validationItems = (currentItems, prevItems) => {
-  const items = [...currentItems];
-
-  for (let i = 0; i < prevItems.length; i++) {
-    const item = prevItems[i];
-    const { _id = '' } = item || {};
-
-    const isExist = currentItems.some((prevItem) => prevItem._id === _id);
-
-    if (!isExist) items.push(item);
-  }
-  return items;
+const validationItems = (currentItems, prevItems, id = '_id') => {
+  return [...new Map([...currentItems, ...prevItems].map((it) => [it[id], it])).values()];
 };
 
 const namespaceParser = {

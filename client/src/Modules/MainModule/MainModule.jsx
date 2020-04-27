@@ -71,7 +71,13 @@ class MainModule extends React.PureComponent {
         />
         <div className="mainModule_main">
           <div className="col-4 columnModuleLeft">
-            <StreamBox parentDataName="users" parentPath={path} key="streamMain" type="global" />
+            <StreamBox
+              prefix="#public"
+              parentDataName="users"
+              parentPath={path}
+              key="streamMain"
+              type="global"
+            />
           </div>
           <div ref={this.rightColumnRef} className="col-8 columnModuleRight">
             <div ref={this.widgetsContainerRef} className="widgets">

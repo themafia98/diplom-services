@@ -141,7 +141,7 @@ class StreamBox extends React.Component {
       } = res;
 
       await onMultipleLoadData({
-        requestsParamsList: buildRequestList(metadata),
+        requestsParamsList: buildRequestList(metadata, '#public'),
         pipe: true,
       });
 
@@ -161,7 +161,7 @@ class StreamBox extends React.Component {
         return this.setState({ streamList: metadata, isLoading: true });
       }
 
-      const path = type === 'private' ? `${streamModule}#private` : streamModule;
+      const path = type === 'private' ? `${streamModule}#private` : `${streamModule}#public`;
 
       await onSaveComponentState({
         [streamStore]:
@@ -174,6 +174,7 @@ class StreamBox extends React.Component {
             : metadata,
         load: true,
         path,
+        shoudParseToUniq: true,
       });
 
       this.setState({ isLoading: true });
@@ -189,12 +190,13 @@ class StreamBox extends React.Component {
       onOpenPageWithData,
       router: { routeData = {}, actionTabs = [] } = {},
       store = '',
+      prefix = '',
       streamModule = '',
       streamStore = '',
       type: typeStream = '',
     } = this.props;
 
-    const nameModuleStream = typeStream === 'private' ? `${streamModule}#private` : streamModule;
+    const nameModuleStream = typeStream === 'private' ? `${streamModule}#private` : `${streamModule}#public`;
 
     const streamList = store
       ? routeData[nameModuleStream] && routeData[nameModuleStream][streamStore]
@@ -202,8 +204,9 @@ class StreamBox extends React.Component {
         : []
       : streamListState;
 
-    const { action: { type: typeAction = '', link: key = '', moduleName = '' } = {}, type = '' } =
+    const { action: { type: typeAction = '', link: key = '', moduleName: name = '' } = {}, type = '' } =
       streamList[index] || {};
+    const moduleName = `${name}${prefix}`;
     const { config = {} } = this.context;
 
     const [storeName = '', typeCurrentAction = ''] = typeAction.split('_');

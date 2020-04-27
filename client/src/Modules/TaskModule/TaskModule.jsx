@@ -132,6 +132,7 @@ class TaskModule extends React.PureComponent {
       storeLoad: 'tasks',
       useStore: true,
       methodRequst: 'POST',
+      shoudParseToUniq: false,
       options,
     });
   };
