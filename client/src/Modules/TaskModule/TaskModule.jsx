@@ -113,7 +113,7 @@ class TaskModule extends React.PureComponent {
 
     const isExists = this.controller?.current || !this.moduleTask?.current;
 
-    if (currentActionTab !== path || !isExists) {
+    if (currentActionTab !== path || !isExists || !this.moduleTask) {
       return;
     }
 
@@ -211,7 +211,7 @@ class TaskModule extends React.PureComponent {
               setCurrentTab={setCurrentTab}
               loading={router?.routeData[moduleName] && router?.routeData[moduleName]?.loading}
               height={heightController ? height - heightController : height}
-              data={router?.routeData[path]}
+              data={router?.routeData[moduleName]}
               router={router}
             />
           </TabContainer>
@@ -232,7 +232,7 @@ class TaskModule extends React.PureComponent {
               visible={path === 'taskModule_myTasks'}
               setCurrentTab={setCurrentTab}
               height={height}
-              data={router?.routeData[path]}
+              data={router?.routeData[moduleName]}
             />
           </TabContainer>
           <TabContainer

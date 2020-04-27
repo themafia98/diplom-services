@@ -17,9 +17,11 @@ class MainModule extends React.PureComponent {
     tableViewHeight: 300,
   };
 
-  firstPartRef = React.createRef();
+  rightColumnRef = React.createRef();
+  widgetsContainerRef = React.createRef();
 
   componentDidMount = () => {
+    this.onResizeWindow();
     window.addEventListener('resize', this.onResizeWindow.bind(this), false);
   };
 
@@ -27,13 +29,23 @@ class MainModule extends React.PureComponent {
     window.removeEventListener('resize', this.onResizeWindow.bind(this), false);
   };
 
+  componentDidUpdate = () => {
+    this.onResizeWindow();
+  };
+
   onResizeWindow = () => {
     const { tableViewHeight = null } = this.state;
     const { visible = false } = this.props;
+    const { current: rightColumnNode } = this.rightColumnRef || {};
+    const { current: widgetContainerNode } = this.widgetsContainerRef || {};
+    if (!visible || !rightColumnNode) return;
 
-    if (!visible) return;
+    const { height: heightColumn = 0 } = rightColumnNode.getBoundingClientRect() || {};
+    const { height: heightWidgets = 0 } = widgetContainerNode.getBoundingClientRect() || {};
+    if (heightColumn <= 0) return;
 
-    const newTableViewHeight = window?.innerHeight / 2 - 70;
+    const newTableViewHeight = heightColumn - heightWidgets;
+
     if (tableViewHeight && Number(tableViewHeight) !== newTableViewHeight) {
       this.setState({
         ...this.state,
@@ -44,10 +56,10 @@ class MainModule extends React.PureComponent {
 
   render() {
     const { visible, setCurrentTab } = this.props;
-    const { path } = this.state;
+    const { path, tableViewHeight } = this.state;
     const {
       config: {
-        visibilityWidjets: { mainModule: { clockVisibility = true, calendarVisiblity = true } = {} } = {},
+        visibilityWidgets: { mainModule: { clockVisibility = true, calendarVisibility = true } = {} } = {},
       } = {},
     } = this.context;
     return (
@@ -61,15 +73,15 @@ class MainModule extends React.PureComponent {
           <div className="col-4 columnModuleLeft">
             <StreamBox parentDataName="users" parentPath={path} key="streamMain" type="global" />
           </div>
-          <div ref={this.firstPartRef} className="col-8 columnModuleRight">
-            <div className="widjects">
+          <div ref={this.rightColumnRef} className="col-8 columnModuleRight">
+            <div ref={this.widgetsContainerRef} className="widgets">
               {clockVisibility ? <ClockWidjet /> : null}
-              {calendarVisiblity ? <Calendar className="mainModule_calendar" fullscreen={false} /> : null}
+              {calendarVisibility ? <Calendar className="mainModule_calendar" fullscreen={false} /> : null}
             </div>
             <div className="tableView__wrapper">
               <TableView
                 setCurrentTab={setCurrentTab}
-                firstPartRef={this.firstPartRef}
+                tableViewHeight={tableViewHeight}
                 visible={visible}
                 key="mainModule_table"
                 path="mainModule__table"

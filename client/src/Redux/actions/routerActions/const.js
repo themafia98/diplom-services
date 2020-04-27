@@ -8,3 +8,4 @@ export const SET_FLAG_LOAD_DATA = 'SET_FLAG_LOAD_DATA';
 export const UPDATE_ITEM = 'UPDATE_ITEM';
 export const SET_UPDATE = 'SET_UPDATE';
 export const FLAG_UPDATE = 'FLAG_UPDATE';
+export const ADD_TO_ROUTE_DATA = 'ADD_TO_ROUTE_DATA';

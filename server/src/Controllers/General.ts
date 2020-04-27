@@ -116,7 +116,7 @@ namespace General {
 
     @Delete({ path: '/logout', private: true })
     public async logout(req: Request, res: Response): Promise<Response> {
-      return await req.session.destroy(
+      return req.session.destroy(
         (err: Error): Response => {
           if (err) console.error(err);
           req.logOut(); // passportjs logout

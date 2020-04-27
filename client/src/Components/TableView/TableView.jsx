@@ -9,7 +9,11 @@ import { routePathNormalise, routeParser } from '../../Utils';
 import Output from '../Output';
 import DynamicTable from './DynamicTable';
 
-import { openPageWithDataAction, removeTabAction } from '../../Redux/actions/routerActions';
+import {
+  openPageWithDataAction,
+  removeTabAction,
+  addToRouteDataAction,
+} from '../../Redux/actions/routerActions';
 import { loadCurrentData } from '../../Redux/actions/routerActions/middleware';
 import modelContext from '../../Models/context';
 
@@ -90,6 +94,7 @@ class TableView extends React.Component {
       loaderMethods = {},
       loading,
       tableViewHeight = window?.innerHeight / 2 - 70,
+      onAddRouteData,
     } = this.props;
 
     const { routeData } = router;
@@ -154,6 +159,7 @@ class TableView extends React.Component {
           visible={visible}
           loading={loading}
           loaderMethods={loaderMethods}
+          onAddRouteData={onAddRouteData}
           height={height}
         />
       );
@@ -232,6 +238,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     removeTab: (tab) => dispatch(removeTabAction(tab)),
     onOpenPageWithData: (data) => dispatch(openPageWithDataAction(data)),
+    onAddRouteData: (data) => dispatch(addToRouteDataAction(data)),
     onLoadCurrentData: (props) => dispatch(loadCurrentData({ ...props })),
   };
 };

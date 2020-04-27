@@ -150,9 +150,9 @@ class App extends React.Component {
 
     const route = (
       <Switch>
-        <Route exact path="/" render={(props) => <LoginPage {...props} authLoad={authLoad} />} />
         <Route exact path="/recovory" render={(props) => <Recovery {...props} />} />
         <PrivateRoute exact path="/dashboard" {...privateActions} component={Dashboard} />
+        <Route exact path="*" render={(props) => <LoginPage {...props} authLoad={authLoad} />} />
       </Switch>
     );
 

@@ -10,6 +10,7 @@ import {
   SET_FLAG_LOAD_DATA,
   UPDATE_ITEM,
   SET_UPDATE,
+  ADD_TO_ROUTE_DATA,
 } from '../../actions/routerActions/const';
 import { SET_STATUS } from '../../actions/publicActions/const';
 
@@ -79,6 +80,26 @@ export default (state = initialState, action) => {
         routeData: copyRouteData,
       };
     }
+
+    case ADD_TO_ROUTE_DATA: {
+      const { path, saveData = {} } = action.payload;
+      const savedCurrentData = state.routeData[path]
+        ? {
+            ...state.routeData[path],
+          }
+        : {};
+      debugger;
+      return {
+        ...state,
+        routeData: {
+          ...state.routeData,
+          [path]: {
+            ...savedCurrentData,
+            saveData: { ...saveData },
+          },
+        },
+      };
+    }
     case SAVE_STATE: {
       let copyRouteData = { ...state.routeData };
       const { multiple = false, stateList = null, params: paramsAction = {}, loading } = action?.payload;
@@ -120,10 +141,11 @@ export default (state = initialState, action) => {
           }
           const isEmptyParams = JSON.stringify(paramsAction) === '{}' && state.routeData[path];
           const params = isEmptyParams ? state.routeData[path]?.params : paramsAction;
-
+          const currentStateData = state.routeData[path] ? { ...state.routeData[path] } : {};
           return {
             ...newState,
             [path]: {
+              ...currentStateData,
               ...actionItem,
               [storeName]: items,
               loading,
@@ -139,7 +161,7 @@ export default (state = initialState, action) => {
           return true;
         });
 
-        if (shouldUpdateList)
+        if (shouldUpdateList) {
           return {
             ...state,
             routeData: {
@@ -147,6 +169,7 @@ export default (state = initialState, action) => {
               ...modulesState,
             },
           };
+        }
       }
 
       const { isPartData = false, shouldUpdate = false, path: pathAction = '' } = action.payload;
@@ -174,9 +197,11 @@ export default (state = initialState, action) => {
         const prevTasks = isMore ? copyRouteData[path]?.tasks : state.routeData[path].tasks;
 
         const tasks = validationItems(currentTasks, prevTasks);
+        const currentStateData = state.routeData[path] ? { ...state.routeData[path] } : {};
         copyRouteData = {
           ...copyRouteData,
           [path]: {
+            ...currentStateData,
             ...copyRouteData[path],
             load: true,
             loading,
@@ -184,7 +209,11 @@ export default (state = initialState, action) => {
           },
         };
       }
-      copyRouteData[path].loading = loading;
+      const currentStateData = state.routeData[path] ? { ...state.routeData[path] } : {};
+      copyRouteData[path] = {
+        ...currentStateData,
+        loading,
+      };
       return {
         ...state,
         path,

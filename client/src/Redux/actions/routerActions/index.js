@@ -9,6 +9,7 @@ import {
   SET_FLAG_LOAD_DATA,
   SET_UPDATE,
   UPDATE_ITEM,
+  ADD_TO_ROUTE_DATA,
 } from './const';
 
 import { setLogoutTabs } from '../tabActions';
@@ -58,6 +59,13 @@ export const logoutRouterAction = (state) => {
 export const saveComponentStateAction = (state) => {
   return {
     type: SAVE_STATE,
+    payload: state,
+  };
+};
+
+export const addToRouteDataAction = (state) => {
+  return {
+    type: ADD_TO_ROUTE_DATA,
     payload: state,
   };
 };

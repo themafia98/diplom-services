@@ -10,10 +10,10 @@
   "regInclude": true,
   "recovoryInclude": true,
   "forceUpdate": false,
-  "visibilityWidjets": {
+  "visibilityWidgets": {
     "mainModule": {
       "clockVisibility": true,
-      "calendarVisiblity": true
+      "calendarVisibility": true
     }
   },
   "msTimeoutLoading": 0,

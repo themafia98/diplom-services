@@ -13,17 +13,17 @@ class DynamicTable extends React.PureComponent {
     pagination: {
       current: 1,
       pageSize: 5,
-      paginationState: {},
     },
-    filteredInfo: [],
-    sortedInfo: [],
   };
 
   static contextType = modelContext;
   static propTypes = dynamicTableType;
 
   getConfigColumns = () => {
-    const { sortedInfo } = this.state;
+    const { router: { path = '' } = {} } = this.props;
+    const {
+      router: { routeData: { [path]: { saveData: { sortedInfo = [] } = {} } = {} } = {} } = {},
+    } = this.props;
     return [
       {
         title: 'Статус',
@@ -246,34 +246,34 @@ class DynamicTable extends React.PureComponent {
    * @param {any} filters
    * @param {any} sorter
    */
-  handleTableChange = (pagination, filters, sorter) => {
-    const { pagination: paginationState } = this.state;
-    const pager = { paginationState };
-    pager.current = pagination.current;
-    console.log(pager);
-    const params = {
-      filteredInfo: filters,
-      sortedInfo: sorter,
-    };
-
-    this.setState({
-      pagination: pager,
-      ...params,
+  handleTableChange = (pagination, filteredInfo, sortedInfo) => {
+    const {
+      router: { path = '' },
+      onAddRouteData,
+    } = this.props;
+    onAddRouteData({
+      path,
+      saveData: { pagination, filteredInfo, sortedInfo },
     });
   };
 
   render() {
     /** sizes: "small" | "default" | "middle"  */
     const { config: { task: { tableSize = 'default' } = {} } = {} } = this.context;
-    const { pagination } = this.state;
+    const { pagination: paginationDefault = {} } = this.state;
+
     const {
       dataSource = [],
       filterBy = '',
       udata: { _id: uid },
       height,
       loading,
+      router: { path, routeData: { [path]: currentModuleData = {} } = {} } = {},
     } = this.props;
-    console.log(loading);
+    const { saveData: { pagination = null } = {} } = currentModuleData || {};
+    const pager = pagination ? pagination : paginationDefault;
+    pager.paginationState = { ...pager };
+
     let source = dataSource && dataSource?.length ? getDataSource(dataSource, filterBy, uid) : dataSource;
     const columns = this.getConfigColumns();
 
@@ -282,7 +282,7 @@ class DynamicTable extends React.PureComponent {
         locale={{
           emptyText: <Empty image={Empty.PRESENTED_IMAGE_DEFAULT} description="Журнал пуст" />,
         }}
-        pagination={pagination}
+        pagination={pager}
         size={tableSize}
         scroll={{ y: height }}
         onChange={this.handleTableChange}

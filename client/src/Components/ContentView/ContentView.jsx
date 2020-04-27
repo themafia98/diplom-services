@@ -58,29 +58,9 @@ class ContentView extends React.Component {
     dashboardStrem.off('EventUpdate', this.updateFunction);
   };
 
-  getBackground(module) {
-    switch (module) {
-      case 'mainModule':
-        return this.checkBackground('mainModule');
-      case 'cabientModule':
-        return this.checkBackground('cabinetModule');
-      case 'taskModule':
-        return this.checkBackground('taskModule');
-      case 'contactModule':
-        return this.checkBackground('contactModule');
-      case 'customersModule':
-        return this.checkBackground('customersModule');
-      case 'settingsModule':
-        return this.checkBackground('settingsModule');
-      case 'statisticModule':
-        return this.checkBackground('statisticModule');
-      case 'wikiModule':
-        return this.checkBackground('wikiModule');
-      default: {
-        break;
-      }
-    }
-  }
+  getBackground = (moduleName) => {
+    return this.checkBackground(moduleName);
+  };
 
   /**
    * @param {string} path

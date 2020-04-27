@@ -1,5 +1,5 @@
 import { NextFunction, Response, Request } from 'express';
-import _ from 'lodash';
+
 import { App, Params } from '../../Utils/Interfaces';
 import { ParserResult, ResRequest } from '../../Utils/Types';
 
