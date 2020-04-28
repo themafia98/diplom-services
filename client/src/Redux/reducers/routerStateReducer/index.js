@@ -110,7 +110,7 @@ export default (state = initialState, action) => {
         stateList = null,
         params: paramsAction = {},
         loading,
-        isShouldValidation = false,
+        shoudParseToUniq = false,
       } = action?.payload;
 
       if (stateList && Array.isArray(stateList) && multiple) {
@@ -128,10 +128,10 @@ export default (state = initialState, action) => {
 
           const isExists = state.routeData[path] && state.routeData[path][storeName];
           if (isExists && actionItem[storeName]) {
-            const currentTasks = actionItem[storeName];
-            const prevTasks = state.routeData[path][storeName];
+            const currentItems = actionItem[storeName];
+            const prevItems = state.routeData[path][storeName];
 
-            items = isShouldValidation ? validationItems(currentTasks, prevTasks) : currentTasks;
+            items = shoudParseToUniq ? validationItems(currentItems, prevItems) : currentItems;
           }
           const isEmptyParams = JSON.stringify(paramsAction) === '{}' && state.routeData[path];
           const params = isEmptyParams ? state.routeData[path]?.params : paramsAction;
@@ -189,12 +189,12 @@ export default (state = initialState, action) => {
       storeName = storeName[storeName.length] !== 's' ? `${storeName}s` : storeName;
 
       if (copyRouteData[path][storeName] && state.routeData[path] && state.routeData[path][storeName]) {
-        const currentTasks = copyRouteData[path]?.tasks;
-        const prevTasks = state.routeData[path].tasks;
+        const currenItems = copyRouteData[path][storeName];
+        const prevItems = state.routeData[path][storeName];
 
-        const tasks = isShouldValidation
-          ? validationItems(currentTasks, prevTasks)
-          : copyRouteData[path]?.tasks;
+        const items = shoudParseToUniq
+          ? validationItems(currenItems, prevItems)
+          : copyRouteData[path][storeName];
 
         const currentStateData = state.routeData[path] ? { ...state.routeData[path] } : {};
         copyRouteData = {
@@ -205,7 +205,7 @@ export default (state = initialState, action) => {
             shouldUpdate: false,
             load: true,
             loading,
-            tasks,
+            [storeName]: items,
           },
         };
       }
