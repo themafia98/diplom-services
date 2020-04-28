@@ -20,7 +20,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
 
   let isLocalUpdate = true;
   const primaryKey = 'uuid';
-  const pathValid = path.includes('_') ? path.split('_')[0] : path.split('__')[0];
+  const pathValid = path.includes('_') ? path : path.split('__')[0];
   const router = getState().router;
 
   const { requestError, status = 'online' } = getState().publicReducer;
@@ -106,7 +106,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
 };
 
 const multipleLoadData = (params) => async (dispatch, getState, { schema, Request, clientDB }) => {
-  const { requestsParamsList = [], pipe = true } = params;
+  const { requestsParamsList = [], pipe = true, saveModuleName = '' } = params;
 
   const primaryKey = 'uuid';
   const { requestError, status = 'online' } = getState().publicReducer;
@@ -131,10 +131,11 @@ const multipleLoadData = (params) => async (dispatch, getState, { schema, Reques
           options = {},
           noCorsClient = false,
           sortBy = '',
-          path = '',
+          path: pathName = '',
         } = requestParam;
+        const path = saveModuleName ? saveModuleName : pathName;
         let isLocalUpdate = true;
-        const pathValid = path.includes('_') ? path.split('_')[0] : path.split('__')[0];
+        const pathValid = path.includes('_') ? path : path.split('__')[0];
 
         const normalizeReqPath = getNormalizedPath(useStore, {
           xhrPath,
@@ -179,6 +180,7 @@ const multipleLoadData = (params) => async (dispatch, getState, { schema, Reques
         } catch (error) {}
       }
       let hookData = [];
+
       for await (let res of responseList) {
         const { dep } = res;
         const resultHook = await coreUpdaterDataHook(dispatch, dep, true);

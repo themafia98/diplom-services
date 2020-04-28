@@ -42,7 +42,7 @@ class CreateNews extends React.PureComponent {
   onPublish = async (contentState) => {
     const { statusApp = '', udata: { displayName = '', _id: uid = '' } = {} } = this.props;
     const { titleNews = '' } = this.state;
-    const { Request } = this.context;
+
     if (!contentState) {
       return message.error('Ничего не найдено');
     }

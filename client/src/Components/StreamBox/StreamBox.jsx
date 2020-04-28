@@ -112,13 +112,9 @@ class StreamBox extends React.Component {
         personalUid = null,
         udata: { _id = '' } = {},
       } = this.props;
-
       const uid = !personalUid ? _id : personalUid;
       const shouldUpdatePrivate = setCounter && visiblePopover && !isLoadPopover;
 
-      /**
-       * @type {{ [x: string]: number | string }}
-       */
       let methodQuery = filterStream && uid ? { [filterStream]: uid } : {};
       if (type.includes('private') && _.isEmpty(methodQuery)) return;
 
@@ -141,7 +137,7 @@ class StreamBox extends React.Component {
       } = res;
 
       await onMultipleLoadData({
-        requestsParamsList: buildRequestList(metadata, '#public'),
+        requestsParamsList: buildRequestList(metadata, '#notification'),
         pipe: true,
       });
 
@@ -161,7 +157,7 @@ class StreamBox extends React.Component {
         return this.setState({ streamList: metadata, isLoading: true });
       }
 
-      const path = type === 'private' ? `${streamModule}#private` : `${streamModule}#public`;
+      const path = type === 'private' ? `${streamModule}#private` : `${streamModule}#notification`;
 
       await onSaveComponentState({
         [streamStore]:
@@ -196,7 +192,8 @@ class StreamBox extends React.Component {
       type: typeStream = '',
     } = this.props;
 
-    const nameModuleStream = typeStream === 'private' ? `${streamModule}#private` : `${streamModule}#public`;
+    const nameModuleStream =
+      typeStream === 'private' ? `${streamModule}#private` : `${streamModule}#notification`;
 
     const streamList = store
       ? routeData[nameModuleStream] && routeData[nameModuleStream][streamStore]

@@ -99,12 +99,13 @@ class TableView extends React.Component {
     } = this.props;
 
     const { routeData } = router;
-    const routePathData = router.currentActionTab.split('_')[0];
-    const currentData = routeData[routePathData];
+    const routePathData = router.currentActionTab;
+    let currentData = routeData[routePathData];
 
     const height = heightProps - 250;
 
     if (path === 'mainModule__table' && visible) {
+      currentData = path && routeData[path] ? routeData[path] : currentData;
       const isUsers = currentData && currentData.users;
       const isLoad = currentData && currentData.load;
 

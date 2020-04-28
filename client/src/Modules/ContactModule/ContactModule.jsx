@@ -37,7 +37,7 @@ class ContactModule extends React.PureComponent {
   componentDidUpdate = () => {
     const { router: { shouldUpdate = false, routeData = {} } = {}, path, onLoadCurrentData } = this.props;
 
-    if (path === 'contactModule_feedback' && shouldUpdate && routeData[path.split('_')[0]]?.load) {
+    if (path === 'contactModule_feedback' && shouldUpdate && routeData[path]?.load) {
       onLoadCurrentData({
         path,
         storeLoad: 'news',
@@ -94,7 +94,7 @@ class ContactModule extends React.PureComponent {
 
     const linkPath = _.isString(path) ? path.split('__')[1] || '' : '';
     const data = routeData[path] || routeData[linkPath] || {};
-    const { load = false, news = [] } = routeData['contactModule'] || {};
+    const { load = false, news = [] } = routeData[path] || {};
 
     const entityLinkProps =
       linkPath && path.includes('___link')
@@ -115,6 +115,7 @@ class ContactModule extends React.PureComponent {
             isLoading={!load && !news.length}
             key="newsModule"
             isBackground={isBackgrounNews}
+            path={path}
             visible={path === 'contactModule_feedback'}
           />
         </TabContainer>

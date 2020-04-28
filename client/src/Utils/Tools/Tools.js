@@ -11,9 +11,10 @@ const createNotification = async (type = '', body = {}) => {
 const createEntity = async (storeName = '', body = {}, sliceCreaterNumber = 0) => {
   if (!storeName || _.isEmpty(body)) return;
   const rest = new Request();
-  const createPath = `${storeName[0].toUpperCase()}${storeName.slice(1)}}`;
+
+  const createPath = `${storeName[0].toUpperCase()}${storeName.slice(1)}`;
   return await rest.sendRequest(
-    `/${storeName}/create${createPath.slice(0, sliceCreaterNumber)}`,
+    `/${storeName}/create${createPath.slice(0, sliceCreaterNumber ? sliceCreaterNumber : createPath.length)}`,
     'POST',
     body,
     true,

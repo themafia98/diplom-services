@@ -54,7 +54,7 @@ export default (state = initialState, action) => {
       const copyRouteData = { ...state.routeData };
       const {
         activePage = {},
-        routeDataActive = {},
+        routeDataActive: RDA = {},
         routeDataActive: { key: keyRouteData = '', _id: id = '' } = {},
       } = action.payload || {};
 
@@ -66,17 +66,28 @@ export default (state = initialState, action) => {
         return { ...state };
       }
 
-      const { path = '' } = activePage || {};
+      const { path: pathPage = '' } = activePage || {};
+
+      const linkEntity = pathPage.includes('___link') && pathPage.split('__')[1];
+      let path = pathPage;
+      let currentActionTab = path;
+
+      if (linkEntity) {
+        const pathLink = linkEntity ? pathPage.split('___link')[0] : pathPage;
+        const moduleName = pathLink.split('#')[0];
+        currentActionTab = `${moduleName}__${linkEntity}`;
+      }
+
       if (!path) return { ...state };
 
       const validKey = keyRouteData || id || 'undefiendModule';
-
-      copyRouteData[validKey] = !_.isString(routeDataActive) ? routeDataActive : {};
+      const routeDataActive = !_.isString(RDA) ? RDA : state.routeData[path] || {};
+      copyRouteData[validKey] = !_.isString(RDA) ? RDA : state.routeData[path] || {};
 
       return {
         ...state,
-        currentActionTab: path,
-        actionTabs: [...state.actionTabs, path],
+        currentActionTab,
+        actionTabs: [...state.actionTabs, currentActionTab],
         routeDataActive: { ...routeDataActive },
         routeData: copyRouteData,
       };
@@ -111,15 +122,21 @@ export default (state = initialState, action) => {
         params: paramsAction = {},
         loading,
         shoudParseToUniq = false,
+        path: pathAction = '',
+        isPartData = false,
+        shouldUpdate = false,
       } = action?.payload;
+      const isLink = pathAction.includes('__link') && pathAction.split('__')[1];
+      const pathLink = isLink ? pathAction.split('__')[1] : pathAction;
+      const path = pathLink.split('__link')[0];
 
       if (stateList && Array.isArray(stateList) && multiple) {
         const modulesState = stateList.reduce((newState, actionItem) => {
           const { path = '' } = actionItem;
 
-          let storeName = path.split('Module')[0];
+          let storeName = path ? path.split('Module')[0] : '';
           storeName = storeName[storeName.length] !== 's' ? `${storeName}s` : storeName;
-
+          if (!storeName) return newState;
           let items = actionItem[storeName];
 
           if (!actionItem[storeName] && storeName.includes('contact')) {
@@ -136,22 +153,25 @@ export default (state = initialState, action) => {
           const isEmptyParams = JSON.stringify(paramsAction) === '{}' && state.routeData[path];
           const params = isEmptyParams ? state.routeData[path]?.params : paramsAction;
           const currentStateData = state.routeData[path] ? { ...state.routeData[path] } : {};
-          return {
-            ...newState,
-            [path]: {
-              ...currentStateData,
-              ...actionItem,
-              [storeName]: items,
-              shouldUpdate: false,
-              loading,
-              params,
-            },
-          };
+
+          if (path)
+            return {
+              ...newState,
+              [path]: {
+                ...currentStateData,
+                ...actionItem,
+                [storeName]: items,
+                shouldUpdate: false,
+                loading,
+                params,
+              },
+            };
+          else return newState;
         }, {});
 
         const shouldUpdateList = Object.keys(state.routeData).every((key) => {
-          if (stateList.some((actionItem) => key === actionItem.path)) {
-            return state.routeData[key].load;
+          if (stateList.some((actionItem) => actionItem?.path && key === actionItem.path)) {
+            return state.routeData[key]?.load;
           }
           return true;
         });
@@ -167,17 +187,6 @@ export default (state = initialState, action) => {
         }
       }
 
-      const { isPartData = false, shouldUpdate = false, path: pathAction = '' } = action.payload;
-
-      let path = pathAction;
-      let pathParse = path.split('_');
-      if (
-        pathParse[0] === 'taskModule' &&
-        pathParse[1] &&
-        (pathParse[1] === 'myTasks' || pathParse[1] === 'all')
-      ) {
-        path = pathParse[0];
-      }
       copyRouteData[path] = action.payload;
       if (action.payload.mode === 'offline') copyRouteData[path].mode = 'offlineLoading';
       else if (action.payload.mode === 'online' && copyRouteData[path].mode === 'offlineLoading') {
@@ -197,6 +206,7 @@ export default (state = initialState, action) => {
           : copyRouteData[path][storeName];
 
         const currentStateData = state.routeData[path] ? { ...state.routeData[path] } : {};
+
         copyRouteData = {
           ...copyRouteData,
           [path]: {
@@ -218,15 +228,17 @@ export default (state = initialState, action) => {
         shouldUpdate: false,
         loading,
       };
-      return {
-        ...state,
-        path,
-        routeData: copyRouteData,
-        load: action.payload.load,
-        isPartData: isNewPartData ? isPartData : state.isPartData,
-        partDataPath: isNewPartData ? path : state.partDataPath,
-        shouldUpdate,
-      };
+      if (path)
+        return {
+          ...state,
+          path,
+          routeData: copyRouteData,
+          load: action.payload.load,
+          isPartData: isNewPartData ? isPartData : state.isPartData,
+          partDataPath: isNewPartData ? path : state.partDataPath,
+          shouldUpdate,
+        };
+      else return state;
     }
 
     case UPDATE_ITEM: {
@@ -299,7 +311,7 @@ export default (state = initialState, action) => {
     }
     case SET_ACTIVE_TAB: {
       const content = action.payload.split('__')[1];
-      const selectModule = action.payload.split('_')[0];
+      const selectModule = action.payload;
       let currentActive = null;
       let isDataPage = false;
       if (content) {
@@ -342,6 +354,7 @@ export default (state = initialState, action) => {
 
       return {
         ...state,
+        path: action.payload,
         currentActionTab: action.payload,
         routeDataActive: isDataPage
           ? { ...currentActive }
@@ -419,7 +432,7 @@ export default (state = initialState, action) => {
       } catch {
         current = {};
       }
-      const selectModule = nextTab.split('_')[0] || nextTab.split('__')[1] || nextTab;
+      const selectModule = nextTab ? nextTab || nextTab.split('__')[1] || nextTab : nextTab;
 
       return {
         ...state,

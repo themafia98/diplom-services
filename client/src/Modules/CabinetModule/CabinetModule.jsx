@@ -165,11 +165,10 @@ class CabinetModule extends React.PureComponent {
             <p className="lastActivity">Последняя активность</p>
             <StreamBox
               type="global"
+              prefix="#notification"
               isSingleLoading={true}
               streamStore="streamList"
               streamModule="cabinetModule"
-              store="redux"
-              onSaveComponentState={onSaveComponentState}
               filterStream="uidCreater"
               personalUid={isPersonal ? uidUser : null}
               boxClassName="streamActivityCabinet"

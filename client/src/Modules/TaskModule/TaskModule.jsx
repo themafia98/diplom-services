@@ -53,12 +53,13 @@ class TaskModule extends React.PureComponent {
     const { height } = this.state;
     const { onShowLoader } = loaderMethods;
 
-    const isEmptyTasks = _.isEmpty(routeData[path.split('_')[0]]);
-
+    const isEmptyTasks = _.isEmpty(routeData[path]);
+    const isTaskModule = path && path.includes('task') && !path.split('__')[1];
     if (_.isNull(height) && !_.isNull(this.moduleTask) && visible) {
       this.recalcHeight();
     }
-    if (visible) {
+
+    if (visible && isTaskModule) {
       const saveData = {
         current: 1,
         pageSize: limitList,
@@ -89,15 +90,27 @@ class TaskModule extends React.PureComponent {
     const {
       visible,
       router: { shouldUpdate = false, routeData = {} },
+      path = '',
     } = this.props;
-
+    const { isListCounterLoading = false } = this.state;
+    const { config: { task: { limitList = 10 } = {} } = {} } = this.context;
     if (!_.isNull(this.moduleTask) && !_.isNull(this.controller) && visible) {
       this.recalcHeight();
     }
-    const shouldUpdateList = routeData['taskModule'] && routeData['taskModule']?.shouldUpdate;
-    if ((shouldUpdate && visible && !routeData['taskModule']?.load) || (visible && shouldUpdateList)) {
-      const { saveData = {} } = routeData['taskModule'];
+    const isTaskModule = path && path.includes('task') && !path.split('__')[1];
 
+    const shouldUpdateList = visible && isTaskModule && routeData[path] && routeData[path]?.shouldUpdate;
+    const isUnloadModule = shouldUpdate && visible && !routeData[path]?.load;
+    const isUndefiend = visible && !routeData[path];
+
+    if (!isListCounterLoading && isTaskModule && (isUnloadModule || shouldUpdateList || isUndefiend)) {
+      const { saveData: saveDataState = null } = routeData[path] || {};
+      const saveData = saveDataState
+        ? saveDataState
+        : {
+            current: 1,
+            pageSize: limitList,
+          };
       this.fetchTaskModule(null, saveData);
     }
   };
@@ -114,27 +127,38 @@ class TaskModule extends React.PureComponent {
           saveData,
         };
 
-    try {
-      const rest = new Request();
-      const res = await rest.sendRequest('/tasks/listCounter', 'GET', null, true);
-      if (res.status !== 200) throw new Error('Bad list');
-      const { data: { response: { metadata = 0 } = {} } = {} } = res || {};
-      if (counter !== metadata)
-        this.setState({
-          counter: metadata,
-        });
-    } catch (error) {
-      console.error(error);
-    }
+    this.setState(
+      {
+        isListCounterLoading: true,
+      },
+      async () => {
+        try {
+          const rest = new Request();
+          const res = await rest.sendRequest('/tasks/listCounter', 'GET', null, true);
+          if (res.status !== 200) throw new Error('Bad list');
+          const { data: { response: { metadata = 0 } = {} } = {} } = res || {};
+          if (counter !== metadata)
+            this.setState({
+              counter: metadata,
+            });
+        } catch (error) {
+          console.error(error);
+        }
 
-    onLoadCurrentData({
-      path,
-      storeLoad: 'tasks',
-      useStore: true,
-      methodRequst: 'POST',
-      shoudParseToUniq: true,
-      options,
-    });
+        await onLoadCurrentData({
+          path,
+          storeLoad: 'tasks',
+          useStore: true,
+          methodRequst: 'POST',
+          shoudParseToUniq: true,
+          options,
+        });
+
+        this.setState({
+          isListCounterLoading: false,
+        });
+      },
+    );
   };
 
   recalcHeight = () => {
@@ -214,7 +238,7 @@ class TaskModule extends React.PureComponent {
 
       const route = routeParser({ pageType: 'moduleItem', path });
       const isBackgroundTaskViewModule = _.isObject(route) && !_.isNull(route);
-      const moduleName = path.split('_')[0];
+      const moduleName = path;
       const key = path.split('__')[1];
 
       return (
