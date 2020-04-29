@@ -109,6 +109,7 @@ function renderDescription(theme = 'default') {
         <Descriptions.Item label="Исполнитель">
           {modeControll === 'default' ? (
             <Output
+              typeOutput="link"
               depModuleName={depModuleName}
               router={router}
               links={filteredUsers?.length ? filteredUsers : cachesEditorList}

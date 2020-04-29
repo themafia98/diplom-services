@@ -195,6 +195,26 @@ class Output extends React.PureComponent {
     });
   };
 
+  renderDefault = (list, className, isLink, value) => {
+    return (
+      <>
+        {list ? (
+          <div
+            className="output-list-wrapper"
+            ref={this.childRef}
+            className={clsx(className ? className : null, 'list-mode', isLink ? 'link' : null)}
+          >
+            {value}
+          </div>
+        ) : (
+          <span ref={this.childRef} className={clsx(className ? className : null, isLink ? 'link' : null)}>
+            {value}
+          </span>
+        )}
+      </>
+    );
+  };
+
   render() {
     const {
       links = null,
@@ -243,21 +263,8 @@ class Output extends React.PureComponent {
               >
                 {value}
               </Button>
-            ) : list ? (
-              <div
-                className="output-list-wrapper"
-                ref={this.childRef}
-                className={clsx(className ? className : null, 'list-mode', isLink ? 'link' : null)}
-              >
-                {value}
-              </div>
             ) : (
-              <span
-                ref={this.childRef}
-                className={clsx(className ? className : null, isLink ? 'link' : null)}
-              >
-                {value}
-              </span>
+              this.renderDefault(list, className, isLink, value)
             )}
           </div>
         </td>
@@ -281,18 +288,8 @@ class Output extends React.PureComponent {
             >
               {value}
             </Button>
-          ) : list ? (
-            <div
-              className="output-list-wrapper"
-              ref={this.childRef}
-              className={clsx(className ? className : null, 'list-mode', isLink ? 'link' : null)}
-            >
-              {value}
-            </div>
           ) : (
-            <span ref={this.childRef} className={clsx(className ? className : null, isLink ? 'link' : null)}>
-              {value}
-            </span>
+            this.renderDefault(list, className, isLink, value)
           )}
         </div>
       );

@@ -1,4 +1,4 @@
-import { Model, Document } from 'mongoose';
+import { Model, Document, Types, FilterQuery } from 'mongoose';
 import { ActionParams, Actions, Action } from '../../../Utils/Interfaces';
 import { ParserData } from '../../../Utils/Types';
 import Utils from '../../../Utils';
@@ -68,6 +68,18 @@ class ActionTasks implements Action {
     return this.getEntity().getAll(model, paramsList, <number | null>limitList, skip);
   }
 
+  public async getTaskCount(model: Model<Document>, actionParam: ActionParams): ParserData {
+    const { filterCounter = null } = actionParam as Record<string, null | string>;
+    if (!Types.ObjectId(<string>filterCounter)) return null;
+
+    const query: FilterQuery<object> = !filterCounter
+      ? {}
+      : {
+          $or: [{ editor: { $elemMatch: { $eq: filterCounter } } }, { uidCreater: filterCounter }],
+        };
+    return await this.getEntity().getCounter(model, query);
+  }
+
   public async run(actionParam: ActionParams): ParserData {
     const model: Model<Document> | null = getModelByName('tasks', 'task');
     if (!model) return null;
@@ -80,7 +92,7 @@ class ActionTasks implements Action {
       case 'set_single':
         return this.createSingleTask(actionParam, model);
       case 'list_counter':
-        return await this.getEntity().getCounter(model);
+        return await this.getTaskCount(model, actionParam);
       default: {
         if (typeAction.includes('update_')) return this.update(actionParam, model, typeAction);
         return null;

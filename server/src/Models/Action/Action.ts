@@ -1,5 +1,5 @@
 import { ActionProps, ActionParams, Actions, Action } from '../../Utils/Interfaces';
-import { Model, Document, Mongoose, mongo, Types } from 'mongoose';
+import { Model, Document, Mongoose, mongo, Types, FilterQuery } from 'mongoose';
 import _ from 'lodash';
 import ActionEntity from './ActionEntity';
 import { ParserData, limiter, OptionsUpdate } from '../../Utils/Types';
@@ -22,8 +22,8 @@ namespace Action {
       super(props);
     }
 
-    public async getCounter(model: Model<Document>): Promise<number> {
-      return await model.collection.count();
+    public async getCounter(model: Model<Document>, query: FilterQuery<any>): Promise<number> {
+      return await model.collection.countDocuments(query);
     }
 
     public async getAll(

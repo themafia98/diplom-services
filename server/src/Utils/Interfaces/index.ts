@@ -10,7 +10,7 @@ import nodemailer, { SendMailOptions, Transporter, createTransport } from 'nodem
 import { Dropbox, files } from 'dropbox';
 import { transOptions, ParserData, ParserResult } from '../Types';
 import socketio from 'socket.io';
-import mongoose, { Mongoose, Connection, Model, Document } from 'mongoose';
+import mongoose, { Mongoose, Connection, Model, Document, FilterQuery } from 'mongoose';
 import Database from '../../Models/Database';
 
 export interface ServerRun {
@@ -193,7 +193,7 @@ export interface Action {
 }
 
 export interface Actions extends EntityActionApi {
-  getCounter(model: Model<Document>): Promise<number>;
+  getCounter(model: Model<Document>, query: FilterQuery<any>): Promise<number>;
   getAll(
     model: Model<Document>,
     actionParam: ActionParams,

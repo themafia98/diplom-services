@@ -56,8 +56,10 @@ namespace Tasks {
       }
     }
 
+    @Post({ path: '/listCounter', private: true })
     @Get({ path: '/listCounter', private: true })
     public async getListCounter(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+      const { filterCounter = null } = req?.body || {}; // uid
       const { dbm } = server.locals;
       const params: Params = {
         methodQuery: 'list_counter',
@@ -75,7 +77,9 @@ namespace Tasks {
           actionType: 'list_counter',
         });
 
-        const data: ParserResult = await listCounterAction.getActionData({});
+        const data: ParserResult = await listCounterAction.getActionData(
+          !filterCounter ? {} : { filterCounter },
+        );
 
         if (!data) {
           params.done = false;
