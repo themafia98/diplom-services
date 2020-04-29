@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { tableViewType } from './types';
 import { connect } from 'react-redux';

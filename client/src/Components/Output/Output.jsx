@@ -30,29 +30,56 @@ class Output extends React.PureComponent {
 
   componentDidMount = () => {
     const { showTooltip, widthChild, widthParent } = this.state;
-    const { typeOutput } = this.props;
+    const { typeOutput, children: child } = this.props;
+    const isDefaultList = _.isArray(child) && typeOutput === 'default';
     if (_.isNull(widthChild) && _.isNull(widthParent) && !showTooltip && this.child && this.parent) {
-      const children = typeOutput === 'link' ? this.child?.buttonNode?.firstChild : this.child;
+      let children =
+        typeOutput === 'link'
+          ? this.child?.buttonNode?.firstChild
+          : this.child?.buttonNode
+          ? this.child?.buttonNode
+          : this.child;
 
-      const childW = children.getBoundingClientRect().width;
-      const parentW = this.parent.getBoundingClientRect().width;
-      this.setState({
-        ...this.state,
-        showTooltip: childW > parentW,
-        widthChild: childW,
-        widthParent: parentW,
-      });
+      const childW =
+        children && !isDefaultList
+          ? children.getBoundingClientRect().width
+          : isDefaultList && children
+          ? Array.from(children?.children).reduce((total, elem) => total + elem?.offsetWidth, 0)
+          : null;
+      const parentW = this.parent ? this.parent.getBoundingClientRect().width : null;
+
+      if (!_.isNull(childW) && !_.isNull(parentW))
+        this.setState({
+          ...this.state,
+          showTooltip: childW > parentW,
+          widthChild: childW,
+          widthParent: parentW,
+        });
     }
   };
 
   componentDidUpdate = () => {
     const { showTooltip, widthChild, widthParent } = this.state;
-    const { typeOutput } = this.props;
-    if (!_.isNull(widthChild) && !_.isNull(widthParent) && this.child && this.parent) {
-      const children = typeOutput === 'link' ? this.child?.buttonNode?.firstChild : this.child;
+    const { typeOutput, children: child } = this.props;
 
-      const childW = children.getBoundingClientRect().width;
-      const parentW = this.parent.getBoundingClientRect().width;
+    const isDefaultList = _.isArray(child) && typeOutput === 'default';
+    if (!_.isNull(widthChild) && !_.isNull(widthParent) && this.child && this.parent) {
+      const children =
+        typeOutput === 'link'
+          ? this.child?.buttonNode?.firstChild
+          : this.child?.buttonNode
+          ? this.child?.buttonNode
+          : this.child;
+
+      const childW =
+        children && !isDefaultList
+          ? children.getBoundingClientRect().width
+          : isDefaultList && children
+          ? Array.from(children?.children).reduce((total, elem) => total + elem?.offsetWidth, 0)
+          : null;
+      const parentW = this.parent ? this.parent.getBoundingClientRect().width : null;
+
+      if (_.isNull(childW) || _.isNull(parentW)) return;
 
       const showTooltipUpdate = childW > parentW;
 
@@ -121,35 +148,49 @@ class Output extends React.PureComponent {
   };
 
   renderLinks = (item = '') => {
-    const { isLoad = false } = this.props;
+    const { isLoad = false, typeOutput = '' } = this.props;
     if ((!isLoad && Array.isArray(item) && !item.length) || !item) return <Spin size="small" />;
 
     if (!Array.isArray(item)) {
       const { displayName = '', _id: id = '' } = item || {};
 
       return (
-        <Button
-          onKeyDown={id ? this.onOpenLink.bind(this, { id, action: 'cabinet' }) : null}
-          type="link"
-          key={`${id}-editor`}
-          className="editor"
-        >
-          {displayName}
-        </Button>
+        <>
+          {typeOutput && typeOutput !== 'default' ? (
+            <Button
+              onKeyDown={id ? this.onOpenLink.bind(this, { id, action: 'cabinet' }) : null}
+              type="link"
+              key={`${id}-editor`}
+              className="editor"
+            >
+              {displayName}
+            </Button>
+          ) : (
+            <span> {displayName}</span>
+          )}
+        </>
       );
     }
 
     return item.map((it, index) => {
       const { displayValue = '', displayName = '', _id = '', id = '' } = it || {};
       return (
-        <Button
-          onClick={id || _id ? this.onOpenLink.bind(this, { id: id ? id : _id, action: 'cabinet' }) : null}
-          type="link"
-          key={`${index}${id ? id : _id}`}
-          className="editor"
-        >
-          {displayValue || displayName}
-        </Button>
+        <>
+          {typeOutput && typeOutput !== 'default' ? (
+            <Button
+              onClick={
+                id || _id ? this.onOpenLink.bind(this, { id: id ? id : _id, action: 'cabinet' }) : null
+              }
+              type="link"
+              key={`${index}${id ? id : _id}`}
+              className="editor"
+            >
+              {displayValue || displayName}
+            </Button>
+          ) : (
+            <span> {displayValue || displayName}</span>
+          )}
+        </>
       );
     });
   };
@@ -169,6 +210,7 @@ class Output extends React.PureComponent {
     } = this.props;
     const { showTooltip } = this.state;
     let value = children;
+
     if (links || isStaticList) {
       if (Array.isArray(children)) {
         const linksList = !isStaticList
@@ -186,13 +228,13 @@ class Output extends React.PureComponent {
             });
 
         value = this.renderLinks(linksList);
-      } else return this.renderLinks(links.find((link) => link?._id === children));
+      } else if (links) return this.renderLinks(links.find((link) => link?._id === children));
     }
     if (type === 'table') {
       const output = (
         <td>
           <div className={clsx('output', typeOutput ? 'withType' : null)} ref={this.parentRef}>
-            {typeOutput ? (
+            {typeOutput && typeOutput !== 'default' ? (
               <Button
                 onClick={this.onOpenLink.bind(this, { action, id })}
                 type={typeOutput}
@@ -201,14 +243,18 @@ class Output extends React.PureComponent {
               >
                 {value}
               </Button>
+            ) : list ? (
+              <div
+                className="output-list-wrapper"
+                ref={this.childRef}
+                className={clsx(className ? className : null, 'list-mode', isLink ? 'link' : null)}
+              >
+                {value}
+              </div>
             ) : (
               <span
                 ref={this.childRef}
-                className={clsx(
-                  className ? className : null,
-                  list ? 'list-mode' : null,
-                  isLink ? 'link' : null,
-                )}
+                className={clsx(className ? className : null, isLink ? 'link' : null)}
               >
                 {value}
               </span>
@@ -226,7 +272,7 @@ class Output extends React.PureComponent {
     } else {
       const output = (
         <div className="output" ref={this.parentRef}>
-          {typeOutput ? (
+          {typeOutput && typeOutput !== 'default' ? (
             <Button
               onClick={this.onOpenLink.bind(this, { action, id })}
               type={typeOutput}
@@ -235,15 +281,16 @@ class Output extends React.PureComponent {
             >
               {value}
             </Button>
-          ) : (
-            <span
+          ) : list ? (
+            <div
+              className="output-list-wrapper"
               ref={this.childRef}
-              className={clsx(
-                className ? className : null,
-                list ? 'list-mode' : null,
-                isLink ? 'link' : null,
-              )}
+              className={clsx(className ? className : null, 'list-mode', isLink ? 'link' : null)}
             >
+              {value}
+            </div>
+          ) : (
+            <span ref={this.childRef} className={clsx(className ? className : null, isLink ? 'link' : null)}>
               {value}
             </span>
           )}

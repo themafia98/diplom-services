@@ -34,7 +34,15 @@ class DynamicTable extends React.PureComponent {
   };
 
   getConfigColumns = () => {
-    const { router: { path = '' } = {} } = this.props;
+    const {
+      router: { path = '' } = {},
+      router,
+      depModuleName,
+      udata,
+      filteredUsers,
+      cachesAuthorList,
+      cachesEditorList,
+    } = this.props;
     const {
       router: { routeData: { [path]: { saveData: { sortedInfo = [] } = {} } = {} } = {} } = {},
     } = this.props;
@@ -118,7 +126,23 @@ class DynamicTable extends React.PureComponent {
         sortOrder: sortedInfo && sortedInfo.columnKey === 'editor' && sortedInfo.order,
         sortDirections: ['descend', 'ascend'],
         render: (text, row, index) => {
-          return <Output key={`${text}${row}${index}editor`}>{text}</Output>;
+          debugger;
+          console.log(text);
+          return (
+            <Output
+              key={`${text}${row}${index}editor`}
+              depModuleName={depModuleName}
+              router={router}
+              links={filteredUsers?.length ? filteredUsers : cachesEditorList}
+              isLink={filteredUsers?.length ? Boolean(filteredUsers) : Boolean(cachesAuthorList)}
+              list={true}
+              udata={udata}
+              isLoad={true}
+              isStaticList={true}
+            >
+              {text.split('-')}
+            </Output>
+          );
         },
         ...this.getColumn('editor'),
       },
@@ -194,7 +218,16 @@ class DynamicTable extends React.PureComponent {
         setTimeout(() => this.searchInput.select());
       }
     },
-    render: (text) => {
+    render: (text, currentData) => {
+      const {
+        router: { path = '' } = {},
+        router,
+        depModuleName,
+        udata,
+        filteredUsers,
+        cachesAuthorList,
+        cachesEditorList,
+      } = this.props;
       const isDateString = _.isArray(text) && moment(text[0], 'DD.MM.YYYY')?._isValid;
       const isArrayEditors = _.isArray(text) && !isDateString;
       const className =
@@ -207,10 +240,40 @@ class DynamicTable extends React.PureComponent {
           : text === 'Выполнен'
           ? 'done'
           : null;
+      const usersList = router?.routeData['mainModule__table']?.users;
+      const listKeys = Object.keys(currentData);
+      const index = listKeys.findIndex((key) => currentData[key] === text);
+      const currentKey = listKeys[index] || null;
+      const isEditor = currentKey === 'editor';
+      let propsOutput = isEditor
+        ? {
+            typeOutput: 'default',
+            depModuleName,
+            router,
+            links: usersList,
+            list: true,
+            udata: udata,
+            isLoad: true,
+            isStaticList: true,
+          }
+        : {};
+
+      const children =
+        isEditor && _.isArray(text)
+          ? text
+              .map((id) => {
+                return usersList.find((it) => it?._id === id);
+              })
+              .filter(Boolean)
+          : isArrayEditors
+          ? text.join(' , ')
+          : isDateString
+          ? text.join(' - ')
+          : text;
 
       return (
-        <Output className={className}>
-          {isArrayEditors ? text.join(' , ') : isDateString ? text.join(' - ') : text}
+        <Output {...propsOutput} className={className ? className : currentKey}>
+          {children}
         </Output>
       );
     },
@@ -296,7 +359,7 @@ class DynamicTable extends React.PureComponent {
 
     let source = dataSource && dataSource?.length ? getDataSource(dataSource, filterBy, uid) : dataSource;
     const columns = this.getConfigColumns();
-
+    console.log(columns);
     return (
       <Table
         locale={{
