@@ -22,6 +22,7 @@ function renderDescription(theme = 'default') {
     accessPriority,
     setCurrentTab,
     filteredUsers,
+    depModuleName,
     modeControll,
     accessStatus,
     uidCreater,
@@ -91,7 +92,7 @@ function renderDescription(theme = 'default') {
           <Output
             className="author"
             typeOutput="link"
-            depModuleName="mainModule"
+            depModuleName={depModuleName}
             router={router}
             links={filteredUsers?.length ? filteredUsers : cachesEditorList}
             isLink={filteredUsers?.length ? Boolean(filteredUsers) : Boolean(cachesAuthorList)}
@@ -108,7 +109,7 @@ function renderDescription(theme = 'default') {
         <Descriptions.Item label="Исполнитель">
           {modeControll === 'default' ? (
             <Output
-              depModuleName="mainModule"
+              depModuleName={depModuleName}
               router={router}
               links={filteredUsers?.length ? filteredUsers : cachesEditorList}
               isLink={filteredUsers?.length ? Boolean(filteredUsers) : Boolean(cachesEditorList)}

@@ -33,7 +33,7 @@ namespace Chat {
   @Controller('/chat')
   export class ChatController {
     @Post({ path: '/loadChats', private: true })
-    public async loadChats(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    public async loadChats(req: Request, res: Response): ResRequest {
       const { body: { actionPath = '', actionType = '', queryParams: params = {} } = {} } = req;
 
       try {
@@ -56,7 +56,7 @@ namespace Chat {
     }
 
     @Put({ path: '/createRoom', private: true })
-    public async createRoom(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    public async createRoom(req: Request, res: Response): ResRequest {
       const { body: { actionPath = '', actionType = '', queryParams: params = {} } = {} } = req;
 
       try {
@@ -77,7 +77,7 @@ namespace Chat {
     }
 
     @Delete({ path: '/leaveRoom', private: true })
-    async leaveRoom(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    async leaveRoom(req: Request, res: Response): ResRequest {
       const { body: { queryParams: params = {} } = {} } = req;
       const actionType: string = 'chatRoom';
       const actionPath: string = 'leave_room';
@@ -102,7 +102,7 @@ namespace Chat {
     }
 
     @Post({ path: '/load/tokenData', private: true })
-    async loadTokenData(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    async loadTokenData(req: Request, res: Response): ResRequest {
       try {
         const {
           body: {

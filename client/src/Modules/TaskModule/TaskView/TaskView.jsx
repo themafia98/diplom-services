@@ -624,6 +624,7 @@ class TaskView extends React.PureComponent {
 
     const renderProps = {
       ...renderMethods,
+      depModuleName: 'mainModule__table',
       onOpenPageWithData,
       cachesAuthorList,
       cachesEditorList,
@@ -640,6 +641,7 @@ class TaskView extends React.PureComponent {
       isLoad,
       router,
       editor,
+      udata,
       name,
       date,
       key,

@@ -219,9 +219,10 @@ class StreamBox extends React.Component {
         if (!moduleId || !page) return;
 
         const { [storeName]: data = [] } = routeData[page] || {};
-        const index = actionTabs.findIndex((tab) => tab.includes(page) && tab.includes(key));
+        const tabPage = page.split('#')[0];
+        const index = actionTabs.findIndex((tab) => tab.includes(tabPage) && tab.includes(key));
         const isFind = index !== -1;
-
+        debugger;
         if (isFind) return setCurrentTab(actionTabs[index]);
 
         const item = data.find((it) => it?.key === key || it?._id === key);
