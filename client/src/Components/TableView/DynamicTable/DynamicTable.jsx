@@ -236,7 +236,7 @@ class DynamicTable extends React.PureComponent {
 
         const { moduleId = '', page = '' } = routeParser({ path });
         if (!moduleId || !page) return;
-        debugger;
+
         const index = actionTabs.findIndex((tab) => tab.includes(page) && tab.includes(key));
         const isFind = index !== -1;
 
