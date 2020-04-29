@@ -101,9 +101,14 @@ class TaskModule extends React.PureComponent {
 
     const shouldUpdateList = visible && isTaskModule && routeData[path] && routeData[path]?.shouldUpdate;
     const isUnloadModule = shouldUpdate && visible && !routeData[path]?.load;
+    const { loading = false } = routeData[path] || {};
     const isUndefiend = visible && !routeData[path];
-
-    if (!isListCounterLoading && isTaskModule && (isUnloadModule || shouldUpdateList || isUndefiend)) {
+    const isCloseAction = !isUnloadModule && !shouldUpdateList && !isUndefiend && shouldUpdate && !loading;
+    if (
+      !isListCounterLoading &&
+      isTaskModule &&
+      (isUnloadModule || shouldUpdateList || isUndefiend || isCloseAction)
+    ) {
       const { saveData: saveDataState = null } = routeData[path] || {};
       const saveData = saveDataState
         ? saveDataState
