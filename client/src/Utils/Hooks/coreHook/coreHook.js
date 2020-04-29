@@ -39,6 +39,7 @@ const coreUpdaterDataHook = async (dispatch, dep = {}, multiple = false) => {
     dep,
     multiple,
   );
+
   isLocalUpdate = shouldUpdate;
   if (cursor) return eventResult;
 
@@ -59,7 +60,7 @@ const coreUpdaterDataHook = async (dispatch, dep = {}, multiple = false) => {
       errorRequestAction,
     };
     try {
-      await runLocalUpdateAction(dispatch, depAction, depParser, multiple);
+      return await runLocalUpdateAction(dispatch, depAction, depParser, multiple);
     } catch (error) {
       console.error(error);
     }

@@ -36,8 +36,17 @@ class ContactModule extends React.PureComponent {
 
   componentDidUpdate = () => {
     const { router: { shouldUpdate = false, routeData = {} } = {}, path, onLoadCurrentData } = this.props;
+    const { initModule = false } = this.state;
+    const isUpdate = shouldUpdate && routeData[path]?.load;
+    const shoudInit = path && !routeData[path] && !initModule;
+    const isAvailable = path === 'contactModule_feedback';
+    if (isAvailable && (isUpdate || shoudInit)) {
+      if (!routeData[path] && !initModule) {
+        this.setState({
+          initModule: true,
+        });
+      }
 
-    if (path === 'contactModule_feedback' && shouldUpdate && routeData[path]?.load) {
       onLoadCurrentData({
         path,
         storeLoad: 'news',
@@ -91,18 +100,17 @@ class ContactModule extends React.PureComponent {
     const isBackgroundInfoPage = this.checkBackground('contactModule_informationPage');
     const isBackgroundCreateNews = this.checkBackground('contactModule_createNews');
     const { statusApp = '', router: { routeData = {} } = {}, udata } = this.props;
-
+    debugger;
     const linkPath = _.isString(path) ? path.split('__')[1] || '' : '';
     const data = routeData[path] || routeData[linkPath] || {};
     const { load = false, news = [] } = routeData[path] || {};
 
-    const entityLinkProps =
-      linkPath && path.includes('___link')
-        ? {
-            ...data,
-          }
-        : {};
-    const visibleEntity = path.includes('___link') || path === 'contactModule_informationPage';
+    const entityLinkProps = linkPath
+      ? {
+          ...data,
+        }
+      : {};
+    const visibleEntity = (linkPath && path.includes(linkPath)) || path === 'contactModule_informationPage';
 
     return (
       <>

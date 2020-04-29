@@ -52,6 +52,7 @@ const runNoCorsAction = (dispatch, dep, multiple) => {
 
 const runRefreshIndexedDb = async (dispatch, storeName, dep, multiple) => {
   const { clientDB, isLocalUpdate } = dep;
+
   let shouldUpdate = isLocalUpdate;
   const cursor = await clientDB.getCursor(storeName);
   shouldUpdate = !_.isNull(cursor);
