@@ -126,8 +126,6 @@ class DynamicTable extends React.PureComponent {
         sortOrder: sortedInfo && sortedInfo.columnKey === 'editor' && sortedInfo.order,
         sortDirections: ['descend', 'ascend'],
         render: (text, row, index) => {
-          debugger;
-          console.log(text);
           return (
             <Output
               key={`${text}${row}${index}editor`}
@@ -359,7 +357,7 @@ class DynamicTable extends React.PureComponent {
 
     let source = dataSource && dataSource?.length ? getDataSource(dataSource, filterBy, uid) : dataSource;
     const columns = this.getConfigColumns();
-    console.log(columns);
+
     return (
       <Table
         locale={{
