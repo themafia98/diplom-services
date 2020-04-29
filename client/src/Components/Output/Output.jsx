@@ -166,7 +166,7 @@ class Output extends React.PureComponent {
               {displayName}
             </Button>
           ) : (
-            <span> {displayName}</span>
+            <span className="list-item"> {displayName}</span>
           )}
         </>
       );
@@ -188,7 +188,7 @@ class Output extends React.PureComponent {
               {displayValue || displayName}
             </Button>
           ) : (
-            <span> {displayValue || displayName}</span>
+            <span className="list-item"> {displayValue || displayName}</span>
           )}
         </>
       );
