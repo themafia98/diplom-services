@@ -19,13 +19,14 @@ class TaskModuleMyList extends React.PureComponent {
   };
 
   render() {
-    const { udata, data, height, setCurrentTab, loading, counter } = this.props;
+    const { udata, data, height, setCurrentTab, loading, counter, currentActionTab } = this.props;
     const { tasks = [] } = data || {};
     return (
       <div ref={this.refModuleTask} className="taskModule_all">
         <TitleModule additional="Мои задачи" classNameTitle="taskModuleTittle" title="Список моих задач" />
         <div className="taskModuleAll_main">
           <TableView
+            key={currentActionTab}
             setCurrentTab={setCurrentTab}
             counter={counter}
             height={height}

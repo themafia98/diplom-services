@@ -222,7 +222,7 @@ class TaskModule extends React.PureComponent {
       const isList = path === 'taskModule_myTasks' || path === 'taskModule_all';
       const {
         router,
-        router: { routeData = {} } = {},
+        router: { currentActionTab = '' } = {},
         publicReducer: { status = null } = {},
         onOpenPageWithData,
         onLoadCurrentData,
@@ -244,7 +244,7 @@ class TaskModule extends React.PureComponent {
       const route = routeParser({ pageType: 'moduleItem', path });
       const isBackgroundTaskViewModule = _.isObject(route) && !_.isNull(route);
       const moduleName = path;
-      const key = path.split('__')[1];
+      const [name = '', key = ''] = path.split('__');
 
       return (
         <Scrollbars hideTracksWhenNotNeeded={true}>
@@ -256,13 +256,14 @@ class TaskModule extends React.PureComponent {
             </div>
           ) : null}
           <TabContainer
-            key="taskList_tab"
+            key={`${currentActionTab}${name}taskList_tab`}
             className="tabList"
             isBackground={isBackgroundTaskModuleAll}
             visible={path === 'taskModule_all'}
           >
             <TaskModuleList
-              key="taskList"
+              key="taskModule_listAll"
+              urrentActionTab={currentActionTab}
               isBackground={isBackgroundTaskModuleAll}
               rest={rest}
               counter={this.state.counter}
@@ -276,13 +277,14 @@ class TaskModule extends React.PureComponent {
             />
           </TabContainer>
           <TabContainer
-            key="myTaskList_tab"
+            key={`${currentActionTab}${name}myTaskList_tab`}
             className="tabList"
             isBackground={isBackgroundTaskModuleMyTasks}
             visible={path === 'taskModule_myTasks'}
           >
             <TaskModuleMyList
-              key="myListTask"
+              key="myList_tasks"
+              currentActionTab={currentActionTab}
               rest={rest}
               udata={udata}
               router={router}

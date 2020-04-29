@@ -99,9 +99,8 @@ class TableView extends React.Component {
       onAddRouteData,
     } = this.props;
 
-    const { routeData } = router;
-    const routePathData = router.currentActionTab;
-    let currentData = routeData[routePathData];
+    const { routeData, currentActionTab = '' } = router;
+    let currentData = routeData[currentActionTab];
 
     const height = heightProps - 250;
 
@@ -144,11 +143,10 @@ class TableView extends React.Component {
         </Scrollbars>
       );
     } else if (path === 'searchTable') {
-      const { isPartData = false, partDataPath = '' } = router;
       const { tasks = [] } = currentData || {};
       return (
         <DynamicTable
-          key="dynamicTable"
+          key={currentActionTab}
           routePathNormalise={routePathNormalise}
           routeParser={routeParser}
           dataSource={tasks}
