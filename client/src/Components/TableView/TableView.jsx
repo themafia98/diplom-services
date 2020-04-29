@@ -182,7 +182,7 @@ class TableView extends React.Component {
     const { router, removeTab, onOpenPageWithData, setCurrentTab, udata = {} } = this.props;
     return arrayData.map((it, id) => {
       return (
-        <tr className="contentTr" key={`${id}contentTr`}>
+        <tr className="content-row-table" key={`${id}content-row-table`}>
           <Output key={`${id}${it.status}status`} type="table" className="status">
             {it.status || 'Скрыт'}
           </Output>

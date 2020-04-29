@@ -51,7 +51,7 @@
       }
     }
 
-    .contentTr {
+    .content-row-table {
       display: flex;
       padding: 0;
       border-right: 0;
@@ -153,7 +153,7 @@
 @media screen and (max-width: 960px) {
   .tableView__wrapper {
     table {
-      .contentTr {
+      .content-row-table {
         td {
           i {
             font-size: 14px;
