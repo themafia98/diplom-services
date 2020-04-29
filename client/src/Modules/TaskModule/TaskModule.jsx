@@ -149,7 +149,11 @@ class TaskModule extends React.PureComponent {
         } catch (error) {
           console.error(error);
         }
-
+        // if (options && options?.saveData?.filteredInfo) {
+        //   options.saveData.filteredInfo = {
+        //     editor: ['5df9621e83e65e4538bfc2c3'],
+        //   };
+        // }
         await onLoadCurrentData({
           path,
           storeLoad: 'tasks',

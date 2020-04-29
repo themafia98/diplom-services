@@ -68,7 +68,7 @@ class ActionTasks implements Action {
     return this.getEntity().getAll(model, paramsList, <number | null>limitList, skip);
   }
 
-  public async getTaskCount(model: Model<Document>, actionParam: ActionParams): ParserData {
+  private async getTaskCount(model: Model<Document>, actionParam: ActionParams): ParserData {
     const { filterCounter = null } = actionParam as Record<string, null | string>;
     if (!Types.ObjectId(<string>filterCounter)) return null;
 
@@ -80,11 +80,35 @@ class ActionTasks implements Action {
     return await this.getEntity().getCounter(model, query);
   }
 
+  private async getDataByFilter(actionParam: ActionParams, model: Model<Document>): ParserData {
+    const { filteredInfo = {}, sort = 'desc' } = actionParam as Record<string, any>;
+
+    const filteredKeys: Array<string> = Object.keys(filteredInfo);
+    if (!filteredKeys?.length) return await this.getEntity().getFilterData(model, {}, <string>sort);
+
+    const filter: Record<string, Array<object>> = { $or: [] };
+
+    filteredKeys.forEach((key: string) => {
+      const condtion: Array<string> = filteredInfo[key];
+      filter.$or.push({ [key]: { $in: condtion } });
+    });
+
+    console.log(filter);
+
+    return this.getEntity().getFilterData(model, <object>filter, <string>sort);
+  }
+
   public async run(actionParam: ActionParams): ParserData {
     const model: Model<Document> | null = getModelByName('tasks', 'task');
     if (!model) return null;
 
     const typeAction: string = this.getEntity().getActionType();
+    // const { saveData: { filteredInfo = {} } = {} } = actionParam as Record<string, any>;
+
+    // if (filteredInfo && !_.isEmpty(filteredInfo)){
+    //   console.log('filteredInfo');
+    //   return await this.getDataByFilter({ filteredInfo }, model);
+    // }
 
     switch (typeAction) {
       case 'get_all':
@@ -93,6 +117,8 @@ class ActionTasks implements Action {
         return this.createSingleTask(actionParam, model);
       case 'list_counter':
         return await this.getTaskCount(model, actionParam);
+      case 'filter':
+        return this.getDataByFilter(actionParam, model);
       default: {
         if (typeAction.includes('update_')) return this.update(actionParam, model, typeAction);
         return null;

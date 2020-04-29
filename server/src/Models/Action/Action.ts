@@ -1,5 +1,5 @@
 import { ActionProps, ActionParams, Actions, Action } from '../../Utils/Interfaces';
-import { Model, Document, Mongoose, mongo, Types, FilterQuery } from 'mongoose';
+import { Model, Document, Mongoose, mongo, Types, FilterQuery, Query } from 'mongoose';
 import _ from 'lodash';
 import ActionEntity from './ActionEntity';
 import { ParserData, limiter, OptionsUpdate } from '../../Utils/Types';
@@ -45,7 +45,7 @@ namespace Action {
             .in((<Record<string, any[]>>actionParam).in)
             .limit(<number>limit)
             .sort({
-              createdAt: 'asc',
+              createdAt: 'desc',
             });
         }
 
@@ -54,7 +54,7 @@ namespace Action {
           .limit(<number>limit)
           .skip(toSkip)
           .sort({
-            createdAt: 'asc',
+            createdAt: 'desc',
           });
 
         return actionData;
@@ -62,6 +62,14 @@ namespace Action {
         console.error(err);
         return null;
       }
+    }
+
+    public async getFilterData(model: Model<Document>, filter: object, sort?: string): ParserData {
+      if (!model || !filter) return null;
+      const query: FilterQuery<object> = filter;
+      return await model.find(query).sort({
+        createdAt: sort ? sort : 'desc',
+      });
     }
 
     public async findOnce(model: Model<Document>, actionParam: ActionParams): ParserData {

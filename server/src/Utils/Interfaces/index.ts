@@ -200,6 +200,7 @@ export interface Actions extends EntityActionApi {
     limit?: number | null | undefined,
     skip?: number,
   ): Promise<any>;
+  getFilterData(model: Model<Document>, filter: object, sort?: string): ParserData;
   createEntity(model: Model<Document>, item: object): Promise<any>;
   deleteEntity(model: Model<Document>, query: ActionParams): Promise<any>;
   updateEntity(
