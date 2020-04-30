@@ -324,11 +324,22 @@ class DynamicTable extends React.PureComponent {
    * @param {any} filters
    * @param {any} sorter
    */
-  handleTableChange = (pagination, filteredInfo, sortedInfo) => {
+  handleTableChange = (pagination, filtered, sorted) => {
     const {
       router: { path = '' },
       onAddRouteData,
     } = this.props;
+
+    const filteredInfo = Object.keys(filtered).reduce((filter, key) => {
+      if (filtered[key]?.length) filter[key] = filtered[key];
+      return filter;
+    }, {});
+
+    const sortedInfo = Object.keys(sorted).reduce((sorter, key) => {
+      if (sorted[key]?.length) sorter[key] = sorted[key];
+      return sorter;
+    }, {});
+
     onAddRouteData({
       path,
       loading: true,

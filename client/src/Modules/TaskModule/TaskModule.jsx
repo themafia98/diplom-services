@@ -141,7 +141,9 @@ class TaskModule extends React.PureComponent {
           const { filteredInfo = null } = saveDataState || {};
           const arrayKeys = !filteredInfo
             ? []
-            : Object.keys(filteredInfo).filter((key) => key === 'editor' || key === 'date');
+            : Object.keys(filteredInfo).filter(
+                (key) => filteredInfo[key]?.length && (key === 'editor' || key === 'date'),
+              );
           const rest = new Request();
           const res = await rest.sendRequest(
             '/tasks/listCounter',
@@ -157,6 +159,13 @@ class TaskModule extends React.PureComponent {
             });
         } catch (error) {
           console.error(error);
+
+          if (error?.response?.status === 404) {
+            this.setState({
+              ...this.state,
+              counter: 1,
+            });
+          }
         }
         // if (options && options?.saveData?.filteredInfo) {
         //   options.saveData.filteredInfo = {

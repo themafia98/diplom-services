@@ -79,6 +79,30 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
           storeLoad,
           path,
         };
+        debugger;
+        if (error?.status === 404) {
+          const dep = {
+            noCorsClient,
+            requestError,
+            copyStore: [],
+            sortBy,
+            pathValid,
+            isPartData: true,
+            schema,
+            storeLoad,
+            clientDB,
+            methodQuery,
+            primaryKey,
+            params,
+            saveComponentStateAction,
+            errorRequestAction,
+            isLocalUpdate,
+            indStoreName,
+          };
+
+          coreUpdaterDataHook(dispatch, dep);
+          return;
+        }
         errorHook(error, dispatch, dep);
       }
       return;
