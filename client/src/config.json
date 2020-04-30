@@ -21,6 +21,7 @@
   "intervalNotification": 30000,
   "tabsLimit": 40,
   "task": {
+    "frontFilter": false,
     "limitList": 10,
     "tableSize": "default"
   },

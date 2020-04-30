@@ -26,8 +26,14 @@ namespace Tasks {
           console.error(err);
         });
 
-        const { options: { limitList = null, keys = null, saveData = {} } = {} } = req?.body || {};
-        const actionParams: ActionParams = { queryParams: keys ? { keys } : {}, limitList, saveData };
+        const { options: { limitList = null, keys = null, saveData = {}, filterCounter = null } = {} } =
+          req?.body || {};
+        const actionParams: ActionParams = {
+          queryParams: keys ? { keys } : {},
+          limitList,
+          saveData,
+          filterCounter,
+        };
 
         if (!connect) throw new Error('Bad connect');
 
@@ -81,10 +87,10 @@ namespace Tasks {
           !filterCounter ? { saveData } : { filterCounter, saveData },
         );
 
-        if (!data) {
+        if (!data && !_.isNumber(data)) {
           params.done = false;
           params.status = 'FAIL';
-          return new Responser(res, req, params, null, 404, [], dbm).emit();
+          return new Responser(res, req, params, null, 404, 0, dbm).emit();
         }
 
         return new Responser(res, req, params, null, 200, data, dbm).emit();

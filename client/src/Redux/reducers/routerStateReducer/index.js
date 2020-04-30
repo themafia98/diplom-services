@@ -41,6 +41,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         actionTabs: [...state.actionTabs, tab],
+        shouldUpdate: true,
         currentActionTab: tab,
       };
     }

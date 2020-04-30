@@ -102,13 +102,9 @@ class TaskModule extends React.PureComponent {
     const shouldUpdateList = visible && isTaskModule && routeData[path] && routeData[path]?.shouldUpdate;
     const isUnloadModule = shouldUpdate && visible && !routeData[path]?.load;
     const { loading = false } = routeData[path] || {};
-    const isUndefiend = visible && !routeData[path];
-    const isCloseAction = !isUnloadModule && !shouldUpdateList && !isUndefiend && shouldUpdate && !loading;
-    if (
-      !isListCounterLoading &&
-      isTaskModule &&
-      (isUnloadModule || shouldUpdateList || isUndefiend || isCloseAction)
-    ) {
+
+    const isCloseAction = !isUnloadModule && !shouldUpdateList && shouldUpdate && !loading;
+    if (!isListCounterLoading && isTaskModule && (isUnloadModule || shouldUpdateList || isCloseAction)) {
       const { saveData: saveDataState = null } = routeData[path] || {};
       const saveData = saveDataState
         ? saveDataState
@@ -170,13 +166,14 @@ class TaskModule extends React.PureComponent {
         //     editor: ['5df9621e83e65e4538bfc2c3'],
         //   };
         // }
+
         await onLoadCurrentData({
           path,
           storeLoad: 'tasks',
           useStore: true,
           methodRequst: 'POST',
           shoudParseToUniq: true,
-          options,
+          options: { ...options, filterCounter: path.includes('all') ? null : uid },
         });
 
         this.setState({

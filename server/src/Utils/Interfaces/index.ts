@@ -163,10 +163,10 @@ export interface FileApi {
 }
 
 export interface ActionProps {
-  actionPath: string;
-  actionType: string;
-  body?: object;
-  store?: FileApi;
+  actionPath: Readonly<string>;
+  actionType: Readonly<string>;
+  body?: Readonly<object>;
+  store?: Readonly<FileApi>;
 }
 
 export interface DownloadDropbox {
@@ -193,7 +193,7 @@ export interface Action {
 }
 
 export interface Actions extends EntityActionApi {
-  getCounter(model: Model<Document>, query: FilterQuery<any>): Promise<number>;
+  getCounter(model: Model<Document>, query: Readonly<FilterQuery<any>>): Promise<number>;
   getAll(
     model: Model<Document>,
     actionParam: ActionParams,
@@ -216,7 +216,7 @@ export interface ResponseJson<T> {
   params: T;
   done: boolean;
   isPartData?: boolean;
-  metadata: object | Array<any> | null | BinaryType | string | number;
+  metadata: Readonly<object | Array<any> | null | BinaryType | string | number>;
 }
 
 export interface WsWorker {

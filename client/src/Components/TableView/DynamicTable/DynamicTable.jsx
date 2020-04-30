@@ -349,7 +349,7 @@ class DynamicTable extends React.PureComponent {
 
   render() {
     /** sizes: "small" | "default" | "middle"  */
-    const { config: { task: { tableSize = 'default' } = {} } = {} } = this.context;
+    const { config: { task: { tableSize = 'default', frontFilter = true } = {} } = {} } = this.context;
     const { pagination: paginationDefault = {}, counter = null } = this.state;
 
     const {
@@ -368,8 +368,9 @@ class DynamicTable extends React.PureComponent {
       pager.total = counter;
       pager.paginationState.total = counter;
     }
+    const isExistsSource = dataSource && dataSource?.length;
+    let source = isExistsSource && frontFilter ? getDataSource(dataSource, filterBy, uid) : dataSource;
 
-    let source = dataSource && dataSource?.length ? getDataSource(dataSource, filterBy, uid) : dataSource;
     const columns = this.getConfigColumns();
 
     return (

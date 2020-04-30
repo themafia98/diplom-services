@@ -3,6 +3,7 @@ import { ActionParams, Actions, Action } from '../../../Utils/Interfaces';
 import { ParserData } from '../../../Utils/Types';
 import Utils from '../../../Utils';
 import _ from 'lodash';
+import { ObjectID } from 'mongodb';
 const { getModelByName } = Utils;
 
 class ActionTasks implements Action {
@@ -50,14 +51,18 @@ class ActionTasks implements Action {
   }
 
   private async getTasks(actionParam: ActionParams, model: Model<Document>): ParserData {
-    const { queryParams, limitList = 10, saveData = {} } = actionParam || {};
+    const { queryParams, limitList = 10, saveData = {}, filterCounter = '' } = actionParam || {};
+    const _id: ObjectID = Types.ObjectId(<string>filterCounter);
 
     const { pagination = null } = <Record<string, any>>saveData;
     const params: ActionParams =
       _.isEmpty(queryParams) || !(<Record<string, string[]>>queryParams)?.keys
         ? {}
         : <ActionParams>queryParams;
-    const filter: Record<string, Array<object>> = await this.getDataByFilter(actionParam);
+    const filter: Record<string, Array<object>> = await this.getDataByFilter(
+      actionParam,
+      _id ? <string>filterCounter : null,
+    );
     const query = {
       where: 'key',
       in: (<Record<string, string[]>>queryParams)?.keys,
@@ -73,31 +78,46 @@ class ActionTasks implements Action {
 
   private async getTaskCount(model: Model<Document>, actionParam: ActionParams): ParserData {
     const { filterCounter = null } = actionParam as Record<string, null | string>;
-    if (!Types.ObjectId(<string>filterCounter)) return null;
+
     const filter: any = await this.getDataByFilter(actionParam);
     const filterList = filter['$or'] || [{}];
 
-    const query: FilterQuery<object> = !filterCounter
-      ? { $or: filterList }
+    const filterListValid: Array<object> = filterList.every((obj: object) => _.isEmpty(obj))
+      ? !filterCounter
+        ? [{}]
+        : []
+      : filterList;
+
+    const query: Readonly<FilterQuery<object>> = !filterCounter
+      ? { $or: filterListValid }
       : {
           $or: [
             { editor: { $elemMatch: { $eq: filterCounter } } },
-            { uidCreater: filterCounter },
-            ...filterList,
+            { uidCreater: { $eq: filterCounter } },
+            ...filterListValid,
           ],
         };
 
     return await this.getEntity().getCounter(model, query);
   }
 
-  private async getDataByFilter(actionParam: ActionParams): Promise<Record<string, Array<object>>> {
+  private async getDataByFilter(
+    actionParam: ActionParams,
+    id: string | null = null,
+  ): Promise<Record<string, Array<object>>> {
     const { saveData: { filteredInfo = {}, arrayKeys = [] } = {}, sort = 'desc' } = actionParam as Record<
       string,
       any
     >;
 
     const filteredKeys: Array<string> = Object.keys(filteredInfo);
-    if (!filteredKeys?.length) return {};
+    if (!filteredKeys?.length && !id) return {};
+
+    if (!filteredKeys?.length && id) {
+      return {
+        $or: [{ editor: { $elemMatch: { $eq: id } } }, { uidCreater: { $eq: id } }],
+      };
+    }
 
     const filter: Record<string, Array<object>> = { $or: [] };
 
@@ -107,7 +127,7 @@ class ActionTasks implements Action {
           ? filteredInfo[key].map((val: string) => val.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&'))
           : filteredInfo[key];
 
-      const condtion: Array<RegExp> = (<string[]>parsedPatterns).map(
+      const condtion: Readonly<Array<RegExp>> = (<string[]>parsedPatterns).map(
         (pattern: string) => new RegExp(pattern, 'gi'),
       );
       const query = !arrayKeys.some((arrKey: string) => key === arrKey)
@@ -116,6 +136,12 @@ class ActionTasks implements Action {
 
       if (key && condtion) filter.$or.push(query);
     });
+
+    if (id) {
+      filter.$and = [];
+
+      filter.$and.push({ $or: [{ editor: { $elemMatch: { $eq: id } } }, { uidCreater: { $eq: id } }] });
+    }
 
     return !filter['$or']?.length ? { $or: [{}] } : filter;
   }
