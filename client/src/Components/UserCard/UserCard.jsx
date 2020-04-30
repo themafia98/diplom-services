@@ -67,7 +67,7 @@ class UserCard extends React.Component {
 
       this.setState({ visibilityModal: false });
     } catch (error) {
-      console.error(error.message);
+      if (error?.response?.status !== 404) console.error(error.message);
       message.error('Ошибка обновления описания.');
     }
   };

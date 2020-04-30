@@ -64,7 +64,7 @@ class NotificationPopup extends React.PureComponent {
 
       if (metadata && metadata?.length) this.setCounter(metadata.filter((it) => it?.isRead === false).length);
     } catch (error) {
-      console.error(error);
+      if (error?.response?.status !== 404) console.error(error);
     }
   };
 

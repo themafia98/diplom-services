@@ -230,7 +230,7 @@ class Request {
         if (res.status === 200) this.restartApp();
         else throw new Error('invalid logout');
       })
-      .catch((error) => console.error(error));
+      .catch((error) => error?.response?.status !== 404 && console.error(error));
   };
 }
 

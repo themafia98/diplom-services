@@ -248,7 +248,7 @@ class CreateTask extends React.PureComponent {
         const res = await createEntity('tasks', validHash, 4);
 
         if (res.status !== 200) {
-          console.error(res);
+          if (res?.status !== 404) console.error(res);
           throw new Error('Bad response');
         }
 
@@ -292,7 +292,7 @@ class CreateTask extends React.PureComponent {
             };
 
             createNotification('global', itemNotification).catch((error) => {
-              console.error(error);
+              if (error?.response?.status !== 404) console.error(error);
               message.error('Ошибка глобального уведомления');
             });
 
@@ -324,7 +324,7 @@ class CreateTask extends React.PureComponent {
           },
         );
       } catch (error) {
-        console.error(error);
+        if (error?.response?.status !== 404) console.error(error);
         message.success(error.message);
         this.setState({
           ...this.state,

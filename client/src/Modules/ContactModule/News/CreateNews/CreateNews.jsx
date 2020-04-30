@@ -86,7 +86,7 @@ class CreateNews extends React.PureComponent {
         };
 
         createNotification('global', itemNotification).catch((error) => {
-          console.error(error);
+          if (error?.response?.status !== 404) console.error(error);
           message.error('Error create notification');
         });
 
@@ -98,7 +98,7 @@ class CreateNews extends React.PureComponent {
           () => message.success('Новость создана.'),
         );
       } catch (error) {
-        console.error(error);
+        if (error?.response?.status !== 404) console.error(error);
         notification.error({
           title: 'Ошибка создания новой новости',
           message: 'Возможно данные повреждены',

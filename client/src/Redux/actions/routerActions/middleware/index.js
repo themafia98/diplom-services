@@ -79,7 +79,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
           storeLoad,
           path,
         };
-        debugger;
+
         if (error?.status === 404) {
           const dep = {
             noCorsClient,

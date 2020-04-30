@@ -53,8 +53,8 @@ const WikiPage = (props) => {
       setPageId(pageId);
       setLastEdit(lastEditName);
       setContent(getValidContent(contentState));
-    } catch ({ messsage = 'err wikiPage' }) {
-      console.error(messsage);
+    } catch ({ response: { status = '' } = {}, messsage = 'err wikiPage' }) {
+      if (status !== 404) console.error(messsage);
       if (statusPage) setStatus(0);
       setLoading(false);
     }

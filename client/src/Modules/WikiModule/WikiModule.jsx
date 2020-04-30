@@ -149,7 +149,7 @@ class WikiModule extends React.PureComponent {
       if (!item) this.onVisibleModalChange(this.fetchTree.bind(this, null, true));
       else this.fetchTree('', true);
     } catch (error) {
-      console.error(error);
+      if (error?.response?.status !== 404) console.error(error);
       message.error('Ошибка создания новой ветки');
     }
   };
@@ -170,7 +170,7 @@ class WikiModule extends React.PureComponent {
       if (deletedCount && ok) this.fetchTree('', true);
       message.success('Ветка удалена');
     } catch (error) {
-      console.error(error);
+      if (error?.response?.status !== 404) console.error(error);
       message.error('Ошибка удаления ветки');
     }
   };
@@ -374,7 +374,7 @@ class WikiModule extends React.PureComponent {
       const { metadata = {} } = response || {};
       if (callback) callback(null, metadata);
     } catch (error) {
-      console.error(error);
+      if (error?.response?.status !== 404) console.error(error);
       if (callback) callback(null);
     }
   };

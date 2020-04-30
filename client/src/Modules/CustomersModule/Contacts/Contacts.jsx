@@ -50,7 +50,7 @@ class Contacts extends React.PureComponent {
       const { data: { response = {} } = {} } = res || {};
       callback(response);
     } catch (error) {
-      console.error(error);
+      if (error?.response?.status !== 404) console.error(error);
       message.error('Не удалось загрузить список');
 
       this.setState({ isLoadingModule: false });

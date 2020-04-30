@@ -47,7 +47,7 @@ class EditorTextarea extends React.Component {
           contentState: _.isString(contentState) ? stateFromHTML(contentState) : contentState,
         });
       } catch (error) {
-        console.error(error);
+        if (error?.response?.status !== 404) console.error(error);
       }
     }
   };

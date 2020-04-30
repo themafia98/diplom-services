@@ -122,7 +122,7 @@ class ModalWindow extends React.PureComponent {
 
           this.setState({ ...this.state, visible: false });
         } catch (error) {
-          console.error(error);
+          if (error?.response?.status !== 404) console.error(error);
         }
       }
     } else if (mode === 'jur' && modeEditContent) {
@@ -178,7 +178,7 @@ class ModalWindow extends React.PureComponent {
       };
 
       createNotification('global', itemNotification).catch((error) => {
-        console.error(error);
+        if (error?.response?.status !== 404) console.error(error);
         message.error('Ошибка глобального уведомления');
       });
 

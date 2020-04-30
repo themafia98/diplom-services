@@ -122,9 +122,9 @@ class TaskView extends React.PureComponent {
             filteredUsers,
           });
         } else throw new Error('fail load user list');
-      } catch (err) {
+      } catch (error) {
         message.error('Ошибка загрузки сотрудников.');
-        console.error(err);
+        if (error?.response?.status !== 404) console.error(error);
         this.setState({
           ...this.state,
           isLoad: true,
@@ -177,8 +177,8 @@ class TaskView extends React.PureComponent {
             }
           },
         );
-      } catch (err) {
-        console.error(err);
+      } catch (error) {
+        if (error?.response?.status !== 404) console.error(error);
       }
     }
   };
@@ -232,8 +232,8 @@ class TaskView extends React.PureComponent {
           },
         );
       } else throw new Error('Invalid delete file');
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      if (error?.response?.status !== 404) console.error(error);
       message.error('Ошибка удаления файла.');
     }
   };

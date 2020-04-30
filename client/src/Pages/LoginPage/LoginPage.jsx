@@ -70,11 +70,11 @@ class LoginPage extends React.Component {
           } else throw new Error(`${res.status}`);
         })
         .catch((error) => {
-          const {
-            response: { data = '' },
-          } = error || {};
+          const { response: { data = '' } = {} } = error || {};
 
-          const isHtml = /DOCTYPE html/gi.test(data);
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(data, 'text/html');
+          const isHtml = Array.from(doc.body.childNodes).some((node) => node.nodeType === 1);
           const isValid = _.isString(data) && data && !isHtml;
 
           const errorMessage = isValid ? data : 'Ошибка авторизации';

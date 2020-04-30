@@ -121,7 +121,7 @@ class TaskModule extends React.PureComponent {
   };
 
   fetchTaskModule = async (customOptions = null, saveData = {}, saveDataState) => {
-    const { onLoadCurrentData, path, udata: { _id: uid = '' } = {} } = this.props;
+    const { onLoadCurrentData, path, udata: { _id: uid = '' } = {}, routeDa } = this.props;
     const { counter = null } = this.state;
     const { config, Request } = this.context || {};
     const { task: { limitList = 10 } = {} } = config || {};
@@ -158,14 +158,12 @@ class TaskModule extends React.PureComponent {
               counter: metadata,
             });
         } catch (error) {
-          console.error(error);
-
           if (error?.response?.status === 404) {
             this.setState({
               ...this.state,
               counter: 1,
             });
-          }
+          } else console.error(error);
         }
         // if (options && options?.saveData?.filteredInfo) {
         //   options.saveData.filteredInfo = {

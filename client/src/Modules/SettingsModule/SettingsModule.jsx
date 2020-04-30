@@ -245,7 +245,7 @@ class SettingsModule extends React.PureComponent {
         },
       );
     } catch (error) {
-      console.error(error);
+      if (error?.response?.status !== 404) console.error(error);
       message.error('Ошибка смены пароля');
     }
   };
@@ -308,7 +308,7 @@ class SettingsModule extends React.PureComponent {
         },
       );
     } catch (error) {
-      console.error(error);
+      if (error?.response?.status !== 404) console.error(error);
       message.error('Ошибка смены пароля');
     }
   };

@@ -49,7 +49,7 @@ class ChatModal extends React.PureComponent {
 
       onVisibleChange(visible, res.status === 200);
     } catch (error) {
-      console.error(error.message);
+      if (error?.response?.status !== 404) console.error(error.message);
       onVisibleChange(visible);
       message.error(error.message);
     }
