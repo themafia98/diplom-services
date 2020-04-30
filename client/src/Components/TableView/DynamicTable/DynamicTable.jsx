@@ -119,9 +119,9 @@ class DynamicTable extends React.PureComponent {
         className: 'editor',
         dataIndex: 'editor',
         key: 'editor',
-        onFilter: (value, record) => {
-          return record.editor.includes(value);
-        },
+        // onFilter: (value, record) => {
+        //   return record.editor.includes(value);
+        // },
         sorter: (a, b) => (a.editor && b.editor ? a.editor[0] - b.editor[0] : null),
         sortOrder: sortedInfo && sortedInfo.columnKey === 'editor' && sortedInfo.order,
         sortDirections: ['descend', 'ascend'],
@@ -178,34 +178,37 @@ class DynamicTable extends React.PureComponent {
   };
 
   getColumn = (dataIndex) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => {
-      return (
-        <div style={{ padding: 8 }}>
-          <Input
-            ref={(node) => {
-              this.searchInput = node;
-            }}
-            placeholder={`Поиск по ${dataIndex}`}
-            value={selectedKeys[0]}
-            onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-            onPressEnter={() => this.handleSearch(selectedKeys, confirm)}
-            style={{ width: 188, marginBottom: 8, display: 'block' }}
-          />
-          <Button
-            type="primary"
-            onClick={() => this.handleSearch(selectedKeys, confirm, dataIndex)}
-            icon="search"
-            size="small"
-            style={{ width: 90, marginRight: 8 }}
-          >
-            Искать
-          </Button>
-          <Button onClick={() => this.handleReset(clearFilters)} size="small" style={{ width: 90 }}>
-            Сброс
-          </Button>
-        </div>
-      );
-    },
+    filterDropdown:
+      dataIndex !== 'editor'
+        ? ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => {
+            return (
+              <div style={{ padding: 8 }}>
+                <Input
+                  ref={(node) => {
+                    this.searchInput = node;
+                  }}
+                  placeholder={`Поиск по ${dataIndex}`}
+                  value={selectedKeys[0]}
+                  onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                  onPressEnter={() => this.handleSearch(selectedKeys, confirm)}
+                  style={{ width: 188, marginBottom: 8, display: 'block' }}
+                />
+                <Button
+                  type="primary"
+                  onClick={() => this.handleSearch(selectedKeys, confirm, dataIndex)}
+                  icon="search"
+                  size="small"
+                  style={{ width: 90, marginRight: 8 }}
+                >
+                  Искать
+                </Button>
+                <Button onClick={() => this.handleReset(clearFilters)} size="small" style={{ width: 90 }}>
+                  Сброс
+                </Button>
+              </div>
+            );
+          }
+        : undefined,
     filterIcon: (filtered) => <Icon type="search" style={{ color: filtered ? '#1890ff' : undefined }} />,
     onFilter: (value, record) => {
       const filterText = record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());

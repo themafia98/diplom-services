@@ -91,7 +91,10 @@ class ActionTasks implements Action {
   }
 
   private async getDataByFilter(actionParam: ActionParams): Promise<Record<string, Array<object>>> {
-    const { saveData: { filteredInfo = {} } = {}, sort = 'desc' } = actionParam as Record<string, any>;
+    const { saveData: { filteredInfo = {}, arrayKeys = [] } = {}, sort = 'desc' } = actionParam as Record<
+      string,
+      any
+    >;
 
     const filteredKeys: Array<string> = Object.keys(filteredInfo);
     if (!filteredKeys?.length) return {};
@@ -99,8 +102,19 @@ class ActionTasks implements Action {
     const filter: Record<string, Array<object>> = { $or: [] };
 
     filteredKeys.forEach((key: string) => {
-      const condtion: Array<string> = filteredInfo[key];
-      if (key && condtion) filter.$or.push({ [key]: { $in: condtion } });
+      const parsedPatterns: string | Array<string> =
+        _.isArray(filteredInfo[key]) && filteredInfo[key].every((it: string) => _.isString(it))
+          ? filteredInfo[key].map((val: string) => val.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&'))
+          : filteredInfo[key];
+
+      const condtion: Array<RegExp> = (<string[]>parsedPatterns).map(
+        (pattern: string) => new RegExp(pattern, 'gi'),
+      );
+      const query = !arrayKeys.some((arrKey: string) => key === arrKey)
+        ? { [key]: { $in: condtion } }
+        : { [key]: { $elemMatch: { $in: condtion } } };
+
+      if (key && condtion) filter.$or.push(query);
     });
 
     return !filter['$or']?.length ? { $or: [{}] } : filter;

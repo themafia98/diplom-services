@@ -138,11 +138,15 @@ class TaskModule extends React.PureComponent {
       },
       async () => {
         try {
+          const { filteredInfo = null } = saveDataState || {};
+          const arrayKeys = !filteredInfo
+            ? []
+            : Object.keys(filteredInfo).filter((key) => key === 'editor' || key === 'date');
           const rest = new Request();
           const res = await rest.sendRequest(
             '/tasks/listCounter',
             'POST',
-            { filterCounter: path.includes('all') ? null : uid, saveData: saveDataState },
+            { filterCounter: path.includes('all') ? null : uid, saveData: { ...saveDataState, arrayKeys } },
             true,
           );
           if (res.status !== 200) throw new Error('Bad list');
