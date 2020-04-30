@@ -34,3 +34,11 @@
 
   @include form;
 }
+
+@media screen and (max-width: 750px) {
+  .recovory {
+    .recovory_form {
+      width: 85%;
+    }
+  }
+}

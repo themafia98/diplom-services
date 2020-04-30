@@ -263,3 +263,63 @@
 .usersList-room {
   margin-bottom: 0;
 }
+
+@media screen and (max-height: 655px) {
+  .chat {
+    .titleModule {
+      text-align: center;
+      p {
+        font-size: 16px;
+      }
+    }
+    .chat__main {
+      flex-direction: column;
+      overflow: auto;
+      max-height: calc(100vh - 116px);
+      .col-chat-menu {
+        .ant-list-item {
+          display: flex;
+          justify-content: center;
+          .ant-list-item-meta {
+            padding: 0;
+            text-align: center;
+          }
+        }
+        .menuLoading-skeleton {
+          width: unset;
+          max-height: 70px;
+          .ant-list-item-meta-avatar {
+            display: none;
+          }
+          .ant-list-item-meta-title {
+            font-size: 13px;
+          }
+        }
+      }
+      .chat_content {
+        .chat_content__header {
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          display: block;
+          .area-left {
+            p {
+              text-overflow: ellipsis;
+              &:last-child {
+                max-width: 100%;
+                overflow: hidden;
+                display: block;
+              }
+            }
+          }
+        }
+      }
+      .chatWindow {
+        #containerChat {
+          .message {
+            width: 100%;
+          }
+        }
+      }
+    }
+  }
+}

@@ -77,3 +77,18 @@ $cardCount: 6;
   position: absolute;
   left: calc(50% - 6px);
 }
+
+@media screen and (max-width: 700px) {
+  .streamBox {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: unset;
+    width: 100%;
+    .cardStream {
+      display: flex;
+      flex: 0 0 80%;
+      text-align: center;
+    }
+  }
+}

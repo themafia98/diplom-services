@@ -48,7 +48,13 @@
     margin: 16px 10px;
   }
   .mainModule {
+    flex-direction: column;
+    flex-wrap: wrap;
     .titleModule {
+      align-self: center;
+      width: 100%;
+      text-align: center;
+      flex: unset;
       span {
         font-weight: bold;
         font-size: 17px;
@@ -60,28 +66,47 @@
 
     .mainModule_main {
       display: flex;
-      flex: 0 0 85%;
+      flex: unset;
+      max-width: 100%;
+      overflow: auto;
+      height: calc(100vh - 150px);
       flex-direction: column;
-      .columnModuleRight {
-        .widjects {
-          height: 70%;
 
+      .columnModuleLeft {
+        flex: 0 0 100%;
+        height: 40vh;
+        overflow: hidden;
+        padding: 0;
+        max-height: 50%;
+      }
+      .columnModuleRight {
+        position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+        .widgets {
+          flex-direction: column;
+          width: 100%;
+          align-items: center;
+          .clockWrapper {
+            width: unset;
+          }
           .mainModule_calendar {
-            padding: 0;
+            width: unset;
+            padding: unset;
             .ant-fullcalendar-header {
-              display: flex;
-              justify-content: center;
+              padding: 20px 0 0 0;
             }
-            .ant-fullcalendar {
-              table {
-                height: 160px;
-              }
+            label.ant-radio-button-wrapper {
+              margin: 5px;
             }
           }
         }
-      }
-      .columnModuleRight {
-        order: -1;
+        .tableView__wrapper {
+          width: 95%;
+          height: unset;
+          margin: 0px;
+        }
       }
     }
   }
