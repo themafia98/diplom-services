@@ -36,9 +36,12 @@ namespace Action {
         const toSkip: number = Math.abs(skip);
 
         if (actionParam.in && actionParam.where) {
-          const { and = [{}] } = <Record<string, Array<object>>>actionParam;
+          const { and = [{}], filter = {} } = <Record<string, any>>actionParam;
+          const filterList = filter['$or'] || [{}];
+
           return await model
             .find()
+            .or(filterList)
             .skip(toSkip)
             .where(actionParam.where)
             .and(and)

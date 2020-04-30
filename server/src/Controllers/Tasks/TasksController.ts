@@ -59,7 +59,7 @@ namespace Tasks {
     @Post({ path: '/listCounter', private: true })
     @Get({ path: '/listCounter', private: true })
     public async getListCounter(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
-      const { filterCounter = null } = req?.body || {}; // uid
+      const { filterCounter = null, saveData = {} } = req?.body || {}; // uid
       const { dbm } = server.locals;
       const params: Params = {
         methodQuery: 'list_counter',
@@ -78,7 +78,7 @@ namespace Tasks {
         });
 
         const data: ParserResult = await listCounterAction.getActionData(
-          !filterCounter ? {} : { filterCounter },
+          !filterCounter ? { saveData } : { filterCounter, saveData },
         );
 
         if (!data) {

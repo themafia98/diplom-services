@@ -116,11 +116,11 @@ class TaskModule extends React.PureComponent {
             current: 1,
             pageSize: limitList,
           };
-      this.fetchTaskModule(null, saveData);
+      this.fetchTaskModule(null, saveData, saveDataState);
     }
   };
 
-  fetchTaskModule = async (customOptions = null, saveData = {}) => {
+  fetchTaskModule = async (customOptions = null, saveData = {}, saveDataState) => {
     const { onLoadCurrentData, path, udata: { _id: uid = '' } = {} } = this.props;
     const { counter = null } = this.state;
     const { config, Request } = this.context || {};
@@ -142,7 +142,7 @@ class TaskModule extends React.PureComponent {
           const res = await rest.sendRequest(
             '/tasks/listCounter',
             'POST',
-            { filterCounter: path.includes('all') ? null : uid },
+            { filterCounter: path.includes('all') ? null : uid, saveData: saveDataState },
             true,
           );
           if (res.status !== 200) throw new Error('Bad list');
