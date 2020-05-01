@@ -162,9 +162,10 @@ class LoginPage extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { udata = {} } = state.publicReducer || {};
+  const { router, publicReducer } = state;
+  const { udata = {} } = publicReducer;
   return {
-    router: { ...state.router },
+    router,
     udata,
   };
 };

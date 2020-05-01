@@ -325,9 +325,7 @@ class WikiModule extends React.PureComponent {
               >
                 <span>
                   {beforeStr}
-                  <span style={{ color: 'blue' }} className="site-tree-search-value">
-                    {searchValue}
-                  </span>
+                  <span className="site-tree-search-value">{searchValue}</span>
                   {afterStr}
                 </span>
               </Dropdown>

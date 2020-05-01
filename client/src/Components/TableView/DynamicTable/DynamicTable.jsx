@@ -182,8 +182,9 @@ class DynamicTable extends React.PureComponent {
       dataIndex !== 'editor'
         ? ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => {
             return (
-              <div style={{ padding: 8 }}>
+              <div className="dynamicTable-controllers">
                 <Input
+                  className="searchInput-popover"
                   ref={(node) => {
                     this.searchInput = node;
                   }}
@@ -191,18 +192,21 @@ class DynamicTable extends React.PureComponent {
                   value={selectedKeys[0]}
                   onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
                   onPressEnter={() => this.handleSearch(selectedKeys, confirm)}
-                  style={{ width: 188, marginBottom: 8, display: 'block' }}
                 />
                 <Button
+                  className="buttonSearch-popover"
                   type="primary"
                   onClick={() => this.handleSearch(selectedKeys, confirm, dataIndex)}
                   icon="search"
                   size="small"
-                  style={{ width: 90, marginRight: 8 }}
                 >
                   Искать
                 </Button>
-                <Button onClick={() => this.handleReset(clearFilters)} size="small" style={{ width: 90 }}>
+                <Button
+                  className="buttonReset-popover"
+                  onClick={() => this.handleReset(clearFilters)}
+                  size="small"
+                >
                   Сброс
                 </Button>
               </div>

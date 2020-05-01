@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useMemo } from 'react';
 import clsx from 'clsx';
 import Scrollbars from 'react-custom-scrollbars';
 
@@ -22,42 +22,47 @@ const DescriptionTask = forwardRef(
       rest,
     },
     ref,
-  ) => (
-    <>
-      <p className="descriptionTask__title">Задача</p>
-      <div
-        ref={ref}
-        onClick={rulesEdit ? onEditContentMode : null}
-        className={clsx('description', 'descriptionTask__content', rulesEdit ? 'editable' : null)}
-      >
-        <span className="icon-wrapper">
-          <i className="icon-pencil" />
-        </span>
-        <Scrollbars style={{ height: '150px' }}>
-          <span className="descriptionContent">{description ? description : 'Описания задачи нету.'}</span>
-        </Scrollbars>
-      </div>
+  ) => {
+    const scrollStyle = useMemo(() => {
+      return { height: '150px' };
+    }, []);
+    return (
+      <>
+        <p className="descriptionTask__title">Задача</p>
+        <div
+          ref={ref}
+          onClick={rulesEdit ? onEditContentMode : null}
+          className={clsx('description', 'descriptionTask__content', rulesEdit ? 'editable' : null)}
+        >
+          <span className="icon-wrapper">
+            <i className="icon-pencil" />
+          </span>
+          <Scrollbars style={scrollStyle}>
+            <span className="descriptionContent">{description ? description : 'Описания задачи нету.'}</span>
+          </Scrollbars>
+        </div>
 
-      <p className="task_file">Дополнительные файлы для задачи</p>
-      <File
-        filesArray={filesArray}
-        rest={rest}
-        onAddFileList={onAddFileList}
-        onRemoveFile={onRemoveFile}
-        moduleData={routeDataActive}
-        isLocal={true}
-        module="tasks"
-      />
-      <p className="descriptionTask__comment">Коментарии</p>
-      <Comments
-        commentProps={commentProps}
-        udata={udata}
-        rules={true}
-        onUpdate={onUpdate}
-        data={routeDataActive}
-      />
-    </>
-  ),
+        <p className="task_file">Дополнительные файлы для задачи</p>
+        <File
+          filesArray={filesArray}
+          rest={rest}
+          onAddFileList={onAddFileList}
+          onRemoveFile={onRemoveFile}
+          moduleData={routeDataActive}
+          isLocal={true}
+          module="tasks"
+        />
+        <p className="descriptionTask__comment">Коментарии</p>
+        <Comments
+          commentProps={commentProps}
+          udata={udata}
+          rules={true}
+          onUpdate={onUpdate}
+          data={routeDataActive}
+        />
+      </>
+    );
+  },
 );
 
 export default DescriptionTask;

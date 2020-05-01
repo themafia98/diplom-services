@@ -361,10 +361,11 @@ class Dashboard extends React.PureComponent {
 }
 
 const mapStateToProps = (state) => {
-  const { firstConnect = false, udata = {} } = state.publicReducer;
+  const { router, publicReducer } = state;
+  const { firstConnect = false, udata = {} } = publicReducer;
   return {
-    router: { ...state.router },
-    publicReducer: state.publicReducer,
+    router,
+    publicReducer,
     firstConnect,
     udata,
   };

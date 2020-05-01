@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { tabType } from './types';
 import clsx from 'clsx';
@@ -20,24 +21,38 @@ class Tab extends React.PureComponent {
     callbackHendlerTab(event, itemKey, 'close');
   };
 
-  tab = null;
-  tabRef = (node) => (this.tab = node);
-
-  render() {
-    const { value, active, hendlerTab: callbackHendlerTab, itemKey, sizeTab = 10 } = this.props;
+  getTabStyle = () => {
+    const { sizeTab = 10 } = this.props;
     const recalcSize =
       sizeTab > 55
         ? sizeTab - sizeTab * 0.15
         : sizeTab > 43
         ? sizeTab - sizeTab * 0.2
         : sizeTab - sizeTab * 0.3;
+    return {
+      width: `${recalcSize}px`,
+      maxWidth: `${recalcSize}px`,
+      minWidth: `${recalcSize}px`,
+    };
+  };
+
+  getIconStyle = () => {
+    const { sizeTab = 10 } = this.props;
+    return {
+      left: sizeTab < 60 ? `85%` : sizeTab < 90 ? `90%` : sizeTab < 102 ? `93%` : null,
+    };
+  };
+
+  tab = null;
+  tabRef = (node) => (this.tab = node);
+
+  render() {
+    const { value, active, hendlerTab: callbackHendlerTab, itemKey } = this.props;
+    const tabStyle = this.getTabStyle();
+    const closeIconStyle = this.getIconStyle();
     return (
       <li
-        style={{
-          width: `${recalcSize}px`,
-          maxWidth: `${recalcSize}px`,
-          minWidth: `${recalcSize}px`,
-        }}
+        style={tabStyle}
         onClick={callbackHendlerTab ? this.eventHandler : null}
         className={clsx(active ? 'active' : null)}
         key={itemKey}
@@ -49,9 +64,7 @@ class Tab extends React.PureComponent {
           </Tooltip>
         </span>
         <Icon
-          style={{
-            left: sizeTab < 60 ? `85%` : sizeTab < 90 ? `90%` : sizeTab < 102 ? `93%` : null,
-          }}
+          style={closeIconStyle}
           className={clsx('closeTab')}
           onClick={callbackHendlerTab ? this.eventCloseHandler : null}
           type="close"

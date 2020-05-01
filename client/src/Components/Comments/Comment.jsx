@@ -62,7 +62,6 @@ const Comment = (props) => {
         <span className="timeComment">&nbsp;{it?.time}.</span>
         &nbsp;
         <Output
-          id={it?._id}
           action={'cabinet'}
           typeOutput="link"
           router={router}

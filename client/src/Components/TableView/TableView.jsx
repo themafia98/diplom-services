@@ -108,9 +108,9 @@ class TableView extends React.Component {
       currentData = path && routeData[path] ? routeData[path] : currentData;
       const isUsers = currentData && currentData.users;
       const isLoad = currentData && currentData.load;
-
+      const scrollStyle = { height: `${tableViewHeight}px` };
       return (
-        <Scrollbars hideTracksWhenNotNeeded={true} style={{ height: `${tableViewHeight}px` }}>
+        <Scrollbars hideTracksWhenNotNeeded={true} style={scrollStyle}>
           <table key="mainModule__table">
             <thead className="header-table">
               <tr>

@@ -86,6 +86,27 @@
     }
   }
 }
+
+.searchInput-popover {
+  display: block;
+  width: 188px;
+  margin-bottom: 8px;
+}
+
+.buttonSearch-popover {
+  width: 90px;
+  margin-right: 8px;
+}
+
+.buttonReset-popover {
+  width: 90px;
+}
+
+div.dynamicTable-controllers,
+.dynamicTable-controllers {
+  padding: 8px;
+}
+
 .editor,
 .author {
   &.ant-table-column-has-actions.ant-table-column-has-filters.ant-table-column-has-sorters {

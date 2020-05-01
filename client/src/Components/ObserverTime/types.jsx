@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
-const { string, array, bool } = PropTypes;
+const { string, array, bool, oneOfType, object } = PropTypes;
 
 export const observerTimeType = {
   title: string.isRequired,
-  settingsLogs: array.isRequired,
+  settingsLogs: oneOfType([array.isRequired, object.isRequired, () => null]).isRequired,
   isLoading: bool.isRequired,
 };

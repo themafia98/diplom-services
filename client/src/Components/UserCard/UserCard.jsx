@@ -104,6 +104,7 @@ class UserCard extends React.Component {
     const background = {
       backgroundImage: `url("${imageCard}")`,
     };
+    const popoverStyle = { width: '500px' };
 
     return (
       <>
@@ -151,9 +152,7 @@ class UserCard extends React.Component {
               ) : null}
               {summary ? (
                 <Popover
-                  overlayStyle={{
-                    maxWidth: '500px',
-                  }}
+                  overlayStyle={popoverStyle}
                   placement="top"
                   content={<p className="summary-popover">{summary}</p>}
                   trigger="click"

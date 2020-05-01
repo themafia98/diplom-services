@@ -29,7 +29,8 @@
     "limitListTasks": 200
   },
   "settings": {
-    "includeChangeEmail": false
+    "includeChangeEmail": false,
+    "includeRulesSettings": true
   },
   "menu": [
     {

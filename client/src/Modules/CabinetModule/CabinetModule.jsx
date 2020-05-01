@@ -194,7 +194,7 @@ class CabinetModule extends React.PureComponent {
             {...props}
           >
             {imageUrl && !this.state.loading ? (
-              <img src={imageUrl} alt="avatar" style={{ width: '50%' }} />
+              <img className="user-avatar" src={imageUrl} alt="avatar" />
             ) : (
               uploadButton
             )}

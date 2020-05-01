@@ -3,6 +3,7 @@ import React from 'react';
 import { settingsModuleType } from './types';
 import _ from 'lodash';
 import { connect } from 'react-redux';
+import { settingsLogsSelector } from './selectors';
 import { saveComponentStateAction } from '../../Redux/actions/routerActions';
 import { updateUdata, setStatus } from '../../Redux/actions/publicActions';
 import { Collapse, Switch, Input, Button, message } from 'antd';
@@ -320,13 +321,19 @@ class SettingsModule extends React.PureComponent {
 
   render() {
     const { emailValue, telValue, haveChanges, oldPassword, newPassword } = this.state;
-    const { settingsLogs = {}, shouldUpdate } = this.props;
-    const { config: { settings: { includeChangeEmail = false } = {} } = {} } = this.context;
+    const {
+      settingsLogs = null,
+      shouldUpdate,
+      udata: { departament = '', rules = '' },
+    } = this.props;
+    const {
+      config: { settings: { includeChangeEmail = false, includeRulesSettings = false } = {} } = {},
+    } = this.context;
     const text = ` A dog is a type of domesticated animal.`;
 
     const readonlyPassword = haveChanges.includes('password_new') && haveChanges.includes('password_old');
     const readonlyCommon = haveChanges.includes('commonEmail') || haveChanges.includes('commonPhone');
-
+    const isAdmin = departament === 'Admin' && rules === 'full';
     const settingsBlock = (
       <>
         <div ref={this.refFunc}>
@@ -413,32 +420,34 @@ class SettingsModule extends React.PureComponent {
                 Принять изменения
               </Button>
             </Panel>
-            <Panel header="Настройки уровней доступа" key="access">
-              <Collapse bordered={false}>
-                <Panel header="Администратор" key="admin">
-                  {text}
-                </Panel>
-                <Panel header="Начальник отдела" key="headDepartament">
-                  {text}
-                </Panel>
-                <Panel header="Сотрудник" key="solider">
-                  {text}
-                </Panel>
-              </Collapse>
-              <Button
-                onClick={(e) => this.onSaveSettings(e, 'access')}
-                className="submit"
-                type="primary"
-                disabled={!haveChanges.includes('profile')}
-              >
-                Принять изменения
-              </Button>
-            </Panel>
+            {isAdmin && includeRulesSettings ? (
+              <Panel header="Настройки уровней доступа" key="access">
+                <Collapse bordered={false}>
+                  <Panel header="Администратор" key="admin">
+                    {text}
+                  </Panel>
+                  <Panel header="Начальник отдела" key="headDepartament">
+                    {text}
+                  </Panel>
+                  <Panel header="Сотрудник" key="solider">
+                    {text}
+                  </Panel>
+                </Collapse>
+                <Button
+                  onClick={(e) => this.onSaveSettings(e, 'access')}
+                  className="submit"
+                  type="primary"
+                  disabled={!haveChanges.includes('profile')}
+                >
+                  Принять изменения
+                </Button>
+              </Panel>
+            ) : null}
           </Collapse>
         </div>
       </>
     );
-
+    debugger;
     return (
       <div className="settingsModule">
         <TitleModule classNameTitle="settingsModuleTitle" title="Настройки" />
@@ -447,42 +456,31 @@ class SettingsModule extends React.PureComponent {
             <Scrollbars>{settingsBlock}</Scrollbars>
           </div>
           <div className="col-6">
-            <ObserverTime isLoading={!shouldUpdate && !settingsLogs?.length} settingsLogs={settingsLogs} />
+            <ObserverTime
+              isLoading={
+                !shouldUpdate &&
+                (!settingsLogs || (settingsLogs && (!settingsLogs?.length || _.isEmpty(settingsLogs))))
+              }
+              settingsLogs={settingsLogs}
+            />
           </div>
         </div>
       </div>
     );
   }
 }
-const mapStateToProps = (state) => {
+
+const mapStateToProps = (state, props) => {
   const {
-    publicReducer: { udata = {}, caches = {} } = {},
+    publicReducer: { udata = {} } = {},
     router: { shouldUpdate = false, currentActionTab = '' } = {},
+    router = {},
   } = state;
 
-  let settingsLogs = [];
-  const filterLogs = Object.keys(caches).reduce((logs, key) => {
-    if (key.includes('user_settings_log') && !_.isEmpty(caches[key])) {
-      logs[key] = { ...caches[key] };
-    }
-    return logs;
-  }, {});
-
-  if (!_.isEmpty(filterLogs)) {
-    settingsLogs = Object.keys(filterLogs)
-      .map((logKey) => {
-        return {
-          ...filterLogs[logKey],
-          date: new Date(filterLogs[logKey].date),
-        };
-      })
-      .sort((a, b) => b.date - a.date);
-  }
-
   return {
-    router: { ...state.router },
-    settingsLogs,
+    router,
     udata,
+    settingsLogs: settingsLogsSelector(state, props),
     shouldUpdate: shouldUpdate && currentActionTab.includes('settings'),
   };
 };

@@ -313,8 +313,9 @@ class StreamBox extends React.Component {
     const { [parentPath]: { [parentDataName]: parentDataList = [] } = {} } = routeData || {};
 
     if (type === 'private' && buildItems) {
+      const scrollStyle = { height: listHeight };
       return (
-        <Scrollbars hideTracksWhenNotNeeded={true} style={{ height: listHeight }}>
+        <Scrollbars hideTracksWhenNotNeeded={true} style={scrollStyle}>
           {streamList && streamList?.length ? (
             buildItems(streamList, this.onRunAction)
           ) : !isLoading ? (
