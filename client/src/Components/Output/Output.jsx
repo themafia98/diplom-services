@@ -147,11 +147,11 @@ class Output extends React.PureComponent {
     }
   };
 
-  renderLinks = (item = '') => {
+  renderLinks = (item = '', mode = 'default') => {
     const { isLoad = false, typeOutput = '' } = this.props;
     if ((!isLoad && Array.isArray(item) && !item.length) || !item) return <Spin size="small" />;
 
-    if (!Array.isArray(item)) {
+    if (!Array.isArray(item) || mode === 'single') {
       const { displayName = '', _id: id = '' } = item || {};
 
       return (
