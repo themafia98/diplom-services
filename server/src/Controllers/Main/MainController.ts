@@ -192,7 +192,7 @@ namespace System {
     @Delete({ path: '/:module/delete/file', private: true })
     public async deleteTaskFile(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { dbm } = <Record<string, Readonly<Database.ManagmentDatabase>>>server.locals;
-      const { dropbpx: store } = <Record<string, FileApi>>server.locals;
+      const { dropbox: store } = <Record<string, FileApi>>server.locals;
       const { module: moduleName = '' } = req.params;
       const params: Params = {
         methodQuery: 'delete_file',

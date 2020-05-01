@@ -220,15 +220,7 @@ class DynamicTable extends React.PureComponent {
       }
     },
     render: (text, currentData) => {
-      const {
-        router: { path = '' } = {},
-        router,
-        depModuleName,
-        udata,
-        filteredUsers,
-        cachesAuthorList,
-        cachesEditorList,
-      } = this.props;
+      const { router, depModuleName, udata } = this.props;
       const isDateString = _.isArray(text) && moment(text[0], 'DD.MM.YYYY')?._isValid;
       const isArrayEditors = _.isArray(text) && !isDateString;
       const className =

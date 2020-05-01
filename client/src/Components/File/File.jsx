@@ -51,16 +51,21 @@ class File extends React.Component {
     if (onRemoveFile) onRemoveFile(file);
   };
 
-  render() {
-    const { moduleData: { _id = '' } = {}, rest, module = '', isLocal = false } = this.props;
-    const props = {
+  getFileProps = () => {
+    const { moduleData: { _id = '' } = {}, rest, module = '', isLocal = false, customUrl = '' } = this.props;
+    const { filesArray = [] } = this.state;
+    return {
       name: `${uuid()}__${_id}`,
       multiple: !isLocal,
       withCredentials: true,
       headers: rest && isLocal ? rest.getHeaders() : null,
-      fileList: this.state.filesArray,
-      action: rest && isLocal ? `${rest.getApi()}/system/${module}/file` : null,
+      fileList: filesArray,
+      action: customUrl ? customUrl : rest && isLocal ? `${rest.getApi()}/system/${module}/file` : null,
     };
+  };
+
+  render() {
+    const props = this.getFileProps();
 
     return (
       <div className="file">

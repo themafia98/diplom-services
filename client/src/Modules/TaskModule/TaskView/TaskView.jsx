@@ -202,7 +202,7 @@ class TaskView extends React.PureComponent {
   onRemoveFile = async (file) => {
     try {
       const { filesArray } = this.state;
-      const { Request = {} } = this.context;
+
       if (!file) return;
 
       const deleteFileBody = {
@@ -214,9 +214,9 @@ class TaskView extends React.PureComponent {
       const { data: { response = null } = {} } = await deleteFile('tasks', deleteFileBody);
 
       if (response && response?.done) {
-        const { metadata = {} } = response;
-        const { uid: idClient } = file;
-        const { id: idResponse } = metadata;
+        const { metadata: { metadata: fileParams = {} } = {} } = response;
+        const { uid: idClient = '' } = file;
+        const { id: idResponse = '' } = fileParams;
 
         if (idClient !== idResponse) {
           throw new Error('id files not equal');

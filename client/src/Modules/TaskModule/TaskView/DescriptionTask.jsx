@@ -44,6 +44,7 @@ const DescriptionTask = forwardRef(
         onAddFileList={onAddFileList}
         onRemoveFile={onRemoveFile}
         moduleData={routeDataActive}
+        isLocal={true}
         module="tasks"
       />
       <p className="descriptionTask__comment">Коментарии</p>

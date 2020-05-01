@@ -60,8 +60,8 @@ function renderDescription(theme = 'default') {
               name="priority"
               type="text"
             >
-              {accessStatus.map((it) => (
-                <Option key={it} value={it}>
+              {accessStatus.map((it, index) => (
+                <Option key={`${it}${index}`} value={it}>
                   {it}
                 </Option>
               ))}
@@ -80,8 +80,8 @@ function renderDescription(theme = 'default') {
               name="priority"
               type="text"
             >
-              {accessPriority.map((it) => (
-                <Option key={it} value={it}>
+              {accessPriority.map((it, index) => (
+                <Option key={`${index}${it}`} value={it}>
                   {it}
                 </Option>
               ))}
@@ -134,8 +134,8 @@ function renderDescription(theme = 'default') {
               placeholder="выберете исполнителя"
               optionLabelProp="label"
             >
-              {filteredUsers.map((it) => (
-                <Option key={it._id} value={it._id} label={it.displayName}>
+              {filteredUsers.map((it, index) => (
+                <Option key={`${it._id}${index}`} value={it._id} label={it.displayName}>
                   <span>{it.displayName}</span>
                 </Option>
               ))}

@@ -125,7 +125,7 @@ class CabinetModule extends React.PureComponent {
   render() {
     const { visible, imageUrl, modePage = '' } = this.state;
     const { rest } = this.context;
-    const { udata = {}, routeDataActive = {}, onSaveComponentState } = this.props;
+    const { udata = {}, routeDataActive = {} } = this.props;
     const isPersonal = modePage === 'personal';
 
     const { _id: uidUser = '', avatar = '' } = isPersonal ? routeDataActive : udata;

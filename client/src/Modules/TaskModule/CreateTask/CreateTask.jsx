@@ -404,6 +404,7 @@ class CreateTask extends React.PureComponent {
                   <File
                     moduleData={{ id: `${keyCard}_virtual`, name: ' taskModule' }}
                     isLocal={true}
+                    module="tasks"
                     rest={rest}
                   />
                   <label>Срок сдачи: </label>

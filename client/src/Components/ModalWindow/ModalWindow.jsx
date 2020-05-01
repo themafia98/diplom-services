@@ -153,7 +153,6 @@ class ModalWindow extends React.PureComponent {
       const item = { ...jurnal, depKey: keyTask, editor: 'Павел Петрович' };
 
       const jurnalCopy = { ...jurnal };
-      const { Request } = this.context;
       const { udata: { _id: uid, displayName } = {} } = this.props;
 
       if (onCaching) {

@@ -117,7 +117,7 @@ class TaskModule extends React.PureComponent {
   };
 
   fetchTaskModule = async (customOptions = null, saveData = {}, saveDataState) => {
-    const { onLoadCurrentData, path, udata: { _id: uid = '' } = {}, routeDa } = this.props;
+    const { onLoadCurrentData, path, udata: { _id: uid = '' } = {} } = this.props;
     const { counter = null } = this.state;
     const { config, Request } = this.context || {};
     const { task: { limitList = 20 } = {} } = config || {};

@@ -22,9 +22,9 @@ export const dynamicTableType = {
   setCurrentTab: func.isRequired,
   routeParser: func.isRequired,
   routePathNormalise: func.isRequired,
-  tasks: array.isRequired,
+  dataSource: array.isRequired,
   filterBy: oneOfType([string.isRequired, arrayOf(string).isRequired]).isRequired,
   udata: udataType.isRequired,
   height: oneOfType([string.isRequired, number.isRequired]).isRequired,
-  loading: bool.isRequired,
+  loading: bool,
 };

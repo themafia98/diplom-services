@@ -28,7 +28,8 @@ export const taskEntityType = shape({
   status: string.isRequired,
   name: string.isRequired,
   priority: string.isRequired,
-  author: string.isRequired,
+  authorName: string.isRequired,
+  uidCreater: string.isRequired,
   description: string.isRequired,
 });
 

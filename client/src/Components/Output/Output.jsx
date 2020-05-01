@@ -175,22 +175,24 @@ class Output extends React.PureComponent {
     return item.map((it, index) => {
       const { displayValue = '', displayName = '', _id = '', id = '' } = it || {};
       return (
-        <>
+        <React.Fragment key={`${index}${_id}${id}`}>
           {typeOutput && typeOutput !== 'default' ? (
             <Button
               onClick={
                 id || _id ? this.onOpenLink.bind(this, { id: id ? id : _id, action: 'cabinet' }) : null
               }
               type="link"
-              key={`${index}${id ? id : _id}`}
+              key={`${index}${_id}`}
               className="editor"
             >
               {displayValue || displayName}
             </Button>
           ) : (
-            <span className="list-item"> {displayValue || displayName}</span>
+            <span key={`${index}${_id}`} className="list-item">
+              {displayValue || displayName}
+            </span>
           )}
-        </>
+        </React.Fragment>
       );
     });
   };
@@ -200,9 +202,13 @@ class Output extends React.PureComponent {
       <>
         {list ? (
           <div
-            className="output-list-wrapper"
             ref={this.childRef}
-            className={clsx(className ? className : null, 'list-mode', isLink ? 'link' : null)}
+            className={clsx(
+              'output-list-wrapper',
+              className ? className : null,
+              'list-mode',
+              isLink ? 'link' : null,
+            )}
           >
             {value}
           </div>
@@ -256,6 +262,7 @@ class Output extends React.PureComponent {
           <div className={clsx('output', typeOutput ? 'withType' : null)} ref={this.parentRef}>
             {typeOutput && typeOutput !== 'default' ? (
               <Button
+                key={`${id}`}
                 onClick={this.onOpenLink.bind(this, { action, id })}
                 type={typeOutput}
                 ref={this.childRef}
