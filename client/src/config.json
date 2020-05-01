@@ -22,7 +22,7 @@
   "tabsLimit": 40,
   "task": {
     "frontFilter": false,
-    "limitList": 10,
+    "limitList": 20,
     "tableSize": "default"
   },
   "statist": {

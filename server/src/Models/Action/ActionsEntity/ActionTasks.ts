@@ -51,7 +51,7 @@ class ActionTasks implements Action {
   }
 
   private async getTasks(actionParam: ActionParams, model: Model<Document>): ParserData {
-    const { queryParams, limitList = 10, saveData = {}, filterCounter = '' } = actionParam || {};
+    const { queryParams, limitList = 20, saveData = {}, filterCounter = '' } = actionParam || {};
     const _id: ObjectID = Types.ObjectId(<string>filterCounter);
 
     const { pagination = null } = <Record<string, any>>saveData;

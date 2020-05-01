@@ -49,7 +49,7 @@ class TaskModule extends React.PureComponent {
       loaderMethods = {},
       router: { routeData },
     } = this.props;
-    const { config: { task: { limitList = 10 } = {} } = {} } = this.context;
+    const { config: { task: { limitList = 20 } = {} } = {} } = this.context;
     const { height } = this.state;
     const { onShowLoader } = loaderMethods;
 
@@ -93,7 +93,7 @@ class TaskModule extends React.PureComponent {
       path = '',
     } = this.props;
     const { isListCounterLoading = false } = this.state;
-    const { config: { task: { limitList = 10 } = {} } = {} } = this.context;
+    const { config: { task: { limitList = 20 } = {} } = {} } = this.context;
     if (!_.isNull(this.moduleTask) && !_.isNull(this.controller) && visible) {
       this.recalcHeight();
     }
@@ -120,7 +120,7 @@ class TaskModule extends React.PureComponent {
     const { onLoadCurrentData, path, udata: { _id: uid = '' } = {}, routeDa } = this.props;
     const { counter = null } = this.state;
     const { config, Request } = this.context || {};
-    const { task: { limitList = 10 } = {} } = config || {};
+    const { task: { limitList = 20 } = {} } = config || {};
     const options = customOptions
       ? customOptions
       : {

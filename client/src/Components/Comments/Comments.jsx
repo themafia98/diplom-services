@@ -98,18 +98,23 @@ class Comments extends React.PureComponent {
     }
   };
 
-  onEdit = async (event, idComment) => {
+  onEdit = async (idComment, msg = null, callback = null) => {
     const { onUpdate, data: { _id: id = '', key = '', comments = [] } = {}, data = {} } = this.props;
-    const newComments = comments.map((it) => {
-      const { id: idEntity = '' } = it || {};
 
-      if (idEntity === idComment)
-        return {
-          ...it,
-          message: 'Тестовое редактирование',
-        };
-      else return it;
-    });
+    if (!_.isString(msg)) {
+      message.error('Сообщение не валидно.');
+      if (callback) callback();
+      return;
+    }
+
+    const commentIndex = comments.findIndex((item) => item?.id === idComment);
+    if (commentIndex === -1) {
+      message.error('Коментарий не существует.');
+      if (callback) callback();
+      return;
+    }
+    const newCommentsArray = [...comments];
+    newCommentsArray[commentIndex] = { ...comments[commentIndex], message: msg };
 
     try {
       await onUpdate({
@@ -118,11 +123,13 @@ class Comments extends React.PureComponent {
         item: data,
         store: 'tasks',
         updateBy: 'key',
-        updateItem: newComments,
+        updateItem: newCommentsArray,
         updateField: 'comments',
       });
       message.success('Коментарий обновлен.');
+      if (callback) callback();
     } catch (error) {
+      if (callback) callback();
       message.error('Не удалось обновить коментарий.');
     }
   };

@@ -47,11 +47,12 @@ const WikiPage = (props) => {
       }
 
       const { data: { response: { metadata = {} } = {} } = {} } = res || {};
-      const { content: contentState = {}, _id: pageId, lastEditName } = metadata || {};
+      const { content: contentState = {}, _id: pageId, lastEditName, lastEditDate } = metadata || {};
 
       setLoading(false);
       setPageId(pageId);
       setLastEdit(lastEditName);
+      setLastEditDate(lastEditDate);
       setContent(getValidContent(contentState));
     } catch ({ response: { status = '' } = {}, messsage = 'err wikiPage' }) {
       if (status !== 404) console.error(messsage);
@@ -120,6 +121,10 @@ const WikiPage = (props) => {
   return (
     <div className="wikiPage">
       <h2 className="wikiPage__title">{title}</h2>
+      <div className="edit-inform">
+        {lastEditName ? <p className="lastEditName">Последний редактор: {lastEditName}. </p> : null}
+        {lastEditDate ? <p className="lastEditDate">Время редактирования: {lastEditDate}. </p> : null}
+      </div>
       <div className="wikiPage-content">
         {loading ? (
           <Spin size="large" />
