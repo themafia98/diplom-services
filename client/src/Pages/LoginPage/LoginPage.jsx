@@ -77,7 +77,11 @@ class LoginPage extends React.Component {
           const isHtml = Array.from(doc.body.childNodes).some((node) => node.nodeType === 1);
           const isValid = _.isString(data) && data && !isHtml;
 
-          const errorMessage = isValid ? data : 'Ошибка авторизации';
+          const errorMessage = isValid
+            ? data
+            : isHtml
+            ? 'Ошибка сервера, попробуйте позже.'
+            : 'Ошибка авторизации';
 
           this.setState({
             errorMessage,
