@@ -414,13 +414,13 @@ class TaskView extends React.PureComponent {
   };
 
   renderWorkJurnal = (cachesJurnalList = []) => {
-    return cachesJurnalList
-      .sort((a, b) => moment(a?.date).unix() + moment(b?.date).unix())
-      .map((item) => {
+    return _.uniqBy(cachesJurnalList, '_id')
+      .sort((a, b) => moment(b?.date[0]).unix() - moment(a?.date[0]).unix())
+      .map((item, index) => {
         const date = item && Array.isArray(item.date) ? item.date[0] : 'Invalid date';
-
+        debugger;
         return (
-          <div key={item?._id} className="jurnalItem">
+          <div key={`${item?._id}${index}`} className="jurnalItem">
             <p className="timeLost">
               <span className="title">Затрачено времени:</span>
               {item?.timeLost ? item.timeLost : item[0] ? item[0]?.timeLost : 'не установлено'}

@@ -360,7 +360,11 @@ class StreamBox extends React.Component {
                   className={clsx('cardStream', mode ? mode : null, !_.isEmpty(action) ? 'withAction' : null)}
                 >
                   <div className="about">
-                    <Avatar src={`data:image/png;base64,${avatar}`} size="default" icon="user" />
+                    <Avatar
+                      src={avatar ? `data:image/png;base64,${avatar}` : null}
+                      size="default"
+                      icon="user"
+                    />
                     <p className="name">{authorName}</p>
                   </div>
                   <p className="card_title">{title}</p>

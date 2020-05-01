@@ -135,6 +135,7 @@ class LoginPage extends React.Component {
               type="password"
               name="password"
               size="large"
+              autoComplete=""
               placeholder="password"
               ref={refPassword}
             />
