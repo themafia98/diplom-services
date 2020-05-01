@@ -23,8 +23,8 @@ class SettingsModule extends React.PureComponent {
     telValue: null,
     newPassword: '',
     oldPassword: '',
-    mail: false,
-    phone: false,
+    isHideEmail: false,
+    isHidePhone: false,
   };
 
   static propTypes = settingsModuleType;
@@ -109,21 +109,23 @@ class SettingsModule extends React.PureComponent {
   };
 
   hideMail = (event) => {
-    if (event !== this.state.mail) {
+    const { isHideEmail = false } = this.state;
+    if (event !== isHideEmail) {
       this.setState({
         ...this.state,
         haveChanges: true,
-        mail: event,
+        isHideEmail: event,
       });
     }
   };
 
   hidePhone = (event) => {
-    if (event !== this.state.phone) {
+    const { isHidePhone = false } = this.state;
+    if (event !== isHidePhone) {
       this.setState({
         ...this.state,
         haveChanges: true,
-        phone: event,
+        isHidePhone: event,
       });
     }
   };
@@ -168,6 +170,19 @@ class SettingsModule extends React.PureComponent {
       this.onChangePassword(settingsKey);
     } else if (settingsKey === 'common') {
       this.onChangeCommon(settingsKey);
+    } else if (settingsKey === 'profile') {
+      this.onChangeProfile(settingsKey);
+    }
+  };
+
+  onChangeProfile = async (keyChange) => {
+    try {
+      const { udata: { _id: uid = '' } = {}, onUpdateUdata = null, onCaching = null } = this.props;
+      const { isHideEmail = false, isHidePhone = false, haveChanges } = this.state;
+
+      const { Request } = this.context;
+    } catch (error) {
+      if (error?.status !== 404) console.error(error);
     }
   };
 
@@ -206,7 +221,7 @@ class SettingsModule extends React.PureComponent {
       }
 
       this.setState({
-        haveChanges: this.state.haveChanges.filter((it) => {
+        haveChanges: haveChanges.filter((it) => {
           if (it !== keyChange) return true;
           else return false;
         }),
@@ -255,7 +270,7 @@ class SettingsModule extends React.PureComponent {
     try {
       const { Request = {} } = this.context;
       const { udata: { _id: uid = '' } = {}, onCaching } = this.props;
-      const { oldPassword = '', newPassword = '' } = this.state;
+      const { oldPassword = '', newPassword = '', haveChanges = {} } = this.state;
       if (!oldPassword || !newPassword) {
         message.warning('Формат пароля не верен');
         return;
@@ -279,7 +294,7 @@ class SettingsModule extends React.PureComponent {
       }
 
       this.setState({
-        haveChanges: this.state.haveChanges.filter((it) => it !== keyChange),
+        haveChanges: haveChanges.filter((it) => it !== keyChange),
       });
 
       const msg = 'Изменение пароля.';
@@ -320,7 +335,15 @@ class SettingsModule extends React.PureComponent {
   refColumnFunc = (node) => (this.refColumn = node);
 
   render() {
-    const { emailValue, telValue, haveChanges, oldPassword, newPassword } = this.state;
+    const {
+      emailValue,
+      telValue,
+      haveChanges,
+      oldPassword,
+      newPassword,
+      isHideEmail,
+      isHidePhone,
+    } = this.state;
     const {
       settingsLogs = null,
       shouldUpdate,
@@ -404,11 +427,11 @@ class SettingsModule extends React.PureComponent {
 
             <Panel header="Настройки профиля" key="profile">
               <div className="configWrapper">
-                <Switch defaultChecked={this.state.mail} onChange={this.hideMail} />
+                <Switch defaultChecked={isHideEmail} onChange={this.hideMail} />
                 <span className="configTitle">Скрывать почту</span>
               </div>
               <div className="configWrapper">
-                <Switch defaultChecked={this.state.phone} onChange={this.hidePhone} />
+                <Switch defaultChecked={isHidePhone} onChange={this.hidePhone} />
                 <span className="configTitle">Скрывать телефон</span>
               </div>
               <Button

@@ -20,6 +20,8 @@ const userSchema = new Schema(
     rules: { type: String, default: 'guest', required: true },
     accept: { type: Boolean, default: false, required: true },
     avatar: { type: String, default: '', required: false },
+    isHideEmail: { type: Boolean, default: false },
+    isHidePhone: { type: Boolean, default: false },
   },
   { timestamps: true },
 );
@@ -29,14 +31,14 @@ userSchema
   .set(async function (password: string): Promise<void> {
     this._plainPassword = password;
     if (password) {
-      this.passwordHash = bcrypt.hashSync(<string>password, 10);
+      this.passwordHash = bcrypt.hashSync(password, 10);
       console.log(this.passwordHash);
     } else {
       this.passwordHash = undefined;
     }
   })
   .get(function () {
-    return <string>this._plainPassword;
+    return this._plainPassword;
   });
 
 userSchema.methods.checkPassword = async function (password: string): Promise<boolean> {
