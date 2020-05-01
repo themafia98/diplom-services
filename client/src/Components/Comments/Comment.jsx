@@ -10,7 +10,6 @@ const Comment = (props) => {
   const [editable, setEditable] = useState(false);
   const [loading, setLoading] = useState(false);
   const onAction = (action, event) => {
-    console.log(key);
     switch (action) {
       case 'delete':
         return onDelete(event, key);
