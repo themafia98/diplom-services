@@ -11,7 +11,7 @@ const ObserverTime = (props) => {
   const { title = '', settingsLogs = [], isLoading = false } = props;
 
   const renderLogs = (settingsLogs = []) => {
-    if (!settingsLogs || _.isEmpty(settingsLogs)) return null;
+    if (!settingsLogs?.length) return null;
 
     return settingsLogs.map((log, index) => {
       const { message, date, _id = '' } = log;
@@ -31,7 +31,9 @@ const ObserverTime = (props) => {
       <TitleModule classNameTitle="observerTitle" title={title ? title : 'История изменений'} />
       <Scrollbars hideTracksWhenNotNeeded={true}>
         <div className="observerWrapper">
-          {isInvalid ? null : isLoading ? (
+          {isInvalid ? (
+            <span className="empty-logger">Истории пока нет</span>
+          ) : isLoading ? (
             <Spin size="large" />
           ) : (
             <Timeline>{renderLogs(settingsLogs)}</Timeline>

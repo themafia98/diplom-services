@@ -29,6 +29,9 @@ class SettingsModule extends React.PureComponent {
 
   static propTypes = settingsModuleType;
   static contextType = modelContext;
+  static defaultProps = {
+    settingsLogs: [],
+  };
 
   static getDerivedStateFromProps = (props, state) => {
     const {
@@ -224,7 +227,7 @@ class SettingsModule extends React.PureComponent {
 
       this.setState({
         haveChanges: haveChanges.filter((it) => {
-          if (it !== keyChange) return true;
+          if (['isHidePhone', 'isHideEmail'].every((key) => key !== it)) return true;
           else return false;
         }),
       });
@@ -390,6 +393,7 @@ class SettingsModule extends React.PureComponent {
       newPassword,
       isHideEmail,
       isHidePhone,
+      isLoadingLogs = false,
     } = this.state;
     const {
       settingsLogs = null,
@@ -399,6 +403,7 @@ class SettingsModule extends React.PureComponent {
     const {
       config: { settings: { includeChangeEmail = false, includeRulesSettings = false } = {} } = {},
     } = this.context;
+    const isLoading = !isLoadingLogs && (!settingsLogs || (settingsLogs && !settingsLogs?.length));
     const text = ` A dog is a type of domesticated animal.`;
 
     const readonlyPassword = haveChanges.includes('password_new') && haveChanges.includes('password_old');
@@ -527,13 +532,7 @@ class SettingsModule extends React.PureComponent {
             <Scrollbars>{settingsBlock}</Scrollbars>
           </div>
           <div className="col-6">
-            <ObserverTime
-              isLoading={
-                !shouldUpdate &&
-                (!settingsLogs || (settingsLogs && (!settingsLogs?.length || _.isEmpty(settingsLogs))))
-              }
-              settingsLogs={settingsLogs}
-            />
+            <ObserverTime isLoading={isLoading} settingsLogs={settingsLogs} />
           </div>
         </div>
       </div>

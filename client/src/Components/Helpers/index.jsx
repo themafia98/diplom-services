@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
 import { privateType } from './types';
 import { Route } from 'react-router-dom';
