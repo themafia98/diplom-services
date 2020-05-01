@@ -69,20 +69,17 @@ class CreateNews extends React.PureComponent {
         }
 
         const itemNotification = {
-          actionType: 'set_notification',
-          item: {
-            type: 'global',
-            title: 'Новость',
-            isRead: false,
-            message: `${titleNews}. Добавлена: ${moment().format('MM.DD.YYYY HH:mm')}`,
-            action: {
-              type: 'news_link',
-              moduleName: 'contactModule',
-              link: key,
-            },
-            uidCreater: uid,
-            authorName: displayName,
+          type: 'global',
+          title: 'Новость',
+          isRead: false,
+          message: `${titleNews}. Добавлена: ${moment().format('MM.DD.YYYY HH:mm')}`,
+          action: {
+            type: 'news_link',
+            moduleName: 'contactModule',
+            link: key,
           },
+          uidCreater: uid,
+          authorName: displayName,
         };
 
         createNotification('global', itemNotification).catch((error) => {

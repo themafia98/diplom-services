@@ -2,10 +2,18 @@
 import _ from 'lodash';
 import Request from '../../Models/Rest';
 
-const createNotification = async (type = '', body = {}) => {
-  if (!type || _.isEmpty(body)) return;
+const createNotification = async (type = '', item = {}, actionType = 'set_notification') => {
+  if (!type || _.isEmpty(item)) return;
   const rest = new Request();
-  return rest.sendRequest(`/system/${type}/notification`, 'POST', body, true);
+  return rest.sendRequest(
+    `/system/${type}/notification`,
+    'POST',
+    {
+      item,
+      actionType,
+    },
+    true,
+  );
 };
 
 const createEntity = async (storeName = '', body = {}, sliceCreaterNumber = 0) => {

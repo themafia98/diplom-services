@@ -275,20 +275,17 @@ class CreateTask extends React.PureComponent {
             if (!key) return;
 
             const itemNotification = {
-              actionType: 'set_notification',
-              item: {
-                type: 'global',
-                title: 'Новая задача',
-                isRead: false,
-                message: `Создана новая задача № ${key}. ${name}`,
-                action: {
-                  type: 'tasks_link',
-                  moduleName: 'taskModule',
-                  link: key,
-                },
-                uidCreater: uid,
-                authorName: displayName,
+              type: 'global',
+              title: 'Новая задача',
+              isRead: false,
+              message: `Создана новая задача № ${key}. ${name}`,
+              action: {
+                type: 'tasks_link',
+                moduleName: 'taskModule',
+                link: key,
               },
+              uidCreater: uid,
+              authorName: displayName,
             };
 
             createNotification('global', itemNotification).catch((error) => {
