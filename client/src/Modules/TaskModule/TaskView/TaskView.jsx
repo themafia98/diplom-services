@@ -418,7 +418,7 @@ class TaskView extends React.PureComponent {
       .sort((a, b) => moment(b?.date[0]).unix() - moment(a?.date[0]).unix())
       .map((item, index) => {
         const date = item && Array.isArray(item.date) ? item.date[0] : 'Invalid date';
-        debugger;
+
         return (
           <div key={`${item?._id}${index}`} className="jurnalItem">
             <p className="timeLost">
