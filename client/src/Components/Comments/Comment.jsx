@@ -1,10 +1,23 @@
 // @ts-nocheck
 import React, { useState } from 'react';
 import { commentType } from './types';
+import Output from '../Output';
 import { Icon, Tooltip, Input, Button } from 'antd';
 
 const Comment = (props) => {
-  const { onDelete, onEdit, rules, it, userId, uId } = props;
+  const {
+    onDelete,
+    onEdit,
+    rules,
+    it,
+    userId,
+    uId,
+    router,
+    removeTab,
+    udata,
+    onOpenPageWithData,
+    setCurrentTab,
+  } = props;
   const [key] = useState(it?.id ? it.id : it?._id);
   const [value, setValue] = useState(it?.message);
   const [editable, setEditable] = useState(false);
@@ -29,7 +42,6 @@ const Comment = (props) => {
 
   const onEditMode = () => setEditable(!editable);
   const onChange = ({ target: { value = '' } }) => setValue(value);
-
   return (
     <p className="block-comment">
       {rules ? (
@@ -48,7 +60,25 @@ const Comment = (props) => {
       ) : null}
       <span className="aboutCommentSender">
         <span className="timeComment">&nbsp;{it?.time}.</span>
-        &nbsp;<span className="sender_name">{`${it?.username}`}</span> написал:
+        &nbsp;
+        <Output
+          id={it?._id}
+          action={'cabinet'}
+          typeOutput="link"
+          router={router}
+          removeTab={removeTab}
+          currentData={it}
+          udata={udata}
+          id={it?.uId}
+          isStaticList={true}
+          onOpenPageWithData={onOpenPageWithData}
+          setCurrentTab={setCurrentTab}
+          className="sender_name"
+          outputClassName="output--inline"
+        >
+          {it?.username}
+        </Output>
+        написал:
       </span>
       {!editable ? (
         <span className="commentContet">{it?.message}</span>

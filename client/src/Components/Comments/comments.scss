@@ -51,8 +51,12 @@
     .aboutCommentSender {
       font-weight: bold;
       .sender_name {
+        font-weight: bold;
         cursor: pointer;
         color: $blueDark;
+        &:hover {
+          color: $blueDarkHover;
+        }
       }
     }
     .commentContet {

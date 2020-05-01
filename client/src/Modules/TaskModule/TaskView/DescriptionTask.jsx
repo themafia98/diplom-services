@@ -13,6 +13,7 @@ const DescriptionTask = forwardRef(
       onAddFileList,
       routeDataActive,
       onRemoveFile,
+      commentProps,
       description,
       rulesEdit,
       filesArray,
@@ -48,7 +49,13 @@ const DescriptionTask = forwardRef(
         module="tasks"
       />
       <p className="descriptionTask__comment">Коментарии</p>
-      <Comments udata={udata} rules={true} onUpdate={onUpdate} data={routeDataActive} />
+      <Comments
+        commentProps={commentProps}
+        udata={udata}
+        rules={true}
+        onUpdate={onUpdate}
+        data={routeDataActive}
+      />
     </>
   ),
 );

@@ -143,7 +143,7 @@ class Comments extends React.PureComponent {
   };
 
   renderComments(commentsArray) {
-    const { rules, udata: { _id: userId = '' } = {} } = this.props;
+    const { rules, udata: { _id: userId = '' } = {}, commentProps = {} } = this.props;
     if (commentsArray.length && Array.isArray(commentsArray))
       return commentsArray.map((it) => (
         <Comment
@@ -154,6 +154,7 @@ class Comments extends React.PureComponent {
           userId={userId}
           onDelete={this.onDelete}
           onEdit={this.onEdit}
+          {...commentProps}
         />
       ));
     else return <Empty description={<span>Данных нету</span>} />;

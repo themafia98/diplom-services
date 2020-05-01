@@ -224,7 +224,7 @@ class Output extends React.PureComponent {
   render() {
     const {
       links = null,
-      className,
+      className = '',
       children,
       type,
       typeOutput,
@@ -233,6 +233,7 @@ class Output extends React.PureComponent {
       list = false,
       isLink = false,
       isStaticList = false,
+      outputClassName = '',
     } = this.props;
     const { showTooltip } = this.state;
     let value = children;
@@ -259,7 +260,14 @@ class Output extends React.PureComponent {
     if (type === 'table') {
       const output = (
         <td>
-          <div className={clsx('output', typeOutput ? 'withType' : null)} ref={this.parentRef}>
+          <div
+            className={clsx(
+              'output',
+              outputClassName ? outputClassName : null,
+              typeOutput ? 'withType' : null,
+            )}
+            ref={this.parentRef}
+          >
             {typeOutput && typeOutput !== 'default' ? (
               <Button
                 key={`${id}`}
@@ -268,7 +276,7 @@ class Output extends React.PureComponent {
                 ref={this.childRef}
                 className={className ? className : null}
               >
-                {value}
+                {_.isPlainObject(value) ? this.renderLinks(value, 'single') : value}
               </Button>
             ) : (
               this.renderDefault(list, className, isLink, value)
@@ -285,7 +293,7 @@ class Output extends React.PureComponent {
         );
     } else {
       const output = (
-        <div className="output" ref={this.parentRef}>
+        <div className={clsx('output', outputClassName ? outputClassName : null)} ref={this.parentRef}>
           {typeOutput && typeOutput !== 'default' ? (
             <Button
               onClick={this.onOpenLink.bind(this, { action, id })}

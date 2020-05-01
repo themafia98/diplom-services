@@ -4,6 +4,15 @@
   text-overflow: ellipsis;
   text-align: center;
 
+  &.output--inline {
+    display: inline;
+    button {
+      padding: 0 2px;
+      box-sizing: content-box;
+      height: 100%;
+    }
+  }
+
   .list-mode {
     text-overflow: ellipsis;
     overflow: hidden;

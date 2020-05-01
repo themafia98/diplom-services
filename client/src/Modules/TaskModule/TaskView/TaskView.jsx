@@ -604,6 +604,7 @@ class TaskView extends React.PureComponent {
     const renderMethods = {
       onChangeEditable,
       onChangeEditableStart,
+      onOpenPageWithData,
       onEditContentMode,
       onChangeEditableEnd,
       calcSumWorkTime,
@@ -611,8 +612,18 @@ class TaskView extends React.PureComponent {
       onRemoveFile,
     };
 
-    const desciptionTaskProps = {
+    const commonProps = {
       ...renderMethods,
+      depModuleName: 'mainModule__table',
+      cachesAuthorList,
+      cachesEditorList,
+      filteredUsers,
+      router,
+      udata,
+    };
+
+    const desciptionTaskProps = {
+      ...commonProps,
       routeDataActive,
       description,
       rulesEdit,
@@ -623,25 +634,18 @@ class TaskView extends React.PureComponent {
     };
 
     const renderProps = {
-      ...renderMethods,
-      depModuleName: 'mainModule__table',
-      onOpenPageWithData,
-      cachesAuthorList,
-      cachesEditorList,
+      ...commonProps,
       modeControllEdit,
       statusClassName,
       accessPriority,
       setCurrentTab,
-      filteredUsers,
       modeControll,
       accessStatus,
       uidCreater,
       priority,
       status,
       isLoad,
-      router,
       editor,
-      udata,
       name,
       date,
       key,
@@ -658,7 +662,7 @@ class TaskView extends React.PureComponent {
                 {renderDescription()(renderProps)}
               </Descriptions>
               <div className="descriptionTask">
-                <DescriptionTask {...desciptionTaskProps} />
+                <DescriptionTask commentProps={commonProps} {...desciptionTaskProps} />
               </div>
             </Scrollbars>
           </div>
