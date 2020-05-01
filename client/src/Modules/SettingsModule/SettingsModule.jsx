@@ -447,7 +447,7 @@ class SettingsModule extends React.PureComponent {
         </div>
       </>
     );
-    debugger;
+
     return (
       <div className="settingsModule">
         <TitleModule classNameTitle="settingsModuleTitle" title="Настройки" />
