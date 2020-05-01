@@ -199,6 +199,7 @@ export interface Actions extends EntityActionApi {
     actionParam: ActionParams,
     limit?: number | null | undefined,
     skip?: number,
+    sortType?: string,
   ): Promise<any>;
   getFilterData(model: Model<Document>, filter: object, sort?: string): ParserData;
   createEntity(model: Model<Document>, item: object): Promise<any>;

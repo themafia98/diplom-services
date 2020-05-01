@@ -31,6 +31,7 @@ namespace Action {
       actionParam: ActionParams,
       limit: limiter,
       skip: number = 0,
+      sortType: string = 'desc',
     ): ParserData {
       try {
         const toSkip: number = Math.abs(skip);
@@ -48,7 +49,7 @@ namespace Action {
             .in((<Record<string, any[]>>actionParam).in)
             .limit(<number>limit)
             .sort({
-              createdAt: 'desc',
+              createdAt: sortType,
             });
         }
 
@@ -57,7 +58,7 @@ namespace Action {
           .limit(<number>limit)
           .skip(toSkip)
           .sort({
-            createdAt: 'desc',
+            createdAt: sortType,
           });
 
         return actionData;

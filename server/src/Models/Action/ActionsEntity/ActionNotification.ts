@@ -41,10 +41,16 @@ class ActionNotification implements Action {
         ],
       };
 
-      return await this.getEntity().getAll(model, { type: concactType, ...privateMethodQuery });
+      return await this.getEntity().getAll(
+        model,
+        { type: concactType, ...privateMethodQuery },
+        null,
+        0,
+        'asc',
+      );
     }
 
-    return await this.getEntity().getAll(model, { type: concactType, ...methodQuery });
+    return await this.getEntity().getAll(model, { type: concactType, ...methodQuery }, null, 0, 'asc');
   }
 
   private async updateMany(actionParam: ActionParams, model: Model<Document>): ParserData {
