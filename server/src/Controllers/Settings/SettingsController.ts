@@ -65,13 +65,48 @@ namespace Settings {
           throw new Error('Invalid queryParams for common_changes action');
         }
 
-        const changePasswordAction = new Action.ActionParser({
+        const changeCommonAction = new Action.ActionParser({
           actionPath: 'users',
           actionType: 'common_changes',
         });
 
         const actionParams: ActionParams = { queryParams };
-        const data: ParserResult = await changePasswordAction.getActionData(actionParams);
+        const data: ParserResult = await changeCommonAction.getActionData(actionParams);
+
+        if (!data) throw new Error('Invalid action data');
+        else return res.sendStatus(200);
+      } catch (err) {
+        console.error(err);
+        params.status = 'FAIL';
+        params.done = false;
+        return new Responser(res, req, params, err, 503, [], dbm).emit();
+      }
+    }
+
+    @Post({ path: '/profile', private: true })
+    public async profileSettings(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+      const { dbm } = server.locals;
+      const params: Params = {
+        methodQuery: 'profile_changes',
+        from: 'users',
+        done: true,
+        status: 'OK',
+      };
+      try {
+        const body: object = req.body;
+        const queryParams: Record<string, any> = (<Record<string, any>>body).queryParams;
+
+        if (!queryParams || _.isEmpty(queryParams)) {
+          throw new Error('Invalid queryParams for profile_changes action');
+        }
+
+        const changeProfileAction = new Action.ActionParser({
+          actionPath: 'users',
+          actionType: 'profile_changes',
+        });
+
+        const actionParams: ActionParams = { queryParams };
+        const data: ParserResult = await changeProfileAction.getActionData(actionParams);
 
         if (!data) throw new Error('Invalid action data');
         else return res.sendStatus(200);

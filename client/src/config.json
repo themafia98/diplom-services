@@ -30,7 +30,8 @@
   },
   "settings": {
     "includeChangeEmail": false,
-    "includeRulesSettings": true
+    "includeRulesSettings": true,
+    "includeChangeProfile": true
   },
   "menu": [
     {

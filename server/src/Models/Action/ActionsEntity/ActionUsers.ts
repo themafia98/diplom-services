@@ -56,7 +56,7 @@ class ActionUsers implements Action {
   }
 
   private async changePassword(actionParam: ActionParams, model: Model<Document>): ParserData {
-    const { queryParams = {} } = ({} = <Record<string, any>>actionParam);
+    const { queryParams = {} } = <Record<string, any>>actionParam;
     const { oldPassword = '', newPassword = '', uid = '' } = queryParams || {};
 
     const checkProps = {
@@ -89,6 +89,32 @@ class ActionUsers implements Action {
     }
 
     const res = await this.getEntity().updateEntity(model, { _id, updateProps: { passwordHash } });
+
+    if (!res) return null;
+
+    return res;
+  }
+
+  private async updateProfileChanges(actionParam: ActionParams, model: Model<Document>): ParserData {
+    const { queryParams = {} } = ({} = <Record<string, any>>actionParam);
+    const { isHidePhone = null, isHideEmail = null, uid = '' } = queryParams || {};
+
+    if (!uid || (_.isNull(isHidePhone) && _.isNull(isHideEmail))) {
+      return null;
+    }
+
+    const _id = Types.ObjectId(uid);
+    if (!_id) {
+      console.error('Invalid user id');
+      return null;
+    }
+
+    const updateProps: Record<string, boolean> = {};
+
+    if (!_.isNull(isHidePhone)) updateProps.isHidePhone = <boolean>isHidePhone;
+    if (!_.isNull(isHideEmail)) updateProps.isHideEmail = <boolean>isHideEmail;
+
+    const res = await this.getEntity().updateEntity(model, { _id, updateProps });
 
     if (!res) return null;
 
@@ -169,6 +195,8 @@ class ActionUsers implements Action {
         return this.changePassword(actionParam, model);
       case 'common_changes':
         return this.updateCommonChanges(actionParam, model);
+      case 'profile_changes':
+        return this.updateProfileChanges(actionParam, model);
       case 'update_single':
         return this.updateSingle(actionParam, model);
       case 'update_many':

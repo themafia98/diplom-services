@@ -128,7 +128,9 @@ class CabinetModule extends React.PureComponent {
     const { udata = {}, routeDataActive = {} } = this.props;
     const isPersonal = modePage === 'personal';
 
-    const { _id: uidUser = '', avatar = '' } = isPersonal ? routeDataActive : udata;
+    const { _id: uidUser = '', avatar = '', isHidePhone = false, isHideEmail = false } = isPersonal
+      ? routeDataActive
+      : udata;
 
     const props = {
       name: 'avatar',
@@ -155,6 +157,8 @@ class CabinetModule extends React.PureComponent {
         <div className="cabinetModule_main">
           <div className="col-6">
             <UserCard
+              isHidePhone={isPersonal && isHidePhone ? true : false}
+              isHideEmail={isPersonal && isHideEmail ? true : false}
               personalData={routeDataActive}
               modePage={modePage}
               imageUrl={avatar}

@@ -88,6 +88,8 @@ userSchema.methods.toAuthJSON = function () {
     rules: this.rules,
     accept: this.accept,
     avatar: this.avatar,
+    isHideEmail: this.isHideEmail,
+    isHidePhone: this.isHidePhone,
     token: this.generateJWT(),
   };
 };

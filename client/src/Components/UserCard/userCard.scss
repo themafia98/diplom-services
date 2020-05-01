@@ -30,6 +30,9 @@
       align-items: center;
       padding-top: 25px;
       padding-bottom: 20px;
+      &.withHideIcon {
+        padding-top: 40px;
+      }
       .name {
         font-weight: bold;
         font-size: 22px;

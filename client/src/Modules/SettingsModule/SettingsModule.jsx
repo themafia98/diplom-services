@@ -23,21 +23,30 @@ class SettingsModule extends React.PureComponent {
     telValue: null,
     newPassword: '',
     oldPassword: '',
-    isHideEmail: false,
-    isHidePhone: false,
+    isHideEmail: null,
+    isHidePhone: null,
   };
 
   static propTypes = settingsModuleType;
   static contextType = modelContext;
 
   static getDerivedStateFromProps = (props, state) => {
-    const { udata: { email = null, phone = null } = {} } = props;
-
-    if (_.isNull(state.emailValue) && _.isNull(state.telValue)) {
+    const {
+      udata: {
+        email: emailValue = null,
+        phone: telValue = null,
+        isHideEmail = null,
+        isHidePhone = null,
+      } = {},
+    } = props;
+    const enumState = [state.emailValue, state.telValue, state.isHideEmail, state.isHidePhone];
+    if (enumState.every((value) => _.isNull(value))) {
       return {
         ...state,
-        emailValue: email,
-        telValue: phone,
+        emailValue,
+        telValue,
+        isHideEmail,
+        isHidePhone,
       };
     }
     return state;
@@ -108,23 +117,31 @@ class SettingsModule extends React.PureComponent {
       return onSaveComponentState({ ...this.state, path: path });
   };
 
-  hideMail = (event) => {
-    const { isHideEmail = false } = this.state;
+  hideMail = (key, event) => {
+    const { isHideEmail = false, haveChanges = [] } = this.state;
     if (event !== isHideEmail) {
+      const filterChanges = [...haveChanges];
+      if (!filterChanges.includes(key)) {
+        filterChanges.push(key);
+      }
       this.setState({
         ...this.state,
-        haveChanges: true,
+        haveChanges: !filterChanges.length ? [key] : filterChanges,
         isHideEmail: event,
       });
     }
   };
 
-  hidePhone = (event) => {
-    const { isHidePhone = false } = this.state;
+  hidePhone = (key, event) => {
+    const { isHidePhone = false, haveChanges = [] } = this.state;
     if (event !== isHidePhone) {
+      const filterChanges = [...haveChanges];
+      if (!filterChanges.includes(key)) {
+        filterChanges.push(key);
+      }
       this.setState({
         ...this.state,
-        haveChanges: true,
+        haveChanges: !filterChanges.length ? [key] : filterChanges,
         isHidePhone: event,
       });
     }
@@ -179,8 +196,38 @@ class SettingsModule extends React.PureComponent {
     try {
       const { udata: { _id: uid = '' } = {}, onUpdateUdata = null, onCaching = null } = this.props;
       const { isHideEmail = false, isHidePhone = false, haveChanges } = this.state;
-
+      const { config: { settings: { includeChangeProfile = false } = {} } = {} } = this.context;
       const { Request } = this.context;
+
+      if (!includeChangeProfile) return;
+
+      if (!uid) {
+        message.error('Пользователь не найден');
+        return;
+      }
+
+      const queryParams = {
+        isHideEmail,
+        isHidePhone,
+        uid,
+      };
+      const rest = new Request();
+      const res = await rest.sendRequest('/settings/profile', 'POST', { queryParams }, true);
+
+      if (!res || res.status !== 200) {
+        throw new Error('Bad request profile settings');
+      }
+
+      if (onUpdateUdata) {
+        onUpdateUdata({ isHideEmail, isHidePhone });
+      }
+
+      this.setState({
+        haveChanges: haveChanges.filter((it) => {
+          if (it !== keyChange) return true;
+          else return false;
+        }),
+      });
     } catch (error) {
       if (error?.status !== 404) console.error(error);
     }
@@ -356,6 +403,7 @@ class SettingsModule extends React.PureComponent {
 
     const readonlyPassword = haveChanges.includes('password_new') && haveChanges.includes('password_old');
     const readonlyCommon = haveChanges.includes('commonEmail') || haveChanges.includes('commonPhone');
+    const readonlyProfile = haveChanges.includes('isHideEmail') || haveChanges.includes('isHidePhone');
     const isAdmin = departament === 'Admin' && rules === 'full';
     const settingsBlock = (
       <>
@@ -427,18 +475,18 @@ class SettingsModule extends React.PureComponent {
 
             <Panel header="Настройки профиля" key="profile">
               <div className="configWrapper">
-                <Switch defaultChecked={isHideEmail} onChange={this.hideMail} />
+                <Switch defaultChecked={isHideEmail} onChange={this.hideMail.bind(this, 'isHideEmail')} />
                 <span className="configTitle">Скрывать почту</span>
               </div>
               <div className="configWrapper">
-                <Switch defaultChecked={isHidePhone} onChange={this.hidePhone} />
+                <Switch defaultChecked={isHidePhone} onChange={this.hidePhone.bind(this, 'isHidePhone')} />
                 <span className="configTitle">Скрывать телефон</span>
               </div>
               <Button
                 onClick={(e) => this.onSaveSettings(e, 'profile')}
                 className="submit"
                 type="primary"
-                disabled={!haveChanges.includes('profile')}
+                disabled={!readonlyProfile}
               >
                 Принять изменения
               </Button>

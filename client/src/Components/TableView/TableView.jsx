@@ -210,7 +210,7 @@ class TableView extends React.Component {
           {it.email ? (
             <td>
               <Tooltip title={it.email}>
-                <Icon onClick={this.onMail.bind(this, it.email)} type="mail" />
+                {!it?.isHideEmail ? <Icon onClick={this.onMail.bind(this, it.email)} type="mail" /> : null}
               </Tooltip>
             </td>
           ) : null}

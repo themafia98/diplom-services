@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import clsx from 'clsx';
 import { userCardType } from './types';
 import { connect } from 'react-redux';
 import { updateUdata } from '../../Redux/actions/publicActions';
@@ -80,7 +81,14 @@ class UserCard extends React.Component {
 
   render() {
     const { visibilityModal = false, modePage = '' } = this.state;
-    const { udata = {}, cdShowModal, imageUrl = '', personalData = {} } = this.props;
+    const {
+      udata = {},
+      cdShowModal,
+      imageUrl = '',
+      personalData = {},
+      isHidePhone = false,
+      isHideEmail = false,
+    } = this.props;
     const isPersonalPage = modePage === 'personal';
     const {
       displayName = '',
@@ -105,7 +113,7 @@ class UserCard extends React.Component {
       backgroundImage: `url("${imageCard}")`,
     };
     const popoverStyle = { width: '500px' };
-
+    const isHideMailIcon = !email || isHideEmail;
     return (
       <>
         <div className="userCard">
@@ -131,13 +139,15 @@ class UserCard extends React.Component {
                   icon="user"
                 />
               )}
-              <div className="mainInformUser">
+              <div className={clsx('mainInformUser', isHideMailIcon ? 'withHideIcon' : null)}>
                 <div className="mainInformUser__main">
                   <p className="name">{displayName ? displayName : 'Unknown'}</p>
                   <p className="position">{departament ? departament : ''}</p>
                 </div>
                 <div className="mainInformUser__controllers">
-                  {email ? <Button title={email} className="controller" type="primary" icon="mail" /> : null}
+                  {email && !isHideEmail ? (
+                    <Button title={email} className="controller" type="primary" icon="mail" />
+                  ) : null}
                   {isOnline ? <Button className="controller" type="primary" icon="wechat" /> : null}
                 </div>
               </div>
@@ -163,12 +173,12 @@ class UserCard extends React.Component {
                 <p className="summary">{summary}</p>
               )}
               <div className="contact">
-                {email ? (
+                {email && !isHideEmail ? (
                   <div className="email">
                     <Icon type="mail" /> <span>{email}</span>
                   </div>
                 ) : null}
-                {phone ? (
+                {phone && !isHidePhone ? (
                   <div className="phone">
                     <Icon type="phone" /> <span>{phone}</span>
                   </div>

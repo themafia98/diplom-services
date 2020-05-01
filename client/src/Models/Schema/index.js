@@ -76,6 +76,8 @@ class Schema {
           rules: null,
           accept: null,
           avatar: null,
+          isHideEmail: null,
+          isHidePhone: null,
         };
       case NEWS_SCHEMA:
         return {
