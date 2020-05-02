@@ -4,10 +4,11 @@ import passport from 'passport';
 import { UserModel } from '../Models/Database/Schema';
 import { ResRequest, ParserResult } from '../Utils/Types';
 import Utils from '../Utils';
-import { Request, App, BodyLogin, Mail } from '../Utils/Interfaces';
+import { Request, App, BodyLogin, Mail, User } from '../Utils/Interfaces';
 import Action from '../Models/Action';
 import Decorators from '../Decorators';
 import Database from '../Models/Database';
+import { SentMessageInfo } from 'nodemailer';
 
 namespace General {
   const { getResponseJson } = Utils;
@@ -19,7 +20,7 @@ namespace General {
     @Post({ path: '/auth', private: true })
     public auth(req: Request, res: Response, next: NextFunction, server: App): Response {
       try {
-        const { dbm = null } = (server?.locals as Record<string, Readonly<Database.ManagmentDatabase>>) || {};
+        const { dbm = null } = server?.locals || {};
         if (dbm) dbm.connection().catch((err) => console.error(err));
         return res.sendStatus(200);
       } catch (err) {
@@ -59,14 +60,14 @@ namespace General {
 
     @Post({ path: '/login', private: false })
     public async login(req: Request, res: Response, next: NextFunction, server: App) {
-      const { dbm = null } = (server?.locals as Record<string, Readonly<Database.ManagmentDatabase>>) || {};
+      const { dbm = null } = server?.locals || {};
       const body: BodyLogin = req.body;
       if (dbm) dbm.connection().catch((err) => console.error(err));
       if (!body || (body && _.isEmpty(body))) return void res.sendStatus(503);
 
       return await passport.authenticate(
         'local',
-        async (err: Error, user: Record<string, any>): ResRequest => {
+        async (err: Error, user: User): ResRequest => {
           try {
             if (!user || err) {
               return res.status(401).send('Пользователь не найден, проверьте введеные данные.');
@@ -105,7 +106,7 @@ namespace General {
 
     @Post({ path: '/userload', private: true })
     public async userload(req: Request, res: Response, server: App): Promise<Response> {
-      const { dbm = null } = (server?.locals as Record<string, Readonly<Database.ManagmentDatabase>>) || {};
+      const { dbm = null } = server?.locals || {};
       if (dbm) dbm.connection().catch((err) => console.error(err));
       if (req.user) return res.json({ user: (req as Record<string, any>).user.toAuthJSON() });
       else {
@@ -134,7 +135,7 @@ namespace General {
       server: App,
     ): Promise<Response> {
       try {
-        const mailer: Readonly<Mail> = server?.locals?.mailer;
+        const { mailer } = server.locals;
         const body: Record<string, any> = req?.body;
 
         const { recovoryField = '', mode = 'email' } = body;
@@ -156,7 +157,7 @@ namespace General {
 
         const to: string = recovoryField;
 
-        const result: Promise<any> = await mailer.send(
+        const result: Promise<SentMessageInfo> = await (<Mail>mailer).send(
           to,
           'Восстановление пароля / ControllSystem',
           `Ваш новый пароль: ${password}`,

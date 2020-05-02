@@ -63,7 +63,7 @@ namespace System {
         const files = Array.isArray(req.files) ? req.files : null;
         if (!files) throw new Error('Bad file');
 
-        const store: FileApi = server.locals.dropbox;
+        const { dropbox: store } = server.locals;
         let responseSave: Array<object | null> = [];
 
         for await (let file of files) {
@@ -72,7 +72,7 @@ namespace System {
           const ext = parseOriginalName[parseOriginalName.length - 1];
 
           const path: string = `/${moduleName}/${entityId}/${file.originalname}`;
-          const result = await store.saveFile({ path, contents: file.buffer });
+          const result = await (<FileApi>store).saveFile({ path, contents: file.buffer });
 
           if (result) {
             responseSave.push({
@@ -159,11 +159,11 @@ namespace System {
           return new Responser(res, req, params, null, 404, [], dbm).emit();
         }
 
-        const dropbox: FileApi = server.locals.dropbox;
+        const { dropbox: store } = server.locals;
         const downloadAction = new Action.ActionParser({
           actionPath: 'global',
           actionType: 'download_files',
-          store: dropbox,
+          store,
         });
 
         const actionData: ParserResult = await downloadAction.getActionData({
@@ -191,8 +191,8 @@ namespace System {
 
     @Delete({ path: '/:module/delete/file', private: true })
     public async deleteTaskFile(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
-      const { dbm } = <Record<string, Readonly<Database.ManagmentDatabase>>>server.locals;
-      const { dropbox: store } = <Record<string, FileApi>>server.locals;
+      const { dbm } = server.locals;
+      const { dropbox: store } = server.locals;
       const { module: moduleName = '' } = req.params;
       const params: Params = {
         methodQuery: 'delete_file',

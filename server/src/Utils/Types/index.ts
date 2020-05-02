@@ -1,5 +1,17 @@
 import winston from 'winston';
 import { files } from 'dropbox';
+import {
+  User,
+  Task,
+  Jurnal,
+  Logger,
+  News,
+  ChatMessage,
+  ChatRoom,
+  Notification,
+  WikiTree,
+  WikiPage,
+} from '../Interfaces';
 import { DocumentQuery, Document } from 'mongoose';
 import { Response } from 'express';
 
@@ -16,8 +28,8 @@ export type docResponse = string | number | object | null | Array<any> | any;
 export type ActionData = Promise<Array<Document>> | null | Document | Promise<Document>;
 export type DocCompared = Document | Document[];
 export type FileEdit = FileMetadata | DeleteFile | ListFolderResult | BinaryType;
-export type ParserData = Promise<DocCompared | FileEdit | number | null | object | Blob>;
-export type ParserResult = DocCompared | FileEdit | null | object | number;
+export type ParserData = Promise<DocCompared | FileEdit | number | null | object | Blob | string>;
+export type ParserResult = DocCompared | FileEdit | null | object | number | string;
 export type OptionsUpdate = Record<string, boolean | null>;
 
 export type collectionOperations = {
@@ -27,6 +39,18 @@ export type collectionOperations = {
   update: Function;
   start: Function;
 };
+
+export type SchemaEntity =
+  | Task
+  | User
+  | Jurnal
+  | News
+  | ChatMessage
+  | ChatRoom
+  | Logger
+  | Notification
+  | WikiTree
+  | WikiPage;
 
 export type actionGet = {
   collection: string;

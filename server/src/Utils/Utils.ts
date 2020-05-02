@@ -11,6 +11,7 @@ import {
   WsWorker,
   ActionParams,
   Params,
+  Dbms,
 } from './Interfaces';
 import { FileTransportInstance, docResponse, ParserResult } from './Types';
 
@@ -74,8 +75,9 @@ namespace Utils {
     }
   };
 
-  export const responseTime = (start: Date) => {
-    return <any>new Date() - <any>start;
+  export const responseTime = (start: num): number => {
+    const now: number = Number(new Date().toString());
+    return now - start;
   };
 
   export const initControllers = (
@@ -144,7 +146,7 @@ namespace Utils {
     err: Error | null,
     status: number = 200,
     metadata: ParserResult = null,
-    dbm: Readonly<Database.ManagmentDatabase> | null = null,
+    dbm: Dbms | null = null,
   ): Promise<Response> => {
     console.warn('deprecated responser, use new Responser class');
     if (res.headersSent) return res;

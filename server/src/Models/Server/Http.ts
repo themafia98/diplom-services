@@ -1,4 +1,4 @@
-import express, { Response, NextFunction } from 'express';
+import express, { Response, NextFunction, RequestHandler } from 'express';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import nodemailer from 'nodemailer';
@@ -7,7 +7,7 @@ import passport from 'passport';
 import _ from 'lodash';
 import helmet from 'helmet';
 import chalk from 'chalk';
-import { Route } from '../../Utils/Interfaces';
+import { Route, Dbms, User } from '../../Utils/Interfaces';
 import RouterInstance from '../Router';
 import { Server as HttpServer } from 'http';
 import { Request, Mail } from '../../Utils/Interfaces';
@@ -60,7 +60,7 @@ namespace Http {
       }
     }
 
-    public initErrorHandler(server: HttpServer, dbm: Readonly<Database.ManagmentDatabase>): void {
+    public initErrorHandler(server: HttpServer, dbm: Dbms): void {
       server.on('clientError', (err, socket) => {
         console.log('clientError');
         console.error(err);
@@ -102,7 +102,7 @@ namespace Http {
       next();
     }
 
-    public initJWT(dbm: Readonly<Database.ManagmentDatabase>): void {
+    public initJWT(dbm: Dbms): void {
       passport.use(
         new LocalStrategy(
           {
@@ -117,13 +117,13 @@ namespace Http {
               if (!result) {
                 await dbm.disconnect().catch((err: Error) => console.error(err));
               }
-              const userResult = await UserModel.findOne({ email });
+              const userResult: User = (await UserModel.findOne({ email })) as User;
               if (!userResult) {
                 await dbm.disconnect().catch((err: Error) => console.error(err));
                 return done(userResult);
               }
 
-              if (!(await (<any>userResult).checkPassword(password))) {
+              if (!(await userResult.checkPassword(password))) {
                 return done(null, false, {
                   message: 'Нет такого пользователя или пароль неверен.',
                 });
@@ -219,10 +219,7 @@ namespace Http {
       this.getApp().use(passport.session());
       this.getApp().use(this.errorLogger);
 
-      const dbm: Readonly<Database.ManagmentDatabase> = new Database.ManagmentDatabase(
-        'controllSystem',
-        MONGODB_URI,
-      );
+      const dbm: Dbms = new Database.ManagmentDatabase('controllSystem', MONGODB_URI);
 
       const dropbox = new DropboxStorage.DropboxManager({ token: DROPBOX_TOKEN });
       const mailer: Readonly<Mail> = new Mailer.MailManager(
@@ -262,7 +259,7 @@ namespace Http {
 
       /** initial entrypoint route */
       this.setRest(instanceRouter.initInstance('/rest'));
-      this.getRest().use(this.startResponse);
+      this.getRest().use(<RequestHandler>this.startResponse);
       this.getRest().use(limiter);
 
       wsWorkerManager.startSocketConnection(socketio(server));

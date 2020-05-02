@@ -1,4 +1,4 @@
-import { ResponseBuilder } from '../../Utils/Interfaces';
+import { ResponseBuilder, Dbms } from '../../Utils/Interfaces';
 import { Params } from '../../Utils/Interfaces';
 import Database from '../Database';
 import { Response, Request } from 'express';
@@ -14,7 +14,7 @@ class Responser implements ResponseBuilder {
   private readonly error: Error | null;
   private readonly statusResponse: number;
   private readonly data: ParserResult;
-  private readonly db: Readonly<Database.ManagmentDatabase> | null;
+  private readonly db: Dbms | null;
 
   constructor(
     res: Response,
@@ -23,7 +23,7 @@ class Responser implements ResponseBuilder {
     err: Error | null,
     status: number = 200,
     metadata: ParserResult = null,
-    dbm: Readonly<Database.ManagmentDatabase> | null = null,
+    dbm: Dbms | null = null,
   ) {
     this.response = res;
     this.request = req;
@@ -58,7 +58,7 @@ class Responser implements ResponseBuilder {
     return this.data;
   }
 
-  public get dbm(): Readonly<Database.ManagmentDatabase> | null {
+  public get dbm(): Dbms | null {
     return this.db;
   }
 

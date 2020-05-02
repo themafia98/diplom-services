@@ -49,7 +49,7 @@ class ActionUsers implements Action {
 
       if (!res) return null;
 
-      return <any>password;
+      return password;
     }
 
     return null;

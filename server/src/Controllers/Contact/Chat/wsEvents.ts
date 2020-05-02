@@ -3,17 +3,17 @@ import _ from 'lodash';
 import { Socket } from 'socket.io';
 import { Model, Document } from 'mongoose';
 import WebSocketWorker from '../../../Models/WebSocketWorker';
-import Database from '../../../Models/Database';
 import Chat from './';
 import Utils from '../../../Utils';
 import { Server as HttpServer } from 'http';
 import { ParserResult } from '../../../Utils/Types';
+import { Dbms } from '../../../Utils/Interfaces';
 
 /**
  * Need upgrade for communication between workers
  */
 
-export default (ws: WebSocketWorker, dbm: Readonly<Database.ManagmentDatabase>, server: HttpServer) => {
+export default (ws: WebSocketWorker, dbm: Dbms, server: HttpServer) => {
   const { getModelByName } = Utils;
   const { createRealRoom } = Chat;
   const workerId = cluster.worker.id;

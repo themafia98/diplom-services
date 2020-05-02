@@ -6,7 +6,7 @@ import {
   NextFunction,
   response,
 } from 'express';
-import nodemailer, { SendMailOptions, Transporter, createTransport } from 'nodemailer';
+import nodemailer, { SendMailOptions, Transporter, createTransport, SentMessageInfo } from 'nodemailer';
 import { Dropbox, files } from 'dropbox';
 import { transOptions, ParserData, ParserResult } from '../Types';
 import socketio from 'socket.io';
@@ -30,7 +30,7 @@ export interface Mail {
   getSender(): SendMailOptions;
   getMailerConfig(): transOptions;
   create(): Promise<Transporter | null>;
-  send(to: string, subject: string, text: string): Promise<any>;
+  send(to: string, subject: string, text: string): Promise<SentMessageInfo>;
 }
 
 export interface Rest {
@@ -62,8 +62,11 @@ export interface CryptoSecurity {
 }
 
 export interface App extends Application {
-  locals: Record<string, any>;
-  dbm: Dbms;
+  locals: {
+    dbm: Dbms;
+    dropbox?: FileApi;
+    mailer?: Mail;
+  };
   hash: CryptoSecurity;
 }
 
@@ -116,16 +119,6 @@ export interface Metadata extends Object {
   GET: methodParam;
 }
 
-export interface User extends Object {
-  _id: string;
-  email: string;
-  displayName: string;
-  departament: string;
-  position: string;
-  rules: string;
-  accept: boolean;
-}
-
 export interface MetadataMongo extends Metadata {
   _doc?: Array<object>;
   [key: string]: MetadataMongo | any;
@@ -151,6 +144,119 @@ export interface DropboxAccess {
 export interface ServiceManager<T> {
   getService(): T;
   changeService(service: T): void;
+}
+
+export interface User extends Document {
+  _id: string;
+  email: string;
+  summary: string;
+  phone: string;
+  isOnline: boolean;
+  avatar: string;
+  isHideEmail: boolean;
+  isHidePhone: boolean;
+  passwordHash: string;
+  displayName: string;
+  departament: string;
+  position: string;
+  rules: string;
+  accept: boolean;
+  token?: string;
+  checkPassword: Function;
+  changePassword: Function;
+  generateJWT: Function;
+  toAuthJSON: Function;
+}
+
+export interface Task extends Document {
+  key: string;
+  status: string;
+  name: string;
+  priority: string;
+  authorName: string;
+  uidCreater: string;
+  editor: Array<string>;
+  description: string;
+  date: Array<string>;
+  comments: Array<object>;
+  modeAdd: string;
+}
+
+export interface Jurnal {
+  depKey: string;
+  timeLost: string;
+  editor: string;
+  date: Array<string>;
+  description: string;
+  modeAdd: string;
+  methodObj: object;
+}
+
+export interface Logger {
+  uid: string;
+  message: string;
+  date: string;
+  depKey: string;
+}
+
+export interface News {
+  title: string;
+  content: {
+    entityMap: object;
+    blocks: Array<any>;
+  };
+}
+
+export interface ChatMessage {
+  msg: string;
+  authorId: string;
+  displayName: string;
+  date: string;
+  tokenRoom: string;
+  groupName: string;
+  moduleName: string;
+}
+
+export interface ChatRoom {
+  type: string;
+  moduleName: string;
+  tokenRoom: string;
+  membersIds: Array<string>;
+  groupName: string;
+}
+
+export interface Notification {
+  key: string;
+  type: string;
+  title: string;
+  message: string;
+  isRead: boolean;
+  action: {
+    type: string;
+    link: string;
+    moduleName: string;
+  };
+  uidCreater: string;
+  authorName: string;
+}
+
+export interface WikiTree {
+  title: string;
+  level: number;
+  path: string;
+  parentId: string;
+  index: number;
+  accessGroups: Array<string>;
+}
+
+export interface WikiPage {
+  treeId: string;
+  lastEditName: string;
+  lastEditDate: string;
+  content: {
+    entityMap: object;
+    blocks: Array<any>;
+  };
 }
 
 export interface FileApi {
@@ -233,6 +339,6 @@ export interface ResponseBuilder {
   err: Error | null;
   status: number;
   metadata: ParserResult;
-  dbm: Readonly<Database.ManagmentDatabase> | null;
+  dbm: Dbms | null;
   emit(): Promise<Response>;
 }

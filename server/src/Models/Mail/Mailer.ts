@@ -1,4 +1,4 @@
-import nodemailer, { SendMailOptions, Transporter, createTransport } from 'nodemailer';
+import nodemailer, { SendMailOptions, Transporter, createTransport, SentMessageInfo } from 'nodemailer';
 import _ from 'lodash';
 import { Mail } from '../../Utils/Interfaces';
 import { transOptions } from '../../Utils/Types';
@@ -51,7 +51,7 @@ namespace Mailer {
       return this.transporter;
     }
 
-    public async send(to: string, subject: string, text: string): Promise<any> {
+    public async send(to: string, subject: string, text: string): Promise<SentMessageInfo> {
       try {
         const senderProps: object = this.getSender();
         if (!senderProps || !_.isString(to) || !_.isString(subject) || !_.isString(text)) {
@@ -64,7 +64,7 @@ namespace Mailer {
           return null;
         }
 
-        const result = await this.getTransporter()?.sendMail({
+        const result: Promise<SentMessageInfo> = await this.getTransporter()?.sendMail({
           ...senderProps,
           subject,
           text,

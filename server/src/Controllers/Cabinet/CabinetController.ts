@@ -22,10 +22,10 @@ namespace Cabinet {
         status: 'OK',
       };
       try {
-        const { files = [] } = req;
+        const { files = [] } = req as Record<string, any>;
         const { uid = '' } = req.params;
 
-        const image = (<Record<string, any>>files)[0] || null;
+        const image: { buffer: Buffer } = files[0] || null;
 
         if (!image || !image?.buffer) {
           throw new Error('Bad avatar');
