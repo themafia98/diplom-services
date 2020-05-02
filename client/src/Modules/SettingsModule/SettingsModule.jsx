@@ -6,17 +6,20 @@ import { connect } from 'react-redux';
 import { settingsLogsSelector } from './selectors';
 import { saveComponentStateAction } from '../../Redux/actions/routerActions';
 import { updateUdata, setStatus } from '../../Redux/actions/publicActions';
-import { Collapse, Switch, Input, Button, message } from 'antd';
+import { message } from 'antd';
 import Scrollbars from 'react-custom-scrollbars';
 import { middlewareCaching } from '../../Redux/actions/publicActions/middleware';
 import modelContext from '../../Models/context';
 import ObserverTime from '../../Components/ObserverTime';
 import TitleModule from '../../Components/TitleModule';
-const { Panel } = Collapse;
+
+import PanelPassword from './Panels/PanelPassword';
+import PanelCommon from './Panels/PanelCommon';
+import PanelAdmin from './Panels/PanelAdmin';
+import PanelProfile from './Panels/PanelProfile';
 
 class SettingsModule extends React.PureComponent {
   state = {
-    haveChanges: [],
     showScrollbar: false,
     emailValue: null,
     isLoadingLogs: false,
@@ -32,6 +35,11 @@ class SettingsModule extends React.PureComponent {
   static defaultProps = {
     settingsLogs: [],
   };
+
+  refWrapper = null;
+  refColumn = null;
+  refFunc = (node) => (this.refWrapper = node);
+  refColumnFunc = (node) => (this.refColumn = node);
 
   static getDerivedStateFromProps = (props, state) => {
     const {
@@ -113,92 +121,24 @@ class SettingsModule extends React.PureComponent {
     }
   };
 
-  componentWillUnmount = () => {
-    const { haveChanges } = this.state;
-    const { onSaveComponentState, path, router } = this.props;
-    if (haveChanges && !_.isEqual(router.routeData[path], this.state))
-      return onSaveComponentState({ ...this.state, path: path });
-  };
+  onSaveSettings = (settingsKey = '', state = {}, callback = null) => {
+    switch (settingsKey) {
+      case 'password':
+        return this.onChangePassword(state, callback);
+      case 'common':
+        return this.onChangeCommon(state, callback);
+      case 'profile':
+        return this.onChangeProfile(state, callback);
 
-  hideMail = (key, event) => {
-    const { isHideEmail = false, haveChanges = [] } = this.state;
-    if (event !== isHideEmail) {
-      const filterChanges = [...haveChanges];
-      if (!filterChanges.includes(key)) {
-        filterChanges.push(key);
-      }
-      this.setState({
-        ...this.state,
-        haveChanges: !filterChanges.length ? [key] : filterChanges,
-        isHideEmail: event,
-      });
+      default:
+        return;
     }
   };
 
-  hidePhone = (key, event) => {
-    const { isHidePhone = false, haveChanges = [] } = this.state;
-    if (event !== isHidePhone) {
-      const filterChanges = [...haveChanges];
-      if (!filterChanges.includes(key)) {
-        filterChanges.push(key);
-      }
-      this.setState({
-        ...this.state,
-        haveChanges: !filterChanges.length ? [key] : filterChanges,
-        isHidePhone: event,
-      });
-    }
-  };
-
-  onChangeInput = ({ target = {} }, key) => {
-    const { config: { settings: { includeChangeEmail = false } = {} } = {} } = this.context;
-    const { haveChanges = [] } = this.state;
-    const filterChanges = [...haveChanges];
-    if (!filterChanges.includes(key)) {
-      filterChanges.push(key);
-    }
-
-    if (includeChangeEmail && target?.dataset?.id === 'email') {
-      this.setState({
-        ...this.state,
-        haveChanges: !filterChanges.length ? [key] : filterChanges,
-        emailValue: target.value,
-      });
-    } else if (target?.dataset?.id === 'tel') {
-      this.setState({
-        ...this.state,
-        haveChanges: !filterChanges.length ? [key] : filterChanges,
-        telValue: target.value,
-      });
-    } else if (target?.dataset?.id === 'newPassword') {
-      this.setState({
-        ...this.state,
-        haveChanges: !filterChanges.length ? [key] : filterChanges,
-        newPassword: target.value,
-      });
-    } else if (target?.dataset?.id === 'oldPassword') {
-      this.setState({
-        ...this.state,
-        haveChanges: !filterChanges.length ? [key] : filterChanges,
-        oldPassword: target.value,
-      });
-    }
-  };
-
-  onSaveSettings = async (event, settingsKey) => {
-    if (settingsKey.includes('password')) {
-      this.onChangePassword(settingsKey);
-    } else if (settingsKey === 'common') {
-      this.onChangeCommon(settingsKey);
-    } else if (settingsKey === 'profile') {
-      this.onChangeProfile(settingsKey);
-    }
-  };
-
-  onChangeProfile = async (keyChange) => {
+  onChangeProfile = async (state, callback) => {
     try {
-      const { udata: { _id: uid = '' } = {}, onUpdateUdata = null, onCaching = null } = this.props;
-      const { isHideEmail = false, isHidePhone = false, haveChanges } = this.state;
+      const { udata: { _id: uid = '' } = {}, onUpdateUdata = null } = this.props;
+      const { isHideEmail = false, isHidePhone = false } = state;
       const { config: { settings: { includeChangeProfile = false } = {} } = {} } = this.context;
       const { Request } = this.context;
 
@@ -225,22 +165,17 @@ class SettingsModule extends React.PureComponent {
         onUpdateUdata({ isHideEmail, isHidePhone });
       }
 
-      this.setState({
-        haveChanges: haveChanges.filter((it) => {
-          if (['isHidePhone', 'isHideEmail'].every((key) => key !== it)) return true;
-          else return false;
-        }),
-      });
+      if (callback) callback();
     } catch (error) {
       if (error?.status !== 404) console.error(error);
     }
   };
 
-  onChangeCommon = async (keyChange) => {
+  onChangeCommon = async (state, callback) => {
     try {
       const { Request = {} } = this.context;
       const { udata: { _id: uid = '' } = {}, onUpdateUdata = null, onCaching = null } = this.props;
-      const { emailValue: newEmail = '', telValue: newPhone = '', haveChanges } = this.state;
+      const { emailValue: newEmail = '', telValue: newPhone = '', haveChanges = [] } = state;
       const { config: { settings: { includeChangeEmail = false } = {} } = {} } = this.context;
       if (includeChangeEmail && (!newEmail || !/\w+@\w+\.\D+/i.test(newEmail))) {
         message.error('Формат почты не соблюден');
@@ -270,12 +205,7 @@ class SettingsModule extends React.PureComponent {
         onUpdateUdata(includeChangeEmail ? { email: newEmail, phone: newPhone } : { phone: newPhone });
       }
 
-      this.setState({
-        haveChanges: haveChanges.filter((it) => {
-          if (it !== keyChange) return true;
-          else return false;
-        }),
-      });
+      if (callback) callback();
 
       const isOnlyPhone = haveChanges.includes('commonPhone') && !haveChanges.includes('commonEmail');
       const isOnlyEmail = haveChanges.includes('commonEmail') && !haveChanges.includes('commonPhone');
@@ -301,26 +231,18 @@ class SettingsModule extends React.PureComponent {
         type: 'logger',
       });
 
-      this.setState(
-        {
-          ...this.state,
-          haveChanges: [],
-        },
-        () => {
-          message.success('Настройки успешно обновлены.');
-        },
-      );
+      message.success('Настройки успешно обновлены.');
     } catch (error) {
       if (error?.response?.status !== 404) console.error(error);
       message.error('Ошибка смены пароля');
     }
   };
 
-  onChangePassword = async (keyChange) => {
+  onChangePassword = async (state, callback) => {
     try {
       const { Request = {} } = this.context;
       const { udata: { _id: uid = '' } = {}, onCaching } = this.props;
-      const { oldPassword = '', newPassword = '', haveChanges = {} } = this.state;
+      const { oldPassword = '', newPassword = '' } = state;
       if (!oldPassword || !newPassword) {
         message.warning('Формат пароля не верен');
         return;
@@ -343,9 +265,7 @@ class SettingsModule extends React.PureComponent {
         throw new Error('Bad request change password');
       }
 
-      this.setState({
-        haveChanges: haveChanges.filter((it) => it !== keyChange),
-      });
+      if (callback) callback();
 
       const msg = 'Изменение пароля.';
 
@@ -364,31 +284,17 @@ class SettingsModule extends React.PureComponent {
         type: 'logger',
       });
 
-      this.setState(
-        {
-          ...this.state,
-          haveChanges: [],
-        },
-        () => {
-          message.success('Пароль изменен.');
-        },
-      );
+      message.success('Пароль изменен.');
     } catch (error) {
       if (error?.response?.status !== 404) console.error(error);
       message.error('Ошибка смены пароля');
     }
   };
 
-  refWrapper = null;
-  refColumn = null;
-  refFunc = (node) => (this.refWrapper = node);
-  refColumnFunc = (node) => (this.refColumn = node);
-
   render() {
     const {
       emailValue,
       telValue,
-      haveChanges,
       oldPassword,
       newPassword,
       isHideEmail,
@@ -397,139 +303,37 @@ class SettingsModule extends React.PureComponent {
     } = this.state;
     const {
       settingsLogs = null,
-      shouldUpdate,
       udata: { departament = '', rules = '' },
     } = this.props;
-    const {
-      config: { settings: { includeChangeEmail = false, includeRulesSettings = false } = {} } = {},
-    } = this.context;
+    const { config: { settings: { includeRulesSettings = false } = {} } = {} } = this.context;
+
     const isLoading = !isLoadingLogs && (!settingsLogs || (settingsLogs && !settingsLogs?.length));
-    const text = ` A dog is a type of domesticated animal.`;
-
-    const readonlyPassword = haveChanges.includes('password_new') && haveChanges.includes('password_old');
-    const readonlyCommon = haveChanges.includes('commonEmail') || haveChanges.includes('commonPhone');
-    const readonlyProfile = haveChanges.includes('isHideEmail') || haveChanges.includes('isHidePhone');
     const isAdmin = departament === 'Admin' && rules === 'full';
-    const settingsBlock = (
-      <>
-        <div ref={this.refFunc}>
-          <Collapse defaultActiveKey={['common']}>
-            <Panel onChange={this.onUpdate} header="Смена пароля" key="password">
-              <div className="configWrapper flexWrapper">
-                <span>Старый пароль:</span>
-                <Input
-                  data-id="oldPassword"
-                  type="password"
-                  allowClear
-                  value={oldPassword}
-                  onChange={(e) => this.onChangeInput(e, 'password_old')}
-                />
-              </div>
-              <div className="configWrapper flexWrapper">
-                <span>Новый пароль:</span>
-                <Input
-                  data-id="newPassword"
-                  type="password"
-                  allowClear
-                  value={newPassword}
-                  onChange={(e) => this.onChangeInput(e, 'password_new')}
-                />
-              </div>
-              <Button
-                onClick={(e) => this.onSaveSettings(e, 'password')}
-                className="submit"
-                type="primary"
-                disabled={!readonlyPassword}
-              >
-                Принять изменения
-              </Button>
-            </Panel>
-            <Panel onChange={this.onUpdate} header="Общие настройки" key="common">
-              <div className="settingsPanel--center-flex">
-                {includeChangeEmail ? (
-                  <div className="configWrapper flexWrapper">
-                    <span>Сменить почту:</span>
-                    <Input
-                      data-id="email"
-                      allowClear
-                      value={emailValue}
-                      onChange={(e) => this.onChangeInput(e, 'commonEmail')}
-                    />
-                  </div>
-                ) : null}
-                <div className="configWrapper flexWrapper">
-                  <span>Сменить телефон:</span>
-                  <Input
-                    data-id="tel"
-                    type="tel"
-                    allowClear
-                    value={telValue}
-                    onChange={(e) => this.onChangeInput(e, 'commonPhone')}
-                  />
-                </div>
-              </div>
-              <Button
-                onClick={(e) => this.onSaveSettings(e, 'common')}
-                className="submit"
-                type="primary"
-                disabled={!readonlyCommon}
-              >
-                Принять изменения
-              </Button>
-            </Panel>
-
-            <Panel header="Настройки профиля" key="profile">
-              <div className="configWrapper">
-                <Switch defaultChecked={isHideEmail} onChange={this.hideMail.bind(this, 'isHideEmail')} />
-                <span className="configTitle">Скрывать почту</span>
-              </div>
-              <div className="configWrapper">
-                <Switch defaultChecked={isHidePhone} onChange={this.hidePhone.bind(this, 'isHidePhone')} />
-                <span className="configTitle">Скрывать телефон</span>
-              </div>
-              <Button
-                onClick={(e) => this.onSaveSettings(e, 'profile')}
-                className="submit"
-                type="primary"
-                disabled={!readonlyProfile}
-              >
-                Принять изменения
-              </Button>
-            </Panel>
-            {isAdmin && includeRulesSettings ? (
-              <Panel header="Настройки уровней доступа" key="access">
-                <Collapse bordered={false}>
-                  <Panel header="Администратор" key="admin">
-                    {text}
-                  </Panel>
-                  <Panel header="Начальник отдела" key="headDepartament">
-                    {text}
-                  </Panel>
-                  <Panel header="Сотрудник" key="solider">
-                    {text}
-                  </Panel>
-                </Collapse>
-                <Button
-                  onClick={(e) => this.onSaveSettings(e, 'access')}
-                  className="submit"
-                  type="primary"
-                  disabled={!haveChanges.includes('profile')}
-                >
-                  Принять изменения
-                </Button>
-              </Panel>
-            ) : null}
-          </Collapse>
-        </div>
-      </>
-    );
-
     return (
       <div className="settingsModule">
         <TitleModule classNameTitle="settingsModuleTitle" title="Настройки" />
         <div className="settingsModule__main">
           <div ref={this.refColumnFunc} className="col-6">
-            <Scrollbars>{settingsBlock}</Scrollbars>
+            <Scrollbars>
+              <div ref={this.refFunc}>
+                <PanelPassword
+                  oldPassword={oldPassword}
+                  newPassword={newPassword}
+                  onSaveSettings={this.onSaveSettings}
+                />
+                <PanelCommon
+                  onSaveSettings={this.onSaveSettings}
+                  emailValue={emailValue}
+                  telValue={telValue}
+                />
+                <PanelProfile
+                  onSaveSettings={this.onSaveSettings}
+                  isHideEmail={isHideEmail}
+                  isHidePhone={isHidePhone}
+                />
+                {isAdmin && includeRulesSettings ? <PanelAdmin /> : null}
+              </div>
+            </Scrollbars>
           </div>
           <div className="col-6">
             <ObserverTime isLoading={isLoading} settingsLogs={settingsLogs} />
