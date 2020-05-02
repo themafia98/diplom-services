@@ -1,11 +1,12 @@
 // @ts-nocheck
 import { createPortal } from 'react-dom';
+import { JsxElement } from 'typescript';
 import { PureComponent, Component } from 'react';
 
 class Node {
   /**
    * portal element
-   * @type {PureComponent|Component}
+   * @type {HTMLElement}
    * */
   #portal;
   /**
@@ -35,6 +36,10 @@ class Node {
     this.container.removeChild(this.portal);
   }
 
+  /**
+   *
+   * @param {PureComponent |Component | JsxElement} children
+   */
   create(children) {
     return createPortal(children, this.container);
   }
