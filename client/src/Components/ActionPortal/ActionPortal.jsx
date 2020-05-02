@@ -2,7 +2,6 @@
 import Node from '../../Models/Node';
 import React from 'react';
 import { Button } from 'antd';
-// const node = new Node('div', 'action-root');
 
 class ActionPortal extends React.PureComponent {
   node = new Node('div', 'action-root');
