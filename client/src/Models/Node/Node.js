@@ -21,7 +21,6 @@ class Node {
   }
 
   append() {
-    debugger;
     this.container.appendChild(this.portal);
   }
 
