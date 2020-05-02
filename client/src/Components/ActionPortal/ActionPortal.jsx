@@ -14,7 +14,7 @@ class ActionPortal extends React.PureComponent {
   };
 
   render() {
-    const { action: actionProps = null } = this;
+    const { action: actionProps = null } = this.props;
     const action = actionProps ? (
       actionProps
     ) : (
