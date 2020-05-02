@@ -1,10 +1,17 @@
 // @ts-nocheck
 import { createPortal } from 'react-dom';
+import { PureComponent, Component } from 'react';
 
 class Node {
-  /** portal element */
+  /**
+   * portal element
+   * @type {PureComponent|Component}
+   * */
   #portal;
-  /** container for portal */
+  /**
+   * container for portal
+   * @type {HTMLElement}
+   * */
   #container;
 
   constructor(element, containerClassName) {

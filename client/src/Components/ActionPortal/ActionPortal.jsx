@@ -14,11 +14,17 @@ class ActionPortal extends React.PureComponent {
   };
 
   render() {
-    const action = (
+    const { action: actionProps = null } = this;
+    const action = actionProps ? (
+      actionProps
+    ) : (
       <div className="action-button">
         <Button type="primary">Чат</Button>
       </div>
     );
+
+    if (!action) return null;
+
     return this.node.create(action);
   }
 }
