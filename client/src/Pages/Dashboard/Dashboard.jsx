@@ -18,6 +18,7 @@ import { loadCurrentData } from '../../Redux/actions/routerActions/middleware';
 import { errorRequestAction, clearCache, setStatus, showGuile } from '../../Redux/actions/publicActions';
 import { routeParser } from '../../Utils';
 
+import ActionPortal from '../../Components/ActionPortal';
 import Loader from '../../Components/Loader';
 import HeaderView from '../../Components/HeaderView';
 import ContentView from '../../Components/ContentView';
@@ -41,6 +42,8 @@ class Dashboard extends React.PureComponent {
 
   static contextType = modelContext;
   static propTypes = dashboardType;
+
+  dashboardRef = React.createRef();
 
   componentDidMount = () => {
     if (deferredPrompt) {
@@ -293,7 +296,7 @@ class Dashboard extends React.PureComponent {
     const actionTabsData = this.getActionTabs(actionTabs, menuItems);
 
     return (
-      <>
+      <div ref={this.dashboardRef} className="dashboard">
         {showLoader ? <Loader className="mainLoader" /> : null}
         <Layout className="layout_menu">
           <MenuView
@@ -355,7 +358,8 @@ class Dashboard extends React.PureComponent {
             ) : null}
           </Layout>
         </Layout>
-      </>
+        <ActionPortal name="Чат" />
+      </div>
     );
   }
 }
