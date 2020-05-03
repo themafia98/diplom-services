@@ -1,4 +1,4 @@
-import mongoose, { Mongoose, Connection } from 'mongoose';
+import mongoose, { Connection } from 'mongoose';
 import dotenv from 'dotenv';
 import _ from 'lodash';
 

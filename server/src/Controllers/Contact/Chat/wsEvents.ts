@@ -6,12 +6,8 @@ import WebSocketWorker from '../../../Models/WebSocketWorker';
 import Chat from './';
 import Utils from '../../../Utils';
 import { Server as HttpServer } from 'http';
-import { ParserResult } from '../../../Utils/Types';
+import { ParserResult, Payload } from '../../../Utils/Types';
 import { Dbms } from '../../../Utils/Interfaces';
-
-/**
- * Need upgrade for communication between workers
- */
 
 export default (ws: WebSocketWorker, dbm: Dbms, server: HttpServer) => {
   const { getModelByName } = Utils;
@@ -24,7 +20,7 @@ export default (ws: WebSocketWorker, dbm: Dbms, server: HttpServer) => {
     socket.emit('connection', true);
 
     const callbackFakeRoom = (result: ParserResult, fakeMsg: object) => {
-      const { tokenRoom = '', membersIds = [] } = <Record<string, any>>result || {};
+      const { tokenRoom = '' } = (result as Record<string, string>) || {};
       socket.join(tokenRoom);
       const response = { room: result, msg: fakeMsg };
 
@@ -81,15 +77,18 @@ export default (ws: WebSocketWorker, dbm: Dbms, server: HttpServer) => {
       }
     });
 
-    socket.on('initFakeRoom', async (fakeData: Record<string, any>) => {
+    socket.on('initFakeRoom', async (fakeData: Record<string, string | object>) => {
       const { fakeMsg = {}, interlocutorId = '' } = fakeData || {};
 
       if (!_.isEmpty(fakeMsg) && interlocutorId) {
-        const result: ParserResult = await createRealRoom(fakeMsg, interlocutorId);
+        const result: ParserResult = await createRealRoom(
+          <Record<string, object>>fakeMsg,
+          <string>interlocutorId,
+        );
 
         if (result) {
           console.log('updateFakeRoom', result);
-          callbackFakeRoom(result, fakeMsg);
+          callbackFakeRoom(result, <Record<string, object>>fakeMsg);
         }
       }
     });
@@ -115,26 +114,26 @@ export default (ws: WebSocketWorker, dbm: Dbms, server: HttpServer) => {
     console.log('user disconnected');
   });
 
-  process.on('message', (data: any) => {
+  process.on('message', (data: Record<string, object | string | null>) => {
     try {
-      const { action = '', payload } = data;
+      const { action = '', payload = {} } = data;
 
       switch (action) {
         case 'emitSocket': {
-          const { event = '', data = {}, to = '', socket = null } = payload;
+          const { event = '', data = {}, to = '', socket = null } = payload as Record<string, Payload>;
 
           let worker = ws.getWorker();
           if (to && to === 'broadcast' && socket) {
-            socket.broadcast.emit(event, data);
+            (<Socket>socket).broadcast.emit(<string>event, data);
             break;
           }
 
           if (to) {
-            worker.to(to).emit(event, data);
+            worker.to(<string>to).emit(<string>event, data);
             break;
           }
 
-          worker.emit(event, data);
+          worker.emit(<string>event, data);
           break;
         }
 

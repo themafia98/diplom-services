@@ -14,7 +14,9 @@ import {
 } from '../Interfaces';
 import { DocumentQuery, Document } from 'mongoose';
 import { Response } from 'express';
+import { Socket } from 'socket.io';
 
+export type Payload = string | object | string | null | Socket;
 export type limiter = number | null | undefined;
 export type ListFolderResult = files.ListFolderResult | null;
 export type FileMetadata = files.FileMetadata | null;

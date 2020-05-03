@@ -105,10 +105,7 @@ class ActionTasks implements Action {
     actionParam: ActionParams,
     id: string | null = null,
   ): Promise<Record<string, Array<object>>> {
-    const { saveData: { filteredInfo = {}, arrayKeys = [] } = {}, sort = 'desc' } = actionParam as Record<
-      string,
-      any
-    >;
+    const { saveData: { filteredInfo = {}, arrayKeys = [] } = {} } = actionParam as Record<string, any>;
 
     const filteredKeys: Array<string> = Object.keys(filteredInfo);
     if (!filteredKeys?.length && !id) return {};

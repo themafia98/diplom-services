@@ -1,7 +1,7 @@
 import { NextFunction, Response, Request } from 'express';
 
-import { App, Params } from '../../Utils/Interfaces';
-import { ParserResult, ResRequest } from '../../Utils/Types';
+import { App, Params, FileBody, Controller } from '../../Utils/Interfaces';
+import { ResRequest } from '../../Utils/Types';
 
 import Responser from '../../Models/Responser';
 import Action from '../../Models/Action';
@@ -11,9 +11,9 @@ namespace Cabinet {
   const { Controller, Post } = Decorators;
 
   @Controller('/cabinet')
-  export class CabinetController {
+  export class CabinetController implements Controller<FunctionConstructor> {
     @Post({ path: '/:uid/loadAvatar', private: true, file: true })
-    public async loadAvatar(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    protected async loadAvatar(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { dbm } = server.locals;
       const params: Params = {
         methodQuery: 'update_avatar',
@@ -22,10 +22,10 @@ namespace Cabinet {
         status: 'OK',
       };
       try {
-        const { files = [] } = req as Record<string, any>;
+        const files: Array<FileBody> = req.files as Array<FileBody>;
         const { uid = '' } = req.params;
 
-        const image: { buffer: Buffer } = files[0] || null;
+        const image: FileBody = files[0];
 
         if (!image || !image?.buffer) {
           throw new Error('Bad avatar');
@@ -46,7 +46,7 @@ namespace Cabinet {
         });
 
         const body = { queryParams: { uid }, updateItem: { avatar: dataUrl } };
-        const data: ParserResult = await updateAvatarAction.getActionData(body);
+        await updateAvatarAction.getActionData(body);
 
         return new Responser(res, req, params, null, 200, dataUrl, dbm).emit();
       } catch (err) {

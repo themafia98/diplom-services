@@ -1,6 +1,6 @@
 import { NextFunction, Response, Request } from 'express';
 import _ from 'lodash';
-import { App, Params, ActionParams } from '../../Utils/Interfaces';
+import { App, Params, ActionParams, Controller } from '../../Utils/Interfaces';
 import { ParserResult, ResRequest } from '../../Utils/Types';
 import Responser from '../../Models/Responser';
 
@@ -11,9 +11,14 @@ namespace Settings {
   const { Controller, Post, Put } = Decorators;
 
   @Controller('/settings')
-  export class SettingsController {
+  export class SettingsController implements Controller<FunctionConstructor> {
     @Post({ path: '/password', private: true })
-    public async passwordChanged(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    protected async passwordChanged(
+      req: Request,
+      res: Response,
+      next: NextFunction,
+      server: App,
+    ): ResRequest {
       const { dbm } = server.locals;
       const params: Params = {
         methodQuery: 'change_password',
@@ -49,7 +54,7 @@ namespace Settings {
     }
 
     @Post({ path: '/common', private: true })
-    public async commonSettings(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    protected async commonSettings(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { dbm } = server.locals;
       const params: Params = {
         methodQuery: 'common_changes',
@@ -84,7 +89,12 @@ namespace Settings {
     }
 
     @Post({ path: '/profile', private: true })
-    public async profileSettings(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    protected async profileSettings(
+      req: Request,
+      res: Response,
+      next: NextFunction,
+      server: App,
+    ): ResRequest {
       const { dbm } = server.locals;
       const params: Params = {
         methodQuery: 'profile_changes',
@@ -120,7 +130,7 @@ namespace Settings {
 
     @Put({ path: '/logger', private: true })
     @Post({ path: '/logger', private: true })
-    async logger(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    protected async logger(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { dbm } = server.locals;
       const body = req.body;
       const actionType: string = body.actionType;

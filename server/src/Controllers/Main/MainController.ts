@@ -1,13 +1,12 @@
-import { NextFunction, Response, Request, response } from 'express';
+import { NextFunction, Response, Request } from 'express';
 import _ from 'lodash';
 import { Document } from 'mongoose';
-import { App, Params, FileApi } from '../../Utils/Interfaces';
+import { App, Params, FileApi, Controller } from '../../Utils/Interfaces';
 import { ParserResult, ResRequest } from '../../Utils/Types';
 import Utils from '../../Utils';
 import Responser from '../../Models/Responser';
 import Decorators from '../../Decorators';
 import Action from '../../Models/Action';
-import Database from '../../Models/Database';
 
 namespace System {
   const Controller = Decorators.Controller;
@@ -16,9 +15,9 @@ namespace System {
   const Get = Decorators.Get;
   const Put = Decorators.Put;
   @Controller('/system')
-  export class SystemData {
+  export class SystemData implements Controller<FunctionConstructor> {
     @Get({ path: '/userList', private: true })
-    async getUsersList(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    protected async getUsersList(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { dbm } = server.locals;
       const params: Params = { methodQuery: 'get_all', status: 'done', done: true, from: 'users' };
       try {
@@ -49,7 +48,7 @@ namespace System {
     }
 
     @Post({ path: '/:module/file', private: true, file: true })
-    public async saveFile(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    protected async saveFile(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { dbm } = server.locals;
       const { module: moduleName = '' } = req.params;
       const params: Params = {
@@ -104,7 +103,7 @@ namespace System {
     }
 
     @Put({ path: '/:module/load/file', private: true })
-    public async loadTaskFiles(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    protected async loadTaskFiles(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { dbm } = server.locals;
       const { module: moduleName = '' } = req.params;
       const params: Params = {
@@ -142,7 +141,7 @@ namespace System {
     }
 
     @Get({ path: '/:module/download/:entityId/:filename', private: true })
-    public async downloadFile(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    protected async downloadFile(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { dbm } = server.locals;
       const { entityId = '', filename = '', module: moduleName = '' } = req.params;
       const params: Params = {
@@ -190,7 +189,7 @@ namespace System {
     }
 
     @Delete({ path: '/:module/delete/file', private: true })
-    public async deleteTaskFile(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    protected async deleteTaskFile(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { dbm } = server.locals;
       const { dropbox: store } = server.locals;
       const { module: moduleName = '' } = req.params;
@@ -223,7 +222,7 @@ namespace System {
     }
 
     @Post({ path: '/:module/update/single', private: true })
-    public async updateSingle(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    protected async updateSingle(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { dbm } = server.locals;
       const { module: moduleName = '' } = req.params;
       const body: object = req.body;
@@ -271,7 +270,7 @@ namespace System {
     }
 
     @Post({ path: '/:module/update/many', private: true })
-    public async updateMany(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    protected async updateMany(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { dbm } = server.locals;
       const { module: moduleName = '' } = req.params;
       const params: Params = {
@@ -320,7 +319,7 @@ namespace System {
     }
 
     @Post({ path: '/:type/notification', private: true })
-    public async notification(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    protected async notification(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { dbm } = server.locals;
       const { type = '' } = req.params;
       const params: Params = {

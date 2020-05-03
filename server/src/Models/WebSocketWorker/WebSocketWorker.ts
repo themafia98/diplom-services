@@ -1,4 +1,4 @@
-import socketio, { Socket, EngineSocket } from 'socket.io';
+import socketio from 'socket.io';
 import { WsWorker } from '../../Utils/Interfaces';
 import cluster from 'cluster';
 

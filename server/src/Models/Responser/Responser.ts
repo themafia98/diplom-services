@@ -1,6 +1,5 @@
 import { ResponseBuilder, Dbms } from '../../Utils/Interfaces';
 import { Params } from '../../Utils/Interfaces';
-import Database from '../Database';
 import { Response, Request } from 'express';
 import { ParserResult } from '../../Utils/Types';
 import Utils from '../../Utils';

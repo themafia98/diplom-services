@@ -13,6 +13,14 @@ import socketio from 'socket.io';
 import mongoose, { Mongoose, Connection, Model, Document, FilterQuery } from 'mongoose';
 import Database from '../../Models/Database';
 
+export interface FileBody {
+  buffer: Buffer;
+}
+
+export interface Controller<T> {
+  [key: string]: any;
+}
+
 export interface ServerRun {
   isPrivateRoute(req: Request, res: Response, next: NextFunction): Response | void;
   startResponse(req: Request, res: Response, next: NextFunction): void;
@@ -90,8 +98,7 @@ export interface Request extends RequestExpress {
 }
 
 export interface BodyLogin {
-  email?: string;
-  password?: string;
+  [key: string]: string | number | object | ActionParams;
 }
 
 export interface RouteDefinition {

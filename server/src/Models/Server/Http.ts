@@ -267,7 +267,16 @@ namespace Http {
       wsEvents(wsWorkerManager, dbm, server); /** chat */
 
       Utils.initControllers(
-        [Main, TasksAlias, WikiAlias, NewsAlias, SystemAlias, ChatAlias, SettingsAlias, CabinetAlias],
+        [
+          <FunctionConstructor>Main,
+          <FunctionConstructor>TasksAlias,
+          <FunctionConstructor>WikiAlias,
+          <FunctionConstructor>NewsAlias,
+          <FunctionConstructor>SystemAlias,
+          <FunctionConstructor>ChatAlias,
+          <FunctionConstructor>SettingsAlias,
+          <FunctionConstructor>CabinetAlias,
+        ],
         this.getApp.bind(this),
         this.getRest.bind(this),
         this.isPrivateRoute.bind(this),

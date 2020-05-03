@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import _ from 'lodash';
 import Utils from '../../Utils';
-import { App, Params, ActionParams } from '../../Utils/Interfaces';
+import { App, Params, ActionParams, Controller } from '../../Utils/Interfaces';
 import { ResRequest, ParserResult } from '../../Utils/Types';
 import Responser from '../../Models/Responser';
 import Action from '../../Models/Action';
@@ -15,10 +15,10 @@ namespace Tasks {
   const Put = Decorators.Put;
 
   @Controller('/tasks')
-  export class TasksController {
+  export class TasksController implements Controller<FunctionConstructor> {
     @Post({ path: '/list', private: true })
     @Get({ path: '/list', private: true })
-    public async getList(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    protected async getList(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { dbm } = server.locals;
       const params: Params = { methodQuery: 'get_all', status: 'done', done: true, from: 'tasks' };
       try {
@@ -64,7 +64,7 @@ namespace Tasks {
 
     @Post({ path: '/listCounter', private: true })
     @Get({ path: '/listCounter', private: true })
-    public async getListCounter(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    protected async getListCounter(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { filterCounter = null, saveData = {} } = req?.body || {}; // uid
       const { dbm } = server.locals;
       const params: Params = {
@@ -103,7 +103,7 @@ namespace Tasks {
     }
 
     @Post({ path: '/createTask', private: true })
-    public async create(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    protected async create(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { dbm } = server.locals;
       const params: Params = {
         methodQuery: 'set_single',
@@ -117,8 +117,6 @@ namespace Tasks {
           params.status = 'FAIL BODY';
           return new Responser(res, req, params, null, 404, [], dbm).emit();
         }
-
-        const param: object = req.body.param;
         const connect = await dbm.connection().catch((err: Error) => console.error(err));
 
         if (!connect) throw new Error('Bad connect');
@@ -149,7 +147,7 @@ namespace Tasks {
     }
 
     @Put({ path: '/caching/jurnal', private: true })
-    public async setJurnalWorks(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    protected async setJurnalWorks(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { dbm } = server.locals;
       const params: Params = {
         methodQuery: 'set_jurnal',
@@ -196,7 +194,7 @@ namespace Tasks {
     }
 
     @Put({ path: '/caching/list', private: true })
-    public async getCachingList(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    protected async getCachingList(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { dbm } = server.locals;
       const { queryParams = {}, actionType = '' } = req.body;
       const params: Params = { methodQuery: actionType, status: 'done', done: true, from: 'tasks' };

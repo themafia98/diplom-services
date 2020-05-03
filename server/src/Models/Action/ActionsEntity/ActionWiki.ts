@@ -1,6 +1,6 @@
 import { Model, Document, Types } from 'mongoose';
 import { ActionParams, Actions, Action } from '../../../Utils/Interfaces';
-import { ParserData, ParserResult } from '../../../Utils/Types';
+import { ParserData } from '../../../Utils/Types';
 import Utils from '../../../Utils';
 import _ from 'lodash';
 

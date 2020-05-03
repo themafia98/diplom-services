@@ -1,15 +1,13 @@
 import { NextFunction, Response, Request } from 'express';
 import _ from 'lodash';
-import { App, Params, ActionParams } from '../../Utils/Interfaces';
+import { App, Params, ActionParams, Controller } from '../../Utils/Interfaces';
 import { ParserResult, ResRequest } from '../../Utils/Types';
-import Utils from '../../Utils';
 
 import Responser from '../../Models/Responser';
 import Decorators from '../../Decorators';
 import Action from '../../Models/Action';
 
 namespace Wiki {
-  const { getResponseJson } = Utils;
   const Controller = Decorators.Controller;
   const Delete = Decorators.Delete;
   const Put = Decorators.Put;
@@ -17,9 +15,9 @@ namespace Wiki {
   const Post = Decorators.Post;
 
   @Controller('/wiki')
-  export class WikiController {
+  export class WikiController implements Controller<FunctionConstructor> {
     @Get({ path: '/list', private: true })
-    async getTreeList(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    protected async getTreeList(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { dbm } = server.locals;
       const params: Params = { methodQuery: 'get_all', status: 'done', done: true, from: 'wiki' };
       try {
@@ -50,7 +48,7 @@ namespace Wiki {
     }
 
     @Put({ path: '/createLeaf', private: true })
-    async createLeaf(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    protected async createLeaf(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { dbm } = server.locals;
       const params: Params = { methodQuery: 'create_leaf', status: 'done', done: true, from: 'wiki' };
       try {
@@ -67,7 +65,6 @@ namespace Wiki {
 
         const data: ParserResult = await actionCreateLeaf.getActionData(body);
 
-        const { user: { rules = '' } = {} } = <Record<string, Record<string, string>>>body;
         // TODO: delay disabled filter
         // const metadata: ArrayLike<object> = Utils.parsePublicData(data, 'accessGroups', rules);
 
@@ -89,7 +86,7 @@ namespace Wiki {
     }
 
     @Delete({ path: '/deleteLeafs', private: true })
-    async deleteLeafs(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    protected async deleteLeafs(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { dbm } = server.locals;
       const params: Params = { methodQuery: 'delete_leafs', status: 'done', done: true, from: 'wiki' };
       try {
@@ -124,7 +121,7 @@ namespace Wiki {
     }
 
     @Post({ path: '/wikiPage', private: true })
-    async getWikiPage(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    protected async getWikiPage(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { dbm } = server.locals;
       const params: Params = { methodQuery: 'wiki_page', status: 'done', done: true, from: 'wiki' };
       try {

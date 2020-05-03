@@ -2,7 +2,7 @@ import { NextFunction, Response, Request } from 'express';
 import multer from 'multer';
 import winston from 'winston';
 import { model, Schema, Model, Document } from 'mongoose';
-import Database from '../Models/Database';
+import _ from 'lodash';
 import { getSchemaByName } from '../Models/Database/Schema';
 import {
   RouteDefinition,
@@ -75,24 +75,25 @@ namespace Utils {
     }
   };
 
-  export const responseTime = (start: num): number => {
-    const now: number = Number(new Date().toString());
+  export const responseTime = (startDate: Date): number => {
+    const now: number = Number(_.toString(new Date()));
+    const start: number = Number(_.toString(startDate));
     return now - start;
   };
 
   export const initControllers = (
-    controllers: Array<any>,
+    controllers: Array<FunctionConstructor>,
     getApp: Function,
     getRest: Function,
     isPrivateRoute: Function,
     wsWorkerManager: WsWorker,
   ) => {
-    controllers.forEach((controller) => {
+    controllers.forEach((Controller: FunctionConstructor) => {
       // This is our instantiated class
-      const instance: Record<string, any> = new controller();
-      const prefix = Reflect.getMetadata('prefix', controller);
+      const instance: object = new Controller();
+      const prefix = Reflect.getMetadata('prefix', Controller);
       // Our `routes` array containing all our routes for this controller
-      const routes: Array<RouteDefinition> = Reflect.getMetadata('routes', controller);
+      const routes: Array<RouteDefinition> = Reflect.getMetadata('routes', Controller);
 
       // Iterate over all routes and register them to our express application
       routes.forEach((route) => {
@@ -118,7 +119,14 @@ namespace Utils {
           prefix === '/' ? route.path : prefix + route.path,
           ...compose,
           (req: Request, res: Response, next: NextFunction) => {
-            instance[route.methodName](req, res, next, getApp(), isWs ? wsWorkerManager : null);
+            const { methodName } = route;
+            (<Record<string, Function>>instance)[methodName](
+              req,
+              res,
+              next,
+              getApp(),
+              isWs ? wsWorkerManager : null,
+            );
           },
         );
       });

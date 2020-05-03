@@ -3,22 +3,19 @@ import _ from 'lodash';
 import passport from 'passport';
 import { UserModel } from '../Models/Database/Schema';
 import { ResRequest, ParserResult } from '../Utils/Types';
-import Utils from '../Utils';
-import { Request, App, BodyLogin, Mail, User } from '../Utils/Interfaces';
+import { Request, App, BodyLogin, Mail, User, Controller } from '../Utils/Interfaces';
 import Action from '../Models/Action';
 import Decorators from '../Decorators';
-import Database from '../Models/Database';
 import { SentMessageInfo } from 'nodemailer';
 
 namespace General {
-  const { getResponseJson } = Utils;
   const Post = Decorators.Post;
   const Delete = Decorators.Delete;
   const Controller = Decorators.Controller;
   @Controller('/')
-  export class Main {
+  export class Main implements Controller<FunctionConstructor> {
     @Post({ path: '/auth', private: true })
-    public auth(req: Request, res: Response, next: NextFunction, server: App): Response {
+    protected auth(req: Request, res: Response, next: NextFunction, server: App): Response {
       try {
         const { dbm = null } = server?.locals || {};
         if (dbm) dbm.connection().catch((err) => console.error(err));
@@ -30,7 +27,7 @@ namespace General {
     }
 
     @Post({ path: '/reg', private: false })
-    public async reg(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    protected async reg(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       try {
         if (!req.body || (req.body && _.isEmpty(req.body))) throw new Error('Invalid auth data');
 
@@ -59,7 +56,7 @@ namespace General {
     }
 
     @Post({ path: '/login', private: false })
-    public async login(req: Request, res: Response, next: NextFunction, server: App) {
+    protected async login(req: Request, res: Response, next: NextFunction, server: App) {
       const { dbm = null } = server?.locals || {};
       const body: BodyLogin = req.body;
       if (dbm) dbm.connection().catch((err) => console.error(err));
@@ -105,10 +102,11 @@ namespace General {
     }
 
     @Post({ path: '/userload', private: true })
-    public async userload(req: Request, res: Response, server: App): Promise<Response> {
+    protected async userload(req: Request, res: Response, server: App): Promise<Response> {
       const { dbm = null } = server?.locals || {};
       if (dbm) dbm.connection().catch((err) => console.error(err));
-      if (req.user) return res.json({ user: (req as Record<string, any>).user.toAuthJSON() });
+      const { user } = req;
+      if (user) return res.json({ user: (<User>user).toAuthJSON() });
       else {
         res.clearCookie('connect.sid');
         return res.sendStatus(302);
@@ -116,7 +114,7 @@ namespace General {
     }
 
     @Delete({ path: '/logout', private: true })
-    public async logout(req: Request, res: Response): Promise<Response> {
+    protected async logout(req: Request, res: Response): Promise<Response> {
       return req.session.destroy(
         (err: Error): Response => {
           if (err) console.error(err);
@@ -128,7 +126,7 @@ namespace General {
     }
 
     @Post({ path: '/recovory', private: false })
-    public async recovoryPassword(
+    protected async recovoryPassword(
       req: Request,
       res: Response,
       next: NextFunction,
@@ -136,9 +134,9 @@ namespace General {
     ): Promise<Response> {
       try {
         const { mailer } = server.locals;
-        const body: Record<string, any> = req?.body;
+        const body: BodyLogin = req?.body;
 
-        const { recovoryField = '', mode = 'email' } = body;
+        const { recovoryField = '' } = body;
 
         const actionPath: string = 'users';
         const actionType: string = 'recovory_checker';
@@ -155,7 +153,7 @@ namespace General {
           throw new Error('Invalid checker data');
         }
 
-        const to: string = recovoryField;
+        const to: string = <string>recovoryField;
 
         const result: Promise<SentMessageInfo> = await (<Mail>mailer).send(
           to,

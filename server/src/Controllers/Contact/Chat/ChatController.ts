@@ -1,22 +1,22 @@
 import _ from 'lodash';
 import Responser from '../../../Models/Responser';
-import { App } from '../../../Utils/Interfaces';
 import { ParserResult, ResRequest } from '../../../Utils/Types';
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 
 import Decorators from '../../../Decorators';
 import Utils from '../../../Utils';
 import Action from '../../../Models/Action';
+import { Controller } from '../../../Utils/Interfaces';
 
 namespace Chat {
   const Post = Decorators.Post;
   const Delete = Decorators.Delete;
   const Put = Decorators.Put;
   const Controller = Decorators.Controller;
-  const { getResponseJson, parsePublicData } = Utils;
+  const { parsePublicData } = Utils;
 
   export const createRealRoom = async (
-    fakeMsg: Record<string, any>,
+    fakeMsg: Record<string, string | object>,
     interlocutorId: string,
   ): Promise<ParserResult> => {
     const actionPath: string = 'chatRoom';
@@ -31,9 +31,9 @@ namespace Chat {
   };
 
   @Controller('/chat')
-  export class ChatController {
+  export class ChatController implements Controller<FunctionConstructor> {
     @Post({ path: '/loadChats', private: true })
-    public async loadChats(req: Request, res: Response): ResRequest {
+    protected async loadChats(req: Request, res: Response): ResRequest {
       const { body: { actionPath = '', actionType = '', queryParams: params = {} } = {} } = req;
 
       try {
@@ -56,7 +56,7 @@ namespace Chat {
     }
 
     @Put({ path: '/createRoom', private: true })
-    public async createRoom(req: Request, res: Response): ResRequest {
+    protected async createRoom(req: Request, res: Response): ResRequest {
       const { body: { actionPath = '', actionType = '', queryParams: params = {} } = {} } = req;
 
       try {
@@ -77,7 +77,7 @@ namespace Chat {
     }
 
     @Delete({ path: '/leaveRoom', private: true })
-    async leaveRoom(req: Request, res: Response): ResRequest {
+    protected async leaveRoom(req: Request, res: Response): ResRequest {
       const { body: { queryParams: params = {} } = {} } = req;
       const actionType: string = 'chatRoom';
       const actionPath: string = 'leave_room';
@@ -102,7 +102,7 @@ namespace Chat {
     }
 
     @Post({ path: '/load/tokenData', private: true })
-    async loadTokenData(req: Request, res: Response): ResRequest {
+    protected async loadTokenData(req: Request, res: Response): ResRequest {
       try {
         const {
           body: {

@@ -35,3 +35,5 @@ namespace Entrypoint {
     }
   }
 }
+
+export default Entrypoint;

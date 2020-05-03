@@ -1,5 +1,5 @@
 import { ActionProps, ActionParams, Actions, Action } from '../../Utils/Interfaces';
-import { Model, Document, Mongoose, mongo, Types, FilterQuery, Query } from 'mongoose';
+import { Model, Document, Types, FilterQuery } from 'mongoose';
 import _ from 'lodash';
 import ActionEntity from './ActionEntity';
 import { ParserData, limiter, OptionsUpdate } from '../../Utils/Types';

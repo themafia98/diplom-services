@@ -1,33 +1,31 @@
 import { NextFunction, Response, Request } from 'express';
 import Responser from '../../../Models/Responser';
-import { App, Params, ActionParams } from '../../../Utils/Interfaces';
-import { ParserResult, Decorator, ResRequest } from '../../../Utils/Types';
-import Utils from '../../../Utils';
+import { App, Params, ActionParams, Controller, BodyLogin } from '../../../Utils/Interfaces';
+import { ParserResult, ResRequest } from '../../../Utils/Types';
+
 import Decorators from '../../../Decorators';
 import Action from '../../../Models/Action';
 
 namespace News {
-  const { getResponseJson } = Utils;
   const Controller = Decorators.Controller;
   const Post = Decorators.Post;
   const Get = Decorators.Get;
 
   @Controller('/news')
-  export class NewsController {
+  export class NewsController implements Controller<FunctionConstructor> {
     @Post({ path: '/createNews', private: true })
-    public async createNews(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    protected async createNews(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const service = server.locals;
       const { dbm } = service;
       try {
-        const bodyRequest = <Record<string, any>>req.body;
+        const bodyRequest: BodyLogin = req.body;
         const connect = await dbm.connection().catch((err: Error) => {
           console.error(err);
         });
 
-        const {
-          queryParams: { actionType = '' },
-        } = bodyRequest;
-        const body: ActionParams = bodyRequest.metadata;
+        const { queryParams = {} } = bodyRequest;
+        const { actionType = '' } = queryParams as Record<string, string>;
+        const body: ActionParams = bodyRequest.metadata as ActionParams;
 
         if (!connect) throw new Error('Bad connect');
 
@@ -49,10 +47,9 @@ namespace News {
         return new Responser(res, req, params, null, 200, data, dbm).emit();
       } catch (err) {
         console.error(err);
-        const bodyRequest = <Record<string, any>>req.body;
-        const {
-          queryParams: { actionType = '' },
-        } = bodyRequest;
+        const bodyRequest: BodyLogin = req.body;
+        const { queryParams = {} } = bodyRequest;
+        const { actionType = '' } = queryParams as Record<string, string>;
 
         const params: Params = {
           methodQuery: actionType,
@@ -66,7 +63,7 @@ namespace News {
 
     @Post({ path: '/list', private: true })
     @Get({ path: '/list', private: true })
-    public async getNewsList(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    protected async getNewsList(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       let data: Readonly<ParserResult>;
       const service = server.locals;
       const { dbm } = service;
