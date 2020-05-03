@@ -108,7 +108,7 @@ namespace Wiki {
           return new Responser(res, req, params, null, 404, [], dbm).emit();
         }
 
-        const { deletedCount = 0, ok = 0 } = <Record<string, any>>data || {};
+        const { deletedCount = 0, ok = 0 } = (data as Record<string, number>) || {};
         const metadata: Record<string, number> = { deletedCount, ok };
 
         return new Responser(res, req, params, null, 200, metadata, dbm).emit();

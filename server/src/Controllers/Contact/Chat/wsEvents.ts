@@ -7,7 +7,7 @@ import Chat from './';
 import Utils from '../../../Utils';
 import { Server as HttpServer } from 'http';
 import { ParserResult, Payload } from '../../../Utils/Types';
-import { Dbms } from '../../../Utils/Interfaces';
+import { Dbms, ChatMessage } from '../../../Utils/Interfaces';
 
 export default (ws: WebSocketWorker, dbm: Dbms, server: HttpServer) => {
   const { getModelByName } = Utils;
@@ -23,8 +23,9 @@ export default (ws: WebSocketWorker, dbm: Dbms, server: HttpServer) => {
       const { tokenRoom = '' } = (result as Record<string, string>) || {};
       socket.join(tokenRoom);
       const response = { room: result, msg: fakeMsg };
+      const send: Function = process.send as Function;
 
-      (<Record<string, any>>process).send({
+      send({
         action: 'emitSocket',
         payload: {
           event: 'updateFakeRoom',
@@ -40,20 +41,22 @@ export default (ws: WebSocketWorker, dbm: Dbms, server: HttpServer) => {
       });
     };
 
-    socket.on('newMessage', async (msgObj: Record<string, any>) => {
+    socket.on('newMessage', async (msgObj: ChatMessage) => {
       const { tokenRoom = '' } = msgObj || {};
       try {
+        const sendProcess: Function = process.send as NodeJS.MessageListener;
         const model: Model<Document> | null = getModelByName('chatMsg', 'chatMsg');
 
         if (model && tokenRoom) {
           socket.join(tokenRoom);
-          const displayName = (msgObj as Record<string, string>).displayName;
+          const { displayName = '' } = msgObj;
           if (msgObj && _.isObject(msgObj) && displayName !== 'System') {
             const saveMsg = await model.create(msgObj);
 
             if (!saveMsg) throw new TypeError('Bad msg object');
             console.log('tokenRoom:', tokenRoom);
-            (<any>process).send({
+
+            sendProcess({
               action: 'emitSocket',
               payload: {
                 event: 'msg',
@@ -62,7 +65,7 @@ export default (ws: WebSocketWorker, dbm: Dbms, server: HttpServer) => {
               },
             });
           } else {
-            (<any>process).send({
+            sendProcess({
               action: 'emitSocket',
               payload: {
                 event: 'msg',
@@ -94,9 +97,10 @@ export default (ws: WebSocketWorker, dbm: Dbms, server: HttpServer) => {
     });
 
     socket.on('onChatRoomActive', ({ token: tokenRoom, displayName = '' }) => {
+      const sendProcess: Function = process.send as NodeJS.MessageListener;
       socket.join(tokenRoom);
 
-      (<any>process).send({
+      sendProcess({
         action: 'emitSocket',
         payload: {
           event: 'joinMsg',

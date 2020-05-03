@@ -79,7 +79,7 @@ const b64toBlob = (b64Data, contentType = '', sliceSize = 512) => {
 
 /**
  * @param {Blob} img
- * @param {(arg0: string | ArrayBuffer) => any} callback
+ * @param {(arg0: string | ArrayBuffer) => void} callback
  */
 const getBase64 = (img, callback) => {
   const reader = new FileReader();

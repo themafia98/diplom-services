@@ -2,7 +2,7 @@ import { ActionProps, ActionParams, Actions, Action } from '../../Utils/Interfac
 import { Model, Document, Types, FilterQuery } from 'mongoose';
 import _ from 'lodash';
 import ActionEntity from './ActionEntity';
-import { ParserData, limiter, OptionsUpdate } from '../../Utils/Types';
+import { ParserData, limiter, OptionsUpdate, Filter, DeleteEntitiyParams } from '../../Utils/Types';
 
 /** Actions */
 import ActionLogger from './ActionsEntity/ActionLogger';
@@ -35,18 +35,18 @@ namespace Action {
     ): ParserData {
       try {
         const toSkip: number = Math.abs(skip);
-
-        if (actionParam.in && actionParam.where) {
-          const { and = [{}], filter = {} } = <Record<string, any>>actionParam;
-          const filterList = filter['$or'] || [{}];
-
+        const { in: inn, where = '' } = actionParam;
+        if (inn && where) {
+          const { and = [{}], filter = {} } = actionParam as Record<string, Filter | Array<object>>;
+          const orCondition: Array<object> = (<Filter>filter)['$or'] as object[];
+          const andComdition: Array<object> = <Array<Filter>>and;
           return await model
             .find()
-            .or(filterList)
+            .or(orCondition)
             .skip(toSkip)
             .where(actionParam.where)
-            .and(and)
-            .in((<Record<string, any[]>>actionParam).in)
+            .and(andComdition)
+            .in(<any>inn)
             .limit(<number>limit)
             .sort({
               createdAt: sortType,
@@ -99,7 +99,7 @@ namespace Action {
     public async deleteEntity(model: Model<Document>, query: ActionParams): ParserData {
       try {
         const { multiple = false, mode = '$pullAll', findBy, queryParams = {} } = query;
-        const { uid = '', updateField = '', ids = [] } = ({} = <Record<string, string>>queryParams || {});
+        const { uid = '', updateField = '', ids = [] } = ({} = <DeleteEntitiyParams>queryParams || {});
 
         const isPull = mode === '$pullAll';
         let actionData: Document | null = null;
@@ -108,7 +108,7 @@ namespace Action {
         const runDelete: Function = async (
           props: ActionParams,
           multiple: boolean = false,
-        ): Promise<Record<string, any>> => {
+        ): Promise<object> => {
           if (!multiple) return await model.deleteOne(props);
           else return await model.deleteMany({ [<string>findBy]: { $in: ids } });
         };
@@ -124,13 +124,13 @@ namespace Action {
             return null;
           }
 
-          const record: ArrayLike<string> = (doc as Record<string, any>)[<string>updateField];
+          const record: ArrayLike<string> = doc.get(updateField);
 
           if (Array.isArray(record) && (!record?.length || record?.length === 0)) {
-            const docResult: Record<string, any> = await runDelete({ [<string>findBy]: findBy }, multiple);
+            const docResult: { ok: boolean } = await runDelete({ [<string>findBy]: findBy }, multiple);
 
             if (docResult?.ok) {
-              return <Document>docResult;
+              return docResult;
             } else return null;
           }
 
@@ -158,17 +158,16 @@ namespace Action {
 
         switch (queryType) {
           case 'many': {
-            const { ids = [], updateProps = {}, returnType = 'default' } = (<Record<string, any>>(
-              actionParam
-            )).query;
+            const { query = {} } = (actionParam as Record<string, object>) || {};
+            const { ids = [], updateProps = {}, returnType = 'default' } = query as DeleteEntitiyParams;
             const parsedIds = ids.map((id: string) => Types.ObjectId(id));
 
-            const actionData: Document = await model.updateMany(
+            const actionData: object = await model.updateMany(
               { _id: { $in: parsedIds } },
               { $set: { ...updateProps } },
               { multi: true, ...options },
             );
-            const { ok = 0, nModified = 0 } = <Record<string, any>>actionData || {};
+            const { ok = 0, nModified = 0 } = <Record<string, number>>actionData || {};
 
             if (returnType === 'arrayItems') return await model.find({ _id: { $in: ids } });
             else return { status: Boolean(ok), count: nModified };

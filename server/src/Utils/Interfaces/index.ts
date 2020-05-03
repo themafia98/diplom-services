@@ -13,10 +13,6 @@ import socketio from 'socket.io';
 import mongoose, { Mongoose, Connection, Model, Document, FilterQuery } from 'mongoose';
 import Database from '../../Models/Database';
 
-export interface FileBody {
-  buffer: Buffer;
-}
-
 export interface Controller<T> {
   [key: string]: any;
 }
@@ -83,6 +79,7 @@ export interface Params {
   status: string;
   from: string;
   done?: boolean;
+  isPartData?: boolean;
 }
 
 export interface ResponseMetadata<T> {

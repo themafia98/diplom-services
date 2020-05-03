@@ -1,12 +1,13 @@
 import { NextFunction, Response, Request } from 'express';
 import _ from 'lodash';
 import { Document } from 'mongoose';
-import { App, Params, FileApi, Controller } from '../../Utils/Interfaces';
+import { App, Params, FileApi, Controller, BodyLogin } from '../../Utils/Interfaces';
 import { ParserResult, ResRequest } from '../../Utils/Types';
 import Utils from '../../Utils';
 import Responser from '../../Models/Responser';
 import Decorators from '../../Decorators';
 import Action from '../../Models/Action';
+import { BinaryLike } from 'crypto';
 
 namespace System {
   const Controller = Decorators.Controller;
@@ -14,6 +15,7 @@ namespace System {
   const Post = Decorators.Post;
   const Get = Decorators.Get;
   const Put = Decorators.Put;
+
   @Controller('/system')
   export class SystemData implements Controller<FunctionConstructor> {
     @Get({ path: '/userList', private: true })
@@ -171,8 +173,12 @@ namespace System {
           filename,
         });
 
-        const isBinary: Boolean = actionData && (actionData as Record<string, any>).fileBinary;
-        const fileBinary: BinaryType = isBinary ? (actionData as Record<string, any>).fileBinary : null;
+        const isBinary: boolean = Boolean(
+          actionData && (actionData as Record<string, BinaryLike>)?.fileBinary,
+        );
+        const fileBinary: BinaryLike | null = isBinary
+          ? (actionData as Record<string, BinaryLike>).fileBinary
+          : null;
 
         if (!actionData || !fileBinary) {
           params.done = false;
@@ -339,15 +345,15 @@ namespace System {
           params.status = 'FAIL BODY';
           return new Responser(res, req, params, null, 404, [], dbm).emit();
         }
-        const body: object = req.body;
-        const { actionType = '' } = <Record<string, any>>body;
+        const body: BodyLogin = req.body;
+        const { actionType = '' } = body;
         const connect = await dbm.connection().catch((err: Error) => console.error(err));
 
         if (!connect) throw new Error('Bad connect');
 
         const createNotificationAction = new Action.ActionParser({
           actionPath: 'notification',
-          actionType,
+          actionType: <string>actionType,
         });
 
         const data: ParserResult = await createNotificationAction.getActionData({ ...req.body, type });

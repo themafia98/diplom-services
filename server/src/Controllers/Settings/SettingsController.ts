@@ -27,8 +27,8 @@ namespace Settings {
         status: 'OK',
       };
       try {
-        const body: object = req.body;
-        const queryParams: Record<string, any> = (<Record<string, any>>body).queryParams;
+        const body: Record<string, object> = req.body;
+        const { queryParams } = body;
 
         if (!queryParams || _.isEmpty(queryParams)) {
           throw new Error('Invalid queryParams for change_password action');
@@ -63,8 +63,8 @@ namespace Settings {
         status: 'OK',
       };
       try {
-        const body: object = req.body;
-        const queryParams: Record<string, any> = (<Record<string, any>>body).queryParams;
+        const body: Record<string, object> = req.body;
+        const { queryParams } = body;
 
         if (!queryParams || _.isEmpty(queryParams)) {
           throw new Error('Invalid queryParams for common_changes action');
@@ -103,8 +103,8 @@ namespace Settings {
         status: 'OK',
       };
       try {
-        const body: object = req.body;
-        const queryParams: Record<string, any> = (<Record<string, any>>body).queryParams;
+        const body: Record<string, object> = req.body;
+        const { queryParams } = body;
 
         if (!queryParams || _.isEmpty(queryParams)) {
           throw new Error('Invalid queryParams for profile_changes action');
@@ -132,32 +132,31 @@ namespace Settings {
     @Post({ path: '/logger', private: true })
     protected async logger(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { dbm } = server.locals;
-      const body = req.body;
-      const actionType: string = body.actionType;
+      const body: Record<string, object | string> = req.body;
+      const { actionType = '', queryParams } = body;
+
       const params: Params = {
-        methodQuery: actionType,
+        methodQuery: <string>actionType,
         from: 'settingsLog',
         done: true,
         status: 'OK',
       };
 
       try {
-        const queryParams: Record<string, any> = (<Record<string, any>>body).queryParams;
-
         if (!queryParams || _.isEmpty(queryParams)) {
           throw new Error('Invalid queryParams for common_changes action');
         }
 
         const settingsLogger = new Action.ActionParser({
           actionPath: 'settingsLog',
-          actionType,
+          actionType: <string>actionType,
         });
 
         const data: ParserResult = await settingsLogger.getActionData(body);
 
         if (!data) throw new Error('Invalid action data');
 
-        if (!actionType.includes('get')) return res.sendStatus(200);
+        if (!(<string>actionType).includes('get')) return res.sendStatus(200);
 
         return new Responser(res, req, params, null, 200, data, dbm).emit();
       } catch (err) {

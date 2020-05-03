@@ -1,6 +1,6 @@
 import { Model, Document } from 'mongoose';
 import { ActionParams, Actions, Action } from '../../../Utils/Interfaces';
-import { ParserData } from '../../../Utils/Types';
+import { ParserData, MessageOptions } from '../../../Utils/Types';
 import Utils from '../../../Utils';
 import _ from 'lodash';
 const { getModelByName } = Utils;
@@ -13,9 +13,8 @@ class ActionChatMessage implements Action {
   }
 
   private getMsgByToken(actionParam: ActionParams, model: Model<Document>) {
-    const { options: { tokenRoom = '', moduleName = '', membersIds = [] } = {} } = <Record<string, any>>(
-      actionParam
-    );
+    const { options = {} } = actionParam;
+    const { tokenRoom = '', moduleName = '', membersIds = [] } = <MessageOptions>options;
 
     if (!tokenRoom || !moduleName) {
       console.error('Bad tokenRoom or moduleName in get_msg_by_token action');

@@ -34,6 +34,29 @@ export type ParserData = Promise<DocCompared | FileEdit | number | null | object
 export type ParserResult = DocCompared | FileEdit | null | object | number | string;
 export type OptionsUpdate = Record<string, boolean | null>;
 
+export type FileBody = {
+  buffer: Buffer;
+};
+
+export type MessageOptions = {
+  tokenRoom: string;
+  moduleName: string;
+  membersIds: Array<string>;
+};
+
+export type DeleteEntitiyParams = {
+  ids?: Array<string>;
+  updateProps?: object;
+  returnType?: string;
+  updateField?: string;
+  uid?: string;
+};
+
+export type Filter = {
+  $or?: Array<object>;
+  $and?: Array<object>;
+};
+
 export type collectionOperations = {
   get: Function;
   set: Function;

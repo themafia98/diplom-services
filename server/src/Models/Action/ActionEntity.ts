@@ -8,7 +8,7 @@ abstract class ActionEntity implements EntityActionApi {
   protected constructor(props: ActionProps) {
     this.actionPath = props.actionPath;
     this.actionType = props.actionType;
-    this.store = (props as Record<string, any>).store;
+    this.store = props.store as FileApi;
   }
 
   public getActionPath(): string {

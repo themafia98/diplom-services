@@ -1,7 +1,7 @@
 import { NextFunction, Response, Request } from 'express';
 
-import { App, Params, FileBody, Controller } from '../../Utils/Interfaces';
-import { ResRequest } from '../../Utils/Types';
+import { App, Params, Controller } from '../../Utils/Interfaces';
+import { ResRequest, FileBody } from '../../Utils/Types';
 
 import Responser from '../../Models/Responser';
 import Action from '../../Models/Action';

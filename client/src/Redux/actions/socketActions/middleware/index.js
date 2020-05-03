@@ -99,13 +99,6 @@ const loadActiveChats = (payload) => async (dispatch, getState, { schema, Reques
   }
 };
 
-/**
- * @param {any} token
- * @param {any[]} listdata
- * @param {any} activeModule
- */
-/**
- */
 const loadingDataByToken = (token, listdata, activeModule, isFake = null) => async (
   dispatch,
   getState,
