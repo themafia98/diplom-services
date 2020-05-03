@@ -5,6 +5,7 @@
     "rootDir": "./server/src",
     "moduleResolution": "node",
     "module": "commonjs",
+    "inlineSources": true,
     "declaration": true,
     "inlineSourceMap": true,
     "esModuleInterop": true /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */,

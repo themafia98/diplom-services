@@ -1,7 +1,5 @@
 // @ts-nocheck
 import { createPortal } from 'react-dom';
-import { JsxElement } from 'typescript';
-import { PureComponent, Component } from 'react';
 
 class Node {
   /**
