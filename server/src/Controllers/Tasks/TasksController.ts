@@ -196,7 +196,7 @@ namespace Tasks {
     }
 
     @Put({ path: '/caching/list', private: true })
-    public async getCachingList(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    protected async getCachingList(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { dbm } = server.locals;
       const { queryParams = {}, actionType = '' } = req.body;
       const params: Params = { methodQuery: actionType, status: 'done', done: true, from: 'tasks' };
