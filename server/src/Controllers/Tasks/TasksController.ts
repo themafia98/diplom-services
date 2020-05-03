@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import _ from 'lodash';
 import Utils from '../../Utils';
 import { App, Params, ActionParams, BodyLogin } from '../../Utils/Interfaces';
-import { ResRequest, ParserResult } from '../../Utils/Types';
+import { ResRequest, ParserResult, Meta } from '../../Utils/Types';
 import Responser from '../../Models/Responser';
 import Action from '../../Models/Action';
 import Decorators from '../../Decorators';
@@ -47,7 +47,7 @@ namespace Tasks {
           return new Responser(res, req, params, null, 404, [], dbm).emit();
         }
 
-        let metadata: ArrayLike<object> = [];
+        let metadata: Meta = [];
 
         if (data && Array.isArray(data)) {
           metadata = parsePublicData(data);
@@ -136,7 +136,7 @@ namespace Tasks {
           return new Responser(res, req, params, null, 404, [], dbm).emit();
         }
 
-        const meta: ArrayLike<object> = parsePublicData(<ParserResult>[data]);
+        const meta: Meta = parsePublicData(<ParserResult>[data]);
         const metadata: ArrayLike<object> = Array.isArray(meta) && meta[0] ? meta[0] : null;
 
         return new Responser(res, req, params, null, 200, metadata, dbm).emit();
@@ -183,7 +183,7 @@ namespace Tasks {
           return new Responser(res, req, params, null, 404, [], dbm).emit();
         }
 
-        const meta: ArrayLike<object> = parsePublicData(<ParserResult>[data]);
+        const meta: Meta = parsePublicData(<ParserResult>[data]);
         const metadata: ArrayLike<object> = Array.isArray(meta) && meta[0] ? meta[0] : null;
 
         return new Responser(res, req, params, null, 200, metadata, dbm).emit();
@@ -218,7 +218,7 @@ namespace Tasks {
           return new Responser(res, req, params, null, 404, [], dbm).emit();
         }
 
-        let metadata: ArrayLike<object> = [];
+        let metadata: Meta = [];
         if (data && Array.isArray(data)) {
           metadata = parsePublicData(data);
         }

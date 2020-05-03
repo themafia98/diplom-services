@@ -173,9 +173,9 @@ namespace Action {
             else return { status: Boolean(ok), count: nModified };
           }
           default: {
-            const { _id } = query;
-            const updateProps: Record<string, any> = _.isPlainObject(query.updateProps)
-              ? <Record<string, object>>query.updateProps
+            const { _id, updateProps: upProps = {} } = query;
+            const updateProps: object = _.isPlainObject(upProps)
+              ? <object>upProps
               : { updateProps: query.updateProps };
 
             const actionData: Document = await model.updateOne(

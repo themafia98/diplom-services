@@ -2,7 +2,7 @@ import { NextFunction, Response, Request } from 'express';
 import _ from 'lodash';
 import { Document } from 'mongoose';
 import { App, Params, FileApi, Controller, BodyLogin } from '../../Utils/Interfaces';
-import { ParserResult, ResRequest } from '../../Utils/Types';
+import { ParserResult, ResRequest, Meta } from '../../Utils/Types';
 import Utils from '../../Utils';
 import Responser from '../../Models/Responser';
 import Decorators from '../../Decorators';
@@ -38,7 +38,7 @@ namespace System {
           return new Responser(res, req, params, null, 404, [], dbm).emit();
         }
 
-        const metadata: ArrayLike<object> = Utils.parsePublicData(data);
+        const metadata: Meta = Utils.parsePublicData(data);
 
         return new Responser(res, req, params, null, 200, metadata, dbm).emit();
       } catch (err) {

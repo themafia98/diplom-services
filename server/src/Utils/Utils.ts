@@ -13,7 +13,7 @@ import {
   Params,
   Dbms,
 } from './Interfaces';
-import { FileTransportInstance, docResponse, ParserResult } from './Types';
+import { FileTransportInstance, docResponse, ParserResult, Meta } from './Types';
 
 namespace Utils {
   const upload = multer();
@@ -160,22 +160,18 @@ namespace Utils {
     if (res.headersSent) return res;
     if (status) res.status(status);
     if (dbm) await dbm.disconnect().catch((err: Error) => console.error(err));
-
+    const start: Date = (<Record<string, any>>req).start as Date;
     switch (status) {
       case 200:
         return res.json(
-          getResponseJson(
-            params?.methodQuery,
-            { params, metadata, done: true, status: 'OK' },
-            (<Record<string, any>>req).start,
-          ),
+          getResponseJson(params?.methodQuery, { params, metadata, done: true, status: 'OK' }, start),
         );
       case 503:
         return res.json(
           getResponseJson(
             (<Error>err)?.name,
             { metadata: 'Server error', params, done: false, status: 'FAIL' },
-            (req as Record<string, any>).start,
+            start,
           ),
         );
       default:
@@ -183,7 +179,7 @@ namespace Utils {
           getResponseJson(
             `error or status not connected to responser, ${params?.methodQuery}`,
             { status: params?.status, params, done: false, metadata },
-            (req as Record<string, any>).start,
+            start,
           ),
         );
     }
@@ -206,30 +202,26 @@ namespace Utils {
     );
   };
 
-  export const parsePublicData = (
-    data: ParserResult,
-    mode: string = 'default',
-    rules = '',
-  ): ArrayLike<object> => {
+  export const parsePublicData = (data: ParserResult, mode: string = 'default', rules = ''): Array<Meta> => {
     switch (mode) {
       case 'access':
       case 'accessGroups':
-        const isGroupMode = mode.includes('Groups');
-        return (<docResponse[]>data)
-          .map((it: docResponse) => {
-            const item: ResponseDocument = it['_doc'] || it;
+        const dataArray: Array<object> = data as Array<object>;
+        const isGroupMode: boolean = mode.includes('Groups');
+        return dataArray
+          .map((it: object | null) => {
+            if (!it) return null;
+            const { _doc: item = {} } = it as Record<string, object>;
 
             if (isGroupMode) {
-              if (!Array.isArray(item[mode])) return null;
+              const { [mode]: modeArray = [] } = item as Record<string, Array<string>>;
+              if (!Array.isArray(modeArray)) return null;
 
-              const accept: Array<string> = <Array<string>>item[mode] || [];
-
-              if (accept.some((rule) => rule === rules)) return it;
+              if (modeArray.some((rule) => rule === rules)) return it;
             } else {
               if (!rules) return null;
-
-              const accept: string = <string>item[mode];
-              if (accept === rules) return it;
+              const { [mode]: modeStr = [] } = item as Record<string, string>;
+              if (modeStr === rules) return it;
             }
             return null;
           })
@@ -238,11 +230,11 @@ namespace Utils {
       default:
         return (<docResponse[]>data)
           .map((it: docResponse) => {
-            const item: ResponseDocument = it['_doc'] || it;
+            const { _doc: item = {} } = it as Record<string, object>;
 
             const itemValid = Object.keys(item).reduce((obj: ResponseDocument, key: string): object => {
               if (!key.includes('password') && !key.includes('At') && !key.includes('__v')) {
-                obj[key] = item[key];
+                obj[key] = (<ResponseDocument>item)[<string>key];
               }
               return obj;
             }, {});

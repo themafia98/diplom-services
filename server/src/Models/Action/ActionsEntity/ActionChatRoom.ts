@@ -14,9 +14,9 @@ class ActionChatRoom implements Action {
   }
 
   private async getEntrypointData(actionParam: ActionParams, model: Model<Document>): ParserData {
-    const socket: object = (actionParam as Record<string, any>).socket || {};
-    const uid: string = (actionParam as Record<string, string>).uid;
-    const { socketConnection = false, module: moduleName = '' } = <Record<string, any>>socket;
+    const { uid = '', socket = {} } = (actionParam as Record<string, string | object>) || {};
+
+    const { socketConnection = false, module: moduleName = '' } = socket as Record<string, boolean | string>;
     const query: ActionParams = { moduleName, membersIds: { $in: [uid] } };
 
     if (socketConnection && moduleName) return this.getEntity().getAll(model, query);

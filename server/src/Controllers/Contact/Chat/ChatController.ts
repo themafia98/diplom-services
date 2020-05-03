@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import Responser from '../../../Models/Responser';
-import { ParserResult, ResRequest } from '../../../Utils/Types';
+import { ParserResult, ResRequest, Meta } from '../../../Utils/Types';
 import { Request, Response } from 'express';
 
 import Decorators from '../../../Decorators';
@@ -46,7 +46,7 @@ namespace Chat {
 
         if (!data) throw new TypeError('Bad action data');
 
-        const filterData: ArrayLike<object> = parsePublicData(data);
+        const filterData: Meta = parsePublicData(data);
 
         return new Responser(res, req, params, null, 200, filterData).emit();
       } catch (err) {

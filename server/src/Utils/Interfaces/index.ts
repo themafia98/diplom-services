@@ -4,14 +4,12 @@ import {
   Request as RequestExpress,
   Response,
   NextFunction,
-  response,
 } from 'express';
-import nodemailer, { SendMailOptions, Transporter, createTransport, SentMessageInfo } from 'nodemailer';
-import { Dropbox, files } from 'dropbox';
-import { transOptions, ParserData, ParserResult } from '../Types';
+import nodemailer, { SendMailOptions, Transporter, SentMessageInfo } from 'nodemailer';
+import { files } from 'dropbox';
+import { transOptions, ParserData, ParserResult, Meta } from '../Types';
 import socketio from 'socket.io';
 import mongoose, { Mongoose, Connection, Model, Document, FilterQuery } from 'mongoose';
-import Database from '../../Models/Database';
 
 export interface Controller<T> {
   [key: string]: any;
@@ -327,7 +325,7 @@ export interface ResponseJson<T> {
   params: T;
   done: boolean;
   isPartData?: boolean;
-  metadata: Readonly<object | Array<any> | null | BinaryType | string | number>;
+  metadata: Readonly<Meta>;
 }
 
 export interface WsWorker {
