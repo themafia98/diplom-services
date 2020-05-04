@@ -40,7 +40,7 @@ class Chat extends React.PureComponent {
     const { onUpdateRoom, webSocket = null } = this.props;
     //  const isDev = process.env.NODE_ENV === "development";
     if (!webSocket) return;
-    if (!webSocket.connected) webSocket.socket.connect();
+    if (!webSocket.connected) webSocket.connect();
     else this.connection(true);
     this.chat = new ChatModel(webSocket);
 
