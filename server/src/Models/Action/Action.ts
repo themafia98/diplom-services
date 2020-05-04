@@ -35,16 +35,16 @@ namespace Action {
     ): ParserData {
       try {
         const toSkip: number = Math.abs(skip);
-        const { in: inn, where = '' } = actionParam;
+        const { in: inn = [], where = '' } = actionParam;
         if (inn && where) {
           const { and = [{}], filter = {} } = actionParam as Record<string, Filter | Array<object>>;
-          const orCondition: Array<object> = (<Filter>filter)['$or'] as object[];
+          const orCondition: Array<object> = (<Filter>filter)['$or'] || ([{}] as object[]);
           const andComdition: Array<object> = <Array<Filter>>and;
           return await model
             .find()
             .or(orCondition)
             .skip(toSkip)
-            .where(actionParam.where)
+            .where(where)
             .and(andComdition)
             .in(<any>inn)
             .limit(<number>limit)

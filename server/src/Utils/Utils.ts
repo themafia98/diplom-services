@@ -76,9 +76,8 @@ namespace Utils {
   };
 
   export const responseTime = (startDate: Date): number => {
-    const now: number = Number(_.toString(new Date()));
-    const start: number = Number(_.toString(startDate));
-    return now - start;
+    const now: Date = new Date();
+    return <any>now - <any>startDate;
   };
 
   export const initControllers = (

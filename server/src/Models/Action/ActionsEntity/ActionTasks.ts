@@ -148,7 +148,7 @@ class ActionTasks implements Action {
     if (!model) return null;
 
     const typeAction: string = this.getEntity().getActionType();
-
+    console.log('action task:', actionParam);
     switch (typeAction) {
       case 'get_all':
         return this.getTasks(actionParam, model);
