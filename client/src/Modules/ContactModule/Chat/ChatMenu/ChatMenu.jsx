@@ -126,7 +126,7 @@ const ChatMenu = (props) => {
                           <Avatar
                             src={`data:image/png;base64,${avatar}`}
                             shape="square"
-                            size="large"
+                            size={type === 'modal' ? 'default' : 'large'}
                             icon="user"
                           />
                         }

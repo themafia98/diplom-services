@@ -24,13 +24,48 @@
             height: 100%;
           }
         }
+        .ant-list-item {
+          padding: 0 0 1px 0px;
+        }
+        .ant-avatar-lg {
+          width: 30px;
+          height: 30px;
+          line-height: 30px;
+        }
+        .ant-list-item-meta-title {
+          word-break: break-word;
+          & > * {
+            margin: 0;
+          }
+        }
+        .ant-list-item-meta {
+          padding: 5px 0px 0px 5px;
+        }
       }
       .col-chat-content {
         width: 100%;
         flex: unset;
-        .chat-content {
+        .chat_content {
           .chat_content__header {
-            background-color: rgb(46, 150, 247);
+            height: 100%;
+            background-color: rgba(77, 164, 246, 1);
+          }
+          .chat_content__main {
+            .chatRoom {
+              .message {
+                padding: 3px 0px;
+                width: 48%;
+                .msg_header {
+                  flex-direction: column;
+                }
+              }
+              .displayName {
+                font-size: 14px;
+              }
+              .msg_date {
+                font-size: 13px;
+              }
+            }
           }
         }
       }
