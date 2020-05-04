@@ -2,57 +2,53 @@
 import Node from '../../Models/Node';
 import modalContext from '../../Models/context';
 import React from 'react';
-import { Button } from 'antd';
 
-class ActionPortal extends React.PureComponent {
+class ActionPortal extends React.Component {
   state = {
     visible: false,
   };
+  /** node - instanse portal */
+  node = new Node('div', 'action-root');
   static contextType = modalContext;
 
-  node = new Node('div', 'action-root');
+  static getDerivedStateFromProps = (props, state) => {
+    const { visible: visibleState = false } = state;
+
+    if (visibleState !== props?.visible) {
+      return {
+        ...state,
+        visible: props.visible,
+      };
+    }
+
+    return state;
+  };
+
   componentDidMount = () => {
     this.node.append();
   };
 
   componentWillUnmount = () => {
-    this.node.remove();
-  };
-
-  onChangeVisible = () => {
-    this.setState((state) => {
-      return {
-        ...this.state,
-        visible: !state.visible,
-      };
-    });
+    if (this.node) this.node.remove();
   };
 
   render() {
-    const { action: actionProps = null, renderComponent = null } = this.props;
+    const { action: actionProps = null, children = null } = this.props;
+    const { visible = false } = this.state;
     const {
       config: { actionRoot: { visibilityActionRoot = false } = {} },
     } = this.context;
 
-    if (!renderComponent || !visibilityActionRoot) return null;
+    if (!children || !visibilityActionRoot) return null;
     const action = actionProps ? (
       actionProps
     ) : (
-      <>
-        <div className="action-button">
-          <Button onClick={this.onChangeVisible} type="primary">
-            Чат
-          </Button>
-        </div>
-        <div style={this.state.visible ? null : { display: 'none' }} className="action-render">
-          {renderComponent}
-        </div>
-      </>
+      <div style={visible ? null : { display: 'none' }} className="action-render">
+        {children}
+      </div>
     );
 
-    if (!action) return null;
-
-    return this.node.create(action);
+    return !action ? null : this.node.create(action);
   }
 }
 

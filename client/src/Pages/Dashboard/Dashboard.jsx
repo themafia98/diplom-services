@@ -18,8 +18,7 @@ import { loadCurrentData } from '../../Redux/actions/routerActions/middleware';
 import { errorRequestAction, clearCache, setStatus, showGuile } from '../../Redux/actions/publicActions';
 import { routeParser } from '../../Utils';
 
-import Chat from '../../Modules/ContactModule/Chat';
-import ActionPortal from '../../Components/ActionPortal';
+import FixedToolbar from '../../Components/FixedToolbar';
 import Loader from '../../Components/Loader';
 import HeaderView from '../../Components/HeaderView';
 import ContentView from '../../Components/ContentView';
@@ -34,6 +33,7 @@ class Dashboard extends React.PureComponent {
     collapsed: true,
     guideVisible: true,
     visibleInstallApp: false,
+    isToolbarActive: false,
     redirect: false,
     status: 'online',
     menuItems: this.context?.config?.menu,
@@ -282,8 +282,34 @@ class Dashboard extends React.PureComponent {
     });
   };
 
+  onChangeVisibleAction = (event, shouldChange = false) => {
+    const { isToolbarActive = false } = this.state;
+    const isShoudChange = !event && shouldChange;
+
+    if (isShoudChange) {
+      isToolbarActive !== !shouldChange &&
+        this.setState({
+          isToolbarActive: !shouldChange,
+        });
+      return;
+    }
+
+    this.setState((state) => {
+      return {
+        isToolbarActive: !state.isToolbarActive,
+      };
+    });
+  };
+
   render() {
-    const { menuItems = null, showLoader, redirect, guideVisible, visibleInstallApp = false } = this.state;
+    const {
+      menuItems = null,
+      showLoader,
+      redirect,
+      guideVisible,
+      visibleInstallApp = false,
+      isToolbarActive = false,
+    } = this.state;
     const {
       router: { actionTabs = [], currentActionTab, shouldUpdate = false } = {},
       router = {},
@@ -329,12 +355,14 @@ class Dashboard extends React.PureComponent {
               dashboardStrem={this.dashboardStrem}
               actionTabs={actionTabs}
               udata={udata}
+              isToolbarActive={isToolbarActive}
               webSocket={this.webSocket}
               onSetStatus={onSetStatus}
               shouldUpdate={shouldUpdate}
               onShowLoader={this.onShowLoader}
               onHideLoader={this.onHideLoader}
               router={router}
+              onChangeVisibleAction={this.onChangeVisibleAction}
               statusApp={publicReducer.status}
               onShoudUpdate={onShoudUpdate}
               setCurrentTab={setCurrentTab}
@@ -366,11 +394,7 @@ class Dashboard extends React.PureComponent {
             ) : null}
           </Layout>
         </Layout>
-        <ActionPortal
-          key="action-portal"
-          renderComponent={<Chat key="chat-modal" type="modal" visible={true} webSocket={this.webSocket} />}
-          name="Чат"
-        />
+        <FixedToolbar key="toolbar" onChangeVisibleAction={this.onChangeVisibleAction} name="Чат" />
       </div>
     );
   }

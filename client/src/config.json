@@ -34,7 +34,7 @@
     "includeChangeProfile": true
   },
   "actionRoot": {
-    "visibilityActionRoot": false
+    "visibilityActionRoot": true
   },
   "menu": [
     {

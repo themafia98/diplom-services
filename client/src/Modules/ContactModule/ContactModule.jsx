@@ -89,17 +89,20 @@ class ContactModule extends React.PureComponent {
       .filter(Boolean);
   };
 
-  checkBackground = (path) => {
-    const { actionTabs = [] } = this.props;
-    return actionTabs.some((actionTab) => actionTab.startsWith(path) || actionTab === path);
-  };
-
   getContactContentByPath = (path) => {
-    const isBackgroundChat = this.checkBackground('contactModule_chat');
-    const isBackgrounNews = this.checkBackground('contactModule_feedback');
-    const isBackgroundInfoPage = this.checkBackground('contactModule_informationPage');
-    const isBackgroundCreateNews = this.checkBackground('contactModule_createNews');
-    const { statusApp = '', router: { routeData = {} } = {}, udata, webSocket = null } = this.props;
+    const {
+      getBackground,
+      statusApp = '',
+      router: { routeData = {} } = {},
+      udata,
+      webSocket = null,
+      visibilityPortal,
+      onChangeVisibleAction = null,
+    } = this.props;
+    const isBackgroundChat = getBackground('contactModule_chat');
+    const isBackgrounNews = getBackground('contactModule_feedback');
+    const isBackgroundInfoPage = getBackground('contactModule_informationPage');
+    const isBackgroundCreateNews = getBackground('contactModule_createNews');
 
     const linkPath = _.isString(path) ? path.split('__')[1] || '' : '';
     const data = routeData[path] || routeData[linkPath] || {};
@@ -111,15 +114,23 @@ class ContactModule extends React.PureComponent {
         }
       : {};
     const visibleEntity = (linkPath && path.includes(linkPath)) || path === 'contactModule_informationPage';
+    const isVisibleChatModal = visibilityPortal && path !== 'contactModule_chat';
 
     return (
       <>
-        <TabContainer isBackground={isBackgroundChat} visible={path === 'contactModule_chat'}>
+        <TabContainer
+          isBackground={isBackgroundChat}
+          isPortal={visibilityPortal}
+          onChangeVisibleAction={onChangeVisibleAction}
+          isTab={path === 'contactModule_chat'}
+          visible={isVisibleChatModal || path === 'contactModule_chat'}
+        >
           <Chat
             key="chatModule"
             isBackground={isBackgroundChat}
             webSocket={webSocket}
-            visible={path === 'contactModule_chat'}
+            type={isVisibleChatModal ? 'modal' : null}
+            visible={visibilityPortal || path === 'contactModule_chat'}
           />
         </TabContainer>
         <TabContainer isBackground={isBackgrounNews} visible={path === 'contactModule_feedback'}>

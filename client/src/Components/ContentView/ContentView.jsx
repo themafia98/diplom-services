@@ -23,10 +23,24 @@ const { Content } = Layout;
 class ContentView extends React.Component {
   state = {
     drawerView: false,
+    visibilityPortal: false,
     key: null,
   };
 
   static propTypes = contentViewType;
+
+  static getDerivedStateFromProps = (props, state) => {
+    const { isToolbarActive = false } = props;
+    const { visibilityPortal = false } = state;
+
+    if (isToolbarActive !== visibilityPortal) {
+      return {
+        ...state,
+        visibilityPortal: isToolbarActive,
+      };
+    }
+    return state;
+  };
 
   componentDidMount = () => {
     const { dashboardStrem = null } = this.props;
@@ -42,11 +56,12 @@ class ContentView extends React.Component {
 
   shouldComponentUpdate = (nextProps, nextState) => {
     const { path: currentPath } = this.props;
-    const { key: currentKey, drawerView: currentDrawerView } = this.state;
+    const { key: currentKey, drawerView: currentDrawerView, visibilityPortal } = this.state;
     if (
       nextProps.path !== currentPath ||
       nextState.key !== currentKey ||
-      nextState.drawerView !== currentDrawerView
+      nextState.drawerView !== currentDrawerView ||
+      nextState.visibilityPortal !== visibilityPortal
     ) {
       return true;
     } else return false;
@@ -66,11 +81,13 @@ class ContentView extends React.Component {
    * @param {string} path
    */
   checkBackground = (path) => {
-    const { actionTabs = [] } = this.props;
+    const { actionTabs = [], router: { currentActionTab = '' } = {} } = this.props;
     /**
      * @param {string} actionTab
      */
-    return actionTabs.some((actionTab) => actionTab.startsWith(path) || actionTab === path);
+    return actionTabs.some(
+      (actionTab) => (actionTab.startsWith(path) || actionTab === path) && currentActionTab !== actionTab,
+    );
   };
 
   updateFunction = _.debounce((forceUpdate) => {
@@ -109,8 +126,9 @@ class ContentView extends React.Component {
       onHideLoader,
       onSetStatus,
       webSocket = null,
+      onChangeVisibleAction = null,
     } = this.props;
-    const { drawerView, key } = this.state;
+    const { drawerView, key, visibilityPortal = false } = this.state;
 
     const loaderMethods = {
       onShowLoader,
@@ -133,6 +151,7 @@ class ContentView extends React.Component {
               onErrorRequestAction={onErrorRequestAction}
               loaderMethods={loaderMethods}
               setCurrentTab={setCurrentTab}
+              getBackground={this.getBackground}
               key="mainModule"
             />
           </TabContainer>
@@ -145,6 +164,7 @@ class ContentView extends React.Component {
               visible={path.startsWith('cabinetModule')}
               rest={rest}
               loaderMethods={loaderMethods}
+              getBackground={this.getBackground}
               onErrorRequestAction={onErrorRequestAction}
               path={path}
               key={path?.includes('personal') ? 'cabinetModulePersonal' : 'cabinetModule'}
@@ -159,6 +179,7 @@ class ContentView extends React.Component {
             <TaskModule
               visible={path.startsWith('taskModule')}
               onErrorRequestAction={onErrorRequestAction}
+              getBackground={this.getBackground}
               setCurrentTab={setCurrentTab}
               key="taskModule"
               rest={rest}
@@ -172,19 +193,23 @@ class ContentView extends React.Component {
               onErrorRequestAction={onErrorRequestAction}
               key="wikiModule"
               path={path}
+              getBackground={this.getBackground}
               loaderMethods={loaderMethods}
               rest={rest}
               statusApp={statusApp}
             />
           </TabContainer>
           <TabContainer
-            isBackground={this.getBackground('contactModule')}
+            isBackground={visibilityPortal || this.getBackground('contactModule')}
             visible={path.startsWith('contactModule')}
           >
             <ContactModule
               visible={path.startsWith('contactModule')}
               actionTabs={actionTabs}
+              visibilityPortal={visibilityPortal}
+              onChangeVisibleAction={onChangeVisibleAction}
               statusApp={statusApp}
+              getBackground={this.getBackground}
               router={router}
               rest={rest}
               webSocket={webSocket}
@@ -204,6 +229,7 @@ class ContentView extends React.Component {
               onErrorRequestAction={onErrorRequestAction}
               actionTabs={actionTabs}
               rest={rest}
+              getBackground={this.getBackground}
               onSetStatus={onSetStatus}
               router={router}
               loaderMethods={loaderMethods}
@@ -219,6 +245,7 @@ class ContentView extends React.Component {
               visible={path === 'settingsModule'}
               onErrorRequestAction={onErrorRequestAction}
               key="settings"
+              getBackground={this.getBackground}
               loaderMethods={loaderMethods}
               rest={rest}
               path={path}
@@ -232,6 +259,7 @@ class ContentView extends React.Component {
               visible={path === 'statisticModule'}
               onErrorRequestAction={onErrorRequestAction}
               key="statistic"
+              getBackground={this.getBackground}
               loaderMethods={loaderMethods}
               rest={rest}
               path={path}
