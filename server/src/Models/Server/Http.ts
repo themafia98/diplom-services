@@ -183,7 +183,7 @@ namespace Http {
       });
     }
 
-    public async start(callback: Function): Promise<void> {
+    public async start(): Promise<void> {
       const Main: Readonly<Function> = General.Main;
       const TasksAlias: Readonly<Function> = Tasks.TasksController;
       const SystemAlias: Readonly<Function> = System.SystemData;
