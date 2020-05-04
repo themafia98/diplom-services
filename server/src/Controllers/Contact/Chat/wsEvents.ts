@@ -64,7 +64,7 @@ export default (ws: WebSocketWorker, dbm: Dbms, server: HttpServer) => {
               },
             });
           } else {
-            sendProcess({
+            (<any>process).send({
               action: 'emitSocket',
               payload: {
                 event: 'msg',
