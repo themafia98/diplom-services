@@ -48,7 +48,11 @@ class Dashboard extends React.PureComponent {
   webSocket = null;
 
   componentDidMount = () => {
-    this.webSocket = io('/');
+    this.webSocket = io('/', {
+      path: '/socket.io',
+      transports: ['websocket'],
+      secure: window.location.protocol === 'https',
+    });
     if (deferredPrompt) {
       this.setState({
         visibleInstallApp: true,

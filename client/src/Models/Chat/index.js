@@ -25,7 +25,7 @@ class ChatModel {
     if (!this.getSocket()) return;
 
     this.getSocket().on('reconnect_attempt', () => {
-      this.getSocket().io.opts.transports = ['websocket', 'polling'];
+      this.getSocket().io.opts.transports = ['websocket'];
     });
   }
 
