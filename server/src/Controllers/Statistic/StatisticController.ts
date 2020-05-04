@@ -1,4 +1,4 @@
-import express, { Router as RouteExpress } from 'express';
+import { Router as RouteExpress } from 'express';
 import { ServerRun } from '../../Utils/Interfaces';
 
 namespace Statistic {

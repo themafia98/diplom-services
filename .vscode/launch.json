@@ -5,17 +5,16 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Node Inspector",
+      "name": "Launch server.js via nodemon",
       "type": "node",
       "request": "launch",
-      "args": ["${workspaceRoot}/server/src/index.ts"],
-      "runtimeArgs": ["-r", "ts-node/register"],
-      "cwd": "${workspaceRoot}",
-      "protocol": "inspector",
-      "internalConsoleOptions": "openOnSessionStart",
-      "env": {
-        "TS_NODE_IGNORE": "false"
-      }
+      "port": 3001,
+      "address": "localhost",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/nodemon",
+      "program": "${workspaceFolder}/server/build/index.js",
+      "restart": true,
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
     }
   ]
 }

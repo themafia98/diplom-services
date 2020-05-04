@@ -90,7 +90,7 @@ namespace System {
 
         responseSave = responseSave.filter(Boolean);
 
-        if (!responseSave?.length) {
+        if (!responseSave.length) {
           params.done = false;
           params.status = 'FAIL';
           return new Responser(res, req, params, null, 404, [], dbm).emit();

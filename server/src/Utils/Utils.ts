@@ -163,12 +163,12 @@ namespace Utils {
     switch (status) {
       case 200:
         return res.json(
-          getResponseJson(params?.methodQuery, { params, metadata, done: true, status: 'OK' }, start),
+          getResponseJson(params.methodQuery, { params, metadata, done: true, status: 'OK' }, start),
         );
       case 503:
         return res.json(
           getResponseJson(
-            (<Error>err)?.name,
+            (<Error>err).name,
             { metadata: 'Server error', params, done: false, status: 'FAIL' },
             start,
           ),
@@ -176,8 +176,8 @@ namespace Utils {
       default:
         return res.json(
           getResponseJson(
-            `error or status not connected to responser, ${params?.methodQuery}`,
-            { status: params?.status, params, done: false, metadata },
+            `error or status not connected to responser, ${params.methodQuery}`,
+            { status: params.status, params, done: false, metadata },
             start,
           ),
         );

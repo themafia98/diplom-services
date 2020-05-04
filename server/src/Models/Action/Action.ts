@@ -1,7 +1,7 @@
 import { ActionProps, ActionParams, Actions, Action } from '../../Utils/Interfaces';
 import { Model, Document, Types, FilterQuery } from 'mongoose';
 import _ from 'lodash';
-import ActionEntity from './ActionEntity';
+import ActionEntity from 'socket.io';
 import { ParserData, limiter, OptionsUpdate, Filter, DeleteEntitiyParams } from '../../Utils/Types';
 
 /** Actions */

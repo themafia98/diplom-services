@@ -63,7 +63,7 @@ class Responser implements ResponseBuilder {
 
   private getErrorStatus(): string {
     if (this.status === 404) return 'Not found';
-    else return `error or status not connected to responser, ${this.params?.methodQuery}`;
+    else return `error or status not connected to responser, ${this.params.methodQuery}`;
   }
 
   private async doneResponse(): Promise<Response> {
