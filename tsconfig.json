@@ -21,7 +21,7 @@
     "noImplicitReturns": true /* Report error when not all code paths in function return a value. */,
     "noFallthroughCasesInSwitch": true /* Report errors for fallthrough cases in switch statement. */,
     /* Debugging Options */
-    "traceResolution": true /* Report module resolution log messages. */,
+    "traceResolution": false /* Report module resolution log messages. */,
     "listEmittedFiles": true /* Print names of generated files part of the compilation. */,
     "listFiles": true /* Print names of files part of the compilation. */,
     "pretty": true /* Stylize errors and messages using color and context. */,
@@ -29,7 +29,8 @@
     "experimentalDecorators": true /* Enables experimental support for ES7 decorators. */,
     "emitDecoratorMetadata": true /* Enables experimental support for emitting type metadata for decorators. */,
     "lib": ["ES2020", "DOM"],
-    "types": ["node"]
+    "types": ["node"],
+    "typeRoots": ["node_modules/@types"]
   },
   "checkJs": false,
   "include": ["server/src/**/*.ts"],

@@ -27,7 +27,7 @@ namespace Cabinet {
 
         const image: FileBody = files[0];
 
-        if (!image || !image?.buffer) {
+        if (!image || !image.buffer) {
           throw new Error('Bad avatar');
         }
 

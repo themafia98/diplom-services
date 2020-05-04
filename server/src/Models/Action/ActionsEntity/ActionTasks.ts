@@ -60,7 +60,7 @@ class ActionTasks implements Action {
 
     const { pagination = null } = <Record<string, any>>saveData;
     const params: ActionParams =
-      _.isEmpty(queryParams) || !(<Record<string, string[]>>queryParams)?.keys
+      _.isEmpty(queryParams) || !(<Record<string, string[]>>queryParams).keys
         ? {}
         : <ActionParams>queryParams;
     const filter: Record<string, Array<object>> = await this.getDataByFilter(
@@ -69,13 +69,13 @@ class ActionTasks implements Action {
     );
     const query = {
       where: 'key',
-      in: (<Record<string, string[]>>queryParams)?.keys,
+      in: (<Record<string, string[]>>queryParams).keys,
       filter,
     };
 
     const paramsList: ActionParams = _.isEmpty(params) ? { ...params, ...filter } : query;
 
-    const isPagerParams = pagination && pagination?.current && pagination?.pageSize;
+    const isPagerParams = pagination && pagination.current && pagination.pageSize;
     const skip: number = isPagerParams && limitList ? (pagination.current - 1) * pagination.pageSize : 0;
     return this.getEntity().getAll(model, paramsList, <number | null>limitList, skip);
   }
@@ -112,9 +112,9 @@ class ActionTasks implements Action {
     const { saveData: { filteredInfo = {}, arrayKeys = [] } = {} } = actionParam as Record<string, any>;
 
     const filteredKeys: Array<string> = Object.keys(filteredInfo);
-    if (!filteredKeys?.length && !id) return {};
+    if (!filteredKeys.length && !id) return {};
 
-    if (!filteredKeys?.length && id) {
+    if (!filteredKeys.length && id) {
       return {
         $or: [{ editor: { $elemMatch: { $eq: id } } }, { uidCreater: { $eq: id } }],
       };
@@ -144,7 +144,7 @@ class ActionTasks implements Action {
       filter.$and.push({ $or: [{ editor: { $elemMatch: { $eq: id } } }, { uidCreater: { $eq: id } }] });
     }
 
-    return !filter['$or']?.length ? { $or: [{}] } : filter;
+    return !filter['$or'].length ? { $or: [{}] } : filter;
   }
 
   public async run(actionParam: ActionParams): Promise<ParserData> {

@@ -17,7 +17,7 @@ class ActionNews implements Action {
     const { queryParams, limitList = null } = actionParam || {};
     const { keys = [] } = <Record<string, string[]>>queryParams || {};
     const params: ActionParams =
-      _.isEmpty(queryParams) || !(<Record<string, string[]>>queryParams)?.keys
+      _.isEmpty(queryParams) || !(<Record<string, string[]>>queryParams).keys
         ? {}
         : <ActionParams>queryParams;
     const parsedKeys: Array<ObjectId> = keys.map((id) => Types.ObjectId(id));

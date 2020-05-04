@@ -174,7 +174,7 @@ namespace System {
         });
 
         const isBinary: boolean = Boolean(
-          actionData && (actionData as Record<string, BinaryLike>)?.fileBinary,
+          actionData && (actionData as Record<string, BinaryLike>).fileBinary,
         );
         const fileBinary: BinaryLike | null = isBinary
           ? (actionData as Record<string, BinaryLike>).fileBinary

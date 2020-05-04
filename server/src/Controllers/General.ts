@@ -17,7 +17,7 @@ namespace General {
     @Post({ path: '/auth', private: true })
     protected auth(req: Request, res: Response, next: NextFunction, server: App): Response {
       try {
-        const { dbm = null } = server?.locals || {};
+        const { dbm = null } = server.locals || {};
         if (dbm) dbm.connection().catch((err) => console.error(err));
         return res.sendStatus(200);
       } catch (err) {
@@ -57,7 +57,7 @@ namespace General {
 
     @Post({ path: '/login', private: false })
     protected async login(req: Request, res: Response, next: NextFunction, server: App) {
-      const { dbm = null } = server?.locals || {};
+      const { dbm = null } = server.locals || {};
       const body: BodyLogin = req.body;
       if (dbm) dbm.connection().catch((err) => console.error(err));
       if (!body || (body && _.isEmpty(body))) return void res.sendStatus(503);
@@ -103,7 +103,7 @@ namespace General {
 
     @Post({ path: '/userload', private: true })
     protected async userload(req: Request, res: Response, server: App): Promise<Response> {
-      const { dbm = null } = server?.locals || {};
+      const { dbm = null } = server.locals || {};
       if (dbm) dbm.connection().catch((err) => console.error(err));
       const { user } = req;
       if (user) return res.json({ user: (<User>user).toAuthJSON() });
@@ -134,7 +134,7 @@ namespace General {
     ): Promise<Response> {
       try {
         const { mailer } = server.locals;
-        const body: BodyLogin = req?.body;
+        const body: BodyLogin = req.body;
 
         const { recovoryField = '' } = body;
 

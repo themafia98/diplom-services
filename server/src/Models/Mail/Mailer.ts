@@ -40,7 +40,7 @@ namespace Mailer {
       this.transporter = createTransport(this.getMailerConfig());
 
       try {
-        const result = await this.transporter?.verify();
+        const result = await this.transporter.verify();
 
         if (!result) throw new Error('Invalid varify mailer');
       } catch (error) {
@@ -64,7 +64,11 @@ namespace Mailer {
           return null;
         }
 
-        const result: Promise<SentMessageInfo> = await this.getTransporter()?.sendMail({
+        const transport: Transporter | null = await this.getTransporter();
+        if (!transport) {
+          throw new TypeError('Bad mail transporter');
+        }
+        const result: Promise<SentMessageInfo> = transport.sendMail({
           ...senderProps,
           subject,
           text,

@@ -126,10 +126,10 @@ namespace Action {
 
           const record: ArrayLike<string> = doc.get(updateField);
 
-          if (Array.isArray(record) && (!record?.length || record?.length === 0)) {
+          if (Array.isArray(record) && (!record.length || record.length === 0)) {
             const docResult: { ok: boolean } = await runDelete({ [<string>findBy]: findBy }, multiple);
 
-            if (docResult?.ok) {
+            if (docResult.ok) {
               return docResult;
             } else return null;
           }
@@ -138,7 +138,7 @@ namespace Action {
         } else {
           const docResult: object = await runDelete({}, multiple);
 
-          if ((<Record<string, boolean>>docResult)?.ok) {
+          if ((<Record<string, boolean>>docResult).ok) {
             return <Document>docResult;
           } else return null;
         }

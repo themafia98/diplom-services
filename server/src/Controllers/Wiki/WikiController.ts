@@ -37,7 +37,7 @@ namespace Wiki {
           return new Responser(res, req, params, null, 404, [], dbm).emit();
         }
 
-        const metadata: Array<object> = (<Array<object>>data)?.reverse();
+        const metadata: Array<object> = (<Array<object>>data).reverse();
         return new Responser(res, req, params, null, 200, metadata, dbm).emit();
       } catch (err) {
         console.error(err);

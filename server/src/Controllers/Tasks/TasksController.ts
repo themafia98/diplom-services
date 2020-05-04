@@ -27,7 +27,7 @@ namespace Tasks {
         });
 
         const { options: { limitList = null, keys = null, saveData = {}, filterCounter = null } = {} } =
-          req?.body || {};
+          req.body || {};
         const actionParams: ActionParams = {
           queryParams: keys ? { keys } : {},
           limitList,
@@ -65,7 +65,7 @@ namespace Tasks {
     @Post({ path: '/listCounter', private: true })
     @Get({ path: '/listCounter', private: true })
     protected async getListCounter(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
-      const { filterCounter = null, saveData = {} } = req?.body || {}; // uid
+      const { filterCounter = null, saveData = {} } = req.body || {}; // uid
       const { dbm } = server.locals;
       const params: Params = {
         methodQuery: 'list_counter',
@@ -105,7 +105,7 @@ namespace Tasks {
     @Post({ path: '/createTask', private: true })
     protected async create(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { dbm } = server.locals;
-      const body: BodyLogin = req?.body;
+      const body: BodyLogin = req.body;
       const params: Params = {
         methodQuery: 'set_single',
         status: 'done',

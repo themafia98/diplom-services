@@ -75,7 +75,7 @@ namespace News {
 
         if (!connect) throw new Error('Bad connect');
 
-        const { options: { limitList = null, keys = null } = {} } = req?.body || {};
+        const { options: { limitList = null, keys = null } = {} } = req.body || {};
         const actionParams: ActionParams = { queryParams: keys ? { keys } : {}, limitList };
 
         const actionNews = new Action.ActionParser({ actionPath: 'news', actionType: 'get_all' });
