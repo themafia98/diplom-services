@@ -4,7 +4,7 @@ import { dashboardType } from './types';
 import { Redirect } from 'react-router-dom';
 import { EventEmitter } from 'events';
 import _ from 'lodash';
-
+import io from 'socket.io-client';
 import { Layout, message, notification, Modal, Button } from 'antd';
 import { connect } from 'react-redux';
 import {
@@ -45,13 +45,19 @@ class Dashboard extends React.PureComponent {
   static propTypes = dashboardType;
 
   dashboardRef = React.createRef();
+  webSocket = null;
 
   componentDidMount = () => {
+    this.webSocket = io('/');
     if (deferredPrompt) {
       this.setState({
         visibleInstallApp: true,
       });
     }
+  };
+
+  componentWillUnmount = () => {
+    if (this.webSocket) this.webSocket.disconnect();
   };
 
   componentDidUpdate = () => {
@@ -323,6 +329,7 @@ class Dashboard extends React.PureComponent {
               dashboardStrem={this.dashboardStrem}
               actionTabs={actionTabs}
               udata={udata}
+              webSocket={this.webSocket}
               onSetStatus={onSetStatus}
               shouldUpdate={shouldUpdate}
               onShowLoader={this.onShowLoader}
@@ -359,7 +366,11 @@ class Dashboard extends React.PureComponent {
             ) : null}
           </Layout>
         </Layout>
-        <ActionPortal renderComponent={<Chat type="modal" visible={true} />} name="Чат" />
+        <ActionPortal
+          key="action-portal"
+          renderComponent={<Chat key="chat-modal" type="modal" visible={true} webSocket={this.webSocket} />}
+          name="Чат"
+        />
       </div>
     );
   }

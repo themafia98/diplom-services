@@ -20,6 +20,7 @@ const ChatMenu = (props) => {
     uid = '',
     setActiveChatRoom,
     type,
+    isWs,
   } = props || {};
 
   const [iDs, setIDs] = useState([]);
@@ -27,6 +28,7 @@ const ChatMenu = (props) => {
   const [rooms, updateRooms] = useState([]);
 
   const generateSkeleton = (counter = 5) => {
+    if (!isWs) return null;
     return _.fill(Array(counter), '-_-').map((it, i) => {
       return (
         <div className="item-skeleton" key={`${it}${i}`}>
@@ -44,6 +46,7 @@ const ChatMenu = (props) => {
 
   useEffect(() => {
     const ids = [];
+    if (!isWs) return;
     let i = usersList.length > iDs.length ? iDs.length - 1 : 0;
 
     for (i; i < usersList.length; i++) {
@@ -51,11 +54,11 @@ const ChatMenu = (props) => {
     }
 
     setIDs(ids);
-  }, [usersList.length, iDs.length]);
+  }, [usersList.length, iDs.length, isWs]);
 
   useEffect(() => {
     const singleRooms = listdata.filter((room) => room.type === 'single');
-
+    if (!isWs) return;
     const rooms = [];
     for (let j = 0; j < usersList.length; j++) {
       const user = usersList[j];
@@ -75,15 +78,15 @@ const ChatMenu = (props) => {
     }
 
     updateRooms([...singleRooms, ...rooms]);
-  }, [usersList, listdata, iDs, uid]);
+  }, [usersList, listdata, iDs, uid, isWs]);
 
   return (
     <>
-      {type !== 'modal' ? null : (
+      {type !== 'modal' ? null : isWs ? (
         <Button type="primary" className="openMenu-button" onClick={onOpenMenu}>
           {!visible ? 'Открыть комнаты' : 'Скрыть комнаты'}
         </Button>
-      )}
+      ) : null}
       <div
         className={
           type !== 'modal'
@@ -93,9 +96,9 @@ const ChatMenu = (props) => {
       >
         <div className="menuLoading-skeleton">
           <Scrollbars hideTracksWhenNotNeeded={true}>
-            {!socketConnection && !socketErrorStatus ? (
+            {!socketConnection && !socketErrorStatus && isWs ? (
               generateSkeleton(listdata && listdata?.length ? listdata?.length : 5)
-            ) : (
+            ) : isWs ? (
               <List
                 key="list-chat"
                 dataSource={rooms}
@@ -134,14 +137,14 @@ const ChatMenu = (props) => {
                   );
                 }}
               />
-            )}
+            ) : null}
           </Scrollbars>
         </div>
         {type !== 'modal' ? (
           <Button
             onClick={onCreateRoom}
             type="primary"
-            disabled={!socketConnection}
+            disabled={!socketConnection || !isWs}
             className="chat_main__createRoom"
           >
             Создать комнату
@@ -154,6 +157,7 @@ const ChatMenu = (props) => {
 
 ChatMenu.defaultProps = {
   type: 'default',
+  isWs: null,
 };
 
 export default ChatMenu;

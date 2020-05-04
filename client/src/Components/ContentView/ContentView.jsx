@@ -108,6 +108,7 @@ class ContentView extends React.Component {
       onShowLoader,
       onHideLoader,
       onSetStatus,
+      webSocket = null,
     } = this.props;
     const { drawerView, key } = this.state;
 
@@ -186,6 +187,7 @@ class ContentView extends React.Component {
               statusApp={statusApp}
               router={router}
               rest={rest}
+              webSocket={webSocket}
               onSetStatus={onSetStatus}
               loaderMethods={loaderMethods}
               onErrorRequestAction={onErrorRequestAction}

@@ -17,6 +17,10 @@ class ChatModel {
     return this.#socket;
   }
 
+  getStatus() {
+    return this.getSocket().connected;
+  }
+
   useDefaultEvents() {
     if (!this.getSocket()) return;
 

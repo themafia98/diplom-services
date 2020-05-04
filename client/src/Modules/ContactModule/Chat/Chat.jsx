@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import clsx from 'clsx';
 import moment from 'moment';
 import _ from 'lodash';
-import io from 'socket.io-client';
 
 import ChatMenu from './ChatMenu';
 
@@ -31,16 +30,19 @@ class Chat extends React.PureComponent {
 
   static contextType = modelsContext;
   static defaultProps = {
-    type: 'modal',
+    type: 'default',
   };
 
   socket = null;
   updaterChats = null;
 
   componentDidMount = () => {
-    const { onUpdateRoom } = this.props;
+    const { onUpdateRoom, webSocket = null } = this.props;
     //  const isDev = process.env.NODE_ENV === "development";
-    this.chat = new ChatModel(io('/'));
+    if (!webSocket) return;
+    if (!webSocket.connected) webSocket.connect();
+    else this.connection(true);
+    this.chat = new ChatModel(webSocket);
 
     this.chat.useDefaultEvents();
 
@@ -66,8 +68,9 @@ class Chat extends React.PureComponent {
       udata: { _id: uid } = {},
       chat: { chatToken = null, listdata = [], shouldLoadingMessage = false } = {},
       onLoadingDataByToken = null,
+      webSocket = null,
     } = this.props;
-
+    if (!webSocket) return;
     const { shouldUpdate = false } = this.state;
 
     if (prevProps.socketConnection && !socketConnection) {
@@ -252,6 +255,7 @@ class Chat extends React.PureComponent {
     if (chatToken !== token || !token) {
       if (onLoadingDataByToken) {
         if (onLoadingDataByToken) onLoadingDataByToken(token, listdata, 'chat', false);
+
         this.chat.getSocket().emit('onChatRoomActive', { token, displayName });
       }
     } else if (!token) message.warning('Чат комната не найдена либо требуется обновить систему.');
@@ -366,8 +370,9 @@ class Chat extends React.PureComponent {
       socketConnection,
       socketErrorStatus,
       type,
+      webSocket = null,
     } = this.props;
-
+    const isWs = !_.isNull(webSocket);
     const isDev = process.env.NODE_ENV === 'development';
 
     const { usersListComponent = null, count = 0 } = tokenRoom ? this.getUsersList() : {};
@@ -377,11 +382,12 @@ class Chat extends React.PureComponent {
         {type !== 'modal' ? (
           <TitleModule classNameTitle="ContactModule__chatTitle" title="Корпоративный чат" />
         ) : null}
-        {this.renderModal(visible)}
+        {isWs ? this.renderModal(visible) : null}
         <div className="chat__main">
           <ChatMenu
             uid={uid}
             type={type}
+            isWs={isWs}
             socketConnection={socketConnection}
             socketErrorStatus={socketErrorStatus}
             listdata={listdata}
@@ -415,9 +421,9 @@ class Chat extends React.PureComponent {
                 </p>
               </div>
               <div className="chat_content__main">
-                {!socketConnection && !socketErrorStatus ? (
+                {!socketConnection && !socketErrorStatus && isWs ? (
                   <Spin size="large" />
-                ) : tokenRoom ? (
+                ) : tokenRoom && isWs ? (
                   <ChatRoom
                     key={tokenRoom}
                     uid={uid.trim()}
@@ -433,10 +439,12 @@ class Chat extends React.PureComponent {
                   />
                 ) : (
                   <div className="emptyChatRoom">
-                    {!socketErrorStatus ? (
+                    {!socketErrorStatus && isWs ? (
                       <p className="emptyChatRoomMsg">Выберите собеседника</p>
-                    ) : (
+                    ) : isWs ? (
                       <p className="socket-error">{socketErrorStatus}</p>
+                    ) : (
+                      <p className="webSocket-disable">WebSocket connection is not available</p>
                     )}
                   </div>
                 )}

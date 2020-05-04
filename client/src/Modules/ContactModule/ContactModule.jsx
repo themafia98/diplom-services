@@ -99,7 +99,7 @@ class ContactModule extends React.PureComponent {
     const isBackgrounNews = this.checkBackground('contactModule_feedback');
     const isBackgroundInfoPage = this.checkBackground('contactModule_informationPage');
     const isBackgroundCreateNews = this.checkBackground('contactModule_createNews');
-    const { statusApp = '', router: { routeData = {} } = {}, udata } = this.props;
+    const { statusApp = '', router: { routeData = {} } = {}, udata, webSocket = null } = this.props;
 
     const linkPath = _.isString(path) ? path.split('__')[1] || '' : '';
     const data = routeData[path] || routeData[linkPath] || {};
@@ -115,7 +115,12 @@ class ContactModule extends React.PureComponent {
     return (
       <>
         <TabContainer isBackground={isBackgroundChat} visible={path === 'contactModule_chat'}>
-          <Chat key="chatModule" isBackground={isBackgroundChat} visible={path === 'contactModule_chat'} />
+          <Chat
+            key="chatModule"
+            isBackground={isBackgroundChat}
+            webSocket={webSocket}
+            visible={path === 'contactModule_chat'}
+          />
         </TabContainer>
         <TabContainer isBackground={isBackgrounNews} visible={path === 'contactModule_feedback'}>
           <News

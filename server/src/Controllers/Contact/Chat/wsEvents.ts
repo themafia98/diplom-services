@@ -44,7 +44,6 @@ export default (ws: WebSocketWorker, dbm: Dbms, server: HttpServer) => {
     socket.on('newMessage', async (msgObj: ChatMessage) => {
       const { tokenRoom = '' } = msgObj || {};
       try {
-        const sendProcess: Function = process.send as NodeJS.MessageListener;
         const model: Model<Document> | null = getModelByName('chatMsg', 'chatMsg');
 
         if (model && tokenRoom) {
@@ -56,7 +55,7 @@ export default (ws: WebSocketWorker, dbm: Dbms, server: HttpServer) => {
             if (!saveMsg) throw new TypeError('Bad msg object');
             console.log('tokenRoom:', tokenRoom);
 
-            sendProcess({
+            (<any>process).send({
               action: 'emitSocket',
               payload: {
                 event: 'msg',
@@ -97,10 +96,9 @@ export default (ws: WebSocketWorker, dbm: Dbms, server: HttpServer) => {
     });
 
     socket.on('onChatRoomActive', ({ token: tokenRoom, displayName = '' }) => {
-      const sendProcess: Function = process.send as NodeJS.MessageListener;
       socket.join(tokenRoom);
 
-      sendProcess({
+      (<any>process).send({
         action: 'emitSocket',
         payload: {
           event: 'joinMsg',
@@ -120,12 +118,12 @@ export default (ws: WebSocketWorker, dbm: Dbms, server: HttpServer) => {
 
   process.on('message', (data: Record<string, object | string | null>) => {
     try {
+      console.log('process message', data);
       const { action = '', payload = {} } = data;
 
       switch (action) {
         case 'emitSocket': {
           const { event = '', data = {}, to = '', socket = null } = payload as Record<string, Payload>;
-
           let worker = ws.getWorker();
           if (to && to === 'broadcast' && socket) {
             (<Socket>socket).broadcast.emit(<string>event, data);
