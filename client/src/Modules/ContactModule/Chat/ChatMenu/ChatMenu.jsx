@@ -79,9 +79,11 @@ const ChatMenu = (props) => {
 
   return (
     <>
-      <Button type="primary" className="openMenu-button" onClick={onOpenMenu}>
-        {!visible ? 'Открыть комнаты' : 'Скрыть комнаты'}
-      </Button>
+      {type !== 'modal' ? null : (
+        <Button type="primary" className="openMenu-button" onClick={onOpenMenu}>
+          {!visible ? 'Открыть комнаты' : 'Скрыть комнаты'}
+        </Button>
+      )}
       <div
         className={
           type !== 'modal'
