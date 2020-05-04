@@ -25,7 +25,7 @@ class ActionChatMessage implements Action {
     return this.getEntity().getAll(model, query);
   }
 
-  public async run(actionParam: ActionParams): ParserData {
+  public async run(actionParam: ActionParams): Promise<ParserData> {
     const model: Model<Document> | null = getModelByName('chatMsg', 'chatMsg');
     if (!model) return null;
 

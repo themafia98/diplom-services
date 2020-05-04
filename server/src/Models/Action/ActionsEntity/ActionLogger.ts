@@ -13,17 +13,17 @@ class ActionLogger implements Action {
     return this.entity;
   }
 
-  private async getUserSettingsLog(actionParam: ActionParams, model: Model<Document>): ParserData {
+  private async getUserSettingsLog(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const { queryParams = {} } = actionParam;
     return this.getEntity().getAll(model, <Record<string, any>>queryParams);
   }
 
-  private async saveUserSettingsLog(actionParam: ActionParams, model: Model<Document>): ParserData {
+  private async saveUserSettingsLog(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const { item = {} } = <Record<string, any>>actionParam;
     return this.getEntity().createEntity(model, item);
   }
 
-  public async run(actionParam: ActionParams): ParserData {
+  public async run(actionParam: ActionParams): Promise<ParserData> {
     const model: Model<Document> | null = getModelByName('settingsLog', 'settingsLog');
     if (!model) return null;
 

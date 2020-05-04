@@ -9,7 +9,7 @@ class ActionGlobal implements Action {
     return this.entity;
   }
 
-  private async loadFiles(actionParam: ActionParams): ParserData {
+  private async loadFiles(actionParam: ActionParams): Promise<ParserData> {
     const {
       body: { queryParams = {} },
     } = <Record<string, any>>actionParam;
@@ -22,7 +22,7 @@ class ActionGlobal implements Action {
     return files;
   }
 
-  private async deleteFile(actionParam: ActionParams): ParserData {
+  private async deleteFile(actionParam: ActionParams): Promise<ParserData> {
     const { body: { queryParams = {} } = {}, store = '' } = <Record<string, any>>actionParam;
 
     const file: object = (queryParams as Record<string, any>).file;
@@ -36,7 +36,7 @@ class ActionGlobal implements Action {
     else return deleteFile;
   }
 
-  public async download(actionParam: ActionParams): ParserData {
+  public async download(actionParam: ActionParams): Promise<ParserData> {
     const entityId: string = (actionParam as Record<string, string>).entityId;
     const filename: string = (actionParam as Record<string, string>).filename;
     const moduleName: string = (actionParam as Record<string, string>).moduleName;
@@ -46,7 +46,7 @@ class ActionGlobal implements Action {
     return await this.getEntity().getStore().downloadFile(path);
   }
 
-  public async run(actionParam: ActionParams): ParserData {
+  public async run(actionParam: ActionParams): Promise<ParserData> {
     switch (this.getEntity().getActionType()) {
       case 'load_files':
         return this.loadFiles(actionParam);

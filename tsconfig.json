@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es2019",
+    "target": "ES2019",
     "outDir": "./server/build",
     "rootDir": "./server/src",
     "moduleResolution": "node",
@@ -28,9 +28,9 @@
     /* Experimental Options */
     "experimentalDecorators": true /* Enables experimental support for ES7 decorators. */,
     "emitDecoratorMetadata": true /* Enables experimental support for emitting type metadata for decorators. */,
-    "lib": ["es2017", "dom", "ES2019", "ESNext", "ES2020"],
+    "lib": ["ES2020", "DOM"],
     "types": ["node"],
-    "typeRoots": ["node_modules/@types", "server/src/Utils/Types"]
+    "typeRoots": ["node_modules/@types"]
   },
   "checkJs": false,
   "include": ["server/src/**/*.ts"],

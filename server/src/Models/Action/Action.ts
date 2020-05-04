@@ -1,7 +1,7 @@
 import { ActionProps, ActionParams, Actions, Action } from '../../Utils/Interfaces';
 import { Model, Document, Types, FilterQuery } from 'mongoose';
 import _ from 'lodash';
-import ActionEntity from 'socket.io';
+import ActionEntity from './ActionEntity';
 import { ParserData, limiter, OptionsUpdate, Filter, DeleteEntitiyParams } from '../../Utils/Types';
 
 /** Actions */
@@ -32,7 +32,7 @@ namespace Action {
       limit: limiter,
       skip: number = 0,
       sortType: string = 'desc',
-    ): ParserData {
+    ): Promise<ParserData> {
       try {
         const toSkip: number = Math.abs(skip);
         const { in: inn = [], where = '' } = actionParam;
@@ -68,7 +68,7 @@ namespace Action {
       }
     }
 
-    public async getFilterData(model: Model<Document>, filter: object, sort?: string): ParserData {
+    public async getFilterData(model: Model<Document>, filter: object, sort?: string): Promise<ParserData> {
       if (!model || !filter) return null;
       const query: FilterQuery<object> = filter;
       return await model.find(query).sort({
@@ -76,7 +76,7 @@ namespace Action {
       });
     }
 
-    public async findOnce(model: Model<Document>, actionParam: ActionParams): ParserData {
+    public async findOnce(model: Model<Document>, actionParam: ActionParams): Promise<ParserData> {
       try {
         const actionData = await model.findOne(actionParam);
         return actionData;
@@ -86,7 +86,7 @@ namespace Action {
       }
     }
 
-    public async createEntity(model: Model<Document>, item: object): ParserData {
+    public async createEntity(model: Model<Document>, item: object): Promise<ParserData> {
       try {
         const actionData: Document = await model.create(item);
         return actionData;
@@ -96,7 +96,7 @@ namespace Action {
       }
     }
 
-    public async deleteEntity(model: Model<Document>, query: ActionParams): ParserData {
+    public async deleteEntity(model: Model<Document>, query: ActionParams): Promise<ParserData> {
       try {
         const { multiple = false, mode = '$pullAll', findBy, queryParams = {} } = query;
         const { uid = '', updateField = '', ids = [] } = ({} = <DeleteEntitiyParams>queryParams || {});
@@ -152,7 +152,7 @@ namespace Action {
       model: Model<Document>,
       query: ActionParams,
       options: OptionsUpdate = {},
-    ): ParserData {
+    ): Promise<ParserData> {
       try {
         const { queryType = 'single', actionParam = null /** params for multiple update */ } = query;
 
@@ -194,7 +194,7 @@ namespace Action {
       }
     }
 
-    public async getActionData(actionParam: ActionParams = {}): ParserData {
+    public async getActionData(this: Actions, actionParam: ActionParams = {}): Promise<ParserData> {
       try {
         console.log(`Run action. actionType: ${this.getActionType()}, 
                             actionPath: ${this.getActionPath()}`);

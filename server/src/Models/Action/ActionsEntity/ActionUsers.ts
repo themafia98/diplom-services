@@ -1,7 +1,7 @@
 import generator from 'generate-password';
 import _ from 'lodash';
 import { Model, Document, Types } from 'mongoose';
-import { ActionParams, Actions, Action } from '../../../Utils/Interfaces';
+import { ActionParams, Actions, Action, User } from '../../../Utils/Interfaces';
 import { ParserData } from '../../../Utils/Types';
 import Utils from '../../../Utils';
 
@@ -14,29 +14,29 @@ class ActionUsers implements Action {
     return this.entity;
   }
 
-  private async getUsers(actionParam: ActionParams, model: Model<Document>): ParserData {
+  private async getUsers(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     return this.getEntity().getAll(model, actionParam);
   }
 
-  private async recovoryPassword(actionParam: ActionParams, model: Model<Document>): ParserData {
+  private async recovoryPassword(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const filed: string = (<Record<string, string>>actionParam).recovoryField;
     const mode: string = (<Record<string, string>>actionParam).mode;
 
     const props: object = mode == 'emailMode' ? { email: filed } : { login: filed };
 
-    const result: Record<string, any> | null = await this.getEntity().findOnce(model, { ...props });
+    const result: ParserData = await this.getEntity().findOnce(model, { ...props });
 
     if (!result) return result;
 
-    if (<Record<string, any>>result) {
-      const { _id } = result || {};
+    if (result) {
+      const { _id } = (result as Record<string, string>) || {};
 
       const password: string = generator.generate({
         length: 10,
         numbers: true,
       });
 
-      const passwordHash: string | null = await result.changePassword(password);
+      const passwordHash: string | null = await (<User>result).changePassword(password);
 
       if (!passwordHash) {
         return null;
@@ -55,7 +55,7 @@ class ActionUsers implements Action {
     return null;
   }
 
-  private async changePassword(actionParam: ActionParams, model: Model<Document>): ParserData {
+  private async changePassword(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const { queryParams = {} } = <Record<string, any>>actionParam;
     const { oldPassword = '', newPassword = '', uid = '' } = queryParams || {};
 
@@ -63,7 +63,7 @@ class ActionUsers implements Action {
       _id: Types.ObjectId(uid),
     };
 
-    const result: Record<string, any> | null = await this.getEntity().findOnce(model, {
+    const result: ParserData = await this.getEntity().findOnce(model, {
       ...checkProps,
     });
 
@@ -72,17 +72,17 @@ class ActionUsers implements Action {
       return null;
     }
 
-    const isValid: boolean = await result.checkPassword(oldPassword);
+    const isValid: boolean = await (<User>result).checkPassword(oldPassword);
 
     if (!isValid) {
       console.error('Bad old password for change password action');
       return null;
     }
 
-    const { _id: id } = result || {};
+    const { _id: id } = (result as Record<string, string>) || {};
     const _id = Types.ObjectId(id);
     const password: string = newPassword;
-    const passwordHash: string | null = await result.changePassword(password);
+    const passwordHash: string | null = await (<User>result).changePassword(password);
 
     if (!passwordHash) {
       return null;
@@ -95,7 +95,7 @@ class ActionUsers implements Action {
     return res;
   }
 
-  private async updateProfileChanges(actionParam: ActionParams, model: Model<Document>): ParserData {
+  private async updateProfileChanges(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const { queryParams = {} } = ({} = <Record<string, any>>actionParam);
     const { isHidePhone = null, isHideEmail = null, uid = '' } = queryParams || {};
 
@@ -121,7 +121,7 @@ class ActionUsers implements Action {
     return res;
   }
 
-  private async updateCommonChanges(actionParam: ActionParams, model: Model<Document>): ParserData {
+  private async updateCommonChanges(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const { queryParams = {} } = ({} = <Record<string, any>>actionParam);
     const { newEmail = '', newPhone = '', uid = '' } = queryParams || {};
 
@@ -133,7 +133,7 @@ class ActionUsers implements Action {
       _id: Types.ObjectId(uid),
     };
 
-    const result: Record<string, any> | null = await this.getEntity().findOnce(model, {
+    const result: ParserData = await this.getEntity().findOnce(model, {
       ...checkProps,
     });
 
@@ -142,7 +142,7 @@ class ActionUsers implements Action {
       return null;
     }
 
-    const { _id: id } = result || {};
+    const { _id: id } = (result as Record<string, string>) || {};
     const _id = Types.ObjectId(id);
     const email: string = newEmail ? newEmail : null;
     const phone: string = newPhone ? newPhone : null;
@@ -159,7 +159,7 @@ class ActionUsers implements Action {
     return res;
   }
 
-  private async updateSingle(actionParam: ActionParams, model: Model<Document>): ParserData {
+  private async updateSingle(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     try {
       const { queryParams = {}, updateItem: updateProps = '' } = actionParam;
       const id: string = (queryParams as Record<string, string>).uid;
@@ -168,7 +168,7 @@ class ActionUsers implements Action {
 
       await this.getEntity().updateEntity(model, query);
 
-      const actionData: Document = await this.getEntity().findOnce(model, { _id });
+      const actionData: ParserData = await this.getEntity().findOnce(model, { _id });
 
       return actionData;
     } catch (err) {
@@ -177,12 +177,12 @@ class ActionUsers implements Action {
     }
   }
 
-  private async updateMany(actionParam: ActionParams, model: Model<Document>): ParserData {
+  private async updateMany(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     /** Not supported now */
     return null;
   }
 
-  public async run(actionParam: ActionParams): ParserData {
+  public async run(actionParam: ActionParams): Promise<ParserData> {
     const model: Model<Document> | null = getModelByName('users', 'users');
     if (!model) return null;
 

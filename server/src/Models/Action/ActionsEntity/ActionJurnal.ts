@@ -12,17 +12,17 @@ class ActionJurnal implements Action {
     return this.entity;
   }
 
-  private async getJurnal(actionParam: ActionParams, model: Model<Document>): ParserData {
+  private async getJurnal(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const { depKey } = actionParam;
     const conditions = { depKey };
-    const actionData: Document[] | null = await this.getEntity().getAll(model, conditions);
+    const actionData: ParserData = await this.getEntity().getAll(model, conditions);
     return actionData;
   }
 
-  private async setJurnal(actionParam: ActionParams, model: Model<Document>): ParserData {
+  private async setJurnal(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     try {
       const { item = {} } = actionParam;
-      const actionData: Document | null = await this.getEntity().createEntity(model, <object>item);
+      const actionData: ParserData = await this.getEntity().createEntity(model, <object>item);
 
       return actionData;
     } catch (err) {
@@ -31,7 +31,7 @@ class ActionJurnal implements Action {
     }
   }
 
-  public async run(actionParam: ActionParams): ParserData {
+  public async run(actionParam: ActionParams): Promise<ParserData> {
     const model: Model<Document> | null = getModelByName('jurnalworks', 'jurnalworks');
     if (!model) return null;
 

@@ -1,7 +1,7 @@
 import Utils from '../../../Utils';
 import { Model, Document } from 'mongoose';
 import { ActionParams, Actions, Action } from '../../../Utils/Interfaces';
-import { ParserData, Entity } from '../../../Utils/Types';
+import { ParserData } from '../../../Utils/Types';
 import _ from 'lodash';
 
 const { getModelByName } = Utils;
@@ -13,7 +13,7 @@ class ActionNotification implements Action {
     return this.entity;
   }
 
-  public async create(model: Model<Document>, actionParam: ActionParams): Promise<Entity> {
+  public async create(model: Model<Document>, actionParam: ActionParams): Promise<ParserData> {
     const { item = null } = <Record<string, object>>actionParam;
 
     if (!item) return null;
@@ -21,7 +21,7 @@ class ActionNotification implements Action {
     return await this.getEntity().createEntity(model, item);
   }
 
-  public async getByType(actionParam: ActionParams, model: Model<Document>): Promise<Entity> {
+  public async getByType(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const { methodQuery = {}, type = 'global' } = <Record<string, object>>actionParam;
 
     const concactType = <string>type === 'private' ? ['private', 'global'] : type;
@@ -53,13 +53,13 @@ class ActionNotification implements Action {
     return await this.getEntity().getAll(model, { type: concactType, ...methodQuery }, null, 0, 'asc');
   }
 
-  private async updateMany(actionParam: ActionParams, model: Model<Document>): ParserData {
+  private async updateMany(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const methodQuery = { queryType: 'many', actionParam };
 
     return await this.getEntity().updateEntity(model, methodQuery);
   }
 
-  public async run(actionParam: ActionParams): ParserData {
+  public async run(actionParam: ActionParams): Promise<ParserData> {
     const model: Model<Document> | null = getModelByName('notification', 'notification');
     if (!model) return null;
 

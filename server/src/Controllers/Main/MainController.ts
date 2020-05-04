@@ -1,7 +1,7 @@
 import { NextFunction, Response, Request } from 'express';
 import _ from 'lodash';
 import { Document } from 'mongoose';
-import { App, Params, FileApi, Controller, BodyLogin } from '../../Utils/Interfaces';
+import { App, Params, FileApi, Controller, BodyLogin, Actions } from '../../Utils/Interfaces';
 import { ParserResult, ResRequest, Meta } from '../../Utils/Types';
 import Utils from '../../Utils';
 import Responser from '../../Models/Responser';
@@ -26,7 +26,7 @@ namespace System {
         const connect = await dbm.connection().catch((err: Error) => console.error(err));
         if (!connect) throw new Error('Bad connect');
 
-        const actionUserList = new Action.ActionParser({
+        const actionUserList: Actions = new Action.ActionParser({
           actionPath: 'users',
           actionType: 'get_all',
         });
@@ -116,7 +116,7 @@ namespace System {
       };
 
       try {
-        const downloadAction = new Action.ActionParser({
+        const downloadAction: Actions = new Action.ActionParser({
           actionPath: 'global',
           actionType: 'load_files',
           store: <FileApi>server.locals.dropbox,
@@ -161,7 +161,7 @@ namespace System {
         }
 
         const { dropbox: store } = server.locals;
-        const downloadAction = new Action.ActionParser({
+        const downloadAction: Actions = new Action.ActionParser({
           actionPath: 'global',
           actionType: 'download_files',
           store,
@@ -207,7 +207,7 @@ namespace System {
       };
 
       try {
-        const deleteFileAction = new Action.ActionParser({
+        const deleteFileAction: Actions = new Action.ActionParser({
           actionPath: 'global',
           actionType: 'delete_file',
           store,
@@ -249,7 +249,7 @@ namespace System {
 
         if (!connect) throw new Error('Bad connect');
 
-        const createTaskAction = new Action.ActionParser({
+        const createTaskAction: Actions = new Action.ActionParser({
           actionPath: moduleName,
           actionType: 'update_single',
           body,
@@ -298,7 +298,7 @@ namespace System {
 
         if (!connect) throw new Error('Bad connect');
 
-        const createTaskAction = new Action.ActionParser({
+        const createTaskAction: Actions = new Action.ActionParser({
           actionPath: moduleName,
           actionType: 'update_many',
           body,
@@ -351,7 +351,7 @@ namespace System {
 
         if (!connect) throw new Error('Bad connect');
 
-        const createNotificationAction = new Action.ActionParser({
+        const createNotificationAction: Actions = new Action.ActionParser({
           actionPath: 'notification',
           actionType: <string>actionType,
         });

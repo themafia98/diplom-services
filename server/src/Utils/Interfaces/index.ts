@@ -7,10 +7,9 @@ import {
 } from 'express';
 import nodemailer, { SendMailOptions, Transporter, SentMessageInfo } from 'nodemailer';
 import { files } from 'dropbox';
-import { transOptions, ParserData, ParserResult, Meta } from '../Types';
+import { transOptions, ParserData, ParserResult, Meta, limiter, OptionsUpdate } from '../Types';
 import socketio from 'socket.io';
 import mongoose, { Mongoose, Connection, Model, Document, FilterQuery } from 'mongoose';
-
 export interface Controller<T> {
   [key: string]: any;
 }
@@ -157,13 +156,14 @@ export interface User extends Document {
   avatar: string;
   isHideEmail: boolean;
   isHidePhone: boolean;
-  passwordHash: string;
+  passwordHash?: string;
   displayName: string;
   departament: string;
   position: string;
   rules: string;
   accept: boolean;
   token?: string;
+  _plainPassword?: string;
   checkPassword: Function;
   changePassword: Function;
   generateJWT: Function;
@@ -297,27 +297,24 @@ export interface EntityActionApi {
 
 export interface Action {
   getEntity(): Actions;
-  run(actionParam: ActionParams): ParserData;
+  run(actionParam: ActionParams): Promise<ParserData>;
 }
 
 export interface Actions extends EntityActionApi {
-  getCounter(model: Model<Document>, query: Readonly<FilterQuery<any>>): Promise<number>;
+  getCounter(model: Model<Document>, query: FilterQuery<any>): Promise<number>;
   getAll(
     model: Model<Document>,
     actionParam: ActionParams,
-    limit?: number | null | undefined,
+    limit?: limiter,
     skip?: number,
     sortType?: string,
-  ): Promise<any>;
-  getFilterData(model: Model<Document>, filter: object, sort?: string): ParserData;
-  createEntity(model: Model<Document>, item: object): Promise<any>;
-  deleteEntity(model: Model<Document>, query: ActionParams): Promise<any>;
-  updateEntity(
-    model: Model<Document>,
-    query: ActionParams,
-    options?: Record<string, null | boolean>,
-  ): Promise<any>;
-  findOnce(model: Model<Document>, actionParam: ActionParams): Promise<any>;
+  ): Promise<ParserData>;
+  getFilterData(model: Model<Document>, filter: object, sort?: string): Promise<ParserData>;
+  createEntity(model: Model<Document>, item: object): Promise<ParserData>;
+  deleteEntity(model: Model<Document>, query: ActionParams): Promise<ParserData>;
+  updateEntity(model: Model<Document>, query: ActionParams, options?: OptionsUpdate): Promise<ParserData>;
+  findOnce(model: Model<Document>, actionParam: ActionParams): Promise<ParserData>;
+  getActionData(this: Actions, actionParam: ActionParams): Promise<ParserData>;
 }
 
 export interface ResponseJson<T> {

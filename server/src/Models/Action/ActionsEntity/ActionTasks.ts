@@ -13,9 +13,9 @@ class ActionTasks implements Action {
     return this.entity;
   }
 
-  public async createSingleTask(actionParam: ActionParams, model: Model<Document>): ParserData {
+  public async createSingleTask(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     try {
-      const actionData: Document | null = await this.getEntity().createEntity(model, actionParam);
+      const actionData: ParserData = await this.getEntity().createEntity(model, actionParam);
       return actionData;
     } catch (err) {
       console.error(err);
@@ -23,7 +23,11 @@ class ActionTasks implements Action {
     }
   }
 
-  public async update(actionParam: ActionParams, model: Model<Document>, typeAction: string): ParserData {
+  public async update(
+    actionParam: ActionParams,
+    model: Model<Document>,
+    typeAction: string,
+  ): Promise<ParserData> {
     try {
       /** Params for query */
       const { queryParams = {}, updateItem = '' } = actionParam;
@@ -50,7 +54,7 @@ class ActionTasks implements Action {
     }
   }
 
-  private async getTasks(actionParam: ActionParams, model: Model<Document>): ParserData {
+  private async getTasks(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const { queryParams, limitList = 20, saveData = {}, filterCounter = '' } = actionParam || {};
     const _id: ObjectID = Types.ObjectId(<string>filterCounter);
 
@@ -76,7 +80,7 @@ class ActionTasks implements Action {
     return this.getEntity().getAll(model, paramsList, <number | null>limitList, skip);
   }
 
-  private async getTaskCount(model: Model<Document>, actionParam: ActionParams): ParserData {
+  private async getTaskCount(model: Model<Document>, actionParam: ActionParams): Promise<ParserData> {
     const { filterCounter = null } = actionParam as Record<string, null | string>;
 
     const filter: any = await this.getDataByFilter(actionParam);
@@ -143,7 +147,7 @@ class ActionTasks implements Action {
     return !filter['$or']?.length ? { $or: [{}] } : filter;
   }
 
-  public async run(actionParam: ActionParams): ParserData {
+  public async run(actionParam: ActionParams): Promise<ParserData> {
     const model: Model<Document> | null = getModelByName('tasks', 'task');
     if (!model) return null;
 

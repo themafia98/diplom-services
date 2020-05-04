@@ -40,7 +40,7 @@ const userSchema: Schema<User> = new Schema(
 
 userSchema
   .virtual('password')
-  .set(async function (password: string): Promise<void> {
+  .set(async function (this: User, password: string): Promise<void> {
     this._plainPassword = password;
     if (password) {
       this.passwordHash = bcrypt.hashSync(password, 10);
@@ -49,14 +49,14 @@ userSchema
       this.passwordHash = undefined;
     }
   })
-  .get(function () {
+  .get(function (this: User) {
     return this._plainPassword;
   });
 
 userSchema.methods.checkPassword = async function (password: string): Promise<boolean> {
   if (!password) return false;
 
-  return await bcrypt.compare(password, this.passwordHash);
+  return await bcrypt.compare(password, <string>this.passwordHash);
 };
 
 userSchema.methods.changePassword = async function (password: string): Promise<string | null> {
@@ -72,7 +72,7 @@ userSchema.methods.changePassword = async function (password: string): Promise<s
   }
 };
 
-userSchema.methods.generateJWT = function (): any {
+userSchema.methods.generateJWT = function (this: User): any {
   const today = new Date();
   const expirationDate = new Date(<Date>today);
   expirationDate.setDate(today.getDate() + 30);
@@ -87,12 +87,12 @@ userSchema.methods.generateJWT = function (): any {
   );
 };
 
-userSchema.methods.toAuthJSON = function () {
+userSchema.methods.toAuthJSON = function (this: User) {
   return {
     _id: this._id,
     email: this.email,
     summary: this.summary,
-    position: this.posotion,
+    position: this.position,
     displayName: this.displayName,
     departament: this.departament,
     isOnline: this.isOnline,

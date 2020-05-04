@@ -22,7 +22,7 @@ export type limiter = number | null | undefined;
 export type ListFolderResult = files.ListFolderResult | null;
 export type FileMetadata = files.FileMetadata | null;
 export type DeleteFile = files.DeleteResult;
-export type Entity = Document | null;
+export type Entity = Document | null | string | number;
 export type BuilderResponse = Promise<DocumentQuery<any, Document> | object | null>;
 export type ResRequest = Promise<Response | void>;
 export type Decorator = <Function extends ClassDecorator>(target: object, propKey?: string) => void;
@@ -31,7 +31,7 @@ export type docResponse = string | number | object | null | Array<any>;
 export type ActionData = Promise<Array<Document>> | null | Document | Promise<Document>;
 export type DocCompared = Document | Document[];
 export type FileEdit = FileMetadata | DeleteFile | ListFolderResult | BinaryLike;
-export type ParserData = Promise<DocCompared | FileEdit | number | null | object | Blob | string>;
+export type ParserData = DocCompared | FileEdit | number | null | object | Blob | string | User;
 export type ParserResult = DocCompared | FileEdit | null | object | number | string;
 export type OptionsUpdate = Record<string, boolean | null>;
 export type Meta = object | Array<any> | number | string | null;
@@ -77,6 +77,7 @@ export type SchemaEntity =
   | Logger
   | Notification
   | WikiTree
+  | string
   | WikiPage;
 
 export type actionGet = {

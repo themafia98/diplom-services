@@ -13,7 +13,7 @@ class ActionNews implements Action {
     return this.entity;
   }
 
-  private getNews(actionParam: ActionParams, model: Model<Document>): ParserData {
+  private getNews(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const { queryParams, limitList = null } = actionParam || {};
     const { keys = [] } = <Record<string, string[]>>queryParams || {};
     const params: ActionParams =
@@ -29,12 +29,12 @@ class ActionNews implements Action {
     return this.getEntity().getAll(model, _.isEmpty(params) ? params : query, <number | null>limitList);
   }
 
-  private createNews(actionParam: ActionParams, model: Model<Document>): ParserData {
+  private createNews(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const body: object = <Record<string, any>>actionParam || {};
     return this.getEntity().createEntity(model, body);
   }
 
-  public async run(actionParam: ActionParams): ParserData {
+  public async run(actionParam: ActionParams): Promise<ParserData> {
     const model: Model<Document> | null = getModelByName('news', 'news');
     if (!model) return null;
 

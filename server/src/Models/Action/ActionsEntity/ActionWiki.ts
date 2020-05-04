@@ -13,11 +13,11 @@ class ActionWiki implements Action {
     return this.entity;
   }
 
-  private async getTreeList(actionParam: ActionParams, model: Model<Document>): ParserData {
+  private async getTreeList(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     return this.getEntity().getAll(model, actionParam);
   }
 
-  private async createLeaf(actionParam: ActionParams, model: Model<Document>): ParserData {
+  private async createLeaf(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const { item = null } = <Record<string, object>>actionParam || {};
 
     if (!item || (item && _.isEmpty(item))) return null;
@@ -25,7 +25,7 @@ class ActionWiki implements Action {
     return this.getEntity().createEntity(model, item);
   }
 
-  private async deleteLeafs(actionParam: ActionParams, model: Model<Document>): ParserData {
+  private async deleteLeafs(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const { queryParams = null } = <Record<string, Array<string>>>actionParam || {};
 
     if (!queryParams || (queryParams && _.isEmpty(queryParams))) return null;
@@ -40,12 +40,12 @@ class ActionWiki implements Action {
     return this.getEntity().deleteEntity(model, query);
   }
 
-  private async getWikiPage(actionParam: ActionParams, model: Model<Document>): ParserData {
+  private async getWikiPage(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const { methodQuery = {} } = actionParam as Record<string, ActionParams>;
     return await this.getEntity().findOnce(model, methodQuery);
   }
 
-  private async update(actionParam: ActionParams, model: Model<Document>): ParserData {
+  private async update(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     try {
       const { queryParams = {}, updateItem: updateProps = {} } = actionParam as Record<string, object>;
       const { pageId: _id } = queryParams as Record<string, string>;
@@ -60,7 +60,7 @@ class ActionWiki implements Action {
       const query: ActionParams = { _id: Types.ObjectId(_id), updateProps };
 
       await this.getEntity().updateEntity(model, query);
-      const actionData: Document = await this.getEntity().findOnce(model, queryFind);
+      const actionData: ParserData = await this.getEntity().findOnce(model, queryFind);
 
       return actionData;
     } catch (err) {
@@ -69,7 +69,7 @@ class ActionWiki implements Action {
     }
   }
 
-  public async run(actionParam: ActionParams): ParserData {
+  public async run(actionParam: ActionParams): Promise<ParserData> {
     const { type = 'wikiTree' } = <Record<string, string>>actionParam;
     const model: Model<Document> | null = getModelByName(type, type);
     if (!model) return null;

@@ -13,7 +13,7 @@ class ActionChatRoom implements Action {
     return this.entity;
   }
 
-  private async getEntrypointData(actionParam: ActionParams, model: Model<Document>): ParserData {
+  private async getEntrypointData(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const { uid = '', socket = {} } = (actionParam as Record<string, string | object>) || {};
 
     const { socketConnection = false, module: moduleName = '' } = socket as Record<string, boolean | string>;
@@ -24,7 +24,7 @@ class ActionChatRoom implements Action {
     return null;
   }
 
-  private getUpdateRooms(actionParam: ActionParams, model: Model<Document>): ParserData {
+  private getUpdateRooms(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const { queryParams: { tokenRoom = '', moduleName = '' } = {} } = <Record<string, any>>actionParam || {};
 
     const query: ActionParams = { tokenRoom, moduleName };
@@ -32,7 +32,7 @@ class ActionChatRoom implements Action {
     return this.getEntity().getAll(model, query);
   }
 
-  private async createRoom(actionParam: ActionParams, model: Model<Document>): ParserData {
+  private async createRoom(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     if (!actionParam) return null;
 
     const mode: string = actionParam.type && actionParam.type === 'single' ? 'equalSingle' : 'equal';
@@ -47,17 +47,17 @@ class ActionChatRoom implements Action {
     });
   }
 
-  private async leaveRoom(actionParam: ActionParams, model: Model<Document>): ParserData {
+  private async leaveRoom(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const uid: string = (actionParam as Record<string, string>).uid;
     const roomToken: string = (actionParam as Record<string, string>).roomToken;
     const updateField: string = (actionParam as Record<string, string>).updateField;
 
     const query = { findBy: roomToken, uid, updateField };
-    const actionData: Record<string, any> | null = await this.getEntity().deleteEntity(model, query);
+    const actionData: ParserData = await this.getEntity().deleteEntity(model, query);
     return <Document | null>actionData;
   }
 
-  private async roomGenerator(actionParam: ActionParams, model: Model<Document>): ParserData {
+  private async roomGenerator(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const modelMsg: Model<Document> | null = getModelByName('chatMsg', 'chatMsg');
     const msg: Record<string, any> = (actionParam as Record<string, any>).fakeMsg || {};
     const interlocutorId: string = (actionParam as Record<string, string>).interlocutorId;
@@ -76,7 +76,7 @@ class ActionChatRoom implements Action {
       groupName: msg.groupName ? msg.groupName : null,
     };
 
-    const actionData: Document | null = await this.getEntity().createEntity(model, room);
+    const actionData: ParserData = await this.getEntity().createEntity(model, room);
 
     if (!actionData) return null;
 
@@ -87,7 +87,7 @@ class ActionChatRoom implements Action {
     return actionData;
   }
 
-  public async run(actionParam: ActionParams): ParserData {
+  public async run(actionParam: ActionParams): Promise<ParserData> {
     const model: Model<Document> | null = getModelByName('chatRoom', 'chatRoom');
     if (!model) return null;
 
