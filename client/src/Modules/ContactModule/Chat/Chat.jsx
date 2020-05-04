@@ -30,6 +30,9 @@ class Chat extends React.PureComponent {
   };
 
   static contextType = modelsContext;
+  static defaultProps = {
+    type: 'modal',
+  };
 
   socket = null;
   updaterChats = null;
@@ -362,6 +365,7 @@ class Chat extends React.PureComponent {
       udata: { _id: uid = '', avatar: myAvatar = null } = {},
       socketConnection,
       socketErrorStatus,
+      type,
     } = this.props;
 
     const isDev = process.env.NODE_ENV === 'development';
@@ -370,11 +374,14 @@ class Chat extends React.PureComponent {
 
     return (
       <div className="chat">
-        <TitleModule classNameTitle="ContactModule__chatTitle" title="Корпоративный чат" />
+        {type !== 'modal' ? (
+          <TitleModule classNameTitle="ContactModule__chatTitle" title="Корпоративный чат" />
+        ) : null}
         {this.renderModal(visible)}
         <div className="chat__main">
           <ChatMenu
             uid={uid}
+            type={type}
             socketConnection={socketConnection}
             socketErrorStatus={socketErrorStatus}
             listdata={listdata}

@@ -123,7 +123,6 @@ class Request {
    * @param {function} callback function
    */
   async test(callback = null) {
-    console.clear();
     try {
       const response = await new Promise((resolve, reject) => {
         const testRequst = new XMLHttpRequest();
@@ -131,6 +130,7 @@ class Request {
         testRequst.open('GET', api);
         testRequst.onload = function () {
           if (this.status === 200 || this.status === 204) {
+            console.clear();
             resolve('online');
           } else {
             reject('offline');

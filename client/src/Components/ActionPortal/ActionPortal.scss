@@ -3,3 +3,37 @@
   right: 10px;
   bottom: 10px;
 }
+
+.action-root {
+  .chat {
+    position: fixed;
+    right: 11px;
+    bottom: 45px;
+    z-index: 999;
+    background: black;
+    .chat__main {
+      width: 40vw;
+      .col-chat-menu {
+        flex: unset;
+        .menuLoading-skeleton {
+          width: 100%;
+          &:first-child {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+          }
+        }
+      }
+      .col-chat-content {
+        width: 100%;
+        flex: unset;
+        .chat-content {
+          .chat_content__header {
+            background-color: rgb(46, 150, 247);
+          }
+        }
+      }
+    }
+  }
+}

@@ -33,6 +33,9 @@
     "includeRulesSettings": true,
     "includeChangeProfile": true
   },
+  "actionRoot": {
+    "visibilityActionRoot": false
+  },
   "menu": [
     {
       "EUID": "mainModule",

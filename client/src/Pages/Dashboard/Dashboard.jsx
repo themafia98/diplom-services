@@ -18,6 +18,7 @@ import { loadCurrentData } from '../../Redux/actions/routerActions/middleware';
 import { errorRequestAction, clearCache, setStatus, showGuile } from '../../Redux/actions/publicActions';
 import { routeParser } from '../../Utils';
 
+import Chat from '../../Modules/ContactModule/Chat';
 import ActionPortal from '../../Components/ActionPortal';
 import Loader from '../../Components/Loader';
 import HeaderView from '../../Components/HeaderView';
@@ -358,7 +359,7 @@ class Dashboard extends React.PureComponent {
             ) : null}
           </Layout>
         </Layout>
-        <ActionPortal name="Чат" />
+        <ActionPortal renderComponent={<Chat type="modal" visible={true} />} name="Чат" />
       </div>
     );
   }
