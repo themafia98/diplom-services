@@ -1,6 +1,7 @@
 // @ts-nocheck
 import React from 'react';
 import _ from 'lodash';
+import clsx from 'clsx';
 import { statisticsModuleType } from './types';
 import moment from 'moment';
 import { connect } from 'react-redux';
@@ -16,6 +17,7 @@ class StatisticsModule extends React.PureComponent {
   state = {
     dateConfig: [2, 'weeks'],
     statsListFields: ['Открыт', 'Выполнен', 'Закрыт', 'В работе'],
+    textContent: ''
   };
   static propTypes = statisticsModuleType;
   static contextType = modelContext;
@@ -44,7 +46,7 @@ class StatisticsModule extends React.PureComponent {
     if (_.isArray(dateConfig) && shouldReload) this.fetchStatistics();
   };
 
-  fetchStatistics = () => {
+  fetchStatistics = (shouldSetLoading = false) => {
     const {
       onLoadCurrentData,
       path,
@@ -66,11 +68,13 @@ class StatisticsModule extends React.PureComponent {
       methodQuery: 'get_stats',
       noCorsClient: true,
       useStore: true,
+      shouldSetLoading,
       options: {
         queryParams: {
           statsListFields,
           ...limits
         },
+        queryType: dateConfig[0],
         todayISO: dateConfig[0] === 'full'
           ? moment().toISOString()
           : moment().subtract(...dateConfig).toISOString(),
@@ -78,15 +82,18 @@ class StatisticsModule extends React.PureComponent {
     });
   }
 
-  onChangeBar = (dateConfig = []) => {
+  onChangeBar = ({ currentTarget: { textContent = '' } }, dateConfig = []) => {
     this.setState({
-      dateConfig
+      dateConfig,
+      textContent
     }, () => {
-      this.fetchStatistics();
+      this.fetchStatistics(true);
     })
   };
 
-  getToolbarBody = () => {
+  getToolbarBody = (loading = false) => {
+    const { dateConfig = [] } = this.state;
+
     return (
       <div className='toolbarBody'>
         <div className='controllers'>
@@ -94,35 +101,45 @@ class StatisticsModule extends React.PureComponent {
           <ul className='toolbar-actions-list'>
             <li className='toolbar-action-item'>
               <Button
-                onClick={() => this.onChangeBar([1, 'day'])}
+                loading={loading && dateConfig[1] === 'day'}
+                className={clsx(dateConfig[1] === 'day' ? 'active' : null)}
+                onClick={(evt) => this.onChangeBar(evt, [1, 'day'])}
               >
                 Статистика за день
               </Button>
             </li>
             <li className='toolbar-action-item'>
               <Button
-                onClick={() => this.onChangeBar([2, 'weeks'])}
+                loading={loading && dateConfig[1] === 'weeks'}
+                className={clsx(dateConfig[1] === 'weeks' ? 'active' : null)}
+                onClick={(evt) => this.onChangeBar(evt, [2, 'weeks'])}
               >
                 Статистика за 2 недели
               </Button>
             </li>
             <li className='toolbar-action-item'>
               <Button
-                onClick={() => this.onChangeBar([1, 'month'])}
+                loading={loading && dateConfig[1] === 'month'}
+                className={clsx(dateConfig[1] === 'month' ? 'active' : null)}
+                onClick={(evt) => this.onChangeBar(evt, [1, 'month'])}
               >
                 Статистика за 1 месяц
               </Button>
             </li>
             <li className='toolbar-action-item'>
               <Button
-                onClick={() => this.onChangeBar([1, 'year'])}
+                loading={loading && dateConfig[1] === 'year'}
+                className={clsx(dateConfig[1] === 'year' ? 'active' : null)}
+                onClick={(evt) => this.onChangeBar(evt, [1, 'year'])}
               >
                 Статистика за 1 год
               </Button>
             </li>
             <li className='toolbar-action-item'>
               <Button
-                onClick={() => this.onChangeBar(['full'])}>
+                loading={loading && dateConfig[0] === 'full'}
+                className={clsx(dateConfig[0] === 'full' ? 'active' : null)}
+                onClick={(evt) => this.onChangeBar(evt, ['full'])}>
                 Статистика за все время
               </Button>
             </li>
@@ -133,8 +150,9 @@ class StatisticsModule extends React.PureComponent {
   }
 
   render() {
-    const { path = '' } = this.props;
+    const { textContent = '' } = this.state;
     const {
+      path = '',
       router: {
         routeData: {
           [path]: currentModule = {}
@@ -142,10 +160,9 @@ class StatisticsModule extends React.PureComponent {
         shouldUpdate = false
       } = {}
     } = this.props;
-
     const { statistic = [], loading = false } = currentModule || {};
     const { bar: barData = {} } = statistic[0] || {};
-    const toolbarBody = this.getToolbarBody();
+    const toolbarBody = this.getToolbarBody(loading);
 
     return (
       <div className="statisticsModule">
@@ -154,6 +171,7 @@ class StatisticsModule extends React.PureComponent {
           <div className="col-6">{(
             <Bar
               data={barData}
+              textContent={textContent}
               loading={loading || shouldUpdate}
               subDataList={Object.keys(barData)}
             />)}

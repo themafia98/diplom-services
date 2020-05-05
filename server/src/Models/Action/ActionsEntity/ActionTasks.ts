@@ -149,9 +149,14 @@ class ActionTasks implements Action {
 
   private async getStats(model: Model<Document>, actionParam: ActionParams): Promise<ParserData> {
     const { queryParams = {} } = actionParam as Record<string, object>;
-    const { type = '', todayISO } = actionParam as Record<string, string>;
+    const { type = '', todayISO = '', limitList = '', queryType = '' } = actionParam as Record<string, string>;
     const { statsListFields = [] } = (queryParams as Record<string, Array<string>>) || {};
-    const dateQuery: object = todayISO ? { createdAt: { $gte: new Date(todayISO) } } : {};
+    const dateQuery: object = todayISO && queryType !== 'full'
+      ? { createdAt: { $gte: new Date(todayISO) } }
+      : queryType === 'full' && todayISO && limitList
+      ? { createdAt: { $lte: new Date(todayISO) } }
+      : {};
+
     if (!statsListFields || (statsListFields && !statsListFields.length)) {
       return null;
     }
@@ -159,18 +164,18 @@ class ActionTasks implements Action {
     const metadata: Record<string, number | object> = {};
     if (type) metadata[type] = {};
 
-    for await (let filed of statsListFields) {
+    for await (let field of statsListFields) {
       const dataField: number = await this.getEntity().getCounter(model, {
         ...dateQuery,
-        status: filed
-      });
+        status: field
+      }, limitList ? { limit: limitList } : undefined);
 
       if (!dataField) continue;
 
       if (type && metadata[type]) {
         const alias = metadata[type] as Record<string, number>;
-        alias[filed] = dataField;
-      } else metadata[filed] = dataField;
+        alias[field] = dataField;
+      } else metadata[field] = dataField;
     }
 
     return <ParserData>metadata;

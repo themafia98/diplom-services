@@ -22,8 +22,8 @@ namespace Action {
       super(props);
     }
 
-    public async getCounter(model: Model<Document>, query: FilterQuery<any>): Promise<number> {
-      return await model.collection.countDocuments(query);
+    public async getCounter(model: Model<Document>, query: FilterQuery<any>, options: object): Promise<number> {
+      return await model.collection.countDocuments(query, options);
     }
 
     public async getAll(
@@ -196,7 +196,7 @@ namespace Action {
 
     public async getActionData(this: Actions, actionParam: ActionParams = {}): Promise<ParserData> {
       try {
-        console.log(`Run action. actionType: ${this.getActionType()}, 
+        console.log(`Run action. actionType: ${this.getActionType()},
                             actionPath: ${this.getActionPath()}`);
 
         switch (this.getActionPath()) {

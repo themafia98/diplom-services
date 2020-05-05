@@ -301,7 +301,7 @@ export interface Action {
 }
 
 export interface Actions extends EntityActionApi {
-  getCounter(model: Model<Document>, query: FilterQuery<any>): Promise<number>;
+  getCounter(model: Model<Document>, query: FilterQuery<any>, options?: object): Promise<number>;
   getAll(
     model: Model<Document>,
     actionParam: ActionParams,

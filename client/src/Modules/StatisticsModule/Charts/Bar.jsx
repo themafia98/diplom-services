@@ -6,7 +6,16 @@ import { Spin } from 'antd';
 import { ResponsiveBar } from '@nivo/bar';
 
 const Bar = (props) => {
-  const { data, subDataList, schemeBarProps, legendName, anchor, customLegendEffects, loading } = props;
+  const {
+    data,
+    subDataList,
+    textContent,
+    schemeBarProps,
+    legendName,
+    anchor,
+    customLegendEffects,
+    loading
+  } = props;
 
   const [source, setSource] = useState([]);
 
@@ -81,11 +90,17 @@ const Bar = (props) => {
       tickSize: 5,
       tickPadding: 5,
       tickRotation: 0,
-      legend: legendName ? legendName : 'Статистика выполненных задач',
+      legend: legendName && textContent
+          ? `${legendName} ( ${textContent} )`
+          : legendName
+          ? legendName
+          : textContent
+            ? `Статистика выполненных задач ( ${textContent} )`
+          : 'Статистика выполненных задач',
       legendPosition: 'middle',
       legendOffset: 32,
     };
-  }, [legendName]);
+  }, [legendName, textContent]);
 
   const axisLeft = useMemo(() => {
     return {
@@ -178,6 +193,7 @@ Bar.defaultProps = {
   legendName: '',
   anchor: '',
   customLegendEffects: null,
+  textContent: '',
   loading: false
 };
 export default Bar;

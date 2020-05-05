@@ -15,6 +15,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
     noCorsClient = false,
     sortBy = '',
     options = {},
+    shouldSetLoading = false,
     indStoreName = '',
   } = params;
 
@@ -28,6 +29,8 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
 
   if (isExist && !router.routeData[pathValid].load) {
     dispatch(loadFlagAction({ path: pathValid, load: true, loading: true }));
+  } else if (pathValid && shouldSetLoading){
+    dispatch(loadFlagAction({ path: pathValid, loading: true }));
   }
 
   switch (status) {
@@ -67,7 +70,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
           indStoreName,
         };
 
-        coreUpdaterDataHook(dispatch, dep);
+        await coreUpdaterDataHook(dispatch, dep);
       } catch (error) {
         const dep = {
           Request,
@@ -100,7 +103,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
             indStoreName,
           };
 
-          coreUpdaterDataHook(dispatch, dep);
+          await coreUpdaterDataHook(dispatch, dep);
           return;
         }
         errorHook(error, dispatch, dep);
