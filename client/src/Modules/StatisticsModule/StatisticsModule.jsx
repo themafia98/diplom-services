@@ -2,7 +2,6 @@
 import React from 'react';
 import { statisticsModuleType } from './types';
 import { connect } from 'react-redux';
-import data from './data.json';
 import { loadCurrentData } from '../../Redux/actions/routerActions/middleware';
 import Bar from './Charts/Bar';
 import TitleModule from '../../Components/TitleModule';
@@ -45,11 +44,14 @@ class StatisticsModule extends React.PureComponent {
       onLoadCurrentData,
       visible,
       path,
-      router: { shouldUpdate = false, routeData = {} },
+      router: { routeData = {} },
     } = this.props;
-    const { statsListFields = [] } = this.state;
+    if (!path || (path && !path.includes('statistic'))) return;
 
-    if (shouldUpdate && visible && routeData[path]?.load) {
+    const { statsListFields = [] } = this.state;
+    const { [path]: currentModule = null } = routeData || {};
+
+    if (currentModule && !currentModule?.loading && visible && !currentModule?.load) {
       onLoadCurrentData({
         path,
         storeLoad: 'statistic',
@@ -71,15 +73,13 @@ class StatisticsModule extends React.PureComponent {
     const { router: { routeData: { [path]: currentModule = {} } = {} } = {} } = this.props;
 
     const { statistic = [] } = currentModule || {};
+    const { bar: barData = {} } = statistic[0] || {};
 
     return (
       <div className="statisticsModule">
         <TitleModule classNameTitle="statisticsModuleTitle" title="Статистика" />
         <div className="statisticsModule__main">
-          <div className="col-6">
-            {JSON.stringify(statistic)}
-            {/* <Bar isPartData={isPartData} data={tasks} dateList={data.date} /> */}
-          </div>
+          <div className="col-6">{<Bar data={barData} subDataList={Object.keys(barData)} />}</div>
         </div>
       </div>
     );

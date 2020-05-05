@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-const { func, bool, object, string, arrayOf, objectOf } = PropTypes;
+const { func, bool, object, string, arrayOf, objectOf, array, number, oneOfType } = PropTypes;
 
 export const statisticsModuleType = {
   visible: bool.isRequired,
@@ -12,7 +12,10 @@ export const statisticsModuleType = {
 };
 
 export const barType = {
-  isPartData: bool.isRequired,
-  data: arrayOf(object.isRequired).isRequired,
-  dateList: arrayOf(string.isRequired).isRequired,
+  subDataList: arrayOf(string.isRequired).isRequired,
+  customLegendEffects: arrayOf(object.isRequired),
+  data: objectOf(oneOfType([array, string, number])).isRequired,
+  schemeBarProps: object,
+  legendName: string,
+  anchor: string,
 };
