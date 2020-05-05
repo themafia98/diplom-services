@@ -147,12 +147,35 @@ class ActionTasks implements Action {
     return !filter['$or'].length ? { $or: [{}] } : filter;
   }
 
+  private async getStats(model: Model<Document>, actionParam: ActionParams): Promise<ParserData> {
+    const { queryParams = {} } = actionParam as Record<string, object>;
+    const { type = '' } = actionParam as Record<string, string>;
+    const { statsListFields = [] } = (queryParams as Record<string, Array<string>>) || {};
+
+    if (!statsListFields || (statsListFields && !statsListFields.length)) {
+      return null;
+    }
+
+    const metadata: Record<string, number | object> = {};
+    if (type) metadata[type] = {};
+
+    for await (let filed of statsListFields) {
+      const dataField: number = await this.getEntity().getCounter(model, { status: filed });
+      if (type && metadata[type]) {
+        const alias = metadata[type] as Record<string, number>;
+        alias[filed] = dataField;
+      } else metadata[filed] = dataField;
+    }
+
+    return <ParserData>metadata;
+  }
+
   public async run(actionParam: ActionParams): Promise<ParserData> {
     const model: Model<Document> | null = getModelByName('tasks', 'task');
     if (!model) return null;
 
     const typeAction: string = this.getEntity().getActionType();
-    console.log('action task:', actionParam);
+
     switch (typeAction) {
       case 'get_all':
         return this.getTasks(actionParam, model);
@@ -160,6 +183,8 @@ class ActionTasks implements Action {
         return this.createSingleTask(actionParam, model);
       case 'list_counter':
         return await this.getTaskCount(model, actionParam);
+      case 'get_stats':
+        return await this.getStats(model, actionParam);
       default: {
         if (typeAction.includes('update_')) return this.update(actionParam, model, typeAction);
         return null;

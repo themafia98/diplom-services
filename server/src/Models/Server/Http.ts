@@ -14,6 +14,7 @@ import { Request, Mail } from '../../Utils/Interfaces';
 import RestEntitiy from './RestEntity';
 import Utils from '../../Utils';
 
+import Statistic from '../../Controllers/Statistic';
 import System from '../../Controllers/Main';
 import Cabinet from '../../Controllers/Cabinet';
 import Settings from '../../Controllers/Settings';
@@ -192,6 +193,7 @@ namespace Http {
       const SettingsAlias: Readonly<Function> = Settings.SettingsController;
       const WikiAlias: Readonly<Function> = Wiki.WikiController;
       const CabinetAlias: Readonly<Function> = Cabinet.CabinetController;
+      const StatisticAlias: Readonly<Function> = Statistic.StatisticController;
 
       this.setApp(express());
       this.getApp().disabled('x-powerd-by');
@@ -276,6 +278,7 @@ namespace Http {
           <FunctionConstructor>ChatAlias,
           <FunctionConstructor>SettingsAlias,
           <FunctionConstructor>CabinetAlias,
+          <FunctionConstructor>StatisticAlias,
         ],
         this.getApp.bind(this),
         this.getRest.bind(this),

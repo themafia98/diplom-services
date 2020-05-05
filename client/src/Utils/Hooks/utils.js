@@ -44,7 +44,7 @@ const runNoCorsAction = (dispatch, dep, multiple) => {
 
   if (shouldUpdateState && !multiple) {
     dispatch(saveComponentStateAction({ ...data, params }));
-    return [false, null];
+    return [true, null];
   }
 
   return [true, data];
