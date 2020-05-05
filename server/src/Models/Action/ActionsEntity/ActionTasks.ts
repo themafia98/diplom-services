@@ -149,9 +149,9 @@ class ActionTasks implements Action {
 
   private async getStats(model: Model<Document>, actionParam: ActionParams): Promise<ParserData> {
     const { queryParams = {} } = actionParam as Record<string, object>;
-    const { type = '' } = actionParam as Record<string, string>;
+    const { type = '', todayISO } = actionParam as Record<string, string>;
     const { statsListFields = [] } = (queryParams as Record<string, Array<string>>) || {};
-
+    const dateQuery: object = todayISO ? { createdAt: { $gte: new Date(todayISO) } } : {};
     if (!statsListFields || (statsListFields && !statsListFields.length)) {
       return null;
     }
@@ -160,7 +160,13 @@ class ActionTasks implements Action {
     if (type) metadata[type] = {};
 
     for await (let filed of statsListFields) {
-      const dataField: number = await this.getEntity().getCounter(model, { status: filed });
+      const dataField: number = await this.getEntity().getCounter(model, {
+        ...dateQuery,
+        status: filed
+      });
+
+      if (!dataField) continue;
+
       if (type && metadata[type]) {
         const alias = metadata[type] as Record<string, number>;
         alias[filed] = dataField;

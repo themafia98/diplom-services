@@ -25,7 +25,7 @@
     "limitList": 20,
     "tableSize": "default"
   },
-  "statist": {
+  "statistics": {
     "limitListTasks": 200
   },
   "settings": {

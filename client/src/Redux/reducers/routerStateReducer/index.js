@@ -122,7 +122,7 @@ export default (state = initialState, action) => {
         stateList = null,
         params: paramsAction = {},
         loading,
-        shoudParseToUniq = false,
+        shouldParseToUniq = false,
         path: pathAction = '',
         isPartData = false,
         shouldUpdate = false,
@@ -149,7 +149,7 @@ export default (state = initialState, action) => {
             const currentItems = actionItem[storeName];
             const prevItems = state.routeData[path][storeName];
 
-            items = shoudParseToUniq ? validationItems(currentItems, prevItems) : currentItems;
+            items = shouldParseToUniq ? validationItems(currentItems, prevItems) : currentItems;
           }
           const isEmptyParams = JSON.stringify(paramsAction) === '{}' && state.routeData[path];
           const params = isEmptyParams ? state.routeData[path]?.params : paramsAction;
@@ -202,7 +202,7 @@ export default (state = initialState, action) => {
         const currenItems = copyRouteData[path][storeName];
         const prevItems = state.routeData[path][storeName];
 
-        const items = shoudParseToUniq
+        const items = shouldParseToUniq
           ? validationItems(currenItems, prevItems)
           : copyRouteData[path][storeName];
 
@@ -331,6 +331,8 @@ export default (state = initialState, action) => {
       } else if (action.payload.includes('settings')) {
         shouldUpdate = true;
       } else if (action.payload.includes('customersModule_contacts')) {
+        shouldUpdate = true;
+      } else if (state.routeData['statisticModule']){
         shouldUpdate = true;
       }
 

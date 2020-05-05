@@ -6,7 +6,7 @@ import { Spin } from 'antd';
 import { ResponsiveBar } from '@nivo/bar';
 
 const Bar = (props) => {
-  const { data, subDataList, schemeBarProps, legendName, anchor, customLegendEffects } = props;
+  const { data, subDataList, schemeBarProps, legendName, anchor, customLegendEffects, loading } = props;
 
   const [source, setSource] = useState([]);
 
@@ -135,7 +135,12 @@ const Bar = (props) => {
     ];
   }, [anchor, customLegendEffects]);
 
-  if (!data || !subDataList?.length) return <Spin size="large" />;
+  if (loading && (!data || !subDataList?.length)) return <Spin size="large" />;
+
+
+  if (!loading && !source?.length) return (
+    <div className='empty-bar'>Нету данных для построения графика выполненных задач</div>
+  )
 
   return (
     <div className="barWrapper">
@@ -173,5 +178,6 @@ Bar.defaultProps = {
   legendName: '',
   anchor: '',
   customLegendEffects: null,
+  loading: false
 };
 export default Bar;
