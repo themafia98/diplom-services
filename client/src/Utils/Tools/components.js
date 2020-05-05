@@ -42,7 +42,7 @@ const components = {
 
 function getComponentByKey(key) {
   try {
-    if (!key) throw new TypeError('key should be string');
+    if (!key || typeof key !== 'string') throw new TypeError('key should be string');
     return components[key];
   } catch (error) {
     console.error(error);
