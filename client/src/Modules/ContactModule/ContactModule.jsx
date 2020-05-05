@@ -100,7 +100,7 @@ class ContactModule extends React.PureComponent {
       onChangeVisibleAction = null,
     } = this.props;
     const isBackgroundChat = getBackground('contactModule_chat');
-    const isBackgrounNews = getBackground('contactModule_feedback');
+    const isBackgroundNews = getBackground('contactModule_feedback');
     const isBackgroundInfoPage = getBackground('contactModule_informationPage');
     const isBackgroundCreateNews = getBackground('contactModule_createNews');
 
@@ -133,12 +133,12 @@ class ContactModule extends React.PureComponent {
             visible={visibilityPortal || path === 'contactModule_chat'}
           />
         </TabContainer>
-        <TabContainer isBackground={isBackgrounNews} visible={path === 'contactModule_feedback'}>
+        <TabContainer isBackground={isBackgroundNews} visible={path === 'contactModule_feedback'}>
           <News
             data={data}
             isLoading={!load && !news.length}
             key="newsModule"
-            isBackground={isBackgrounNews}
+            isBackground={isBackgroundNews}
             path={path}
             visible={path === 'contactModule_feedback'}
           />

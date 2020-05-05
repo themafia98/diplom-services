@@ -6,7 +6,6 @@ import { Layout } from 'antd';
 
 import TabContainer from '../TabContainer';
 import DrawerViewer from '../DrawerViewer';
-
 import MainModule from '../../Modules/MainModule';
 import CabinetModule from '../../Modules/CabinetModule';
 import TaskModule from '../../Modules/TaskModule';

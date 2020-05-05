@@ -104,6 +104,7 @@ class TaskModule extends React.PureComponent {
     const { loading = false } = routeData[path] || {};
 
     const isCloseAction = !isUnloadModule && !shouldUpdateList && shouldUpdate && !loading;
+    debugger;
     if (!isListCounterLoading && isTaskModule && (isUnloadModule || shouldUpdateList || isCloseAction)) {
       const { saveData: saveDataState = null } = routeData[path] || {};
       const saveData = saveDataState
@@ -335,7 +336,7 @@ class TaskModule extends React.PureComponent {
             visible={path === 'taskModule_createTask'}
           >
             <CreateTask
-              key="createTask_module"
+              key="createTaskModule"
               rest={rest}
               isBackground={isBackgroundTaskModuleCreateTask}
               visible={path === 'taskModule_createTask'}
@@ -355,7 +356,7 @@ class TaskModule extends React.PureComponent {
             visible={isViewTask}
           >
             <TaskView
-              key="taskView"
+              key="taskViewModule"
               uuid={key}
               rest={rest}
               isBackground={isBackgroundTaskViewModule}
