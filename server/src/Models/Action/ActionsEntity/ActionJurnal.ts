@@ -5,7 +5,7 @@ import Utils from '../../../Utils';
 import _ from 'lodash';
 const { getModelByName } = Utils;
 
-class ActionJurnal implements Action {
+class ActionJournal implements Action {
   constructor(private entity: Actions) {}
 
   public getEntity(): Actions {
@@ -19,7 +19,7 @@ class ActionJurnal implements Action {
     return actionData;
   }
 
-  private async setJurnal(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
+  private async setJournal(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     try {
       const { item = {} } = actionParam;
       const actionData: ParserData = await this.getEntity().createEntity(model, <object>item);
@@ -41,11 +41,11 @@ class ActionJurnal implements Action {
         // set for synchronize with client key
         return this.getJurnal(actionParam, model);
       case 'set_jurnal':
-        return this.setJurnal(actionParam, model);
+        return this.setJournal(actionParam, model);
       default:
         return null;
     }
   }
 }
 
-export default ActionJurnal;
+export default ActionJournal;

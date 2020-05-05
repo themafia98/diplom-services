@@ -1,17 +1,32 @@
 .taskView {
   display: flex;
 
-  .jurnalItem {
+  .journalItem {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 5px;
+    margin: 5px 30px;
     border: 0.5px solid blue;
-    background-color: #c7e1f7;
+    background-color: $journalColorBg;
     border-radius: 6px;
-    margin: 5px;
+
+    .editor {
+
+      color: #7548f8;
+      &:before {
+        content: '';
+      }
+    }
+    .timeLost {
+      margin: 0;
+    }
+      .msg {
+        font-weight: bold;
+      }
+
     .title {
-      font-weight: bold;
+      color: $softTitle;
+      margin: 0;
     }
   }
 

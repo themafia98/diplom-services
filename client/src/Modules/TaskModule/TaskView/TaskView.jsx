@@ -388,39 +388,50 @@ class TaskView extends React.PureComponent {
     });
   };
 
-  showModalWorkJur = () => {
-    this.setState({
-      ...this.state,
-      mode: 'jur',
-      showModalJur: true,
-      modeEditContent: false,
-    });
-  };
+  calcSumWorkTime = (cachesJournalList = []) => {
 
-  calcSumWorkTime = (cachesJurnalList = []) => {
-    return cachesJurnalList
+    return cachesJournalList
       .reduce((startValue, item) => {
         const normalizeValue = item.timeLost.toString().toLowerCase();
-        /** TODO: fix calculate */
+
+        let hour = null;
+        let min = null;
+
         if (normalizeValue.includes('h') || normalizeValue.includes('ч')) {
-          startValue += parseFloat(normalizeValue.split(/[hч]/i)[0]);
-        } else if (normalizeValue.includes('m') || normalizeValue.includes('м')) {
-          startValue += parseFloat(normalizeValue.split(/[mм]/i)[0]) / 60;
+          const arrayStringHour = normalizeValue.match(/(\w+)[h|ч]/gi) || [];
+          hour = !arrayStringHour ? 0 : arrayStringHour.reduce((total, current) => {
+            return total + parseFloat(current);
+          }, 0) || 0;
         }
 
-        return startValue;
+        if (normalizeValue.includes('m') || normalizeValue.includes('м')) {
+          const arrayStringMin = normalizeValue.match(/(\w+)[m|м]/gi) || [];
+          min = !arrayStringMin ? 0 : arrayStringMin.reduce((total, current) => {
+            return total + parseFloat(current);
+          }, 0);
+        }
+
+        const plusValue = !min && hour
+              ? hour
+              : hour && min > 0
+              ? hour + (min / 60)
+              : min > 0 ? min / 60 : 0;
+        if (_.isNumber(plusValue)) return startValue + plusValue;
+        else return startValue;
       }, 0)
       .toFixed(1);
   };
 
-  renderWorkJurnal = (cachesJurnalList = []) => {
-    return _.uniqBy(cachesJurnalList, '_id')
+  renderWorkJournal = (cachesJournalList = []) => {
+    return _.uniqBy(cachesJournalList, '_id')
       .sort((a, b) => moment(b?.date[0]).unix() - moment(a?.date[0]).unix())
       .map((item, index) => {
+
         const date = item && Array.isArray(item.date) ? item.date[0] : 'Invalid date';
 
         return (
-          <div key={`${item?._id}${index}`} className="jurnalItem">
+          <div key={`${item?._id}${index}`} className="journalItem">
+            {item.editor ? <p className='editor'>{item.editor}</p> : null}
             <p className="timeLost">
               <span className="title">Затрачено времени:</span>
               {item?.timeLost ? item.timeLost : item[0] ? item[0]?.timeLost : 'не установлено'}
@@ -432,7 +443,7 @@ class TaskView extends React.PureComponent {
             <p className="comment">
               <span className="title">Коментарии:</span>
             </p>
-            <p>
+            <p className='msg'>
               {item?.description
                 ? item.description
                 : Array.isArray(item) && item[0]?.description
@@ -617,12 +628,13 @@ class TaskView extends React.PureComponent {
       depModuleName: 'mainModule__table',
       cachesAuthorList,
       cachesEditorList,
+      cachesJurnalList,
       filteredUsers,
       router,
       udata,
     };
 
-    const desciptionTaskProps = {
+    const descriptionTaskProps = {
       ...commonProps,
       routeDataActive,
       description,
@@ -662,7 +674,7 @@ class TaskView extends React.PureComponent {
                 {renderDescription()(renderProps)}
               </Descriptions>
               <div className="descriptionTask">
-                <DescriptionTask commentProps={commonProps} {...desciptionTaskProps} />
+                <DescriptionTask commentProps={commonProps} {...descriptionTaskProps} />
               </div>
             </Scrollbars>
           </div>
@@ -672,7 +684,7 @@ class TaskView extends React.PureComponent {
               {!cachesJurnalList?.length ? (
                 <Empty description={<span>Нету данных в журнале</span>} />
               ) : (
-                this.renderWorkJurnal(cachesJurnalList)
+                this.renderWorkJournal(cachesJurnalList)
               )}
             </Scrollbars>
           </div>

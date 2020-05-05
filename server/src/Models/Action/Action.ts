@@ -8,7 +8,7 @@ import { ParserData, limiter, OptionsUpdate, Filter, DeleteEntitiyParams } from 
 import ActionLogger from './ActionsEntity/ActionLogger';
 import ActionNotification from './ActionsEntity/ActionNotification';
 import ActionNews from './ActionsEntity/ActionNews';
-import ActionJurnal from './ActionsEntity/ActionJurnal';
+import ActionJournal from './ActionsEntity/ActionJurnal';
 import ActionUsers from './ActionsEntity/ActionUsers';
 import ActionChatMessage from './ActionsEntity/ActionChatMessage';
 import ActionChatRoom from './ActionsEntity/ActionChatRoom';
@@ -226,7 +226,7 @@ namespace Action {
           }
 
           case 'jurnalworks': {
-            const action: Action = new ActionJurnal(this);
+            const action: Action = new ActionJournal(this);
             return action.run(actionParam);
           }
 

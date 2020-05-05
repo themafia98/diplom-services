@@ -2,7 +2,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { barType } from '../types';
 import { Spin } from 'antd';
-//import moment from 'moment';
 import { ResponsiveBar } from '@nivo/bar';
 
 const Bar = (props) => {

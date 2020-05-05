@@ -29,6 +29,7 @@ const {
   getValidContent,
   getDataSource,
   validationItems,
+  isTimeLostValue,
 } = namespaceParser;
 
 const { createNotification, createEntity, deleteFile, loadFile } = namespaceTools;
@@ -56,4 +57,5 @@ export {
   loadFile,
   getDataSource,
   validationItems,
+  isTimeLostValue
 };

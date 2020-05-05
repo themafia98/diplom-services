@@ -177,6 +177,7 @@ class Schema {
    * @param {Object} data string
    */
   getSchema(type, data) {
+
     if (!_.isObject(data)) return null;
     if (!_.isString(type)) return null;
     if (_.isNull(data)) return null;

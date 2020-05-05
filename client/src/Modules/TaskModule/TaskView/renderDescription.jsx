@@ -36,6 +36,7 @@ function renderDescription(theme = 'default') {
     date,
     key,
   }) => {
+
     return (
       <>
         <Descriptions.Item label="Артикул">

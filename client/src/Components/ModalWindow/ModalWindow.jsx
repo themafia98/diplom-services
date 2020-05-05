@@ -1,13 +1,14 @@
 // @ts-nocheck
 import React from 'react';
 import { modalWindowType } from './types';
+import { v4 as uuid } from 'uuid';
 import clsx from 'clsx';
 import axios from 'axios';
 import _ from 'lodash';
 import moment from 'moment';
 import { Modal, Button, Dropdown, Icon, Menu, Input, DatePicker, message, Select, Spin, Tooltip } from 'antd';
 import { TASK_CONTROLL_JURNAL_SCHEMA } from '../../Models/Schema/const';
-import { createNotification } from '../../Utils';
+import { createNotification, isTimeLostValue } from '../../Utils';
 import SimpleEditableModal from './SimpleEditableModal';
 import RegistrationModal from './RegistrationModal';
 import Textarea from '../Textarea';
@@ -90,6 +91,7 @@ class ModalWindow extends React.PureComponent {
       taskStatus = null,
       description: { value: valueDescription = '' } = {},
     } = this.state;
+
     const {
       mode = null,
       onCaching,
@@ -100,6 +102,7 @@ class ModalWindow extends React.PureComponent {
       keyTask = null,
       onCancelEditModeContent,
       path = '',
+      udata: { displayName = '', _id: uid = '' } = {},
       modeEditContent = null,
     } = this.props;
 
@@ -149,11 +152,10 @@ class ModalWindow extends React.PureComponent {
         .catch((error) => {
           message.error('Ошибка редактирования.');
         });
-    } else if ((visible && mode === 'jur' && this.validation() && !typeValue) || typeValue === 'jur') {
-      const item = { ...jurnal, depKey: keyTask, editor: 'Павел Петрович' };
+    } else if (visible && mode === 'jur' && this.validation()) {
 
-      const jurnalCopy = { ...jurnal };
-      const { udata: { _id: uid, displayName } = {} } = this.props;
+      const item = { ...jurnal, depKey: keyTask, editor: displayName, uid };
+      const journalCopy = { ...jurnal };
 
       if (onCaching) {
         await onCaching({ item, actionType, depStore: 'tasks', store: 'jurnalworks' });
@@ -165,8 +167,8 @@ class ModalWindow extends React.PureComponent {
         isRead: false,
         message: `
                 Работа над задачей ${nameTask}.
-                Время затрачено: ${jurnalCopy?.timeLost}.
-                Описание: ${jurnalCopy.description}. Дата: ${jurnalCopy?.date}`,
+                Время затрачено: ${journalCopy?.timeLost}.
+                Описание: ${journalCopy.description}. Дата: ${journalCopy?.date}`,
         action: {
           type: 'tasks_link',
           moduleName: 'taskModule',
@@ -274,16 +276,16 @@ class ModalWindow extends React.PureComponent {
     const {
       jurnal: { timeLost = null, date = moment(), description = null },
       error = [],
-      type: typeState,
     } = this.state;
+
     const { keyTask } = this.props;
     const { schema = {} } = this.context;
     let _valid = true;
-    let invalidDate = !_.isDate(new Date(date));
-    let invalidTimeLost = !_.isString(timeLost);
-    let invalidDescription = !_.isString(description);
+    let invalidDate = !date || !_.isDate(new Date(date));
+    let invalidTimeLost = !timeLost || !_.isString(timeLost) || !isTimeLostValue(timeLost);
+    let invalidDescription = !description || !_.isString(description);
 
-    if ((invalidDate || invalidTimeLost || invalidDescription) && !typeState) {
+    if ((invalidDate || invalidTimeLost || invalidDescription)) {
       _valid = false;
       const errorBundle = error.size ? new Set([...error]) : new Set();
       message.error('Не все поля заполнены!');
@@ -304,6 +306,7 @@ class ModalWindow extends React.PureComponent {
       editor: '',
       date: date,
       description: description,
+      _id: uuid()
     });
 
     if (validData) return _valid;

@@ -226,6 +226,11 @@ const validationItems = (currentItems, prevItems, id = '_id') => {
   return [...new Map([...currentItems, ...prevItems].map((it) => [it[id], it])).values()];
 };
 
+const isTimeLostValue = value => {
+
+  return /\w+[m|м|h|ч]$/gi.test(value);
+};
+
 const namespaceParser = {
   dataParser,
   getNormalizedPath,
@@ -238,6 +243,7 @@ const namespaceParser = {
   syncData,
   getDataSource,
   validationItems,
+  isTimeLostValue
 };
 
 export default namespaceParser;
