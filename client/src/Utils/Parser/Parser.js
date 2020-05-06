@@ -54,6 +54,7 @@ const getNormalizedPath = (useStore = false, dep = {}) => {
 };
 
 /**
+ * @deprecated 06.06.2020
  * @param {string} b64Data
  * @param contentType
  * @param sliceSize
@@ -78,6 +79,7 @@ const b64toBlob = (b64Data, contentType = '', sliceSize = 512) => {
 };
 
 /**
+ * @deprecated 06.05.2020
  * @param {Blob} img
  * @param {(arg0: string | ArrayBuffer) => void} callback
  */

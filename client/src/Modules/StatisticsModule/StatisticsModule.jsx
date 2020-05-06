@@ -17,19 +17,18 @@ class StatisticsModule extends React.PureComponent {
   state = {
     dateConfig: [2, 'weeks'],
     statsListFields: ['Открыт', 'Выполнен', 'Закрыт', 'В работе'],
-    textContent: ''
+    textContent: '',
   };
   static propTypes = statisticsModuleType;
   static contextType = modelContext;
 
   componentDidMount = () => {
-    const {visible } = this.props;
+    const { visible } = this.props;
     const { dateConfig = [] } = this.state;
 
     if (visible && _.isArray(dateConfig)) {
       this.fetchStatistics();
     }
-
   };
 
   componentDidUpdate = () => {
@@ -47,17 +46,14 @@ class StatisticsModule extends React.PureComponent {
   };
 
   fetchStatistics = (shouldSetLoading = false) => {
-    const {
-      onLoadCurrentData,
-      path,
-    } = this.props;
+    const { onLoadCurrentData, path } = this.props;
     const { statsListFields = [], dateConfig = [] } = this.state;
     const { config: { statistics: { limitListTasks = 5000 } = {} } = {} } = this.context;
 
     let limits = {};
-    if (dateConfig[0] === 'full'){
+    if (dateConfig[0] === 'full') {
       limits = {
-        limitList: limitListTasks
+        limitList: limitListTasks,
       };
     }
 
@@ -72,34 +68,40 @@ class StatisticsModule extends React.PureComponent {
       options: {
         queryParams: {
           statsListFields,
-          ...limits
+          ...limits,
         },
         queryType: dateConfig[0],
-        todayISO: dateConfig[0] === 'full'
-          ? moment().toISOString()
-          : moment().subtract(...dateConfig).toISOString(),
+        todayISO:
+          dateConfig[0] === 'full'
+            ? moment().toISOString()
+            : moment()
+                .subtract(...dateConfig)
+                .toISOString(),
       },
     });
-  }
+  };
 
   onChangeBar = ({ currentTarget: { textContent = '' } }, dateConfig = []) => {
-    this.setState({
-      dateConfig,
-      textContent
-    }, () => {
-      this.fetchStatistics(true);
-    })
+    this.setState(
+      {
+        dateConfig,
+        textContent,
+      },
+      () => {
+        this.fetchStatistics(true);
+      },
+    );
   };
 
   getToolbarBody = (loading = false) => {
     const { dateConfig = [] } = this.state;
 
     return (
-      <div className='toolbarBody'>
-        <div className='controllers'>
+      <div className="toolbarBody">
+        <div className="controllers">
           <p>Смена периода</p>
-          <ul className='toolbar-actions-list'>
-            <li className='toolbar-action-item'>
+          <ul className="toolbar-actions-list">
+            <li className="toolbar-action-item">
               <Button
                 loading={loading && dateConfig[1] === 'day'}
                 className={clsx(dateConfig[1] === 'day' ? 'active' : null)}
@@ -108,7 +110,7 @@ class StatisticsModule extends React.PureComponent {
                 Статистика за день
               </Button>
             </li>
-            <li className='toolbar-action-item'>
+            <li className="toolbar-action-item">
               <Button
                 loading={loading && dateConfig[1] === 'weeks'}
                 className={clsx(dateConfig[1] === 'weeks' ? 'active' : null)}
@@ -117,7 +119,7 @@ class StatisticsModule extends React.PureComponent {
                 Статистика за 2 недели
               </Button>
             </li>
-            <li className='toolbar-action-item'>
+            <li className="toolbar-action-item">
               <Button
                 loading={loading && dateConfig[1] === 'month'}
                 className={clsx(dateConfig[1] === 'month' ? 'active' : null)}
@@ -126,7 +128,7 @@ class StatisticsModule extends React.PureComponent {
                 Статистика за 1 месяц
               </Button>
             </li>
-            <li className='toolbar-action-item'>
+            <li className="toolbar-action-item">
               <Button
                 loading={loading && dateConfig[1] === 'year'}
                 className={clsx(dateConfig[1] === 'year' ? 'active' : null)}
@@ -135,30 +137,26 @@ class StatisticsModule extends React.PureComponent {
                 Статистика за 1 год
               </Button>
             </li>
-            <li className='toolbar-action-item'>
+            <li className="toolbar-action-item">
               <Button
                 loading={loading && dateConfig[0] === 'full'}
                 className={clsx(dateConfig[0] === 'full' ? 'active' : null)}
-                onClick={(evt) => this.onChangeBar(evt, ['full'])}>
+                onClick={(evt) => this.onChangeBar(evt, ['full'])}
+              >
                 Статистика за все время
               </Button>
             </li>
           </ul>
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   render() {
     const { textContent = '' } = this.state;
     const {
       path = '',
-      router: {
-        routeData: {
-          [path]: currentModule = {}
-        } = {},
-        shouldUpdate = false
-      } = {}
+      router: { routeData: { [path]: currentModule = {} } = {}, shouldUpdate = false } = {},
     } = this.props;
     const { statistic = [], loading = false } = currentModule || {};
     const { bar: barData = {} } = statistic[0] || {};
@@ -168,16 +166,18 @@ class StatisticsModule extends React.PureComponent {
       <div className="statisticsModule">
         <TitleModule classNameTitle="statisticsModuleTitle" title="Статистика" />
         <div className="statisticsModule__main">
-          <div className="col-6">{(
-            <Bar
-              data={barData}
-              textContent={textContent}
-              loading={loading || shouldUpdate}
-              subDataList={Object.keys(barData)}
-            />)}
+          <div className="col-6">
+            {
+              <Bar
+                data={barData}
+                textContent={textContent}
+                loading={loading || shouldUpdate}
+                subDataList={Object.keys(barData)}
+              />
+            }
           </div>
         </div>
-        <FixedToolbar name = 'Настройки' customRender={toolbarBody} />
+        <FixedToolbar name="Настройки" customRender={toolbarBody} />
       </div>
     );
   }
