@@ -178,18 +178,23 @@ namespace Action {
             else return { status: Boolean(ok), count: nModified };
           }
           default: {
-            const { _id, updateProps: upProps = {} } = query;
+            const { _id, customQuery, updateProps: upProps = {} } = query;
+            const { [<string>customQuery]: customQueryValue = '' } = query;
             const updateProps: object = _.isPlainObject(upProps)
               ? <object>upProps
               : { updateProps: query.updateProps };
 
+            const findQuery: object =
+              _id && !customQuery ? { _id } : customQuery ? { [<string>customQuery]: customQueryValue } : {};
+
             const actionData: Document = await model.updateOne(
-              _id ? { _id } : {},
+              findQuery,
               {
                 ...updateProps,
               },
               options,
             );
+
             return actionData;
           }
         }

@@ -20,14 +20,15 @@ class ActionSettings implements Action {
       const { idSettings = '' } = actionParam as Record<string, string>;
 
       const settings: Array<Record<string, string>> = draftItems.map((item) => {
-        if (item && _.isString(item.id) && item.id.includes('virtual')) {
+        const { id: idItem, value } = item as Record<string, any>;
+        if (item && _.isString(idItem) && idItem.includes('virtual')) {
           return {
             id: uuid(),
-            ...item,
+            value,
           };
         }
 
-        return _.isPlainObject(item) ? { ...item } : item;
+        return _.isPlainObject(item) ? { id: idItem, value } : item;
       });
 
       const updateProps = {
@@ -36,9 +37,9 @@ class ActionSettings implements Action {
       };
 
       const queryFind: ActionParams = { idSettings };
-      const query: ActionParams = { idSettings, updateProps };
+      const query: ActionParams = { idSettings, updateProps, customQuery: 'idSettings' };
 
-      await this.getEntity().updateEntity(model, query, { upset: true });
+      await this.getEntity().updateEntity(model, query, { upsert: true });
       const actionData: ParserData = await this.getEntity().findOnce(model, queryFind);
       return actionData;
     } catch (err) {

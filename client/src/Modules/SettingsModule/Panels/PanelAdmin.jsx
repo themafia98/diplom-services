@@ -10,12 +10,14 @@ const { Option } = Select;
 const PanelAdmin = (props) => {
   const { onSaveSettings, statusList: statusListProps } = props;
 
-  const [statusList] = useState(statusListProps);
+  const [statusList, setStatusList] = useState(statusListProps);
   const [readOnly, setReadOnly] = useState(true);
   const [value, setValue] = useState([]);
   const [haveChanges, setChanges] = useState([]);
 
-  const onCear = () => {
+  const onCear = (response) => {
+    if (_.isArray(response)) setStatusList(response);
+
     setChanges([]);
     setReadOnly(true);
   };

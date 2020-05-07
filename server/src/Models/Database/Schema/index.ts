@@ -234,8 +234,16 @@ export const wikiPage: Schema<WikiPage> = new Schema(
 
 export const settings: Schema<Settings> = new Schema(
   {
-    idSettings: { type: String, required: true },
-    settings: { type: [Object], required: true },
+    idSettings: { type: String, required: true, dropDups: true },
+    settings: {
+      type: [
+        {
+          id: { type: String, dropDups: true },
+          value: { type: Schema.Types.Mixed, dropDups: true },
+        },
+      ],
+      required: true,
+    },
     depKey: { type: String, required: false },
   },
   { timestamps: true },

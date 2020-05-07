@@ -126,8 +126,10 @@ class SettingsModule extends React.PureComponent {
       const { Request } = this.context;
 
       const queryParams = {
+        idSettings: 'statusSettings',
         items: state,
       };
+      debugger;
       const rest = new Request();
       const res = await rest.sendRequest('/settings/statusList', 'POST', { queryParams }, true);
 
@@ -135,7 +137,15 @@ class SettingsModule extends React.PureComponent {
         throw new Error('Bad request profile settings');
       }
 
-      if (callback) callback();
+      const {
+        data: { response: { metadata: { idSettings: saveSettingsId = '', settings = [] } = {} } = {} } = {},
+      } = res;
+
+      if (saveSettingsId !== queryParams.idSettings) {
+        throw new Error('Invalid saved settings id');
+      }
+
+      if (callback) callback(settings);
     } catch (error) {
       if (error?.status !== 404) console.error(error);
     }

@@ -66,6 +66,7 @@ namespace Settings {
         const body: Record<string, object> = req.body;
         const { queryParams } = body;
         const { items = [] } = queryParams as Record<string, Array<object>>;
+        const { idSettings = '' } = queryParams as Record<string, string>;
 
         if (!queryParams || _.isEmpty(queryParams)) {
           throw new Error('Invalid queryParams for change_statusList action');
@@ -76,11 +77,12 @@ namespace Settings {
           actionType: 'change_statusList',
         });
 
-        const actionParams: ActionParams = { items };
+        const actionParams: ActionParams = { items, idSettings };
         const data: ParserResult = await changeStatusList.getActionData(actionParams);
 
         if (!data) throw new Error('Invalid action data');
-        else return res.sendStatus(200);
+
+        return new Responser(res, req, params, null, 200, data, dbm).emit();
       } catch (err) {
         console.error(err);
         params.status = 'FAIL';
