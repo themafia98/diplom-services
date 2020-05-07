@@ -121,6 +121,10 @@ class SettingsModule extends React.PureComponent {
     }
   };
 
+  onChangeStatusList = (state, callback = null) => {
+    if (callback) callback();
+  };
+
   onSaveSettings = (settingsKey = '', state = {}, callback = null) => {
     switch (settingsKey) {
       case 'password':
@@ -129,6 +133,8 @@ class SettingsModule extends React.PureComponent {
         return this.onChangeCommon(state, callback);
       case 'profile':
         return this.onChangeProfile(state, callback);
+      case 'statusSettings':
+        return this.onChangeStatusList(state, callback);
 
       default:
         return;
@@ -331,7 +337,7 @@ class SettingsModule extends React.PureComponent {
                   isHideEmail={isHideEmail}
                   isHidePhone={isHidePhone}
                 />
-                {isAdmin && includeRulesSettings ? <PanelAdmin /> : null}
+                {isAdmin && includeRulesSettings ? <PanelAdmin onSaveSettings={this.onSaveSettings} /> : null}
               </div>
             </Scrollbars>
           </div>

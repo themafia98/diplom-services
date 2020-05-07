@@ -104,7 +104,7 @@ class TaskModule extends React.PureComponent {
     const { loading = false } = routeData[path] || {};
 
     const isCloseAction = !isUnloadModule && !shouldUpdateList && shouldUpdate && !loading;
-    debugger;
+
     if (!isListCounterLoading && isTaskModule && (isUnloadModule || shouldUpdateList || isCloseAction)) {
       const { saveData: saveDataState = null } = routeData[path] || {};
       const saveData = saveDataState
