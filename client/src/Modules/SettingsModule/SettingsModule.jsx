@@ -121,8 +121,24 @@ class SettingsModule extends React.PureComponent {
     }
   };
 
-  onChangeStatusList = (state, callback = null) => {
-    if (callback) callback();
+  onChangeStatusList = async (state, callback = null) => {
+    try {
+      const { Request } = this.context;
+
+      const queryParams = {
+        items: state,
+      };
+      const rest = new Request();
+      const res = await rest.sendRequest('/settings/statusList', 'POST', { queryParams }, true);
+
+      if (!res || res.status !== 200) {
+        throw new Error('Bad request profile settings');
+      }
+
+      if (callback) callback();
+    } catch (error) {
+      if (error?.status !== 404) console.error(error);
+    }
   };
 
   onSaveSettings = (settingsKey = '', state = {}, callback = null) => {
