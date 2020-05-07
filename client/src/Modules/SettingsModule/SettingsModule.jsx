@@ -129,7 +129,7 @@ class SettingsModule extends React.PureComponent {
         idSettings: 'statusSettings',
         items: state,
       };
-      debugger;
+
       const rest = new Request();
       const res = await rest.sendRequest('/settings/statusList', 'POST', { queryParams }, true);
 
