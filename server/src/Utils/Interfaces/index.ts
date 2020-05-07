@@ -209,6 +209,11 @@ export interface News {
   };
 }
 
+export interface Settings {
+  idSettings: string;
+  settings: Array<Object>;
+}
+
 export interface ChatMessage {
   msg: string;
   authorId: string;

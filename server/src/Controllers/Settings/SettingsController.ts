@@ -53,6 +53,41 @@ namespace Settings {
       }
     }
 
+    @Post({ path: '/statusList', private: true })
+    protected async statusList(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+      const { dbm } = server.locals;
+      const params: Params = {
+        methodQuery: 'change_statusList',
+        from: 'settings',
+        done: true,
+        status: 'OK',
+      };
+      try {
+        const body: Record<string, object> = req.body;
+        const { queryParams } = body;
+        const { items = [] } = queryParams as Record<string, Array<object>>;
+
+        if (!queryParams || _.isEmpty(queryParams)) {
+          throw new Error('Invalid queryParams for change_statusList action');
+        }
+
+        const changeStatusList = new Action.ActionParser({
+          actionPath: 'settings',
+          actionType: 'change_statusList',
+        });
+
+        const actionParams: ActionParams = { items };
+        const data: ParserResult = await changeStatusList.getActionData(actionParams);
+
+        if (!data) throw new Error('Invalid action data');
+        else return res.sendStatus(200);
+      } catch (err) {
+        console.error(err);
+        params.status = 'FAIL';
+        params.done = false;
+        return new Responser(res, req, params, err, 503, [], dbm).emit();
+      }
+    }
     @Post({ path: '/common', private: true })
     protected async commonSettings(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { dbm } = server.locals;

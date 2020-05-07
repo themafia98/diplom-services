@@ -15,6 +15,7 @@ import ActionChatRoom from './ActionsEntity/ActionChatRoom';
 import ActionGlobal from './ActionsEntity/ActionGlobal';
 import ActionTasks from './ActionsEntity/ActionTasks';
 import ActionWiki from './ActionsEntity/ActionWiki';
+import ActionSettings from './ActionsEntity/ActionSettings';
 
 namespace Action {
   export class ActionParser extends ActionEntity implements Actions {
@@ -22,7 +23,11 @@ namespace Action {
       super(props);
     }
 
-    public async getCounter(model: Model<Document>, query: FilterQuery<any>, options: object): Promise<number> {
+    public async getCounter(
+      model: Model<Document>,
+      query: FilterQuery<any>,
+      options: object,
+    ): Promise<number> {
       return await model.collection.countDocuments(query, options);
     }
 
@@ -247,6 +252,11 @@ namespace Action {
 
           case 'wiki': {
             const action: Action = new ActionWiki(this);
+            return action.run(actionParam);
+          }
+
+          case 'settings': {
+            const action: Action = new ActionSettings(this);
             return action.run(actionParam);
           }
 

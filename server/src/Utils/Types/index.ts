@@ -11,6 +11,7 @@ import {
   Notification,
   WikiTree,
   WikiPage,
+  Settings,
 } from '../Interfaces';
 import { DocumentQuery, Document } from 'mongoose';
 import { Response } from 'express';
@@ -78,6 +79,7 @@ export type SchemaEntity =
   | Notification
   | WikiTree
   | string
+  | Settings
   | WikiPage;
 
 export type actionGet = {

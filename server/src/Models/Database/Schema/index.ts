@@ -11,6 +11,7 @@ import {
   Notification,
   WikiTree,
   WikiPage,
+  Settings,
 } from '../../../Utils/Interfaces';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
@@ -231,6 +232,15 @@ export const wikiPage: Schema<WikiPage> = new Schema(
   { timestamps: true },
 );
 
+export const settings: Schema<Settings> = new Schema(
+  {
+    idSettings: { type: String, required: true },
+    settings: { type: [Object], required: true },
+    depKey: { type: String, required: false },
+  },
+  { timestamps: true },
+);
+
 export const UserModel: Model<Document> = model('users', userSchema);
 
 export const getSchemaByName = (name: string): Schema<SchemaEntity> | null => {
@@ -249,6 +259,8 @@ export const getSchemaByName = (name: string): Schema<SchemaEntity> | null => {
       return chatRoom;
     case 'settingsLog':
       return logger;
+    case 'settings':
+      return settings;
     case 'notification':
       return notification;
     case 'wikiTree':
