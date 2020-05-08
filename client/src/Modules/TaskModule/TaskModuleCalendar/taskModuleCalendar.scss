@@ -9,6 +9,10 @@
     }
     .ant-fullcalendar-content {
       position: relative;
+      .ant-dropdown-trigger {
+        display: flex;
+        height: 100%;
+      }
       button {
         background: rgba(0, 0, 0, -3.8);
         border: none;

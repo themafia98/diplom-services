@@ -5,13 +5,18 @@ import _ from 'lodash';
 import Scrollbars from 'react-custom-scrollbars';
 import moment from 'moment';
 import TitleModule from '../../../Components/TitleModule';
-import { Calendar, Popover, Button, message } from 'antd';
+import { Calendar, Popover, Button, message, Dropdown, Menu } from 'antd';
 
 import modelContext from '../../../Models/context';
 import { routePathNormalise } from '../../../Utils';
 import Output from '../../../Components/Output';
 
 class TaskModuleCalendar extends React.PureComponent {
+  state = {
+    visbileDropdownId: null,
+    visbileDropdown: false,
+  };
+
   static propTypes = taskModuleCalendarType;
   static contextType = modelContext;
   static defaultProps = {
@@ -85,7 +90,20 @@ class TaskModuleCalendar extends React.PureComponent {
     return listData || [];
   };
 
+  createTask = (value) => {
+    console.log(value);
+  };
+
+  onVisibleChange = (id, visible) => {
+    this.setState({
+      ...this.state,
+      visbileDropdownId: visible ? id : null,
+      visbileDropdown: visible,
+    });
+  };
+
   dateCellRender = (value) => {
+    const { visbileDropdown = false, visbileDropdownId = '' } = this.state;
     const listData = this.getListData(value);
     const content = listData.map((item) => {
       return (
@@ -107,16 +125,43 @@ class TaskModuleCalendar extends React.PureComponent {
       );
     }
 
-    if (content.length)
-      return (
-        <Popover content={list}>
-          <Button>
-            <span className="calendarDate-content">
-              {outValues ? (outValues.content ? outValues.content : outValues) : null}
-            </span>
+    const menu = (
+      <Menu className="dropdown-action">
+        <Menu.Item>
+          <Button type="primary" className="item-action" onClick={this.createTask.bind(this, value)}>
+            Создать задачу
           </Button>
-        </Popover>
+        </Menu.Item>
+      </Menu>
+    );
+    const stringValue = value.toString();
+    const dropdown = (children) => (
+      <Dropdown
+        visible={visbileDropdownId === stringValue && visbileDropdown}
+        onVisibleChange={this.onVisibleChange.bind(this, stringValue)}
+        overlay={menu}
+        trigger={['contextMenu']}
+      >
+        {children}
+      </Dropdown>
+    );
+
+    if (content.length) {
+      return (
+        <>
+          {dropdown(
+            <Popover content={list}>
+              <Button>
+                <span className="calendarDate-content">
+                  {outValues ? (outValues.content ? outValues.content : outValues) : null}
+                </span>
+              </Button>
+            </Popover>,
+          )}
+        </>
       );
+    }
+    return dropdown(<span />);
   };
 
   render() {
@@ -127,7 +172,7 @@ class TaskModuleCalendar extends React.PureComponent {
           <div className="taskModuleCalendar__main">
             <Calendar
               fullscreen={true}
-              dateCellRender={this.dateCellRender}
+              dateCellRender={this.dateCellRender.bind(this)}
               monthCellRender={this.monthCellRender}
             />
           </div>
