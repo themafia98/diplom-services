@@ -19,6 +19,7 @@ function renderDescription(theme = 'default') {
     onChangeEditable,
     cachesEditorList,
     modeControllEdit,
+    onChangeTagList,
     statusClassName,
     calcSumWorkTime,
     accessPriority,
@@ -29,6 +30,7 @@ function renderDescription(theme = 'default') {
     accessStatus,
     uidCreater,
     priority,
+    tagList,
     status,
     isLoad,
     router,
@@ -147,6 +149,8 @@ function renderDescription(theme = 'default') {
         <Descriptions.Item label="Метки">
           <div className="tags">
             <TagsContainer
+              tagList={tagList}
+              onChangeTagList={onChangeTagList}
               shouldVisibleButtonAddTag={shouldVisibleButtonAddTag}
               modeControll={modeControll}
               modeControllEdit={modeControllEdit}

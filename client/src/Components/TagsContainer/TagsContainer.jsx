@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { v4 as uuid } from 'uuid';
 import clsx from 'clsx';
 import { ChromePicker } from 'react-color';
@@ -7,12 +7,13 @@ import { tagsContainerType } from './types';
 import { Input, Tag, Button, Tooltip } from 'antd';
 
 const TagsContainer = (props) => {
-  const { shouldVisibleButtonAddTag, modeControll, modeControllEdit } = props;
+  const { shouldVisibleButtonAddTag, modeControll, modeControllEdit, tagList = [], onChangeTagList } = props;
+
+  const setTagList = useCallback(onChangeTagList, [onChangeTagList]);
 
   const [hex, setHex] = useState('#2db7f5');
   const [colorVisible, setVisible] = useState(false);
   const [tagValue, setTagValue] = useState('');
-  const [tagList, setTagList] = useState([]);
 
   const onCloseTag = (id) => {
     setTagList(tagList.filter(({ id: tagId = '' }) => tagId !== id));
@@ -24,7 +25,11 @@ const TagsContainer = (props) => {
     event.stopPropagation();
     const { key = '', ctrlKey } = event;
     if (!click && (key !== 'Enter' || !ctrlKey || !tagValue)) return;
+
+    if (colorVisible) setVisible(false);
+
     setTagValue('');
+
     setTagList([
       ...tagList,
       {
@@ -51,6 +56,7 @@ const TagsContainer = (props) => {
   return (
     <>
       {tagList.map((tag) => {
+        debugger;
         const { color = '', id = '', tagValue = '' } = tag;
         const editableTabProps = isEditable
           ? {
@@ -81,7 +87,9 @@ const TagsContainer = (props) => {
                 type="text"
               />
             </Tooltip>
-            <Button onClick={onChangeVisible}>Выбрать цвет</Button>
+            <Button type="primary" onClick={onChangeVisible}>
+              Выбрать цвет
+            </Button>
             <div className={clsx('color-wrapper', colorVisible ? 'visible' : 'hidden')}>
               <ChromePicker color={hex} onChange={onChangeColor} />
             </div>
@@ -101,6 +109,7 @@ TagsContainer.defaultProps = {
   shouldVisibleButtonAddTag: false,
   modeControll: 'default',
   modeControllEdit: false,
+  tagList: [],
 };
 TagsContainer.propTypes = tagsContainerType;
 

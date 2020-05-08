@@ -124,6 +124,14 @@ export const task: Schema<Task> = new Schema(
     date: { type: [String], required: true },
     comments: { type: [Object], required: true },
     modeAdd: String,
+    tags: [
+      {
+        color: { type: String, required: true },
+        id: { type: String, required: true },
+        sortable: { type: Boolean, default: false },
+        tagValue: { type: String, required: true },
+      },
+    ],
   },
   { timestamps: true },
 );

@@ -36,6 +36,7 @@ class TaskView extends React.PureComponent {
       editor: null,
       description: null,
       date: null,
+      tags: [],
     },
     actionType: '__getJurnal',
     isLoadingFiles: false,
@@ -54,6 +55,16 @@ class TaskView extends React.PureComponent {
   static getDerivedStateFromProps = (props, state) => {
     if (props.uuid !== state.key) return { ...state, key: props.key };
     else return state;
+  };
+
+  onChangeTagList = (tags) => {
+    this.setState({
+      ...this.state,
+      modeControllEdit: {
+        ...this.state.modeControllEdit,
+        tags,
+      },
+    });
   };
 
   componentDidMount = async () => {
@@ -579,6 +590,7 @@ class TaskView extends React.PureComponent {
     const {
       modeControll,
       modeControllEdit,
+      modeControllEdit: { tags: tagList = [] },
       filesArray = [],
       filteredUsers = [],
       isLoad = false,
@@ -602,6 +614,7 @@ class TaskView extends React.PureComponent {
       onEditContentMode,
       onAddFileList,
       onRemoveFile,
+      onChangeTagList,
     } = this;
     const { rest = {} } = this.context;
 
@@ -618,6 +631,7 @@ class TaskView extends React.PureComponent {
     const renderMethods = {
       onChangeEditable,
       onChangeEditableStart,
+      onChangeTagList,
       onOpenPageWithData,
       onEditContentMode,
       onChangeEditableEnd,
@@ -657,6 +671,7 @@ class TaskView extends React.PureComponent {
       modeControll,
       accessStatus,
       uidCreater,
+      tagList,
       priority,
       status,
       isLoad,
@@ -665,7 +680,7 @@ class TaskView extends React.PureComponent {
       date,
       key,
     };
-
+    console.log(this.state.tagList);
     return (
       <Scrollbars hideTracksWhenNotNeeded={true}>
         <TitleModule classNameTitle="taskModuleTittle" title="Карточка задачи" />
