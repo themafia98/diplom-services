@@ -189,6 +189,14 @@ tbody.table-body {
   overflow: auto;
 }
 
+.color-wrapper {
+  width: 230px;
+  position: absolute;
+  z-index: 9999;
+  margin-top: 5px;
+  left: 50%;
+}
+
 @media screen and (max-height: 655px) {
   .tableView__wrapper {
     top: 65%;
