@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import Scrollbars from 'react-custom-scrollbars';
 import { deleteFile, loadFile } from '../../../Utils';
 import { TASK_SCHEMA } from '../../../Models/Schema/const';
-
+import { settingsStatusSelector } from '../../../Utils/selectors';
 import { middlewareCaching, middlewareUpdate } from '../../../Redux/actions/publicActions/middleware';
 import { сachingAction } from '../../../Redux/actions/publicActions';
 
@@ -25,6 +25,7 @@ class TaskView extends React.PureComponent {
     mode: 'jur',
     modeControll: 'default',
     isLoad: false,
+    statusListName: [],
     modeControllEdit: {
       key: null,
       status: null,
@@ -141,11 +142,16 @@ class TaskView extends React.PureComponent {
 
     const { rest } = this.context;
 
+    const { statusListName = [] } = this.state;
+    const { statusList: { settings = [] } = {} } = this.props;
+    const filteredStatusNames = settings.map(({ value = '' }) => value).filter(Boolean);
+
     if ((!isLoadingFiles && routeDataActive?._id) || shouldRefresh) {
       try {
         this.setState(
           {
             ...this.state,
+            statusListName: filteredStatusNames,
             shouldRefresh: false,
             isLoadingFiles: true,
           },
@@ -162,6 +168,7 @@ class TaskView extends React.PureComponent {
 
               this.setState({
                 ...this.state,
+                statusListName: filteredStatusNames,
                 filesArray: filesArray.map((it) => {
                   const { name, path_display: url, id: uid } = it;
                   const [module, taskId, filename] = url.slice(1).split(/\//gi);
@@ -180,6 +187,13 @@ class TaskView extends React.PureComponent {
       } catch (error) {
         if (error?.response?.status !== 404) console.error(error);
       }
+    }
+
+    if (filteredStatusNames?.length !== statusListName?.length) {
+      this.setState({
+        ...this.state,
+        statusListName: filteredStatusNames,
+      });
     }
   };
 
@@ -323,7 +337,7 @@ class TaskView extends React.PureComponent {
         });
       }
     } else if (typeof event === 'string') {
-      const arrayStatus = ['Открыт', 'Выполнен', 'Закрыт', 'В работе'];
+      const arrayStatus = this.state.statusListName;
       if (arrayStatus.some((it) => it === event)) {
         return this.setState({
           ...this.state,
@@ -389,7 +403,6 @@ class TaskView extends React.PureComponent {
   };
 
   calcSumWorkTime = (cachesJournalList = []) => {
-
     return cachesJournalList
       .reduce((startValue, item) => {
         const normalizeValue = item.timeLost.toString().toLowerCase();
@@ -399,23 +412,23 @@ class TaskView extends React.PureComponent {
 
         if (normalizeValue.includes('h') || normalizeValue.includes('ч')) {
           const arrayStringHour = normalizeValue.match(/(\w+)[h|ч]/gi) || [];
-          hour = !arrayStringHour ? 0 : arrayStringHour.reduce((total, current) => {
-            return total + parseFloat(current);
-          }, 0) || 0;
+          hour = !arrayStringHour
+            ? 0
+            : arrayStringHour.reduce((total, current) => {
+                return total + parseFloat(current);
+              }, 0) || 0;
         }
 
         if (normalizeValue.includes('m') || normalizeValue.includes('м')) {
           const arrayStringMin = normalizeValue.match(/(\w+)[m|м]/gi) || [];
-          min = !arrayStringMin ? 0 : arrayStringMin.reduce((total, current) => {
-            return total + parseFloat(current);
-          }, 0);
+          min = !arrayStringMin
+            ? 0
+            : arrayStringMin.reduce((total, current) => {
+                return total + parseFloat(current);
+              }, 0);
         }
 
-        const plusValue = !min && hour
-              ? hour
-              : hour && min > 0
-              ? hour + (min / 60)
-              : min > 0 ? min / 60 : 0;
+        const plusValue = !min && hour ? hour : hour && min > 0 ? hour + min / 60 : min > 0 ? min / 60 : 0;
         if (_.isNumber(plusValue)) return startValue + plusValue;
         else return startValue;
       }, 0)
@@ -426,12 +439,11 @@ class TaskView extends React.PureComponent {
     return _.uniqBy(cachesJournalList, '_id')
       .sort((a, b) => moment(b?.date[0]).unix() - moment(a?.date[0]).unix())
       .map((item, index) => {
-
         const date = item && Array.isArray(item.date) ? item.date[0] : 'Invalid date';
 
         return (
           <div key={`${item?._id}${index}`} className="journalItem">
-            {item.editor ? <p className='editor'>{item.editor}</p> : null}
+            {item.editor ? <p className="editor">{item.editor}</p> : null}
             <p className="timeLost">
               <span className="title">Затрачено времени:</span>
               {item?.timeLost ? item.timeLost : item[0] ? item[0]?.timeLost : 'не установлено'}
@@ -443,7 +455,7 @@ class TaskView extends React.PureComponent {
             <p className="comment">
               <span className="title">Коментарии:</span>
             </p>
-            <p className='msg'>
+            <p className="msg">
               {item?.description
                 ? item.description
                 : Array.isArray(item) && item[0]?.description
@@ -485,18 +497,8 @@ class TaskView extends React.PureComponent {
   };
 
   getAccessStatus = () => {
-    const {
-      router: { routeDataActive = {} },
-    } = this.props;
-    const { status = '' } = routeDataActive;
-    const { modeControllEdit: { status: statusState = '' } = {} } = this.state;
-    return _.uniq([
-      statusState ? status : status ? status : null,
-      'Открыт',
-      'Выполнен',
-      'Закрыт',
-      'В работе',
-    ]).filter(Boolean);
+    const { statusListName } = this.state;
+    return statusListName;
   };
 
   getAccessPriority = () => {
@@ -694,13 +696,14 @@ class TaskView extends React.PureComponent {
   }
 }
 
-const mapStateTopProps = (state) => {
+const mapStateTopProps = (state, props) => {
   const { router = {}, publicReducer = {}, publicReducer: { udata = {} } = {} } = state || {};
 
   return {
     router,
     publicReducer,
     udata,
+    statusList: settingsStatusSelector(state, props),
   };
 };
 
