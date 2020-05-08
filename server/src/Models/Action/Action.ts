@@ -211,12 +211,12 @@ namespace Action {
 
         switch (this.getActionPath()) {
           case 'global': {
-            const action = new ActionGlobal(this);
+            const action: Action = new ActionGlobal(this);
             return action.run(actionParam);
           }
 
           case 'notification': {
-            const action = new ActionNotification(this);
+            const action: Action = new ActionNotification(this);
             return action.run(actionParam);
           }
 

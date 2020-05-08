@@ -7,6 +7,7 @@ import {
   errorHook,
   updateEntityHook,
 } from '../../../../Utils';
+import { onLoadArtifacts, onLoadSettings } from '../';
 import { updateItemStateAction } from '../../routerActions';
 
 /**
@@ -207,4 +208,39 @@ const middlewareUpdate = (props = {}) => async (dispatch, getState, { schema, Re
   }
 };
 
-export { middlewareCaching, middlewareUpdate, loadCacheData };
+const settingsLoader = (props) => async (dispatch, getState, { schema, Request, clientDB }) => {
+  const { wishList = [] } = props;
+
+  const rest = new Request();
+
+  const artifacts = [];
+  const settings = [];
+
+  for await (let wish of wishList) {
+    try {
+      const { name = '', params = {} } = wish;
+      const { method = 'GET', body = {} } = params;
+
+      const res = await rest.sendRequest(`/settings/${name}`, method, body, true);
+
+      if (!res || (res.status !== 200 && res.status !== 404)) {
+        throw new Error('Invalid loading settings');
+      }
+
+      const { data: { response: { metadata = [] } = {} } = {} } = res;
+      const config = metadata[0];
+      settings.push(config);
+    } catch (error) {
+      console.error(error);
+      artifacts.push(wish);
+    }
+  }
+
+  if (artifacts.length) {
+    dispatch(onLoadArtifacts(artifacts));
+  }
+
+  dispatch(onLoadSettings(settings));
+};
+
+export { middlewareCaching, middlewareUpdate, loadCacheData, settingsLoader };

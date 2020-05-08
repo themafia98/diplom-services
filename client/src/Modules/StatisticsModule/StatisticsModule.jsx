@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { loadCurrentData } from '../../Redux/actions/routerActions/middleware';
 import Bar from './Charts/Bar';
 import TitleModule from '../../Components/TitleModule';
-
+import { settingsStatusSelector } from '../../Utils/selectors';
 import modelContext from '../../Models/context';
 import FixedToolbar from '../../Components/FixedToolbar';
 import { Button } from 'antd';
@@ -16,7 +16,6 @@ import { Button } from 'antd';
 class StatisticsModule extends React.PureComponent {
   state = {
     dateConfig: [2, 'weeks'],
-    statsListFields: ['Открыт', 'Выполнен', 'Закрыт', 'В работе'],
     textContent: '',
   };
   static propTypes = statisticsModuleType;
@@ -46,8 +45,13 @@ class StatisticsModule extends React.PureComponent {
   };
 
   fetchStatistics = (shouldSetLoading = false) => {
-    const { onLoadCurrentData, path } = this.props;
-    const { statsListFields = [], dateConfig = [] } = this.state;
+    const {
+      onLoadCurrentData,
+      path,
+      statusList: { settings = [] },
+    } = this.props;
+    const statsListFields = settings.map(({ value = '' }) => value).filter(Boolean);
+    const { dateConfig = [] } = this.state;
     const { config: { statistics: { limitListTasks = 5000 } = {} } = {} } = this.context;
 
     let limits = {};
@@ -183,9 +187,9 @@ class StatisticsModule extends React.PureComponent {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, props) => {
   const { router } = state;
-  return { router };
+  return { router, statusList: settingsStatusSelector(state, props) };
 };
 
 const mapDispatchToProps = (dispatch) => {

@@ -5,3 +5,5 @@ export const UDATA_LOAD = 'UDATA_LOAD';
 export const SHOW_GUIDE = 'SHOW_GUIDE';
 export const CLEAR_CACHE = 'CLEAR_CACHE';
 export const UPDATE_UDATA = 'UPDATE_UDATA';
+export const LOAD_ARTIFACT = 'LOAD_ARTIFACT';
+export const LOAD_SETTINGS = 'LOAD_SETTINGS';

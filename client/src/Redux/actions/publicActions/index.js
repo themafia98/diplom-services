@@ -1,10 +1,34 @@
 // @ts-nocheck
 /** Here action constants import */
-import { SET_ERROR, SET_CACHE, SET_STATUS, SHOW_GUIDE, UDATA_LOAD, CLEAR_CACHE, UPDATE_UDATA } from './const';
+import {
+  SET_ERROR,
+  SET_CACHE,
+  SET_STATUS,
+  SHOW_GUIDE,
+  UDATA_LOAD,
+  CLEAR_CACHE,
+  UPDATE_UDATA,
+  LOAD_ARTIFACT,
+  LOAD_SETTINGS,
+} from './const';
 
 export const errorRequestAction = (state) => {
   return {
     type: SET_ERROR,
+    payload: state,
+  };
+};
+
+export const onLoadArtifacts = (state) => {
+  return {
+    type: LOAD_ARTIFACT,
+    payload: state,
+  };
+};
+
+export const onLoadSettings = (state) => {
+  return {
+    type: LOAD_SETTINGS,
     payload: state,
   };
 };

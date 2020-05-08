@@ -7,6 +7,8 @@ import {
   UDATA_LOAD,
   CLEAR_CACHE,
   UPDATE_UDATA,
+  LOAD_SETTINGS,
+  LOAD_ARTIFACT,
 } from '../../actions/publicActions/const';
 
 const initialState = {
@@ -16,6 +18,8 @@ const initialState = {
   requestError: null,
   udata: {},
   caches: {},
+  settings: [],
+  artifacts: [],
 };
 
 export default (state = initialState, action) => {
@@ -29,6 +33,45 @@ export default (state = initialState, action) => {
             : action.payload
             ? [action.payload]
             : null,
+      };
+    }
+    case LOAD_SETTINGS: {
+      const { payload = [] } = action;
+      const { settings: settingsState = [] } = state;
+      if (payload && typeof payload === 'object' && !Array.isArray(payload)) {
+        const { type = '', metadata = {}, depKey = '' } = payload || {};
+        const parsedSettings = settingsState.map((item) => {
+          const { idSettings = '', settings = [] } = item || {};
+          const isDepItem = idSettings === depKey;
+          if (isDepItem && type === 'add') {
+            return {
+              ...item,
+              settings: [...settings, { ...metadata }],
+            };
+          } else if (isDepItem && type === 'update') {
+            return { ...metadata };
+          }
+
+          return item;
+        });
+
+        return {
+          ...state,
+          settings: parsedSettings,
+        };
+      }
+
+      return {
+        ...state,
+        settings: payload,
+      };
+    }
+
+    case LOAD_ARTIFACT: {
+      const { payload = [] } = action;
+      return {
+        ...state,
+        artifacts: payload,
       };
     }
 

@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { createSelector } from 'reselect';
 import _ from 'lodash';
-import { cache } from './selectors';
+import { cache, settings, artifacts } from './selectors';
 
 const settingsLogsSelector = createSelector(cache, (caches) => {
   const cahceLogs = Object.keys(caches).reduce((logs, key) => {
@@ -25,4 +25,12 @@ const settingsLogsSelector = createSelector(cache, (caches) => {
   return settingsLogs;
 });
 
-export { settingsLogsSelector };
+const settingsStatusSelector = createSelector(settings, (list) => {
+  return list.find((item) => item?.idSettings && item?.idSettings === 'statusSettings');
+});
+
+const settingsArtifactsSelector = createSelector(artifacts, (list) => {
+  return list;
+});
+
+export { settingsLogsSelector, settingsStatusSelector, settingsArtifactsSelector };

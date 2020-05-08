@@ -8,14 +8,14 @@
       "name": "Launch server.js via nodemon",
       "type": "node",
       "request": "launch",
-      "runtimeExecutable": "${workspaceFolder}/node_modules/nodemon",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/nodemon/bin/nodemon.js",
       "program": "${workspaceFolder}/server/src/index.ts",
       "outFiles": ["${workspaceFolder}/server/build/**/*.js"],
-      "restart": true,
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
       "port": 9229,
-      "runtimeArgs": ["--inspect=9229"]
+      "runtimeArgs": ["--inspect=9229"],
+      "trace": true
     }
   ]
 }

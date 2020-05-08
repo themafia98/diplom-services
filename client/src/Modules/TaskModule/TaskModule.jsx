@@ -8,7 +8,7 @@ import Scrollbars from 'react-custom-scrollbars';
 import { Button, message } from 'antd';
 
 import { routeParser } from '../../Utils';
-
+import { settingsStatusSelector } from '../../Utils/selectors';
 import TabContainer from '../../Components/TabContainer';
 import { addTabAction, openPageWithDataAction, removeTabAction } from '../../Redux/actions/routerActions';
 import { loadCurrentData } from '../../Redux/actions/routerActions/middleware';
@@ -245,6 +245,7 @@ class TaskModule extends React.PureComponent {
         setCurrentTab,
         udata = {},
         loaderMethods = {},
+        statusList = {},
       } = this.props;
 
       const isViewTask = path.startsWith('taskModule') && /__/gi.test(path);
@@ -343,6 +344,7 @@ class TaskModule extends React.PureComponent {
               height={heightController ? height - heightController : height}
               onLoadCurrentData={onLoadCurrentData}
               statusApp={status}
+              statusList={statusList}
               router={router}
               onOpenPageWithData={onOpenPageWithData}
               removeTab={removeTab}
@@ -386,12 +388,13 @@ class TaskModule extends React.PureComponent {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, props) => {
   const { udata = {} } = state.publicReducer;
 
   return {
     publicReducer: state.publicReducer,
     router: state.router,
+    statusList: settingsStatusSelector(state, props),
     udata,
   };
 };

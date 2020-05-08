@@ -240,6 +240,7 @@ export const settings: Schema<Settings> = new Schema(
         {
           id: { type: String, dropDups: true },
           value: { type: Schema.Types.Mixed, dropDups: true },
+          active: { type: Boolean, default: false },
         },
       ],
       required: true,

@@ -8,7 +8,7 @@ import Action from '../../Models/Action';
 import Decorators from '../../Decorators';
 
 namespace Settings {
-  const { Controller, Post, Put } = Decorators;
+  const { Controller, Post, Put, Get } = Decorators;
 
   @Controller('/settings')
   export class SettingsController implements Controller<FunctionConstructor> {
@@ -53,31 +53,34 @@ namespace Settings {
       }
     }
 
-    @Post({ path: '/statusList', private: true })
+    @Get({ path: '/statusList', private: true })
+    @Put({ path: '/statusList', private: true })
     protected async statusList(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { dbm } = server.locals;
+      const isGetter = req.method === 'GET';
+
       const params: Params = {
-        methodQuery: 'change_statusList',
+        methodQuery: isGetter ? 'get_statusList' : 'change_statusList',
         from: 'settings',
         done: true,
         status: 'OK',
       };
       try {
         const body: Record<string, object> = req.body;
-        const { queryParams } = body;
+        const { queryParams = {} } = body;
         const { items = [] } = queryParams as Record<string, Array<object>>;
         const { idSettings = '' } = queryParams as Record<string, string>;
 
-        if (!queryParams || _.isEmpty(queryParams)) {
-          throw new Error('Invalid queryParams for change_statusList action');
+        if (!isGetter && (!queryParams || _.isEmpty(queryParams))) {
+          throw new Error(`Invalid queryParams for ${!isGetter ? 'change_statusList' : 'statusList'} action`);
         }
 
         const changeStatusList = new Action.ActionParser({
           actionPath: 'settings',
-          actionType: 'change_statusList',
+          actionType: isGetter ? 'get_statusList' : 'change_statusList',
         });
 
-        const actionParams: ActionParams = { items, idSettings };
+        const actionParams: ActionParams = !isGetter ? { items, idSettings } : {};
         const data: ParserResult = await changeStatusList.getActionData(actionParams);
 
         if (!data) throw new Error('Invalid action data');

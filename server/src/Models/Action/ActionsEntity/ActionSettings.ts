@@ -20,15 +20,16 @@ class ActionSettings implements Action {
       const { idSettings = '' } = actionParam as Record<string, string>;
 
       const settings: Array<Record<string, string>> = draftItems.map((item) => {
-        const { id: idItem, value } = item as Record<string, any>;
+        const { id: idItem, value, active = false } = item as Record<string, any>;
         if (item && _.isString(idItem) && idItem.includes('virtual')) {
           return {
             id: uuid(),
             value,
+            active,
           };
         }
 
-        return _.isPlainObject(item) ? { id: idItem, value } : item;
+        return _.isPlainObject(item) ? { id: idItem, value, active } : item;
       });
 
       const updateProps = {
@@ -48,11 +49,17 @@ class ActionSettings implements Action {
     }
   }
 
+  private async getStatusList(model: Model<Document>, actionParam: ActionParams): Promise<ParserData> {
+    return await this.getEntity().getAll(model, {});
+  }
+
   public async run(actionParam: ActionParams): Promise<ParserData> {
     const model: Model<Document> | null = getModelByName('settings', 'settings');
     if (!model) return null;
 
     switch (this.getEntity().getActionType()) {
+      case 'get_statusList':
+        return this.getStatusList(model, actionParam);
       case 'change_statusList':
         return this.onChangeStatusList(model, actionParam);
       default:

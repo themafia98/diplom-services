@@ -3,9 +3,13 @@ import React from 'react';
 import { settingsModuleType } from './types';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import { settingsLogsSelector } from './selectors';
+import {
+  settingsLogsSelector,
+  settingsStatusSelector,
+  settingsArtifactsSelector,
+} from '../../Utils/selectors';
 import { saveComponentStateAction } from '../../Redux/actions/routerActions';
-import { updateUdata, setStatus } from '../../Redux/actions/publicActions';
+import { updateUdata, setStatus, onLoadSettings } from '../../Redux/actions/publicActions';
 import { message } from 'antd';
 import Scrollbars from 'react-custom-scrollbars';
 import { middlewareCaching } from '../../Redux/actions/publicActions/middleware';
@@ -28,6 +32,7 @@ class SettingsModule extends React.PureComponent {
     oldPassword: '',
     isHideEmail: null,
     isHidePhone: null,
+    statusList: [],
   };
 
   static propTypes = settingsModuleType;
@@ -124,6 +129,7 @@ class SettingsModule extends React.PureComponent {
   onChangeStatusList = async (state, callback = null) => {
     try {
       const { Request } = this.context;
+      const { onSaveStatusList } = this.props;
 
       const queryParams = {
         idSettings: 'statusSettings',
@@ -131,20 +137,22 @@ class SettingsModule extends React.PureComponent {
       };
 
       const rest = new Request();
-      const res = await rest.sendRequest('/settings/statusList', 'POST', { queryParams }, true);
+      const res = await rest.sendRequest('/settings/statusList', 'PUT', { queryParams }, true);
 
       if (!res || res.status !== 200) {
         throw new Error('Bad request profile settings');
       }
 
       const {
-        data: { response: { metadata: { idSettings: saveSettingsId = '', settings = [] } = {} } = {} } = {},
+        data: {
+          response: { metadata: { idSettings: saveSettingsId = '', settings = [] } = {}, metadata = {} } = {},
+        } = {},
       } = res;
 
       if (saveSettingsId !== queryParams.idSettings) {
         throw new Error('Invalid saved settings id');
       }
-
+      onSaveStatusList({ metadata, type: 'update', depKey: saveSettingsId });
       if (callback) callback(settings);
     } catch (error) {
       if (error?.status !== 404) console.error(error);
@@ -336,6 +344,7 @@ class SettingsModule extends React.PureComponent {
     const {
       settingsLogs = null,
       udata: { departament = '', rules = '' },
+      settings = [],
     } = this.props;
     const { config: { settings: { includeRulesSettings = false } = {} } = {} } = this.context;
 
@@ -363,7 +372,9 @@ class SettingsModule extends React.PureComponent {
                   isHideEmail={isHideEmail}
                   isHidePhone={isHidePhone}
                 />
-                {isAdmin && includeRulesSettings ? <PanelAdmin onSaveSettings={this.onSaveSettings} /> : null}
+                {isAdmin && includeRulesSettings ? (
+                  <PanelAdmin statusList={settings} onSaveSettings={this.onSaveSettings} />
+                ) : null}
               </div>
             </Scrollbars>
           </div>
@@ -386,6 +397,8 @@ const mapStateToProps = (state, props) => {
   return {
     router,
     udata,
+    settings: settingsStatusSelector(state, props),
+    artifacts: settingsArtifactsSelector(state, props),
     settingsLogs: settingsLogsSelector(state, props),
     shouldUpdate: shouldUpdate && currentActionTab.includes('settings'),
   };
@@ -397,6 +410,7 @@ const mapDispatchToProps = (dispatch) => {
     onUpdateUdata: (payload) => dispatch(updateUdata(payload)),
     onCaching: (props) => dispatch(middlewareCaching(props)),
     onSetStatus: (props) => dispatch(setStatus(props)),
+    onSaveStatusList: (payload) => dispatch(onLoadSettings(payload)),
   };
 };
 

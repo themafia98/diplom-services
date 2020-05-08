@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { v4 as uuid } from 'uuid';
 import _ from 'lodash';
 import { Button, Collapse, Select } from 'antd';
@@ -8,34 +8,47 @@ const { Panel } = Collapse;
 const { Option } = Select;
 
 const PanelAdmin = (props) => {
-  const { onSaveSettings, statusList: statusListProps } = props;
+  const { onSaveSettings, statusList: { settings: statusListProps = [] } = {} } = props;
+
+  const memoStatusList = useMemo(() => statusListProps.filter(({ active }) => active).map(({ id }) => id), [
+    statusListProps,
+  ]);
 
   const [statusList, setStatusList] = useState(statusListProps);
   const [readOnly, setReadOnly] = useState(true);
-  const [value, setValue] = useState([]);
+  const [value, setValue] = useState(memoStatusList);
   const [haveChanges, setChanges] = useState([]);
 
   const onCear = (response) => {
-    if (_.isArray(response)) setStatusList(response);
+    if (_.isArray(response)) {
+      setStatusList(response);
+      setValue(response.filter(({ active }) => active).map(({ id }) => id));
+    }
 
     setChanges([]);
     setReadOnly(true);
   };
 
   const onSubmit = () => {
-    const statusListForSave = value.map((val) => {
-      const status = statusList.find(({ id = '' }) => {
-        return id === val;
+    const statusListForSave = value.map((statusId) => {
+      const item = statusList.find(({ id: selectedId = '' }) => {
+        return selectedId === statusId;
       });
 
-      if (status && _.isPlainObject(status)) {
-        return { ...status };
+      const isObj = _.isPlainObject(item);
+
+      if (!statusId && isObj) {
+        return { ...item, active: false };
       }
 
-      return { id: `virtual_${uuid()}`, value: val };
+      if (statusId && isObj) {
+        return { ...item, active: true };
+      }
+
+      return { id: `virtual_${uuid()}`, value: statusId, active: true };
     });
 
-    if (onSaveSettings && statusListForSave?.length) {
+    if (onSaveSettings) {
       onSaveSettings('statusSettings', statusListForSave, onCear);
     }
   };

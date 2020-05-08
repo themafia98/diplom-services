@@ -7,7 +7,6 @@ import Scrollbars from 'react-custom-scrollbars';
 import TitleModule from '../../../Components/TitleModule';
 import moment from 'moment';
 import { Button, Input, Select, DatePicker, message } from 'antd';
-
 import Textarea from '../../../Components/Textarea';
 import File from '../../../Components/File';
 import { v4 as uuid } from 'uuid';
@@ -24,9 +23,10 @@ class CreateTask extends React.PureComponent {
   state = {
     load: false,
     trySubmit: false,
+    statusListName: [],
     card: {
       key: uuid(),
-      status: 'Открыт',
+      status: '',
       name: null,
       priority: 'Средний',
       uidCreater: null,
@@ -96,6 +96,19 @@ class CreateTask extends React.PureComponent {
     } catch (err) {
       message.error('Ошибка загрузки сотрудников.');
       console.error(err);
+    }
+  };
+
+  componentDidUpdate = () => {
+    const { statusListName = [] } = this.state;
+    const { statusList: { settings = [] } = {} } = this.props;
+    const filteredStatusNames = settings.map(({ value = '' }) => value).filter(Boolean);
+
+    if (filteredStatusNames?.length !== statusListName?.length) {
+      this.setState({
+        ...this.state,
+        statusListName: filteredStatusNames,
+      });
     }
   };
 
@@ -194,6 +207,15 @@ class CreateTask extends React.PureComponent {
     }
   };
 
+  onChangeHandlerSelectState = (stateName) => {
+    if (!_.isString(stateName) || stateName === this.state.card?.status) return;
+    else {
+      this.setState({ ...this.state, card: { ...this.state.card, status: stateName } }, () => {
+        this.validation(true);
+      });
+    }
+  };
+
   offlineMode = (validHash) => {
     const offlineValidHash = { ...validHash, modeAdd: 'offline' };
     const { clientDB = {} } = this.context;
@@ -205,6 +227,19 @@ class CreateTask extends React.PureComponent {
           message.success(`Задача создана.`),
         );
       };
+  };
+
+  renderStatusList = () => {
+    const { statusListName = [] } = this.state;
+    return statusListName
+      .map((status, index) => {
+        return (
+          <Option key={`${index}${status}`} value={status} label={status}>
+            <span className="value">{status}</span>
+          </Option>
+        );
+      })
+      .filter(Boolean);
   };
 
   handlerCreateTask = async (event) => {
@@ -359,6 +394,15 @@ class CreateTask extends React.PureComponent {
                     name="name"
                     type="text"
                   />
+                  <label> Статус: </label>
+                  <Select
+                    className={clsx(!_.isEmpty(errorBundle) && errorBundle.state ? 'isError' : null)}
+                    onChange={this.onChangeHandlerSelectState}
+                    name="state"
+                    type="text"
+                  >
+                    {this.renderStatusList()}
+                  </Select>
                   <label>Приоритет: </label>
                   <Select
                     className={clsx(!_.isEmpty(errorBundle) && errorBundle.priority ? 'isError' : null)}

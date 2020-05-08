@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { appType } from './types';
 import _ from 'lodash';
@@ -8,6 +9,7 @@ import { message } from 'antd';
 import { PrivateRoute } from './Components/Helpers';
 import { forceUpdateDetectedInit } from './Utils';
 
+import { settingsLoader } from './Redux/actions/publicActions/middleware';
 import { setStatus, loadUdata } from './Redux/actions/publicActions';
 import { addTabAction, setActiveTabAction, logoutAction } from './Redux/actions/routerActions';
 
@@ -36,6 +38,7 @@ class App extends React.Component {
       setCurrentTab,
       router: { currentActionTab = '', actionTabs = [] } = {},
       onLoadUdata,
+      onLoadSettings,
     } = this.props;
     const { config = {}, Request, config: { appActive = true } = {} } = this.context;
     if (!appActive) return;
@@ -73,6 +76,7 @@ class App extends React.Component {
         if (isUserData) {
           try {
             await onLoadUdata(udata);
+            await onLoadSettings({ wishList: [{ name: 'statusList' }] });
             addTab(routeParser({ path }));
           } catch (error) {
             console.log(error);
@@ -82,6 +86,7 @@ class App extends React.Component {
         if (isUserData) {
           try {
             await onLoadUdata(udata);
+            await onLoadSettings({ wishList: [{ name: 'statusList' }] });
             setCurrentTab(path);
           } catch (error) {
             console.log(error);
@@ -177,6 +182,7 @@ const mapDispatchToProps = (dispatch) => {
     setCurrentTab: (tab) => dispatch(setActiveTabAction(tab)),
     onLogoutAction: async () => await dispatch(logoutAction()),
     onLoadUdata: async (udata) => await dispatch(loadUdata(udata)),
+    onLoadSettings: async (payload) => await dispatch(settingsLoader(payload)),
   };
 };
 
