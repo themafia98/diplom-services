@@ -414,6 +414,7 @@ class CreateTask extends React.PureComponent {
                     <Option value="Низкий">Низкий</Option>
                     <Option value="Средний">Средний</Option>
                     <Option value="Высокий">Высокий</Option>
+                    <Option value="Критический">Критический</Option>
                   </Select>
                   <label>Назначить исполнителя/исполнителей:</label>
                   <Select

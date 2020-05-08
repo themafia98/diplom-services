@@ -513,6 +513,7 @@ class TaskView extends React.PureComponent {
       'Высокий',
       'Средний',
       'Низкий',
+      'Критический',
     ]).filter(Boolean);
   };
 
