@@ -1,6 +1,7 @@
 // @ts-nocheck
 import React from 'react';
 import clsx from 'clsx';
+import TagsContainer from '../../../Components/TagsContainer';
 import { Descriptions, Input, Select, DatePicker } from 'antd';
 import Output from '../../../Components/Output';
 import moment from 'moment';
@@ -12,6 +13,7 @@ function renderDescription(theme = 'default') {
     onOpenPageWithData,
     onChangeEditableStart,
     onChangeEditableEnd,
+    shouldVisibleButtonAddTag,
     cachesJurnalList,
     cachesAuthorList,
     onChangeEditable,
@@ -36,7 +38,6 @@ function renderDescription(theme = 'default') {
     date,
     key,
   }) => {
-
     return (
       <>
         <Descriptions.Item label="Артикул">
@@ -142,6 +143,15 @@ function renderDescription(theme = 'default') {
               ))}
             </Select>
           ) : null}
+        </Descriptions.Item>
+        <Descriptions.Item label="Метки">
+          <div className="tags">
+            <TagsContainer
+              shouldVisibleButtonAddTag={shouldVisibleButtonAddTag}
+              modeControll={modeControll}
+              modeControllEdit={modeControllEdit}
+            />
+          </div>
         </Descriptions.Item>
         <Descriptions.Item label="Дата назначения">
           {modeControll === 'default' ? (
