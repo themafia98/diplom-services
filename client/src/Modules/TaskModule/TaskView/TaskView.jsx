@@ -590,10 +590,10 @@ class TaskView extends React.PureComponent {
     const {
       modeControll,
       modeControllEdit,
-      modeControllEdit: { tags: tagList = [] },
       filesArray = [],
       filteredUsers = [],
       isLoad = false,
+      modeControllEdit: { tags: tagsListState = [] },
     } = this.state;
 
     const {
@@ -604,6 +604,7 @@ class TaskView extends React.PureComponent {
       uidCreater = '',
       editor = [],
       date = [],
+      tags: tagsView = [],
       description = '',
     } = routeDataActive || {};
     const {
@@ -671,7 +672,8 @@ class TaskView extends React.PureComponent {
       modeControll,
       accessStatus,
       uidCreater,
-      tagList,
+      tagList: _.uniqBy([...tagsListState, ...tagsView], 'id'),
+      tagsView,
       priority,
       status,
       isLoad,
@@ -680,7 +682,7 @@ class TaskView extends React.PureComponent {
       date,
       key,
     };
-    console.log(this.state.tagList);
+
     return (
       <Scrollbars hideTracksWhenNotNeeded={true}>
         <TitleModule classNameTitle="taskModuleTittle" title="Карточка задачи" />

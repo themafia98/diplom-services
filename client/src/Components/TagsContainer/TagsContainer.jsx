@@ -7,7 +7,7 @@ import { tagsContainerType } from './types';
 import { Input, Tag, Button, Tooltip } from 'antd';
 
 const TagsContainer = (props) => {
-  const { shouldVisibleButtonAddTag, modeControll, modeControllEdit, tagList = [], onChangeTagList } = props;
+  const { shouldVisibleButtonAddTag, modeControll, modeControllEdit, tagList, onChangeTagList } = props;
 
   const setTagList = useCallback(onChangeTagList, [onChangeTagList]);
 
@@ -34,7 +34,7 @@ const TagsContainer = (props) => {
       ...tagList,
       {
         color: hex,
-        id: `virtual__${uuid()}`,
+        id: `${uuid()}`,
         sortable: false,
         tagValue,
       },
@@ -56,7 +56,6 @@ const TagsContainer = (props) => {
   return (
     <>
       {tagList.map((tag) => {
-        debugger;
         const { color = '', id = '', tagValue = '' } = tag;
         const editableTabProps = isEditable
           ? {

@@ -30,6 +30,7 @@ function renderDescription(theme = 'default') {
     accessStatus,
     uidCreater,
     priority,
+    tagsView,
     tagList,
     status,
     isLoad,
@@ -150,6 +151,7 @@ function renderDescription(theme = 'default') {
           <div className="tags">
             <TagsContainer
               tagList={tagList}
+              tagsView={tagsView}
               onChangeTagList={onChangeTagList}
               shouldVisibleButtonAddTag={shouldVisibleButtonAddTag}
               modeControll={modeControll}
