@@ -5,8 +5,8 @@ import { Drawer } from 'antd';
 class DrawerViewer extends React.PureComponent {
   state = {};
   render() {
-    const { onClose, visible } = this.props;
-    return <Drawer onClose={onClose} title="Панель администратора" width={720} visible={visible} />;
+    const { onClose, visible, title = '' } = this.props;
+    return <Drawer onClose={onClose} title={title} width={720} visible={visible} />;
   }
 }
 

@@ -6,13 +6,15 @@ import Scrollbars from 'react-custom-scrollbars';
 import moment from 'moment';
 import TitleModule from '../../../Components/TitleModule';
 import { Calendar, Popover, Button, message, Dropdown, Menu } from 'antd';
-
+import DrawerViewer from '../../../Components/DrawerViewer';
 import modelContext from '../../../Models/context';
 import { routePathNormalise } from '../../../Utils';
 import Output from '../../../Components/Output';
 
 class TaskModuleCalendar extends React.PureComponent {
   state = {
+    selectedEntityId: null,
+    drawerVisible: false,
     visbileDropdownId: null,
     visbileDropdown: false,
   };
@@ -90,8 +92,15 @@ class TaskModuleCalendar extends React.PureComponent {
     return listData || [];
   };
 
-  createTask = (value) => {
-    console.log(value);
+  createTask = (selectedEntityId, event) => {
+    event.stopPropagation();
+    this.setState(
+      {
+        ...this.state,
+        selectedEntityId,
+      },
+      () => this.onChangeDrawerVisible(),
+    );
   };
 
   onVisibleChange = (id, visible) => {
@@ -128,7 +137,7 @@ class TaskModuleCalendar extends React.PureComponent {
     const menu = (
       <Menu className="dropdown-action">
         <Menu.Item>
-          <Button type="primary" className="item-action" onClick={this.createTask.bind(this, value)}>
+          <Button type="primary" className="item-action" onKeyDown={this.createTask.bind(this, value)}>
             Создать задачу
           </Button>
         </Menu.Item>
@@ -152,7 +161,7 @@ class TaskModuleCalendar extends React.PureComponent {
           {dropdown(
             <Popover content={list}>
               <Button>
-                <span className="calendarDate-content">
+                <span onClick={(e) => e.stopPropagation()} className="calendarDate-content">
                   {outValues ? (outValues.content ? outValues.content : outValues) : null}
                 </span>
               </Button>
@@ -161,10 +170,21 @@ class TaskModuleCalendar extends React.PureComponent {
         </>
       );
     }
-    return dropdown(<span />);
+    return dropdown(<span onClick={(e) => e.stopPropagation()} />);
+  };
+
+  onChangeDrawerVisible = () => {
+    debugger;
+    this.setState((state) => {
+      return {
+        ...this.state,
+        drawerVisible: true,
+      };
+    });
   };
 
   render() {
+    const { drawerVisible = false } = this.state;
     return (
       <Scrollbars hideTracksWhenNotNeeded={true}>
         <div className="taskModuleCalendar">
@@ -176,6 +196,11 @@ class TaskModuleCalendar extends React.PureComponent {
               monthCellRender={this.monthCellRender}
             />
           </div>
+          <DrawerViewer
+            title="Создание задачи"
+            visible={drawerVisible}
+            onClose={this.onChangeDrawerVisible}
+          />
         </div>
       </Scrollbars>
     );
