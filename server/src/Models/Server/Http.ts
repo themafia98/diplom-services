@@ -110,7 +110,7 @@ namespace Http {
             usernameField: 'email',
             passwordField: 'password',
           },
-          async (email: string, password: string, done: Function) => {
+          async (email: string, password: string, done: Function): Promise<Function> => {
             try {
               const connect = await dbm.connection();
               if (!connect) throw new Error('Bad connect');
@@ -162,26 +162,28 @@ namespace Http {
         }),
       );
 
-      passport.serializeUser((user: Record<string, ObjectId>, done: Function) => {
+      passport.serializeUser((user: Record<string, ObjectId>, done: Function): void => {
         const { id } = user || {};
         done(null, id);
       });
 
-      passport.deserializeUser(async (id: string, done: Function) => {
-        try {
-          const connect = await dbm.connection();
-          if (!connect) throw new Error('Bad connect');
-          const result = await UserModel.findById(id);
-          if (!result) {
-            await dbm.disconnect().catch((err: Error) => console.error(err));
-            console.log('deserializeUser error');
+      passport.deserializeUser(
+        async (id: string, done: Function): Promise<void | Function> => {
+          try {
+            const connect = await dbm.connection();
+            if (!connect) throw new Error('Bad connect');
+            const result = await UserModel.findById(id);
+            if (!result) {
+              await dbm.disconnect().catch((err: Error) => console.error(err));
+              console.log('deserializeUser error');
+            }
+            done(null, result);
+          } catch (err) {
+            console.error(err);
+            return done(err, null);
           }
-          done(null, result);
-        } catch (err) {
-          console.error(err);
-          return done(err, null);
-        }
-      });
+        },
+      );
     }
 
     public async start(): Promise<void> {

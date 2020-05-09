@@ -24,8 +24,8 @@ class ProcessRouter {
   }
 
   public removeWorker(workerId: number): void {
-    const index = this.getWorkers().findIndex((worker) => worker.id === workerId);
-    this.getWorkers().splice(index, 1);
+    const index: number = this.getWorkers().findIndex((worker) => worker.id === workerId);
+    this.getWorkers().splice(index !== -1 ? index : 0, 1);
   }
 
   public onExit(worker: Worker): void {

@@ -13,7 +13,7 @@ import Output from '../../../Components/Output';
 
 class TaskModuleCalendar extends React.PureComponent {
   state = {
-    selectedEntityId: null,
+    selectedEntity: null,
     drawerVisible: false,
     visbileDropdownId: null,
     visbileDropdown: false,
@@ -92,18 +92,20 @@ class TaskModuleCalendar extends React.PureComponent {
     return listData || [];
   };
 
-  createTask = (selectedEntityId, event) => {
+  createTask = (selectedEntity, event) => {
     event.stopPropagation();
     this.setState(
       {
         ...this.state,
-        selectedEntityId,
+        selectedEntity,
+        visbileDropdownId: null,
+        visbileDropdown: false,
       },
       () => this.onChangeDrawerVisible(),
     );
   };
 
-  onVisibleChange = (id, visible) => {
+  onVisibleChange = (id = null, visible = false) => {
     this.setState({
       ...this.state,
       visbileDropdownId: visible ? id : null,
@@ -137,7 +139,7 @@ class TaskModuleCalendar extends React.PureComponent {
     const menu = (
       <Menu className="dropdown-action">
         <Menu.Item>
-          <Button type="primary" className="item-action" onKeyDown={this.createTask.bind(this, value)}>
+          <Button type="primary" className="item-action" onClick={this.createTask.bind(this, value)}>
             Создать задачу
           </Button>
         </Menu.Item>
@@ -174,17 +176,16 @@ class TaskModuleCalendar extends React.PureComponent {
   };
 
   onChangeDrawerVisible = () => {
-    debugger;
     this.setState((state) => {
       return {
         ...this.state,
-        drawerVisible: true,
+        drawerVisible: !state.drawerVisible,
       };
     });
   };
 
   render() {
-    const { drawerVisible = false } = this.state;
+    const { drawerVisible = false, selectedEntity = null } = this.state;
     return (
       <Scrollbars hideTracksWhenNotNeeded={true}>
         <div className="taskModuleCalendar">
@@ -199,6 +200,7 @@ class TaskModuleCalendar extends React.PureComponent {
           <DrawerViewer
             title="Создание задачи"
             visible={drawerVisible}
+            selectedEntity={selectedEntity}
             onClose={this.onChangeDrawerVisible}
           />
         </div>
