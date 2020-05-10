@@ -43,9 +43,17 @@ class ClientSideDatabase {
    */
   #schema = null;
   /**
+   * @private
    * @param {string} name
    * @param {number} version
    */
+
+  /**
+   * @private
+   * @param {Array<{ entity: string, props: object }>}
+   */
+  #availableEntitysList = [];
+
   constructor(name, version) {
     this.#db = null;
     this.#name = name;
@@ -53,11 +61,72 @@ class ClientSideDatabase {
     this.#isInit = false;
     this.#crashStatus = false;
     this.#schema = new Schema('no-strict');
+    this.#availableEntitysList = [
+      Object.freeze({
+        entity: 'users',
+        props: { unique: true, keyPath: '_id', autoIncrement: true },
+        index: {
+          unique: function (key) {
+            return key === '_id' || key === 'email';
+          },
+          schema: USER_SCHEMA,
+        },
+      }),
+      Object.freeze({
+        entity: 'wikiTree',
+        props: { unique: true, keyPath: '_id', autoIncrement: true },
+        index: {
+          unique: function (key) {
+            return key === '_id';
+          },
+        },
+        schema: WIKI_NODE_TREE,
+      }),
+      Object.freeze({
+        entity: 'tasks',
+        props: { unique: true, keyPath: '_id', autoIncrement: true },
+        index: {
+          unique: function (key) {
+            return key === '_id';
+          },
+        },
+        schema: TASK_SCHEMA,
+      }),
+      Object.freeze({
+        entity: 'news',
+        props: { unique: true, keyPath: '_id', autoIncrement: true },
+        index: {
+          unique: function (key) {
+            return key === '_id';
+          },
+        },
+        schema: NEWS_SCHEMA,
+      }),
+      Object.freeze({
+        entity: 'jurnalworks',
+        props: { unique: true, keyPath: '_id', autoIncrement: true },
+        index: {
+          unique: function (key) {
+            return key === '_id';
+          },
+        },
+        schema: TASK_CONTROLL_JURNAL_SCHEMA,
+      }),
+    ];
   }
 
-  /**
-   * @param {boolean} state
-   */
+  get db() {
+    return this.#db;
+  }
+
+  set db(DB) {
+    this.#db = DB;
+  }
+
+  get availableList() {
+    return this.#availableEntitysList;
+  }
+
   updateStateInit(state) {
     this.#isInit = state;
   }
@@ -78,14 +147,6 @@ class ClientSideDatabase {
     return this.#schema;
   }
 
-  get db() {
-    return this.#db;
-  }
-
-  set db(DB) {
-    this.#db = DB;
-  }
-
   getInitStatus() {
     return this.#isInit;
   }
@@ -100,183 +161,73 @@ class ClientSideDatabase {
 
   async init() {
     if (this.getInitStatus()) return;
+
     const self = this;
     try {
       self.db = await openDB(self.getName(), self.getVersion(), {
         async blocking() {
           self.updateStateInit(false);
           await self.db.close();
-          return await self.init();
         },
         async upgrade(
           db = self?.db,
-          oldVersion = self.db.version,
+          oldVersion,
           newVersion = ++self.db.version,
           transaction = self.db.transaction,
         ) {
           self.db = db;
-          let isUsersObject = false;
-          let isTasksObject = false;
-          let isjurnalWorksObject = false;
-          let isWikiTreeObject = false;
-          let isNewsObject = false;
 
-          const newVersionUpdate = newVersion !== oldVersion && oldVersion !== 0;
+          const newVersionUpdate = newVersion !== oldVersion && oldVersion;
 
           if (newVersionUpdate) {
-            return await deleteDB(self.getName(), {
+            await deleteDB(self.getName(), {
               async blocked() {
                 self.updateStateInit(false);
                 console.log('Database sussesfully clear and update after error or rollback');
-                return await self.init();
               },
             });
+            alert('Новое обновление, приложение будет перезагружено');
+            window.location.reload();
+            return;
           }
 
-          if (self.isContains('users') && !newVersionUpdate) isUsersObject = true;
-          if (self.isContains('wikiTree') && !newVersionUpdate) isWikiTreeObject = true;
-          if (self.isContains('tasks') && !newVersionUpdate) isTasksObject = true;
-          if (self.isContains('news') && !newVersionUpdate) isNewsObject = true;
-          if (self.isContains('jurnalworks') && !newVersionUpdate) isjurnalWorksObject = true;
+          const storeKeyList = [];
 
-          const objectStoreUsers =
-            !isUsersObject && !newVersionUpdate
-              ? self.db?.createObjectStore('users', {
-                  unique: true,
-                  keyPath: '_id',
-                  autoIncrement: true,
-                })
-              : newVersionUpdate
-              ? self.db.transaction.objectStore('users')
-              : null;
+          for await (let entity of self.availableList) {
+            const { entity: key, props, index, schema } = entity || {};
 
-          if (!isUsersObject) {
-            const schemaUsers = self.getSchema()?.getValidateSchema(USER_SCHEMA);
-            const keysUsers = Object.keys(schemaUsers);
+            const isExist = self.isContains(key);
+            const shouldCreate = !isExist && !newVersionUpdate;
 
-            keysUsers.forEach((key, i) => {
+            const store = shouldCreate
+              ? await self.db.createObjectStore(key, { ...props })
+              : await self.db.transaction.objectStore(key);
+
+            if (!shouldCreate) {
+              const schema = self.getSchema()?.getValidateSchema(schema);
+              const keys = Object.keys(schema);
+              storeKeyList.push({ store, keys, index });
+            }
+          }
+
+          for await (let storeParams of storeKeyList) {
+            let i = 0;
+            const { store, keys, index } = storeParams || {};
+            for await (let key of keys) {
               if (newVersionUpdate) {
-                const keysIndex = Object.keys(objectStoreUsers.indexNames);
-                const isCanDelete = keysUsers.includes(objectStoreUsers.indexNames[keysIndex[i]]);
-                if (isCanDelete) objectStoreUsers.deleteIndex(key);
+                const keysIndex = Object.keys(store.indexNames);
+                const isCanDelete = keys.includes(store.indexNames[keysIndex[i]]);
+                if (isCanDelete) await store.deleteIndex(key);
               }
-              objectStoreUsers.createIndex(key, key, {
-                unique: key === '_id' || key === 'email',
+
+              await store.createIndex(key, key, {
+                unique: index?.unique(key),
               });
-            });
+              i++;
+            }
           }
 
-          const objectStoreTasks =
-            !isTasksObject && !newVersionUpdate
-              ? self.db.createObjectStore('tasks', {
-                  unique: true,
-                  keyPath: 'key',
-                  autoIncrement: true,
-                })
-              : newVersionUpdate
-              ? self.db.transaction.objectStore('tasks')
-              : null;
-
-          if (!isTasksObject) {
-            const schemaTasks = self.getSchema()?.getValidateSchema(TASK_SCHEMA);
-            const keysTasks = Object.keys(schemaTasks);
-
-            keysTasks.forEach((key, i) => {
-              if (newVersionUpdate) {
-                const keysIndex = Object.keys(objectStoreTasks.indexNames);
-                const isCanDelete = keysTasks.includes(objectStoreTasks.indexNames[keysIndex[i]]);
-                if (isCanDelete) objectStoreTasks.deleteIndex(key);
-              }
-              objectStoreTasks.createIndex(key, key, {
-                unique: key === 'key',
-              });
-            });
-          }
-
-          const objectStoreWikiTree =
-            !isWikiTreeObject && !newVersionUpdate
-              ? self.db.createObjectStore('wikiTree', {
-                  unique: true,
-                  keyPath: '_id',
-                  autoIncrement: true,
-                })
-              : newVersionUpdate
-              ? self.db.transaction.objectStore('wikiTree')
-              : null;
-
-          if (!isWikiTreeObject) {
-            const schemaWikiTree = self.getSchema()?.getValidateSchema(WIKI_NODE_TREE);
-            const keysWikiTree = Object.keys(schemaWikiTree);
-
-            keysWikiTree.forEach((key, i) => {
-              if (newVersionUpdate) {
-                const keysIndex = Object.keys(objectStoreWikiTree.indexNames);
-                const isCanDelete = keysWikiTree.includes(objectStoreWikiTree.indexNames[keysIndex[i]]);
-                if (isCanDelete) objectStoreWikiTree.deleteIndex(key);
-              }
-              objectStoreWikiTree.createIndex(key, key, {
-                unique: key === 'key',
-              });
-            });
-          }
-
-          const objectStoreNews =
-            !isNewsObject && !newVersionUpdate
-              ? self.db.createObjectStore('news', {
-                  unique: true,
-                  keyPath: '_id',
-                  autoIncrement: true,
-                })
-              : newVersionUpdate
-              ? self.db.transaction.objectStore('news')
-              : null;
-
-          if (!isNewsObject) {
-            const schemaNews = self.getSchema()?.getValidateSchema(NEWS_SCHEMA);
-            const keysNews = Object.keys(schemaNews);
-
-            keysNews.forEach((key, i) => {
-              if (newVersionUpdate) {
-                const keysIndex = Object.keys(objectStoreNews.indexNames);
-                const isCanDelete = keysNews.includes(objectStoreNews.indexNames[keysIndex[i]]);
-                if (isCanDelete) objectStoreNews.deleteIndex(key);
-              }
-              objectStoreNews.createIndex(key, key, {
-                unique: key === 'key',
-              });
-            });
-          }
-
-          const objectStorejurnalWorks =
-            !isjurnalWorksObject && !newVersionUpdate
-              ? self.db.createObjectStore('jurnalworks', {
-                  unique: true,
-                  keyPath: 'id',
-                  autoIncrement: true,
-                })
-              : newVersionUpdate
-              ? self.db.transaction.objectStore('jurnalworks')
-              : null;
-
-          if (!isjurnalWorksObject) {
-            const schemajurnalWorks = self.getSchema()?.getValidateSchema(TASK_CONTROLL_JURNAL_SCHEMA);
-            const keysjurnalWorks = Object.keys(schemajurnalWorks);
-
-            keysjurnalWorks.forEach((key, i) => {
-              if (newVersionUpdate) {
-                const keysIndex = Object.keys(objectStorejurnalWorks.indexNames);
-                const isCanDelete = keysjurnalWorks.includes(objectStorejurnalWorks.indexNames[keysIndex[i]]);
-                if (isCanDelete) objectStorejurnalWorks.deleteIndex(key);
-              }
-              objectStorejurnalWorks.createIndex(key, key, {
-                unique: key === 'id',
-              });
-            });
-          }
-
-          if (newVersionUpdate) {
-            console.log('Database update new version.');
-          }
+          if (newVersionUpdate) console.log('Database update new version.');
         },
       });
 

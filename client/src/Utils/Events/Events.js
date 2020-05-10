@@ -53,9 +53,9 @@ const sucessEvent = async (dispatch, dep, mode = '', multiple = false, cursor = 
   });
   const iEmpty = index === -1;
   if (copyStore && iEmpty) {
-    if (cursor.value.modeAdd === 'offline') {
-      const copy = { ...cursor.value, modeAdd: 'online' };
-      cursor.value.modeAdd = 'online';
+    if (cursor.value?.offline) {
+      const copy = { ...cursor.value, offline: false };
+      cursor.value.offline = false;
       undefiendCopyStore.push({ ...copy });
     }
   }

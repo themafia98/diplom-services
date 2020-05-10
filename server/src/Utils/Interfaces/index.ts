@@ -181,7 +181,7 @@ export interface Task extends Document {
   description: string;
   date: Array<string>;
   comments: Array<object>;
-  modeAdd: string;
+  offline: boolean;
 }
 
 export interface Jurnal {
@@ -190,7 +190,7 @@ export interface Jurnal {
   editor: string;
   date: Array<string>;
   description: string;
-  modeAdd: string;
+  offline: boolean;
   methodObj: object;
 }
 

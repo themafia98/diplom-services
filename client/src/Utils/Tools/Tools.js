@@ -15,17 +15,40 @@ const createNotification = async (type = '', item = {}, actionType = 'set_notifi
   );
 };
 
-const createEntity = async (storeName = '', body = {}, sliceCreaterNumber = 0) => {
+const createEntity = async (storeName = '', body = {}, dep = {}, sliceCreaterNumber = 0) => {
+  const { statusApp = 'online', clientDB = null } = dep;
   if (!storeName || _.isEmpty(body)) return;
-  const rest = new Request();
+  try {
+    if (statusApp === 'online') {
+      const rest = new Request();
 
-  const createPath = `${storeName[0].toUpperCase()}${storeName.slice(1)}`;
-  return await rest.sendRequest(
-    `/${storeName}/create${createPath.slice(0, sliceCreaterNumber ? sliceCreaterNumber : createPath.length)}`,
-    'POST',
-    body,
-    true,
-  );
+      const createPath = `${storeName[0].toUpperCase()}${storeName.slice(1)}`;
+      const res = await rest.sendRequest(
+        `/${storeName}/create${createPath.slice(
+          0,
+          sliceCreaterNumber ? sliceCreaterNumber : createPath.length,
+        )}`,
+        'POST',
+        body,
+        true,
+      );
+
+      if (res.status !== 200) {
+        if (res?.status !== 404) console.error(res);
+        throw new Error('Bad response');
+      }
+
+      return { result: res, offline: res?.status !== 404 ? false : true };
+    }
+
+    const offlineBody = { ...body, offline: true };
+    const { clientDB = {} } = this.context;
+    const putAction = await clientDB.addItem('tasks', offlineBody);
+    return { result: putAction, offline: true };
+  } catch (error) {
+    console.error(error);
+    return { result: null, offline: null };
+  }
 };
 
 const deleteFile = async (store = '', body = {}) => {

@@ -4,7 +4,7 @@
   "supportIE": true,
   "clientDB": {
     "name": "controllSystemDB",
-    "version": 1
+    "version": 3
   },
   "appActive": true,
   "regInclude": true,

@@ -148,7 +148,7 @@ class Schema {
     if (!_.isArray(keysData) || !_.isArray(keysSchema)) return false;
     let validLenth = keysData.length;
 
-    const isFindMode = keysData.findIndex((it) => it === 'modeAdd' && _.isString(data[it])) !== -1;
+    const isFindMode = keysData.findIndex((it) => it === 'offline' && _.isString(data[it])) !== -1;
     if (isFindMode) validLenth--;
 
     const isCreated = keysData.findIndex((it) => it === 'createdAt' && _.isString(data[it])) !== -1;
@@ -165,7 +165,7 @@ class Schema {
     return this.getMode() !== 'no-strict'
       ? keysData.every((dataKey, i) => dataKey === keysSchema[i])
       : keysData.every((dataKey) => {
-          if (dataKey !== 'modeAdd' && this.isPublicKey(dataKey)) {
+          if (dataKey !== 'offline' && this.isPublicKey(dataKey)) {
             return keysSchema.findIndex((it) => it === dataKey) !== -1;
           }
           return true;

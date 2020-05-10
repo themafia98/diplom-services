@@ -123,7 +123,7 @@ export const task: Schema<Task> = new Schema(
     description: { type: String, required: true },
     date: { type: [String], required: true },
     comments: { type: [Object], required: true },
-    modeAdd: String,
+    offline: Boolean,
     tags: [
       {
         color: { type: String, required: true },
@@ -143,7 +143,7 @@ export const jurnalItem: Schema<Jurnal> = new Schema(
     editor: { type: String, required: true },
     date: { type: [String], required: true },
     description: { type: String, required: true },
-    modeAdd: String,
+    offline: Boolean,
   },
   { timestamps: true },
 );

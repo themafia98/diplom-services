@@ -45,6 +45,7 @@ describe('<TaskView /> template', () => {
       if (keyCard === 'description') {
       } else if (keyCard === 'date') {
         if (card.date[0]) expect(TaskViewWrapper.find('.startDate').exists()).toBeTruthy();
+
         if (card.date[1]) expect(TaskViewWrapper.find('.endDate').exists()).toBeTruthy();
       }
     });

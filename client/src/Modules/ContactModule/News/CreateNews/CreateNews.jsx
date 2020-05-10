@@ -42,6 +42,7 @@ class CreateNews extends React.PureComponent {
   onPublish = async (contentState) => {
     const { statusApp = '', udata: { displayName = '', _id: uid = '' } = {} } = this.props;
     const { titleNews = '' } = this.state;
+    const { clientDB = null } = this.context;
 
     if (!contentState) {
       return message.error('Ничего не найдено');
@@ -60,7 +61,7 @@ class CreateNews extends React.PureComponent {
           },
           metadata: { title: titleNews, content: contentState },
         };
-        const res = await createEntity('news', body);
+        const res = await createEntity('news', body, { clientDB, statusApp });
         const { data: { response = {} } = {} } = res || {};
         const { metadata: { _id: key = '' } = {}, params: { done = false } = {} } = response;
 
