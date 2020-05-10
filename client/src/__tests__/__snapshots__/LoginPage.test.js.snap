@@ -29,6 +29,7 @@ exports[`<LoginPage /> template Should be render 1`] = `
       />
       <Input
         aria-label="password"
+        autoComplete=""
         name="password"
         placeholder="password"
         size="large"
@@ -46,6 +47,16 @@ exports[`<LoginPage /> template Should be render 1`] = `
       >
         Войти
       </Button>
+      <ModalWindow
+        mode="reg"
+      />
+      <NavLink
+        aria-label="recovory-link"
+        className="recovory-link"
+        to="/recovory"
+      >
+        Восстановление доступа
+      </NavLink>
     </form>
   </div>
 </div>
@@ -80,6 +91,7 @@ exports[`<LoginPage /> template Should be render 2`] = `
       />
       <Input
         aria-label="password"
+        autoComplete=""
         name="password"
         placeholder="password"
         size="large"
@@ -97,6 +109,16 @@ exports[`<LoginPage /> template Should be render 2`] = `
       >
         Войти
       </Button>
+      <ModalWindow
+        mode="reg"
+      />
+      <NavLink
+        aria-label="recovory-link"
+        className="recovory-link"
+        to="/recovory"
+      >
+        Восстановление доступа
+      </NavLink>
     </form>
   </div>
 </div>
@@ -131,6 +153,7 @@ exports[`<LoginPage /> template Should be render 3`] = `
       />
       <Input
         aria-label="password"
+        autoComplete=""
         name="password"
         placeholder="password"
         size="large"
@@ -148,6 +171,16 @@ exports[`<LoginPage /> template Should be render 3`] = `
       >
         Войти
       </Button>
+      <ModalWindow
+        mode="reg"
+      />
+      <NavLink
+        aria-label="recovory-link"
+        className="recovory-link"
+        to="/recovory"
+      >
+        Восстановление доступа
+      </NavLink>
     </form>
   </div>
 </div>
@@ -168,6 +201,7 @@ exports[`<LoginPage /> template Should be render 4`] = `
       className="loginContainer__loginForm"
       method="POST"
       name="loginForm"
+      onKeyDown={[Function]}
     >
       <div
         className="notificationWrapper"
@@ -181,6 +215,7 @@ exports[`<LoginPage /> template Should be render 4`] = `
       />
       <Input
         aria-label="password"
+        autoComplete=""
         name="password"
         placeholder="password"
         size="large"

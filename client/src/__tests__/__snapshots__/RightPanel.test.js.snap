@@ -5,6 +5,7 @@ exports[`<RightPanel /> template should be render 1`] = `
   className="headerControllers rightPanel"
 >
   <UserPopup
+    statusApp=""
     udata={Object {}}
   />
   <div
@@ -12,6 +13,7 @@ exports[`<RightPanel /> template should be render 1`] = `
   >
     <NotificationPopup
       notificationDep={Object {}}
+      statusApp=""
       type="private"
       udata={Object {}}
     />
@@ -19,13 +21,17 @@ exports[`<RightPanel /> template should be render 1`] = `
       additionalClassName="updaterDefault"
       className=""
       onClick={[Function]}
+      statusApp=""
     />
     <div
       className="logout"
     >
       Выйти
     </div>
-    <Status />
+    <Status
+      shouldUpdate={false}
+      statusApp=""
+    />
   </div>
 </div>
 `;

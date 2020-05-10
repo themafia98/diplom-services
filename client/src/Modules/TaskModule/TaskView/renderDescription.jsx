@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import _ from 'lodash';
 import clsx from 'clsx';
 import TagsContainer from '../../../Components/TagsContainer';
 import { Descriptions, Input, Select, DatePicker } from 'antd';
@@ -164,10 +165,18 @@ function renderDescription(theme = 'default') {
             <Output className="startDate"> {date[0] ? date[0] : null}</Output>
           ) : modeControll === 'edit' && modeControllEdit ? (
             <DatePicker
-              value={moment(
-                modeControllEdit?.date[0] ? modeControllEdit.date[0] : date[0] ? date[0] : moment(),
-                'DD.MM.YYYY',
-              )}
+              value={
+                modeControllEdit
+                  ? moment(
+                      _.isArray(modeControllEdit.date) && modeControllEdit.date[0]
+                        ? modeControllEdit.date[0]
+                        : date[0]
+                        ? date[0]
+                        : moment(),
+                      'DD.MM.YYYY',
+                    )
+                  : undefined
+              }
               className="dateStartEdit"
               onChange={onChangeEditableStart}
               defaultValue={date[0] ? moment(date[0], 'DD.MM.YYYY') : null}
@@ -180,10 +189,18 @@ function renderDescription(theme = 'default') {
             <Output className="endDate"> {date[1] ? date[1] : null}</Output>
           ) : modeControll === 'edit' && modeControllEdit ? (
             <DatePicker
-              value={moment(
-                modeControllEdit?.date[1] ? modeControllEdit.date[1] : date[1] ? date[1] : moment(),
-                'DD.MM.YYYY',
-              )}
+              value={
+                modeControllEdit
+                  ? moment(
+                      _.isArray(modeControllEdit.date) && modeControllEdit?.date[1]
+                        ? modeControllEdit.date[1]
+                        : date[1]
+                        ? date[1]
+                        : moment(),
+                      'DD.MM.YYYY',
+                    )
+                  : undefined
+              }
               className="dateEndEdit"
               onChange={onChangeEditableEnd}
               defaultValue={date[1] ? moment(date[1], 'DD.MM.YYYY') : null}

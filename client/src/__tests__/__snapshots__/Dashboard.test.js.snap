@@ -1,7 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<Dashboard /> main page Should render component 1`] = `
-<Fragment>
+<div
+  className="dashboard"
+>
   <Loader
     className="mainLoader"
   />
@@ -38,6 +40,7 @@ exports[`<Dashboard /> main page Should render component 1`] = `
             "_events": Object {},
             "_eventsCount": 0,
             "_maxListeners": undefined,
+            Symbol(kCapture): false,
           }
         }
         goCabinet={[Function]}
@@ -55,13 +58,19 @@ exports[`<Dashboard /> main page Should render component 1`] = `
             "_events": Object {},
             "_eventsCount": 0,
             "_maxListeners": undefined,
+            Symbol(kCapture): false,
           }
         }
+        isToolbarActive={false}
         key="contentView"
+        onChangeVisibleAction={[Function]}
         onErrorRequestAction={[Function]}
         onHideLoader={[Function]}
+        onSetStatus={[Function]}
+        onShoudUpdate={[Function]}
         onShowLoader={[Function]}
         path="MainModule"
+        rest={Object {}}
         router={
           Object {
             "actionTabs": Array [
@@ -79,33 +88,225 @@ exports[`<Dashboard /> main page Should render component 1`] = `
         setCurrentTab={[Function]}
         shouldUpdate={false}
         statusApp="online"
-        udata={Object {}}
+        udata={
+          Object {
+            "_id": "dasd",
+            "displayName": "asdas",
+          }
+        }
         updateLoader={[Function]}
+        webSocket={
+          Socket {
+            "_callbacks": Object {
+              "$connect": Array [
+                [Function],
+              ],
+              "$connecting": Array [
+                [Function],
+              ],
+            },
+            "acks": Object {},
+            "connected": false,
+            "disconnected": true,
+            "flags": Object {},
+            "ids": 0,
+            "io": Manager {
+              "_callbacks": Object {
+                "$close": Array [
+                  [Function],
+                ],
+                "$open": Array [
+                  [Function],
+                ],
+                "$packet": Array [
+                  [Function],
+                ],
+              },
+              "_randomizationFactor": 0.5,
+              "_reconnection": true,
+              "_reconnectionAttempts": Infinity,
+              "_reconnectionDelay": 1000,
+              "_reconnectionDelayMax": 5000,
+              "_timeout": 20000,
+              "autoConnect": true,
+              "backoff": Backoff {
+                "attempts": 0,
+                "factor": 2,
+                "jitter": 0.5,
+                "max": 5000,
+                "ms": 1000,
+              },
+              "connecting": Array [
+                [Circular],
+              ],
+              "decoder": Decoder {
+                "reconstructor": null,
+              },
+              "encoder": Encoder {},
+              "encoding": false,
+              "engine": Socket {
+                "_callbacks": Object {
+                  "$error": Array [
+                    [Function],
+                  ],
+                  "$open": Array [
+                    [Function],
+                  ],
+                },
+                "agent": false,
+                "binaryType": null,
+                "ca": null,
+                "cert": null,
+                "ciphers": null,
+                "enablesXDR": false,
+                "forceBase64": false,
+                "forceJSONP": false,
+                "forceNode": false,
+                "hostname": "localhost",
+                "id": null,
+                "isReactNative": false,
+                "jsonp": true,
+                "key": null,
+                "onlyBinaryUpgrades": undefined,
+                "passphrase": null,
+                "path": "/socket.io/",
+                "perMessageDeflate": Object {
+                  "threshold": 1024,
+                },
+                "pfx": null,
+                "pingInterval": null,
+                "pingIntervalTimer": null,
+                "pingTimeout": null,
+                "pingTimeoutTimer": null,
+                "policyPort": 843,
+                "port": "80",
+                "prevBufferLen": 0,
+                "query": Object {},
+                "readyState": "opening",
+                "rejectUnauthorized": true,
+                "rememberUpgrade": false,
+                "secure": false,
+                "timestampParam": "t",
+                "timestampRequests": undefined,
+                "transport": WS {
+                  "_callbacks": Object {
+                    "$close": Array [
+                      [Function],
+                    ],
+                    "$drain": Array [
+                      [Function],
+                    ],
+                    "$error": Array [
+                      [Function],
+                    ],
+                    "$packet": Array [
+                      [Function],
+                    ],
+                  },
+                  "agent": false,
+                  "ca": null,
+                  "cert": null,
+                  "ciphers": null,
+                  "enablesXDR": false,
+                  "extraHeaders": undefined,
+                  "forceNode": false,
+                  "hostname": "localhost",
+                  "isReactNative": false,
+                  "key": null,
+                  "localAddress": undefined,
+                  "passphrase": null,
+                  "path": "/socket.io/",
+                  "perMessageDeflate": Object {
+                    "threshold": 1024,
+                  },
+                  "pfx": null,
+                  "port": "80",
+                  "protocols": undefined,
+                  "query": Object {
+                    "EIO": 3,
+                    "transport": "websocket",
+                  },
+                  "readyState": "opening",
+                  "rejectUnauthorized": true,
+                  "secure": false,
+                  "socket": [Circular],
+                  "timestampParam": "t",
+                  "timestampRequests": undefined,
+                  "usingBrowserWebSocket": true,
+                  "withCredentials": true,
+                  "ws": WebSocket {},
+                },
+                "transportOptions": Object {},
+                "transports": Array [
+                  "websocket",
+                ],
+                "upgrade": true,
+                "upgrades": null,
+                "withCredentials": true,
+                "writeBuffer": Array [],
+              },
+              "lastPing": null,
+              "nsps": Object {
+                "/": [Circular],
+              },
+              "opts": Object {
+                "hostname": "localhost",
+                "path": "/socket.io",
+                "port": "80",
+                "secure": false,
+                "transports": Array [
+                  "websocket",
+                ],
+              },
+              "packetBuffer": Array [],
+              "readyState": "opening",
+              "skipReconnect": false,
+              "subs": Array [
+                Object {
+                  "destroy": [Function],
+                },
+                Object {
+                  "destroy": [Function],
+                },
+                Object {
+                  "destroy": [Function],
+                },
+              ],
+              "uri": "http://localhost/",
+            },
+            "json": [Circular],
+            "nsp": "/",
+            "receiveBuffer": Array [],
+            "sendBuffer": Array [],
+            "subs": Array [
+              Object {
+                "destroy": [Function],
+              },
+              Object {
+                "destroy": [Function],
+              },
+              Object {
+                "destroy": [Function],
+              },
+            ],
+          }
+        }
       />
-      <Modal
-        className="guideModal"
-        confirmLoading={false}
-        maskTransitionName="fade"
-        okText="Закрыть"
-        okType="primary"
-        onOk={[Function]}
-        title="Добро пожаловать в систему."
-        transitionName="zoom"
-        visible={false}
-        width={520}
-      >
-        <p>
-          Спасибо что выбрали 
-          нашу систему!
-        </p>
-      </Modal>
     </Layout>
   </Layout>
-</Fragment>
+  <ForwardRef
+    customRender={null}
+    key="toolbar"
+    name="Чат"
+    onChangeVisibleAction={[Function]}
+  />
+</div>
 `;
 
 exports[`<Dashboard /> main page Should render component 2`] = `
-<Fragment>
+<div
+  className="dashboard"
+>
   <Layout
     className="layout_menu"
   >
@@ -139,6 +340,7 @@ exports[`<Dashboard /> main page Should render component 2`] = `
             "_events": Object {},
             "_eventsCount": 0,
             "_maxListeners": undefined,
+            Symbol(kCapture): false,
           }
         }
         goCabinet={[Function]}
@@ -156,13 +358,19 @@ exports[`<Dashboard /> main page Should render component 2`] = `
             "_events": Object {},
             "_eventsCount": 0,
             "_maxListeners": undefined,
+            Symbol(kCapture): false,
           }
         }
+        isToolbarActive={false}
         key="contentView"
+        onChangeVisibleAction={[Function]}
         onErrorRequestAction={[Function]}
         onHideLoader={[Function]}
+        onSetStatus={[Function]}
+        onShoudUpdate={[Function]}
         onShowLoader={[Function]}
         path="MainModule"
+        rest={Object {}}
         router={
           Object {
             "actionTabs": Array [
@@ -180,33 +388,225 @@ exports[`<Dashboard /> main page Should render component 2`] = `
         setCurrentTab={[Function]}
         shouldUpdate={false}
         statusApp="online"
-        udata={Object {}}
+        udata={
+          Object {
+            "_id": "dasd",
+            "displayName": "asdas",
+          }
+        }
         updateLoader={[Function]}
+        webSocket={
+          Socket {
+            "_callbacks": Object {
+              "$connect": Array [
+                [Function],
+              ],
+              "$connecting": Array [
+                [Function],
+              ],
+            },
+            "acks": Object {},
+            "connected": false,
+            "disconnected": true,
+            "flags": Object {},
+            "ids": 0,
+            "io": Manager {
+              "_callbacks": Object {
+                "$close": Array [
+                  [Function],
+                ],
+                "$open": Array [
+                  [Function],
+                ],
+                "$packet": Array [
+                  [Function],
+                ],
+              },
+              "_randomizationFactor": 0.5,
+              "_reconnection": true,
+              "_reconnectionAttempts": Infinity,
+              "_reconnectionDelay": 1000,
+              "_reconnectionDelayMax": 5000,
+              "_timeout": 20000,
+              "autoConnect": true,
+              "backoff": Backoff {
+                "attempts": 0,
+                "factor": 2,
+                "jitter": 0.5,
+                "max": 5000,
+                "ms": 1000,
+              },
+              "connecting": Array [
+                [Circular],
+              ],
+              "decoder": Decoder {
+                "reconstructor": null,
+              },
+              "encoder": Encoder {},
+              "encoding": false,
+              "engine": Socket {
+                "_callbacks": Object {
+                  "$error": Array [
+                    [Function],
+                  ],
+                  "$open": Array [
+                    [Function],
+                  ],
+                },
+                "agent": false,
+                "binaryType": null,
+                "ca": null,
+                "cert": null,
+                "ciphers": null,
+                "enablesXDR": false,
+                "forceBase64": false,
+                "forceJSONP": false,
+                "forceNode": false,
+                "hostname": "localhost",
+                "id": null,
+                "isReactNative": false,
+                "jsonp": true,
+                "key": null,
+                "onlyBinaryUpgrades": undefined,
+                "passphrase": null,
+                "path": "/socket.io/",
+                "perMessageDeflate": Object {
+                  "threshold": 1024,
+                },
+                "pfx": null,
+                "pingInterval": null,
+                "pingIntervalTimer": null,
+                "pingTimeout": null,
+                "pingTimeoutTimer": null,
+                "policyPort": 843,
+                "port": "80",
+                "prevBufferLen": 0,
+                "query": Object {},
+                "readyState": "opening",
+                "rejectUnauthorized": true,
+                "rememberUpgrade": false,
+                "secure": false,
+                "timestampParam": "t",
+                "timestampRequests": undefined,
+                "transport": WS {
+                  "_callbacks": Object {
+                    "$close": Array [
+                      [Function],
+                    ],
+                    "$drain": Array [
+                      [Function],
+                    ],
+                    "$error": Array [
+                      [Function],
+                    ],
+                    "$packet": Array [
+                      [Function],
+                    ],
+                  },
+                  "agent": false,
+                  "ca": null,
+                  "cert": null,
+                  "ciphers": null,
+                  "enablesXDR": false,
+                  "extraHeaders": undefined,
+                  "forceNode": false,
+                  "hostname": "localhost",
+                  "isReactNative": false,
+                  "key": null,
+                  "localAddress": undefined,
+                  "passphrase": null,
+                  "path": "/socket.io/",
+                  "perMessageDeflate": Object {
+                    "threshold": 1024,
+                  },
+                  "pfx": null,
+                  "port": "80",
+                  "protocols": undefined,
+                  "query": Object {
+                    "EIO": 3,
+                    "transport": "websocket",
+                  },
+                  "readyState": "opening",
+                  "rejectUnauthorized": true,
+                  "secure": false,
+                  "socket": [Circular],
+                  "timestampParam": "t",
+                  "timestampRequests": undefined,
+                  "usingBrowserWebSocket": true,
+                  "withCredentials": true,
+                  "ws": WebSocket {},
+                },
+                "transportOptions": Object {},
+                "transports": Array [
+                  "websocket",
+                ],
+                "upgrade": true,
+                "upgrades": null,
+                "withCredentials": true,
+                "writeBuffer": Array [],
+              },
+              "lastPing": null,
+              "nsps": Object {
+                "/": [Circular],
+              },
+              "opts": Object {
+                "hostname": "localhost",
+                "path": "/socket.io",
+                "port": "80",
+                "secure": false,
+                "transports": Array [
+                  "websocket",
+                ],
+              },
+              "packetBuffer": Array [],
+              "readyState": "opening",
+              "skipReconnect": false,
+              "subs": Array [
+                Object {
+                  "destroy": [Function],
+                },
+                Object {
+                  "destroy": [Function],
+                },
+                Object {
+                  "destroy": [Function],
+                },
+              ],
+              "uri": "http://localhost/",
+            },
+            "json": [Circular],
+            "nsp": "/",
+            "receiveBuffer": Array [],
+            "sendBuffer": Array [],
+            "subs": Array [
+              Object {
+                "destroy": [Function],
+              },
+              Object {
+                "destroy": [Function],
+              },
+              Object {
+                "destroy": [Function],
+              },
+            ],
+          }
+        }
       />
-      <Modal
-        className="guideModal"
-        confirmLoading={false}
-        maskTransitionName="fade"
-        okText="Закрыть"
-        okType="primary"
-        onOk={[Function]}
-        title="Добро пожаловать в систему."
-        transitionName="zoom"
-        visible={false}
-        width={520}
-      >
-        <p>
-          Спасибо что выбрали 
-          нашу систему!
-        </p>
-      </Modal>
     </Layout>
   </Layout>
-</Fragment>
+  <ForwardRef
+    customRender={null}
+    key="toolbar"
+    name="Чат"
+    onChangeVisibleAction={[Function]}
+  />
+</div>
 `;
 
 exports[`<Dashboard /> main page Should render component 3`] = `
-<Fragment>
+<div
+  className="dashboard"
+>
   <Layout
     className="layout_menu"
   >
@@ -240,6 +640,7 @@ exports[`<Dashboard /> main page Should render component 3`] = `
             "_events": Object {},
             "_eventsCount": 0,
             "_maxListeners": undefined,
+            Symbol(kCapture): false,
           }
         }
         goCabinet={[Function]}
@@ -257,13 +658,19 @@ exports[`<Dashboard /> main page Should render component 3`] = `
             "_events": Object {},
             "_eventsCount": 0,
             "_maxListeners": undefined,
+            Symbol(kCapture): false,
           }
         }
+        isToolbarActive={false}
         key="contentView"
+        onChangeVisibleAction={[Function]}
         onErrorRequestAction={[Function]}
         onHideLoader={[Function]}
+        onSetStatus={[Function]}
+        onShoudUpdate={[Function]}
         onShowLoader={[Function]}
         path="MainModule"
+        rest={Object {}}
         router={
           Object {
             "actionTabs": Array [
@@ -281,27 +688,217 @@ exports[`<Dashboard /> main page Should render component 3`] = `
         setCurrentTab={[Function]}
         shouldUpdate={false}
         statusApp="online"
-        udata={Object {}}
+        udata={
+          Object {
+            "_id": "dasd",
+            "displayName": "asdas",
+          }
+        }
         updateLoader={[Function]}
+        webSocket={
+          Socket {
+            "_callbacks": Object {
+              "$connect": Array [
+                [Function],
+              ],
+              "$connecting": Array [
+                [Function],
+              ],
+            },
+            "acks": Object {},
+            "connected": false,
+            "disconnected": true,
+            "flags": Object {},
+            "ids": 0,
+            "io": Manager {
+              "_callbacks": Object {
+                "$close": Array [
+                  [Function],
+                ],
+                "$open": Array [
+                  [Function],
+                ],
+                "$packet": Array [
+                  [Function],
+                ],
+              },
+              "_randomizationFactor": 0.5,
+              "_reconnection": true,
+              "_reconnectionAttempts": Infinity,
+              "_reconnectionDelay": 1000,
+              "_reconnectionDelayMax": 5000,
+              "_timeout": 20000,
+              "autoConnect": true,
+              "backoff": Backoff {
+                "attempts": 0,
+                "factor": 2,
+                "jitter": 0.5,
+                "max": 5000,
+                "ms": 1000,
+              },
+              "connecting": Array [
+                [Circular],
+              ],
+              "decoder": Decoder {
+                "reconstructor": null,
+              },
+              "encoder": Encoder {},
+              "encoding": false,
+              "engine": Socket {
+                "_callbacks": Object {
+                  "$error": Array [
+                    [Function],
+                  ],
+                  "$open": Array [
+                    [Function],
+                  ],
+                },
+                "agent": false,
+                "binaryType": null,
+                "ca": null,
+                "cert": null,
+                "ciphers": null,
+                "enablesXDR": false,
+                "forceBase64": false,
+                "forceJSONP": false,
+                "forceNode": false,
+                "hostname": "localhost",
+                "id": null,
+                "isReactNative": false,
+                "jsonp": true,
+                "key": null,
+                "onlyBinaryUpgrades": undefined,
+                "passphrase": null,
+                "path": "/socket.io/",
+                "perMessageDeflate": Object {
+                  "threshold": 1024,
+                },
+                "pfx": null,
+                "pingInterval": null,
+                "pingIntervalTimer": null,
+                "pingTimeout": null,
+                "pingTimeoutTimer": null,
+                "policyPort": 843,
+                "port": "80",
+                "prevBufferLen": 0,
+                "query": Object {},
+                "readyState": "opening",
+                "rejectUnauthorized": true,
+                "rememberUpgrade": false,
+                "secure": false,
+                "timestampParam": "t",
+                "timestampRequests": undefined,
+                "transport": WS {
+                  "_callbacks": Object {
+                    "$close": Array [
+                      [Function],
+                    ],
+                    "$drain": Array [
+                      [Function],
+                    ],
+                    "$error": Array [
+                      [Function],
+                    ],
+                    "$packet": Array [
+                      [Function],
+                    ],
+                  },
+                  "agent": false,
+                  "ca": null,
+                  "cert": null,
+                  "ciphers": null,
+                  "enablesXDR": false,
+                  "extraHeaders": undefined,
+                  "forceNode": false,
+                  "hostname": "localhost",
+                  "isReactNative": false,
+                  "key": null,
+                  "localAddress": undefined,
+                  "passphrase": null,
+                  "path": "/socket.io/",
+                  "perMessageDeflate": Object {
+                    "threshold": 1024,
+                  },
+                  "pfx": null,
+                  "port": "80",
+                  "protocols": undefined,
+                  "query": Object {
+                    "EIO": 3,
+                    "transport": "websocket",
+                  },
+                  "readyState": "opening",
+                  "rejectUnauthorized": true,
+                  "secure": false,
+                  "socket": [Circular],
+                  "timestampParam": "t",
+                  "timestampRequests": undefined,
+                  "usingBrowserWebSocket": true,
+                  "withCredentials": true,
+                  "ws": WebSocket {},
+                },
+                "transportOptions": Object {},
+                "transports": Array [
+                  "websocket",
+                ],
+                "upgrade": true,
+                "upgrades": null,
+                "withCredentials": true,
+                "writeBuffer": Array [],
+              },
+              "lastPing": null,
+              "nsps": Object {
+                "/": [Circular],
+              },
+              "opts": Object {
+                "hostname": "localhost",
+                "path": "/socket.io",
+                "port": "80",
+                "secure": false,
+                "transports": Array [
+                  "websocket",
+                ],
+              },
+              "packetBuffer": Array [],
+              "readyState": "opening",
+              "skipReconnect": false,
+              "subs": Array [
+                Object {
+                  "destroy": [Function],
+                },
+                Object {
+                  "destroy": [Function],
+                },
+                Object {
+                  "destroy": [Function],
+                },
+              ],
+              "uri": "http://localhost/",
+            },
+            "json": [Circular],
+            "nsp": "/",
+            "receiveBuffer": Array [],
+            "sendBuffer": Array [],
+            "subs": Array [
+              Object {
+                "destroy": [Function],
+              },
+              Object {
+                "destroy": [Function],
+              },
+              Object {
+                "destroy": [Function],
+              },
+            ],
+          }
+        }
       />
-      <Modal
-        className="guideModal"
-        confirmLoading={false}
-        maskTransitionName="fade"
-        okText="Закрыть"
-        okType="primary"
-        onOk={[Function]}
-        title="Добро пожаловать в систему."
-        transitionName="zoom"
-        visible={false}
-        width={520}
-      >
-        <p>
-          Спасибо что выбрали 
-          нашу систему!
-        </p>
-      </Modal>
     </Layout>
   </Layout>
-</Fragment>
+  <ForwardRef
+    customRender={null}
+    key="toolbar"
+    name="Чат"
+    onChangeVisibleAction={[Function]}
+  />
+</div>
 `;

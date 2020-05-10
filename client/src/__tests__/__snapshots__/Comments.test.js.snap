@@ -14,7 +14,7 @@ exports[`<ContentView /> Should render component 1`] = `
       autoHide={false}
       autoHideDuration={200}
       autoHideTimeout={1000}
-      hideTracksWhenNotNeeded={false}
+      hideTracksWhenNotNeeded={true}
       renderThumbHorizontal={[Function]}
       renderThumbVertical={[Function]}
       renderTrackHorizontal={[Function]}
@@ -35,9 +35,10 @@ exports[`<ContentView /> Should render component 1`] = `
         }
         key="213123"
         onDelete={[Function]}
+        onEdit={[Function]}
         rules={true}
-        uId={null}
-        userId=""
+        uId=""
+        userId="asda"
       />
     </Scrollbars>
   </div>
@@ -87,7 +88,7 @@ exports[`<ContentView /> Should render component 2`] = `
       autoHide={false}
       autoHideDuration={200}
       autoHideTimeout={1000}
-      hideTracksWhenNotNeeded={false}
+      hideTracksWhenNotNeeded={true}
       renderThumbHorizontal={[Function]}
       renderThumbVertical={[Function]}
       renderTrackHorizontal={[Function]}
@@ -108,9 +109,10 @@ exports[`<ContentView /> Should render component 2`] = `
         }
         key="213123"
         onDelete={[Function]}
+        onEdit={[Function]}
         rules={true}
-        uId={null}
-        userId=""
+        uId=""
+        userId="asda"
       />
     </Scrollbars>
   </div>
@@ -160,7 +162,7 @@ exports[`<ContentView /> Should render component 3`] = `
       autoHide={false}
       autoHideDuration={200}
       autoHideTimeout={1000}
-      hideTracksWhenNotNeeded={false}
+      hideTracksWhenNotNeeded={true}
       renderThumbHorizontal={[Function]}
       renderThumbVertical={[Function]}
       renderTrackHorizontal={[Function]}
@@ -181,9 +183,10 @@ exports[`<ContentView /> Should render component 3`] = `
         }
         key="213123"
         onDelete={[Function]}
+        onEdit={[Function]}
         rules={true}
-        uId={null}
-        userId=""
+        uId=""
+        userId="asda"
       />
     </Scrollbars>
   </div>
@@ -233,7 +236,7 @@ exports[`<ContentView /> Should render component 4`] = `
       autoHide={false}
       autoHideDuration={200}
       autoHideTimeout={1000}
-      hideTracksWhenNotNeeded={false}
+      hideTracksWhenNotNeeded={true}
       renderThumbHorizontal={[Function]}
       renderThumbVertical={[Function]}
       renderTrackHorizontal={[Function]}
@@ -254,9 +257,10 @@ exports[`<ContentView /> Should render component 4`] = `
         }
         key="213123"
         onDelete={[Function]}
+        onEdit={[Function]}
         rules={true}
-        uId={null}
-        userId=""
+        uId=""
+        userId="asda"
       />
     </Scrollbars>
   </div>

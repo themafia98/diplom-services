@@ -40,11 +40,11 @@ class ContentView extends React.Component {
   };
 
   componentDidMount = () => {
-    const { dashboardStrem = null } = this.props;
+    const { dashboardStrem = null, shouldRenderMenu = true } = this.props;
     const { key = null } = this.state;
     document.addEventListener('keydown', this.disableF5);
     dashboardStrem.on('EventUpdate', this.updateFunction);
-    if (_.isNull(key)) {
+    if (_.isNull(key) && shouldRenderMenu) {
       this.setState({
         key: uuid(),
       });
@@ -260,4 +260,5 @@ class ContentView extends React.Component {
   }
 }
 
+export { ContentView };
 export default ContentView;

@@ -408,7 +408,7 @@ class CreateTask extends React.PureComponent {
   };
 
   render() {
-    const { visibleMode, dateFormat = 'DD.MM.YYYY' } = this.props;
+    const { visibleMode = 'default', dateFormat = 'DD.MM.YYYY' } = this.props;
 
     const {
       errorBundle = {},

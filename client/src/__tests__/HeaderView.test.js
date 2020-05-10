@@ -5,7 +5,7 @@ import toJson from 'enzyme-to-json';
 
 import { HeaderView } from '../Components/HeaderView/HeaderView';
 import { initialState } from '../Redux/testStore';
-
+import context from '../Models/context';
 describe('<HeaderView /> and children', () => {
   test('Should render', () => {
     const props = {
@@ -17,7 +17,7 @@ describe('<HeaderView /> and children', () => {
       logout: () => {},
     };
 
-    const HeaderViewWrapper = shallow(<HeaderView {...props} />);
+    const HeaderViewWrapper = shallow(<HeaderView {...props} />, { context });
     expect(toJson(HeaderViewWrapper)).toMatchSnapshot();
 
     expect(HeaderViewWrapper.find('.tabsMenu').exists()).toBeTruthy();

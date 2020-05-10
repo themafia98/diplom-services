@@ -121,7 +121,7 @@ exports[`<ModalWindow /> Should works with mode 3`] = `
       mouseEnterDelay={0.15}
       mouseLeaveDelay={0.1}
       overlay={
-        <>
+        <React.Fragment>
           <Menu>
             <MenuItem>
               <p
@@ -148,11 +148,13 @@ exports[`<ModalWindow /> Should works with mode 3`] = `
               </p>
             </MenuItem>
           </Menu>
-        </>
+        </React.Fragment>
       }
       placement="bottomLeft"
     >
-      <p>
+      <p
+        className="action-dropdown-link"
+      >
         Управление задачей
         <Icon
           type="down"
@@ -172,7 +174,7 @@ exports[`<ModalWindow /> Should works with mode 4`] = `
       mouseEnterDelay={0.15}
       mouseLeaveDelay={0.1}
       overlay={
-        <>
+        <React.Fragment>
           <Menu>
             <MenuItem>
               <p
@@ -199,11 +201,13 @@ exports[`<ModalWindow /> Should works with mode 4`] = `
               </p>
             </MenuItem>
           </Menu>
-        </>
+        </React.Fragment>
       }
       placement="bottomLeft"
     >
-      <p>
+      <p
+        className="action-dropdown-link"
+      >
         Управление задачей
         <Icon
           type="down"
@@ -260,7 +264,7 @@ exports[`<ModalWindow /> Should works with mode 5`] = `
       mouseEnterDelay={0.15}
       mouseLeaveDelay={0.1}
       overlay={
-        <>
+        <React.Fragment>
           <Menu>
             <MenuItem>
               <p
@@ -287,11 +291,13 @@ exports[`<ModalWindow /> Should works with mode 5`] = `
               </p>
             </MenuItem>
           </Menu>
-        </>
+        </React.Fragment>
       }
       placement="bottomLeft"
     >
-      <p>
+      <p
+        className="action-dropdown-link"
+      >
         Управление задачей
         <Icon
           type="down"
@@ -323,7 +329,7 @@ exports[`<ModalWindow /> Should works with mode 6`] = `
       mouseEnterDelay={0.15}
       mouseLeaveDelay={0.1}
       overlay={
-        <>
+        <React.Fragment>
           <Menu>
             <MenuItem>
               <p
@@ -350,11 +356,13 @@ exports[`<ModalWindow /> Should works with mode 6`] = `
               </p>
             </MenuItem>
           </Menu>
-        </>
+        </React.Fragment>
       }
       placement="bottomLeft"
     >
-      <p>
+      <p
+        className="action-dropdown-link"
+      >
         Управление задачей
         <Icon
           type="down"

@@ -1,9 +1,10 @@
+// @ts-nocheck
 import React from 'react';
 import { shallow } from 'enzyme';
 import toJson from 'enzyme-to-json';
 
-import { Dashboard } from '../Components/Pages/Dashboard/Dashboard';
-
+import { Dashboard } from '../Pages/Dashboard/Dashboard';
+import context from '../Models/context';
 describe('<Dashboard /> main page', () => {
   test('Should render component', () => {
     const props = {
@@ -25,9 +26,16 @@ describe('<Dashboard /> main page', () => {
         routeDataActive: null,
         routeData: { MainModule: { name: 'MainModule' } },
       },
+      rest: {},
+      firstConnect: false,
+      udata: { _id: 'dasd', displayName: 'asdas' },
+      onSetStatus: () => {},
+      onClearCache: () => {},
+      onShoudUpdate: () => {},
+      onShowGuide: () => {},
       tabData: {},
     };
-    const DashboardWrapper = shallow(<Dashboard {...props} />);
+    const DashboardWrapper = shallow(<Dashboard {...props} />, { context });
 
     expect(DashboardWrapper.find('MenuView').prop('collapsed')).toEqual(true);
     expect(DashboardWrapper.find('ContentView').prop('path')).toEqual(props.router.currentActionTab);

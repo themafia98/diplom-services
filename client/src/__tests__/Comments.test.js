@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import toJson from 'enzyme-to-json';
 import Comments from '../Components/Comments';
-
+import context from '../Models/context';
 describe('<ContentView />', () => {
   test('Should render component', () => {
     const props = {
@@ -19,8 +19,11 @@ describe('<ContentView />', () => {
         ],
       },
       onUpdate: () => {},
+      onSaveCache: () => {},
+      udata: { _id: 'asda', dispalayName: 'asdas' },
+      uId: 'asda',
     };
-    const CommentsWrapper = shallow(<Comments {...props} />);
+    const CommentsWrapper = shallow(<Comments {...props} />, { context });
     expect(toJson(CommentsWrapper)).toMatchSnapshot();
 
     CommentsWrapper.setState({ onUpdateDisabled: true });

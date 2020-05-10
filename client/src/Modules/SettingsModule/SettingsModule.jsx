@@ -38,6 +38,7 @@ class SettingsModule extends React.PureComponent {
   static propTypes = settingsModuleType;
   static contextType = modelContext;
   static defaultProps = {
+    udata: {},
     settingsLogs: [],
   };
 
@@ -341,11 +342,7 @@ class SettingsModule extends React.PureComponent {
       isHidePhone,
       isLoadingLogs = false,
     } = this.state;
-    const {
-      settingsLogs = null,
-      udata: { departament = '', rules = '' },
-      settings = [],
-    } = this.props;
+    const { settingsLogs = null, udata: { departament = '', rules = '' } = {}, settings = [] } = this.props;
     const { config: { settings: { includeRulesSettings = false } = {} } = {} } = this.context;
 
     const isLoading = !isLoadingLogs && (!settingsLogs || (settingsLogs && !settingsLogs?.length));

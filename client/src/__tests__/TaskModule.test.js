@@ -3,7 +3,8 @@ import { shallow } from 'enzyme';
 import toJson from 'enzyme-to-json';
 
 import { initialState } from '../Redux/testStore';
-import { TaskModule } from '../Components/Modules/TaskModule/TaskModule';
+import { TaskModule } from '../Modules/TaskModule/TaskModule';
+import context from '../Models/context';
 
 describe('<TaskModule /> template', () => {
   test('Should be render', () => {
@@ -14,10 +15,15 @@ describe('<TaskModule /> template', () => {
       addTab: () => {},
       onOpenPageWithData: () => {},
       onLoadCurrentData: () => {},
+      onLoadCacheData: () => {},
+      removeTab: () => {},
+      loaderMethods: {},
+      visible: true,
+      rest: {},
       ...initialState,
       router: { ...initialState.router, routeData: { taskModule__all: {} } },
     };
-    const TaskModuleWrapper = shallow(<TaskModule {...props} />);
+    const TaskModuleWrapper = shallow(<TaskModule {...props} />, { context });
     expect(toJson(TaskModuleWrapper)).toMatchSnapshot();
 
     expect(TaskModuleWrapper.find('.newTaskButton').simulate('click', [])).toBeTruthy();

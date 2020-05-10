@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import { mount } from 'enzyme';
 import toJson from 'enzyme-to-json';
 
-import TableView from '../Components/TableView';
+import TableView from '../Components/TableView/TableView';
 import store from '../Redux/testStore';
 
 describe('<TableView />', () => {

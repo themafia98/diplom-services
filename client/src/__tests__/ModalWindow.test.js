@@ -3,7 +3,7 @@ import { shallow, mount } from 'enzyme';
 import toJson from 'enzyme-to-json';
 import config from '../config.json';
 import ModalWindow from '../Components/ModalWindow';
-
+import context from '../Models/context';
 describe('<ModalWindow />', () => {
   test('Should works with mode', () => {
     const props = {
@@ -25,7 +25,7 @@ describe('<ModalWindow />', () => {
       onUpdateEditable: () => {},
       statusTaskValue: 'В работе',
     };
-    const ModalWindowWrapper = mount(<ModalWindow {...props} />);
+    const ModalWindowWrapper = mount(<ModalWindow {...props} />, { context });
 
     expect(toJson(ModalWindowWrapper)).toMatchSnapshot();
     expect(ModalWindowWrapper.find('Button').text()).toEqual('Регистрация');

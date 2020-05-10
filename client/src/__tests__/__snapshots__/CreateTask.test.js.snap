@@ -8,7 +8,7 @@ exports[`<CreateTask /> template Should be render 1`] = `
   autoHide={false}
   autoHideDuration={200}
   autoHideTimeout={1000}
-  hideTracksWhenNotNeeded={false}
+  hideTracksWhenNotNeeded={true}
   renderThumbHorizontal={[Function]}
   renderThumbVertical={[Function]}
   renderTrackHorizontal={[Function]}
@@ -40,7 +40,7 @@ exports[`<CreateTask /> template Should be render 1`] = `
           autoHide={true}
           autoHideDuration={200}
           autoHideTimeout={1000}
-          hideTracksWhenNotNeeded={false}
+          hideTracksWhenNotNeeded={true}
           renderThumbHorizontal={[Function]}
           renderThumbVertical={[Function]}
           renderTrackHorizontal={[Function]}
@@ -61,6 +61,18 @@ exports[`<CreateTask /> template Should be render 1`] = `
               className=""
               name="name"
               onChange={[Function]}
+              type="text"
+            />
+            <label>
+               Статус: 
+            </label>
+            <Select
+              choiceTransitionName="zoom"
+              className=""
+              name="state"
+              onChange={[Function]}
+              showSearch={false}
+              transitionName="slide-up"
               type="text"
             />
             <label>
@@ -91,6 +103,11 @@ exports[`<CreateTask /> template Should be render 1`] = `
               >
                 Высокий
               </Option>
+              <Option
+                value="Критический"
+              >
+                Критический
+              </Option>
             </Select>
             <label>
               Назначить исполнителя/исполнителей:
@@ -120,13 +137,20 @@ exports[`<CreateTask /> template Should be render 1`] = `
               onKeyDown={null}
               row={5}
               rows={8}
-              value=""
+              value={null}
             />
             <label>
               Прикрепить файлы: 
             </label>
             <File
-              onAddFileList={null}
+              isLocal={true}
+              module="tasks"
+              moduleData={
+                Object {
+                  "id": "00fdee7d-e507-4427-9a64-c9f0c965660d_virtual",
+                  "name": " taskModule",
+                }
+              }
             />
             <label>
               Срок сдачи: 
@@ -135,8 +159,8 @@ exports[`<CreateTask /> template Should be render 1`] = `
               className=""
               defaultValue={
                 Array [
-                  "2020-04-17T21:00:00.000Z",
-                  "2020-04-17T21:00:00.000Z",
+                  "2020-05-09T21:00:00.000Z",
+                  "2020-05-09T21:00:00.000Z",
                 ]
               }
               format="DD.MM.YYYY"
@@ -164,6 +188,13 @@ exports[`<CreateTask /> template Should be render 1`] = `
           </form>
         </Scrollbars>
       </div>
+      <div
+        className="col-6 error-logger"
+      >
+        <ul
+          className="errors-list"
+        />
+      </div>
     </div>
   </div>
 </Scrollbars>
@@ -177,7 +208,7 @@ exports[`<CreateTask /> template Should be render 2`] = `
   autoHide={false}
   autoHideDuration={200}
   autoHideTimeout={1000}
-  hideTracksWhenNotNeeded={false}
+  hideTracksWhenNotNeeded={true}
   renderThumbHorizontal={[Function]}
   renderThumbVertical={[Function]}
   renderTrackHorizontal={[Function]}
@@ -209,7 +240,7 @@ exports[`<CreateTask /> template Should be render 2`] = `
           autoHide={true}
           autoHideDuration={200}
           autoHideTimeout={1000}
-          hideTracksWhenNotNeeded={false}
+          hideTracksWhenNotNeeded={true}
           renderThumbHorizontal={[Function]}
           renderThumbVertical={[Function]}
           renderTrackHorizontal={[Function]}
@@ -230,6 +261,18 @@ exports[`<CreateTask /> template Should be render 2`] = `
               className=""
               name="name"
               onChange={[Function]}
+              type="text"
+            />
+            <label>
+               Статус: 
+            </label>
+            <Select
+              choiceTransitionName="zoom"
+              className=""
+              name="state"
+              onChange={[Function]}
+              showSearch={false}
+              transitionName="slide-up"
               type="text"
             />
             <label>
@@ -260,6 +303,11 @@ exports[`<CreateTask /> template Should be render 2`] = `
               >
                 Высокий
               </Option>
+              <Option
+                value="Критический"
+              >
+                Критический
+              </Option>
             </Select>
             <label>
               Назначить исполнителя/исполнителей:
@@ -289,13 +337,20 @@ exports[`<CreateTask /> template Should be render 2`] = `
               onKeyDown={null}
               row={5}
               rows={8}
-              value=""
+              value={null}
             />
             <label>
               Прикрепить файлы: 
             </label>
             <File
-              onAddFileList={null}
+              isLocal={true}
+              module="tasks"
+              moduleData={
+                Object {
+                  "id": "00fdee7d-e507-4427-9a64-c9f0c965660d_virtual",
+                  "name": " taskModule",
+                }
+              }
             />
             <label>
               Срок сдачи: 
@@ -304,8 +359,8 @@ exports[`<CreateTask /> template Should be render 2`] = `
               className=""
               defaultValue={
                 Array [
-                  "2020-04-17T21:00:00.000Z",
-                  "2020-04-17T21:00:00.000Z",
+                  "2020-05-09T21:00:00.000Z",
+                  "2020-05-09T21:00:00.000Z",
                 ]
               }
               format="DD.MM.YYYY"
@@ -332,6 +387,13 @@ exports[`<CreateTask /> template Should be render 2`] = `
             </Button>
           </form>
         </Scrollbars>
+      </div>
+      <div
+        className="col-6 error-logger"
+      >
+        <ul
+          className="errors-list"
+        />
       </div>
     </div>
   </div>

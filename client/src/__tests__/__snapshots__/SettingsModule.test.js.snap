@@ -34,193 +34,21 @@ exports[`<SettingsModule /> template Should be render 1`] = `
         universal={false}
       >
         <div>
-          <Collapse
-            bordered={true}
-            defaultActiveKey={
-              Array [
-                "common",
-              ]
-            }
-            expandIconPosition="left"
-            openAnimation={
-              Object {
-                "appear": [Function],
-                "enter": [Function],
-                "leave": [Function],
-              }
-            }
-          >
-            <CollapsePanel
-              header="Смена пароля"
-              key="password"
-            >
-              <div
-                className="configWrapper flexWrapper"
-              >
-                <span>
-                  Старый пароль:
-                </span>
-                <Input
-                  allowClear={true}
-                  data-id="oldPassword"
-                  onChange={[Function]}
-                  type="password"
-                  value=""
-                />
-              </div>
-              <div
-                className="configWrapper flexWrapper"
-              >
-                <span>
-                  Новый пароль:
-                </span>
-                <Input
-                  allowClear={true}
-                  data-id="newPassword"
-                  onChange={[Function]}
-                  type="password"
-                  value=""
-                />
-              </div>
-              <Button
-                block={false}
-                className="submit"
-                disabled={true}
-                ghost={false}
-                htmlType="button"
-                loading={false}
-                onClick={[Function]}
-                type="primary"
-              >
-                Принять изменения
-              </Button>
-            </CollapsePanel>
-            <CollapsePanel
-              header="Общие настройки"
-              key="common"
-            >
-              <div
-                className="settingsPanel--center-flex"
-              >
-                <div
-                  className="configWrapper flexWrapper"
-                >
-                  <span>
-                    Сменить телефон:
-                  </span>
-                  <Input
-                    allowClear={true}
-                    data-id="tel"
-                    onChange={[Function]}
-                    type="tel"
-                    value={null}
-                  />
-                </div>
-              </div>
-              <Button
-                block={false}
-                className="submit"
-                disabled={true}
-                ghost={false}
-                htmlType="button"
-                loading={false}
-                onClick={[Function]}
-                type="primary"
-              >
-                Принять изменения
-              </Button>
-            </CollapsePanel>
-            <CollapsePanel
-              header="Настройки профиля"
-              key="profile"
-            >
-              <div
-                className="configWrapper"
-              >
-                <Switch
-                  defaultChecked={false}
-                  onChange={[Function]}
-                />
-                <span
-                  className="configTitle"
-                >
-                  Скрывать почту
-                </span>
-              </div>
-              <div
-                className="configWrapper"
-              >
-                <Switch
-                  defaultChecked={false}
-                  onChange={[Function]}
-                />
-                <span
-                  className="configTitle"
-                >
-                  Скрывать телефон
-                </span>
-              </div>
-              <Button
-                block={false}
-                className="submit"
-                disabled={true}
-                ghost={false}
-                htmlType="button"
-                loading={false}
-                onClick={[Function]}
-                type="primary"
-              >
-                Принять изменения
-              </Button>
-            </CollapsePanel>
-            <CollapsePanel
-              header="Настройки уровней доступа"
-              key="access"
-            >
-              <Collapse
-                bordered={false}
-                expandIconPosition="left"
-                openAnimation={
-                  Object {
-                    "appear": [Function],
-                    "enter": [Function],
-                    "leave": [Function],
-                  }
-                }
-              >
-                <CollapsePanel
-                  header="Администратор"
-                  key="admin"
-                >
-                   A dog is a type of domesticated animal.
-                </CollapsePanel>
-                <CollapsePanel
-                  header="Начальник отдела"
-                  key="headDepartament"
-                >
-                   A dog is a type of domesticated animal.
-                </CollapsePanel>
-                <CollapsePanel
-                  header="Сотрудник"
-                  key="solider"
-                >
-                   A dog is a type of domesticated animal.
-                </CollapsePanel>
-              </Collapse>
-              <Button
-                block={false}
-                className="submit"
-                disabled={true}
-                ghost={false}
-                htmlType="button"
-                loading={false}
-                onClick={[Function]}
-                type="primary"
-              >
-                Принять изменения
-              </Button>
-            </CollapsePanel>
-          </Collapse>
+          <PanelPassword
+            newPassword=""
+            oldPassword=""
+            onSaveSettings={[Function]}
+          />
+          <PanelCommon
+            emailValue={null}
+            onSaveSettings={[Function]}
+            telValue={null}
+          />
+          <PanelProfile
+            isHideEmail={null}
+            isHidePhone={null}
+            onSaveSettings={[Function]}
+          />
         </div>
       </Scrollbars>
     </div>
@@ -229,7 +57,7 @@ exports[`<SettingsModule /> template Should be render 1`] = `
     >
       <ObserverTime
         isLoading={true}
-        settingsLogs={Object {}}
+        settingsLogs={Array []}
         title=""
       />
     </div>
@@ -271,193 +99,21 @@ exports[`<SettingsModule /> template Should be render 2`] = `
         universal={false}
       >
         <div>
-          <Collapse
-            bordered={true}
-            defaultActiveKey={
-              Array [
-                "common",
-              ]
-            }
-            expandIconPosition="left"
-            openAnimation={
-              Object {
-                "appear": [Function],
-                "enter": [Function],
-                "leave": [Function],
-              }
-            }
-          >
-            <CollapsePanel
-              header="Смена пароля"
-              key="password"
-            >
-              <div
-                className="configWrapper flexWrapper"
-              >
-                <span>
-                  Старый пароль:
-                </span>
-                <Input
-                  allowClear={true}
-                  data-id="oldPassword"
-                  onChange={[Function]}
-                  type="password"
-                  value=""
-                />
-              </div>
-              <div
-                className="configWrapper flexWrapper"
-              >
-                <span>
-                  Новый пароль:
-                </span>
-                <Input
-                  allowClear={true}
-                  data-id="newPassword"
-                  onChange={[Function]}
-                  type="password"
-                  value=""
-                />
-              </div>
-              <Button
-                block={false}
-                className="submit"
-                disabled={true}
-                ghost={false}
-                htmlType="button"
-                loading={false}
-                onClick={[Function]}
-                type="primary"
-              >
-                Принять изменения
-              </Button>
-            </CollapsePanel>
-            <CollapsePanel
-              header="Общие настройки"
-              key="common"
-            >
-              <div
-                className="settingsPanel--center-flex"
-              >
-                <div
-                  className="configWrapper flexWrapper"
-                >
-                  <span>
-                    Сменить телефон:
-                  </span>
-                  <Input
-                    allowClear={true}
-                    data-id="tel"
-                    onChange={[Function]}
-                    type="tel"
-                    value={null}
-                  />
-                </div>
-              </div>
-              <Button
-                block={false}
-                className="submit"
-                disabled={true}
-                ghost={false}
-                htmlType="button"
-                loading={false}
-                onClick={[Function]}
-                type="primary"
-              >
-                Принять изменения
-              </Button>
-            </CollapsePanel>
-            <CollapsePanel
-              header="Настройки профиля"
-              key="profile"
-            >
-              <div
-                className="configWrapper"
-              >
-                <Switch
-                  defaultChecked={false}
-                  onChange={[Function]}
-                />
-                <span
-                  className="configTitle"
-                >
-                  Скрывать почту
-                </span>
-              </div>
-              <div
-                className="configWrapper"
-              >
-                <Switch
-                  defaultChecked={false}
-                  onChange={[Function]}
-                />
-                <span
-                  className="configTitle"
-                >
-                  Скрывать телефон
-                </span>
-              </div>
-              <Button
-                block={false}
-                className="submit"
-                disabled={true}
-                ghost={false}
-                htmlType="button"
-                loading={false}
-                onClick={[Function]}
-                type="primary"
-              >
-                Принять изменения
-              </Button>
-            </CollapsePanel>
-            <CollapsePanel
-              header="Настройки уровней доступа"
-              key="access"
-            >
-              <Collapse
-                bordered={false}
-                expandIconPosition="left"
-                openAnimation={
-                  Object {
-                    "appear": [Function],
-                    "enter": [Function],
-                    "leave": [Function],
-                  }
-                }
-              >
-                <CollapsePanel
-                  header="Администратор"
-                  key="admin"
-                >
-                   A dog is a type of domesticated animal.
-                </CollapsePanel>
-                <CollapsePanel
-                  header="Начальник отдела"
-                  key="headDepartament"
-                >
-                   A dog is a type of domesticated animal.
-                </CollapsePanel>
-                <CollapsePanel
-                  header="Сотрудник"
-                  key="solider"
-                >
-                   A dog is a type of domesticated animal.
-                </CollapsePanel>
-              </Collapse>
-              <Button
-                block={false}
-                className="submit"
-                disabled={true}
-                ghost={false}
-                htmlType="button"
-                loading={false}
-                onClick={[Function]}
-                type="primary"
-              >
-                Принять изменения
-              </Button>
-            </CollapsePanel>
-          </Collapse>
+          <PanelPassword
+            newPassword=""
+            oldPassword=""
+            onSaveSettings={[Function]}
+          />
+          <PanelCommon
+            emailValue={null}
+            onSaveSettings={[Function]}
+            telValue={null}
+          />
+          <PanelProfile
+            isHideEmail={null}
+            isHidePhone={null}
+            onSaveSettings={[Function]}
+          />
         </div>
       </Scrollbars>
     </div>
@@ -465,8 +121,8 @@ exports[`<SettingsModule /> template Should be render 2`] = `
       className="col-6"
     >
       <ObserverTime
-        isLoading={true}
-        settingsLogs={Object {}}
+        isLoading={false}
+        settingsLogs={Array []}
         title=""
       />
     </div>

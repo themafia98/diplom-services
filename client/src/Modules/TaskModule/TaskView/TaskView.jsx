@@ -580,7 +580,7 @@ class TaskView extends React.PureComponent {
       router: { routeDataActive = {} },
       onUpdate,
       udata = {},
-      udata: { _id: uid = '' },
+      udata: { _id: uid = '' } = {},
       onOpenPageWithData,
       setCurrentTab,
       router = {},
@@ -589,11 +589,11 @@ class TaskView extends React.PureComponent {
 
     const {
       modeControll,
-      modeControllEdit,
+      modeControllEdit = {},
       filesArray = [],
       filteredUsers = [],
       isLoad = false,
-      modeControllEdit: { tags: tagsListState = [] },
+      modeControllEdit: { tags: tagsListState = [] } = {},
     } = this.state;
 
     const {

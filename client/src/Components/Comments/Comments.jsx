@@ -150,7 +150,7 @@ class Comments extends React.PureComponent {
           key={it.id}
           rules={rules}
           it={it}
-          uId={it.uId ? it.uId : null}
+          uId={it.uId ? it.uId : ''}
           userId={userId}
           onDelete={this.onDelete}
           onEdit={this.onEdit}

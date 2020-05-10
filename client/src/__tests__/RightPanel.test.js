@@ -8,6 +8,8 @@ describe('<RightPanel /> template', () => {
     const props = {
       onUpdate: () => {},
       onClick: () => {},
+      statusApp: 'online',
+      shouldUpdate: false,
     };
     const RightPanelWrapper = shallow(<RightPanel {...props} />);
     expect(RightPanelWrapper.find('Updater').prop('additionalClassName')).toEqual('updaterDefault');

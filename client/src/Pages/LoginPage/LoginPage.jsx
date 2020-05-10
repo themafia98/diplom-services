@@ -107,12 +107,9 @@ class LoginPage extends React.Component {
 
   render() {
     const { refLogin, refPassword, enterLoading } = this;
-    const {
-      authLoad = false,
-      location: { pathname = '' },
-    } = this.props;
+    const { authLoad = false, location: { pathname = '' } = {} } = this.props;
     const { loading, errorMessage, loginAuth } = this.state;
-    const { config = {}, config: { regInclude = false, recovoryInclude = false } = {} } = this.context;
+    const { config = {}, config: { regInclude = true, recovoryInclude = true } = {} } = this.context;
 
     if (authLoad || loginAuth) return <Redirect to="/dashboard" />;
     if ((!authLoad || !loginAuth) && pathname !== '/') {

@@ -129,6 +129,8 @@ class TaskModule extends React.PureComponent {
           saveData,
         };
 
+    if (!Request) return;
+
     this.setState(
       {
         isListCounterLoading: true,
@@ -141,6 +143,7 @@ class TaskModule extends React.PureComponent {
             : Object.keys(filteredInfo).filter(
                 (key) => filteredInfo[key]?.length && (key === 'editor' || key === 'date'),
               );
+          if (!Request) return;
           const rest = new Request();
           const res = await rest.sendRequest(
             '/tasks/listCounter',

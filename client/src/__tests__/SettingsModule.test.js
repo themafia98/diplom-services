@@ -3,18 +3,31 @@ import toJson from 'enzyme-to-json';
 import { shallow } from 'enzyme';
 
 import { initialState } from '../Redux/testStore';
-import { SettingsModule } from '../Components/Modules/SettingsModule/SettingsModule';
-
+import { SettingsModule } from '../Modules/SettingsModule/SettingsModule';
+import context from '../Models/context';
 describe('<SettingsModule /> template', () => {
   test('Should be render', () => {
     const props = {
       onErrorRequestAction: () => {},
       path: 'settingsModule',
+      statusApp: 'online',
+      visible: true,
+      loaderMethods: {},
+      rest: {},
+      shouldUpdate: false,
+      onUpdateUdata: () => {},
+      onCaching: () => {},
+      onSetStatus: () => {},
+      emailValue: '',
+      onSaveCache: () => {},
+      telValue: '',
+      isHidePhone: false,
+      isHideEmail: false,
       onSaveComponentState: () => {},
       router: { ...initialState.router },
     };
 
-    const SettingsModuleWrapper = shallow(<SettingsModule {...props} />);
+    const SettingsModuleWrapper = shallow(<SettingsModule {...props} />, { context });
     expect(toJson(SettingsModuleWrapper)).toMatchSnapshot();
 
     /** TODO: need upgrade test for new settings component */
