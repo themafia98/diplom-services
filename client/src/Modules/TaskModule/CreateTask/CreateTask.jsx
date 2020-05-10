@@ -56,10 +56,10 @@ class CreateTask extends React.PureComponent {
     const dateUpdater = _.isNull(date)
       ? contentDrawer && contentDrawer instanceof moment
         ? {
-            date: [contentDrawer.format('DD.MM.YYYY'), contentDrawer.format('DD.MM.YYYY')],
+            date: [contentDrawer.format(dateFormat), contentDrawer.format(dateFormat)],
           }
         : {
-            date: [moment().format('DD.MM.YYYY'), moment().format('DD.MM.YYYY')],
+            date: [moment().format(dateFormat), moment().format(dateFormat)],
           }
       : {};
 
@@ -275,7 +275,7 @@ class CreateTask extends React.PureComponent {
       removeTab,
       udata: { _id: uid = '', displayName = '' } = {},
     } = this.props;
-    debugger;
+
     const { trySubmit: trySubmitState = false, card = {} } = this.state;
     const { config = {}, schema = {} } = this.context;
 
@@ -397,13 +397,13 @@ class CreateTask extends React.PureComponent {
 
     if (contentDrawer && contentDrawer instanceof moment) {
       return [
-        moment(contentDrawer.format('DD.MM.YYYY'), dateFormat),
-        moment(contentDrawer.format('DD.MM.YYYY'), dateFormat),
+        moment(contentDrawer.format(dateFormat), dateFormat),
+        moment(contentDrawer.format(dateFormat), dateFormat),
       ];
     } else
       return [
-        moment(moment().format('DD.MM.YYYY'), dateFormat),
-        moment(moment().format('DD.MM.YYYY'), dateFormat),
+        moment(moment().format(dateFormat), dateFormat),
+        moment(moment().format(dateFormat), dateFormat),
       ];
   };
 
