@@ -327,6 +327,10 @@ class TaskModule extends React.PureComponent {
               onOpenPageWithData={onOpenPageWithData}
               height={heightController ? height - heightController : height}
               router={router}
+              statusApp={status}
+              statusList={statusList}
+              udata={udata}
+              onLoadCurrentData={onLoadCurrentData}
               loaderMethods={loaderMethods}
             />
           </TabContainer>
@@ -341,7 +345,6 @@ class TaskModule extends React.PureComponent {
               rest={rest}
               isBackground={isBackgroundTaskModuleCreateTask}
               visible={path === 'taskModule_createTask'}
-              height={heightController ? height - heightController : height}
               onLoadCurrentData={onLoadCurrentData}
               statusApp={status}
               statusList={statusList}

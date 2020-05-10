@@ -1,0 +1,7 @@
+.drawerViewer {
+  .ant-drawer-body {
+    height: calc(100% - 55px);
+  }
+  &.createTaskModule {
+  }
+}

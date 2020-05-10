@@ -42,7 +42,7 @@ export const taskModuleListType = {
   visible: bool.isRequired,
   setCurrentTab: func.isRequired,
   data: object.isRequired,
-  height: oneOfType([oneOf([null]), number]),
+  height: oneOfType([oneOf([null]), number, string]),
 };
 
 export const taskModuleMyListType = {
@@ -54,7 +54,7 @@ export const taskModuleMyListType = {
   router: object.isRequired,
   udata: udataType.isRequired,
   loaderMethods: objectOf(func.isRequired).isRequired,
-  height: oneOfType([oneOf([null]), number]),
+  height: oneOfType([oneOf([null]), number, string]),
 };
 
 export const taskModuleCalendarType = {
@@ -66,5 +66,21 @@ export const taskModuleCalendarType = {
   setCurrentTab: func.isRequired,
   onOpenPageWithData: func.isRequired,
   loaderMethods: objectOf(func.isRequired).isRequired,
-  height: oneOfType([oneOf([null]), number]),
+  height: oneOfType([oneOf([null]), number, string]),
+};
+
+export const createTaskType = {
+  onLoadCurrentData: func.isRequired,
+  statusApp: string.isRequired,
+  isBackground: bool,
+  onOpenPageWithData: func,
+  removeTab: func,
+  rest: object,
+  router: object.isRequired,
+  statusList: object.isRequired,
+  udata: udataType,
+  visible: bool.isRequired,
+  visibleMode: string,
+  contentDrawer: oneOfType([string, number, object]),
+  dateFormat: string,
 };

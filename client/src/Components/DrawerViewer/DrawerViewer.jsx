@@ -1,25 +1,45 @@
 // @ts-nocheck
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import clsx from 'clsx';
 import { getComponentByKey } from '../../Utils';
 import { drawerViewerType } from './types';
 import { Drawer } from 'antd';
 
 const DrawerViewer = (props) => {
-  const { onClose, visible, title = '', selectedEntity = null } = props;
-  const [key, setKey] = useState(selectedEntity);
+  const { onClose, visible, title, selectedEntity, contentKey, moduleProps, udata } = props;
+  const [content, setContent] = useState(selectedEntity);
 
   useEffect(() => {
-    if (key !== selectedEntity) {
-      setKey(selectedEntity);
+    if (content !== selectedEntity) {
+      setContent(selectedEntity);
     }
-  }, [selectedEntity, key]);
+  }, [selectedEntity, content]);
 
-  if (!key) return null;
-  // const Component = getComponentByKey('createTaskModule');
+  const Component = useMemo(() => getComponentByKey(contentKey), [contentKey]);
+
+  if (!content) return null;
 
   return (
-    <Drawer key={key} onClose={onClose} title={title} width={720} visible={visible} destroyOnClose={true}>
-      <span>{key.toString()}</span>
+    <Drawer
+      className={clsx('drawerViewer', contentKey)}
+      key={`${contentKey}-drawer`}
+      onClose={onClose}
+      title={title}
+      width={720}
+      visible={visible}
+      destroyOnClose={true}
+    >
+      {Component ? (
+        <Component
+          key={contentKey}
+          {...moduleProps}
+          visibleMode="drawerViewer"
+          contentDrawer={content}
+          udata={udata}
+        />
+      ) : (
+        <span>{content.toString()}</span>
+      )}
     </Drawer>
   );
 };
@@ -30,6 +50,9 @@ DrawerViewer.defaultProps = {
   visible: false,
   title: '',
   selectedEntity: null,
+  contentKey: '',
+  udata: {},
+  moduleProps: {},
 };
 
 export default DrawerViewer;

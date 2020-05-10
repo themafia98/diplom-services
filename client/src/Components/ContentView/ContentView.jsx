@@ -5,7 +5,6 @@ import _ from 'lodash';
 import { Layout } from 'antd';
 
 import TabContainer from '../TabContainer';
-import DrawerViewer from '../DrawerViewer';
 import MainModule from '../../Modules/MainModule';
 import CabinetModule from '../../Modules/CabinetModule';
 import TaskModule from '../../Modules/TaskModule';
@@ -21,7 +20,6 @@ const { Content } = Layout;
 
 class ContentView extends React.Component {
   state = {
-    drawerView: false,
     visibilityPortal: false,
     key: null,
   };
@@ -55,11 +53,10 @@ class ContentView extends React.Component {
 
   shouldComponentUpdate = (nextProps, nextState) => {
     const { path: currentPath } = this.props;
-    const { key: currentKey, drawerView: currentDrawerView, visibilityPortal } = this.state;
+    const { key: currentKey, visibilityPortal } = this.state;
     if (
       nextProps.path !== currentPath ||
       nextState.key !== currentKey ||
-      nextState.drawerView !== currentDrawerView ||
       nextState.visibilityPortal !== visibilityPortal
     ) {
       return true;
@@ -99,17 +96,10 @@ class ContentView extends React.Component {
   }, 300);
 
   disableF5 = (event) => {
-    if ((event.which || event.keyCode) === 113) {
-      return this.setState({ ...this.state, drawerView: !this.state.drawerView });
-    }
     if ((event.which || event.keyCode) === 116) {
       event.preventDefault();
       this.updateFunction(true);
     }
-  };
-
-  onClose = () => {
-    return this.setState({ ...this.state, drawerView: false });
   };
 
   render() {
@@ -127,7 +117,7 @@ class ContentView extends React.Component {
       webSocket = null,
       onChangeVisibleAction = null,
     } = this.props;
-    const { drawerView, key, visibilityPortal = false } = this.state;
+    const { key, visibilityPortal = false } = this.state;
 
     const loaderMethods = {
       onShowLoader,
@@ -265,7 +255,6 @@ class ContentView extends React.Component {
             />
           </TabContainer>
         </Content>
-        <DrawerViewer onClose={this.onClose} visible={drawerView} />
       </>
     );
   }

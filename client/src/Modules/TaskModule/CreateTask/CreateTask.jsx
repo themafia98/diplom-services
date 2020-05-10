@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React from 'react';
-import PropTypes from 'prop-types';
+import { createTaskType } from '../types';
 import clsx from 'clsx';
 import _ from 'lodash';
 import Scrollbars from 'react-custom-scrollbars';
@@ -34,23 +34,35 @@ class CreateTask extends React.PureComponent {
       editor: null,
       description: null,
       comments: [],
-      date: [moment().format('DD.MM.YYYY'), moment().format('DD.MM.YYYY')],
+      date: null,
     },
     errorBundle: {},
   };
 
   static contextType = modelContext;
-
-  static propTypes = {
-    height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    onLoadCurrentData: PropTypes.func.isRequired,
-
-    statusApp: PropTypes.string.isRequired,
+  static propTypes = createTaskType;
+  static defaultProps = {
+    visibleMode: 'default',
   };
 
   static getDerivedStateFromProps = (props, state) => {
-    const { card: { authorName: authorState = null, uidCreater = null } = {} } = state;
-    const { udata: { _id: uid, displayName = '' } = {} } = props;
+    const { card: { authorName: authorState = null, uidCreater = null, date = null } = {} } = state;
+    const {
+      udata: { _id: uid, displayName = '' } = {},
+      dateFormat = 'DD.MM.YYYY',
+      contentDrawer = '',
+    } = props;
+
+    const dateUpdater = _.isNull(date)
+      ? contentDrawer && contentDrawer instanceof moment
+        ? {
+            date: [contentDrawer.format('DD.MM.YYYY'), contentDrawer.format('DD.MM.YYYY')],
+          }
+        : {
+            date: [moment().format('DD.MM.YYYY'), moment().format('DD.MM.YYYY')],
+          }
+      : {};
+
     if (_.isNull(uidCreater) && _.isNull(authorState) && uid && displayName) {
       return {
         ...state,
@@ -58,6 +70,17 @@ class CreateTask extends React.PureComponent {
           ...state.card,
           authorName: displayName,
           uidCreater: uid,
+          ...dateUpdater,
+        },
+      };
+    }
+
+    if (_.isNull(date)) {
+      return {
+        ...state,
+        card: {
+          ...state.card,
+          ...dateUpdater,
         },
       };
     }
@@ -102,6 +125,7 @@ class CreateTask extends React.PureComponent {
   componentDidUpdate = () => {
     const { statusListName = [] } = this.state;
     const { statusList: { settings = [] } = {} } = this.props;
+
     const filteredStatusNames = settings.map(({ value = '' }) => value).filter(Boolean);
 
     if (filteredStatusNames?.length !== statusListName?.length) {
@@ -150,7 +174,7 @@ class CreateTask extends React.PureComponent {
     if (!errorBundle || _.isEmpty(errorBundle)) return null;
 
     return Object.values(errorBundle).map((value, index) => (
-      <li key={`${value}${index}`} className="error-item">
+      <li key={value && index ? `${value}${index}` : index} className="error-item">
         {value}
       </li>
     ));
@@ -234,7 +258,7 @@ class CreateTask extends React.PureComponent {
     return statusListName
       .map((status, index) => {
         return (
-          <Option key={`${index}${status}`} value={status} label={status}>
+          <Option key={index && status ? `${index}${status}` : index} value={status} label={status}>
             <span className="value">{status}</span>
           </Option>
         );
@@ -249,8 +273,9 @@ class CreateTask extends React.PureComponent {
       router: { currentActionTab: path, actionTabs = [] },
       setCurrentTab,
       removeTab,
-      udata: { _id: uid, displayName = '' },
+      udata: { _id: uid = '', displayName = '' } = {},
     } = this.props;
+    debugger;
     const { trySubmit: trySubmitState = false, card = {} } = this.state;
     const { config = {}, schema = {} } = this.context;
 
@@ -323,10 +348,11 @@ class CreateTask extends React.PureComponent {
               authorName: displayName,
             };
 
-            createNotification('global', itemNotification).catch((error) => {
-              if (error?.response?.status !== 404) console.error(error);
-              message.error('Ошибка глобального уведомления');
-            });
+            if (createNotification)
+              createNotification('global', itemNotification).catch((error) => {
+                if (error?.response?.status !== 404) console.error(error);
+                message.error('Ошибка глобального уведомления');
+              });
 
             if (config.tabsLimit <= actionTabs.length)
               return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
@@ -340,9 +366,9 @@ class CreateTask extends React.PureComponent {
             let type = 'deafult';
             if (path.split('__')[1]) type = 'itemTab';
 
-            removeTab({ path, type: type });
+            if (removeTab) removeTab({ path, type: type });
 
-            if (!isFind) {
+            if (!isFind && onOpenPageWithData) {
               onOpenPageWithData({
                 activePage: routePathNormalise({
                   pathType: 'moduleItem',
@@ -350,7 +376,7 @@ class CreateTask extends React.PureComponent {
                 }),
                 routeDataActive: metadata[0] || metadata || {},
               });
-            } else {
+            } else if (setCurrentTab) {
               setCurrentTab(actionTabs[index]);
             }
           },
@@ -366,8 +392,24 @@ class CreateTask extends React.PureComponent {
     }
   };
 
+  getDefaultDate = (dateFormat) => {
+    const { contentDrawer } = this.props;
+
+    if (contentDrawer && contentDrawer instanceof moment) {
+      return [
+        moment(contentDrawer.format('DD.MM.YYYY'), dateFormat),
+        moment(contentDrawer.format('DD.MM.YYYY'), dateFormat),
+      ];
+    } else
+      return [
+        moment(moment().format('DD.MM.YYYY'), dateFormat),
+        moment(moment().format('DD.MM.YYYY'), dateFormat),
+      ];
+  };
+
   render() {
-    const dateFormat = 'DD.MM.YYYY';
+    const { visibleMode, dateFormat = 'DD.MM.YYYY' } = this.props;
+
     const {
       errorBundle = {},
       filteredUsers = [],
@@ -375,16 +417,20 @@ class CreateTask extends React.PureComponent {
     } = this.state;
     const { rest } = this.context;
 
+    const defaultDate = this.getDefaultDate(dateFormat);
+
     return (
       <Scrollbars hideTracksWhenNotNeeded={true}>
         <div className="createTask">
-          <TitleModule
-            additional="Форма создания задачи"
-            classNameTitle="createTaskTitle"
-            title="Новая задача"
-          />
+          {visibleMode === 'default' ? (
+            <TitleModule
+              additional="Форма создания задачи"
+              classNameTitle="createTaskTitle"
+              title="Новая задача"
+            />
+          ) : null}
           <div className="createTask__main">
-            <div className="col-6 col-task">
+            <div className={clsx(visibleMode !== 'default' ? 'col-fullscreen' : 'col-6', 'col-task')}>
               <Scrollbars hideTracksWhenNotNeeded={true} autoHide>
                 <form className="taskForm" name="taskForm">
                   <label>Название: </label>
@@ -453,10 +499,7 @@ class CreateTask extends React.PureComponent {
                   <RangePicker
                     className={clsx(!_.isEmpty(errorBundle) && errorBundle.date ? 'isError' : null)}
                     onChange={this.onChangeHandlerDate}
-                    defaultValue={[
-                      moment(moment().format('DD.MM.YYYY'), dateFormat),
-                      moment(moment().format('DD.MM.YYYY'), dateFormat),
-                    ]}
+                    defaultValue={defaultDate}
                     name="date"
                     format="DD.MM.YYYY"
                     type="date"
@@ -473,9 +516,11 @@ class CreateTask extends React.PureComponent {
                 </form>
               </Scrollbars>
             </div>
-            <div className="col-6 error-logger">
-              <ul className="errors-list">{this.getErrorLogs()}</ul>
-            </div>
+            {visibleMode === 'default' ? (
+              <div className="col-6 error-logger">
+                <ul className="errors-list">{this.getErrorLogs()}</ul>
+              </div>
+            ) : null}
           </div>
         </div>
       </Scrollbars>

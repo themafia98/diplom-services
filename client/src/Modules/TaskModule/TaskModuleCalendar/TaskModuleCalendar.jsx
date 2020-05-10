@@ -186,6 +186,7 @@ class TaskModuleCalendar extends React.PureComponent {
 
   render() {
     const { drawerVisible = false, selectedEntity = null } = this.state;
+    const { udata = {} } = this.props;
     return (
       <Scrollbars hideTracksWhenNotNeeded={true}>
         <div className="taskModuleCalendar">
@@ -201,7 +202,10 @@ class TaskModuleCalendar extends React.PureComponent {
             title="Создание задачи"
             visible={drawerVisible}
             selectedEntity={selectedEntity}
+            contentKey="createTaskModule"
             onClose={this.onChangeDrawerVisible}
+            udata={udata}
+            moduleProps={this.props}
           />
         </div>
       </Scrollbars>
