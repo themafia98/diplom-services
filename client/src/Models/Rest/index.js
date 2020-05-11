@@ -198,7 +198,7 @@ class Request {
 
   restartApp() {
     localStorage.clear();
-    window.location.assign('/admin');
+    window.location.assign('/');
   }
 
   /**
