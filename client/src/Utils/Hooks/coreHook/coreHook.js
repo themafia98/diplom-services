@@ -55,7 +55,6 @@ const coreUpdaterDataHook = async (dispatch, dep = {}, multiple = false) => {
   if (cursor) return eventResult;
 
   if (!isLocalUpdate) {
-    debugger;
     const depParser = {
       copyStore,
       isPartData,

@@ -45,7 +45,6 @@ const runBadNetworkAction = (dispatch, error, dep) => {
         const list = _.uniqBy([...paramsList, currnetParams], 'path');
 
         if (multipleLoadData) {
-          debugger;
           dispatch(multipleLoadData({ requestsParamsList: list }));
           return;
         }

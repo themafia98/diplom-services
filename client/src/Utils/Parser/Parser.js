@@ -22,7 +22,6 @@ const dataParser = (flag = false, isLocalUpdate = true, dep = {}, offlineStore =
   const store = [...copyStore];
 
   if (offlineStore?.length) {
-    debugger;
     offlineStore.forEach((it) => {
       const item = { ...it };
       const { _id = 0, key = '' } = item || {};
