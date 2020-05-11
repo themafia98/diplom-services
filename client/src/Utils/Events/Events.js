@@ -3,7 +3,8 @@ import { getStoreSchema } from '../utilsHook';
 import { dataParser } from '../';
 
 /** Events */
-const sucessEvent = async (dispatch, dep, mode = '', multiple = false, cursor = null) => {
+const sucessEvent = async (dispatch, dep, mode = '', multiple = false, cursor = null, offlineStore = []) => {
+  const copyStoreOffline = [...offlineStore];
   const {
     copyStore,
     primaryKey,
@@ -36,7 +37,7 @@ const sucessEvent = async (dispatch, dep, mode = '', multiple = false, cursor = 
   }
 
   if (!cursor) {
-    const { data = {}, shoudClearError = false } = dataParser(true, true, dep);
+    const { data = {}, shoudClearError = false } = dataParser(true, true, dep, offlineStore);
     if (shoudClearError) await dispatch(errorRequestAction(null));
 
     if (!multiple) {
@@ -52,14 +53,14 @@ const sucessEvent = async (dispatch, dep, mode = '', multiple = false, cursor = 
     return isKey && isValid;
   });
   const iEmpty = index === -1;
+
   if (copyStore && iEmpty) {
     if (cursor.value?.offline) {
       const copy = { ...cursor.value, offline: false };
-      cursor.value.offline = false;
-      //undefiendCopyStore.push({ ...copy });
+      copyStoreOffline.push({ ...copy });
     }
   }
-  return await namespaceEvents.sucessEvent(dispatch, dep, mode, multiple, await cursor.continue());
+  return await sucessEvent(dispatch, dep, mode, multiple, await cursor.continue(), copyStoreOffline);
 };
 
 const forceUpdateDetectedInit = () => {

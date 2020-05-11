@@ -84,10 +84,10 @@ class ClientSideDatabase {
       }),
       Object.freeze({
         entity: 'tasks',
-        props: { unique: true, keyPath: '_id', autoIncrement: true },
+        props: { unique: true, keyPath: 'key', autoIncrement: true },
         index: {
           unique: function (key) {
-            return key === '_id';
+            return key === 'key';
           },
         },
         schema: TASK_SCHEMA,
@@ -291,7 +291,7 @@ class ClientSideDatabase {
    * @param {any} item
    * @param {any} pk
    */
-  async updateItem(nameStore, item, pk, mode = 'readwrite') {
+  async updateItem(nameStore, item, pk = null, mode = 'readwrite') {
     if (this.getCrashStatus()) return;
 
     try {

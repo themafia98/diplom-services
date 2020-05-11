@@ -7,32 +7,51 @@ import { dataParser } from '../';
 /** Utils hooks */
 
 const runBadNetworkAction = (dispatch, error, dep) => {
-  const { Request, setStatus, errorRequestAction, loadCurrentData, getState } = dep;
+  const {
+    rest,
+    setStatus,
+    errorRequestAction,
+    loadCurrentData,
+    getState,
+    path,
+    params,
+    multipleLoadData,
+  } = dep;
+
   if (!loadCurrentData && !errorRequestAction) return;
 
   if (!loadCurrentData && errorRequestAction) {
     dispatch(errorRequestAction(error.message));
-    if (setStatus) dispatch(setStatus({ statusRequst: 'offline' }));
+    if (setStatus) dispatch(setStatus({ statusRequst: 'offline', params, path }));
   }
 
-  if (setStatus) dispatch(setStatus({ statusRequst: 'offline' }));
+  if (setStatus) dispatch(setStatus({ statusRequst: 'offline', params, path }));
   else return;
   dispatch(errorRequestAction(error.message));
-  const errorRequest = new Request();
-  new Request().follow(
+
+  rest.follow(
     'offline',
     (statusRequst) => {
       const state = getState() || {};
-      const { publicReducer: { status = '' } = {}, router = {} } = state;
-      if (status !== statusRequst && statusRequst === 'online') {
+      const { publicReducer: { status = '', paramsList = [] } = {}, router = {} } = state;
+
+      if (statusRequst === 'online') {
         const { path, routeData = {} } = router;
         const currentModule = path && routeData[path] ? routeData[path] : {};
-        const requestParams = !currentModule?.params ? {} : currentModule.params;
-        errorRequest.unfollow();
+        const currnetParams = !currentModule?.params ? {} : currentModule.params;
+        rest.unfollow();
 
-        dispatch(setStatus({ statusRequst }));
+        dispatch(setStatus({ statusRequst, clearParams: true }));
+        const list = _.uniqBy([...paramsList, currnetParams], 'path');
 
-        dispatch(loadCurrentData({ ...requestParams, sync: true }));
+        if (multipleLoadData) {
+          debugger;
+          dispatch(multipleLoadData({ requestsParamsList: list }));
+          return;
+        }
+        list.forEach((requestParams) => {
+          dispatch(loadCurrentData({ ...requestParams, sync: true }));
+        });
       }
     },
     3000,
@@ -55,7 +74,8 @@ const runRefreshIndexedDb = async (dispatch, storeName, dep, multiple) => {
   const { clientDB, isLocalUpdate } = dep;
 
   let shouldUpdate = isLocalUpdate;
-  const cursor = await clientDB.getCursor(storeName);
+  const cursor = await clientDB.getCursor(storeName, 'readwrite');
+
   shouldUpdate = !_.isNull(cursor);
   if (cursor) {
     const eventResult = await sucessEvent(dispatch, dep, '', multiple, cursor);

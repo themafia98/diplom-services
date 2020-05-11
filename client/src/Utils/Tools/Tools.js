@@ -1,5 +1,6 @@
 // @ts-nocheck
 import _ from 'lodash';
+import { runBadNetworkAction } from '../../Utils/utilsHook';
 import Request from '../../Models/Rest';
 const createNotification = async (type = '', item = {}, actionType = 'set_notification') => {
   if (!type || _.isEmpty(item)) return;
@@ -16,13 +17,12 @@ const createNotification = async (type = '', item = {}, actionType = 'set_notifi
 };
 
 const createEntity = async (storeName = '', body = {}, dep = {}, sliceCreaterNumber = 0) => {
-  const { statusApp = 'online', clientDB = null } = dep;
-  debugger;
+  const { statusApp = 'online', clientDB = null, onSetStatus } = dep;
+
   if (!storeName || _.isEmpty(body)) return;
   try {
+    const rest = new Request();
     if (statusApp === 'online') {
-      const rest = new Request();
-
       const createPath = `${storeName[0].toUpperCase()}${storeName.slice(1)}`;
       const res = await rest.sendRequest(
         `/${storeName}/create${createPath.slice(
@@ -48,6 +48,14 @@ const createEntity = async (storeName = '', body = {}, dep = {}, sliceCreaterNum
     return { result: putAction ? { ...offlineBody } : null, offline: true };
   } catch (error) {
     console.error(error);
+
+    if (error?.message === 'Network Error' && onSetStatus) {
+      await onSetStatus({
+        statusRequst: 'offline',
+      });
+
+      return await createEntity(storeName, body, { ...dep, statusApp: 'offline' }, sliceCreaterNumber);
+    }
     return { result: null, offline: null };
   }
 };

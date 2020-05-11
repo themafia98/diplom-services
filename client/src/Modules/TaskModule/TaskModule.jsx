@@ -249,6 +249,7 @@ class TaskModule extends React.PureComponent {
         udata = {},
         loaderMethods = {},
         statusList = {},
+        onSetStatus = null,
       } = this.props;
 
       const isViewTask = path.startsWith('taskModule') && /__/gi.test(path);
@@ -330,6 +331,7 @@ class TaskModule extends React.PureComponent {
               onOpenPageWithData={onOpenPageWithData}
               height={heightController ? height - heightController : height}
               router={router}
+              onSetStatus={onSetStatus}
               statusApp={status}
               statusList={statusList}
               udata={udata}
@@ -350,6 +352,7 @@ class TaskModule extends React.PureComponent {
               visible={path === 'taskModule_createTask'}
               onLoadCurrentData={onLoadCurrentData}
               statusApp={status}
+              onSetStatus={onSetStatus}
               statusList={statusList}
               router={router}
               onOpenPageWithData={onOpenPageWithData}

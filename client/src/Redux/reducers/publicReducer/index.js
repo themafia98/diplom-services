@@ -18,6 +18,7 @@ const initialState = {
   requestError: null,
   udata: {},
   caches: {},
+  paramsList: [],
   settings: [],
   artifacts: [],
 };
@@ -173,11 +174,14 @@ export default (state = initialState, action) => {
     }
 
     case SET_STATUS: {
-      const { statusRequst = state.status } = action.payload;
+      const { statusRequst = null, params = null, path = '', clearParams = false } = action.payload;
+      const paramsListNew = params ? [...state.paramsList, params] : [...state.paramsList];
+      debugger;
       return {
         ...state,
-        status: statusRequst,
+        status: statusRequst ? statusRequst : state.status,
         prewStatus: state.status,
+        paramsList: clearParams ? [] : paramsListNew,
       };
     }
     default:

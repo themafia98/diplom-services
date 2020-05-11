@@ -261,6 +261,7 @@ class CreateTask extends React.PureComponent {
       setCurrentTab,
       removeTab,
       udata: { _id: uid = '', displayName = '' } = {},
+      onSetStatus,
     } = this.props;
 
     const {
@@ -293,7 +294,12 @@ class CreateTask extends React.PureComponent {
     this.setState({ ...this.state, load: true });
 
     try {
-      const { result: res, offline } = await createEntity('tasks', validHash, { clientDB, statusApp }, 4);
+      const { result: res, offline } = await createEntity(
+        'tasks',
+        validHash,
+        { clientDB, statusApp, onSetStatus },
+        4,
+      );
 
       if (_.isNull(res) && _.isNull(offline)) {
         throw new Error('Invalid create task');

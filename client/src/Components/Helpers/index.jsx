@@ -43,7 +43,7 @@ const PrivateRoute = ({ component: Component, onLogoutAction, onSetStatus, ...ro
   };
 
   useEffect(() => {
-    history.push(history.location.pathname, { ...routeProps });
+    history.push(history.location.pathname);
   }, [history]);
 
   const getRouters = useCallback(getRoutersFunc, [rest]);

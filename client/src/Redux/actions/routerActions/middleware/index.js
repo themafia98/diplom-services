@@ -19,7 +19,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
     indStoreName = '',
     sync = false,
   } = params;
-
+  debugger;
   let isLocalUpdate = true;
   const primaryKey = 'uuid';
   const pathValid = path.includes('_') ? path : path.split('__')[0];
@@ -34,6 +34,8 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
     dispatch(loadFlagAction({ path: pathValid, loading: true }));
   }
 
+  const rest = new Request();
+
   switch (status) {
     case 'online': {
       const normalizeReqPath = getNormalizedPath(useStore, {
@@ -43,7 +45,6 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
       });
 
       try {
-        const rest = new Request();
         const res = await rest.sendRequest(normalizeReqPath, methodRequst, { methodQuery, options }, true);
 
         const [items, error] = rest.parseResponse(res);
@@ -66,6 +67,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
           primaryKey,
           params,
           saveComponentStateAction,
+          multipleLoadData,
           errorRequestAction,
           isLocalUpdate,
           indStoreName,
@@ -81,9 +83,11 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
           params,
           errorRequestAction,
           loadCurrentData,
+          multipleLoadData,
           getState,
           storeLoad,
           path,
+          rest,
         };
 
         if (error?.status === 404) {
@@ -103,6 +107,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
             saveComponentStateAction,
             errorRequestAction,
             isLocalUpdate,
+            multipleLoadData,
             indStoreName,
           };
 
@@ -129,6 +134,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
         errorRequestAction,
       };
 
+      dispatch(setStatus({ params, path }));
       const cursor = await clientDB.getAllItems(indStoreName ? indStoreName : storeLoad);
       return await sucessEvent(dispatch, dep, 'offline', false, cursor);
     }
@@ -149,6 +155,7 @@ const multipleLoadData = (params) => async (dispatch, getState, { schema, Reques
       return;
     }
     default: {
+      debugger;
       const responseList = [];
       for await (let requestParam of requestsParamsList) {
         const {
@@ -176,7 +183,6 @@ const multipleLoadData = (params) => async (dispatch, getState, { schema, Reques
         try {
           const rest = new Request();
           const res = await rest.sendRequest(normalizeReqPath, methodRequst, { methodQuery, options }, true);
-
           const [items, error] = rest.parseResponse(res);
 
           if (error) {

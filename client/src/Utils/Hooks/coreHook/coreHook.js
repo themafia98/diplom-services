@@ -29,6 +29,7 @@ const coreUpdaterDataHook = async (dispatch, dep = {}, multiple = false) => {
     isLocalUpdate: localUpdateStat,
     indStoreName,
     rest,
+    params,
     sync = false,
   } = dep;
 
@@ -54,6 +55,7 @@ const coreUpdaterDataHook = async (dispatch, dep = {}, multiple = false) => {
   if (cursor) return eventResult;
 
   if (!isLocalUpdate) {
+    debugger;
     const depParser = {
       copyStore,
       isPartData,
@@ -63,6 +65,7 @@ const coreUpdaterDataHook = async (dispatch, dep = {}, multiple = false) => {
       clientDB,
       sortBy,
       pathValid,
+      params,
       requestError,
     };
     const depAction = {

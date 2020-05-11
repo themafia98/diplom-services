@@ -170,6 +170,7 @@ class ContentView extends React.Component {
               onErrorRequestAction={onErrorRequestAction}
               getBackground={this.getBackground}
               setCurrentTab={setCurrentTab}
+              onSetStatus={onSetStatus}
               key="taskModule"
               rest={rest}
               loaderMethods={loaderMethods}

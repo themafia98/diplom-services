@@ -8,6 +8,7 @@ import {
   updateEntityHook,
 } from '../../../../Utils';
 import { onLoadArtifacts, onLoadSettings } from '../';
+import { multipleLoadData } from '../../routerActions/middleware';
 import { updateItemStateAction } from '../../routerActions';
 
 /**
@@ -29,7 +30,7 @@ const middlewareCaching = (props) => async (dispatch, getState, { schema, Reques
     type = '',
     updateBy = '_id',
   } = props;
-
+  const rest = new Request();
   const depActions = {
     errorRequestAction,
     сachingAction,
@@ -41,7 +42,6 @@ const middlewareCaching = (props) => async (dispatch, getState, { schema, Reques
 
       const path = `/${depStore}/caching/jurnal`;
       const body = { queryParams: { depKey, depStore }, item };
-      const rest = new Request();
 
       const res = await rest.sendRequest(path, 'PUT', body, true);
       const [items, error] = rest.parseResponse(res);
@@ -56,6 +56,7 @@ const middlewareCaching = (props) => async (dispatch, getState, { schema, Reques
         schema,
         dataItems,
         updateBy,
+        multipleLoadData,
       };
 
       await cachingHook(dispatch, dep, depActions);
@@ -70,6 +71,7 @@ const middlewareCaching = (props) => async (dispatch, getState, { schema, Reques
       actionType,
       uid,
       Request,
+      multipleLoadData,
     };
 
     await putterCacheHook(dispatch, dep, depActions);
@@ -85,6 +87,8 @@ const middlewareCaching = (props) => async (dispatch, getState, { schema, Reques
       Request,
       errorRequestAction,
       setStatus,
+      multipleLoadData,
+      rest,
     };
     console.error(error);
     errorHook(error, dispatch, depError);
@@ -99,7 +103,7 @@ const loadCacheData = (props) => async (dispatch, getState, { schema, Request, c
     store = '',
     updateBy = '_id',
   } = props;
-
+  const rest = new Request();
   const depActions = {
     errorRequestAction,
     сachingAction,
@@ -107,7 +111,6 @@ const loadCacheData = (props) => async (dispatch, getState, { schema, Request, c
 
   try {
     const path = `/${depStore}/caching/list`;
-    const rest = new Request();
 
     const body = { queryParams: { depKey, store }, actionType };
 
@@ -124,6 +127,7 @@ const loadCacheData = (props) => async (dispatch, getState, { schema, Request, c
       store,
       schema,
       clientDB,
+      multipleLoadData,
       updateBy,
     };
 
@@ -138,8 +142,10 @@ const loadCacheData = (props) => async (dispatch, getState, { schema, Request, c
       schema,
       Request,
       updateBy,
+      multipleLoadData,
       errorRequestAction,
       setStatus,
+      rest,
     };
     console.error(error);
     errorHook(error, dispatch, depError);
@@ -174,14 +180,13 @@ const middlewareUpdate = (props = {}) => async (dispatch, getState, { schema, Re
     actionType = 'default',
     updateBy = '_id',
   } = props;
-
+  const rest = new Request();
   /**
    * update by @property {string} key more prioritized than @property {string} id
    */
   try {
     const isMany = actionType === 'update_many';
     const path = isMany ? `/system/${store}/update/many` : `/system/${store}/update/single`;
-    const rest = new Request();
 
     const body = { queryParams: { id, key }, updateItem, updateField };
 
@@ -201,7 +206,9 @@ const middlewareUpdate = (props = {}) => async (dispatch, getState, { schema, Re
       schema,
       Request,
       errorRequestAction,
+      multipleLoadData,
       setStatus,
+      rest,
     };
     console.error(error);
     errorHook(error, dispatch, depError);

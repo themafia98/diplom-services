@@ -5,7 +5,7 @@ import { clientDB } from '../../Models/ClientSideDatabase';
 import { runNoCorsParser } from './utils';
 import { getStoreSchema } from '../utilsHook';
 
-const dataParser = (flag = false, isLocalUpdate = true, dep = {}) => {
+const dataParser = (flag = false, isLocalUpdate = true, dep = {}, offlineStore = []) => {
   const {
     copyStore = [],
     isPartData = false,
@@ -19,14 +19,35 @@ const dataParser = (flag = false, isLocalUpdate = true, dep = {}) => {
     noCorsClient = false,
   } = dep;
 
+  const store = [...copyStore];
+
+  if (offlineStore?.length) {
+    debugger;
+    offlineStore.forEach((it) => {
+      const item = { ...it };
+      const { _id = 0, key = '' } = item || {};
+      const index = store.findIndex(({ _id: idOffline = 0, key: keyOffline = '' }) => {
+        if (_.isString(idOffline) && _.isString(_id)) {
+          return idOffline === _id;
+        }
+
+        if (key && keyOffline) return key === keyOffline;
+
+        return false;
+      });
+
+      if (index !== -1) store[index] = item;
+    });
+  }
+
   if (noCorsClient) {
-    return runNoCorsParser(copyStore, sortBy, storeLoad, pathValid, isPartData);
+    return runNoCorsParser(store, sortBy, storeLoad, pathValid, isPartData);
   }
 
   let shouldClearError = false;
   const templateSchema = getStoreSchema(storeLoad, methodQuery);
 
-  let storeCopyValid = copyStore.map((it) => schema?.getSchema(templateSchema, it)).filter(Boolean);
+  let storeCopyValid = store.map((it) => schema?.getSchema(templateSchema, it)).filter(Boolean);
   storeCopyValid.forEach((it) => schema.isPublicKey(it) && clientDB.updateItem(storeLoad, it));
 
   if (requestError !== null) shouldClearError = true;
@@ -228,8 +249,7 @@ const validationItems = (currentItems, prevItems, id = '_id') => {
   return [...new Map([...currentItems, ...prevItems].map((it) => [it[id], it])).values()];
 };
 
-const isTimeLostValue = value => {
-
+const isTimeLostValue = (value) => {
   return /\w+[m|м|h|ч]$/gi.test(value);
 };
 
@@ -245,7 +265,7 @@ const namespaceParser = {
   syncData,
   getDataSource,
   validationItems,
-  isTimeLostValue
+  isTimeLostValue,
 };
 
 export default namespaceParser;
