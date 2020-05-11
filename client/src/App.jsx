@@ -16,6 +16,7 @@ import { addTabAction, setActiveTabAction, logoutAction } from './Redux/actions/
 import { routeParser } from './Utils';
 
 import Loader from './Components/Loader';
+import LandingPage from './Pages/LandingPage';
 import Recovery from './Pages/Recovery';
 import LoginPage from './Pages/LoginPage';
 import Dashboard from './Pages/Dashboard';
@@ -107,7 +108,13 @@ class App extends React.Component {
 
   componentDidMount = () => {
     const { config = {}, Request, config: { appActive = true } = {} } = this.context;
+
     if (!appActive) return;
+
+    if (window.location.pathname === '/') {
+      return this.loadApp();
+    }
+
     const rest = new Request();
     rest
       .authCheck()
@@ -155,9 +162,10 @@ class App extends React.Component {
 
     const route = (
       <Switch>
-        <Route exact path="/recovory" render={(props) => <Recovery {...props} />} />
-        <PrivateRoute exact path="/dashboard" {...privateActions} component={Dashboard} />
-        <Route exact path="*" render={(props) => <LoginPage {...props} authLoad={authLoad} />} />
+        <Route exact path="/admin/recovory" render={(props) => <Recovery {...props} />} />
+        <PrivateRoute exact path="/admin/dashboard" {...privateActions} component={Dashboard} />
+        <Route exact path="/admin" render={(props) => <LoginPage {...props} authLoad={authLoad} />} />
+        <Route exact path="/" render={(props) => <LandingPage {...props} />} />
       </Switch>
     );
 

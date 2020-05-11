@@ -1,5 +1,5 @@
-import { Schema, model, Model, Document } from 'mongoose';
-import { SchemaEntity } from '../../../Utils/Types';
+import { Schema, model, Model, Document } from "mongoose";
+import { SchemaEntity } from "../../../Utils/Types";
 import {
   User,
   Task,
@@ -12,9 +12,9 @@ import {
   WikiTree,
   WikiPage,
   Settings,
-} from '../../../Utils/Interfaces';
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
+} from "../../../Utils/Interfaces";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 
 const userSchema: Schema<User> = new Schema(
   {
@@ -23,16 +23,16 @@ const userSchema: Schema<User> = new Schema(
       required: true,
       dropDups: true,
     },
-    passwordHash: { type: String, default: '', required: true },
-    summary: { type: String, default: '' },
-    phone: { type: String, default: '' },
+    passwordHash: { type: String, default: "", required: true },
+    summary: { type: String, default: "" },
+    phone: { type: String, default: "" },
     isOnline: { type: Boolean, default: false, required: true },
     departament: { type: String, required: true },
     displayName: { type: String, required: true },
     position: { type: String, required: true },
-    rules: { type: String, default: 'guest', required: true },
+    rules: { type: String, default: "guest", required: true },
     accept: { type: Boolean, default: false, required: true },
-    avatar: { type: String, default: '', required: false },
+    avatar: { type: String, default: "", required: false },
     isHideEmail: { type: Boolean, default: false },
     isHidePhone: { type: Boolean, default: false },
   },
@@ -40,7 +40,7 @@ const userSchema: Schema<User> = new Schema(
 );
 
 userSchema
-  .virtual('password')
+  .virtual("password")
   .set(async function (this: User, password: string): Promise<void> {
     this._plainPassword = password;
     if (password) {
@@ -54,17 +54,21 @@ userSchema
     return this._plainPassword;
   });
 
-userSchema.methods.checkPassword = async function (password: string): Promise<boolean> {
+userSchema.methods.checkPassword = async function (
+  password: string,
+): Promise<boolean> {
   if (!password) return false;
 
-  return await bcrypt.compare(password, <string>this.passwordHash);
+  return await bcrypt.compare(password, <string> this.passwordHash);
 };
 
-userSchema.methods.changePassword = async function (password: string): Promise<string | null> {
+userSchema.methods.changePassword = async function (
+  password: string,
+): Promise<string | null> {
   try {
-    const passwordHash: string = bcrypt.hashSync(<string>password, 10);
+    const passwordHash: string = bcrypt.hashSync(<string> password, 10);
 
-    if (!passwordHash) throw new Error('Bad password string for change');
+    if (!passwordHash) throw new Error("Bad password string for change");
 
     return passwordHash;
   } catch (err) {
@@ -75,7 +79,7 @@ userSchema.methods.changePassword = async function (password: string): Promise<s
 
 userSchema.methods.generateJWT = function (this: User): any {
   const today = new Date();
-  const expirationDate = new Date(<Date>today);
+  const expirationDate = new Date(<Date> today);
   expirationDate.setDate(today.getDate() + 30);
 
   return jwt.sign(
@@ -84,7 +88,7 @@ userSchema.methods.generateJWT = function (this: User): any {
       id: this._id,
       exp: expirationDate.getTime() / 1000,
     },
-    'jwtsecret',
+    "jwtsecret",
   );
 };
 
@@ -258,31 +262,43 @@ export const settings: Schema<Settings> = new Schema(
   { timestamps: true },
 );
 
-export const UserModel: Model<Document> = model('users', userSchema);
+export const ticket = new Schema(
+  {
+    name: { type: String, required: true },
+    lastName: { type: String, required: true },
+    address: { type: String, required: true },
+    phone: { type: String, required: true },
+    recordingDay: { type: [String], required: true },
+  },
+);
+
+export const Ticket = model("ticket", ticket);
+
+export const UserModel: Model<Document> = model("users", userSchema);
 
 export const getSchemaByName = (name: string): Schema<SchemaEntity> | null => {
   switch (name) {
-    case 'task':
+    case "task":
       return task;
-    case 'users':
+    case "users":
       return userSchema;
-    case 'jurnalworks':
+    case "jurnalworks":
       return jurnalItem;
-    case 'news':
+    case "news":
       return news;
-    case 'chatMsg':
+    case "chatMsg":
       return chatMsg;
-    case 'chatRoom':
+    case "chatRoom":
       return chatRoom;
-    case 'settingsLog':
+    case "settingsLog":
       return logger;
-    case 'settings':
+    case "settings":
       return settings;
-    case 'notification':
+    case "notification":
       return notification;
-    case 'wikiTree':
+    case "wikiTree":
       return wikiTree;
-    case 'wikiPage':
+    case "wikiPage":
       return wikiPage;
     default:
       return null;

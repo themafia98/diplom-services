@@ -43,7 +43,7 @@ const Recovory = (props) => {
   };
 
   const OnLocation = () => {
-    window.location.assign('/');
+    window.location.assign('/admin');
   };
 
   return (

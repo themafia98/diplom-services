@@ -111,8 +111,8 @@ class LoginPage extends React.Component {
     const { loading, errorMessage, loginAuth } = this.state;
     const { config = {}, config: { regInclude = true, recovoryInclude = true } = {} } = this.context;
 
-    if (authLoad || loginAuth) return <Redirect to="/dashboard" />;
-    if ((!authLoad || !loginAuth) && pathname !== '/') {
+    if (authLoad || loginAuth) return <Redirect to="/admin/dashboard" />;
+    if ((!authLoad || !loginAuth) && pathname !== '/admin') {
       return <Redirect to="/" />;
     }
 
