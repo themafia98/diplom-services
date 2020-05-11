@@ -2,6 +2,7 @@ import { ActionProps, ActionParams, Actions, Action } from '../../Utils/Interfac
 import { Model, Document, Types, FilterQuery } from 'mongoose';
 import _ from 'lodash';
 import ActionEntity from './ActionEntity';
+import Utils from '../../Utils';
 import { ParserData, limiter, OptionsUpdate, Filter, DeleteEntitiyParams } from '../../Utils/Types';
 
 /** Actions */
@@ -18,6 +19,7 @@ import ActionWiki from './ActionsEntity/ActionWiki';
 import ActionSettings from './ActionsEntity/ActionSettings';
 
 namespace Action {
+  const { getModelByName } = Utils;
   export class ActionParser extends ActionEntity implements Actions {
     constructor(props: ActionProps) {
       super(props);
@@ -165,7 +167,7 @@ namespace Action {
           case 'many': {
             const { query = {} } = (actionParam as Record<string, object>) || {};
             const { ids = [], updateProps = {}, returnType = 'default' } = query as DeleteEntitiyParams;
-            const parsedIds = ids.map((id: string) => Types.ObjectId(id));
+            const parsedIds = ids.map((id: string) => Types.ObjectId(<string>id));
 
             const actionData: object = await model.updateMany(
               { _id: { $in: parsedIds } },
@@ -178,14 +180,23 @@ namespace Action {
             else return { status: Boolean(ok), count: nModified };
           }
           default: {
-            const { _id, customQuery, updateProps: upProps = {} } = query;
+            const { _id: id, key } = query as Record<string, string>;
+            const { customQuery, updateProps: upProps = {} } = query;
             const { [<string>customQuery]: customQueryValue = '' } = query;
             const updateProps: object = _.isPlainObject(upProps)
               ? <object>upProps
               : { updateProps: query.updateProps };
 
+            const _id: any = id ? Types.ObjectId(id) : null;
+
             const findQuery: object =
-              _id && !customQuery ? { _id } : customQuery ? { [<string>customQuery]: customQueryValue } : {};
+              _id && !customQuery
+                ? { _id }
+                : key
+                ? { key }
+                : customQuery
+                ? { [<string>customQuery]: customQueryValue }
+                : {};
 
             const actionData: Document = await model.updateOne(
               findQuery,
@@ -204,10 +215,46 @@ namespace Action {
       }
     }
 
+    public async runSyncClient(actionParam: ActionParams): Promise<ParserData> {
+      const { syncList = [] } = actionParam as Record<string, Array<object>>;
+
+      console.log('syncList:', syncList);
+      for await (let syncItem of syncList) {
+        const { entity = '' } = syncItem as Record<string, string>;
+        const { items = [] } = syncItem as Record<string, Array<object>>;
+        const model: Model<Document> | null = getModelByName(entity, entity === 'tasks' ? 'task' : entity);
+        console.log('model:', model);
+        if (!model) continue;
+        for await (let updateProps of items) {
+          const copy: { _id: string } = { ...updateProps } as { _id: string };
+          const { _id = '', key = '' } = (updateProps as Record<string, string>) || {};
+          const validId: any = typeof _id === 'string' ? Types.ObjectId(_id) : null;
+          if (!validId) delete copy._id;
+          console.log('updteProps', updateProps);
+          const result = await this.updateEntity(
+            model,
+            {
+              updateProps: copy,
+              _id: validId,
+              key,
+            },
+            { upsert: true },
+          );
+          console.log(result);
+        }
+      }
+
+      return [{}];
+    }
+
     public async getActionData(this: Actions, actionParam: ActionParams = {}): Promise<ParserData> {
       try {
         console.log(`Run action. actionType: ${this.getActionType()},
                             actionPath: ${this.getActionPath()}`);
+
+        if (this.getActionType() === 'sync') {
+          return await this.runSyncClient(actionParam);
+        }
 
         switch (this.getActionPath()) {
           case 'global': {

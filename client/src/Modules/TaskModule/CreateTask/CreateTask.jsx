@@ -299,9 +299,7 @@ class CreateTask extends React.PureComponent {
         throw new Error('Invalid create task');
       }
 
-      const {
-        data: { response: { done = false, metadata = [] } = {} },
-      } = res || {};
+      const { data: { response: { done = false, metadata = [] } = {} } = {} } = res || {};
 
       if (!done && !offline) {
         throw new Error(typeof metadata === 'string' ? metadata : 'Error create task');
@@ -368,7 +366,7 @@ class CreateTask extends React.PureComponent {
       );
     } catch (error) {
       if (error?.response?.status !== 404) console.error(error);
-      message.success(error.message);
+      message.error(error.message);
       this.setState({
         ...this.state,
         load: false,

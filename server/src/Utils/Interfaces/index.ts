@@ -320,6 +320,7 @@ export interface Actions extends EntityActionApi {
   updateEntity(model: Model<Document>, query: ActionParams, options?: OptionsUpdate): Promise<ParserData>;
   findOnce(model: Model<Document>, actionParam: ActionParams): Promise<ParserData>;
   getActionData(this: Actions, actionParam: ActionParams): Promise<ParserData>;
+  runSyncClient(actionParam: ActionParams): Promise<ParserData>;
 }
 
 export interface ResponseJson<T> {

@@ -148,7 +148,7 @@ class Schema {
     if (!_.isArray(keysData) || !_.isArray(keysSchema)) return false;
     let validLenth = keysData.length;
 
-    const isFindMode = keysData.findIndex((it) => it === 'offline' && _.isString(data[it])) !== -1;
+    const isFindMode = keysData.findIndex((it) => it === 'offline') !== -1;
     if (isFindMode) validLenth--;
 
     const isCreated = keysData.findIndex((it) => it === 'createdAt' && _.isString(data[it])) !== -1;

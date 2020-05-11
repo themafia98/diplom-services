@@ -22,7 +22,7 @@ const runBadNetworkAction = (dispatch, error, dep) => {
   new Request().follow(
     'offline',
     (statusRequst) => {
-      const state = getState();
+      const state = getState() || {};
       const { publicReducer: { status = '' } = {}, router = {} } = state;
       if (status !== statusRequst && statusRequst === 'online') {
         const { path, routeData = {} } = router;
@@ -73,12 +73,12 @@ const runLocalUpdateAction = async (dispatch, depAction, depParser, multiple) =>
   else if (multiple) return data;
 };
 
-const runServerSync = async (list = [], request) => {
+const runServerSync = async (list = [], rest) => {
   try {
     if (!rest instanceof Request) {
       throw new TypeError('invalid request model entity');
     }
-    const { data = {} } = await rest.sendRequest('/sync', 'POST', { syncList: list }, true);
+    const { data = {} } = await rest.sendRequest('/system/sync', 'POST', { syncList: list }, true);
   } catch (error) {
     console.error(error);
     return null;
@@ -98,7 +98,7 @@ const runSync = async (dep = {}) => {
     const { entity = '' } = value || {};
     if (!entity) continue;
 
-    const items = await clientDB.getAllItems(entity, 'readwrite', range);
+    const items = await clientDB.getAllItems(entity, 'readonly', range);
     const filteredItems = items.filter((item) => item?.offline);
 
     if (!filteredItems?.length) continue;

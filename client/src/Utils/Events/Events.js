@@ -56,7 +56,7 @@ const sucessEvent = async (dispatch, dep, mode = '', multiple = false, cursor = 
     if (cursor.value?.offline) {
       const copy = { ...cursor.value, offline: false };
       cursor.value.offline = false;
-      undefiendCopyStore.push({ ...copy });
+      //undefiendCopyStore.push({ ...copy });
     }
   }
   return await namespaceEvents.sucessEvent(dispatch, dep, mode, multiple, await cursor.continue());

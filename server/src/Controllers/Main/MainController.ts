@@ -373,6 +373,54 @@ namespace System {
         return new Responser(res, req, params, err, 503, [], dbm).emit();
       }
     }
+
+    @Post({ path: '/sync', private: true })
+    protected async syncClientData(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+      const { dbm } = server.locals;
+      const { module: moduleName = '' } = req.params;
+      const params: Params = {
+        methodQuery: 'sync',
+        status: 'done',
+        done: true,
+        from: 'sync_all',
+      };
+
+      try {
+        if (!req.body || _.isEmpty(req.body)) {
+          params.done = false;
+          params.status = 'FAIL BODY';
+          return new Responser(res, req, params, null, 404, [], dbm).emit();
+        }
+
+        const body: object = req.body;
+        const connect = await dbm.connection().catch((err: Error) => console.error(err));
+
+        if (!connect) throw new Error('Bad connect');
+
+        const syncAction: Actions = new Action.ActionParser({
+          actionPath: moduleName,
+          actionType: 'sync',
+          body,
+        });
+
+        const data: ParserResult = await syncAction.getActionData(req.body);
+
+        if (!data) {
+          params.done = false;
+          params.status = 'FAIL';
+          return new Responser(res, req, params, null, 404, [], dbm).emit();
+        }
+
+        const metadata: any = Array.isArray(<object>data) ? data : [<object>data];
+
+        return new Responser(res, req, params, null, 200, metadata, dbm).emit();
+      } catch (err) {
+        console.error(err.message);
+        params.status = 'FAIL';
+        params.done = false;
+        return new Responser(res, req, params, err, 503, [], dbm).emit();
+      }
+    }
   }
 }
 
