@@ -17,6 +17,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
     options = {},
     shouldSetLoading = false,
     indStoreName = '',
+    sync = false,
   } = params;
 
   let isLocalUpdate = true;
@@ -29,7 +30,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
 
   if (isExist && !router.routeData[pathValid].load) {
     dispatch(loadFlagAction({ path: pathValid, load: true, loading: true }));
-  } else if (pathValid && shouldSetLoading){
+  } else if (pathValid && shouldSetLoading) {
     dispatch(loadFlagAction({ path: pathValid, loading: true }));
   }
 
@@ -68,6 +69,8 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
           errorRequestAction,
           isLocalUpdate,
           indStoreName,
+          rest,
+          sync,
         };
 
         await coreUpdaterDataHook(dispatch, dep);

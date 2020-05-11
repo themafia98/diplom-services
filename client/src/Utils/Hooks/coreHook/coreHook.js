@@ -4,7 +4,13 @@ import { clientDB } from '../../../Models/ClientSideDatabase';
 import utilsHooks from '../utils';
 import { getStoreSchema } from '../../utilsHook';
 
-const { runLocalUpdateAction, runRefreshIndexedDb, runNoCorsAction, runBadNetworkAction } = utilsHooks;
+const {
+  runLocalUpdateAction,
+  runRefreshIndexedDb,
+  runNoCorsAction,
+  runBadNetworkAction,
+  runSync,
+} = utilsHooks;
 
 const coreUpdaterDataHook = async (dispatch, dep = {}, multiple = false) => {
   const {
@@ -22,9 +28,13 @@ const coreUpdaterDataHook = async (dispatch, dep = {}, multiple = false) => {
     errorRequestAction,
     isLocalUpdate: localUpdateStat,
     indStoreName,
+    rest,
+    sync = false,
   } = dep;
 
   let isLocalUpdate = localUpdateStat;
+
+  if (sync) runSync(dep);
 
   if (noCorsClient && _.isNull(requestError)) {
     const [isDone, data] = runNoCorsAction(dispatch, dep, multiple);

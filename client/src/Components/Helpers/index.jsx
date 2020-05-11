@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
+import { useHistory } from 'react-router-dom';
 import { privateType } from './types';
 import { Route } from 'react-router-dom';
 import Loader from '../Loader';
@@ -10,7 +11,7 @@ const PrivateRoute = ({ component: Component, onLogoutAction, onSetStatus, ...ro
    * @type {import('react').MutableRefObject}
    */
   const timerRef = useRef(); // instance timer
-
+  const history = useHistory();
   const { rest } = useContext(modelsContext);
 
   const [route, setRoute] = useState(<Loader />);
@@ -40,6 +41,10 @@ const PrivateRoute = ({ component: Component, onLogoutAction, onSetStatus, ...ro
         } else rest.restartApp();
       });
   };
+
+  useEffect(() => {
+    history.push(history.location.pathname, { ...routeProps });
+  }, [history]);
 
   const getRouters = useCallback(getRoutersFunc, [rest]);
 

@@ -187,7 +187,7 @@ class ClientSideDatabase {
               },
             });
             alert('Новое обновление, приложение будет перезагружено');
-            window.location.reload();
+            window.location.reload(true);
             return;
           }
 
@@ -258,12 +258,12 @@ class ClientSideDatabase {
   /**
    * @param {any} nameStore
    */
-  async getAllItems(nameStore, mode = 'readonly') {
+  async getAllItems(nameStore, mode = 'readonly', query = undefined) {
     if (this.getCrashStatus()) return;
     try {
       const tx = this.db.transaction([nameStore], mode);
       const store = tx.objectStore(nameStore);
-      return await store.getAll();
+      return await store.getAll(query);
     } catch (error) {
       console.error(error.message);
       return null;
