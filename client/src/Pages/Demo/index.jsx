@@ -18,7 +18,7 @@ const Demo = (props) => {
     email: '',
     other: '',
     cause: '',
-    dateRange: [moment(), moment()],
+    date: [moment(), moment()],
   });
 
   const [message, setMessage] = useState('');
@@ -47,7 +47,7 @@ const Demo = (props) => {
 
     try {
       const rest = new Request();
-      const res = await rest.sendRequest('/regTicket', 'POST', formData, false);
+      const res = await rest.sendRequest('/tasks/regTicket', 'PUT', formData, false);
 
       if (res.status !== 200) throw new Error('Не удалось отправить заявку');
       setMessage('Ваша заявка принята');
@@ -58,7 +58,7 @@ const Demo = (props) => {
     } catch (error) {
       const { request: { status = '' } = {} } = error || {};
       console.error(error);
-
+      debugger;
       if (status === 404 || status === 503) setMessage('Ошибка обработки заявки');
       else setMessage(error.message);
     }
@@ -127,7 +127,11 @@ const Demo = (props) => {
           Другая информация
           <textarea value={formData.other} onChange={({ target: { value } }) => onChange('other', value)} />
         </label>
-        <RangePicker value={formData.dateRange} onChange={(value) => onChange('dateRange', value)} />
+        <RangePicker
+          format="DD.MM.YYYY"
+          value={formData.date}
+          onChange={(value) => onChange('date', value)}
+        />
         <div className="wrapper-controller">
           <input disabled={disabled} type="button" value="Отправить" onClick={onSubmit} />
         </div>

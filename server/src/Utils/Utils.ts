@@ -1,9 +1,9 @@
-import { NextFunction, Response, Request } from 'express';
-import multer from 'multer';
-import winston from 'winston';
-import { model, Schema, Model, Document } from 'mongoose';
-import _ from 'lodash';
-import { getSchemaByName } from '../Models/Database/Schema';
+import { NextFunction, Response, Request } from "express";
+import multer from "multer";
+import winston from "winston";
+import { model, Schema, Model, Document } from "mongoose";
+import _ from "lodash";
+import { getSchemaByName } from "../Models/Database/Schema";
 import {
   RouteDefinition,
   ResponseDocument,
@@ -12,8 +12,15 @@ import {
   ActionParams,
   Params,
   Dbms,
-} from './Interfaces';
-import { FileTransportInstance, docResponse, ParserResult, Meta } from './Types';
+  TicketRemote,
+  TaskEntity,
+} from "./Interfaces";
+import { v4 as uuid } from "uuid";
+import {
+  docResponse,
+  ParserResult,
+  Meta,
+} from "./Types";
 
 namespace Utils {
   const upload = multer();
@@ -22,7 +29,7 @@ namespace Utils {
    * @returns {boolean} current process is production or not
    */
   export const isProd = (): boolean => {
-    return process.env.NODE_ENV === 'production';
+    return process.env.NODE_ENV === "production";
   };
 
   export const checkEntity = async (
@@ -31,7 +38,7 @@ namespace Utils {
     actionParam: ActionParams,
     model: Model<Document>,
   ): Promise<boolean> => {
-    if (mode == 'equalSingle') {
+    if (mode == "equalSingle") {
       let query = {};
 
       const field: any = actionParam[checkKey];
@@ -46,7 +53,7 @@ namespace Utils {
       console.log(query);
 
       const result = await model.find(query);
-      console.log('query checker:', query);
+      console.log("query checker:", query);
 
       if (Array.isArray(result) && result.length) {
         return false;
@@ -55,15 +62,22 @@ namespace Utils {
     return true;
   };
 
-  export const getLoggerTransports = (
-    level: string,
-  ): Array<FileTransportInstance> | FileTransportInstance => {
-    if (level === 'info') {
-      return [new winston.transports.File({ filename: 'info.log', level: 'info' })];
-    } else return new winston.transports.File({ filename: 'error.log', level: 'error' });
+  export const getLoggerTransports = (level: string) => {
+    if (level === "info") {
+      return [
+        new winston.transports.File({ filename: "info.log", level: "info" }),
+      ];
+    } else {
+      return new winston.transports.File(
+        { filename: "error.log", level: "error" },
+      );
+    }
   };
 
-  export const getModelByName = (name: string, schemaType: string): Model<Document, {}> | null => {
+  export const getModelByName = (
+    name: string,
+    schemaType: string,
+  ): Model<Document, {}> | null => {
     try {
       const schema: Schema | null = getSchemaByName(schemaType);
 
@@ -77,7 +91,7 @@ namespace Utils {
 
   export const responseTime = (startDate: Date): number => {
     const now: Date = new Date();
-    return <any>now - <any>startDate;
+    return <any> now - <any> startDate;
   };
 
   export const initControllers = (
@@ -90,9 +104,12 @@ namespace Utils {
     controllers.forEach((Controller: FunctionConstructor) => {
       // This is our instantiated class
       const instance: object = new Controller();
-      const prefix = Reflect.getMetadata('prefix', Controller);
+      const prefix = Reflect.getMetadata("prefix", Controller);
       // Our `routes` array containing all our routes for this controller
-      const routes: Array<RouteDefinition> = Reflect.getMetadata('routes', Controller);
+      const routes: Array<RouteDefinition> = Reflect.getMetadata(
+        "routes",
+        Controller,
+      );
 
       // Iterate over all routes and register them to our express application
       routes.forEach((route) => {
@@ -115,11 +132,11 @@ namespace Utils {
           .filter(Boolean);
 
         getRest()[route.requestMethod](
-          prefix === '/' ? route.path : prefix + route.path,
+          prefix === "/" ? route.path : prefix + route.path,
           ...compose,
           (req: Request, res: Response, next: NextFunction) => {
             const { methodName } = route;
-            (<Record<string, Function>>instance)[methodName](
+            (<Record<string, Function>> instance)[methodName](
               req,
               res,
               next,
@@ -155,21 +172,25 @@ namespace Utils {
     metadata: ParserResult = null,
     dbm: Dbms | null = null,
   ): Promise<Response> => {
-    console.warn('deprecated responser, use new Responser class');
+    console.warn("deprecated responser, use new Responser class");
     if (res.headersSent) return res;
     if (status) res.status(status);
     if (dbm) await dbm.disconnect().catch((err: Error) => console.error(err));
-    const start: Date = (<Record<string, any>>req).start as Date;
+    const start: Date = (<Record<string, any>> req).start as Date;
     switch (status) {
       case 200:
         return res.json(
-          getResponseJson(params.methodQuery, { params, metadata, done: true, status: 'OK' }, start),
+          getResponseJson(
+            params.methodQuery,
+            { params, metadata, done: true, status: "OK" },
+            start,
+          ),
         );
       case 503:
         return res.json(
           getResponseJson(
-            (<Error>err).name,
-            { metadata: 'Server error', params, done: false, status: 'FAIL' },
+            (<Error> err).name,
+            { metadata: "Server error", params, done: false, status: "FAIL" },
             start,
           ),
         );
@@ -201,19 +222,26 @@ namespace Utils {
     );
   };
 
-  export const parsePublicData = (data: ParserResult, mode: string = 'default', rules = ''): Array<Meta> => {
+  export const parsePublicData = (
+    data: ParserResult,
+    mode: string = "default",
+    rules = "",
+  ): Array<Meta> => {
     switch (mode) {
-      case 'access':
-      case 'accessGroups':
+      case "access":
+      case "accessGroups":
         const dataArray: Array<object> = data as Array<object>;
-        const isGroupMode: boolean = mode.includes('Groups');
+        const isGroupMode: boolean = mode.includes("Groups");
         return dataArray
           .map((it: object | null) => {
             if (!it) return null;
             const { _doc: item = {} } = it as Record<string, object>;
 
             if (isGroupMode) {
-              const { [mode]: modeArray = [] } = item as Record<string, Array<string>>;
+              const { [mode]: modeArray = [] } = item as Record<
+                string,
+                Array<string>
+              >;
               if (!Array.isArray(modeArray)) return null;
 
               if (modeArray.some((rule) => rule === rules)) return it;
@@ -227,21 +255,50 @@ namespace Utils {
           .filter(Boolean);
 
       default:
-        return (<docResponse[]>data)
+        return (<docResponse[]> data)
           .map((it: docResponse) => {
             const { _doc: item = {} } = it as Record<string, object>;
 
-            const itemValid = Object.keys(item).reduce((obj: ResponseDocument, key: string): object => {
-              if (!key.includes('password') && !key.includes('At') && !key.includes('__v')) {
-                obj[key] = (<ResponseDocument>item)[<string>key];
-              }
-              return obj;
-            }, {});
+            const itemValid = Object.keys(item).reduce(
+              (obj: ResponseDocument, key: string): object => {
+                if (
+                  !key.includes("password") && !key.includes("At") &&
+                  !key.includes("__v")
+                ) {
+                  obj[key] = (<ResponseDocument> item)[<string> key];
+                }
+                return obj;
+              },
+              {},
+            );
 
             return itemValid;
           })
           .filter(Boolean);
     }
+  };
+
+  export const generateRemoteTask = (remoteDep: TicketRemote): TaskEntity => {
+    const { name, lastName, other, date } = remoteDep;
+    return {
+      key: uuid(),
+      status: "Открыт",
+      name: `Заявка от клиента ${name} ${lastName}`,
+      priority: "Средний",
+      authorName: `${name} ${lastName}`,
+      uidCreater: `${uuid()}__remoteTicket`,
+      editor: ["Не установлено"],
+      description: other ? other : "Информации нету",
+      date,
+      comments: [],
+      offline: false,
+      tags: [{
+        color: "#e52dff",
+        id: `${uuid()}__remoteTicket`,
+        sortable: true,
+        tagValue: "Заявки клиентов",
+      }],
+    };
   };
 }
 

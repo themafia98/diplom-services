@@ -4,18 +4,39 @@ import {
   Request as RequestExpress,
   Response,
   NextFunction,
-} from 'express';
-import nodemailer, { SendMailOptions, Transporter, SentMessageInfo } from 'nodemailer';
-import { files } from 'dropbox';
-import { transOptions, ParserData, ParserResult, Meta, limiter, OptionsUpdate } from '../Types';
-import socketio from 'socket.io';
-import mongoose, { Mongoose, Connection, Model, Document, FilterQuery } from 'mongoose';
+} from "express";
+import nodemailer, {
+  SendMailOptions,
+  Transporter,
+  SentMessageInfo,
+} from "nodemailer";
+import { files } from "dropbox";
+import {
+  transOptions,
+  ParserData,
+  ParserResult,
+  Meta,
+  limiter,
+  OptionsUpdate,
+} from "../Types";
+import socketio from "socket.io";
+import mongoose, {
+  Mongoose,
+  Connection,
+  Model,
+  Document,
+  FilterQuery,
+} from "mongoose";
 export interface Controller<T> {
   [key: string]: any;
 }
 
 export interface ServerRun {
-  isPrivateRoute(req: Request, res: Response, next: NextFunction): Response | void;
+  isPrivateRoute(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Response | void;
   startResponse(req: Request, res: Response, next: NextFunction): void;
   start(callback?: Function): void;
 }
@@ -59,7 +80,11 @@ export interface Dbms {
 export interface CryptoSecurity {
   getMode(): string;
   hashing(password: string, salt: number, callback: Function): Promise<void>;
-  verify(password: string, hash: Record<string, any>, callback: Function): Promise<void>;
+  verify(
+    password: string,
+    hash: Record<string, any>,
+    callback: Function,
+  ): Promise<void>;
 }
 
 export interface App extends Application {
@@ -97,7 +122,7 @@ export interface BodyLogin {
 
 export interface RouteDefinition {
   path: string;
-  requestMethod: 'get' | 'post' | 'delete' | 'options' | 'put';
+  requestMethod: "get" | "post" | "delete" | "options" | "put";
   methodName: string;
   private?: boolean;
   file?: boolean | undefined;
@@ -170,6 +195,21 @@ export interface User extends Document {
   toAuthJSON: Function;
 }
 
+export interface TaskEntity {
+  key: string;
+  status: string;
+  name: string;
+  priority: string;
+  authorName: string;
+  uidCreater: string;
+  editor: Array<string>;
+  description: string;
+  date: Array<string>;
+  comments: Array<object>;
+  offline: boolean;
+  tags?: object;
+}
+
 export interface Task extends Document {
   key: string;
   status: string;
@@ -182,6 +222,7 @@ export interface Task extends Document {
   date: Array<string>;
   comments: Array<object>;
   offline: boolean;
+  tags?: object;
 }
 
 export interface Jurnal {
@@ -268,7 +309,9 @@ export interface WikiPage {
 
 export interface FileApi {
   getAllFiles(): Promise<files.ListFolderResult | null>;
-  downloadFileByProps<Props>(fileProps: Props): Promise<files.FileMetadata | null>;
+  downloadFileByProps<Props>(
+    fileProps: Props,
+  ): Promise<files.FileMetadata | null>;
   downloadFile(path: string): Promise<files.FileMetadata | null>;
   saveFile<Props>(saveProps: Props): Promise<files.FileMetadata | null>;
   getFilesByPath(path: string): Promise<files.ListFolderResult | null>;
@@ -306,7 +349,11 @@ export interface Action {
 }
 
 export interface Actions extends EntityActionApi {
-  getCounter(model: Model<Document>, query: FilterQuery<any>, options?: object): Promise<number>;
+  getCounter(
+    model: Model<Document>,
+    query: FilterQuery<any>,
+    options?: object,
+  ): Promise<number>;
   getAll(
     model: Model<Document>,
     actionParam: ActionParams,
@@ -314,13 +361,38 @@ export interface Actions extends EntityActionApi {
     skip?: number,
     sortType?: string,
   ): Promise<ParserData>;
-  getFilterData(model: Model<Document>, filter: object, sort?: string): Promise<ParserData>;
+  getFilterData(
+    model: Model<Document>,
+    filter: object,
+    sort?: string,
+  ): Promise<ParserData>;
   createEntity(model: Model<Document>, item: object): Promise<ParserData>;
-  deleteEntity(model: Model<Document>, query: ActionParams): Promise<ParserData>;
-  updateEntity(model: Model<Document>, query: ActionParams, options?: OptionsUpdate): Promise<ParserData>;
-  findOnce(model: Model<Document>, actionParam: ActionParams): Promise<ParserData>;
+  deleteEntity(
+    model: Model<Document>,
+    query: ActionParams,
+  ): Promise<ParserData>;
+  updateEntity(
+    model: Model<Document>,
+    query: ActionParams,
+    options?: OptionsUpdate,
+  ): Promise<ParserData>;
+  findOnce(
+    model: Model<Document>,
+    actionParam: ActionParams,
+  ): Promise<ParserData>;
   getActionData(this: Actions, actionParam: ActionParams): Promise<ParserData>;
   runSyncClient(actionParam: ActionParams): Promise<ParserData>;
+}
+
+export interface TicketRemote {
+  name: string;
+  lastName: string;
+  address: string;
+  phone: string;
+  email: string;
+  cause: string;
+  date: Array<string>;
+  other?: string;
 }
 
 export interface ResponseJson<T> {
