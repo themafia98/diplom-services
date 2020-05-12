@@ -72,7 +72,8 @@ class News extends React.PureComponent {
       data = {},
     } = this.props;
     const { config = {} } = this.context;
-    const key = _.isString(openKey) ? openKey.replace('___link', '') : '';
+
+    const key = _.isString(openKey) ? openKey.replace('_informationPage', '') : '';
 
     let listdata = data && data.news && Array.isArray(data.news) ? [...data.news] : news;
     const moduleId = 'informationPage';
@@ -80,10 +81,10 @@ class News extends React.PureComponent {
 
     const routeNormalize = routePathNormalise({
       pathType: 'moduleItem',
-      pathData: { page, moduleId, key },
+      pathData: { page, key },
     });
 
-    const index = actionTabs.findIndex((tab) => tab.replace('___link', '') === routeNormalize.path);
+    const index = actionTabs.findIndex((tab) => tab.replace('_informationPage', '') === routeNormalize.path);
     const findItem = listdata.find((it) => it._id === key);
     const dataFind = findItem ? { ...findItem } : {};
     const isFind = index !== -1;
@@ -92,7 +93,10 @@ class News extends React.PureComponent {
       if (config.tabsLimit <= actionTabs.length)
         return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
       onOpenPageWithData({
-        activePage: routeNormalize,
+        activePage: routePathNormalise({
+          pathType: 'moduleItem',
+          pathData: { page, key, moduleId },
+        }),
         routeDataActive: { key, listdata: dataFind ? { ...dataFind } : {} },
       });
     } else setCurrentTab(actionTabs[index]);
