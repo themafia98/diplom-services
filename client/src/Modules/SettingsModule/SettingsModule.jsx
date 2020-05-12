@@ -104,7 +104,7 @@ class SettingsModule extends React.PureComponent {
   };
 
   componentDidUpdate = async (props, state) => {
-    const { showScrollbar, emailValue = '', telValue = '', isLoadingLogs = false } = this.state;
+    const { showScrollbar, emailValue = '', telValue = '' } = this.state;
     const {
       udata: { _id: uid = '' } = {},
       router: { shouldUpdate = false } = {},

@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import { v4 as uuid } from 'uuid';
 import { createNewsType } from '../../types';
 import moment from 'moment';
 import TitleModule from '../../../../Components/TitleModule';
@@ -40,7 +41,7 @@ class CreateNews extends React.PureComponent {
   };
 
   onPublish = async (contentState) => {
-    const { statusApp = '', udata: { displayName = '', _id: uid = '' } = {} } = this.props;
+    const { statusApp = '', udata: { displayName = '', _id: uid = '' } = {}, onSetStatus } = this.props;
     const { titleNews = '' } = this.state;
     const { clientDB = null } = this.context;
 
@@ -59,9 +60,9 @@ class CreateNews extends React.PureComponent {
             actionPath: 'news',
             actionType: 'create_single_news',
           },
-          metadata: { title: titleNews, content: contentState },
+          metadata: { title: titleNews, content: contentState, key: uuid() },
         };
-        const res = await createEntity('news', body, { clientDB, statusApp });
+        const res = await createEntity('news', body, { clientDB, statusApp, onSetStatus });
         const { result: { data = {} } = {}, offline = false } = res || {};
         const { response = {} } = data || {};
         const { metadata: { _id: key = '' } = {}, params: { done = false } = {} } = response;

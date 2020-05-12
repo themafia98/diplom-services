@@ -1,6 +1,7 @@
 // @ts-nocheck
 import React from 'react';
 import { wikiModuleType } from './types';
+import { v4 as uuid } from 'uuid';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import Scrollbars from 'react-custom-scrollbars';
@@ -129,6 +130,7 @@ class WikiModule extends React.PureComponent {
       }
       const index = ++metadata.filter((nodeMeta) => nodeMeta?.parentId === indexId).length;
       const rest = new Request();
+      const key = uuid();
       const res = await rest.sendRequest('/wiki/createLeaf', 'PUT', {
         type: 'wikiTree',
         item: !item
@@ -138,8 +140,9 @@ class WikiModule extends React.PureComponent {
               path: `0-${index}`,
               index,
               accessGroups: node?.accessGroups?.length ? [...node.accessGroups] : ['full'],
+              key,
             }
-          : item,
+          : { ...item, key },
       });
 
       if (res.status !== 200) {

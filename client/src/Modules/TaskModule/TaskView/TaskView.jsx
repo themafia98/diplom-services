@@ -1,6 +1,7 @@
 // @ts-nocheck
 import React from 'react';
 import { taskViewType } from '../types';
+import { v4 as uuid } from 'uuid';
 import _ from 'lodash';
 import moment from 'moment';
 import { Descriptions, Empty, message } from 'antd';
@@ -85,7 +86,7 @@ class TaskView extends React.PureComponent {
 
     if (_.isEmpty(caches) || (key && !caches[key]) || (!key && onLoadCacheData)) {
       onSaveCache({
-        data: [{ _id: uidCreater, displayName: authorName }],
+        data: [{ _id: uidCreater, displayName: authorName, key: uuid() }],
         load: true,
         union: true,
         customDepKey: `taskView#${taskId}`,

@@ -45,7 +45,7 @@ const runBadNetworkAction = (dispatch, error, dep) => {
         const list = _.uniqBy([...paramsList, currnetParams], 'path');
 
         if (multipleLoadData) {
-          dispatch(multipleLoadData({ requestsParamsList: list }));
+          dispatch(multipleLoadData({ requestsParamsList: list, sync: true }));
           return;
         }
         list.forEach((requestParams) => {

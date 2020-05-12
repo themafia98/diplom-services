@@ -74,10 +74,10 @@ class ClientSideDatabase {
       }),
       Object.freeze({
         entity: 'wikiTree',
-        props: { unique: true, keyPath: '_id', autoIncrement: true },
+        props: { unique: true, keyPath: 'key', autoIncrement: true },
         index: {
           unique: function (key) {
-            return key === '_id';
+            return key === 'key';
           },
         },
         schema: WIKI_NODE_TREE,
@@ -94,20 +94,20 @@ class ClientSideDatabase {
       }),
       Object.freeze({
         entity: 'news',
-        props: { unique: true, keyPath: '_id', autoIncrement: true },
+        props: { unique: true, keyPath: 'key', autoIncrement: true },
         index: {
           unique: function (key) {
-            return key === '_id';
+            return key === 'key';
           },
         },
         schema: NEWS_SCHEMA,
       }),
       Object.freeze({
         entity: 'jurnalworks',
-        props: { unique: true, keyPath: '_id', autoIncrement: true },
+        props: { unique: true, keyPath: 'key', autoIncrement: true },
         index: {
           unique: function (key) {
-            return key === '_id';
+            return key === 'key';
           },
         },
         schema: TASK_CONTROLL_JURNAL_SCHEMA,

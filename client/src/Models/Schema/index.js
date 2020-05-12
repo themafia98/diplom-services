@@ -84,7 +84,8 @@ class Schema {
         return {
           _id: null,
           title: null,
-          content: null, // { entityMap: null,blocks: null }
+          content: null, // { entityMap: null,blocks: null },
+          key: null,
         };
       case WIKI_NODE_TREE:
         return {
@@ -95,6 +96,7 @@ class Schema {
           index: null,
           parentId: null,
           accessGroups: null,
+          key: null,
         };
       default:
         return null;

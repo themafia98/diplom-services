@@ -8,7 +8,7 @@ import { Switch, Route } from 'react-router-dom';
 import { message } from 'antd';
 import { PrivateRoute } from './Components/Helpers';
 import { forceUpdateDetectedInit } from './Utils';
-
+import utilsHook from './Utils/Hooks/utils';
 import { settingsLoader } from './Redux/actions/publicActions/middleware';
 import { setStatus, loadUdata } from './Redux/actions/publicActions';
 import { addTabAction, setActiveTabAction, logoutAction } from './Redux/actions/routerActions';
@@ -40,7 +40,8 @@ class App extends React.Component {
       onLoadUdata,
       onLoadSettings,
     } = this.props;
-    const { config = {}, Request, config: { appActive = true } = {} } = this.context;
+    const { config = {}, Request, config: { appActive = true } = {}, clientDB } = this.context;
+    const { runSync } = utilsHook;
     if (!appActive) return;
     const rest = new Request();
 
@@ -78,6 +79,7 @@ class App extends React.Component {
             await onLoadUdata(udata);
             await onLoadSettings({ wishList: [{ name: 'statusList' }] });
             addTab(routeParser({ path }));
+            runSync({ clientDB, rest });
           } catch (error) {
             console.log(error);
           }
@@ -87,6 +89,7 @@ class App extends React.Component {
           try {
             await onLoadUdata(udata);
             await onLoadSettings({ wishList: [{ name: 'statusList' }] });
+            runSync({ clientDB, rest });
             setCurrentTab(path);
           } catch (error) {
             console.log(error);

@@ -3,6 +3,9 @@ import { getNormalizedPath, sucessEvent, errorHook, coreUpdaterDataHook } from '
 import { saveComponentStateAction, loadFlagAction } from '../';
 import { errorRequestAction, setStatus } from '../../publicActions';
 
+import utilsHooks from '../../../../Utils/Hooks/utils';
+const { runSync } = utilsHooks;
+
 const loadCurrentData = (params) => async (dispatch, getState, { schema, Request, clientDB }) => {
   const {
     path = '',
@@ -142,7 +145,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
 };
 
 const multipleLoadData = (params) => async (dispatch, getState, { schema, Request, clientDB }) => {
-  const { requestsParamsList = [], pipe = true, saveModuleName = '' } = params;
+  const { requestsParamsList = [], pipe = true, saveModuleName = '', sync = false } = params;
 
   const primaryKey = 'uuid';
   const { requestError, status = 'online' } = getState().publicReducer;
@@ -156,6 +159,9 @@ const multipleLoadData = (params) => async (dispatch, getState, { schema, Reques
     }
     default: {
       const responseList = [];
+      const rest = new Request();
+      if (sync) runSync({ clientDB, rest });
+
       for await (let requestParam of requestsParamsList) {
         const {
           useStore = false,
@@ -180,7 +186,6 @@ const multipleLoadData = (params) => async (dispatch, getState, { schema, Reques
         });
 
         try {
-          const rest = new Request();
           const res = await rest.sendRequest(normalizeReqPath, methodRequst, { methodQuery, options }, true);
           const [items, error] = rest.parseResponse(res);
 

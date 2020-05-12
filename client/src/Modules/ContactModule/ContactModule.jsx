@@ -98,6 +98,7 @@ class ContactModule extends React.PureComponent {
       webSocket = null,
       visibilityPortal,
       onChangeVisibleAction = null,
+      onSetStatus = null,
     } = this.props;
     const isBackgroundChat = getBackground('contactModule_chat');
     const isBackgroundNews = getBackground('contactModule_feedback');
@@ -157,6 +158,7 @@ class ContactModule extends React.PureComponent {
             key="createNews"
             udata={udata}
             statusApp={statusApp}
+            onSetStatus={onSetStatus}
             isBackground={isBackgroundInfoPage}
             visible={path === 'contactModule_createNews'}
           />

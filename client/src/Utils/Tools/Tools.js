@@ -17,6 +17,7 @@ const createNotification = async (type = '', item = {}, actionType = 'set_notifi
 };
 
 const createEntity = async (storeName = '', body = {}, dep = {}, sliceCreaterNumber = 0) => {
+  const { metadata = {} } = body || {};
   const { statusApp = 'online', clientDB = null, onSetStatus } = dep;
 
   if (!storeName || _.isEmpty(body)) return;
@@ -42,8 +43,9 @@ const createEntity = async (storeName = '', body = {}, dep = {}, sliceCreaterNum
       return { result: res, offline: res?.status !== 404 ? false : true };
     }
 
-    const offlineBody = { ...body, offline: true };
-    const putAction = await clientDB.addItem('tasks', offlineBody);
+    const offlineBody =
+      metadata && !_.isEmpty(metadata) ? { ...metadata, offline: true } : { ...body, offline: true };
+    const putAction = await clientDB.addItem(storeName, offlineBody);
 
     return { result: putAction ? { ...offlineBody } : null, offline: true };
   } catch (error) {

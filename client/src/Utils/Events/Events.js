@@ -48,17 +48,15 @@ const sucessEvent = async (dispatch, dep, mode = '', multiple = false, cursor = 
 
   const index = copyStore.findIndex((it) => {
     const isKey = it[primaryKey] || it['key'];
-    const isValid = it[primaryKey] === cursor.key || it['key'] === cursor.key;
+    const { key } = cursor || {};
+    const isValid = it[primaryKey] === key || it['key'] === key;
 
     return isKey && isValid;
   });
   const iEmpty = index === -1;
 
-  if (copyStore && iEmpty) {
-    if (cursor.value?.offline) {
-      const copy = { ...cursor.value, offline: false };
-      copyStoreOffline.push({ ...copy });
-    }
+  if (iEmpty && cursor.value?.offline) {
+    copyStoreOffline.push({ ...cursor.value, offline: false });
   }
   return await sucessEvent(dispatch, dep, mode, multiple, await cursor.continue(), copyStoreOffline);
 };
