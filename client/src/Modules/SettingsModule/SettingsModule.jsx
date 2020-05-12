@@ -69,45 +69,57 @@ class SettingsModule extends React.PureComponent {
     return state;
   };
 
-  componentDidMount = () => {
+  componentDidMount = async () => {
     const { isLoadingLogs = false } = this.state;
-    const { router, path, settingsLogs = [], udata: { _id: uid = '' } = {}, onCaching } = this.props;
+    const {
+      router,
+      path,
+      settingsLogs = [],
+      udata: { _id: uid = '' } = {},
+      onCaching,
+      onSetStatus,
+    } = this.props;
 
     if (router && router.routeData[path] && router.routeData[path].haveChanges) {
       this.setState({ ...this.state, ...router.routeData[path] });
     }
 
     if (!Object.keys(settingsLogs).length && !isLoadingLogs && onCaching) {
-      onCaching({
-        uid,
-        actionType: 'get_user_settings_log',
-        depStore: 'settings',
-        type: 'logger',
-      });
+      await onSetStatus(false);
+      this.setState(
+        {
+          ...this.state,
+          isLoadingLogs: true,
+        },
+        () => {
+          onCaching({
+            uid,
+            actionType: 'get_user_settings_log',
+            depStore: 'settings',
+            type: 'logger',
+          });
+        },
+      );
     }
   };
 
-  componentDidUpdate = (props, state) => {
+  componentDidUpdate = async (props, state) => {
     const { showScrollbar, emailValue = '', telValue = '', isLoadingLogs = false } = this.state;
     const {
-      settingsLogs = [],
       udata: { _id: uid = '' } = {},
+      router: { shouldUpdate = false } = {},
       onCaching,
-      shouldUpdate = false,
       onSetStatus,
     } = this.props;
 
-    if (onCaching && ((!Object.keys(settingsLogs).length && !isLoadingLogs) || shouldUpdate)) {
+    if (onCaching && shouldUpdate) {
+      await onSetStatus(false);
+
       onCaching({
         uid,
         actionType: 'get_user_settings_log',
         depStore: 'settings',
         type: 'logger',
-      });
-      onSetStatus(false);
-      this.setState({
-        ...this.state,
-        isLoadingLogs: true,
       });
     }
 
