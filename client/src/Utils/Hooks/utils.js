@@ -31,7 +31,7 @@ const runBadNetworkAction = (dispatch, error, dep) => {
 
   rest.follow(
     'offline',
-    (statusRequst) => {
+    async (statusRequst) => {
       const state = getState ? getState() : {};
       const { publicReducer: { status = '', paramsList = [] } = {}, router = {} } = state;
 
@@ -48,8 +48,8 @@ const runBadNetworkAction = (dispatch, error, dep) => {
           dispatch(multipleLoadData({ requestsParamsList: list, sync: true }));
           return;
         }
-        for await (let requestParams of list){
-          await dispatch(loadCurrentData({ ...requestParams, sync: true })); 
+        for await (let requestParams of list) {
+          await dispatch(loadCurrentData({ ...requestParams, sync: true }));
         }
       }
     },

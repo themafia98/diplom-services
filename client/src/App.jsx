@@ -21,7 +21,7 @@ import LoginPage from './Pages/LoginPage';
 import Dashboard from './Pages/Dashboard';
 import 'moment/locale/ru';
 import modelContext from './Models/context';
-// import { isMobile } from "react-device-detect";
+import Demo from './Pages/Demo';
 
 class App extends React.Component {
   state = {
@@ -111,6 +111,8 @@ class App extends React.Component {
   componentDidMount = () => {
     const { config = {}, Request, config: { appActive = true } = {} } = this.context;
     if (!appActive) return;
+    if (window.location.pathname === '/demo') return;
+
     const rest = new Request();
     rest
       .authCheck()
@@ -160,6 +162,7 @@ class App extends React.Component {
       <Switch>
         <Route exact path="/recovory" render={(props) => <Recovery {...props} />} />
         <PrivateRoute exact path="/dashboard" {...privateActions} component={Dashboard} />
+        <Route exact path="/demoPage" render={(props) => <Demo {...props} />} />
         <Route exact path="*" render={(props) => <LoginPage {...props} authLoad={authLoad} />} />
       </Switch>
     );
