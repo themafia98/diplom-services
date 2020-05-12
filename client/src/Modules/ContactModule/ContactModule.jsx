@@ -143,9 +143,9 @@ class ContactModule extends React.PureComponent {
             visible={path === 'contactModule_feedback'}
           />
         </TabContainer>
-        <TabContainer isBackground={isBackgroundInfoPage} visible={visibleEntity}>
+        <TabContainer key={`${linkPath}-tab`} isBackground={isBackgroundInfoPage} visible={visibleEntity}>
           <NewsViewPage
-            key="newViewPageModule"
+            key={linkPath}
             isBackground={isBackgroundInfoPage}
             visible={visibleEntity}
             {...entityLinkProps}

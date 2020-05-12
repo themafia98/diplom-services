@@ -38,16 +38,14 @@ const NewsViewPage = (props) => {
     return content;
   };
 
-  const isValidContent = contentEntity && contentEntity?.blocks && contentEntity?.entityMap;
+  const isValidContent = contentEntity && (contentEntity?.blocks || contentEntity?.entityMap);
+  if (!isValidContent) return null;
+
   return (
     <div className="newsView-page">
       <TitleModule classNameTitle="tittle_contactModule_pageNews" title={title ? title : `Новость № ${id}`} />
       <div className="newsView-page__main">
-        <EditorTextarea
-          key={id}
-          readOnly={true}
-          contentState={isValidContent ? getNormalizeContent() : schema.getEditorJSON()}
-        />
+        <EditorTextarea key={id} readOnly={true} contentState={getNormalizeContent()} />
       </div>
     </div>
   );

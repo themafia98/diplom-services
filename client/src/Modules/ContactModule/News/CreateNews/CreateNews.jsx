@@ -62,31 +62,34 @@ class CreateNews extends React.PureComponent {
           metadata: { title: titleNews, content: contentState },
         };
         const res = await createEntity('news', body, { clientDB, statusApp });
-        const { data: { response = {} } = {} } = res || {};
+        const { result: { data = {} } = {}, offline = false } = res || {};
+        const { response = {} } = data || {};
         const { metadata: { _id: key = '' } = {}, params: { done = false } = {} } = response;
 
-        if (!done) {
+        if (!done && !offline) {
           throw new Error('Bad create news');
         }
 
-        const itemNotification = {
-          type: 'global',
-          title: 'Новость',
-          isRead: false,
-          message: `${titleNews}. Добавлена: ${moment().format('MM.DD.YYYY HH:mm')}`,
-          action: {
-            type: 'news_link',
-            moduleName: 'contactModule',
-            link: key,
-          },
-          uidCreater: uid,
-          authorName: displayName,
-        };
+        if (!offline) {
+          const itemNotification = {
+            type: 'global',
+            title: 'Новость',
+            isRead: false,
+            message: `${titleNews}. Добавлена: ${moment().format('MM.DD.YYYY HH:mm')}`,
+            action: {
+              type: 'news_link',
+              moduleName: 'contactModule',
+              link: key,
+            },
+            uidCreater: uid,
+            authorName: displayName,
+          };
 
-        createNotification('global', itemNotification).catch((error) => {
-          if (error?.response?.status !== 404) console.error(error);
-          message.error('Error create notification');
-        });
+          createNotification('global', itemNotification).catch((error) => {
+            if (error?.response?.status !== 404) console.error(error);
+            message.error('Error create notification');
+          });
+        }
 
         this.setState(
           {
