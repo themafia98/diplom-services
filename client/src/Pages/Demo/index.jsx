@@ -2,7 +2,11 @@
 import React, { useState } from 'react';
 import { DatePicker } from 'antd';
 import moment from 'moment';
+
+import Request from '../../Models/Rest';
+
 import './demo.scss';
+
 const { RangePicker } = DatePicker;
 
 const Demo = (props) => {
@@ -17,9 +21,11 @@ const Demo = (props) => {
     dateRange: [moment(), moment()],
   });
 
+  const [message, setMessage] = useState('');
   const [disabled, setDisabled] = useState(true);
 
   const onChange = (key, value) => {
+    if (message) setMessage('');
     setFormData({
       ...formData,
       [key]: value,
@@ -33,9 +39,29 @@ const Demo = (props) => {
     if (disabled !== invalid) setDisabled(invalid);
   };
 
-  const onSubmit = (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault();
-    debugger;
+    if (disabled) return;
+
+    if (message) setMessage('');
+
+    try {
+      const rest = new Request();
+      const res = await rest.sendRequest('/regTicket', 'POST', formData, false);
+
+      if (res.status !== 200) throw new Error('Не удалось отправить заявку');
+      setMessage('Ваша заявка принята');
+
+      const { data = {} } = res;
+      const { response = {} } = data;
+      console.log('response', response);
+    } catch (error) {
+      const { request: { status = '' } = {} } = error || {};
+      console.error(error);
+
+      if (status === 404 || status === 503) setMessage('Ошибка обработки заявки');
+      else setMessage(error.message);
+    }
   };
 
   return (
@@ -45,6 +71,7 @@ const Demo = (props) => {
         <label>
           Имя
           <input
+            autoFocus={true}
             name="name"
             type="text"
             value={formData.value}
@@ -104,6 +131,7 @@ const Demo = (props) => {
         <div className="wrapper-controller">
           <input disabled={disabled} type="button" value="Отправить" onClick={onSubmit} />
         </div>
+        {message ? <p className="message">{message}</p> : null}
       </form>
     </div>
   );
