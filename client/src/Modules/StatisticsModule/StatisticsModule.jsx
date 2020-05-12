@@ -45,11 +45,7 @@ class StatisticsModule extends React.PureComponent {
   };
 
   fetchStatistics = (shouldSetLoading = false) => {
-    const {
-      onLoadCurrentData,
-      path,
-      statusList: { settings = [] },
-    } = this.props;
+    const { onLoadCurrentData, path, statusList: { settings = [] } = {} } = this.props;
     const statsListFields = settings.map(({ value = '' }) => value).filter(Boolean);
     const { dateConfig = [] } = this.state;
     const { config: { statistics: { limitListTasks = 5000 } = {} } = {} } = this.context;
