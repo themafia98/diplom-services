@@ -336,6 +336,10 @@ class ModalWindow extends React.PureComponent {
     }
   };
 
+  onSendMailResponse = (e) => {
+    this.showModal(e);
+  };
+
   showLoader = () => {
     return (
       <Tooltip mouseEnterDelay={0.1} title="Загрузка или обновление данных">
@@ -360,6 +364,7 @@ class ModalWindow extends React.PureComponent {
       rulesEdit = true,
       rulesStatus = true,
       isLoadList = true,
+      actionTypeList = 'default',
     } = this.props;
 
     if (defaultView) {
@@ -419,6 +424,13 @@ class ModalWindow extends React.PureComponent {
               <Menu.Item>
                 <p className="statusTask" onClick={modeControll === 'edit' ? this.onMessage : onEdit}>
                   Редактировать задачу
+                </p>
+              </Menu.Item>
+            ) : null}
+            {actionTypeList === 'remote' ? (
+              <Menu.Item>
+                <p className="actin-mailResponse" onClick={this.onSendMailResponse}>
+                  Отправить ответ на почту
                 </p>
               </Menu.Item>
             ) : null}

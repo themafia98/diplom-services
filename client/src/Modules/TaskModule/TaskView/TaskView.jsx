@@ -22,6 +22,7 @@ import renderDescription from './renderDescription';
 
 class TaskView extends React.PureComponent {
   state = {
+    type: 'default',
     key: this.props.uuid ? this.props.uuid : null,
     mode: 'jur',
     modeControll: 'default',
@@ -54,8 +55,15 @@ class TaskView extends React.PureComponent {
   };
 
   static getDerivedStateFromProps = (props, state) => {
-    if (props.uuid !== state.key) return { ...state, key: props.key };
-    else return state;
+    const { uuid, router: { routeDataActive: { uidCreater = '' } = {} } = {} } = props;
+    const { key, type } = state;
+    if (uuid !== key) return { ...state, key: key };
+    else if (uidCreater?.includes('__remoteTicket') && type !== 'remote') {
+      return {
+        ...state,
+        type: 'remote',
+      };
+    } else return state;
   };
 
   onChangeTagList = (tags) => {
@@ -545,11 +553,12 @@ class TaskView extends React.PureComponent {
 
   getModalWindow = (accessStatus, rulesEdit = true, rulesStatus = false) => {
     const { router: { routeDataActive = {} } = {}, onCaching, onUpdate, path, uuid, udata = {} } = this.props;
-    const { mode, actionType, modeControll, modeEditContent, isLoad = false } = this.state;
+    const { mode, actionType, modeControll, modeEditContent, isLoad = false, type = 'default' } = this.state;
 
     const { key = '', status = '', description = '' } = routeDataActive || {};
     return (
       <ModalWindow
+        actionTypeList={type}
         onCaching={onCaching}
         actionType={actionType}
         routeDataActive={routeDataActive}
