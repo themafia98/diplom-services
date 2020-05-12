@@ -58,7 +58,7 @@ const Demo = (props) => {
     } catch (error) {
       const { request: { status = '' } = {} } = error || {};
       console.error(error);
-      debugger;
+
       if (status === 404 || status === 503) setMessage('Ошибка обработки заявки');
       else setMessage(error.message);
     }
