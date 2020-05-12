@@ -48,9 +48,9 @@ const runBadNetworkAction = (dispatch, error, dep) => {
           dispatch(multipleLoadData({ requestsParamsList: list, sync: true }));
           return;
         }
-        list.forEach((requestParams) => {
-          dispatch(loadCurrentData({ ...requestParams, sync: true }));
-        });
+        for await (let requestParams of list){
+          await dispatch(loadCurrentData({ ...requestParams, sync: true })); 
+        }
       }
     },
     3000,
