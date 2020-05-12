@@ -97,6 +97,7 @@ class TableView extends React.Component {
       counter = null,
       tableViewHeight = window?.innerHeight / 2 - 70,
       onAddRouteData,
+      statusApp,
     } = this.props;
 
     const { routeData, currentActionTab = '' } = router;
@@ -144,6 +145,7 @@ class TableView extends React.Component {
       );
     } else if (path === 'searchTable') {
       const { tasks = [] } = currentData || {};
+      const countPagination = counter ? counter : statusApp === 'offline' && !counter ? 0 : counter;
       return (
         <DynamicTable
           key={currentActionTab}
@@ -154,7 +156,7 @@ class TableView extends React.Component {
           router={router}
           setCurrentTab={setCurrentTab}
           udata={udata}
-          counter={counter}
+          counter={countPagination}
           filterBy={filterBy}
           user={user}
           visible={visible}

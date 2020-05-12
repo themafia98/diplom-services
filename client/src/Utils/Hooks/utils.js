@@ -32,7 +32,7 @@ const runBadNetworkAction = (dispatch, error, dep) => {
   rest.follow(
     'offline',
     (statusRequst) => {
-      const state = getState() || {};
+      const state = getState ? getState() : {};
       const { publicReducer: { status = '', paramsList = [] } = {}, router = {} } = state;
 
       if (statusRequst === 'online') {
@@ -85,6 +85,7 @@ const runRefreshIndexedDb = async (dispatch, storeName, dep, multiple) => {
 
 const runLocalUpdateAction = async (dispatch, depAction, depParser, multiple) => {
   const { errorRequestAction, saveComponentStateAction, params = {} } = depAction;
+
   const { data, shoudClearError = false, shouldUpdateState = true } = dataParser(true, false, depParser);
   if (shoudClearError) await dispatch(errorRequestAction(null));
   if (shouldUpdateState && !multiple)
@@ -118,7 +119,7 @@ const runSync = async (dep = {}) => {
     if (!entity) continue;
 
     const items = await clientDB.getAllItems(entity, 'readonly', range);
-    const filteredItems = items.filter((item) => item?.offline);
+    const filteredItems = items?.length ? items.filter((item) => item?.offline) : [];
 
     if (!filteredItems?.length) continue;
 

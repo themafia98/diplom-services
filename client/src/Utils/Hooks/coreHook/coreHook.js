@@ -12,7 +12,7 @@ const {
   runSync,
 } = utilsHooks;
 
-const coreUpdaterDataHook = async (dispatch, dep = {}, multiple = false) => {
+const coreUpdaterDataHook = async (dispatch, dep = {}, multiple = false, badNetwork = false) => {
   const {
     noCorsClient,
     requestError,
@@ -42,7 +42,7 @@ const coreUpdaterDataHook = async (dispatch, dep = {}, multiple = false) => {
     if (isDone) return data;
   }
 
-  if (!_.isNull(requestError)) dispatch(errorRequestAction(null));
+  if (!_.isNull(requestError) && !badNetwork) dispatch(errorRequestAction(null));
   const currentStore = indStoreName ? indStoreName : storeLoad;
   const [cursor, eventResult, shouldUpdate] = await runRefreshIndexedDb(
     dispatch,
@@ -51,7 +51,7 @@ const coreUpdaterDataHook = async (dispatch, dep = {}, multiple = false) => {
     multiple,
   );
 
-  isLocalUpdate = shouldUpdate;
+  isLocalUpdate = shouldUpdate && !badNetwork;
   if (cursor) return eventResult;
 
   if (!isLocalUpdate) {
@@ -102,10 +102,12 @@ const updateEntityHook = async (dispatch, dep = {}) => {
   if (schema?.isPublicKey(dataItems)) await clientDB.updateItem(store, dataItems);
 };
 
-const errorHook = (error, dispatch, dep = {}) => {
+const errorHook = async (error, dispatch, dep = {}, callback) => {
   const { errorRequestAction } = dep;
-  if (error.status === 400 || error?.message?.toLowerCase().includes('network error')) {
-    runBadNetworkAction(dispatch, error, dep);
+
+  if (error?.message === 'Network Error') {
+    await runBadNetworkAction(dispatch, error, dep);
+    dispatch(callback());
   } else dispatch(errorRequestAction(error.message));
 };
 

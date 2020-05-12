@@ -284,6 +284,7 @@ class TaskModule extends React.PureComponent {
               urrentActionTab={currentActionTab}
               isBackground={isBackgroundTaskModuleAll}
               rest={rest}
+              statusApp={status}
               counter={this.state.counter}
               loaderMethods={loaderMethods}
               visible={path === 'taskModule_all'}
@@ -305,6 +306,7 @@ class TaskModule extends React.PureComponent {
               currentActionTab={currentActionTab}
               rest={rest}
               udata={udata}
+              statusApp={status}
               router={router}
               loading={router?.routeData[moduleName] && router?.routeData[moduleName]?.loading}
               loaderMethods={loaderMethods}

@@ -87,37 +87,31 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
           errorRequestAction,
           loadCurrentData,
           multipleLoadData,
+          copyStore: [],
           getState,
           storeLoad,
+          saveComponentStateAction,
+          isLocalUpdate,
+          indStoreName,
           path,
           rest,
+          noCorsClient,
+          requestError,
+          copyStore: [],
+          sortBy,
+          pathValid,
+          schema,
+          clientDB,
+          methodQuery,
+          primaryKey,
         };
 
         if (error?.status === 404) {
-          const dep = {
-            noCorsClient,
-            requestError,
-            copyStore: [],
-            sortBy,
-            pathValid,
-            isPartData: true,
-            schema,
-            storeLoad,
-            clientDB,
-            methodQuery,
-            primaryKey,
-            params,
-            saveComponentStateAction,
-            errorRequestAction,
-            isLocalUpdate,
-            multipleLoadData,
-            indStoreName,
-          };
-
-          await coreUpdaterDataHook(dispatch, dep);
+          await coreUpdaterDataHook(dispatch, { ...dep, isPartData: true });
           return;
         }
-        errorHook(error, dispatch, dep);
+
+        await errorHook(error, dispatch, dep, loadCurrentData.bind(this, params));
       }
       return;
     }

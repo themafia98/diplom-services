@@ -19,7 +19,7 @@ class TaskModuleMyList extends React.PureComponent {
   };
 
   render() {
-    const { udata, data, height, setCurrentTab, loading, counter, currentActionTab } = this.props;
+    const { udata, data, height, setCurrentTab, loading, counter, currentActionTab, statusApp } = this.props;
     const { tasks = [] } = data || {};
     return (
       <div ref={this.refModuleTask} className="taskModule_all">
@@ -31,6 +31,7 @@ class TaskModuleMyList extends React.PureComponent {
             counter={counter}
             height={height}
             dataSource={tasks}
+            statusApp={statusApp}
             data={data}
             loading={loading}
             filterBy={['editor', 'uidCreater']}
