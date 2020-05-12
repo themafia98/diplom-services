@@ -332,7 +332,7 @@ export default (state = initialState, action) => {
         shouldUpdate = true;
       } else if (action.payload.includes('customersModule_contacts')) {
         shouldUpdate = true;
-      } else if (state.routeData['statisticModule']){
+      } else if (state.routeData['statisticModule']) {
         shouldUpdate = true;
       }
 

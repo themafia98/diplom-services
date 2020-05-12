@@ -17,7 +17,6 @@ import TaskModuleList from '../../Modules/TaskModule/TaskModuleList';
 import TaskModuleMyList from '../../Modules/TaskModule/TaskModuleMyList';
 import TaskView from '../../Modules/TaskModule/TaskView';
 
-
 const components = {
   taskModule: TaskModule,
   mainModule: MainModule,
@@ -33,12 +32,10 @@ const components = {
   createTaskModule: CreateTask,
   calendarTaskModule: TaskModuleCalendar,
   taskViewModule: TaskView,
-  'taskModule_all': TaskModuleList,
-  'taskModule_myTasks': TaskModuleMyList,
-  'contactModule__CreateNews': CreateNews,
-
+  taskModule_all: TaskModuleList,
+  taskModule_myTasks: TaskModuleMyList,
+  contactModule__CreateNews: CreateNews,
 };
-
 
 function getComponentByKey(key) {
   try {

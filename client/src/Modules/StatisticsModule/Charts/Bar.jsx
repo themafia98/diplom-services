@@ -13,7 +13,7 @@ const Bar = (props) => {
     legendName,
     anchor,
     customLegendEffects,
-    loading
+    loading,
   } = props;
 
   const [source, setSource] = useState([]);
@@ -89,12 +89,13 @@ const Bar = (props) => {
       tickSize: 5,
       tickPadding: 5,
       tickRotation: 0,
-      legend: legendName && textContent
+      legend:
+        legendName && textContent
           ? `${legendName} ( ${textContent} )`
           : legendName
           ? legendName
           : textContent
-            ? `Статистика выполненных задач ( ${textContent} )`
+          ? `Статистика выполненных задач ( ${textContent} )`
           : 'Статистика выполненных задач',
       legendPosition: 'middle',
       legendOffset: 32,
@@ -151,10 +152,8 @@ const Bar = (props) => {
 
   if (loading && (!data || !subDataList?.length)) return <Spin size="large" />;
 
-
-  if (!loading && !source?.length) return (
-    <div className='empty-bar'>Нету данных для построения графика выполненных задач</div>
-  )
+  if (!loading && !source?.length)
+    return <div className="empty-bar">Нету данных для построения графика выполненных задач</div>;
 
   return (
     <div className="barWrapper">
@@ -193,6 +192,6 @@ Bar.defaultProps = {
   anchor: '',
   customLegendEffects: null,
   textContent: '',
-  loading: false
+  loading: false,
 };
 export default Bar;

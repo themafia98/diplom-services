@@ -59,5 +59,5 @@ export {
   getDataSource,
   validationItems,
   isTimeLostValue,
-  getComponentByKey
+  getComponentByKey,
 };

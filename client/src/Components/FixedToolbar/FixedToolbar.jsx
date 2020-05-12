@@ -17,18 +17,18 @@ const FixedToolbar = forwardRef((props, ref) => {
   }, [visible]);
 
   return (
-      <div ref={ref} className="action-button">
-        <Button
-          className='runAction-button'
-          onClick={useCustomRender ? onChangeCustomVisible : onChangeVisibleAction}
-          type="primary"
-        >
-          {name}
-        </Button>
-        <div style={visibilityStyle} className="render-wrapper">
-          {customRender}
-        </div>
+    <div ref={ref} className="action-button">
+      <Button
+        className="runAction-button"
+        onClick={useCustomRender ? onChangeCustomVisible : onChangeVisibleAction}
+        type="primary"
+      >
+        {name}
+      </Button>
+      <div style={visibilityStyle} className="render-wrapper">
+        {customRender}
       </div>
+    </div>
   );
 });
 

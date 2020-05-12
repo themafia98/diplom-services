@@ -153,7 +153,6 @@ class ModalWindow extends React.PureComponent {
           message.error('Ошибка редактирования.');
         });
     } else if (visible && mode === 'jur' && this.validation()) {
-
       const item = { ...jurnal, depKey: keyTask, editor: displayName, uid };
       const journalCopy = { ...jurnal };
 
@@ -285,7 +284,7 @@ class ModalWindow extends React.PureComponent {
     let invalidTimeLost = !timeLost || !_.isString(timeLost) || !isTimeLostValue(timeLost);
     let invalidDescription = !description || !_.isString(description);
 
-    if ((invalidDate || invalidTimeLost || invalidDescription)) {
+    if (invalidDate || invalidTimeLost || invalidDescription) {
       _valid = false;
       const errorBundle = error.size ? new Set([...error]) : new Set();
       message.error('Не все поля заполнены!');
@@ -306,7 +305,7 @@ class ModalWindow extends React.PureComponent {
       editor: '',
       date: date,
       description: description,
-      _id: uuid()
+      _id: uuid(),
     });
 
     if (validData) return _valid;

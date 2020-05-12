@@ -1,33 +1,22 @@
-import {
-  ActionProps,
-  ActionParams,
-  Actions,
-  Action,
-} from "../../Utils/Interfaces";
-import { Model, Document, Types, FilterQuery } from "mongoose";
-import _ from "lodash";
-import ActionEntity from "./ActionEntity";
-import Utils from "../../Utils";
-import {
-  ParserData,
-  limiter,
-  OptionsUpdate,
-  Filter,
-  DeleteEntitiyParams,
-} from "../../Utils/Types";
+import { ActionProps, ActionParams, Actions, Action } from '../../Utils/Interfaces';
+import { Model, Document, Types, FilterQuery } from 'mongoose';
+import _ from 'lodash';
+import ActionEntity from './ActionEntity';
+import Utils from '../../Utils';
+import { ParserData, limiter, OptionsUpdate, Filter, DeleteEntitiyParams } from '../../Utils/Types';
 
 /** Actions */
-import ActionLogger from "./ActionsEntity/ActionLogger";
-import ActionNotification from "./ActionsEntity/ActionNotification";
-import ActionNews from "./ActionsEntity/ActionNews";
-import ActionJournal from "./ActionsEntity/ActionJurnal";
-import ActionUsers from "./ActionsEntity/ActionUsers";
-import ActionChatMessage from "./ActionsEntity/ActionChatMessage";
-import ActionChatRoom from "./ActionsEntity/ActionChatRoom";
-import ActionGlobal from "./ActionsEntity/ActionGlobal";
-import ActionTasks from "./ActionsEntity/ActionTasks";
-import ActionWiki from "./ActionsEntity/ActionWiki";
-import ActionSettings from "./ActionsEntity/ActionSettings";
+import ActionLogger from './ActionsEntity/ActionLogger';
+import ActionNotification from './ActionsEntity/ActionNotification';
+import ActionNews from './ActionsEntity/ActionNews';
+import ActionJournal from './ActionsEntity/ActionJurnal';
+import ActionUsers from './ActionsEntity/ActionUsers';
+import ActionChatMessage from './ActionsEntity/ActionChatMessage';
+import ActionChatRoom from './ActionsEntity/ActionChatRoom';
+import ActionGlobal from './ActionsEntity/ActionGlobal';
+import ActionTasks from './ActionsEntity/ActionTasks';
+import ActionWiki from './ActionsEntity/ActionWiki';
+import ActionSettings from './ActionsEntity/ActionSettings';
 
 namespace Action {
   const { getModelByName } = Utils;
@@ -49,27 +38,23 @@ namespace Action {
       actionParam: ActionParams,
       limit: limiter,
       skip: number = 0,
-      sortType: string = "desc",
+      sortType: string = 'desc',
     ): Promise<ParserData> {
       try {
         const toSkip: number = Math.abs(skip);
-        const { in: inn = [], where = "" } = actionParam;
+        const { in: inn = [], where = '' } = actionParam;
         if (inn && where) {
-          const { and = [{}], filter = {} } = actionParam as Record<
-            string,
-            Filter | Array<object>
-          >;
-          const orCondition: Array<object> = (<Filter> filter)["$or"] ||
-            ([{}] as object[]);
-          const andComdition: Array<object> = <Array<Filter>> and;
+          const { and = [{}], filter = {} } = actionParam as Record<string, Filter | Array<object>>;
+          const orCondition: Array<object> = (<Filter>filter)['$or'] || ([{}] as object[]);
+          const andComdition: Array<object> = <Array<Filter>>and;
           return await model
             .find()
             .or(orCondition)
             .skip(toSkip)
             .where(where)
             .and(andComdition)
-            .in(<any> inn)
-            .limit(<number> limit)
+            .in(<any>inn)
+            .limit(<number>limit)
             .sort({
               createdAt: sortType,
             });
@@ -77,7 +62,7 @@ namespace Action {
 
         const actionData: Array<Document> = await model
           .find(actionParam)
-          .limit(<number> limit)
+          .limit(<number>limit)
           .skip(toSkip)
           .sort({
             createdAt: sortType,
@@ -90,22 +75,15 @@ namespace Action {
       }
     }
 
-    public async getFilterData(
-      model: Model<Document>,
-      filter: object,
-      sort?: string,
-    ): Promise<ParserData> {
+    public async getFilterData(model: Model<Document>, filter: object, sort?: string): Promise<ParserData> {
       if (!model || !filter) return null;
       const query: FilterQuery<object> = filter;
       return await model.find(query).sort({
-        createdAt: sort ? sort : "desc",
+        createdAt: sort ? sort : 'desc',
       });
     }
 
-    public async findOnce(
-      model: Model<Document>,
-      actionParam: ActionParams,
-    ): Promise<ParserData> {
+    public async findOnce(model: Model<Document>, actionParam: ActionParams): Promise<ParserData> {
       try {
         const actionData = await model.findOne(actionParam);
         return actionData;
@@ -115,10 +93,7 @@ namespace Action {
       }
     }
 
-    public async createEntity(
-      model: Model<Document>,
-      item: object,
-    ): Promise<ParserData> {
+    public async createEntity(model: Model<Document>, item: object): Promise<ParserData> {
       try {
         const actionData: Document = await model.create(item);
         return actionData;
@@ -128,21 +103,12 @@ namespace Action {
       }
     }
 
-    public async deleteEntity(
-      model: Model<Document>,
-      query: ActionParams,
-    ): Promise<ParserData> {
+    public async deleteEntity(model: Model<Document>, query: ActionParams): Promise<ParserData> {
       try {
-        const {
-          multiple = false,
-          mode = "$pullAll",
-          findBy,
-          queryParams = {},
-        } = query;
-        const { uid = "", updateField = "", ids = [] } =
-          ({} = <DeleteEntitiyParams> queryParams || {});
+        const { multiple = false, mode = '$pullAll', findBy, queryParams = {} } = query;
+        const { uid = '', updateField = '', ids = [] } = ({} = <DeleteEntitiyParams>queryParams || {});
 
-        const isPull = mode === "$pullAll";
+        const isPull = mode === '$pullAll';
         let actionData: Document | null = null;
         let doc: Document | null = null;
 
@@ -152,18 +118,18 @@ namespace Action {
         ): Promise<object> => {
           if (!multiple) return await model.deleteOne(props);
           else {
-            return await model.deleteMany({ [<string> findBy]: { $in: ids } });
+            return await model.deleteMany({ [<string>findBy]: { $in: ids } });
           }
         };
 
         if (isPull) {
-          const findByParam = { [<string> findBy]: findBy };
+          const findByParam = { [<string>findBy]: findBy };
           const queryUpdate = {
-            [<string> mode]: { [<string> updateField]: [uid] },
+            [<string>mode]: { [<string>updateField]: [uid] },
           };
 
           actionData = await model.update(findByParam, queryUpdate);
-          doc = await model.findOne({ [<string> findBy]: findBy });
+          doc = await model.findOne({ [<string>findBy]: findBy });
 
           if (!doc) {
             return null;
@@ -171,13 +137,8 @@ namespace Action {
 
           const record: ArrayLike<string> = doc.get(updateField);
 
-          if (
-            Array.isArray(record) && (!record.length || record.length === 0)
-          ) {
-            const docResult: { ok: boolean } = await runDelete(
-              { [<string> findBy]: findBy },
-              multiple,
-            );
+          if (Array.isArray(record) && (!record.length || record.length === 0)) {
+            const docResult: { ok: boolean } = await runDelete({ [<string>findBy]: findBy }, multiple);
 
             if (docResult.ok) {
               return docResult;
@@ -188,8 +149,8 @@ namespace Action {
         } else {
           const docResult: object = await runDelete({}, multiple);
 
-          if ((<Record<string, boolean>> docResult).ok) {
-            return <Document> docResult;
+          if ((<Record<string, boolean>>docResult).ok) {
+            return <Document>docResult;
           } else return null;
         }
       } catch (err) {
@@ -204,30 +165,22 @@ namespace Action {
       options: OptionsUpdate = {},
     ): Promise<ParserData> {
       try {
-        const {
-          queryType = "single",
-          actionParam = null, /** params for multiple update */
-        } = query;
+        const { queryType = 'single', actionParam = null /** params for multiple update */ } = query;
 
         switch (queryType) {
-          case "many": {
-            const { query = {} } = (actionParam as Record<string, object>) ||
-              {};
-            const { ids = [], updateProps = {}, returnType = "default" } =
-              query as DeleteEntitiyParams;
-            const parsedIds = ids.map((id: string) =>
-              Types.ObjectId(<string> id)
-            );
+          case 'many': {
+            const { query = {} } = (actionParam as Record<string, object>) || {};
+            const { ids = [], updateProps = {}, returnType = 'default' } = query as DeleteEntitiyParams;
+            const parsedIds = ids.map((id: string) => Types.ObjectId(<string>id));
 
             const actionData: object = await model.updateMany(
               { _id: { $in: parsedIds } },
               { $set: { ...updateProps } },
               { multi: true, ...options },
             );
-            const { ok = 0, nModified = 0 } =
-              <Record<string, number>> actionData || {};
+            const { ok = 0, nModified = 0 } = <Record<string, number>>actionData || {};
 
-            if (returnType === "arrayItems") {
+            if (returnType === 'arrayItems') {
               return await model.find({ _id: { $in: ids } });
             } else return { status: Boolean(ok), count: nModified };
           }
@@ -236,18 +189,19 @@ namespace Action {
             const { customQuery, updateProps: upProps = {} } = query;
             const { [<string>customQuery]: customQueryValue = '' } = query;
             const updateProps: object = _.isPlainObject(upProps)
-              ? <object> upProps
+              ? <object>upProps
               : { updateProps: query.updateProps };
 
             const _id: any = id ? Types.ObjectId(id) : null;
 
-            const findQuery: object = _id && !customQuery
-              ? { _id }
-              : key
+            const findQuery: object =
+              _id && !customQuery
+                ? { _id }
+                : key
                 ? { key }
                 : customQuery
-                  ? { [<string> customQuery]: customQueryValue }
-                  : {};
+                ? { [<string>customQuery]: customQueryValue }
+                : {};
 
             const actionData: Document = await model.updateOne(
               findQuery,
@@ -269,25 +223,19 @@ namespace Action {
     public async runSyncClient(actionParam: ActionParams): Promise<ParserData> {
       const { syncList = [] } = actionParam as Record<string, Array<object>>;
 
-      console.log("syncList:", syncList);
+      console.log('syncList:', syncList);
       for await (let syncItem of syncList) {
-        const { entity = "" } = syncItem as Record<string, string>;
+        const { entity = '' } = syncItem as Record<string, string>;
         const { items = [] } = syncItem as Record<string, Array<object>>;
-        const model: Model<Document> | null = getModelByName(
-          entity,
-          entity === "tasks" ? "task" : entity,
-        );
-        console.log("model:", model);
+        const model: Model<Document> | null = getModelByName(entity, entity === 'tasks' ? 'task' : entity);
+        console.log('model:', model);
         if (!model) continue;
         for await (let updateProps of items) {
           const copy: { _id: string } = { ...updateProps } as { _id: string };
-          const { _id = null, key = "" } =
-            (updateProps as Record<string, string>) || {};
-          const validId: any = typeof _id === "string"
-            ? Types.ObjectId(_id)
-            : null;
+          const { _id = null, key = '' } = (updateProps as Record<string, string>) || {};
+          const validId: any = typeof _id === 'string' ? Types.ObjectId(_id) : null;
           if (!validId) delete copy._id;
-          console.log("updteProps", updateProps);
+          console.log('updteProps', updateProps);
           const result = await this.updateEntity(
             model,
             {
@@ -304,70 +252,67 @@ namespace Action {
       return [{}];
     }
 
-    public async getActionData(
-      this: Actions,
-      actionParam: ActionParams = {},
-    ): Promise<ParserData> {
+    public async getActionData(this: Actions, actionParam: ActionParams = {}): Promise<ParserData> {
       try {
         console.log(`Run action. actionType: ${this.getActionType()},
                             actionPath: ${this.getActionPath()}`);
 
-        if (this.getActionType() === "sync") {
+        if (this.getActionType() === 'sync') {
           return await this.runSyncClient(actionParam);
         }
 
         switch (this.getActionPath()) {
-          case "global": {
+          case 'global': {
             const action: Action = new ActionGlobal(this);
             return action.run(actionParam);
           }
 
-          case "notification": {
+          case 'notification': {
             const action: Action = new ActionNotification(this);
             return action.run(actionParam);
           }
 
-          case "chatRoom": {
+          case 'chatRoom': {
             const action: Action = new ActionChatRoom(this);
             return action.run(actionParam);
           }
 
-          case "chatMsg": {
+          case 'chatMsg': {
             const action: Action = new ActionChatMessage(this);
             return action.run(actionParam);
           }
 
-          case "users": {
+          case 'users': {
             const action: Action = new ActionUsers(this);
             return action.run(actionParam);
           }
 
-          case "jurnalworks": {
+          case 'jurnalworks': {
             const action: Action = new ActionJournal(this);
             return action.run(actionParam);
           }
 
-          case "tasks": {
+          case 'tasks': {
             const action: Action = new ActionTasks(this);
             return action.run(actionParam);
           }
 
-          case "news": {
+          case 'news': {
             const action: Action = new ActionNews(this);
             return action.run(actionParam);
           }
 
-          case "settingsLog": {
+          case 'settingsLog': {
             const action: Action = new ActionLogger(this);
             return action.run(actionParam);
           }
 
-          case "wiki": {
+          case 'wiki': {
             const action: Action = new ActionWiki(this);
             return action.run(actionParam);
           }
 
-          case "settings": {
+          case 'settings': {
             const action: Action = new ActionSettings(this);
             return action.run(actionParam);
           }
