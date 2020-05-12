@@ -80,9 +80,11 @@ const Demo = (props) => {
         <label>
           Имя
           <input
+            required={true}
             autoFocus={true}
             name="name"
             type="text"
+            placeholder="John"
             value={formData.value}
             onChange={({ target: { value } }) => onChange('name', value)}
           />
@@ -90,8 +92,10 @@ const Demo = (props) => {
         <label>
           Фамилия
           <input
+            required={true}
             name="lastName"
             type="text"
+            placeholder="Smit"
             value={formData.lastName}
             onChange={({ target: { value } }) => onChange('lastName', value)}
           />
@@ -99,7 +103,9 @@ const Demo = (props) => {
         <label>
           Причина
           <input
+            required={true}
             name="cause"
+            placeholder="sick"
             type="text"
             value={formData.cause}
             onChange={({ target: { value } }) => onChange('cause', value)}
@@ -108,7 +114,9 @@ const Demo = (props) => {
         <label>
           Адрес
           <input
+            required={true}
             name="address"
+            placeholder="Jon's street 6, apt. 9"
             type="text"
             value={formData.address}
             onChange={({ target: { value } }) => onChange('address', value)}
@@ -117,7 +125,8 @@ const Demo = (props) => {
         <label>
           Телефон
           <input
-            name="phone"
+            required={true}
+            placeholder="+37529..."
             type="tel"
             value={formData.phone}
             onChange={({ target: { value } }) => onChange('phone', value)}
@@ -126,7 +135,9 @@ const Demo = (props) => {
         <label>
           Электронная почта
           <input
+            required={true}
             name="email"
+            placeholder="mail@mail.com"
             type="text"
             value={formData.email}
             onChange={({ target: { value } }) => onChange('email', value)}
@@ -134,7 +145,11 @@ const Demo = (props) => {
         </label>
         <label className="textarea-wrapper">
           Другая информация
-          <textarea value={formData.other} onChange={({ target: { value } }) => onChange('other', value)} />
+          <textarea
+            placeholder="I want..."
+            value={formData.other}
+            onChange={({ target: { value } }) => onChange('other', value)}
+          />
         </label>
         <RangePicker
           format="DD.MM.YYYY"
