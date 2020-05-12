@@ -1,5 +1,6 @@
 //@ts-nocheck
 import React, { useState } from 'react';
+import _ from 'lodash';
 import { DatePicker } from 'antd';
 import moment from 'moment';
 
@@ -39,7 +40,7 @@ const Demo = (props) => {
     if (disabled !== invalid) setDisabled(invalid);
   };
 
-  const onSubmit = async (event) => {
+  const onSubmit = _.debounce(async (event) => {
     event.preventDefault();
     if (disabled) return;
 
@@ -51,18 +52,26 @@ const Demo = (props) => {
 
       if (res.status !== 200) throw new Error('Не удалось отправить заявку');
       setMessage('Ваша заявка принята');
-
-      const { data = {} } = res;
-      const { response = {} } = data;
-      console.log('response', response);
+      setFormData({
+        name: '',
+        lastName: '',
+        address: '',
+        phone: '',
+        email: '',
+        other: '',
+        cause: '',
+        date: [moment(), moment()],
+      });
+      setDisabled(true);
     } catch (error) {
-      const { request: { status = '' } = {} } = error || {};
+      const { request: { status = '' } = {}, response: { data = '' } = [] } = error || {};
       console.error(error);
 
       if (status === 404 || status === 503) setMessage('Ошибка обработки заявки');
+      if (status === 429 && data) setMessage(data);
       else setMessage(error.message);
     }
-  };
+  }, 600);
 
   return (
     <div className="demo-page">

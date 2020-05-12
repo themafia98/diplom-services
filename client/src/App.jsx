@@ -111,7 +111,9 @@ class App extends React.Component {
   componentDidMount = () => {
     const { config = {}, Request, config: { appActive = true } = {} } = this.context;
     if (!appActive) return;
-    if (window.location.pathname === '/demo') return;
+    if (window.location.pathname === '/demoPage') {
+      return this.loadApp();
+    }
 
     const rest = new Request();
     rest

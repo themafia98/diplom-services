@@ -1,43 +1,44 @@
-import express, { Response, NextFunction, RequestHandler } from 'express';
-import session from 'express-session';
-import MongoStore from 'connect-mongo';
-import nodemailer from 'nodemailer';
-import socketio from 'socket.io';
-import passport from 'passport';
-import _ from 'lodash';
-import helmet from 'helmet';
-import chalk from 'chalk';
-import { Route, Dbms, User } from '../../Utils/Interfaces';
-import RouterInstance from '../Router';
-import { Server as HttpServer } from 'http';
-import { Request, Mail } from '../../Utils/Interfaces';
-import RestEntitiy from './RestEntity';
-import Utils from '../../Utils';
+import express, { Response, NextFunction, RequestHandler } from "express";
+import rateLimit from "express-rate-limit";
+import session from "express-session";
+import MongoStore from "connect-mongo";
+import nodemailer from "nodemailer";
+import socketio from "socket.io";
+import passport from "passport";
+import _ from "lodash";
+import helmet from "helmet";
+import chalk from "chalk";
+import { Route, Dbms, User } from "../../Utils/Interfaces";
+import RouterInstance from "../Router";
+import { Server as HttpServer } from "http";
+import { Request, Mail } from "../../Utils/Interfaces";
+import RestEntitiy from "./RestEntity";
+import Utils from "../../Utils";
 
-import Statistic from '../../Controllers/Statistic';
-import System from '../../Controllers/Main';
-import Cabinet from '../../Controllers/Cabinet';
-import Settings from '../../Controllers/Settings';
-import General from '../../Controllers/General';
-import Chat from '../../Controllers/Contact/Chat';
-import Tasks from '../../Controllers/Tasks';
-import Wiki from '../../Controllers/Wiki';
-import News from '../../Controllers/Contact/News';
-import Database from '../Database';
-import Mailer from '../Mail';
+import Statistic from "../../Controllers/Statistic";
+import System from "../../Controllers/Main";
+import Cabinet from "../../Controllers/Cabinet";
+import Settings from "../../Controllers/Settings";
+import General from "../../Controllers/General";
+import Chat from "../../Controllers/Contact/Chat";
+import Tasks from "../../Controllers/Tasks";
+import Wiki from "../../Controllers/Wiki";
+import News from "../../Controllers/Contact/News";
+import Database from "../Database";
+import Mailer from "../Mail";
 
-import DropboxStorage from '../../Services/Dropbox';
+import DropboxStorage from "../../Services/Dropbox";
 
-import { UserModel } from '../Database/Schema';
+import { UserModel } from "../Database/Schema";
 
-import jwt, { StrategyOptions } from 'passport-jwt';
-import * as passportLocal from 'passport-local';
+import jwt, { StrategyOptions } from "passport-jwt";
+import * as passportLocal from "passport-local";
 
-import wsWorkerManager from '../../Utils/instanseWs';
-import wsEvents from '../../Controllers/Contact/Chat/wsEvents';
+import wsWorkerManager from "../../Utils/instanseWs";
+import wsEvents from "../../Controllers/Contact/Chat/wsEvents";
 
-import limiter from '../../config/limiter';
-import { ObjectId } from 'mongodb';
+import limiter from "../../config/limiter";
+import { ObjectId } from "mongodb";
 
 namespace Http {
   const LocalStrategy = passportLocal.Strategy;
@@ -47,52 +48,66 @@ namespace Http {
       super(port);
     }
 
-    public startResponse(req: Request, res: Response, next: NextFunction): void {
+    public startResponse(
+      req: Request,
+      res: Response,
+      next: NextFunction,
+    ): void {
       req.start = new Date();
       next();
     }
 
-    public isPrivateRoute(req: Request, res: Response, next: NextFunction): Response | void {
+    public isPrivateRoute(
+      req: Request,
+      res: Response,
+      next: NextFunction,
+    ): Response | void {
       if (req.isAuthenticated()) {
         return next();
       } else {
-        res.clearCookie('connect.sid');
+        res.clearCookie("connect.sid");
         return res.sendStatus(503);
       }
     }
 
     public initErrorHandler(server: HttpServer, dbm: Dbms): void {
-      server.on('clientError', (err, socket) => {
-        console.log('clientError');
+      server.on("clientError", (err, socket) => {
+        console.log("clientError");
         console.error(err);
         socket.destroy();
       });
 
-      process.on('SIGTERM', (): void => {
-        console.log('SIGTERM, uptime:', process.uptime());
+      process.on("SIGTERM", (): void => {
+        console.log("SIGTERM, uptime:", process.uptime());
         server.close();
       });
 
-      process.on('uncaughtException', (err: Error) => {
+      process.on("uncaughtException", (err: Error) => {
         // handle the error safely
-        if (err.name === 'MongoNetworkError') {
+        if (err.name === "MongoNetworkError") {
           dbm.disconnect().catch((err: Error) => console.error(err));
-          console.log('uncaughtException. uptime:', process.uptime());
+          console.log("uncaughtException. uptime:", process.uptime());
           console.error(err);
         } else {
           console.error(err);
-          console.log('exit error, uptime:', process.uptime());
+          console.log("exit error, uptime:", process.uptime());
           process.exit(1);
         }
       });
     }
 
-    public errorLogger(err: Error, req: Request, res: Response, next: NextFunction): void {
+    public errorLogger(
+      err: Error,
+      req: Request,
+      res: Response,
+      next: NextFunction,
+    ): void {
       // set locals, only providing error in development
       const today: Readonly<Date> = new Date();
-      const time: Readonly<string> = today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds();
-      const day: Readonly<string> =
-        today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+      const time: Readonly<string> = today.getHours() + ":" +
+        today.getMinutes() + ":" + today.getSeconds();
+      const day: Readonly<string> = today.getFullYear() + "-" +
+        (today.getMonth() + 1) + "-" + today.getDate();
       console.error(err.name);
       console.log(`time: ${time}, day: ${day}.`);
       if (!err.name) {
@@ -107,26 +122,35 @@ namespace Http {
       passport.use(
         new LocalStrategy(
           {
-            usernameField: 'email',
-            passwordField: 'password',
+            usernameField: "email",
+            passwordField: "password",
           },
-          async (email: string, password: string, done: Function): Promise<Function> => {
+          async (
+            email: string,
+            password: string,
+            done: Function,
+          ): Promise<Function> => {
             try {
               const connect = await dbm.connection();
-              if (!connect) throw new Error('Bad connect');
+              if (!connect) throw new Error("Bad connect");
               const result = await UserModel.findOne({ email });
               if (!result) {
-                await dbm.disconnect().catch((err: Error) => console.error(err));
+                await dbm.disconnect().catch((err: Error) =>
+                  console.error(err)
+                );
               }
-              const userResult: User = (await UserModel.findOne({ email })) as User;
+              const userResult: User =
+                (await UserModel.findOne({ email })) as User;
               if (!userResult) {
-                await dbm.disconnect().catch((err: Error) => console.error(err));
+                await dbm.disconnect().catch((err: Error) =>
+                  console.error(err)
+                );
                 return done(userResult);
               }
 
               if (!(await userResult.checkPassword(password))) {
                 return done(null, false, {
-                  message: 'Нет такого пользователя или пароль неверен.',
+                  message: "Нет такого пользователя или пароль неверен.",
                 });
               }
               return done(null, userResult);
@@ -139,19 +163,19 @@ namespace Http {
       );
 
       const jwtOptions: Readonly<object> = {
-        jwtFromRequest: jwt.ExtractJwt.fromAuthHeaderWithScheme('jwt'),
-        secretOrKey: 'jwtsecret',
+        jwtFromRequest: jwt.ExtractJwt.fromAuthHeaderWithScheme("jwt"),
+        secretOrKey: "jwtsecret",
       };
 
       passport.use(
-        new jwt.Strategy(<StrategyOptions>jwtOptions, async function (
+        new jwt.Strategy(<StrategyOptions> jwtOptions, async function (
           payload: Record<string, ObjectId>,
           done: Function,
         ) {
           try {
             const { id } = payload || {};
             const connect = await dbm.connection();
-            if (!connect) throw new Error('bad connection');
+            if (!connect) throw new Error("bad connection");
 
             const result = await UserModel.findOne(id);
             if (!result) return done(result);
@@ -162,20 +186,22 @@ namespace Http {
         }),
       );
 
-      passport.serializeUser((user: Record<string, ObjectId>, done: Function): void => {
-        const { id } = user || {};
-        done(null, id);
-      });
+      passport.serializeUser(
+        (user: Record<string, ObjectId>, done: Function): void => {
+          const { id } = user || {};
+          done(null, id);
+        },
+      );
 
       passport.deserializeUser(
         async (id: string, done: Function): Promise<void | Function> => {
           try {
             const connect = await dbm.connection();
-            if (!connect) throw new Error('Bad connect');
+            if (!connect) throw new Error("Bad connect");
             const result = await UserModel.findById(id);
             if (!result) {
               await dbm.disconnect().catch((err: Error) => console.error(err));
-              console.log('deserializeUser error');
+              console.log("deserializeUser error");
             }
             done(null, result);
           } catch (err) {
@@ -198,24 +224,25 @@ namespace Http {
       const StatisticAlias: Readonly<Function> = Statistic.StatisticController;
 
       this.setApp(express());
-      this.getApp().disabled('x-powerd-by');
+      this.getApp().disabled("x-powerd-by");
       this.getApp().use(helmet());
       this.getApp().use(express.urlencoded({ extended: true }));
       this.getApp().use(express.json());
-      this.getApp().set('port', this.getPort());
+      this.getApp().set("port", this.getPort());
 
       const SessionStore = MongoStore(session);
-      const MONGODB_URI: Readonly<string> = <string>process.env.MONGODB_URI;
-      const DROPBOX_TOKEN: Readonly<string> = <string>process.env.DROPBOX_TOKEN;
+      const MONGODB_URI: Readonly<string> = <string> process.env.MONGODB_URI;
+      const DROPBOX_TOKEN: Readonly<string> = <string> process.env
+        .DROPBOX_TOKEN;
 
       this.getApp().use(
         session({
-          secret: 'jwtsecret',
+          secret: "jwtsecret",
           saveUninitialized: true,
           resave: true,
           store: new SessionStore({
             url: MONGODB_URI,
-            collection: 'sessions',
+            collection: "sessions",
           }),
         }),
       );
@@ -223,13 +250,18 @@ namespace Http {
       this.getApp().use(passport.session());
       this.getApp().use(this.errorLogger);
 
-      const dbm: Dbms = new Database.ManagmentDatabase('controllSystem', MONGODB_URI);
+      const dbm: Dbms = new Database.ManagmentDatabase(
+        "controllSystem",
+        MONGODB_URI,
+      );
 
-      const dropbox = new DropboxStorage.DropboxManager({ token: DROPBOX_TOKEN });
+      const dropbox = new DropboxStorage.DropboxManager(
+        { token: DROPBOX_TOKEN },
+      );
       const mailer: Readonly<Mail> = new Mailer.MailManager(
         nodemailer,
         {
-          host: 'smtp.yandex.ru',
+          host: "smtp.yandex.ru",
           port: 465,
           auth: {
             user: process.env.TOKEN_YANDEX_USER,
@@ -244,7 +276,7 @@ namespace Http {
       const createResult = mailer.create();
 
       if (!createResult) {
-        console.error('Invalid create transport mailer');
+        console.error("Invalid create transport mailer");
       }
 
       this.getApp().locals.dbm = dbm;
@@ -252,19 +284,35 @@ namespace Http {
       this.getApp().locals.mailer = mailer;
       this.initJWT(dbm);
 
-      const instanceRouter: Route = RouterInstance.Router.instance(this.getApp());
+      const instanceRouter: Route = RouterInstance.Router.instance(
+        this.getApp(),
+      );
 
-      const server: HttpServer = this.getApp().listen(this.getPort(), (): void => {
-        console.log(`${chalk.yellow(`Worker ${process.pid}`)} ${chalk.green('started')}`);
-        console.log(`Server listen on ${chalk.blue.bold(this.getPort())}.`);
+      const server: HttpServer = this.getApp().listen(
+        this.getPort(),
+        (): void => {
+          console.log(
+            `${chalk.yellow(`Worker ${process.pid}`)} ${chalk.green(
+              "started",
+            )}`,
+          );
+          console.log(`Server listen on ${chalk.blue.bold(this.getPort())}.`);
 
-        // callback("", os.cpus().length);
+          // callback("", os.cpus().length);
+        },
+      );
+
+      const regTicketLimitter = rateLimit({
+        windowMs: 2 * 60 * 1000,
+        max: 1,
+        message: "Заявку можно отправлять раз в 2 минуты.",
       });
 
       /** initial entrypoint route */
-      this.setRest(instanceRouter.initInstance('/rest'));
-      this.getRest().use(<RequestHandler>this.startResponse);
+      this.setRest(instanceRouter.initInstance("/rest"));
+      this.getRest().use(<RequestHandler> this.startResponse);
       this.getRest().use(limiter);
+      this.getRest().use("/tasks/regTicket", regTicketLimitter);
 
       wsWorkerManager.startSocketConnection(socketio(server));
 
@@ -272,15 +320,15 @@ namespace Http {
 
       Utils.initControllers(
         [
-          <FunctionConstructor>Main,
-          <FunctionConstructor>TasksAlias,
-          <FunctionConstructor>WikiAlias,
-          <FunctionConstructor>NewsAlias,
-          <FunctionConstructor>SystemAlias,
-          <FunctionConstructor>ChatAlias,
-          <FunctionConstructor>SettingsAlias,
-          <FunctionConstructor>CabinetAlias,
-          <FunctionConstructor>StatisticAlias,
+          <FunctionConstructor> Main,
+          <FunctionConstructor> TasksAlias,
+          <FunctionConstructor> WikiAlias,
+          <FunctionConstructor> NewsAlias,
+          <FunctionConstructor> SystemAlias,
+          <FunctionConstructor> ChatAlias,
+          <FunctionConstructor> SettingsAlias,
+          <FunctionConstructor> CabinetAlias,
+          <FunctionConstructor> StatisticAlias,
         ],
         this.getApp.bind(this),
         this.getRest.bind(this),
