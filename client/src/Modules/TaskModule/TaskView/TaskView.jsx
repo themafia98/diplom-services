@@ -626,7 +626,7 @@ class TaskView extends React.PureComponent {
     const accessStatus = this.getAccessStatus();
     const accessPriority = this.getAccessPriority();
     const isRemoteTicket = uidCreater?.includes('__remoteTicket');
-    const rulesEdit = uid === uidCreater || uidCreater?.includes('__remoteTicket');
+    const rulesEdit = uid === uidCreater || isRemoteTicket;
     const rulesStatus = editor.some((editorId) => editorId === uid) || uid === uidCreater || isRemoteTicket;
 
     const statusClassName = this.getClassNameByStatus();
