@@ -6,7 +6,7 @@ import moment from 'moment';
 
 import Request from '../../Models/Rest';
 
-import './demo.scss';
+import style from './demo.module.scss';
 
 const { RangePicker } = DatePicker;
 
@@ -45,10 +45,21 @@ const Demo = (props) => {
     if (disabled) return;
 
     if (message) setMessage('');
-
+    debugger;
     try {
       const rest = new Request();
-      const res = await rest.sendRequest('/tasks/regTicket', 'PUT', formData, false);
+      const res = await rest.sendRequest(
+        '/tasks/regTicket',
+        'PUT',
+        {
+          ...formData,
+          date: [
+            formData.date[0].format('DD.MM.YYYY HH:mm:ss'),
+            formData.date[1].format('DD.MM.YYYY HH:mm:ss'),
+          ],
+        },
+        false,
+      );
 
       if (res.status !== 200) throw new Error('Не удалось отправить заявку');
       setMessage('Ваша заявка принята');
@@ -74,8 +85,8 @@ const Demo = (props) => {
   }, 600);
 
   return (
-    <div className="demo-page">
-      <h1 className="title-demoPage">Форма обращения в учереждение здравоохранения</h1>
+    <div className={style.demoPage}>
+      <h1 className="title">Форма обращения в учереждение здравоохранения</h1>
       <form name="ticket" className="demo-form">
         <label>
           Имя
@@ -152,14 +163,15 @@ const Demo = (props) => {
           />
         </label>
         <RangePicker
-          format="DD.MM.YYYY"
+          className={style.rangePickerCss}
+          format="DD.MM.YYYY HH:mm:ss"
           value={formData.date}
           onChange={(value) => onChange('date', value)}
         />
-        <div className="wrapper-controller">
+        <div className={style.wrapperController}>
           <input disabled={disabled} type="button" value="Отправить" onClick={onSubmit} />
         </div>
-        {message ? <p className="message">{message}</p> : null}
+        {message ? <p className={style.message}>{message}</p> : null}
       </form>
     </div>
   );

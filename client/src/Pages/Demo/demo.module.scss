@@ -1,21 +1,16 @@
-.demo-page {
+.demoPage {
   background: #f0f8ff;
   overflow: auto;
   margin: 0 auto;
   height: 100vh;
-  .title-demoPage {
+
+  h1 {
     text-align: center;
     font-size: 21px;
   }
 
   * {
     outline: none;
-  }
-
-  .message {
-    margin: 5px 0;
-    font-weight: bold;
-    color: #009a3d;
   }
 
   form {
@@ -51,45 +46,51 @@
     }
 
     textarea {
-      margin-bottom: 0px;
+      margin-bottom: 5px;
       width: 100%;
       height: 6vw;
     }
+  }
+}
 
-    .ant-calendar-picker {
-      width: 100%;
-      .ant-input {
-        padding-top: 0;
-      }
+.rangePickerCss {
+  width: 100%;
+  .ant-input {
+    padding-top: 0;
+  }
+}
+
+.wrapperController {
+  display: flex;
+  justify-content: center;
+  input {
+    transition: ease-in-out 0.3s all;
+    border-radius: 5px;
+    border: 1px solid #000;
+    background: rgb(120, 188, 248);
+    color: #fff;
+    font-size: bold;
+    padding: 7px;
+    cursor: pointer;
+
+    &:hover {
+      background: rgb(63, 154, 235);
     }
 
-    .wrapper-controller {
-      display: flex;
-      justify-content: center;
-      input {
-        transition: ease-in-out 0.3s all;
-        border-radius: 5px;
-        border: 1px solid #000;
-        background: rgb(120, 188, 248);
-        color: #fff;
-        font-size: bold;
-        padding: 7px;
-        cursor: pointer;
+    &:active {
+      border: 0.7px solid #000;
+    }
 
-        &:hover {
-          background: rgb(63, 154, 235);
-        }
-
-        &:active {
-          border: 0.7px solid #000;
-        }
-
-        &:disabled {
-          cursor: not-allowed;
-          color: #000;
-          background: rgb(128, 128, 128);
-        }
-      }
+    &:disabled {
+      cursor: not-allowed;
+      color: #000;
+      background: rgb(128, 128, 128);
     }
   }
+}
+
+.message {
+  margin: 5px 0;
+  font-weight: bold;
+  color: #009a3d;
 }
