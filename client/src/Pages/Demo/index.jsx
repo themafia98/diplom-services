@@ -45,7 +45,7 @@ const Demo = (props) => {
     if (disabled) return;
 
     if (message) setMessage('');
-    debugger;
+
     try {
       const rest = new Request();
       const res = await rest.sendRequest(
