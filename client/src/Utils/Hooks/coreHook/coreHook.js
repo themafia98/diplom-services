@@ -106,7 +106,7 @@ const errorHook = async (error, dispatch, dep = {}, callback) => {
 
   if (error?.message === 'Network Error') {
     await runBadNetworkAction(dispatch, error, dep);
-    dispatch(callback());
+    if (_.isFunction(callback)) dispatch(callback());
   } else dispatch(errorRequestAction(error.message));
 };
 
