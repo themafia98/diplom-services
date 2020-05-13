@@ -80,7 +80,7 @@ class StreamBox extends React.Component {
     try {
       const { Request } = this.context;
       const rest = new Request();
-      const res = await rest.sendRequest(`/system/notification/update/many`, 'POST', {
+      const res = await rest.sendRequest('/system/notification/update/many', 'POST', {
         actionType: 'get_notifications',
         query: { ids, updateProps: { isRead: true } },
       });
@@ -280,6 +280,20 @@ class StreamBox extends React.Component {
       });
   };
 
+  onParserdMessage = (message) => {
+    if (!message || (message && !_.isString(message))) {
+      return message;
+    }
+
+    const messageParts = message
+      .split('\n')
+      .map((part) => part.trim())
+      .filter(Boolean);
+
+    if (messageParts.length) return messageParts.map((part) => <p className="messagePart">{part}</p>);
+    else return message;
+  };
+
   render() {
     const {
       mode,
@@ -369,7 +383,7 @@ class StreamBox extends React.Component {
                     <p className="name">{authorName}</p>
                   </div>
                   <p className="card_title">{title}</p>
-                  <p className="card_message">{message}</p>
+                  <p className="card_message">{this.onParserdMessage(message)}</p>
                 </div>
               );
 

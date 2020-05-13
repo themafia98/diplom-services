@@ -19,7 +19,6 @@ $cardCount: 6;
     font-weight: bold;
     background-color: $cardColorBg;
     max-height: 250px;
-    min-height: 175px;
     margin-top: 10px;
     box-shadow: $cardBorderShadow;
     margin: 10px;
@@ -55,8 +54,21 @@ $cardCount: 6;
       display: -webkit-box;
       -webkit-line-clamp: $cardCount;
       -webkit-box-orient: vertical;
-      overflow: hidden;
+      overflow: auto;
       line-height: 1.2;
+      &::-webkit-scrollbar {
+        width: 4px;
+      }
+      &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: #888;
+      }
+      p {
+        margin: 0;
+      }
     }
   }
 }

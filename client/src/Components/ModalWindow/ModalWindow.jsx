@@ -153,7 +153,8 @@ class ModalWindow extends React.PureComponent {
     return `
     Работа над задачей ${nameTask}.\n
     Время затрачено: ${timeLost}.\n
-    Описание: ${description}. Дата: ${date}
+    Дата: ${date}. \n
+    Описание: ${description}. \n
     `;
   };
 
