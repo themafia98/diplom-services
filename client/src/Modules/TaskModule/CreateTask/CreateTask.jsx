@@ -8,7 +8,7 @@ import TitleModule from '../../../Components/TitleModule';
 import moment from 'moment';
 import { Button, Input, Select, DatePicker, message } from 'antd';
 import Textarea from '../../../Components/Textarea';
-import File from '../../../Components/File';
+//import File from '../../../Components/File';
 import { v4 as uuid } from 'uuid';
 
 import { routePathNormalise, routeParser, createEntity, createNotification } from '../../../Utils';
@@ -401,9 +401,9 @@ class CreateTask extends React.PureComponent {
     const {
       errorBundle = {},
       filteredUsers = [],
-      card: { description: descriptionValue = '', key: keyCard = '' },
+      card: { description: descriptionValue = '' /* key: keyCard = '' */ },
     } = this.state;
-    const { rest } = this.context;
+    //const { rest } = this.context;
 
     const defaultDate = this.getDefaultDate(dateFormat);
 
@@ -476,13 +476,13 @@ class CreateTask extends React.PureComponent {
                     value={descriptionValue}
                     rows={8}
                   />
-                  <label>Прикрепить файлы: </label>
+                  {/* <label>Прикрепить файлы: </label>
                   <File
                     moduleData={{ id: `${keyCard}_virtual`, name: ' taskModule' }}
                     isLocal={true}
                     module="tasks"
                     rest={rest}
-                  />
+                  /> */}
                   <label>Срок сдачи: </label>
                   <RangePicker
                     className={clsx(!_.isEmpty(errorBundle) && errorBundle.date ? 'isError' : null)}
