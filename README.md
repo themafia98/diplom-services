@@ -16,7 +16,7 @@ or if you use npm, delete yarn.lock and run this:
 
 ### `npm i`
 
-Instal with installing script:
+Install with installing script:
 
 ### `start install.bat`
 
