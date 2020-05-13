@@ -7,11 +7,11 @@ import { Input, DatePicker } from 'antd';
 import Textarea from '../../Textarea';
 
 const TrackerModal = (props) => {
-  const { modeSetTime, onChangeTask, error, timeLost, description, descriptionDefault } = props;
-
+  const { visible, typeView = '', onChangeTask, error, timeLost, description, descriptionDefault } = props;
+  debugger;
   return (
     <>
-      {modeSetTime ? (
+      {visible && typeView === 'jur' ? (
         <>
           <span>Затраченое время:</span>
           <Input

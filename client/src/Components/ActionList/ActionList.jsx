@@ -9,7 +9,6 @@ const ActionList = (props) => {
     entityName: entityNameProps,
     showModal,
     onMessage,
-    onSendMailResponse,
     modeControll,
     onUpdateEditable,
     onRejectEdit,
@@ -18,6 +17,11 @@ const ActionList = (props) => {
     rulesEdit,
     onEdit,
   } = props;
+
+  const onAction = (event, key) => {
+    debugger;
+    showModal(event, key);
+  };
 
   const [entityName] = useState(entityNameProps);
   const isEdit = modeControll === 'edit';
@@ -37,13 +41,16 @@ const ActionList = (props) => {
           <>
             <Menu>
               <Menu.Item>
-                <p className="jur" onClick={isEdit ? onMessage : showModal}>
+                <p className="jur" onClick={isEdit ? onMessage : (evt) => onAction(evt, 'jur')}>
                   Занести в журнал работы
                 </p>
               </Menu.Item>
               {rulesStatus ? (
                 <Menu.Item>
-                  <p className="statusTask" onClick={isEdit ? onMessage : showModal}>
+                  <p
+                    className="statusTask"
+                    onClick={isEdit ? onMessage : (evt) => onAction(evt, 'statusTask')}
+                  >
                     Сменить статус задачи
                   </p>
                 </Menu.Item>
@@ -57,7 +64,7 @@ const ActionList = (props) => {
               ) : null}
               {viewType === 'remote' ? (
                 <Menu.Item>
-                  <p className="mailResponseType" onClick={onSendMailResponse}>
+                  <p className="mailResponseType" onClick={(evt) => onAction(evt, 'mailResponse')}>
                     Отправить ответ на почту
                   </p>
                 </Menu.Item>

@@ -22,11 +22,13 @@ const { Option } = Select;
 class ModalWindow extends React.PureComponent {
   state = {
     visible: false,
-    name: null,
-    password: null,
-    modeSetTime: null,
-    departament: null,
-    email: null,
+    reg: {
+      name: null,
+      password: null,
+      departament: null,
+      email: null,
+      surname: null,
+    },
     jurnal: {
       timeLost: null,
       date: moment().format('DD.MM.YYYY HH:mm:ss'),
@@ -43,6 +45,19 @@ class ModalWindow extends React.PureComponent {
 
   static contextType = modelContext;
   static propTypes = modalWindowType;
+
+  static getDerivedStateFromProps = (props, state) => {
+    const { mode = '' } = props;
+    const { type = '' } = state;
+
+    if (mode === 'reg' && _.isNull(type)) {
+      return {
+        ...state,
+        type: 'regType',
+      };
+    }
+    return state;
+  };
 
   onMessage = (event) => {
     message.warning('Вы в режиме редактирования карточки.');
@@ -62,37 +77,21 @@ class ModalWindow extends React.PureComponent {
       });
   };
 
-  showModal = (event, response = '') => {
-    const { mode, modeEditContent } = this.props;
-    const { modeSetTime, [response]: modeVisibleForm = false } = this.state;
-    const { currentTarget = {} } = event;
-    let type = mode;
-
-    if (mode !== currentTarget.className.split(' ')[0]) {
-      type = currentTarget.className.split(' ')[0];
-    }
-
-    if (response) {
-      return this.setState({
-        ...this.state,
-        type,
-        [response]: !modeVisibleForm,
-      });
-    }
+  showModal = (event, type = '', response = '', action = '') => {
+    const { [type]: visibleType = false } = this.state;
 
     this.setState({
       ...this.state,
-      modeSetTime: !modeSetTime,
-      modeEditContent: !modeEditContent,
+      [type]: !visibleType,
       visible: true,
-      type: type,
+      type,
     });
   };
 
   onRegUser = async () => {
-    const { name, password, departament, email, loading, surname } = this.state;
+    const { reg: { name, password, departament, email, surname } = {}, type = '', loading } = this.state;
 
-    if (!name && !password && !departament && !email && loading) {
+    if (!name || !password || !departament || !email || loading) {
       return;
     }
 
@@ -111,14 +110,14 @@ class ModalWindow extends React.PureComponent {
         throw new Error('Bad registration data');
       }
 
-      this.setState({ ...this.state, visible: false });
+      this.setState({ ...this.state, [type]: false });
     } catch (error) {
       if (error?.response?.status !== 404) console.error(error);
     }
   };
 
   onSaveEdit = (event) => {
-    const { description: { value: valueDescription = '' } = {} } = this.state;
+    const { description: { value: valueDescription = '' } = {}, type: typeState = '' } = this.state;
 
     const {
       onUpdate,
@@ -139,9 +138,8 @@ class ModalWindow extends React.PureComponent {
         onCancelEditModeContent(event);
         this.setState({
           ...this.state,
-          visible: false,
+          [typeState]: false,
           type: null,
-          modeSetTime: false,
           loading: false,
         });
         message.success('Описание изменено.');
@@ -151,8 +149,16 @@ class ModalWindow extends React.PureComponent {
       });
   };
 
+  getTemplate = (nameTask, timeLost, description, date) => {
+    return `
+    Работа над задачей ${nameTask}.\n
+    Время затрачено: ${timeLost}.\n
+    Описание: ${description}. Дата: ${date}
+    `;
+  };
+
   onTrackTask = async () => {
-    const { jurnal } = this.state;
+    const { jurnal, type = '' } = this.state;
 
     const {
       onCaching,
@@ -162,7 +168,7 @@ class ModalWindow extends React.PureComponent {
       udata: { displayName = '', _id: uid = '' } = {},
     } = this.props;
     const item = { ...jurnal, depKey: keyTask, editor: displayName, uid };
-    const journalCopy = { ...jurnal };
+    const { timeLost = '', description = '', date = '' } = jurnal || {};
 
     if (onCaching) {
       await onCaching({ item, actionType, depStore: 'tasks', store: 'jurnalworks' });
@@ -172,10 +178,7 @@ class ModalWindow extends React.PureComponent {
       type: 'global',
       title: 'Списание времени в журнал',
       isRead: false,
-      message: `
-              Работа над задачей ${nameTask}.
-              Время затрачено: ${journalCopy?.timeLost}.
-              Описание: ${journalCopy.description}. Дата: ${journalCopy?.date}`,
+      message: this.getTemplate(nameTask, timeLost, description, date),
       action: {
         type: 'tasks_link',
         moduleName: 'taskModule',
@@ -192,8 +195,7 @@ class ModalWindow extends React.PureComponent {
 
     return this.setState({
       ...this.state,
-      visible: false,
-      modeSetTime: false,
+      [type]: false,
       type: null,
       loading: false,
       jurnal: { timeLost: null, date: moment().format('DD.MM.YYYY HH:mm:ss'), description: null },
@@ -202,16 +204,15 @@ class ModalWindow extends React.PureComponent {
   };
 
   onChangeStatusTask = async (customStatus = null) => {
-    const { taskStatus = null } = this.state;
+    const { taskStatus = null, type = '' } = this.state;
 
     const { onUpdate, routeDataActive = {}, routeDataActive: { key = null } = {}, path = '' } = this.props;
 
     if (_.isNull(taskStatus) && !_.isString(customStatus))
       return this.setState({
         ...this.state,
-        visible: false,
+        [type]: false,
         type: null,
-        modeSetTime: false,
         loading: false,
       });
 
@@ -229,9 +230,8 @@ class ModalWindow extends React.PureComponent {
 
       this.setState({
         ...this.state,
-        visible: false,
+        [type]: false,
         type: null,
-        modeSetTime: false,
         loading: false,
       });
       message.success('Статус изменен.');
@@ -240,46 +240,24 @@ class ModalWindow extends React.PureComponent {
     }
   };
 
-  handleOk = async (event, action = '') => {
-    const { visible, type: typeValue, modeSetTime } = this.state;
-    const { mode = null, modeEditContent = null } = this.props;
+  handleOk = async (event, action = '', response = '') => {
+    const { type } = this.state;
 
     if (action === 'close') {
-      return this.setState(
-        {
-          visible: false,
-        },
-        () => this.onChangeStatusTask('Закрыт'),
-      );
+      this.showModal(event, type, response, action);
+      this.onChangeStatusTask('Закрыт');
     }
 
-    switch (mode) {
-      case 'reg':
-        return this.onRegUser(event);
-      case 'jur': {
-        if (modeEditContent) return this.onSaveEdit(event);
-
-        if (visible && modeSetTime && this.validation()) {
-          return this.onTrackTask();
-        }
-
-        if (typeValue === 'statusTask') {
-          return this.onChangeStatusTask();
-        }
-
-        break;
-      }
-      default:
-        return null;
-    }
+    if (type === 'regType') return this.onRegUser(event);
+    else if (type === 'jur' && this.validation()) return this.onTrackTask();
+    else if (type === 'statusTask') return this.onChangeStatusTask();
   };
 
   handleCancel = (event) => {
+    const { type = '' } = this.state;
     this.setState({
       ...this.state,
-      visible: false,
-      type: null,
-      modeSetTime: false,
+      [type]: false,
       loading: false,
       jurnal: { timeLost: null, date: moment().format('DD.MM.YYYY HH:mm:ss'), description: null },
       error: new Set(),
@@ -294,35 +272,33 @@ class ModalWindow extends React.PureComponent {
   };
 
   onChange = (event) => {
-    const { target } = event;
-    if (target.className.split(' ')[1] === 'surname') {
-      this.setState({
-        ...this.state,
-        surname: target.value,
-      });
-    } else if (target.className.split(' ')[1] === 'name') {
-      this.setState({
-        ...this.state,
-        name: target.value,
-      });
-    } else if (target.className.split(' ')[1] === 'password') {
-      this.setState({
-        ...this.state,
-        password: target.value,
-      });
-    } else if (target.className.split(' ')[1] === 'email') {
-      this.setState({
-        ...this.state,
-        email: target.value,
-      });
-    }
+    const { type = '' } = this.state;
+    const { target: { value = '', className = '' } = {} } = event;
+    const param = className?.split(' ')[1];
+    if (!param) return;
+
+    const newState =
+      type === 'regType'
+        ? {
+            ...this.state,
+            reg: {
+              ...this.state.reg,
+              [param]: value,
+            },
+          }
+        : {
+            ...this.state,
+            [param]: value,
+          };
+
+    this.setState(newState);
   };
 
   validation = () => {
     const {
       jurnal: { timeLost = null, date = moment(), description = null },
       error = [],
-      modeSetTime,
+      type = '',
     } = this.state;
 
     const { keyTask, modeEditContent } = this.props;
@@ -332,7 +308,7 @@ class ModalWindow extends React.PureComponent {
     let invalidTimeLost = !timeLost || !_.isString(timeLost) || !isTimeLostValue(timeLost);
     let invalidDescription = !description || !_.isString(description);
 
-    if (modeSetTime && !modeEditContent && (invalidDate || invalidTimeLost || invalidDescription)) {
+    if (type === 'jur' && !modeEditContent && (invalidDate || invalidTimeLost || invalidDescription)) {
       _valid = false;
       const errorBundle = error.size ? new Set([...error]) : new Set();
       message.error('Не все поля заполнены!');
@@ -362,37 +338,83 @@ class ModalWindow extends React.PureComponent {
 
   onChangeTask = (event) => {
     if (!event) return;
+    const { jurnal = {} } = this.state;
+    const { target: { value = '', className = '' } = {}, _isValid = null } = event;
+    const typeChanges = className?.split(' ')[1];
 
-    const { target = {}, _isValid = null } = event;
-
-    if (target && target.value && target.className.split(' ')[1] === 'timeLost') {
+    if (value && typeChanges === 'timeLost') {
       this.setState({
-        jurnal: { ...this.state.jurnal, timeLost: target.value },
+        ...this.state,
+        jurnal: { ...jurnal, timeLost: value },
       });
     } else if (_isValid && event && _isValid) {
       this.setState({
-        jurnal: { ...this.state.jurnal, date: event.toString() },
+        ...this.state,
+        jurnal: { ...jurnal, date: event.toString() },
       });
-    } else if (
-      target &&
-      (target.value || target.value === '') &&
-      target.className.split(' ')[1] === 'description'
-    ) {
+    } else if ((value || value === '') && typeChanges === 'description') {
       this.setState({
-        jurnal: { ...this.state.jurnal, description: target.value },
+        ...this.state,
+        jurnal: { ...jurnal, description: value },
       });
     }
   };
 
-  onSendMailResponse = (event) => {
-    this.showModal(event, 'mailResponse');
+  renderRegistrationModal = () => {
+    const { type = '' } = this.state;
+    const { [type]: visible = false } = this.state;
+    return (
+      <>
+        <Button aria-label="reg-button" type="primary" onClick={(event) => this.showModal(event, 'regType')}>
+          Регистрация
+        </Button>
+        <Modal
+          className="modalWindow"
+          visible={visible}
+          onOk={this.handleOk}
+          onCancel={this.handleCancel}
+          title={'Регистрация'}
+        >
+          <RegistrationModal cbOnChange={this.onChange} cbOnChangeSelect={this.onChangeSelect} />
+        </Modal>
+      </>
+    );
+  };
+
+  renderChangerStatusModal = (actionProps = {}) => {
+    const { statusTaskValue = '', accessStatus = [] } = this.props;
+    const { type = '' } = this.state;
+    const { [type]: visible = false } = this.state;
+    return (
+      <div className="dropDownWrapper">
+        <ActionList {...actionProps} />
+        <Modal
+          className="modalWindow changeStatus"
+          visible={visible}
+          onOk={this.handleOk}
+          onCancel={this.handleCancel}
+          title="Смена статуса"
+        >
+          <Select onChange={this.onChangeSelect} defaultValue={statusTaskValue}>
+            {accessStatus.map((status, i) =>
+              i === 0 ? (
+                <Option key={i + status} value={statusTaskValue}>
+                  {statusTaskValue}
+                </Option>
+              ) : (
+                <Option key={i + status} value={status}>
+                  {status}
+                </Option>
+              ),
+            )}
+          </Select>
+        </Modal>
+      </div>
+    );
   };
 
   render() {
     const {
-      mode = '',
-      statusTaskValue = '',
-      accessStatus = [],
       onEdit = null,
       modeControll = null,
       onRejectEdit = null,
@@ -406,143 +428,92 @@ class ModalWindow extends React.PureComponent {
       routeDataActive = {},
       actionTypeList: viewType = 'default',
     } = this.props;
-    const { visible = false, type: typeView = '', description: { value: valueDesc = '' } = {} } = this.state;
+    const { type: typeView = '' } = this.state;
+    const {
+      [typeView]: visible = false,
+      description: { value: valueDesc = '' } = {},
+      error,
+      jurnal: { description, timeLost },
+    } = this.state;
+
     if (defaultView) {
       return <SimpleEditableModal {...this.props} />;
     }
 
-    const { type: typeState = '', modeSetTime = null } = this.state;
-    if (mode === 'reg') {
-      return (
-        <>
-          {mode === 'reg' ? (
-            <Button aria-label="reg-button" type="primary" onClick={this.showModal}>
-              Регистрация
-            </Button>
-          ) : null}
+    if (typeView === 'regType') {
+      return this.renderRegistrationModal();
+    }
+
+    const actionProps = {
+      viewType,
+      entityName: 'taskView',
+      onMessage: this.onMessage,
+      showModal: this.showModal,
+      modeControll,
+      onUpdateEditable: onUpdateEditable,
+      onRejectEdit: onRejectEdit,
+      isLoadList,
+      rulesStatus,
+      rulesEdit,
+      onEdit,
+    };
+
+    if (typeView === 'statusTask') {
+      return this.renderChangerStatusModal({
+        ...actionProps,
+      });
+    }
+
+    const trackProps = {
+      typeView,
+      visible,
+      handleOk: this.handleOk,
+      handleCancel: this.handleCancel,
+      onChangeTask: this.onChangeTask,
+      error,
+      timeLost,
+      description,
+    };
+    const isVisibleMailResponser = visible && typeView === 'mailResponse';
+    return (
+      <>
+        <div className="dropDownWrapper">
+          <ActionList {...actionProps} showModal={this.showModal} />
+        </div>
+        {isVisibleMailResponser ? (
+          <MailResponserModal
+            handleCancel={this.handleCancel}
+            handleOk={this.handleOk}
+            routeDataActive={routeDataActive}
+            typeView={typeView}
+            visibleModal={isVisibleMailResponser}
+          />
+        ) : (
           <Modal
             className="modalWindow"
-            visible={this.state.visible}
+            visible={visible}
             onOk={this.handleOk}
-            onCancel={this.handleCancel}
-            title={mode === 'reg' ? 'Регистрация' : null}
+            destroyOnClose={true}
+            onCancel={modeEditContent ? onCancelEditModeContent : this.handleCancel}
+            title={modeEditContent ? 'Редактирование' : 'Отчет времени'}
           >
-            {mode === 'reg' ? (
-              <RegistrationModal cbOnChange={this.onChange} cbOnChangeSelect={this.onChangeSelect} />
-            ) : (
-              <div className="empty" />
-            )}
-          </Modal>
-        </>
-      );
-    } else if (mode === 'jur') {
-      const {
-        error,
-        jurnal: { description, timeLost },
-        mailResponse = false,
-      } = this.state;
-      const actionProps = {
-        viewType,
-        entityName: 'taskView',
-        showModal: this.showModal,
-        onMessage: this.onMessage,
-        onSendMailResponse: this.onSendMailResponse,
-        modeControll,
-        onUpdateEditable: onUpdateEditable,
-        onRejectEdit: onRejectEdit,
-        isLoadList,
-        rulesStatus,
-        rulesEdit,
-        onEdit,
-      };
-
-      switch (typeState) {
-        case 'statusTask': {
-          return (
-            <div className="dropDownWrapper">
-              <ActionList {...actionProps} />
-              <Modal
-                className="modalWindow changeStatus"
-                visible={this.state.visible}
-                onOk={this.handleOk}
-                onCancel={this.handleCancel}
-                title="Смена статуса"
-              >
-                <Select onChange={this.onChangeSelect} defaultValue={statusTaskValue}>
-                  {accessStatus.map((status, i) =>
-                    i === 0 ? (
-                      <Option key={i + status} value={statusTaskValue}>
-                        {statusTaskValue}
-                      </Option>
-                    ) : (
-                      <Option key={i + status} value={status}>
-                        {status}
-                      </Option>
-                    ),
-                  )}
-                </Select>
-              </Modal>
-            </div>
-          );
-        }
-
-        default: {
-          const trackProps = {
-            modeSetTime,
-            visible,
-            handleOk: this.handleOk,
-            handleCancel: this.handleCancel,
-            onChangeTask: this.onChangeTask,
-            error,
-            timeLost,
-            description,
-          };
-          const isEdit = mode === 'jur' && modeEditContent;
-
-          let visibleModal = visible;
-
-          if (isEdit) visibleModal = modeEditContent;
-          else if (typeState === 'mailResponseType') visibleModal = mailResponse;
-
-          return (
-            <>
-              <div className="dropDownWrapper">
-                <ActionList {...actionProps} />
-              </div>
-              <MailResponserModal
-                handleCancel={this.handleCancel}
-                handleOk={this.handleOk}
-                routeDataActive={routeDataActive}
-                typeView={typeView}
-                visibleModal={typeState === 'mailResponseType' && this.state?.mailResponse && visibleModal}
+            {modeEditContent ? (
+              <Textarea
+                key="textAreaEdit"
+                className="editContentDescription"
+                //editor={true}
+                row={10}
+                onChange={this.onChangeDescription}
+                value={valueDesc ? valueDesc : ''}
+                defaultValue={valueDesc ? valueDesc : ''}
               />
-              <Modal
-                className="modalWindow"
-                visible={visibleModal && typeState !== 'mailResponseType' && !this.state?.mailResponse}
-                onOk={this.handleOk}
-                destroyOnClose={true}
-                onCancel={isEdit ? onCancelEditModeContent : this.handleCancel}
-                title={isEdit ? 'Редактирование' : 'Отчет времени'}
-              >
-                {isEdit ? (
-                  <Textarea
-                    key="textAreaEdit"
-                    className="editContentDescription"
-                    //editor={true}
-                    row={10}
-                    onChange={this.onChangeDescription}
-                    value={valueDesc ? valueDesc : ''}
-                    defaultValue={valueDesc ? valueDesc : ''}
-                  />
-                ) : modeSetTime ? (
-                  <TrackerModal {...trackProps} />
-                ) : null}
-              </Modal>
-            </>
-          );
-        }
-      }
-    } else return null;
+            ) : visible && typeView === 'jur' ? (
+              <TrackerModal {...trackProps} />
+            ) : null}
+          </Modal>
+        )}
+      </>
+    );
   }
 }
 
