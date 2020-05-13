@@ -4,4 +4,4 @@ Available application on [system-controll-diplom.herokuapp.com](https://system-c
 
 Pseudo block diagram node.js response, there may be differences with the current state.
 
-![Node.js diagram response](/nodeJS_diagram.png)
+![Node.js diagram response](/server/nodeJS_diagram.png)
