@@ -8,10 +8,22 @@ Pseudo block diagram node.js response, there may be differences with the current
 
 ## Run application
 
-In the project directory, you can run:
+In the project directory, you can run in console:
 
-### `npm start`
+### `yarn i`
 
-or use installing script
+or if you use npm, delete yarn.lock and run this:
+
+### `npm i`
+
+Instal with installing script:
 
 ### `start install.bat`
+
+For start dev server:
+
+### `yarn dev`
+
+or
+
+### `npm run dev`
