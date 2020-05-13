@@ -8,7 +8,7 @@ import Textarea from '../../Textarea';
 
 const TrackerModal = (props) => {
   const { visible, typeView = '', onChangeTask, error, timeLost, description, descriptionDefault } = props;
-  debugger;
+
   return (
     <>
       {visible && typeView === 'jur' ? (

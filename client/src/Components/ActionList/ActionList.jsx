@@ -19,7 +19,6 @@ const ActionList = (props) => {
   } = props;
 
   const onAction = (event, key) => {
-    debugger;
     showModal(event, key);
   };
 
