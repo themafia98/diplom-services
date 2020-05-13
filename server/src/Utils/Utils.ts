@@ -277,6 +277,7 @@ namespace Utils {
   export const generateRemoteTask = (remoteDep: TicketRemote): TaskEntity => {
     const { name, lastName, other, date, phone = "-", email = "-" } = remoteDep;
     return {
+      type: "remote",
       key: uuid(),
       status: "Открыт",
       name: `Заявка от клиента ${name} ${lastName}`,
@@ -298,6 +299,10 @@ namespace Utils {
           tagValue: "Заявки клиентов",
         },
       ],
+      additionalCreaterData: {
+        email,
+        phone,
+      },
     };
   };
 }

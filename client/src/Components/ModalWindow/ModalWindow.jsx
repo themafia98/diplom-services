@@ -201,12 +201,12 @@ class ModalWindow extends React.PureComponent {
     });
   };
 
-  onChangeStatusTask = async () => {
+  onChangeStatusTask = async (customStatus = null) => {
     const { taskStatus = null } = this.state;
 
     const { onUpdate, routeDataActive = {}, routeDataActive: { key = null } = {}, path = '' } = this.props;
 
-    if (_.isNull(taskStatus))
+    if (_.isNull(taskStatus) && !_.isString(customStatus))
       return this.setState({
         ...this.state,
         visible: false,
@@ -221,7 +221,7 @@ class ModalWindow extends React.PureComponent {
         id: routeDataActive?._id,
         key,
         updateBy: 'key',
-        updateItem: taskStatus,
+        updateItem: _.isString(customStatus) ? customStatus : taskStatus,
         updateField: 'status',
         item: { ...routeDataActive },
         store: 'tasks',
@@ -240,9 +240,18 @@ class ModalWindow extends React.PureComponent {
     }
   };
 
-  handleOk = async (event) => {
+  handleOk = async (event, action = '') => {
     const { visible, type: typeValue, modeSetTime } = this.state;
     const { mode = null, modeEditContent = null } = this.props;
+
+    if (action === 'close') {
+      return this.setState(
+        {
+          visible: false,
+        },
+        () => this.onChangeStatusTask('Закрыт'),
+      );
+    }
 
     switch (mode) {
       case 'reg':
@@ -500,13 +509,20 @@ class ModalWindow extends React.PureComponent {
               <div className="dropDownWrapper">
                 <ActionList {...actionProps} />
               </div>
+              <MailResponserModal
+                handleCancel={this.handleCancel}
+                handleOk={this.handleOk}
+                routeDataActive={routeDataActive}
+                typeView={typeView}
+                visibleModal={typeState === 'mailResponseType' && this.state?.mailResponse && visibleModal}
+              />
               <Modal
                 className="modalWindow"
-                visible={visibleModal}
+                visible={visibleModal && typeState !== 'mailResponseType' && !this.state?.mailResponse}
                 onOk={this.handleOk}
                 destroyOnClose={true}
                 onCancel={isEdit ? onCancelEditModeContent : this.handleCancel}
-                title={isEdit ? 'Редактирование' : modeSetTime ? 'Отчет времени' : 'Форма ответа'}
+                title={isEdit ? 'Редактирование' : 'Отчет времени'}
               >
                 {isEdit ? (
                   <Textarea
@@ -520,8 +536,6 @@ class ModalWindow extends React.PureComponent {
                   />
                 ) : modeSetTime ? (
                   <TrackerModal {...trackProps} />
-                ) : 'mailResponseType' === typeState && this.state?.mailResponse ? (
-                  <MailResponserModal routeDataActive={routeDataActive} typeView={typeView} />
                 ) : null}
               </Modal>
             </>

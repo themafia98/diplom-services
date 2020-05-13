@@ -30,6 +30,7 @@ class Schema {
       case TASK_SCHEMA:
         return {
           _id: null,
+          type: null,
           editor: null,
           date: null,
           comments: null, // array [{ id: null, username: null, message: null }]
@@ -40,6 +41,7 @@ class Schema {
           uidCreater: null,
           authorName: null,
           description: null,
+          additionalCreaterData: null,
           tags: null,
         };
       case CREATE_TASK_SCHEMA:
