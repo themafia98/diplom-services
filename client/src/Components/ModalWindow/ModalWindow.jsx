@@ -233,7 +233,7 @@ class ModalWindow extends React.PureComponent {
   handleOk = async (event) => {
     const { visible, type: typeValue, modeSetTime } = this.state;
     const { mode = null, modeEditContent = null } = this.props;
-    debugger;
+
     switch (mode) {
       case 'reg':
         return this.onRegUser(event);
@@ -487,7 +487,7 @@ class ModalWindow extends React.PureComponent {
                   visible={modeEditContent}
                   onOk={this.handleOk}
                   onCancel={onCancelEditModeContent}
-                  title={'Редактирование'}
+                  title="Редактирование"
                 >
                   <TrackerModal {...trackProps} />
                 </Modal>
@@ -497,7 +497,7 @@ class ModalWindow extends React.PureComponent {
                   visible={visible}
                   onOk={this.handleOk}
                   onCancel={this.handleCancel}
-                  title=" Отчет времени"
+                  title="Отчет времени"
                 >
                   <TrackerModal {...trackProps} />
                 </Modal>

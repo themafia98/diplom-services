@@ -37,8 +37,8 @@ const RegistrationModal = ({ cbOnChangeSelect, cbOnChange }) => (
       placeholder="Select a departament"
       optionFilterProp="depart"
     >
-      <Option value="Admin">Admin</Option>
-      <Option value="Doctor">Doctor</Option>
+      <Option value="Admin">Руководство</Option>
+      <Option value="Doctor">Сотрудник</Option>
     </Select>
   </div>
 );

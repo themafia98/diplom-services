@@ -36,7 +36,7 @@ const TrackerModal = (props) => {
             onChange={onChangeTask}
             defaultValue={descriptionDefault}
             value={description}
-            className={['description', error.has('description') ? 'errorFild' : null].join(' ')}
+            className={clsx('description', error.has('description') ? 'errorFild' : null)}
             rows={4}
           />
           >
