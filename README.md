@@ -2,19 +2,23 @@
 
 _Employee Monitoring System_
 
+Available application on [system-controll-diplom.herokuapp.com](https://system-controll-diplom.herokuapp.com).
+
 Pseudo block diagram node.js response, there may be differences with the current state.
 
 ![Node.js diagram response](/nodeJS_diagram.png)
 
 ## Run application
 
-In the project directory, you can run in console:
+In the project directory (in /server and /client dir), you can run in console:
 
 ### `yarn i`
 
 or if you use npm, delete yarn.lock and run this:
 
 ### `npm i`
+
+Or
 
 Install with installing script:
 
