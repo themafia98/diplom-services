@@ -39,7 +39,6 @@ const TrackerModal = (props) => {
             className={clsx('description', error.has('description') ? 'errorFild' : null)}
             rows={4}
           />
-          >
         </>
       ) : null}
     </>

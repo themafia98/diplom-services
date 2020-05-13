@@ -12,7 +12,9 @@ import SimpleEditableModal from './SimpleEditableModal';
 import RegistrationModal from './RegistrationModal';
 import ActionList from '../ActionList';
 import TrackerModal from './TrackerModal';
+import MailResponserModal from './MailResponserModal';
 
+import Textarea from '../Textarea';
 import modelContext from '../../Models/context';
 
 const { Option } = Select;
@@ -60,14 +62,22 @@ class ModalWindow extends React.PureComponent {
       });
   };
 
-  showModal = (event) => {
+  showModal = (event, response = '') => {
     const { mode, modeEditContent } = this.props;
-    const { modeSetTime } = this.state;
+    const { modeSetTime, [response]: modeVisibleForm = false } = this.state;
     const { currentTarget = {} } = event;
     let type = mode;
 
     if (mode !== currentTarget.className.split(' ')[0]) {
       type = currentTarget.className.split(' ')[0];
+    }
+
+    if (response) {
+      return this.setState({
+        ...this.state,
+        type,
+        [response]: !modeVisibleForm,
+      });
     }
 
     this.setState({
@@ -365,8 +375,8 @@ class ModalWindow extends React.PureComponent {
     }
   };
 
-  onSendMailResponse = (e) => {
-    this.showModal(e);
+  onSendMailResponse = (event) => {
+    this.showModal(event, 'mailResponse');
   };
 
   render() {
@@ -384,9 +394,10 @@ class ModalWindow extends React.PureComponent {
       rulesEdit = true,
       rulesStatus = true,
       isLoadList = true,
+      routeDataActive = {},
       actionTypeList: viewType = 'default',
     } = this.props;
-    const { visible = false } = this.state;
+    const { visible = false, type: typeView = '', description: { value: valueDesc = '' } = {} } = this.state;
     if (defaultView) {
       return <SimpleEditableModal {...this.props} />;
     }
@@ -419,6 +430,7 @@ class ModalWindow extends React.PureComponent {
       const {
         error,
         jurnal: { description, timeLost },
+        mailResponse = false,
       } = this.state;
       const actionProps = {
         viewType,
@@ -476,32 +488,42 @@ class ModalWindow extends React.PureComponent {
             timeLost,
             description,
           };
+          const isEdit = mode === 'jur' && modeEditContent;
+
+          let visibleModal = visible;
+
+          if (isEdit) visibleModal = modeEditContent;
+          else if (typeState === 'mailResponseType') visibleModal = mailResponse;
+
           return (
             <>
               <div className="dropDownWrapper">
                 <ActionList {...actionProps} />
               </div>
-              {mode === 'jur' && modeEditContent ? (
-                <Modal
-                  className="modalWindow"
-                  visible={modeEditContent}
-                  onOk={this.handleOk}
-                  onCancel={onCancelEditModeContent}
-                  title="Редактирование"
-                >
+              <Modal
+                className="modalWindow"
+                visible={visibleModal}
+                onOk={this.handleOk}
+                destroyOnClose={true}
+                onCancel={isEdit ? onCancelEditModeContent : this.handleCancel}
+                title={isEdit ? 'Редактирование' : modeSetTime ? 'Отчет времени' : 'Форма ответа'}
+              >
+                {isEdit ? (
+                  <Textarea
+                    key="textAreaEdit"
+                    className="editContentDescription"
+                    //editor={true}
+                    row={10}
+                    onChange={this.onChangeDescription}
+                    value={valueDesc ? valueDesc : ''}
+                    defaultValue={valueDesc ? valueDesc : ''}
+                  />
+                ) : modeSetTime ? (
                   <TrackerModal {...trackProps} />
-                </Modal>
-              ) : modeSetTime ? (
-                <Modal
-                  className="modalWindow"
-                  visible={visible}
-                  onOk={this.handleOk}
-                  onCancel={this.handleCancel}
-                  title="Отчет времени"
-                >
-                  <TrackerModal {...trackProps} />
-                </Modal>
-              ) : null}
+                ) : 'mailResponseType' === typeState && this.state?.mailResponse ? (
+                  <MailResponserModal routeDataActive={routeDataActive} typeView={typeView} />
+                ) : null}
+              </Modal>
             </>
           );
         }

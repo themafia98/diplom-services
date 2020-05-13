@@ -57,7 +57,7 @@ const ActionList = (props) => {
               ) : null}
               {viewType === 'remote' ? (
                 <Menu.Item>
-                  <p className="actin-mailResponse" onClick={onSendMailResponse}>
+                  <p className="mailResponseType" onClick={onSendMailResponse}>
                     Отправить ответ на почту
                   </p>
                 </Menu.Item>
