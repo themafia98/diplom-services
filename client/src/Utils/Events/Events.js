@@ -8,7 +8,6 @@ const sucessEvent = async (dispatch, dep, mode = '', multiple = false, cursor = 
   const {
     copyStore,
     primaryKey,
-    undefiendCopyStore,
     storeLoad,
     schema,
     pathValid,

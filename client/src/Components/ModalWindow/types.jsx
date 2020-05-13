@@ -38,3 +38,12 @@ export const formRegType = {
   cbOnChangeSelect: func.isRequired,
   cbOnChange: func,
 };
+
+export const trackerModalType = {
+  odeSetTime: func,
+  onChangeTask: func,
+  error: object,
+  timeLost: string,
+  description: string,
+  descriptionDefault: string,
+};

@@ -33,7 +33,7 @@ const runBadNetworkAction = (dispatch, error, dep) => {
     'offline',
     async (statusRequst) => {
       const state = getState ? getState() : {};
-      const { publicReducer: { status = '', paramsList = [] } = {}, router = {} } = state;
+      const { publicReducer: { paramsList = [] } = {}, router = {} } = state;
 
       if (statusRequst === 'online') {
         const { path, routeData = {} } = router;
@@ -98,7 +98,7 @@ const runServerSync = async (list = [], rest) => {
     if (!rest instanceof Request) {
       throw new TypeError('invalid request model entity');
     }
-    const { data = {} } = await rest.sendRequest('/system/sync', 'POST', { syncList: list }, true);
+    await rest.sendRequest('/system/sync', 'POST', { syncList: list }, true);
   } catch (error) {
     console.error(error);
     return null;

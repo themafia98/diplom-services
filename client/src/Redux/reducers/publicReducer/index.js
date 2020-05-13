@@ -174,7 +174,7 @@ export default (state = initialState, action) => {
     }
 
     case SET_STATUS: {
-      const { statusRequst = null, params = null, path = '', clearParams = false } = action.payload;
+      const { statusRequst = null, params = null, clearParams = false } = action.payload;
       const paramsListNew = params ? [...state.paramsList, params] : [...state.paramsList];
 
       return {

@@ -97,7 +97,6 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
           rest,
           noCorsClient,
           requestError,
-          copyStore: [],
           sortBy,
           pathValid,
           schema,

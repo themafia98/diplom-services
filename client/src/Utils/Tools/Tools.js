@@ -1,7 +1,7 @@
 // @ts-nocheck
 import _ from 'lodash';
-import { runBadNetworkAction } from '../../Utils/utilsHook';
 import Request from '../../Models/Rest';
+
 const createNotification = async (type = '', item = {}, actionType = 'set_notification') => {
   if (!type || _.isEmpty(item)) return;
   const rest = new Request();

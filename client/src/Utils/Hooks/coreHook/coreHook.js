@@ -28,7 +28,6 @@ const coreUpdaterDataHook = async (dispatch, dep = {}, multiple = false, badNetw
     errorRequestAction,
     isLocalUpdate: localUpdateStat,
     indStoreName,
-    rest,
     params,
     sync = false,
   } = dep;

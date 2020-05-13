@@ -2,16 +2,16 @@
 import React from 'react';
 import { modalWindowType } from './types';
 import { v4 as uuid } from 'uuid';
-import clsx from 'clsx';
 import axios from 'axios';
 import _ from 'lodash';
 import moment from 'moment';
-import { Modal, Button, Dropdown, Icon, Menu, Input, DatePicker, message, Select, Spin, Tooltip } from 'antd';
+import { Modal, Button, message, Select } from 'antd';
 import { TASK_CONTROLL_JURNAL_SCHEMA } from '../../Models/Schema/const';
 import { createNotification, isTimeLostValue } from '../../Utils';
 import SimpleEditableModal from './SimpleEditableModal';
 import RegistrationModal from './RegistrationModal';
-import Textarea from '../Textarea';
+import ActionList from '../ActionList';
+import TrackerModal from './TrackerModal';
 
 import modelContext from '../../Models/context';
 
@@ -61,7 +61,8 @@ class ModalWindow extends React.PureComponent {
   };
 
   showModal = (event) => {
-    const { mode } = this.props;
+    const { mode, modeEditContent } = this.props;
+    const { modeSetTime } = this.state;
     const { currentTarget = {} } = event;
     let type = mode;
 
@@ -71,137 +72,141 @@ class ModalWindow extends React.PureComponent {
 
     this.setState({
       ...this.state,
-      modeSetTime: true,
+      modeSetTime: !modeSetTime,
+      modeEditContent: !modeEditContent,
       visible: true,
       type: type,
     });
   };
 
-  handleOk = async (event) => {
-    const {
-      name,
-      password,
-      departament,
-      visible,
-      email,
-      loading,
-      surname,
-      jurnal,
-      type: typeValue,
-      taskStatus = null,
-      description: { value: valueDescription = '' } = {},
-    } = this.state;
+  onRegUser = async () => {
+    const { name, password, departament, email, loading, surname } = this.state;
+
+    if (!name && !password && !departament && !email && loading) {
+      return;
+    }
+
+    try {
+      const res = await axios.post('/rest/reg', {
+        email,
+        password,
+        displayName: `${name} ${surname}`,
+        departament,
+        position: 'Master',
+        rules: 'full',
+        accept: true,
+      });
+
+      if (!res || res.status !== 200) {
+        throw new Error('Bad registration data');
+      }
+
+      this.setState({ ...this.state, visible: false });
+    } catch (error) {
+      if (error?.response?.status !== 404) console.error(error);
+    }
+  };
+
+  onSaveEdit = (event) => {
+    const { description: { value: valueDescription = '' } = {} } = this.state;
 
     const {
-      mode = null,
-      onCaching,
       onUpdate,
       routeDataActive = {},
-      routeDataActive: { key = null, name: nameTask = '' } = {},
-      actionType = null,
-      keyTask = null,
+      routeDataActive: { key = null } = {},
       onCancelEditModeContent,
-      path = '',
-      udata: { displayName = '', _id: uid = '' } = {},
-      modeEditContent = null,
     } = this.props;
-
-    if (mode === 'reg') {
-      if (name && password && departament && email && !loading) {
-        try {
-          const res = await axios.post('/rest/reg', {
-            email,
-            password,
-            displayName: `${name} ${surname}`,
-            departament,
-            position: 'Master',
-            rules: 'full',
-            accept: true,
-          });
-
-          if (!res || res.status !== 200) {
-            throw new Error('Bad registration data');
-          }
-
-          this.setState({ ...this.state, visible: false });
-        } catch (error) {
-          if (error?.response?.status !== 404) console.error(error);
-        }
-      }
-    } else if (mode === 'jur' && modeEditContent) {
-      onUpdate({
-        key,
-        updateBy: 'key',
-        id: routeDataActive?._id,
-        updateItem: valueDescription,
-        updateField: 'description',
-        item: { ...routeDataActive },
-        store: 'tasks',
-      })
-        .then((res) => {
-          onCancelEditModeContent(event);
-          this.setState({
-            ...this.state,
-            visible: false,
-            type: null,
-            modeSetTime: false,
-            loading: false,
-          });
-          message.success('Описание изменено.');
-        })
-        .catch((error) => {
-          message.error('Ошибка редактирования.');
-        });
-    } else if (visible && mode === 'jur' && this.validation()) {
-      const item = { ...jurnal, depKey: keyTask, editor: displayName, uid };
-      const journalCopy = { ...jurnal };
-
-      if (onCaching) {
-        await onCaching({ item, actionType, depStore: 'tasks', store: 'jurnalworks' });
-        this.handleCancel();
-      }
-      const itemNotification = {
-        type: 'global',
-        title: 'Списание времени в журнал',
-        isRead: false,
-        message: `
-                Работа над задачей ${nameTask}.
-                Время затрачено: ${journalCopy?.timeLost}.
-                Описание: ${journalCopy.description}. Дата: ${journalCopy?.date}`,
-        action: {
-          type: 'tasks_link',
-          moduleName: 'taskModule',
-          link: key,
-        },
-        uidCreater: uid,
-        authorName: displayName,
-      };
-
-      createNotification('global', itemNotification).catch((error) => {
-        if (error?.response?.status !== 404) console.error(error);
-        message.error('Ошибка глобального уведомления');
-      });
-
-      return this.setState({
-        ...this.state,
-        visible: false,
-        modeSetTime: false,
-        type: null,
-        loading: false,
-        jurnal: { timeLost: null, date: moment().format('DD.MM.YYYY HH:mm:ss'), description: null },
-        error: new Set(),
-      });
-    } else if (!_.isNull(typeValue) && typeValue === 'statusTask') {
-      if (_.isNull(taskStatus)) {
-        return this.setState({
+    onUpdate({
+      key,
+      updateBy: 'key',
+      id: routeDataActive?._id,
+      updateItem: valueDescription,
+      updateField: 'description',
+      item: { ...routeDataActive },
+      store: 'tasks',
+    })
+      .then((res) => {
+        onCancelEditModeContent(event);
+        this.setState({
           ...this.state,
           visible: false,
           type: null,
           modeSetTime: false,
           loading: false,
         });
-      }
-      onUpdate({
+        message.success('Описание изменено.');
+      })
+      .catch((error) => {
+        message.error('Ошибка редактирования.');
+      });
+  };
+
+  onTrackTask = async () => {
+    const { jurnal } = this.state;
+
+    const {
+      onCaching,
+      routeDataActive: { key = null, name: nameTask = '' } = {},
+      actionType = null,
+      keyTask = null,
+      udata: { displayName = '', _id: uid = '' } = {},
+    } = this.props;
+    const item = { ...jurnal, depKey: keyTask, editor: displayName, uid };
+    const journalCopy = { ...jurnal };
+
+    if (onCaching) {
+      await onCaching({ item, actionType, depStore: 'tasks', store: 'jurnalworks' });
+      this.handleCancel();
+    }
+    const itemNotification = {
+      type: 'global',
+      title: 'Списание времени в журнал',
+      isRead: false,
+      message: `
+              Работа над задачей ${nameTask}.
+              Время затрачено: ${journalCopy?.timeLost}.
+              Описание: ${journalCopy.description}. Дата: ${journalCopy?.date}`,
+      action: {
+        type: 'tasks_link',
+        moduleName: 'taskModule',
+        link: key,
+      },
+      uidCreater: uid,
+      authorName: displayName,
+    };
+
+    createNotification('global', itemNotification).catch((error) => {
+      if (error?.response?.status !== 404) console.error(error);
+      message.error('Ошибка глобального уведомления');
+    });
+
+    return this.setState({
+      ...this.state,
+      visible: false,
+      modeSetTime: false,
+      type: null,
+      loading: false,
+      jurnal: { timeLost: null, date: moment().format('DD.MM.YYYY HH:mm:ss'), description: null },
+      error: new Set(),
+    });
+  };
+
+  onChangeStatusTask = async () => {
+    const { taskStatus = null } = this.state;
+
+    const { onUpdate, routeDataActive = {}, routeDataActive: { key = null } = {}, path = '' } = this.props;
+
+    if (_.isNull(taskStatus))
+      return this.setState({
+        ...this.state,
+        visible: false,
+        type: null,
+        modeSetTime: false,
+        loading: false,
+      });
+
+    try {
+      await onUpdate({
         path,
         id: routeDataActive?._id,
         key,
@@ -210,20 +215,43 @@ class ModalWindow extends React.PureComponent {
         updateField: 'status',
         item: { ...routeDataActive },
         store: 'tasks',
-      })
-        .then((res) => {
-          this.setState({
-            ...this.state,
-            visible: false,
-            type: null,
-            modeSetTime: false,
-            loading: false,
-          });
-          message.success('Статус изменен.');
-        })
-        .catch((error) => {
-          message.error('Ошибка редактирования.');
-        });
+      });
+
+      this.setState({
+        ...this.state,
+        visible: false,
+        type: null,
+        modeSetTime: false,
+        loading: false,
+      });
+      message.success('Статус изменен.');
+    } catch (error) {
+      message.error('Ошибка редактирования.');
+    }
+  };
+
+  handleOk = async (event) => {
+    const { visible, type: typeValue, modeSetTime } = this.state;
+    const { mode = null, modeEditContent = null } = this.props;
+    debugger;
+    switch (mode) {
+      case 'reg':
+        return this.onRegUser(event);
+      case 'jur': {
+        if (modeEditContent) return this.onSaveEdit(event);
+
+        if (visible && modeSetTime && this.validation()) {
+          return this.onTrackTask();
+        }
+
+        if (typeValue === 'statusTask') {
+          return this.onChangeStatusTask();
+        }
+
+        break;
+      }
+      default:
+        return null;
     }
   };
 
@@ -275,16 +303,17 @@ class ModalWindow extends React.PureComponent {
     const {
       jurnal: { timeLost = null, date = moment(), description = null },
       error = [],
+      modeSetTime,
     } = this.state;
 
-    const { keyTask } = this.props;
+    const { keyTask, modeEditContent } = this.props;
     const { schema = {} } = this.context;
     let _valid = true;
     let invalidDate = !date || !_.isDate(new Date(date));
     let invalidTimeLost = !timeLost || !_.isString(timeLost) || !isTimeLostValue(timeLost);
     let invalidDescription = !description || !_.isString(description);
 
-    if (invalidDate || invalidTimeLost || invalidDescription) {
+    if (modeSetTime && !modeEditContent && (invalidDate || invalidTimeLost || invalidDescription)) {
       _valid = false;
       const errorBundle = error.size ? new Set([...error]) : new Set();
       message.error('Не все поля заполнены!');
@@ -340,14 +369,6 @@ class ModalWindow extends React.PureComponent {
     this.showModal(e);
   };
 
-  showLoader = () => {
-    return (
-      <Tooltip mouseEnterDelay={0.1} title="Загрузка или обновление данных">
-        <Spin type="small" />
-      </Tooltip>
-    );
-  };
-
   render() {
     const {
       mode = '',
@@ -355,7 +376,6 @@ class ModalWindow extends React.PureComponent {
       accessStatus = [],
       onEdit = null,
       modeControll = null,
-      description: descriptionDefault = '',
       onRejectEdit = null,
       modeEditContent = null,
       defaultView = false,
@@ -364,18 +384,14 @@ class ModalWindow extends React.PureComponent {
       rulesEdit = true,
       rulesStatus = true,
       isLoadList = true,
-      actionTypeList = 'default',
+      actionTypeList: viewType = 'default',
     } = this.props;
-
+    const { visible = false } = this.state;
     if (defaultView) {
       return <SimpleEditableModal {...this.props} />;
     }
 
-    const {
-      type: typeState = '',
-      modeSetTime = null,
-      description: { value: valueDesc = '' } = {},
-    } = this.state;
+    const { type: typeState = '', modeSetTime = null } = this.state;
     if (mode === 'reg') {
       return (
         <>
@@ -404,62 +420,26 @@ class ModalWindow extends React.PureComponent {
         error,
         jurnal: { description, timeLost },
       } = this.state;
-      moment.locale('ru');
-      const menu = (
-        <>
-          <Menu>
-            <Menu.Item>
-              <p className="jur" onClick={modeControll === 'edit' ? this.onMessage : this.showModal}>
-                Занести в журнал работы
-              </p>
-            </Menu.Item>
-            {rulesStatus ? (
-              <Menu.Item>
-                <p className="statusTask" onClick={modeControll === 'edit' ? this.onMessage : this.showModal}>
-                  Сменить статус задачи
-                </p>
-              </Menu.Item>
-            ) : null}
-            {rulesEdit ? (
-              <Menu.Item>
-                <p className="statusTask" onClick={modeControll === 'edit' ? this.onMessage : onEdit}>
-                  Редактировать задачу
-                </p>
-              </Menu.Item>
-            ) : null}
-            {actionTypeList === 'remote' ? (
-              <Menu.Item>
-                <p className="actin-mailResponse" onClick={this.onSendMailResponse}>
-                  Отправить ответ на почту
-                </p>
-              </Menu.Item>
-            ) : null}
-          </Menu>
-        </>
-      );
+      const actionProps = {
+        viewType,
+        entityName: 'taskView',
+        showModal: this.showModal,
+        onMessage: this.onMessage,
+        onSendMailResponse: this.onSendMailResponse,
+        modeControll,
+        onUpdateEditable: onUpdateEditable,
+        onRejectEdit: onRejectEdit,
+        isLoadList,
+        rulesStatus,
+        rulesEdit,
+        onEdit,
+      };
+
       switch (typeState) {
         case 'statusTask': {
           return (
             <div className="dropDownWrapper">
-              <Dropdown overlay={menu}>
-                <>
-                  <p className="action-dropdown-link">
-                    Управление задачей
-                    <Icon type="down" />
-                  </p>
-                </>
-              </Dropdown>
-              {modeControll === 'edit' ? (
-                <>
-                  <p onClick={onUpdateEditable} className="modeControllEdit">
-                    Сохранить изменения
-                  </p>
-                  <p onClick={onRejectEdit} className="modeControllEditReject">
-                    Отмена изменений
-                  </p>
-                </>
-              ) : null}
-              {!isLoadList ? this.showLoader() : null}
+              <ActionList {...actionProps} />
               <Modal
                 className="modalWindow changeStatus"
                 visible={this.state.visible}
@@ -486,26 +466,20 @@ class ModalWindow extends React.PureComponent {
         }
 
         default: {
+          const trackProps = {
+            modeSetTime,
+            visible,
+            handleOk: this.handleOk,
+            handleCancel: this.handleCancel,
+            onChangeTask: this.onChangeTask,
+            error,
+            timeLost,
+            description,
+          };
           return (
             <>
               <div className="dropDownWrapper">
-                <Dropdown overlay={menu}>
-                  <p className="action-dropdown-link">
-                    Управление задачей
-                    <Icon type="down" />
-                  </p>
-                </Dropdown>
-                {modeControll === 'edit' ? (
-                  <>
-                    <p onClick={onUpdateEditable} className="modeControllEdit">
-                      Сохранить изменения
-                    </p>
-                    <p onClick={onRejectEdit} className="modeControllEditReject">
-                      Отмена изменений
-                    </p>
-                  </>
-                ) : null}
-                {!isLoadList ? this.showLoader() : null}
+                <ActionList {...actionProps} />
               </div>
               {mode === 'jur' && modeEditContent ? (
                 <Modal
@@ -515,51 +489,17 @@ class ModalWindow extends React.PureComponent {
                   onCancel={onCancelEditModeContent}
                   title={'Редактирование'}
                 >
-                  <Textarea
-                    key="textAreaEdit"
-                    className="editContentDescription"
-                    //editor={true}
-                    row={10}
-                    onChange={this.onChangeDescription}
-                    value={valueDesc ? valueDesc : ''}
-                    defaultValue={valueDesc ? valueDesc : ''}
-                  />
+                  <TrackerModal {...trackProps} />
                 </Modal>
               ) : modeSetTime ? (
                 <Modal
                   className="modalWindow"
-                  visible={this.state.visible}
+                  visible={visible}
                   onOk={this.handleOk}
                   onCancel={this.handleCancel}
                   title=" Отчет времени"
                 >
-                  <span>Затраченое время:</span>
-                  <Input
-                    onChange={this.onChangeTask}
-                    className={clsx('timeLost', error.has('timeLost') ? 'errorFild' : null)}
-                    value={timeLost}
-                    type="text"
-                    size="default"
-                    placeholder="20m / 1h / 2.5h "
-                  />
-
-                  <span>Дата и время:</span>
-                  <DatePicker
-                    onChange={this.onChangeTask}
-                    className={clsx('date', error.has('date') ? 'errorFild' : null)}
-                    format="DD.MM.YYYY HH:mm:ss"
-                    showTime={{ defaultValue: moment() }}
-                    defaultValue={moment()}
-                  />
-                  <span>Кометарии:</span>
-                  <Textarea
-                    key="commentsTextArea"
-                    onChange={this.onChangeTask}
-                    defaultValue={descriptionDefault}
-                    value={description}
-                    className={['description', error.has('description') ? 'errorFild' : null].join(' ')}
-                    rows={4}
-                  />
+                  <TrackerModal {...trackProps} />
                 </Modal>
               ) : null}
             </>

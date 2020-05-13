@@ -194,7 +194,7 @@ class ClientSideDatabase {
           const storeKeyList = [];
 
           for await (let entity of self.availableList) {
-            const { entity: key, props, index, schema } = entity || {};
+            const { entity: key, props, index, schema: template } = entity || {};
 
             const isExist = self.isContains(key);
             const shouldCreate = !isExist && !newVersionUpdate;
@@ -204,7 +204,7 @@ class ClientSideDatabase {
               : await self.db.transaction.objectStore(key);
 
             if (!shouldCreate) {
-              const schema = self.getSchema()?.getValidateSchema(schema);
+              const schema = self.getSchema()?.getValidateSchema(template);
               const keys = Object.keys(schema);
               storeKeyList.push({ store, keys, index });
             }
