@@ -54,18 +54,16 @@ const PanelAdmin = (props) => {
   };
 
   const renderStatusList = () => {
-    return statusList
-      .map((status) => {
-        const { id = '', value = '' } = status;
-        if (!id) return null;
-
-        return (
-          <Option key={id} value={id} label={value}>
-            <span className="value">{value}</span>
-          </Option>
-        );
-      })
-      .filter(Boolean);
+    return statusList.reduce((elementsList, status) => {
+      const { id = '', value = '' } = status;
+      if (!id) return elementsList;
+      return [
+        ...elementsList,
+        <Option key={id} value={id} label={value}>
+          <span className="value">{value}</span>
+        </Option>,
+      ];
+    }, []);
   };
 
   const addStatus = (newStatusArray) => {

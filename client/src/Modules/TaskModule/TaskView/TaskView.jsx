@@ -109,19 +109,19 @@ class TaskView extends React.PureComponent {
         if (response && response.status === 200) {
           const { data: { response: { metadata = [] } = {} } = {} } = response || {};
 
-          const filteredUsers = metadata
-            .map((user) => {
-              const { _id = '', displayName = '' } = user;
+          const filteredUsers = metadata.reduce((usersList, user) => {
+            const { _id = '', displayName = '' } = user;
 
-              if (!user || !_id || !displayName) return null;
+            if (!user || !_id || !displayName) return usersList;
 
-              return {
+            return [
+              ...usersList,
+              {
                 _id,
                 displayName,
-              };
-            })
-            .filter(Boolean);
-
+              },
+            ];
+          }, []);
           if (onSaveCache) {
             const dataEditor =
               Array.isArray(editor) && editor?.length
@@ -484,8 +484,7 @@ class TaskView extends React.PureComponent {
             </p>
           </div>
         );
-      })
-      .filter(Boolean);
+      });
   };
 
   getCacheItemsList = () => {

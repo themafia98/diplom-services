@@ -117,18 +117,11 @@ class News extends React.PureComponent {
      */
     const pageCards = listdata.slice(start, start + 4 > listdata.length ? listdata.length : start + 4);
 
-    return pageCards
-      .map((it, index) => {
-        return (
-          <NewsCard
-            key={it._id || index}
-            onClick={this.onOpen.bind(this, it._id)}
-            className="card"
-            data={it}
-          />
-        );
-      })
-      .filter(Boolean);
+    return pageCards.map((it, index) => {
+      return (
+        <NewsCard key={it._id || index} onClick={this.onOpen.bind(this, it._id)} className="card" data={it} />
+      );
+    });
   };
 
   onChange = (pageNumber) => {

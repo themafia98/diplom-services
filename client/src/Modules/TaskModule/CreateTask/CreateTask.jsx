@@ -99,18 +99,19 @@ class CreateTask extends React.PureComponent {
       if (response && response.status === 200) {
         const { data: { response: { metadata = [] } = {} } = {} } = response || {};
 
-        const filteredUsers = metadata
-          .map((user) => {
-            const { _id = '', displayName = '' } = user;
+        const filteredUsers = metadata.reduce((usersList, user) => {
+          const { _id = '', displayName = '' } = user;
 
-            if (!user || !_id || !displayName) return null;
+          if (!user || !_id || !displayName) return usersList;
 
-            return {
+          return [
+            ...usersList,
+            {
               _id,
               displayName,
-            };
-          })
-          .filter(Boolean);
+            },
+          ];
+        }, []);
 
         this.setState({
           filteredUsers,

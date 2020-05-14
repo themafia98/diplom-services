@@ -64,14 +64,12 @@ class ContactModule extends React.PureComponent {
     } = this.props;
 
     const filterActionTab = actionTabs.filter((tab) => tab.includes('_informationPage__'));
-    const itemsKeys = filterActionTab
-      .map((it) => {
-        const route = routeParser({ pageType: 'moduleItem', path: it });
-        if (typeof route !== 'string' && route.itemId) {
-          return route.itemId;
-        } else return null;
-      })
-      .filter(Boolean);
+    const itemsKeys = filterActionTab.reduce((tabList, tab) => {
+      const route = routeParser({ pageType: 'moduleItem', path: tab });
+      if (typeof route !== 'string' && route.itemId) {
+        return [...tabList, route.itemId];
+      } else return tabList;
+    }, []);
 
     return itemsKeys
       .map((key) => {

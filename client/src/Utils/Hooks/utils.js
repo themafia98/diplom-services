@@ -125,14 +125,10 @@ const runSync = async (dep = {}) => {
 
     offlineDataList.push({
       entity,
-      items: items
-        .map((item) => {
-          if (item?.offline) {
-            return { ...item, offline: false };
-          }
-          return null;
-        })
-        .filter(Boolean),
+      items: items.reduce((itemsList, item) => {
+        if (item?.offline) return [...itemsList, { ...item, offline: false }];
+        return itemsList;
+      }, []),
     });
   }
 

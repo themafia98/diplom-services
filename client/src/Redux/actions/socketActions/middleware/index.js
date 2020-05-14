@@ -209,9 +209,8 @@ const updateRooms = (payload) => async (dispatch, getState, { schema, Request, c
       throw new Error(`Invalid load in module ${activeModule} action tokenData`);
     }
 
-    const rooms = shouldAdd
-      ? [...listdataState, metadata[0] ? metadata[0] : null].filter(Boolean)
-      : [...listdataState];
+    const rooms =
+      shouldAdd && _.isArray(metadata) && metadata[0] ? [...listdataState, metadata[0]] : [...listdataState];
 
     const normalizeRooms = _.uniqWith(rooms, (a, b) => a._id !== b._id);
 

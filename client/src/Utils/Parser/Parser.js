@@ -182,16 +182,17 @@ const buildRequestList = (metadata = [], prefix = '') => {
 
   if (!actionTypes.length) return actionTypes;
 
-  return actionsList
-    .map((actionsArray) => {
-      if (!Array.isArray(actionsArray)) return null;
-      const item = actionsArray[0] || {};
-      const { action = null } = item || {};
-      if (!action) return null;
-      const { type = '', moduleName: path = '', link = '', method = '' } = action;
-      const storeLoad = _.isString(type) ? type.split('_')[0] : '';
-      const methodRequest = method ? method : link ? 'POST' : 'GET';
-      return {
+  return actionsList.reduce((actionsList, actionsArray) => {
+    if (!Array.isArray(actionsArray)) return null;
+    const item = actionsArray[0] || {};
+    const { action = null } = item || {};
+    if (!action) return actionsList;
+    const { type = '', moduleName: path = '', link = '', method = '' } = action;
+    const storeLoad = _.isString(type) ? type.split('_')[0] : '';
+    const methodRequest = method ? method : link ? 'POST' : 'GET';
+    return [
+      ...actionsList,
+      {
         path: `${path}${prefix}`,
         storeLoad,
         methodRequest,
@@ -199,9 +200,9 @@ const buildRequestList = (metadata = [], prefix = '') => {
         options: {
           keys: _.uniq(actionsArray.map((notification) => notification?.action?.link)),
         },
-      };
-    })
-    .filter(Boolean);
+      },
+    ];
+  }, []);
 };
 
 const getValidContent = (contentState) => {

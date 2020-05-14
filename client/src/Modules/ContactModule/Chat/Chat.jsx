@@ -340,14 +340,12 @@ class Chat extends React.PureComponent {
 
     const { membersIds = [] } = room || {};
 
-    const names = usersList
-      .map((it) => {
-        if (membersIds.includes(it._id)) {
-          return it.displayName;
-        }
-        return null;
-      })
-      .filter(Boolean);
+    const names = usersList.reduce((list, it) => {
+      if (membersIds.includes(it._id)) {
+        return [...list, it.displayName];
+      }
+      return list;
+    }, []);
 
     names.unshift(displayName);
 

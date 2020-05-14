@@ -96,14 +96,12 @@ export default (state = initialState, action) => {
 
       const messages = [...state.chat.listdataMsgs[chatToken]];
 
-      const validMessages = messages
-        .map((msgItem) => {
-          if (msgItem._id !== msg._id) {
-            return msgItem;
-          }
-          return null;
-        })
-        .filter(Boolean);
+      const validMessages = messages.reduce((msgs, msgItem) => {
+        if (msgItem._id !== msg._id) {
+          return [...msgs, msgItem];
+        }
+        return msgs;
+      }, []);
 
       return {
         ...state,
@@ -137,26 +135,21 @@ export default (state = initialState, action) => {
       const { chat: { tokenRoom = '' } = {} } = state;
 
       let sortListdata = [...listdata].sort((a, b) => Date(a.date) - Date(b.date));
-      const duplicateFixed = sortListdata
-        .filter((item) => {
-          const isExists = item && item.tokenRoom;
-          const findItem = isExists ? item.tokenRoom === tokenRoom : null;
-          if (findItem) return item;
-          else return null;
-        })
-        .filter(Boolean);
+      const duplicateFixed = sortListdata.filter((item) => {
+        const isExists = item && item.tokenRoom;
+        const findItem = isExists ? item.tokenRoom === tokenRoom : null;
+        if (findItem) return item;
+        else return false;
+      });
 
       const fakeItem = duplicateFixed.find((it) => it?.tokenRoom?.include('__fakeRoom'));
 
       sortListdata = fakeItem
-        ? sortListdata
-            .map((it) => {
-              if (it?.tokenRoom?.include('__fakeRoom')) {
-                return null;
-              }
-              return it;
-            })
-            .filter(Boolean)
+        ? sortListdata.reduce((dataList, it) => {
+            if (it?.tokenRoom?.include('__fakeRoom')) return dataList;
+
+            return [...dataList, it];
+          }, [])
         : sortListdata;
 
       let activeProps = {};

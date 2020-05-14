@@ -257,11 +257,11 @@ class DynamicTable extends React.PureComponent {
 
       const children =
         isEditor && _.isArray(text)
-          ? text
-              .map((id) => {
-                return usersList?.find((it) => it?._id === id);
-              })
-              .filter(Boolean)
+          ? text.reduce((ids, id) => {
+              const findUser = usersList?.find((it) => it?._id === id);
+              if (findUser) return [...ids, findUser];
+              return ids;
+            }, [])
           : isArrayEditors
           ? text.join(' , ')
           : isDateString

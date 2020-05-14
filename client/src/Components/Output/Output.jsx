@@ -242,13 +242,12 @@ class Output extends React.PureComponent {
       if (Array.isArray(children)) {
         const linksList = !isStaticList
           ? links
-              .map((link) => {
+              .reduce((links, link) => {
                 if (children.some((child) => child === link?._id)) {
-                  return { displayValue: link?.displayName, id: link?._id };
+                  return [...links, { displayValue: link?.displayName, id: link?._id }];
                 }
-                return null;
-              })
-              .filter(Boolean)
+                return links;
+              }, [])
               .sort((a, b) => a?.displayName - b?.displayName)
           : children.map((link) => {
               return { displayValue: link?.displayName, id: link?._id };
