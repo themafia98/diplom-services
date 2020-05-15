@@ -8,15 +8,7 @@ import NotificationPopup from '../../NotificationPopup';
 import Status from './Status';
 
 const RightPanel = (props) => {
-  const {
-    onUpdate,
-    onLogout,
-    goCabinet,
-    status = '',
-    shouldUpdate,
-    udata = {},
-    notificationDep = {},
-  } = props;
+  const { onUpdate, onLogout, goCabinet, status, shouldUpdate, udata, notificationDep } = props;
 
   return (
     <div className="headerControllers rightPanel">
@@ -35,6 +27,9 @@ const RightPanel = (props) => {
 
 RightPanel.defaultProps = {
   active: true,
+  udata: {},
+  notificationDep: {},
+  status: '',
 };
 RightPanel.propTypes = rightPanelType;
 

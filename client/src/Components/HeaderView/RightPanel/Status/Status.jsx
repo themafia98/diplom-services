@@ -12,6 +12,11 @@ const Status = ({ statusApp = '', shouldUpdate = false }) => {
   );
 };
 
+Status.defaultProps = {
+  statusApp: '',
+  shouldUpdate: false,
+};
+
 Status.propTypes = statusType;
 
 export default Status;

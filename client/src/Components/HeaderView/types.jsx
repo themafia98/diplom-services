@@ -22,6 +22,8 @@ export const rightPanelType = {
   itemKey: oneOfType([PropTypes.string, number, oneOf([null])]),
   value: oneOfType([PropTypes.string, number, oneOf([null])]),
   sizeTab: oneOfType([string, number]),
+  status: string.isRequired,
+  notificationDep: object.isRequired,
 };
 
 export const statusType = {

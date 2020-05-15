@@ -11,9 +11,9 @@ class ErrorBoundary extends React.Component {
     error: null,
   };
 
-  static getDerivedStateFromError(error) {
+  static getDerivedStateFromError = (error) => {
     return { hasError: true, error: error };
-  }
+  };
 
   update = (event) => {
     this.setState({
@@ -23,13 +23,13 @@ class ErrorBoundary extends React.Component {
     });
   };
 
-  componentDidCatch(error, errorInfo) {
+  componentDidCatch = (error, errorInfo) => {
     Sentry.withScope((scope) => {
       scope.setExtras(errorInfo);
       const eventId = Sentry.captureException(error);
       this.setState({ eventId });
     });
-  }
+  };
 
   logger = (event) => {
     Sentry.showReportDialog({ eventId: this.state.eventId });

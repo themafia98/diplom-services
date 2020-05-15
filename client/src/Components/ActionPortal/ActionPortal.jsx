@@ -1,7 +1,8 @@
 // @ts-nocheck
+import React from 'react';
 import Node from '../../Models/Node';
 import modalContext from '../../Models/context';
-import React from 'react';
+import actionPortalType from './types';
 
 class ActionPortal extends React.Component {
   state = {
@@ -33,7 +34,7 @@ class ActionPortal extends React.Component {
   };
 
   render() {
-    const { action: actionProps = null, children = null } = this.props;
+    const { action: actionProps = null, children } = this.props;
     const { visible = false } = this.state;
     const {
       config: { actionRoot: { visibilityActionRoot = false } = {} },
@@ -51,5 +52,12 @@ class ActionPortal extends React.Component {
     return !action ? null : this.node.create(action);
   }
 }
+
+ActionPortal.defaultProps = {
+  action: null,
+  children: null,
+};
+
+ActionPortal.propTypes = actionPortalType;
 
 export default ActionPortal;
