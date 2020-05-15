@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { udataType, contentType, emptyShape, newsItemType } from '../../types';
-const { func, string, bool, object, oneOf, arrayOf, objectOf, oneOfType } = PropTypes;
+const { func, string, bool, object, oneOf, arrayOf, objectOf, oneOfType, number, array } = PropTypes;
 
 export const contactModuleType = {
   onErrorRequestAction: func.isRequired,
@@ -48,4 +48,52 @@ export const createNewsType = {
   statusApp: string.isRequired,
   isBackground: bool.isRequired,
   visible: bool.isRequired,
+};
+
+export const chatRoomType = {
+  uid: string.isRequired,
+  shouldScroll: bool.isRequired,
+  messages: array.isRequired,
+  usersList: array.isRequired,
+  tokenRoom: string.isRequired,
+  myAvatar: string.isRequired,
+  messagesLength: oneOfType([number, string]).isRequired,
+  onClearScroll: oneOfType([func, () => null]),
+  onKeyDown: oneOfType([func, () => null]),
+  pushMessage: oneOfType([func, () => null]),
+};
+
+export const chatMenuType = {
+  type: string.isRequired,
+  isWs: bool.isRequired,
+  socketConnection: bool.isRequired,
+  socketErrorStatus: string.isRequired,
+  listdata: array.isRequired,
+  usersList: array.isRequired,
+  tokenRoom: string.isRequired,
+  parseChatJson: oneOfType([func, () => null]),
+  onCreateRoom: oneOfType([func, () => null]),
+  uid: string.isRequired,
+  setActiveChatRoom: oneOfType([func, () => null]),
+};
+
+export const messageType = {
+  it: oneOfType([object, () => null]),
+  children: oneOfType([object, () => null]),
+  showTooltip: bool.isRequired,
+  className: string.isRequired,
+};
+
+export const chatType = {
+  type: string.isRequired,
+  chat: object.isRequired,
+  udata: udataType,
+  socketConnection: bool.isRequired,
+  socketErrorStatus: oneOfType([string, () => null]),
+  webSocket: oneOfType([object, () => null]),
+  onUpdateRoom: func,
+  onLoadingDataByToken: func,
+  tokenRoom: string.isRequired,
+  onLoadActiveChats: func,
+  onSetSocketConnection: func,
 };

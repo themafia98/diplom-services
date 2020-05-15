@@ -15,6 +15,15 @@ import CreateNews from './News/CreateNews';
 
 class ContactModule extends React.PureComponent {
   static propTypes = contactModuleType;
+  static defaultProps = {
+    statusApp: '',
+    udata: {},
+    router: {},
+    webSocket: null,
+    visibilityPorta: false,
+    onChangeVisibleAction: null,
+    onSetStatus: null,
+  };
 
   state = {
     isLoading: false,
@@ -90,13 +99,13 @@ class ContactModule extends React.PureComponent {
   getContactContentByPath = (path) => {
     const {
       getBackground,
-      statusApp = '',
+      statusApp,
       router: { routeData = {} } = {},
       udata,
-      webSocket = null,
+      webSocket,
       visibilityPortal,
-      onChangeVisibleAction = null,
-      onSetStatus = null,
+      onChangeVisibleAction,
+      onSetStatus,
     } = this.props;
     const isBackgroundChat = getBackground('contactModule_chat');
     const isBackgroundNews = getBackground('contactModule_feedback');

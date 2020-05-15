@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import clsx from 'clsx';
 import moment from 'moment';
 import _ from 'lodash';
-
+import { chatType } from '../types';
 import ChatMenu from './ChatMenu';
 
 import { notification, message, Popover, Spin } from 'antd';
@@ -28,9 +28,15 @@ class Chat extends React.PureComponent {
     visible: null,
   };
 
+  static propTypes = chatType;
   static contextType = modelsContext;
   static defaultProps = {
     type: 'default',
+    chat: {},
+    udata: {},
+    socketConnection: false,
+    socketErrorStatus: null,
+    webSocket: null,
   };
 
   socket = null;
@@ -368,7 +374,7 @@ class Chat extends React.PureComponent {
       socketConnection,
       socketErrorStatus,
       type,
-      webSocket = null,
+      webSocket,
     } = this.props;
     const isWs = !_.isNull(webSocket);
     const isDev = process.env.NODE_ENV === 'development';

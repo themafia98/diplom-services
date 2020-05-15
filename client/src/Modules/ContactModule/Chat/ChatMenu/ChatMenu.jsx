@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React, { useEffect, useState } from 'react';
+import { chatMenuType } from '../../types';
 import clsx from 'clsx';
 import _ from 'lodash';
 import Scrollbars from 'react-custom-scrollbars';
@@ -15,13 +16,13 @@ const ChatMenu = (props) => {
     listdata,
     usersList,
     tokenRoom,
-    parseChatJson = null,
-    onCreateRoom = null,
-    uid = '',
+    parseChatJson,
+    onCreateRoom,
+    uid,
     setActiveChatRoom,
     type,
     isWs,
-  } = props || {};
+  } = props;
 
   const [iDs, setIDs] = useState([]);
   const [visible, setVisible] = useState(false);
@@ -157,7 +158,18 @@ const ChatMenu = (props) => {
 
 ChatMenu.defaultProps = {
   type: 'default',
-  isWs: null,
+  isWs: false,
+  socketConnection: false,
+  socketErrorStatus: '',
+  listdata: [],
+  usersList: [],
+  tokenRoom: '',
+  parseChatJson: null,
+  onCreateRoom: null,
+  uid: '',
+  setActiveChatRoom: null,
 };
+
+ChatMenu.propTypes = chatMenuType;
 
 export default ChatMenu;

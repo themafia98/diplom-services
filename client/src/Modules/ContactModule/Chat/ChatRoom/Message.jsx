@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import { messageType } from '../../types';
 import { Tooltip } from 'antd';
 
 const Message = ({ it = null, children = null, showTooltip, className = '' }) => {
@@ -13,5 +14,14 @@ const Message = ({ it = null, children = null, showTooltip, className = '' }) =>
     <span className={className}>{children}</span>
   );
 };
+
+Message.defauultProps = {
+  it: null,
+  children: null,
+  showTooltip: false,
+  className: '',
+};
+
+Message.propTypes = messageType;
 
 export default Message;

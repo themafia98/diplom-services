@@ -2,6 +2,7 @@
 import React from 'react';
 import _ from 'lodash';
 import { Modal, Select, message, Input } from 'antd';
+import modelContext from '../../../../Models/context';
 
 const { Option } = Select;
 
@@ -11,15 +12,19 @@ class ChatModal extends React.PureComponent {
     type: 'single',
     membersIds: [],
   };
+  static contextType = modelContext;
+  static defaultProps = {
+    visible: false,
+    usersList: [],
+    onVisibleChange: null,
+    uid: '',
+  };
 
   handleOk = async () => {
-    const { visible, onVisibleChange, Request = null, uid = '' } = this.props;
+    const { Request = null } = this.context;
+    const { visible, onVisibleChange, uid } = this.props;
     const { type = '', membersIds = [] } = this.state;
     try {
-      if (!Request) {
-        throw new Error('Bad request object (chat)');
-      }
-
       const groupProps =
         type !== 'single'
           ? {
@@ -43,21 +48,17 @@ class ChatModal extends React.PureComponent {
         throw new Error('Bad response create chat room');
       }
 
-      // if (membersIds.length <= 1 && type === "single") {
-      //     throw new Error("Bad members counter");
-      // }
-
-      onVisibleChange(visible, res.status === 200);
+      if (onVisibleChange) onVisibleChange(visible, res.status === 200);
     } catch (error) {
       if (error?.response?.status !== 404) console.error(error.message);
-      onVisibleChange(visible);
+      if (onVisibleChange) onVisibleChange(visible);
       message.error(error.message);
     }
   };
 
   handleCancel = () => {
     const { visible, onVisibleChange } = this.props;
-    onVisibleChange(visible);
+    if (onVisibleChange) onVisibleChange(visible);
   };
 
   /**
@@ -91,7 +92,7 @@ class ChatModal extends React.PureComponent {
 
   render() {
     const { confirmLoading, type = 'single', membersIds = [] } = this.state;
-    const { visible, usersList = [] } = this.props;
+    const { visible, usersList } = this.props;
 
     const valueUser = type === 'single' && Array.isArray(membersIds) ? membersIds[0] : membersIds;
 

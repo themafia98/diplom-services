@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { chatRoomType } from '../../types';
 import _ from 'lodash';
 import clsx from 'clsx';
 import Scrollbars from 'react-custom-scrollbars';
@@ -10,16 +11,16 @@ import Message from './Message';
 
 const ChatRoom = (props) => {
   const {
-    uid = '',
-    shouldScroll = false,
+    uid,
+    shouldScroll,
     messagesLength,
-    messages: msgProps = [],
-    usersList = [],
-    tokenRoom = '',
-    onClearScroll = null,
-    onKeyDown = null,
-    pushMessage = null,
-    myAvatar = null,
+    messages: msgProps,
+    usersList,
+    tokenRoom,
+    onClearScroll,
+    onKeyDown,
+    pushMessage,
+    myAvatar,
   } = props;
 
   const refScrollbar = useRef(null);
@@ -152,5 +153,20 @@ const ChatRoom = (props) => {
     </div>
   );
 };
+
+ChatRoom.defaultProps = {
+  uid: '',
+  shouldScroll: false,
+  messagesLength: 0,
+  messages: [],
+  usersList: [],
+  tokenRoom: '',
+  onClearScroll: null,
+  onKeyDown: null,
+  pushMessage: null,
+  myAvatar: '',
+};
+
+ChatRoom.propTypes = chatRoomType;
 
 export default ChatRoom;
