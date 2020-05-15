@@ -223,12 +223,11 @@ namespace Action {
     public async runSyncClient(actionParam: ActionParams): Promise<ParserData> {
       const { syncList = [] } = actionParam as Record<string, Array<object>>;
 
-      console.log('syncList:', syncList);
       for await (let syncItem of syncList) {
         const { entity = '' } = syncItem as Record<string, string>;
         const { items = [] } = syncItem as Record<string, Array<object>>;
         const model: Model<Document> | null = getModelByName(entity, entity === 'tasks' ? 'task' : entity);
-        console.log('model:', model);
+
         if (!model) continue;
         for await (let updateProps of items) {
           const copy: { _id: string } = { ...updateProps } as { _id: string };
@@ -236,7 +235,7 @@ namespace Action {
           const validId: any = typeof _id === 'string' ? Types.ObjectId(_id) : null;
           if (!validId) delete copy._id;
           console.log('updteProps', updateProps);
-          const result = await this.updateEntity(
+          await this.updateEntity(
             model,
             {
               updateProps: copy,
@@ -245,11 +244,10 @@ namespace Action {
             },
             { upsert: true },
           );
-          console.log(result);
         }
       }
 
-      return [{}];
+      return [{ syncDone: true }];
     }
 
     public async getActionData(this: Actions, actionParam: ActionParams = {}): Promise<ParserData> {
