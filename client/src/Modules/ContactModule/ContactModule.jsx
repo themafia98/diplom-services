@@ -4,10 +4,10 @@ import { contactModuleType } from './types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
-import { loadCurrentData } from '../../Redux/actions/routerActions/middleware';
+import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
 
-import { routeParser } from '../../Utils';
-import TabContainer from '../../Components/TabContainer';
+import { routeParser } from 'Utils';
+import TabContainer from 'Components/TabContainer';
 import Chat from './Chat';
 import News from './News';
 import NewsViewPage from './News/NewsViewPage';

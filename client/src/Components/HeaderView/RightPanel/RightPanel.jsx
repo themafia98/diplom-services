@@ -1,10 +1,10 @@
 // @ts-nocheck
 import React from 'react';
 import { rightPanelType } from '../types';
-import Updater from '../../Updater';
-import UserPopup from '../../UserPopup';
+import Updater from 'Components/Updater';
+import UserPopup from 'Components/UserPopup';
 
-import NotificationPopup from '../../NotificationPopup';
+import NotificationPopup from 'Components/NotificationPopup';
 import Status from './Status';
 
 const RightPanel = (props) => {

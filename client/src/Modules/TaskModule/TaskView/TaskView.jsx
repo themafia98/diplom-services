@@ -7,16 +7,16 @@ import moment from 'moment';
 import { Descriptions, Empty, message } from 'antd';
 import { connect } from 'react-redux';
 import Scrollbars from 'react-custom-scrollbars';
-import { deleteFile, loadFile } from '../../../Utils';
-import { TASK_SCHEMA } from '../../../Models/Schema/const';
-import { settingsStatusSelector } from '../../../Utils/selectors';
-import { middlewareCaching, middlewareUpdate } from '../../../Redux/actions/publicActions/middleware';
-import { сachingAction } from '../../../Redux/actions/publicActions';
+import { deleteFile, loadFile } from 'Utils';
+import { TASK_SCHEMA } from 'Models/Schema/const';
+import { settingsStatusSelector } from 'Utils/selectors';
+import { middlewareCaching, middlewareUpdate } from 'Redux/actions/publicActions/middleware';
+import { сachingAction } from 'Redux/actions/publicActions';
 
-import ModalWindow from '../../../Components/ModalWindow';
-import TitleModule from '../../../Components/TitleModule';
+import ModalWindow from 'Components/ModalWindow';
+import TitleModule from 'Components/TitleModule';
 
-import modelContext from '../../../Models/context';
+import modelContext from 'Models/context';
 import DescriptionTask from './DescriptionTask';
 import renderDescription from './renderDescription';
 

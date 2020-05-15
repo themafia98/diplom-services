@@ -5,13 +5,13 @@ import { v4 as uuid } from 'uuid';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import Scrollbars from 'react-custom-scrollbars';
-import { loadCurrentData } from '../../Redux/actions/routerActions/middleware';
+import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
 import { Tree, Button, Input, Select, Dropdown, Menu, message, Spin } from 'antd';
 
 import WikiPage from './WikiPage';
-import ModalWindow from '../../Components/ModalWindow';
-import TitleModule from '../../Components/TitleModule';
-import modalContext from '../../Models/context';
+import ModalWindow from 'Components/ModalWindow';
+import TitleModule from 'Components/TitleModule';
+import modalContext from 'Models/context';
 
 const { Option } = Select;
 const { Search } = Input;

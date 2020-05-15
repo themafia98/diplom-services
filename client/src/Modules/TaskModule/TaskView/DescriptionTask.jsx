@@ -3,8 +3,8 @@ import React, { forwardRef, useMemo } from 'react';
 import clsx from 'clsx';
 import Scrollbars from 'react-custom-scrollbars';
 
-import Comments from '../../../Components/Comments';
-import File from '../../../Components/File';
+import Comments from 'Components/Comments';
+import File from 'Components/File';
 
 const DescriptionTask = forwardRef(
   (

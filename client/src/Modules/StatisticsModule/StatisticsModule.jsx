@@ -5,12 +5,12 @@ import clsx from 'clsx';
 import { statisticsModuleType } from './types';
 import moment from 'moment';
 import { connect } from 'react-redux';
-import { loadCurrentData } from '../../Redux/actions/routerActions/middleware';
+import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
 import Bar from './Charts/Bar';
-import TitleModule from '../../Components/TitleModule';
-import { settingsStatusSelector } from '../../Utils/selectors';
-import modelContext from '../../Models/context';
-import FixedToolbar from '../../Components/FixedToolbar';
+import TitleModule from 'Components/TitleModule';
+import { settingsStatusSelector } from 'Utils/selectors';
+import modelContext from 'Models/context';
+import FixedToolbar from 'Components/FixedToolbar';
 import { Button } from 'antd';
 
 class StatisticsModule extends React.PureComponent {

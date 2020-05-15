@@ -6,16 +6,16 @@ import axios from 'axios';
 import _ from 'lodash';
 import moment from 'moment';
 import { Modal, Button, message, Select } from 'antd';
-import { TASK_CONTROLL_JURNAL_SCHEMA } from '../../Models/Schema/const';
-import { createNotification, isTimeLostValue } from '../../Utils';
+import { TASK_CONTROLL_JURNAL_SCHEMA } from 'Models/Schema/const';
+import { createNotification, isTimeLostValue } from 'Utils';
 import SimpleEditableModal from './SimpleEditableModal';
 import RegistrationModal from './RegistrationModal';
-import ActionList from '../ActionList';
+import ActionList from 'Components/ActionList';
 import TrackerModal from './TrackerModal';
 import MailResponserModal from './MailResponserModal';
 
-import Textarea from '../Textarea';
-import modelContext from '../../Models/context';
+import Textarea from 'Components/Textarea';
+import modelContext from 'Models/context';
 
 const { Option } = Select;
 

@@ -7,7 +7,7 @@ import { v4 as uuid } from 'uuid';
 import moment from 'moment';
 import { Button, Empty, message, notification } from 'antd';
 
-import Textarea from '../Textarea';
+import Textarea from 'Components/Textarea';
 import Comment from './Comment';
 
 class Comments extends React.PureComponent {

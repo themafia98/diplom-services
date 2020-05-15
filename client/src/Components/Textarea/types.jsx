@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { contentType, emptyShape } from '../../types';
+import { contentType, emptyShape } from 'types';
 const { number, bool, string, func, oneOfType } = PropTypes;
 
 export const textAreaType = {

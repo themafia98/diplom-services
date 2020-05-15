@@ -2,11 +2,11 @@
 import React from 'react';
 import { mainModuleType } from './types';
 import { Calendar } from 'antd';
-import modelContext from '../../Models/context';
-import ClockWidjet from '../../Components/ClockWidjet/index';
-import TableView from '../../Components/TableView';
-import StreamBox from '../../Components/StreamBox';
-import TitleModule from '../../Components/TitleModule';
+import modelContext from 'Models/context';
+import ClockWidjet from 'Components/ClockWidjet/index';
+import TableView from 'Components/TableView';
+import StreamBox from 'Components/StreamBox';
+import TitleModule from 'Components/TitleModule';
 
 class MainModule extends React.PureComponent {
   static propTypes = mainModuleType;

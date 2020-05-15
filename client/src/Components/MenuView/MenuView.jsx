@@ -3,7 +3,7 @@ import { menuViewType } from './types';
 import _ from 'lodash';
 import { Menu, Layout, Icon } from 'antd';
 
-import Logo from '../Logo';
+import Logo from 'Components/Logo';
 
 const { Sider } = Layout;
 const { SubMenu } = Menu;

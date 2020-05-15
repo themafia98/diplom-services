@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { udataType } from '../../types';
+import { udataType } from 'types';
 const { func, bool, object, string, objectOf, array } = PropTypes;
 
 export const settingsModuleType = {

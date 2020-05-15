@@ -4,13 +4,13 @@ import { editorTextareaType } from '../types';
 import clsx from 'clsx';
 import { stateFromHTML } from 'draft-js-import-html';
 import { convertFromRaw } from 'draft-js';
-import { getValidContent } from '../../../Utils';
+import { getValidContent } from 'Utils';
 import { Editor } from 'react-draft-wysiwyg';
 import _ from 'lodash';
 
 import '../../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { Button } from 'antd';
-import modelContext from '../../../Models/context';
+import modelContext from 'Models/context';
 
 class EditorTextarea extends React.Component {
   state = {

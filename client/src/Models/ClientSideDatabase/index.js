@@ -1,15 +1,15 @@
 // @ts-nocheck
 import { openDB, deleteDB } from 'idb';
 import _ from 'lodash';
-import config from '../../config.json';
+import config from 'config.json';
 import {
   TASK_SCHEMA,
   USER_SCHEMA,
   TASK_CONTROLL_JURNAL_SCHEMA,
   WIKI_NODE_TREE,
   NEWS_SCHEMA,
-} from '../Schema/const';
-import Schema from '../Schema';
+} from 'Models/Schema/const';
+import Schema from 'Models/Schema';
 
 class ClientSideDatabase {
   /**

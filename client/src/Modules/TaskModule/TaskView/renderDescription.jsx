@@ -2,9 +2,9 @@
 import React from 'react';
 import _ from 'lodash';
 import clsx from 'clsx';
-import TagsContainer from '../../../Components/TagsContainer';
+import TagsContainer from 'Components/TagsContainer';
 import { Descriptions, Input, Select, DatePicker } from 'antd';
-import Output from '../../../Components/Output';
+import Output from 'Components/Output';
 import moment from 'moment';
 
 const { Option } = Select;

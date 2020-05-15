@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { DatePicker } from 'antd';
 import moment from 'moment';
 
-import Request from '../../Models/Rest';
+import Request from 'Models/Rest';
 
 import style from './demo.module.scss';
 

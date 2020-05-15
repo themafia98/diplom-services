@@ -1,6 +1,6 @@
 // @ts-nocheck
 import _ from 'lodash';
-import { clientDB } from '../../../Models/ClientSideDatabase';
+import { clientDB } from 'Models/ClientSideDatabase';
 import utilsHooks from '../utils';
 import { getStoreSchema } from '../../utilsHook';
 

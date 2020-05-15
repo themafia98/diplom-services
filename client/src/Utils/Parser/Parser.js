@@ -1,7 +1,7 @@
 // @ts-nocheck
 import moment from 'moment';
 import _ from 'lodash';
-import { clientDB } from '../../Models/ClientSideDatabase';
+import { clientDB } from 'Models/ClientSideDatabase';
 import { runNoCorsParser } from './utils';
 import { getStoreSchema } from '../utilsHook';
 

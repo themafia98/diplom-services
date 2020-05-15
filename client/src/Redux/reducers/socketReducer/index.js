@@ -5,7 +5,7 @@ import {
   LOAD_CHATS_LIST,
   ADD_CHAT_MSG,
   UPDATE_ENTITY_SOCKET,
-} from '../../actions/socketActions/const';
+} from 'Redux/actions/socketActions/const';
 
 const initialState = {
   socketConnection: false,

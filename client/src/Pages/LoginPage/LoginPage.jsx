@@ -5,12 +5,12 @@ import { loginType } from './types';
 import { Redirect, NavLink } from 'react-router-dom';
 import { Button, Input } from 'antd';
 import { connect } from 'react-redux';
-import { loadUdata } from '../../Redux/actions/publicActions';
-import { addTabAction, setActiveTabAction } from '../../Redux/actions/routerActions';
+import { loadUdata } from 'Redux/actions/publicActions';
+import { addTabAction, setActiveTabAction } from 'Redux/actions/routerActions';
 
-import Logo from '../../Components/Logo';
-import ModalWindow from '../../Components/ModalWindow';
-import modelContext from '../../Models/context';
+import Logo from 'Components/Logo';
+import ModalWindow from 'Components/ModalWindow';
+import modelContext from 'Models/context';
 
 class LoginPage extends React.Component {
   state = {

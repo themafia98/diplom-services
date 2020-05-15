@@ -4,7 +4,7 @@ import { observerTimeType } from './types';
 import Scrollbars from 'react-custom-scrollbars';
 import _ from 'lodash';
 import moment from 'moment';
-import TitleModule from '../TitleModule';
+import TitleModule from 'Components/TitleModule';
 import { Timeline, Spin } from 'antd';
 
 const ObserverTime = (props) => {

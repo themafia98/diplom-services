@@ -3,7 +3,7 @@ import { headerViewType } from './types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { Layout } from 'antd';
-import { saveComponentStateAction } from '../../Redux/actions/routerActions';
+import { saveComponentStateAction } from 'Redux/actions/routerActions';
 import Tab from './Tab';
 import RightPanel from './RightPanel';
 

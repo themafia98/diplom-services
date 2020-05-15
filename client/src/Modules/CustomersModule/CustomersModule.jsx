@@ -2,7 +2,7 @@
 import React from 'react';
 import { customersModuleType } from './types';
 
-import TabContainer from '../../Components/TabContainer';
+import TabContainer from 'Components/TabContainer';
 import Contacts from './Contacts';
 
 class CustomersModule extends React.PureComponent {

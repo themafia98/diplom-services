@@ -1,10 +1,10 @@
 // @ts-nocheck
 import React, { useState, useContext, useEffect, useCallback } from 'react';
 import { v4 as uuid } from 'uuid';
-import { getValidContent } from '../../../Utils';
-import Textarea from '../../../Components/Textarea';
+import { getValidContent } from 'Utils';
+import Textarea from 'Components/Textarea';
 import { wikiPageTypes } from '../types';
-import modelContext from '../../../Models/context';
+import modelContext from 'Models/context';
 import { Spin, Button, message } from 'antd';
 import moment from 'moment';
 

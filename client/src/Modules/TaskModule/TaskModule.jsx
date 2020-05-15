@@ -7,18 +7,18 @@ import { connect } from 'react-redux';
 import Scrollbars from 'react-custom-scrollbars';
 import { Button, message } from 'antd';
 
-import { routeParser } from '../../Utils';
-import { settingsStatusSelector } from '../../Utils/selectors';
-import TabContainer from '../../Components/TabContainer';
-import { addTabAction, openPageWithDataAction, removeTabAction } from '../../Redux/actions/routerActions';
-import { loadCurrentData } from '../../Redux/actions/routerActions/middleware';
-import { loadCacheData } from '../../Redux/actions/publicActions/middleware';
+import { routeParser } from 'Utils';
+import { settingsStatusSelector } from 'Utils/selectors';
+import TabContainer from 'Components/TabContainer';
+import { addTabAction, openPageWithDataAction, removeTabAction } from 'Redux/actions/routerActions';
+import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
+import { loadCacheData } from 'Redux/actions/publicActions/middleware';
 import TaskModuleCalendar from './TaskModuleCalendar';
 import TaskModuleList from './TaskModuleList';
 import TaskModuleMyList from './TaskModuleMyList';
 import TaskView from './TaskView';
 import CreateTask from './CreateTask';
-import modelContext from '../../Models/context';
+import modelContext from 'Models/context';
 
 class TaskModule extends React.PureComponent {
   state = {

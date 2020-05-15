@@ -11,9 +11,9 @@ import {
   UPDATE_ITEM,
   SET_UPDATE,
   ADD_TO_ROUTE_DATA,
-} from '../../actions/routerActions/const';
-import { validationItems } from '../../../Utils';
-import { SET_STATUS } from '../../actions/publicActions/const';
+} from 'Redux/actions/routerActions/const';
+import { validationItems } from 'Utils';
+import { SET_STATUS } from 'Redux/actions/publicActions/const';
 
 const initialState = {
   path: null,

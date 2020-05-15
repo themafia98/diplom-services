@@ -3,10 +3,10 @@ import React from 'react';
 import { dynamicTableType } from '../types';
 import _ from 'lodash';
 import moment from 'moment';
-import Output from '../../Output';
+import Output from 'Components/Output';
 import { Table, message, Input, Button, Icon, Empty } from 'antd';
-import { getDataSource } from '../../../Utils';
-import modelContext from '../../../Models/context';
+import { getDataSource } from 'Utils';
+import modelContext from 'Models/context';
 
 class DynamicTable extends React.PureComponent {
   state = {

@@ -3,7 +3,7 @@ import React, { useState, useContext } from 'react';
 import { recovoryType } from './types';
 import { Button, Input } from 'antd';
 
-import modelContext from '../../Models/context';
+import modelContext from 'Models/context';
 
 const Recovory = (props) => {
   const { Request } = useContext(modelContext);

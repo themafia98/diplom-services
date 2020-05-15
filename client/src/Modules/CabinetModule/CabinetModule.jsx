@@ -4,12 +4,12 @@ import { connect } from 'react-redux';
 import { cabinetType } from './types';
 import _ from 'lodash';
 import { Modal, Upload, message, Icon, Button } from 'antd';
-import { updateUdata } from '../../Redux/actions/publicActions';
-import { saveComponentStateAction } from '../../Redux/actions/routerActions';
-import UserCard from '../../Components/UserCard';
-import TitleModule from '../../Components/TitleModule';
-import StreamBox from '../../Components/StreamBox';
-import modelContext from '../../Models/context';
+import { updateUdata } from 'Redux/actions/publicActions';
+import { saveComponentStateAction } from 'Redux/actions/routerActions';
+import UserCard from 'Components/UserCard';
+import TitleModule from 'Components/TitleModule';
+import StreamBox from 'Components/StreamBox';
+import modelContext from 'Models/context';
 const { Dragger } = Upload;
 
 class CabinetModule extends React.PureComponent {

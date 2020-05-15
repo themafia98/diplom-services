@@ -3,7 +3,7 @@ import React from 'react';
 import { fileType } from './types';
 import { v4 as uuid } from 'uuid';
 import { Upload, Icon, message } from 'antd';
-import modelContext from '../../Models/context';
+import modelContext from 'Models/context';
 const { Dragger } = Upload;
 
 class File extends React.Component {

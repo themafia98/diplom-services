@@ -2,7 +2,7 @@
 import React from 'react';
 import _ from 'lodash';
 import { Modal, Select, message, Input } from 'antd';
-import modelContext from '../../../../Models/context';
+import modelContext from 'Models/context';
 
 const { Option } = Select;
 

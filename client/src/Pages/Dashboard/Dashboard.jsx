@@ -13,17 +13,17 @@ import {
   removeTabAction,
   logoutAction,
   shouldUpdateAction,
-} from '../../Redux/actions/routerActions';
-import { loadCurrentData } from '../../Redux/actions/routerActions/middleware';
-import { errorRequestAction, clearCache, setStatus, showGuile } from '../../Redux/actions/publicActions';
-import { routeParser } from '../../Utils';
+} from 'Redux/actions/routerActions';
+import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
+import { errorRequestAction, clearCache, setStatus, showGuile } from 'Redux/actions/publicActions';
+import { routeParser } from 'Utils';
 
-import FixedToolbar from '../../Components/FixedToolbar';
-import Loader from '../../Components/Loader';
-import HeaderView from '../../Components/HeaderView';
-import ContentView from '../../Components/ContentView';
-import MenuView from '../../Components/MenuView';
-import modelContext from '../../Models/context';
+import FixedToolbar from 'Components/FixedToolbar';
+import Loader from 'Components/Loader';
+import HeaderView from 'Components/HeaderView';
+import ContentView from 'Components/ContentView';
+import MenuView from 'Components/MenuView';
+import modelContext from 'Models/context';
 
 let deferredPrompt = null;
 

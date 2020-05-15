@@ -2,7 +2,7 @@
 import React, { useState, useContext } from 'react';
 import { mailResponserType } from '../types';
 import { Input, message, Modal } from 'antd';
-import modalContext from '../../../Models/context';
+import modalContext from 'Models/context';
 
 const MailResponserModal = (props) => {
   const {

@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useState } from 'react';
 import { commentType } from './types';
-import Output from '../Output';
+import Output from 'Components/Output';
 import { Icon, Tooltip, Input, Button } from 'antd';
 
 const Comment = (props) => {

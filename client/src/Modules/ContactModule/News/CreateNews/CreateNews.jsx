@@ -3,12 +3,12 @@ import React from 'react';
 import { v4 as uuid } from 'uuid';
 import { createNewsType } from '../../types';
 import moment from 'moment';
-import TitleModule from '../../../../Components/TitleModule';
-import EditorTextarea from '../../../../Components/Textarea/EditorTextarea';
+import TitleModule from 'Components/TitleModule';
+import EditorTextarea from 'Components/Textarea/EditorTextarea';
 import { message, notification, Input } from 'antd';
-import modelContext from '../../../../Models/context';
+import modelContext from 'Models/context';
 
-import { createNotification, createEntity } from '../../../../Utils';
+import { createNotification, createEntity } from 'Utils';
 
 class CreateNews extends React.PureComponent {
   state = {

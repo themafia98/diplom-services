@@ -4,17 +4,17 @@ import { createTaskType } from '../types';
 import clsx from 'clsx';
 import _ from 'lodash';
 import Scrollbars from 'react-custom-scrollbars';
-import TitleModule from '../../../Components/TitleModule';
+import TitleModule from 'Components/TitleModule';
 import moment from 'moment';
 import { Button, Input, Select, DatePicker, message } from 'antd';
-import Textarea from '../../../Components/Textarea';
-//import File from '../../../Components/File';
+import Textarea from 'Components/Textarea';
+//import File from 'Components/File';
 import { v4 as uuid } from 'uuid';
 
-import { routePathNormalise, routeParser, createEntity, createNotification } from '../../../Utils';
-import modelContext from '../../../Models/context';
+import { routePathNormalise, routeParser, createEntity, createNotification } from 'Utils';
+import modelContext from 'Models/context';
 
-import { CREATE_TASK_SCHEMA } from '../../../Models/Schema/const';
+import { CREATE_TASK_SCHEMA } from 'Models/Schema/const';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;

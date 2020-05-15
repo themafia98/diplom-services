@@ -6,16 +6,16 @@ import _ from 'lodash';
 import { Pagination, Button, message, Empty, Spin } from 'antd';
 
 import Scrollbars from 'react-custom-scrollbars';
-import { setActiveTabAction, openPageWithDataAction } from '../../../Redux/actions/routerActions';
-import { middlewareCaching } from '../../../Redux/actions/publicActions/middleware';
+import { setActiveTabAction, openPageWithDataAction } from 'Redux/actions/routerActions';
+import { middlewareCaching } from 'Redux/actions/publicActions/middleware';
 
-import TabContainer from '../../../Components/TabContainer';
+import TabContainer from 'Components/TabContainer';
 import NewsCard from './NewsCard';
-import TitleModule from '../../../Components/TitleModule';
+import TitleModule from 'Components/TitleModule';
 
-import { routePathNormalise } from '../../../Utils';
+import { routePathNormalise } from 'Utils';
 
-import modelContext from '../../../Models/context';
+import modelContext from 'Models/context';
 
 class News extends React.PureComponent {
   state = {

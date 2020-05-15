@@ -3,14 +3,14 @@ import React from 'react';
 import { streamBoxType } from './types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { loadCurrentData, multipleLoadData } from '../../Redux/actions/routerActions/middleware';
-import { addTabAction, openPageWithDataAction, setActiveTabAction } from '../../Redux/actions/routerActions';
+import { loadCurrentData, multipleLoadData } from 'Redux/actions/routerActions/middleware';
+import { addTabAction, openPageWithDataAction, setActiveTabAction } from 'Redux/actions/routerActions';
 import _ from 'lodash';
 import { Avatar, message, Tooltip, Spin } from 'antd';
 import { Scrollbars } from 'react-custom-scrollbars';
 import clsx from 'clsx';
-import { routeParser, routePathNormalise, buildRequestList } from '../../Utils';
-import modelContext from '../../Models/context';
+import { routeParser, routePathNormalise, buildRequestList } from 'Utils';
+import modelContext from 'Models/context';
 
 class StreamBox extends React.Component {
   state = {

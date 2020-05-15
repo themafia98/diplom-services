@@ -4,15 +4,15 @@ import { contentViewType } from './types';
 import _ from 'lodash';
 import { Layout } from 'antd';
 
-import TabContainer from '../TabContainer';
-import MainModule from '../../Modules/MainModule';
-import CabinetModule from '../../Modules/CabinetModule';
-import TaskModule from '../../Modules/TaskModule';
-import StatisticsModule from '../../Modules/StatisticsModule';
-import SettingsModule from '../../Modules/SettingsModule';
-import ContactModule from '../../Modules/ContactModule';
-import CustomersModule from '../../Modules/CustomersModule';
-import WikiModule from '../../Modules/WikiModule';
+import TabContainer from 'Components/TabContainer';
+import MainModule from 'Modules/MainModule';
+import CabinetModule from 'Modules/CabinetModule';
+import TaskModule from 'Modules/TaskModule';
+import StatisticsModule from 'Modules/StatisticsModule';
+import SettingsModule from 'Modules/SettingsModule';
+import ContactModule from 'Modules/ContactModule';
+import CustomersModule from 'Modules/CustomersModule';
+import WikiModule from 'Modules/WikiModule';
 
 import { v4 as uuid } from 'uuid';
 

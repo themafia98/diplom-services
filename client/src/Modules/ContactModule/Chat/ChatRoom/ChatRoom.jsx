@@ -6,7 +6,7 @@ import clsx from 'clsx';
 import Scrollbars from 'react-custom-scrollbars';
 import { Button, Avatar } from 'antd';
 
-import Textarea from '../../../../Components/Textarea';
+import Textarea from 'Components/Textarea';
 import Message from './Message';
 
 const ChatRoom = (props) => {

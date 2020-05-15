@@ -1,8 +1,8 @@
 // @ts-nocheck
 import React from 'react';
 import { taskModuleListType } from '../types';
-import TableView from '../../../Components/TableView';
-import TitleModule from '../../../Components/TitleModule';
+import TableView from 'Components/TableView';
+import TitleModule from 'Components/TitleModule';
 
 class TaskModuleList extends React.PureComponent {
   refModuleTask = React.createRef();

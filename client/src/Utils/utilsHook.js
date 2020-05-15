@@ -6,7 +6,7 @@ import {
   TASK_SCHEMA,
   TASK_CONTROLL_JURNAL_SCHEMA,
   NEWS_SCHEMA,
-} from '../Models/Schema/const';
+} from 'Models/Schema/const';
 
 const getStoreSchema = (store, methodQuery = null) => {
   switch (store) {

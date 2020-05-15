@@ -4,8 +4,8 @@ import { newsViewType } from '../../types';
 import _ from 'lodash';
 import { v4 as uuid } from 'uuid';
 
-import TitleModule from '../../../../Components/TitleModule';
-import EditorTextarea from '../../../../Components/Textarea/EditorTextarea';
+import TitleModule from 'Components/TitleModule';
+import EditorTextarea from 'Components/Textarea/EditorTextarea';
 
 const NewsViewPage = (props) => {
   const { content: contentEntity, title, id: _id } = props;

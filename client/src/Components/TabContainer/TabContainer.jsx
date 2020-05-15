@@ -2,7 +2,7 @@
 import React, { useCallback, useMemo, useEffect } from 'react';
 import { tabContainerType } from './types';
 import clsx from 'clsx';
-import ActionPortal from '../ActionPortal';
+import ActionPortal from 'Components/ActionPortal';
 
 const TabContainer = (props) => {
   const { isBackground, visible, children, className, isPortal, isTab, onChangeVisibleAction } = props;

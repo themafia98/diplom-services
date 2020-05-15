@@ -4,8 +4,8 @@ import { notificationPopupType } from './types';
 import _ from 'lodash';
 import { Icon, Badge, Popover } from 'antd';
 import NotificationItem from './NotificationItem';
-import StreamBox from '../StreamBox';
-import modelContext from '../../Models/context';
+import StreamBox from 'Components/StreamBox';
+import modelContext from 'Models/context';
 class NotificationPopup extends React.PureComponent {
   state = {
     counter: 0,

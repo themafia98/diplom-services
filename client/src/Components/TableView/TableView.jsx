@@ -6,17 +6,13 @@ import _ from 'lodash';
 import { Empty, Spin, Tooltip, Icon } from 'antd';
 import Scrollbars from 'react-custom-scrollbars';
 
-import { routePathNormalise, routeParser } from '../../Utils';
-import Output from '../Output';
+import { routePathNormalise, routeParser } from 'Utils';
+import Output from 'Components/Output';
 import DynamicTable from './DynamicTable';
 
-import {
-  openPageWithDataAction,
-  removeTabAction,
-  addToRouteDataAction,
-} from '../../Redux/actions/routerActions';
-import { loadCurrentData } from '../../Redux/actions/routerActions/middleware';
-import modelContext from '../../Models/context';
+import { openPageWithDataAction, removeTabAction, addToRouteDataAction } from 'Redux/actions/routerActions';
+import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
+import modelContext from 'Models/context';
 
 class TableView extends React.Component {
   state = {

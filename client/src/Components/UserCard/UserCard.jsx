@@ -3,11 +3,11 @@ import React from 'react';
 import clsx from 'clsx';
 import { userCardType } from './types';
 import { connect } from 'react-redux';
-import { updateUdata } from '../../Redux/actions/publicActions';
+import { updateUdata } from 'Redux/actions/publicActions';
 import { Avatar, Button, Icon, Dropdown, Menu, Tooltip, message, Popover } from 'antd';
-import ModalWindow from '../ModalWindow';
+import ModalWindow from 'Components/ModalWindow';
 
-import modelContext from '../../Models/context';
+import modelContext from 'Models/context';
 import imageCard from './wallpaper_user.jpg';
 
 const { Item: MenuItem } = Menu;

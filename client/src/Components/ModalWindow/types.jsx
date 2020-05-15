@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { udataType } from '../../types';
+import { udataType } from 'types';
 const { func, string, object, array, bool, number, oneOfType } = PropTypes;
 
 export const modalWindowType = {

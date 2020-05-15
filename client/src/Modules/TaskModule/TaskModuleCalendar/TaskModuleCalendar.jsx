@@ -4,12 +4,12 @@ import { taskModuleCalendarType } from '../types';
 import _ from 'lodash';
 import Scrollbars from 'react-custom-scrollbars';
 import moment from 'moment';
-import TitleModule from '../../../Components/TitleModule';
+import TitleModule from 'Components/TitleModule';
 import { Calendar, Popover, Button, message, Dropdown, Menu } from 'antd';
-import DrawerViewer from '../../../Components/DrawerViewer';
-import modelContext from '../../../Models/context';
-import { routePathNormalise } from '../../../Utils';
-import Output from '../../../Components/Output';
+import DrawerViewer from 'Components/DrawerViewer';
+import modelContext from 'Models/context';
+import { routePathNormalise } from 'Utils';
+import Output from 'Components/Output';
 
 class TaskModuleCalendar extends React.PureComponent {
   state = {

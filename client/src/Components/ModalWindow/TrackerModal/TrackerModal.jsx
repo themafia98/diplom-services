@@ -4,7 +4,7 @@ import { trackerModalType } from '../types';
 import moment from 'moment';
 import clsx from 'clsx';
 import { Input, DatePicker } from 'antd';
-import Textarea from '../../Textarea';
+import Textarea from 'Components/Textarea';
 
 const TrackerModal = (props) => {
   const { visible, typeView = '', onChangeTask, error, timeLost, description, descriptionDefault } = props;

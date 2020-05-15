@@ -3,19 +3,15 @@ import React from 'react';
 import { settingsModuleType } from './types';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import {
-  settingsLogsSelector,
-  settingsStatusSelector,
-  settingsArtifactsSelector,
-} from '../../Utils/selectors';
-import { saveComponentStateAction } from '../../Redux/actions/routerActions';
-import { updateUdata, setStatus, onLoadSettings } from '../../Redux/actions/publicActions';
+import { settingsLogsSelector, settingsStatusSelector, settingsArtifactsSelector } from 'Utils/selectors';
+import { saveComponentStateAction } from 'Redux/actions/routerActions';
+import { updateUdata, setStatus, onLoadSettings } from 'Redux/actions/publicActions';
 import { message } from 'antd';
 import Scrollbars from 'react-custom-scrollbars';
-import { middlewareCaching } from '../../Redux/actions/publicActions/middleware';
-import modelContext from '../../Models/context';
-import ObserverTime from '../../Components/ObserverTime';
-import TitleModule from '../../Components/TitleModule';
+import { middlewareCaching } from 'Redux/actions/publicActions/middleware';
+import modelContext from 'Models/context';
+import ObserverTime from 'Components/ObserverTime';
+import TitleModule from 'Components/TitleModule';
 
 import PanelPassword from './Panels/PanelPassword';
 import PanelCommon from './Panels/PanelCommon';

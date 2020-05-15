@@ -1,8 +1,8 @@
 // @ts-nocheck
 import React from 'react';
 import { contactsType } from '../types';
-import TitleModule from '../../../Components/TitleModule';
-import modelContext from '../../../Models/context';
+import TitleModule from 'Components/TitleModule';
+import modelContext from 'Models/context';
 import WindowScroller from 'react-virtualized/dist/commonjs/WindowScroller';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 import VList from 'react-virtualized/dist/commonjs/List';

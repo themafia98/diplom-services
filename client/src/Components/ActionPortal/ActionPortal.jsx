@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React from 'react';
-import Node from '../../Models/Node';
-import modalContext from '../../Models/context';
+import Node from 'Models/Node';
+import modalContext from 'Models/context';
 import actionPortalType from './types';
 
 class ActionPortal extends React.Component {

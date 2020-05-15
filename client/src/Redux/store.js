@@ -2,9 +2,9 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 
-import Request from '../Models/Rest';
-import { clientDB } from '../Models/ClientSideDatabase';
-import Schema from '../Models/Schema';
+import Request from 'Models/Rest';
+import { clientDB } from 'Models/ClientSideDatabase';
+import Schema from 'Models/Schema';
 import combineReducers from './reducers';
 
 const schema = new Schema('no-strict');

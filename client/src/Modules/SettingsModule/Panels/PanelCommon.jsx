@@ -2,7 +2,7 @@
 import React, { useState, useContext, useEffect, useCallback } from 'react';
 import { panelCommonType } from './types';
 import { Button, Collapse, Input } from 'antd';
-import modelContext from '../../../Models/context';
+import modelContext from 'Models/context';
 const { Panel } = Collapse;
 
 const PanelCommon = (props) => {

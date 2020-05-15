@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { udataType, contentType, emptyShape, newsItemType } from '../../types';
+import { udataType, contentType, emptyShape, newsItemType } from 'types';
 const { func, string, bool, object, oneOf, arrayOf, objectOf, oneOfType, number, array } = PropTypes;
 
 export const contactModuleType = {

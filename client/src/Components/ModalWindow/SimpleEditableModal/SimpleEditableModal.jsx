@@ -3,7 +3,7 @@ import { editableModalType } from '../types';
 import _ from 'lodash';
 import { Modal, Tooltip, message } from 'antd';
 
-import Textarea from '../../Textarea';
+import Textarea from 'Components/Textarea';
 
 const SimpleEditableModal = (props) => {
   const {

@@ -3,8 +3,8 @@ import React, { useState, useEffect, useContext, useRef, useCallback } from 'rea
 import { useHistory } from 'react-router-dom';
 import { privateType } from './types';
 import { Route } from 'react-router-dom';
-import Loader from '../Loader';
-import modelsContext from '../../Models/context';
+import Loader from 'Components/Loader';
+import modelsContext from 'Models/context';
 
 const PrivateRoute = ({ component: Component, onLogoutAction, onSetStatus, ...routeProps }) => {
   /**

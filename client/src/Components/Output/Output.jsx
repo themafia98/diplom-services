@@ -2,10 +2,10 @@
 import React from 'react';
 import { outputType } from './types';
 import clsx from 'clsx';
-import { routePathNormalise } from '../../Utils';
+import { routePathNormalise } from 'Utils';
 import { Tooltip, Button, message, Spin } from 'antd';
 import _ from 'lodash';
-import modelContext from '../../Models/context';
+import modelContext from 'Models/context';
 
 class Output extends React.PureComponent {
   state = {

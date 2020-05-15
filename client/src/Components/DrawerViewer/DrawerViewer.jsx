@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useState, useEffect, useMemo } from 'react';
 import clsx from 'clsx';
-import { getComponentByKey } from '../../Utils';
+import { getComponentByKey } from 'Utils';
 import { drawerViewerType } from './types';
 import { Drawer } from 'antd';
 

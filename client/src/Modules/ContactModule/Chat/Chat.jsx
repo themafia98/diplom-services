@@ -9,19 +9,15 @@ import ChatMenu from './ChatMenu';
 
 import { notification, message, Popover, Spin } from 'antd';
 
-import { setSocketConnection, addMsg } from '../../../Redux/actions/socketActions';
-import {
-  loadActiveChats,
-  loadingDataByToken,
-  updateRooms,
-} from '../../../Redux/actions/socketActions/middleware';
+import { setSocketConnection, addMsg } from 'Redux/actions/socketActions';
+import { loadActiveChats, loadingDataByToken, updateRooms } from 'Redux/actions/socketActions/middleware';
 
-import ChatModel from '../../../Models/Chat';
+import ChatModel from 'Models/Chat';
 import ChatModal from './ChatRoom/ChatModal';
-import TitleModule from '../../../Components/TitleModule';
+import TitleModule from 'Components/TitleModule';
 import ChatRoom from './ChatRoom';
 
-import modelsContext from '../../../Models/context';
+import modelsContext from 'Models/context';
 
 class Chat extends React.PureComponent {
   state = {

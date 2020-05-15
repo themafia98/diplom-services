@@ -1,12 +1,6 @@
 // @ts-nocheck
 import { сachingAction, errorRequestAction, setStatus } from '../';
-import {
-  cachingHook,
-  getterCacheHook,
-  putterCacheHook,
-  errorHook,
-  updateEntityHook,
-} from '../../../../Utils';
+import { cachingHook, getterCacheHook, putterCacheHook, errorHook, updateEntityHook } from 'Utils';
 import { onLoadArtifacts, onLoadSettings } from '../';
 import { multipleLoadData } from '../../routerActions/middleware';
 import { updateItemStateAction } from '../../routerActions';

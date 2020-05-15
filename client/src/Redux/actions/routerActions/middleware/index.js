@@ -1,9 +1,9 @@
 // @ts-nocheck
-import { getNormalizedPath, sucessEvent, errorHook, coreUpdaterDataHook } from '../../../../Utils';
+import { getNormalizedPath, sucessEvent, errorHook, coreUpdaterDataHook } from 'Utils';
 import { saveComponentStateAction, loadFlagAction } from '../';
 import { errorRequestAction, setStatus } from '../../publicActions';
 
-import utilsHooks from '../../../../Utils/Hooks/utils';
+import utilsHooks from 'Utils/Hooks/utils';
 const { runSync } = utilsHooks;
 
 const loadCurrentData = (params) => async (dispatch, getState, { schema, Request, clientDB }) => {

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { udataType } from '../../types';
+import { udataType } from 'types';
 const { object, string, oneOfType, oneOf } = PropTypes;
 
 export const notificationPopupType = {
