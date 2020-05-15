@@ -234,7 +234,7 @@ namespace Action {
           const { _id = null, key = '' } = (updateProps as Record<string, string>) || {};
           const validId: any = typeof _id === 'string' ? Types.ObjectId(_id) : null;
           if (!validId) delete copy._id;
-          console.log('updteProps', updateProps);
+
           await this.updateEntity(
             model,
             {
