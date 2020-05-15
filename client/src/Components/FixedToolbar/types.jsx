@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
 
-const { oneOfType, object, func } = PropTypes;
+const { oneOfType, object, func, string } = PropTypes;
 
 const fixedToolbarType = {
   onChangeVisibleAction: oneOfType([func, () => null]),
   customRender: oneOfType([object, () => null]),
-  name: 'Action',
+  name: string,
 };
 
 export default fixedToolbarType;

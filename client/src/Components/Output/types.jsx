@@ -12,6 +12,6 @@ export const outputType = {
   links: oneOfType([array, () => null]),
   list: bool,
   isLink: bool,
-  isStaticList: false,
-  outputClassName: '',
+  isStaticList: bool,
+  outputClassName: string,
 };

@@ -30,7 +30,7 @@ export const taskViewType = {
   data: taskEntityType.isRequired,
   router: object.isRequired,
   publicReducer: object.isRequired,
-  modeControllEdit: bool.isRequired,
+  modeControllEdit: oneOfType([bool.isRequired, object.isRequired, () => null]),
   udata: udataType.isRequired,
   onCaching: func.isRequired,
   onUpdate: func.isRequired,

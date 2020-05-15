@@ -52,6 +52,7 @@ class TaskView extends React.PureComponent {
   static propTypes = taskViewType;
   static defaultProps = {
     columnStyleConfig: { xxl: 1, xl: 1, lg: 1, d: 1, sm: 1, xs: 1 },
+    modeControllEdit: {},
   };
 
   static getDerivedStateFromProps = (props, state) => {
