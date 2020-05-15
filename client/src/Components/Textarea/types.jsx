@@ -1,16 +1,15 @@
 import PropTypes from 'prop-types';
 import { contentType, emptyShape } from '../../types';
-const { number, bool, string, func, oneOfType, oneOf } = PropTypes;
+const { number, bool, string, func, oneOfType } = PropTypes;
 
 export const textAreaType = {
   row: oneOfType([number.isRequired, string.isRequired]).isRequired,
-  value: oneOfType([oneOf([null]), string]),
+  value: oneOfType([() => null, string]),
   className: string.isRequired,
-  defaultValue: string.isRequired,
   name: string.isRequired,
-  onKeyDown: oneOfType([oneOf([null]).isRequired, func.isRequired]),
-  onClick: oneOfType([oneOf([null]).isRequired, func.isRequired]),
-  onChange: oneOfType([oneOf([null]).isRequired, func.isRequired]),
+  onKeyDown: oneOfType([() => null, func.isRequired]),
+  onClick: oneOfType([() => null, func.isRequired]),
+  onChange: oneOfType([() => null, func.isRequired]),
   shouldDisplayButton: bool,
   contentState: contentType,
   buttonName: string,

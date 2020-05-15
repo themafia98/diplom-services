@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { udataType } from '../../types';
-const { func, string, oneOf, oneOfType, object } = PropTypes;
+const { func, string, oneOf, oneOfType, object, bool } = PropTypes;
 
 export const userCardType = {
   personalData: object.isRequired,
@@ -9,4 +9,7 @@ export const userCardType = {
   onUpdateUdata: oneOfType([oneOf([null]), func]),
   cbShowModal: oneOfType([oneOf([null]), func]),
   udata: udataType.isRequired,
+  cdShowModal: oneOfType([func, () => null]),
+  isHidePhone: bool,
+  isHideEmail: bool,
 };

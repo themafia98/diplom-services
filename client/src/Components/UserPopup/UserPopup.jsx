@@ -1,10 +1,17 @@
 // @ts-nocheck
 import React from 'react';
+import userPopupType from './types';
 import _ from 'lodash';
 import { Avatar } from 'antd';
 
 class UserPopup extends React.PureComponent {
   state = {
+    udata: {},
+  };
+
+  static propTypes = userPopupType;
+  static defaultProps = {
+    goCabinet: null,
     udata: {},
   };
 

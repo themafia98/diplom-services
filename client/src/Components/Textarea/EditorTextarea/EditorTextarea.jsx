@@ -25,10 +25,15 @@ class EditorTextarea extends React.Component {
     clear: false,
     mode: '',
     contentType: {},
+    onChange: null,
+    clearStatus: null,
+    onPublish: null,
+    buttonName: '',
+    shouldDisplayButton: false,
   };
 
   static getDerivedStateFromProps = (props, state) => {
-    const { onChange = null, contentState = null } = props;
+    const { onChange, contentState } = props;
 
     if (_.isFunction(onChange) && contentState) {
       return {
@@ -53,7 +58,7 @@ class EditorTextarea extends React.Component {
   };
 
   componentDidUpdate = () => {
-    const { clear = false, clearStatus = null, readOnly = false } = this.props;
+    const { clear, clearStatus, readOnly } = this.props;
     const { schema = {} } = this.context;
     if (clear && !readOnly) {
       this.setState(
@@ -80,14 +85,7 @@ class EditorTextarea extends React.Component {
 
   render() {
     const { contentState = null } = this.state;
-    const {
-      mode = '',
-      onPublish = null,
-      readOnly = false,
-      disabled = false,
-      buttonName = '',
-      shouldDisplayButton = false,
-    } = this.props;
+    const { mode, onPublish, readOnly, disabled, buttonName, shouldDisplayButton } = this.props;
 
     const readOnlyProps =
       readOnly && contentState

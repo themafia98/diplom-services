@@ -41,6 +41,9 @@ class StreamBox extends React.Component {
     store: '',
     prefix: '',
     boxClassName: '',
+    parentPath: '',
+    buildItems: null,
+    listHeight: null,
   };
 
   static getDerivedStateFromProps = (props, state) => {
@@ -305,7 +308,12 @@ class StreamBox extends React.Component {
       .map((part) => part.trim())
       .filter(Boolean);
 
-    if (messageParts.length) return messageParts.map((part) => <p className="messagePart">{part}</p>);
+    if (messageParts.length)
+      return messageParts.map((part, i) => (
+        <p key={`${part}${i}`} className="messagePart">
+          {part}
+        </p>
+      ));
     else return message;
   };
 
@@ -316,15 +324,15 @@ class StreamBox extends React.Component {
       type,
       udata: { _id = '' } = {},
       udata: { avatar: myAvatar = null } = {},
-      parentPath = '',
-      parentDataName = '',
+      parentPath,
+      parentDataName,
       router: { routeData = {} } = {},
-      streamModule = '',
-      streamStore = '',
-      store = null,
-      buildItems = null,
-      listHeight = null,
-      personalUid = null,
+      streamModule,
+      streamStore,
+      store,
+      buildItems,
+      listHeight,
+      personalUid,
     } = this.props;
 
     const uid = !personalUid ? _id : personalUid;

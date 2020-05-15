@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-const { object, func, string, arrayOf, bool } = PropTypes;
+const { object, func, string, arrayOf, bool, oneOfType } = PropTypes;
 
 export const contentViewType = {
   dashboardStrem: object.isRequired,
@@ -8,11 +8,11 @@ export const contentViewType = {
   onErrorRequestAction: func.isRequired,
   path: string.isRequired,
   statusApp: string.isRequired,
-  rest: func.isRequired,
+  rest: object.isRequired,
   onShowLoader: func.isRequired,
   onHideLoader: func.isRequired,
   onSetStatus: func.isRequired,
-  webSocket: object.isRequired,
+  webSocket: oneOfType([object.isRequired, () => null]),
   onChangeVisibleAction: func.isRequired,
   isToolbarActive: bool,
   visibilityPortal: bool,

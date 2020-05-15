@@ -7,7 +7,7 @@ import { textAreaType } from './types';
 const { TextArea } = Input;
 
 const Textarea = (props) => {
-  const { row, value, className, name, onKeyDown, onClick, onChange, editor, editorKey = null } = props;
+  const { row, value, className, name, onKeyDown, onClick, onChange, editor, editorKey } = props;
   const valueProps = value || value === '' ? { value } : {};
   const propsKey = editorKey ? { key: editorKey } : {};
 
@@ -39,6 +39,7 @@ Textarea.defaultProps = {
   onClick: null,
   onChange: null,
   editor: false,
+  editorKey: '',
 };
 
 Textarea.propTypes = textAreaType;

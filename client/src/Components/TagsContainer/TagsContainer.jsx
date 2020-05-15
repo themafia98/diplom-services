@@ -109,6 +109,7 @@ TagsContainer.defaultProps = {
   modeControll: 'default',
   modeControllEdit: false,
   tagList: [],
+  onChangeTagList: null,
 };
 TagsContainer.propTypes = tagsContainerType;
 

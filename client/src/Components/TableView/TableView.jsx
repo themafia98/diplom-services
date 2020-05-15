@@ -31,6 +31,20 @@ class TableView extends React.Component {
     tasks: [],
     filterBy: '',
     visible: false,
+    onLoadCurrentData: null,
+    user: {},
+    router: [],
+    publicReducer: {},
+    udata: {},
+    height: 300,
+    onOpenPageWithData: null,
+    setCurrentTab: null,
+    loaderMethods: {},
+    loading: false,
+    counter: null,
+    tableViewHeight: window?.innerHeight / 2 - 70,
+    onAddRouteData: null,
+    statusApp: '',
   };
 
   componentDidUpdate = (prevProps) => {
@@ -41,7 +55,7 @@ class TableView extends React.Component {
     });
 
     if (prevProps.visible !== visible && page === 'mainModule' && itemId === 'table') {
-      if (visible)
+      if (visible & onLoadCurrentData)
         onLoadCurrentData({
           path: validPath ? validPath : '',
           xhrPath: 'userList',
@@ -84,9 +98,9 @@ class TableView extends React.Component {
   getComponentByPath = (path) => {
     const {
       user,
-      filterBy = '',
+      filterBy,
       router,
-      publicReducer: { requestError },
+      publicReducer: { requestError } = {},
       udata = {},
       height: heightProps,
       visible,
@@ -94,8 +108,8 @@ class TableView extends React.Component {
       setCurrentTab,
       loaderMethods = {},
       loading,
-      counter = null,
-      tableViewHeight = window?.innerHeight / 2 - 70,
+      counter,
+      tableViewHeight,
       onAddRouteData,
       statusApp,
     } = this.props;

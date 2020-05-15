@@ -21,7 +21,10 @@ export const streamBoxType = {
   personalUid: oneOfType([string, () => null]),
   setCurrentTab: func,
   onOpenPageWithData: func,
-  router: object.isReuqred,
+  router: oneOfType([object, () => null]),
   store: string.isRequired,
   prefix: string.isRequired,
+  parentPath: string,
+  buildItems: oneOfType([func, () => null]),
+  listHeight: oneOfType([func, () => null]),
 };

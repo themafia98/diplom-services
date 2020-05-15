@@ -14,6 +14,12 @@ export const tableViewType = {
   router: object.isRequired,
   publicReducer: object.isRequired,
   onLoadCurrentData: func.isRequired,
+  onOpenPageWithData: oneOfType([func, () => null]),
+  loaderMethods: object.isRequired,
+  loading: bool,
+  counter: oneOfType([number, string, () => null]),
+  onAddRouteData: oneOfType([func, () => null]),
+  statusApp: string,
 };
 
 export const dynamicTableType = {
@@ -27,4 +33,8 @@ export const dynamicTableType = {
   udata: udataType.isRequired,
   height: oneOfType([string.isRequired, number.isRequired]).isRequired,
   loading: bool,
+  filteredUsers: array,
+  cachesAuthorList: array,
+  cachesEditorList: array,
+  onAddRouteData: oneOfType([func, () => null]),
 };

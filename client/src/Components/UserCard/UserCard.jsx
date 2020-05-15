@@ -18,9 +18,19 @@ class UserCard extends React.Component {
   };
   static propTypes = userCardType;
   static contextType = modelContext;
+  static defaultProps = {
+    modePage: '',
+    udata: {},
+    onUpdateUdata: null,
+    cdShowModal: null,
+    imageUrl: '',
+    personalData: {},
+    isHidePhone: false,
+    isHideEmail: false,
+  };
 
   static getDerivedStateFromProps = (props, state) => {
-    const { modePage: modePageProps = '' } = props || {};
+    const { modePage: modePageProps } = props || {};
     const { modePage = '' } = state;
 
     const isPersonalPage = modePageProps && modePageProps.includes('personal');
@@ -64,7 +74,7 @@ class UserCard extends React.Component {
 
       const { response: { metadata: { summary = '' } = {} } = {} } = res.data || {};
 
-      onUpdateUdata({ summary });
+      if (onUpdateUdata) onUpdateUdata({ summary });
 
       this.setState({ visibilityModal: false });
     } catch (error) {
@@ -81,14 +91,7 @@ class UserCard extends React.Component {
 
   render() {
     const { visibilityModal = false, modePage = '' } = this.state;
-    const {
-      udata = {},
-      cdShowModal,
-      imageUrl = '',
-      personalData = {},
-      isHidePhone = false,
-      isHideEmail = false,
-    } = this.props;
+    const { udata, cdShowModal, imageUrl, personalData, isHidePhone, isHideEmail } = this.props;
     const isPersonalPage = modePage === 'personal';
     const {
       displayName = '',

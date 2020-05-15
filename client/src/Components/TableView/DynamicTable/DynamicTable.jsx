@@ -19,9 +19,23 @@ class DynamicTable extends React.PureComponent {
 
   static contextType = modelContext;
   static propTypes = dynamicTableType;
+  static defaultProps = {
+    counter: null,
+    router: {},
+    depModuleName: '',
+    udata: {},
+    filteredUsers: [],
+    cachesAuthorList: [],
+    cachesEditorList: [],
+    onOpenPageWithData: null,
+    setCurrentTab: null,
+    routeParser: null,
+    onAddRouteData: null,
+    routePathNormalise: '',
+  };
 
   static getDerivedStateFromProps = (props, state) => {
-    const { counter = null } = props;
+    const { counter } = props;
     const { counter: counterState = null } = state;
     if (!_.isNull(counter) && counter !== counterState) {
       return {
