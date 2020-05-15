@@ -3,6 +3,7 @@ import React from 'react';
 import { fileType } from './types';
 import { v4 as uuid } from 'uuid';
 import { Upload, Icon, message } from 'antd';
+import modelContext from '../../Models/context';
 const { Dragger } = Upload;
 
 class File extends React.Component {
@@ -10,7 +11,18 @@ class File extends React.Component {
     filesArray: null,
   };
 
+  static contextType = modelContext;
   static propTypes = fileType;
+  static defaultProps = {
+    filesArray: [],
+    onAddFileList: null,
+    onRemoveFile: null,
+    moduleData: {},
+    rest: null,
+    module: '',
+    isLocal: false,
+    customUrl: '',
+  };
 
   static getDerivedStateFromProps = (props, state) => {
     const isArray = Array.isArray(props.filesArray) && Array.isArray(state.filesArray);
@@ -47,12 +59,14 @@ class File extends React.Component {
   };
 
   onRemove = (file) => {
-    const { onRemoveFile = null } = this.props;
+    const { onRemoveFile } = this.props;
     if (onRemoveFile) onRemoveFile(file);
   };
 
   getFileProps = () => {
-    const { moduleData: { _id = '' } = {}, rest, module = '', isLocal = false, customUrl = '' } = this.props;
+    const { moduleData: { _id = '' } = {}, module, isLocal, customUrl } = this.props;
+    const { Request } = this.context;
+    const rest = new Request();
     const { filesArray = [] } = this.state;
     return {
       name: `${uuid()}__${_id}`,

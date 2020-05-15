@@ -8,7 +8,7 @@ import TitleModule from '../TitleModule';
 import { Timeline, Spin } from 'antd';
 
 const ObserverTime = (props) => {
-  const { title = '', settingsLogs = [], isLoading = false } = props;
+  const { title, settingsLogs, isLoading } = props;
 
   const renderLogs = (settingsLogs = []) => {
     if (!settingsLogs?.length) return null;
@@ -45,6 +45,8 @@ const ObserverTime = (props) => {
 };
 ObserverTime.defaultProps = {
   title: '',
+  settingsLogs: [],
+  isLoading: false,
 };
 ObserverTime.propTypes = observerTimeType;
 export default ObserverTime;

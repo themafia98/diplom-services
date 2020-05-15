@@ -42,5 +42,11 @@ const RegistrationModal = ({ cbOnChangeSelect, cbOnChange }) => (
     </Select>
   </div>
 );
+
+RegistrationModal.defaultProps = {
+  cbOnChangeSelect: null,
+  cbOnChange: null,
+};
 RegistrationModal.propTypes = formRegType;
+
 export default RegistrationModal;

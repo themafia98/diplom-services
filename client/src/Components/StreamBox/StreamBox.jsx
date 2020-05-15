@@ -24,6 +24,23 @@ class StreamBox extends React.Component {
     mode: '',
     visiblePopover: false,
     isLoadPopover: false,
+    type: null,
+    isSingleLoading: false,
+    setCounter: null,
+    udata: {},
+    filterStream: '',
+    onMultipleLoadData: null,
+    onSaveComponentState: null,
+    streamStore: '',
+    streamModule: '',
+    onLoadPopover: null,
+    personalUid: null,
+    setCurrentTab: null,
+    onOpenPageWithData: null,
+    router: {},
+    store: '',
+    prefix: '',
+    boxClassName: '',
   };
 
   static getDerivedStateFromProps = (props, state) => {
@@ -39,7 +56,7 @@ class StreamBox extends React.Component {
   onLoadingInterval = null;
 
   componentDidMount = async () => {
-    const { type = '', isSingleLoading = false, setCounter, visiblePopover, isLoadPopover } = this.props;
+    const { type, isSingleLoading, setCounter, visiblePopover, isLoadPopover } = this.props;
     const shouldUpdatePrivate = setCounter && visiblePopover && !isLoadPopover;
     const { config: { intervalNotification = 30000 } = {} } = this.context;
     if (!type) return;
@@ -63,7 +80,7 @@ class StreamBox extends React.Component {
   };
 
   onLoadingStreamList = async (shouldUpdatePrivate = false) => {
-    const { type = '', filterStream = '', udata: { _id: uid = '' } = {} } = this.props;
+    const { type, filterStream, udata: { _id: uid = '' } = {} } = this.props;
 
     const isPrivate = type.includes('private');
 
@@ -183,10 +200,10 @@ class StreamBox extends React.Component {
       setCurrentTab,
       onOpenPageWithData,
       router: { routeData = {}, actionTabs = [] } = {},
-      store = '',
-      prefix = '',
-      streamModule = '',
-      streamStore = '',
+      store,
+      prefix,
+      streamModule,
+      streamStore,
       type: typeStream = '',
     } = this.props;
 

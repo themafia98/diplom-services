@@ -26,6 +26,10 @@ const RightPanel = (props) => {
 };
 
 RightPanel.defaultProps = {
+  onUpdate: null,
+  onLogout: null,
+  goCabinet: null,
+  shouldUpdate: false,
   active: true,
   udata: {},
   notificationDep: {},

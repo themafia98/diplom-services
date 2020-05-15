@@ -25,10 +25,28 @@ class ContentView extends React.Component {
   };
 
   static propTypes = contentViewType;
+  static defaultProps = {
+    dashboardStrem: null,
+    shouldRenderMenu: true,
+    path: '',
+    actionTabs: [],
+    router: {},
+    onErrorRequestAction: null,
+    setCurrentTab: null,
+    statusApp: 'online',
+    rest: null,
+    onShowLoader: null,
+    onHideLoader: false,
+    onSetStatus: null,
+    webSocket: null,
+    onChangeVisibleAction: null,
+    isToolbarActive: false,
+    visibilityPortal: false,
+  };
 
   static getDerivedStateFromProps = (props, state) => {
-    const { isToolbarActive = false } = props;
-    const { visibilityPortal = false } = state;
+    const { isToolbarActive } = props;
+    const { visibilityPortal } = state;
 
     if (isToolbarActive !== visibilityPortal) {
       return {
@@ -40,7 +58,7 @@ class ContentView extends React.Component {
   };
 
   componentDidMount = () => {
-    const { dashboardStrem = null, shouldRenderMenu = true } = this.props;
+    const { dashboardStrem, shouldRenderMenu } = this.props;
     const { key = null } = this.state;
     document.addEventListener('keydown', this.disableF5);
     dashboardStrem.on('EventUpdate', this.updateFunction);
@@ -114,8 +132,8 @@ class ContentView extends React.Component {
       onShowLoader,
       onHideLoader,
       onSetStatus,
-      webSocket = null,
-      onChangeVisibleAction = null,
+      webSocket,
+      onChangeVisibleAction,
     } = this.props;
     const { key, visibilityPortal = false } = this.state;
 

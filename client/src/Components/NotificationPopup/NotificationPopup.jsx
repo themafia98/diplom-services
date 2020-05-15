@@ -17,6 +17,8 @@ class NotificationPopup extends React.PureComponent {
 
   static defaultProps = {
     type: 'private',
+    notificationDep: {},
+    udata: {},
   };
 
   static contextType = modelContext;
@@ -48,7 +50,7 @@ class NotificationPopup extends React.PureComponent {
   getNotifications = async () => {
     try {
       const { Request } = this.context;
-      const { notificationDep = {}, udata: { _id: uid } = {}, type = 'private' } = this.props;
+      const { notificationDep = {}, udata: { _id: uid } = {}, type } = this.props;
       const { filterStream = '' } = notificationDep;
       const rest = new Request();
       const res = await rest.sendRequest(`/system/${type}/notification`, 'POST', {

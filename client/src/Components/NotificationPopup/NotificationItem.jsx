@@ -4,7 +4,7 @@ import { notificationItemType } from './types';
 import clsx from 'clsx';
 import { Avatar } from 'antd';
 
-const NotificationItem = ({ image = null, content = '', authorName = '' }) => {
+const NotificationItem = ({ image, content, authorName }) => {
   return (
     <div className={clsx('notificationItem', image ? null : 'centerContent')}>
       {image ? (
@@ -21,6 +21,12 @@ const NotificationItem = ({ image = null, content = '', authorName = '' }) => {
       ) : null}
     </div>
   );
+};
+
+NotificationItem.defaultProps = {
+  image: null,
+  content: '',
+  authorName: '',
 };
 
 NotificationItem.propTypes = notificationItemType;

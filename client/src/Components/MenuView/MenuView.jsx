@@ -66,6 +66,14 @@ const MenuView = ({ collapsed, cbOnCollapse, items, cbMenuHandler, activeTabEUID
   );
 };
 
+MenuView.defaultProps = {
+  collapsed: false,
+  cbOnCollapse: null,
+  items: [],
+  cbMenuHandler: null,
+  activeTabEUID: '',
+  cbGoMain: null,
+};
 MenuView.propTypes = menuViewType;
 
 export default MenuView;

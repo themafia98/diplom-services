@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-const { array, string, object, func } = PropTypes;
+const { array, string, object, func, bool } = PropTypes;
 
 export const fileType = {
   module: string.isRequired,
@@ -8,4 +8,6 @@ export const fileType = {
   onAddFileList: func,
   filesArray: array,
   rest: object,
+  isLocal: bool,
+  customUrl: string,
 };

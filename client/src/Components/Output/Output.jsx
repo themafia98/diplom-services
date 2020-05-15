@@ -21,6 +21,14 @@ class Output extends React.PureComponent {
     id: '',
     action: '',
     typeOutput: '',
+    isLoad: false,
+    links: null,
+    className: '',
+    type: '',
+    list: false,
+    isLink: false,
+    isStaticList: false,
+    outputClassName: '',
   };
 
   child = null;
@@ -223,17 +231,17 @@ class Output extends React.PureComponent {
 
   render() {
     const {
-      links = null,
-      className = '',
+      links,
+      className,
       children,
       type,
       typeOutput,
       id,
       action,
-      list = false,
-      isLink = false,
-      isStaticList = false,
-      outputClassName = '',
+      list,
+      isLink,
+      isStaticList,
+      outputClassName,
     } = this.props;
     const { showTooltip } = this.state;
     let value = children;

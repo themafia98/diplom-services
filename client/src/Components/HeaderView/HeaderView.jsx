@@ -17,6 +17,10 @@ class HeaderView extends React.PureComponent {
   };
 
   static propTypes = headerViewType;
+  static defaultProps = {
+    tabArray: [],
+    dashboardStrem: null,
+  };
 
   componentDidUpdate = () => {
     const { sizeParent, size, length } = this.state;
@@ -68,7 +72,7 @@ class HeaderView extends React.PureComponent {
 
   update = () => {
     const { dashboardStrem } = this.props;
-    dashboardStrem.emit('EventUpdate', true);
+    if (dashboardStrem) dashboardStrem.emit('EventUpdate', true);
   };
 
   render() {

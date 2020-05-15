@@ -45,9 +45,30 @@ class ModalWindow extends React.PureComponent {
 
   static contextType = modelContext;
   static propTypes = modalWindowType;
+  static defaultProps = {
+    onEdit: null,
+    modeControll: null,
+    onRejectEdit: null,
+    modeEditContent: null,
+    defaultView: false,
+    onCancelEditModeContent: null,
+    onUpdateEditable: null,
+    rulesEdit: true,
+    rulesStatus: true,
+    isLoadList: true,
+    routeDataActive: {},
+    actionTypeList: 'default',
+    mode: '',
+    actionType: '',
+    keyTask: '',
+    udata: {},
+    path: '',
+    statusTaskValue: '',
+    accessStatus: [],
+  };
 
   static getDerivedStateFromProps = (props, state) => {
-    const { mode = '' } = props;
+    const { mode } = props;
     const { type = '' } = state;
 
     if (mode === 'reg' && _.isNull(type)) {
@@ -77,7 +98,7 @@ class ModalWindow extends React.PureComponent {
       });
   };
 
-  showModal = (event, type = '', response = '', action = '') => {
+  showModal = (event, type = '') => {
     const { [type]: visibleType = false } = this.state;
 
     this.setState({
@@ -135,7 +156,7 @@ class ModalWindow extends React.PureComponent {
       store: 'tasks',
     })
       .then((res) => {
-        onCancelEditModeContent(event);
+        if (onCancelEditModeContent) onCancelEditModeContent(event);
         this.setState({
           ...this.state,
           [typeState]: false,
@@ -164,8 +185,8 @@ class ModalWindow extends React.PureComponent {
     const {
       onCaching,
       routeDataActive: { key = null, name: nameTask = '' } = {},
-      actionType = null,
-      keyTask = null,
+      actionType,
+      keyTask,
       udata: { displayName = '', _id: uid = '' } = {},
     } = this.props;
     const item = { ...jurnal, depKey: keyTask, editor: displayName, uid };
@@ -207,7 +228,7 @@ class ModalWindow extends React.PureComponent {
   onChangeStatusTask = async (customStatus = null) => {
     const { taskStatus = null, type = '' } = this.state;
 
-    const { onUpdate, routeDataActive = {}, routeDataActive: { key = null } = {}, path = '' } = this.props;
+    const { onUpdate, routeDataActive = {}, routeDataActive: { key = null } = {}, path } = this.props;
 
     if (_.isNull(taskStatus) && !_.isString(customStatus))
       return this.setState({
@@ -383,7 +404,7 @@ class ModalWindow extends React.PureComponent {
   };
 
   renderChangerStatusModal = (actionProps = {}) => {
-    const { statusTaskValue = '', accessStatus = [] } = this.props;
+    const { statusTaskValue, accessStatus } = this.props;
     const { type = '' } = this.state;
     const { [type]: visible = false } = this.state;
     return (
@@ -416,17 +437,17 @@ class ModalWindow extends React.PureComponent {
 
   render() {
     const {
-      onEdit = null,
-      modeControll = null,
-      onRejectEdit = null,
-      modeEditContent = null,
-      defaultView = false,
-      onCancelEditModeContent = null,
+      onEdit,
+      modeControll,
+      onRejectEdit,
+      modeEditContent,
+      defaultView,
+      onCancelEditModeContent,
       onUpdateEditable,
-      rulesEdit = true,
-      rulesStatus = true,
-      isLoadList = true,
-      routeDataActive = {},
+      rulesEdit,
+      rulesStatus,
+      isLoadList,
+      routeDataActive,
       actionTypeList: viewType = 'default',
     } = this.props;
     const { type: typeView = '' } = this.state;

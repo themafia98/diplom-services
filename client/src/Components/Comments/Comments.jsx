@@ -17,6 +17,11 @@ class Comments extends React.PureComponent {
   };
 
   static propTypes = commentsContainerType;
+  static defaultProps = {
+    data: {},
+    udata: {},
+    rules: true,
+  };
 
   addCommentsDelay = _.debounce(async (event) => {
     try {

@@ -7,15 +7,15 @@ import Textarea from '../../Textarea';
 
 const SimpleEditableModal = (props) => {
   const {
-    visibility = true,
-    title = '',
-    onReject = null,
-    onOkey = null,
-    defaultValue = null,
-    showTooltip = false,
-    maxLength = null,
+    visibility,
+    title,
+    onReject,
+    onOkey,
+    defaultValue,
+    showTooltip,
+    maxLength,
     Component,
-    content = null,
+    content,
   } = props;
 
   const [value, setValue] = useState(defaultValue);
@@ -70,5 +70,17 @@ const SimpleEditableModal = (props) => {
   );
 };
 
+SimpleEditableModal.defaultProps = {
+  visibility: true,
+  title: '',
+  onReject: null,
+  onOkey: null,
+  defaultValue: null,
+  showTooltip: false,
+  maxLength: null,
+  Component: null,
+  content: null,
+};
 SimpleEditableModal.propTypes = editableModalType;
+
 export default SimpleEditableModal;

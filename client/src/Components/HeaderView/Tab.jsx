@@ -6,6 +6,10 @@ import { Icon, Tooltip } from 'antd';
 
 class Tab extends React.PureComponent {
   static propTypes = tabType;
+  static defaultProps = {
+    hendlerTab: null,
+    itemKey: null,
+  };
 
   eventHandler = (event) => {
     const { hendlerTab: callbackHendlerTab, itemKey } = this.props;

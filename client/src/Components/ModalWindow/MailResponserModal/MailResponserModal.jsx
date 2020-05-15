@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React, { useState, useContext } from 'react';
+import { mailResponserType } from '../types';
 import { Input, message, Modal } from 'antd';
 import modalContext from '../../../Models/context';
 
@@ -82,5 +83,14 @@ const MailResponserModal = (props) => {
     </Modal>
   );
 };
+
+MailResponserModal.defaultProps = {
+  routeDataActive: {},
+  visibleModal: false,
+  handleCancel: null,
+  handleOk: null,
+};
+
+MailResponserModal.propTypes = mailResponserType;
 
 export default MailResponserModal;
