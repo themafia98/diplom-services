@@ -22,6 +22,8 @@ import Dashboard from './Pages/Dashboard';
 import 'moment/locale/ru';
 import modelContext from './Models/context';
 import Demo from './Pages/Demo';
+import worker from 'workerize-loader!worker'; // eslint-disable-line import/no-webpack-loader-syntax
+const workerInstanse = worker();
 
 class App extends React.Component {
   state = {
@@ -41,7 +43,6 @@ class App extends React.Component {
       onLoadSettings,
     } = this.props;
     const { config = {}, Request, config: { appActive = true } = {}, clientDB } = this.context;
-    const { runSync } = utilsHook;
     if (!appActive) return;
     const rest = new Request();
 
@@ -79,7 +80,8 @@ class App extends React.Component {
             await onLoadUdata(udata);
             await onLoadSettings({ wishList: [{ name: 'statusList' }] });
             addTab(routeParser({ path }));
-            runSync({ clientDB, rest });
+
+            workerInstanse.runSync(localStorage.getItem('token'));
           } catch (error) {
             console.log(error);
           }
@@ -89,7 +91,7 @@ class App extends React.Component {
           try {
             await onLoadUdata(udata);
             await onLoadSettings({ wishList: [{ name: 'statusList' }] });
-            runSync({ clientDB, rest });
+            workerInstanse.runSync(localStorage.getItem('token'));
             setCurrentTab(path);
           } catch (error) {
             console.log(error);

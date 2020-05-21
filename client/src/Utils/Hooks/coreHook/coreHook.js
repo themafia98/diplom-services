@@ -3,14 +3,8 @@ import _ from 'lodash';
 import { clientDB } from 'Models/ClientSideDatabase';
 import utilsHooks from '../utils';
 import { getStoreSchema } from '../../utilsHook';
-
-const {
-  runLocalUpdateAction,
-  runRefreshIndexedDb,
-  runNoCorsAction,
-  runBadNetworkAction,
-  runSync,
-} = utilsHooks;
+//import workerInstanse from 'workerInstanse';
+const { runLocalUpdateAction, runRefreshIndexedDb, runNoCorsAction, runBadNetworkAction } = utilsHooks;
 
 const coreUpdaterDataHook = async (dispatch, dep = {}, multiple = false, badNetwork = false) => {
   const {
@@ -34,7 +28,7 @@ const coreUpdaterDataHook = async (dispatch, dep = {}, multiple = false, badNetw
 
   let isLocalUpdate = localUpdateStat;
 
-  if (sync) runSync(dep);
+  //  workerInstanse.runSync(dep);
 
   if (noCorsClient && _.isNull(requestError)) {
     const [isDone, data] = runNoCorsAction(dispatch, dep, multiple);

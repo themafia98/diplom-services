@@ -93,46 +93,4 @@ const runLocalUpdateAction = async (dispatch, depAction, depParser, multiple) =>
   else if (multiple) return data;
 };
 
-const runServerSync = async (list = [], rest) => {
-  try {
-    if (!rest instanceof Request) {
-      throw new TypeError('invalid request model entity');
-    }
-    await rest.sendRequest('/system/sync', 'POST', { syncList: list }, true);
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
-};
-
-const runSync = async (dep = {}) => {
-  const { clientDB, rest } = dep || {};
-  const range = IDBKeyRange.lowerBound(0);
-  const valuesDb = clientDB.availableList;
-
-  if (!valuesDb || !valuesDb?.length) return null;
-
-  const offlineDataList = [];
-
-  for await (let value of valuesDb) {
-    const { entity = '' } = value || {};
-    if (!entity) continue;
-
-    const items = await clientDB.getAllItems(entity, 'readonly', range);
-    const filteredItems = items?.length ? items.filter((item) => item?.offline) : [];
-
-    if (!filteredItems?.length) continue;
-
-    offlineDataList.push({
-      entity,
-      items: items.reduce((itemsList, item) => {
-        if (item?.offline) return [...itemsList, { ...item, offline: false }];
-        return itemsList;
-      }, []),
-    });
-  }
-
-  if (offlineDataList?.length) runServerSync(offlineDataList, rest);
-};
-
-export default { runLocalUpdateAction, runBadNetworkAction, runRefreshIndexedDb, runNoCorsAction, runSync };
+export default { runLocalUpdateAction, runBadNetworkAction, runRefreshIndexedDb, runNoCorsAction };

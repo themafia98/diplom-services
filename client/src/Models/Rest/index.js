@@ -11,12 +11,12 @@ class Request {
   /**
    * @param {string} [prop]
    */
-  constructor(prop) {
+  constructor(token = '') {
     this.#testAPI = '/favicon.ico?_=';
     this.#api = '/rest';
 
     /** @const {string} */
-    this.status = prop;
+    this.token = token;
 
     /** @type {function} */
     this.followObserver = null;
@@ -175,7 +175,7 @@ class Request {
     const props = auth
       ? {
           headers: {
-            Authorization: this.getToken(auth),
+            Authorization: auth === 'worker' ? this.getLocalToken() : this.getToken(auth),
           },
           data: body,
         }
@@ -205,11 +205,15 @@ class Request {
    * @param {boolean} auth
    */
   getToken(auth) {
-    const token = localStorage.getItem('token') || '';
+    const token = localStorage && localStorage?.getItem ? localStorage.getItem('token') : this.token;
     if ((auth && !token) || !token) {
       return null;
     }
     return `Token ${token}`;
+  }
+
+  getLocalToken() {
+    return this.token;
   }
 
   signOut = async () => {
