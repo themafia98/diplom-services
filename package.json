@@ -8,8 +8,8 @@
     "scripts": {
         "dev": "run-p dev:**",
         "heroku-postbuild": "cd client && yarn install && yarn add node-sass --dev && cd ../ && yarn buildprod",
-        "start": "node ./server/build/index.js",
-        "dev:server": "cross-env NODE_ENV=development nodemon ./server/src/index.ts --pretty",
+        "start": "ts-node ./server/src/index.ts --inspect",
+        "dev:server": "cross-env NODE_ENV=development nodemon ./server/src/index.ts --pretty --inspect",
         "dev:app": "cd client && yarn start",
         "build": "run-p build:**",
         "buildprod": "cd client && yarn build && cd ../ && cd server && tsc",

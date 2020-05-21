@@ -147,7 +147,7 @@ class Comments extends React.PureComponent {
     });
   };
 
-  renderComments(commentsArray) {
+  renderComments = (commentsArray) => {
     const { rules, udata: { _id: userId = '' } = {}, commentProps = {} } = this.props;
     if (commentsArray.length && Array.isArray(commentsArray))
       return commentsArray.map((it) => (
@@ -163,7 +163,7 @@ class Comments extends React.PureComponent {
         />
       ));
     else return <Empty description={<span>Данных нету</span>} />;
-  }
+  };
   render() {
     const { data: { comments = [] } = {} } = this.props;
     const { onUpdateDisabled, value } = this.state;

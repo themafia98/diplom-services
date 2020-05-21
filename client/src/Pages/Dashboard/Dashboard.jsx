@@ -25,6 +25,7 @@ import ContentView from 'Components/ContentView';
 import MenuView from 'Components/MenuView';
 import modelContext from 'Models/context';
 
+import thread from 'workerize-loader!worker'; // eslint-disable-line import/no-webpack-loader-syntax
 let deferredPrompt = null;
 
 class Dashboard extends React.PureComponent {
@@ -41,6 +42,7 @@ class Dashboard extends React.PureComponent {
     showLoader: false,
   };
 
+  worker = new thread();
   static contextType = modelContext;
   static propTypes = dashboardType;
 
