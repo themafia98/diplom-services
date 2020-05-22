@@ -3,7 +3,7 @@
     .editor-wrapper {
       .rdw-editor-main {
         height: 100%;
-        background-color: #fff;
+        background-color: $selected;
         min-height: 80vh;
         max-height: 80vh;
         resize: none;
@@ -15,7 +15,7 @@
         }
 
         &::-webkit-scrollbar-thumb {
-          background-color: rgba(0, 0, 0, 0.2);
+          background-color: $shadowBlack;
         }
       }
     }

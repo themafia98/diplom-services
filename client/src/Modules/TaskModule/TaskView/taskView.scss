@@ -20,12 +20,12 @@
     flex-direction: column;
     align-items: center;
     margin: 5px 30px;
-    border: 0.5px solid blue;
+    border: 0.5px solid $blueDefault;
     background-color: $journalColorBg;
     border-radius: 6px;
 
     .editor {
-      color: #7548f8;
+      color: $softViolet;
       &:before {
         content: '';
       }

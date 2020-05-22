@@ -10,7 +10,7 @@
       font-weight: bold;
       text-align: center;
       width: 100%;
-      background-color: #1890ff;
+      background-color: $antBlue;
       font-size: 11px;
       display: flex;
       border-radius: 50%;
@@ -31,7 +31,7 @@
       width: 100%;
       text-align: center;
       font-weight: bold;
-      color: #fff;
+      color: $selected;
       padding: 10px;
       background-color: $blueDark;
     }
@@ -63,9 +63,9 @@
       padding-left: 5px;
       word-break: break-all;
       &:hover {
-        color: #fff;
+        color: $selected;
         cursor: pointer;
-        background-color: #6495ed;
+        background-color: $antBlueHover;
       }
     }
 

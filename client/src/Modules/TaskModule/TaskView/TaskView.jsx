@@ -416,7 +416,9 @@ class TaskView extends React.PureComponent {
     });
   };
 
-  onEditContentMode = () => {
+  onEditContentMode = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
     this.setState({
       ...this.state,
       modeEditContent: true,

@@ -16,7 +16,7 @@
     }
     thead {
       background-color: $headerTable;
-      color: #ffff;
+      color: $selected;
       font-weight: bold;
       tr {
         display: flex;

@@ -9,7 +9,7 @@
     .editor-wrapper {
       .rdw-editor-main {
         height: 100%;
-        background-color: #fff;
+        background-color: $selected;
         min-height: calc(80vh - 140px);
         max-height: calc(80vh - 140px);
         resize: none;
@@ -24,11 +24,11 @@
       width: 6px;
     }
     &::-webkit-scrollbar-track {
-      background: #f1f1f1;
+      background: $selectedUp;
     }
 
     &::-webkit-scrollbar-thumb {
-      background-color: rgba(0, 0, 0, 0.2);
+      background-color: $shadowBlack;
     }
   }
 

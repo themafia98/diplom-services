@@ -17,7 +17,7 @@
         background: rgba(0, 0, 0, -3.8);
         border: none;
         width: 100%;
-        color: red;
+        color: $close;
         font-weight: bold;
         height: 100%;
         position: absolute;
@@ -52,7 +52,7 @@
   li {
     cursor: pointer;
     &:hover {
-      color: red;
+      color: $close;
     }
   }
 }

@@ -37,15 +37,16 @@
     }
     table {
       // padding-right: 25px;
+      margin-top: -1px;
       border-bottom: 0.5px solid $blueDark;
       .ant-table-thead {
         background-color: $headerTable;
         border-bottom: 0.5px solid $blueDark;
         i {
-          color: white;
+          color: $selected;
           font-size: 14px;
           padding: 5px;
-          background: #7ac0da;
+          background: $blueDarkHover;
         }
         tr {
           // display: flex;
@@ -89,7 +90,7 @@
               max-width: 20%;
             }
             border-left: 0.5px solid $blueDark;
-            color: #ffff;
+            color: $selected;
             background: unset;
             span {
               font-size: 20px;

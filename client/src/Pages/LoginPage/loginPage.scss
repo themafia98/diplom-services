@@ -9,7 +9,7 @@
   margin: 0 auto;
 
   .recovory-link {
-    color: red;
+    color: $close;
   }
 
   .notificationWrapper {
@@ -20,7 +20,7 @@
     .errorMessage {
       text-align: center;
       font-weight: bold;
-      color: red;
+      color: $close;
       margin: 0;
     }
   }

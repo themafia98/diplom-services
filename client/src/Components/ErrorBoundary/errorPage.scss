@@ -14,7 +14,7 @@
   .message {
     font-size: 35px;
     margin-bottom: 0;
-    color: #000;
+    color: $textBlack;
   }
 
   .messageError {
@@ -22,16 +22,16 @@
     font-size: 25px;
     width: 30%;
     margin-bottom: 0;
-    color: #000;
+    color: $textBlack;
   }
 
   button {
     cursor: pointer;
     padding: 10px;
-    border: 2px solid #000;
+    border: 2px solid $textBlack;
     background: $errorButton;
     font-weight: bold;
-    color: white;
+    color: $selected;
     margin: 10px;
     transition: 0.3s all ease-in-out;
     &:hover {
