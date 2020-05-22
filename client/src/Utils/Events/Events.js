@@ -34,7 +34,7 @@ const sucessEvent = async (dispatch, dep, mode = '', multiple = false, cursor = 
       return;
     } else return data;
   }
-
+  //debugger;
   if (!cursor) {
     const { data = {}, shoudClearError = false } = dataParser(true, true, dep, offlineStore);
     if (shoudClearError) await dispatch(errorRequestAction(null));
@@ -54,7 +54,7 @@ const sucessEvent = async (dispatch, dep, mode = '', multiple = false, cursor = 
   });
   const iEmpty = index === -1;
 
-  if (iEmpty && cursor.value?.offline) {
+  if (!iEmpty && cursor.value?.offline) {
     copyStoreOffline.push({ ...cursor.value, offline: false });
   }
   return await sucessEvent(dispatch, dep, mode, multiple, await cursor.continue(), copyStoreOffline);

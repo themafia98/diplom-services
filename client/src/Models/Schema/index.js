@@ -84,7 +84,6 @@ class Schema {
         };
       case NEWS_SCHEMA:
         return {
-          _id: null,
           title: null,
           content: null, // { entityMap: null,blocks: null },
           key: null,
@@ -148,9 +147,10 @@ class Schema {
    * @param {Object} data
    * @return {boolean}
    */
-  validateSchema(keysData, keysSchema, data) {
+  validateSchema(keysData, keysSchema, data, type = '') {
     if (!_.isArray(keysData) || !_.isArray(keysSchema)) return false;
     let validLenth = keysData.length;
+    let IS_SHOULD_USE_KEY = false;
 
     const isFindMode = keysData.findIndex((it) => it === 'offline') !== -1;
     if (isFindMode) validLenth--;
@@ -164,14 +164,21 @@ class Schema {
     const isVersion = keysData.findIndex((it) => it === '__v' && _.isNumber(data[it])) !== -1;
     if (isVersion) validLenth--;
 
+    if (type === NEWS_SCHEMA && keysData.findIndex((it) => it === '_id' && _.isString(data[it])) !== -1) {
+      validLenth--;
+      IS_SHOULD_USE_KEY = true;
+    }
+
     if (keysSchema.length !== validLenth) return false;
 
     return this.getMode() !== 'no-strict'
       ? keysData.every((dataKey, i) => dataKey === keysSchema[i])
       : keysData.every((dataKey) => {
-          if (dataKey !== 'offline' && this.isPublicKey(dataKey)) {
+          const IS_KEY_UNIQE = dataKey === '_id' && IS_SHOULD_USE_KEY;
+          if (dataKey !== 'offline' && this.isPublicKey(dataKey) && !IS_KEY_UNIQE) {
             return keysSchema.findIndex((it) => it === dataKey) !== -1;
-          }
+          } else if (IS_KEY_UNIQE) return true;
+
           return true;
         });
   }
@@ -189,11 +196,13 @@ class Schema {
     let keysSchema = null;
     const keysData = Object.keys(data);
 
+    debugger;
+
     const schema = this.getValidateSchema(type);
     if (schema) keysSchema = Object.keys(schema);
     else return null;
 
-    if (this.validateSchema(keysData, keysSchema, data)) {
+    if (this.validateSchema(keysData, keysSchema, data, type)) {
       return { ...data };
     } else return null;
   }

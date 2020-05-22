@@ -151,7 +151,6 @@ const multipleLoadData = (params) => async (dispatch, getState, { schema, Reques
     default: {
       const responseList = [];
       const rest = new Request();
-      // if (sync) workerInstanse.runSync({ clientDB, rest });
 
       for await (let requestParam of requestsParamsList) {
         const {

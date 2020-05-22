@@ -8,7 +8,6 @@ import { Switch, Route } from 'react-router-dom';
 import { message } from 'antd';
 import { PrivateRoute } from './Components/Helpers';
 import { forceUpdateDetectedInit } from './Utils';
-import utilsHook from './Utils/Hooks/utils';
 import { settingsLoader } from './Redux/actions/publicActions/middleware';
 import { setStatus, loadUdata } from './Redux/actions/publicActions';
 import { addTabAction, setActiveTabAction, logoutAction } from './Redux/actions/routerActions';

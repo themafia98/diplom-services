@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { clientDB } from 'Models/ClientSideDatabase';
 import Request from 'Models/Rest';
 
@@ -5,7 +6,6 @@ let initial = null;
 
 export function runSync(token) {
   async function loop() {
-    console.log('run sync data');
     if (initial) clearTimeout(initial);
     const rest = new Request(token);
     const range = IDBKeyRange.lowerBound(0);
@@ -34,12 +34,13 @@ export function runSync(token) {
     }
 
     if (offlineDataList?.length) runServerSync(offlineDataList, rest, loop);
+    else initial = setTimeout(loop, 10000);
   }
 
   initial = setTimeout(loop, 10000);
 }
 
-export async function runServerSync(list = [], rest, loop) {
+async function runServerSync(list = [], rest, loop) {
   try {
     if (!rest instanceof Request) {
       throw new TypeError('invalid request model entity');

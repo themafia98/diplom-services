@@ -28,8 +28,6 @@ const coreUpdaterDataHook = async (dispatch, dep = {}, multiple = false, badNetw
 
   let isLocalUpdate = localUpdateStat;
 
-  //  workerInstanse.runSync(dep);
-
   if (noCorsClient && _.isNull(requestError)) {
     const [isDone, data] = runNoCorsAction(dispatch, dep, multiple);
     if (isDone) return data;
