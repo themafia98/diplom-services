@@ -196,8 +196,6 @@ class Schema {
     let keysSchema = null;
     const keysData = Object.keys(data);
 
-    debugger;
-
     const schema = this.getValidateSchema(type);
     if (schema) keysSchema = Object.keys(schema);
     else return null;

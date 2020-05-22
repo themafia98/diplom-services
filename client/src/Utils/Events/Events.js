@@ -34,7 +34,6 @@ const sucessEvent = async (dispatch, dep, mode = '', multiple = false, cursor = 
       return;
     } else return data;
   }
-  //debugger;
   if (!cursor) {
     const { data = {}, shoudClearError = false } = dataParser(true, true, dep, offlineStore);
     if (shoudClearError) await dispatch(errorRequestAction(null));
