@@ -53,7 +53,7 @@ namespace Action {
             .skip(toSkip)
             .where(where)
             .and(andComdition)
-            .in(<any>inn)
+            .in(<Array<object>>inn)
             .limit(<number>limit)
             .sort({
               createdAt: sortType,
@@ -235,15 +235,13 @@ namespace Action {
           const validId: any = typeof _id === 'string' ? Types.ObjectId(_id) : null;
           if (!validId) delete copy._id;
 
-          await this.updateEntity(
-            model,
-            {
-              updateProps: copy,
-              _id: validId,
-              key,
-            },
-            { upsert: true },
-          );
+          const query: ActionParams = {
+            updateProps: copy,
+            _id: validId,
+            key,
+          };
+
+          await this.updateEntity(model, query, { upsert: true });
         }
       }
 

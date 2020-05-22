@@ -29,17 +29,19 @@ class ProcessRouter {
   }
 
   public onExit(worker: Worker): void {
-    console.log(`${chalk.yellow('worker')} ${chalk.red(worker.process.pid ? worker.process.pid : '')} exit.`);
+    const { pid } = worker.process;
+
+    console.log(`${chalk.yellow('worker')} ${chalk.red(pid ? pid : '')} exit.`);
 
     this.removeWorker(worker.id);
 
     const child: Worker = cluster.fork();
+    const { pid: pidChild } = child.process;
+
     this.subscribe(child);
     this.addWorker(child);
 
-    console.log(
-      `New ${chalk.yellow('worker')} ${chalk.red(child.process.pid ? child.process.pid : '')} born.`,
-    );
+    console.log(`New ${chalk.yellow('worker')} ${chalk.red(pidChild ? pidChild : '')} born.`);
   }
 
   public router(workerData: any): void {
