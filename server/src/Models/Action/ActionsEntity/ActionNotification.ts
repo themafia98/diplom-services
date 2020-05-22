@@ -14,19 +14,20 @@ class ActionNotification implements Action {
   }
 
   public async create(model: Model<Document>, actionParam: ActionParams): Promise<ParserData> {
-    const { item = null } = <Record<string, object>>actionParam;
+    const { item = null } = actionParam as Record<string, object>;
 
     if (!item) return null;
 
-    return await this.getEntity().createEntity(model, item);
+    const result = await this.getEntity().createEntity(model, item);
+    return result;
   }
 
   public async getByType(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
-    const { methodQuery = {}, type = 'global' } = <Record<string, object>>actionParam;
+    const { methodQuery = {}, type = 'global' } = actionParam as Record<string, object>;
 
-    const concactType = <string>type === 'private' ? ['private', 'global'] : type;
+    const concactType = (type as string) === 'private' ? ['private', 'global'] : type;
 
-    if (_.isEmpty(methodQuery) && <string>type === 'private') {
+    if (_.isEmpty(methodQuery) && (type as string) === 'private') {
       return null;
     }
 
@@ -41,22 +42,31 @@ class ActionNotification implements Action {
         ],
       };
 
-      return await this.getEntity().getAll(
+      const result = await this.getEntity().getAll(
         model,
         { type: concactType, ...privateMethodQuery },
         null,
         0,
         'asc',
       );
+      return result;
     }
 
-    return await this.getEntity().getAll(model, { type: concactType, ...methodQuery }, null, 0, 'asc');
+    const result = await this.getEntity().getAll(
+      model,
+      { type: concactType, ...methodQuery },
+      null,
+      0,
+      'asc',
+    );
+    return result;
   }
 
   private async updateMany(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const methodQuery = { queryType: 'many', actionParam };
 
-    return await this.getEntity().updateEntity(model, methodQuery);
+    const result = await this.getEntity().updateEntity(model, methodQuery);
+    return result;
   }
 
   public async run(actionParam: ActionParams): Promise<ParserData> {
@@ -66,12 +76,14 @@ class ActionNotification implements Action {
     const actionType: string = this.getEntity().getActionType();
 
     if (actionType === 'update_many') {
-      return await this.updateMany(actionParam, model);
+      const result = await this.updateMany(actionParam, model);
+      return result;
     }
 
     if (actionType.includes('set')) return this.create(model, actionParam);
 
-    return await this.getByType(actionParam, model);
+    const result = await this.getByType(actionParam, model);
+    return result;
   }
 }
 

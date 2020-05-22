@@ -1,7 +1,14 @@
 import { NextFunction, Response, Request } from 'express';
 import _ from 'lodash';
 import { Document } from 'mongoose';
-import { App, Params, FileApi, Controller, BodyLogin, Actions } from '../../Utils/Interfaces';
+import {
+  App,
+  Params,
+  FileApi,
+  Controller as ControllerApi,
+  BodyLogin,
+  Actions,
+} from '../../Utils/Interfaces';
 import { ParserResult, ResRequest, Meta } from '../../Utils/Types';
 import Utils from '../../Utils';
 import Responser from '../../Models/Responser';
@@ -17,7 +24,7 @@ namespace System {
   const Put = Decorators.Put;
 
   @Controller('/system')
-  export class SystemData implements Controller<FunctionConstructor> {
+  export class SystemData implements ControllerApi<FunctionConstructor> {
     @Get({ path: '/userList', private: true })
     protected async getUsersList(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { dbm } = server.locals;
@@ -73,7 +80,7 @@ namespace System {
           const ext = parseOriginalName[parseOriginalName.length - 1];
 
           const path: string = `/${moduleName}/${entityId}/${file.originalname}`;
-          const result = await (<FileApi>store).saveFile({ path, contents: file.buffer });
+          const result = await (store as FileApi).saveFile({ path, contents: file.buffer });
 
           if (result) {
             responseSave.push({
@@ -112,14 +119,14 @@ namespace System {
         methodQuery: 'load_files',
         status: 'done',
         done: true,
-        from: moduleName,
+        from: modcleuleName,
       };
 
       try {
         const downloadAction: Actions = new Action.ActionParser({
           actionPath: 'global',
           actionType: 'load_files',
-          store: <FileApi>server.locals.dropbox,
+          store: (server as FileApi).locals.dropbox,
         });
 
         const data: ParserResult = await downloadAction.getActionData({
@@ -133,7 +140,7 @@ namespace System {
           return new Responser(res, req, params, null, 404, [], dbm).emit();
         }
 
-        const metadata: ParserResult = (<Document[]>data).entries;
+        const metadata: ParserResult = (data as Document[]).entries;
         return new Responser(res, req, params, null, 200, metadata, dbm).emit();
       } catch (err) {
         params.done = false;
@@ -263,7 +270,7 @@ namespace System {
           return new Responser(res, req, params, null, 404, data, dbm).emit();
         }
 
-        const meta = <ArrayLike<object>>Utils.parsePublicData(<ParserResult>[data]);
+        const meta = Utils.parsePublicData([data] as ParserResult) as ArrayLike<object>;
         const metadata: ArrayLike<object> = Array.isArray(meta) && meta[0] ? meta[0] : null;
 
         return new Responser(res, req, { ...req.body, ...params }, null, 200, metadata, dbm).emit();
@@ -312,7 +319,7 @@ namespace System {
           return new Responser(res, req, params, null, 404, [], dbm).emit();
         }
 
-        const meta = <ArrayLike<object>>Utils.parsePublicData(<ParserResult>[data]);
+        const meta = Utils.parsePublicData([data] as ParserResult) as ArrayLike<object>;
         const metadata: ArrayLike<object> = Array.isArray(meta) && meta[0] ? meta[0] : null;
 
         return new Responser(res, req, params, null, 200, metadata, dbm).emit();
@@ -353,7 +360,7 @@ namespace System {
 
         const createNotificationAction: Actions = new Action.ActionParser({
           actionPath: 'notification',
-          actionType: <string>actionType,
+          actionType: actionType as string,
         });
 
         const data: ParserResult = await createNotificationAction.getActionData({ ...req.body, type });
@@ -411,7 +418,7 @@ namespace System {
           return new Responser(res, req, params, null, 404, [], dbm).emit();
         }
 
-        const metadata: any = Array.isArray(<object>data) ? data : [<object>data];
+        const metadata: any = Array.isArray(data as object) ? data : [data as object];
 
         return new Responser(res, req, params, null, 200, metadata, dbm).emit();
       } catch (err) {

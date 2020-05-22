@@ -3,7 +3,7 @@ import _ from 'lodash';
 import passport from 'passport';
 import { UserModel } from '../Models/Database/Schema';
 import { ResRequest, ParserResult } from '../Utils/Types';
-import { Request, App, BodyLogin, Mail, User, Controller } from '../Utils/Interfaces';
+import { Request, App, BodyLogin, Mail, User, Controller as ControllerApi } from '../Utils/Interfaces';
 import Action from '../Models/Action';
 import Decorators from '../Decorators';
 import { SentMessageInfo } from 'nodemailer';
@@ -14,7 +14,7 @@ namespace General {
   const Controller = Decorators.Controller;
 
   @Controller('/')
-  export class Main implements Controller<FunctionConstructor> {
+  export class Main implements ControllerApi<FunctionConstructor> {
     @Post({ path: '/auth', private: true })
     protected auth(req: Request, res: Response, next: NextFunction, server: App): Response {
       try {
@@ -65,7 +65,7 @@ namespace General {
       if (dbm) dbm.connection().catch((err) => console.error(err));
       if (!body || (body && _.isEmpty(body))) return void res.sendStatus(503);
 
-      return await passport.authenticate(
+      const result = await passport.authenticate(
         'local',
         async (err: Error, user: User): ResRequest => {
           try {
@@ -104,6 +104,8 @@ namespace General {
           }
         },
       )(req, res, next);
+
+      return result;
     }
 
     @Post({ path: '/userload', private: true })
@@ -111,7 +113,7 @@ namespace General {
       const { dbm = null } = server.locals || {};
       if (dbm) dbm.connection().catch((err) => console.error(err));
       const { user } = req;
-      if (user) return res.json({ user: (<User>user).toAuthJSON() });
+      if (user) return res.json({ user: (user as User).toAuthJSON() });
       else {
         res.clearCookie('connect.sid');
         return res.sendStatus(302);
@@ -148,7 +150,7 @@ namespace General {
           throw new Error('Invalid mail data');
         }
 
-        const result: Promise<SentMessageInfo> = await (<Mail>mailer).send(
+        const result: Promise<SentMessageInfo> = await (mailer as Mail).send(
           to,
           themeMail || 'Письмо об оказании услуг',
           mailBody,
@@ -192,9 +194,9 @@ namespace General {
           throw new Error('Invalid checker data');
         }
 
-        const to: string = <string>recovoryField;
+        const to: string = recovoryField as string;
 
-        const result: Promise<SentMessageInfo> = await (<Mail>mailer).send(
+        const result: Promise<SentMessageInfo> = await (mailer as Mail).send(
           to,
           'Восстановление пароля / ControllSystem',
           `Ваш новый пароль: ${password}`,

@@ -55,7 +55,7 @@ export default (ws: WebSocketWorker, dbm: Dbms, server: HttpServer) => {
             if (!saveMsg) throw new TypeError('Bad msg object');
             console.log('tokenRoom:', tokenRoom);
 
-            (<any>process).send({
+            (process as any).send({
               action: 'emitSocket',
               payload: {
                 event: 'msg',
@@ -64,7 +64,7 @@ export default (ws: WebSocketWorker, dbm: Dbms, server: HttpServer) => {
               },
             });
           } else {
-            (<any>process).send({
+            (process as any).send({
               action: 'emitSocket',
               payload: {
                 event: 'msg',
@@ -84,13 +84,13 @@ export default (ws: WebSocketWorker, dbm: Dbms, server: HttpServer) => {
 
       if (!_.isEmpty(fakeMsg) && interlocutorId) {
         const result: ParserResult = await createRealRoom(
-          <Record<string, object>>fakeMsg,
-          <string>interlocutorId,
+          fakeMsg as Record<string, object>,
+          interlocutorId as string,
         );
 
         if (result) {
           console.log('updateFakeRoom', result);
-          callbackFakeRoom(result, <Record<string, object>>fakeMsg);
+          callbackFakeRoom(result, fakeMsg as Record<string, object>);
         }
       }
     });
@@ -98,7 +98,7 @@ export default (ws: WebSocketWorker, dbm: Dbms, server: HttpServer) => {
     socket.on('onChatRoomActive', ({ token: tokenRoom, displayName = '' }) => {
       socket.join(tokenRoom);
 
-      (<any>process).send({
+      (process as any).send({
         action: 'emitSocket',
         payload: {
           event: 'joinMsg',
@@ -126,16 +126,16 @@ export default (ws: WebSocketWorker, dbm: Dbms, server: HttpServer) => {
           const { event = '', data = {}, to = '', socket = null } = payload as Record<string, Payload>;
           let worker = ws.getWorker();
           if (to && to === 'broadcast' && socket) {
-            (<Socket>socket).broadcast.emit(<string>event, data);
+            (socket as Socket).broadcast.emit(event as string, data);
             break;
           }
 
           if (to) {
-            worker.to(<string>to).emit(<string>event, data);
+            worker.to(to as string).emit(event as string, data);
             break;
           }
 
-          worker.emit(<string>event, data);
+          worker.emit(event as string, data);
           break;
         }
 

@@ -2,7 +2,7 @@ import { Model, Document } from 'mongoose';
 import { ActionParams, Actions, Action } from '../../../Utils/Interfaces';
 import { ParserData } from '../../../Utils/Types';
 import Utils from '../../../Utils';
-import _ from 'lodash';
+
 const { getModelByName } = Utils;
 
 class ActionJournal implements Action {
@@ -22,7 +22,7 @@ class ActionJournal implements Action {
   private async setJournal(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     try {
       const { item = {} } = actionParam;
-      const actionData: ParserData = await this.getEntity().createEntity(model, <object>item);
+      const actionData: ParserData = await this.getEntity().createEntity(model, item as object);
 
       return actionData;
     } catch (err) {

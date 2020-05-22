@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import Responser from '../../../Models/Responser';
 import { ParserResult, ResRequest, Meta } from '../../../Utils/Types';
 import { Request, Response } from 'express';
@@ -6,7 +5,7 @@ import { Request, Response } from 'express';
 import Decorators from '../../../Decorators';
 import Utils from '../../../Utils';
 import Action from '../../../Models/Action';
-import { Controller } from '../../../Utils/Interfaces';
+import { Controller as ControllerApi } from '../../../Utils/Interfaces';
 
 namespace Chat {
   const Post = Decorators.Post;
@@ -31,7 +30,7 @@ namespace Chat {
   };
 
   @Controller('/chat')
-  export class ChatController implements Controller<FunctionConstructor> {
+  export class ChatController implements ControllerApi<FunctionConstructor> {
     @Post({ path: '/loadChats', private: true })
     protected async loadChats(req: Request, res: Response): ResRequest {
       const { body: { actionPath = '', actionType = '', queryParams: params = {} } = {} } = req;

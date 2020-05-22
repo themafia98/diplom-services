@@ -1,6 +1,6 @@
 import { NextFunction, Response, Request } from 'express';
 import _ from 'lodash';
-import { App, Params, Controller } from '../../Utils/Interfaces';
+import { App, Params, Controller as ControllerApi } from '../../Utils/Interfaces';
 import { ParserResult, ResRequest } from '../../Utils/Types';
 
 import Responser from '../../Models/Responser';
@@ -12,7 +12,7 @@ namespace Statistic {
   const Post = Decorators.Post;
 
   @Controller('/statistic')
-  export class StatisticController implements Controller<FunctionConstructor> {
+  export class StatisticController implements ControllerApi<FunctionConstructor> {
     @Post({ path: '/taskBar', private: true })
     protected async getTaskBarStats(
       req: Request,
@@ -40,7 +40,9 @@ namespace Statistic {
           params.status = 'FAIL';
           return new Responser(res, req, params, null, 404, [], dbm).emit();
         }
-        const parsedMetadata: Array<object> = _.isArray(data) ? <Array<object>>data : <Array<object>>[data];
+        const parsedMetadata: Array<object> = _.isArray(data)
+          ? (data as Array<object>)
+          : ([data] as Array<object>);
         const metadata: Array<object> = parsedMetadata.reverse();
 
         return new Responser(res, req, params, null, 200, metadata, dbm).emit();

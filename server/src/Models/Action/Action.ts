@@ -1,4 +1,4 @@
-import { ActionProps, ActionParams, Actions, Action } from '../../Utils/Interfaces';
+import { ActionParams, Actions, Action } from '../../Utils/Interfaces';
 import { Model, Document, Types, FilterQuery } from 'mongoose';
 import _ from 'lodash';
 import ActionEntity from './ActionEntity';
@@ -18,19 +18,16 @@ import ActionTasks from './ActionsEntity/ActionTasks';
 import ActionWiki from './ActionsEntity/ActionWiki';
 import ActionSettings from './ActionsEntity/ActionSettings';
 
-namespace Action {
+namespace ActionApi {
   const { getModelByName } = Utils;
   export class ActionParser extends ActionEntity implements Actions {
-    constructor(props: ActionProps) {
-      super(props);
-    }
-
     public async getCounter(
       model: Model<Document>,
       query: FilterQuery<any>,
       options: object,
     ): Promise<number> {
-      return await model.collection.countDocuments(query, options);
+      const result = await model.collection.countDocuments(query, options);
+      return result;
     }
 
     public async getAll(
@@ -45,16 +42,16 @@ namespace Action {
         const { in: inn = [], where = '' } = actionParam;
         if (inn && where) {
           const { and = [{}], filter = {} } = actionParam as Record<string, Filter | Array<object>>;
-          const orCondition: Array<object> = (<Filter>filter)['$or'] || ([{}] as object[]);
-          const andComdition: Array<object> = <Array<Filter>>and;
+          const orCondition: Array<object> = (filter as Filter)['$or'] || ([{}] as object[]);
+          const andComdition: Array<object> = and as Array<Filter>;
           return await model
             .find()
             .or(orCondition)
             .skip(toSkip)
             .where(where)
             .and(andComdition)
-            .in(<Array<object>>inn)
-            .limit(<number>limit)
+            .in(inn as Array<object>)
+            .limit(limit as number)
             .sort({
               createdAt: sortType,
             });
@@ -62,7 +59,7 @@ namespace Action {
 
         const actionData: Array<Document> = await model
           .find(actionParam)
-          .limit(<number>limit)
+          .limit(limit as number)
           .skip(toSkip)
           .sort({
             createdAt: sortType,
@@ -78,9 +75,10 @@ namespace Action {
     public async getFilterData(model: Model<Document>, filter: object, sort?: string): Promise<ParserData> {
       if (!model || !filter) return null;
       const query: FilterQuery<object> = filter;
-      return await model.find(query).sort({
+      const result = await model.find(query).sort({
         createdAt: sort || 'desc',
       });
+      return result;
     }
 
     public async findOnce(model: Model<Document>, actionParam: ActionParams): Promise<ParserData> {
@@ -106,7 +104,7 @@ namespace Action {
     public async deleteEntity(model: Model<Document>, query: ActionParams): Promise<ParserData> {
       try {
         const { multiple = false, mode = '$pullAll', findBy, queryParams = {} } = query;
-        const { uid = '', updateField = '', ids = [] } = ({} = <DeleteEntitiyParams>queryParams || {});
+        const { uid = '', updateField = '', ids = [] } = (queryParams as DeleteEntitiyParams) || {};
 
         const isPull = mode === '$pullAll';
         let actionData: Document | null = null;
@@ -116,20 +114,23 @@ namespace Action {
           props: ActionParams,
           multiple: boolean = false,
         ): Promise<object> => {
-          if (!multiple) return await model.deleteOne(props);
-          else {
-            return await model.deleteMany({ [<string>findBy]: { $in: ids } });
+          if (!multiple) {
+            const result = await model.deleteOne(props);
+            return result;
           }
+
+          const result = await model.deleteMany({ [findBy as string]: { $in: ids } });
+          return result;
         };
 
         if (isPull) {
-          const findByParam = { [<string>findBy]: findBy };
+          const findByParam = { [findBy as string]: findBy };
           const queryUpdate = {
-            [<string>mode]: { [<string>updateField]: [uid] },
+            [mode as string]: { [updateField as string]: [uid] },
           };
 
           actionData = await model.update(findByParam, queryUpdate);
-          doc = await model.findOne({ [<string>findBy]: findBy });
+          doc = await model.findOne({ [findBy as string]: findBy });
 
           if (!doc) {
             return null;
@@ -138,7 +139,7 @@ namespace Action {
           const record: ArrayLike<string> = doc.get(updateField);
 
           if (Array.isArray(record) && (!record.length || record.length === 0)) {
-            const docResult: { ok: boolean } = await runDelete({ [<string>findBy]: findBy }, multiple);
+            const docResult: { ok: boolean } = await runDelete({ [findBy as string]: findBy }, multiple);
 
             if (docResult.ok) {
               return docResult;
@@ -149,8 +150,8 @@ namespace Action {
         } else {
           const docResult: object = await runDelete({}, multiple);
 
-          if ((<Record<string, boolean>>docResult).ok) {
-            return <Document>docResult;
+          if ((docResult as Record<string, boolean>).ok) {
+            return docResult as Document;
           } else return null;
         }
       } catch (err) {
@@ -165,20 +166,20 @@ namespace Action {
       options: OptionsUpdate = {},
     ): Promise<ParserData> {
       try {
-        const { queryType = 'single', actionParam = null /** params for multiple update */ } = query;
+        const { queryType = 'single', actionParam = null } = query;
 
         switch (queryType) {
           case 'many': {
             const { query = {} } = (actionParam as Record<string, object>) || {};
             const { ids = [], updateProps = {}, returnType = 'default' } = query as DeleteEntitiyParams;
-            const parsedIds = ids.map((id: string) => Types.ObjectId(<string>id));
+            const parsedIds = ids.map((id: string) => Types.ObjectId(id as string));
 
             const actionData: object = await model.updateMany(
               { _id: { $in: parsedIds } },
               { $set: { ...updateProps } },
               { multi: true, ...options },
             );
-            const { ok = 0, nModified = 0 } = <Record<string, number>>actionData || {};
+            const { ok = 0, nModified = 0 } = (actionData as Record<string, number>) || {};
 
             if (returnType === 'arrayItems') {
               return await model.find({ _id: { $in: ids } });
@@ -187,9 +188,9 @@ namespace Action {
           default: {
             const { _id: id, key } = query as Record<string, string>;
             const { customQuery, updateProps: upProps = {} } = query;
-            const { [<string>customQuery]: customQueryValue = '' } = query;
+            const { [customQuery as string]: customQueryValue = '' } = query;
             const updateProps: object = _.isPlainObject(upProps)
-              ? <object>upProps
+              ? (upProps as object)
               : { updateProps: query.updateProps };
 
             const _id: any = id ? Types.ObjectId(id) : null;
@@ -200,7 +201,7 @@ namespace Action {
                 : key
                 ? { key }
                 : customQuery
-                ? { [<string>customQuery]: customQueryValue }
+                ? { [customQuery as string]: customQueryValue }
                 : {};
 
             const actionData: Document = await model.updateOne(
@@ -325,4 +326,4 @@ namespace Action {
   }
 }
 
-export default Action;
+export default ActionApi;

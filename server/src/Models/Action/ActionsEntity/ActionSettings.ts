@@ -50,7 +50,8 @@ class ActionSettings implements Action {
   }
 
   private async getStatusList(model: Model<Document>, actionParam: ActionParams): Promise<ParserData> {
-    return await this.getEntity().getAll(model, {});
+    const result = await this.getEntity().getAll(model, {});
+    return result;
   }
 
   public async run(actionParam: ActionParams): Promise<ParserData> {

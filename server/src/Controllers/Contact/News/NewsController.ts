@@ -1,6 +1,6 @@
 import { NextFunction, Response, Request } from 'express';
 import Responser from '../../../Models/Responser';
-import { App, Params, ActionParams, Controller, BodyLogin } from '../../../Utils/Interfaces';
+import { App, Params, ActionParams, Controller as ControllerApi, BodyLogin } from '../../../Utils/Interfaces';
 import { ParserResult, ResRequest } from '../../../Utils/Types';
 
 import Decorators from '../../../Decorators';
@@ -12,7 +12,7 @@ namespace News {
   const Get = Decorators.Get;
 
   @Controller('/news')
-  export class NewsController implements Controller<FunctionConstructor> {
+  export class NewsController implements ControllerApi<FunctionConstructor> {
     @Post({ path: '/createNews', private: true })
     protected async createNews(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const service = server.locals;

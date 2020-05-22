@@ -3,7 +3,6 @@ import { v4 as uuid } from 'uuid';
 import { ActionParams, Actions, Action } from '../../../Utils/Interfaces';
 import { ParserData } from '../../../Utils/Types';
 import Utils from '../../../Utils';
-import _ from 'lodash';
 const { getModelByName, checkEntity } = Utils;
 
 class ActionChatRoom implements Action {
@@ -25,7 +24,8 @@ class ActionChatRoom implements Action {
   }
 
   private getUpdateRooms(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
-    const { queryParams: { tokenRoom = '', moduleName = '' } = {} } = <Record<string, any>>actionParam || {};
+    const { queryParams: { tokenRoom = '', moduleName = '' } = {} } =
+      (actionParam as Record<string, any>) || {};
 
     const query: ActionParams = { tokenRoom, moduleName };
 
@@ -41,10 +41,11 @@ class ActionChatRoom implements Action {
 
     if (!isValid) return null;
 
-    return await this.getEntity().createEntity(model, {
+    const result = await this.getEntity().createEntity(model, {
       ...actionParam,
       tokenRoom: uuid(),
     });
+    return result;
   }
 
   private async leaveRoom(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
@@ -54,7 +55,7 @@ class ActionChatRoom implements Action {
 
     const query = { findBy: roomToken, uid, updateField };
     const actionData: ParserData = await this.getEntity().deleteEntity(model, query);
-    return <Document | null>actionData;
+    return actionData as Document | null;
   }
 
   private async roomGenerator(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {

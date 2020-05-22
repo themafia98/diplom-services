@@ -25,7 +25,7 @@ namespace Decorators {
         path: config.path,
         private: config.private,
         file: config.file || undefined,
-        methodName: <string>propKey,
+        methodName: propKey as string,
       });
 
       Reflect.defineMetadata('routes', routesArray, target.constructor);
@@ -45,7 +45,7 @@ namespace Decorators {
         path: config.path,
         private: config.private,
         file: config.file || undefined,
-        methodName: <string>propKey,
+        methodName: propKey as string,
       });
 
       Reflect.defineMetadata('routes', routesArray, target.constructor);
@@ -65,7 +65,7 @@ namespace Decorators {
         path: config.path,
         private: config.private,
         file: config.file || undefined,
-        methodName: <string>propKey,
+        methodName: propKey as string,
       });
 
       Reflect.defineMetadata('routes', routesArray, target.constructor);
@@ -85,7 +85,7 @@ namespace Decorators {
         path: config.path,
         private: config.private,
         file: config.file || undefined,
-        methodName: <string>propKey,
+        methodName: propKey as string,
       });
 
       Reflect.defineMetadata('routes', routesArray, target.constructor);

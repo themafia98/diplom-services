@@ -1,6 +1,6 @@
 import { NextFunction, Response, Request } from 'express';
 import _ from 'lodash';
-import { App, Params, ActionParams, Controller } from '../../Utils/Interfaces';
+import { App, Params, ActionParams, Controller as ControllerApi } from '../../Utils/Interfaces';
 import { ParserResult, ResRequest } from '../../Utils/Types';
 
 import Responser from '../../Models/Responser';
@@ -15,7 +15,7 @@ namespace Wiki {
   const Post = Decorators.Post;
 
   @Controller('/wiki')
-  export class WikiController implements Controller<FunctionConstructor> {
+  export class WikiController implements ControllerApi<FunctionConstructor> {
     @Get({ path: '/list', private: true })
     protected async getTreeList(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { dbm } = server.locals;
@@ -37,7 +37,7 @@ namespace Wiki {
           return new Responser(res, req, params, null, 404, [], dbm).emit();
         }
 
-        const metadata: Array<object> = (<Array<object>>data).reverse();
+        const metadata: Array<object> = (data as Array<object>).reverse();
         return new Responser(res, req, params, null, 200, metadata, dbm).emit();
       } catch (err) {
         console.error(err);

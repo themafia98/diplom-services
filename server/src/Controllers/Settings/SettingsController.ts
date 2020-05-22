@@ -1,6 +1,6 @@
 import { NextFunction, Response, Request } from 'express';
 import _ from 'lodash';
-import { App, Params, ActionParams, Controller } from '../../Utils/Interfaces';
+import { App, Params, ActionParams, Controller as ControllerApi } from '../../Utils/Interfaces';
 import { ParserResult, ResRequest } from '../../Utils/Types';
 import Responser from '../../Models/Responser';
 
@@ -11,7 +11,7 @@ namespace Settings {
   const { Controller, Post, Put, Get } = Decorators;
 
   @Controller('/settings')
-  export class SettingsController implements Controller<FunctionConstructor> {
+  export class SettingsController implements ControllerApi<FunctionConstructor> {
     @Post({ path: '/password', private: true })
     protected async passwordChanged(
       req: Request,
@@ -176,7 +176,7 @@ namespace Settings {
       const { actionType = '', queryParams } = body;
 
       const params: Params = {
-        methodQuery: <string>actionType,
+        methodQuery: actionType as string,
         from: 'settingsLog',
         done: true,
         status: 'OK',
@@ -189,14 +189,14 @@ namespace Settings {
 
         const settingsLogger = new Action.ActionParser({
           actionPath: 'settingsLog',
-          actionType: <string>actionType,
+          actionType: actionType as string,
         });
 
         const data: ParserResult = await settingsLogger.getActionData(body);
 
         if (!data) throw new Error('Invalid action data');
 
-        if (!(<string>actionType).includes('get')) return res.sendStatus(200);
+        if (!(actionType as string).includes('get')) return res.sendStatus(200);
 
         return new Responser(res, req, params, null, 200, data, dbm).emit();
       } catch (err) {

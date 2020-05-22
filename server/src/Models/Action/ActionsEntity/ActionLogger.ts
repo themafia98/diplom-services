@@ -2,7 +2,6 @@ import Utils from '../../../Utils';
 import { Model, Document } from 'mongoose';
 import { ActionParams, Actions, Action } from '../../../Utils/Interfaces';
 import { ParserData } from '../../../Utils/Types';
-import _ from 'lodash';
 
 const { getModelByName } = Utils;
 
@@ -15,11 +14,11 @@ class ActionLogger implements Action {
 
   private async getUserSettingsLog(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const { queryParams = {} } = actionParam;
-    return this.getEntity().getAll(model, <Record<string, any>>queryParams);
+    return this.getEntity().getAll(model, queryParams as Record<string, any>);
   }
 
   private async saveUserSettingsLog(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
-    const { item = {} } = <Record<string, any>>actionParam;
+    const { item = {} } = actionParam as Record<string, any>;
     return this.getEntity().createEntity(model, item);
   }
 

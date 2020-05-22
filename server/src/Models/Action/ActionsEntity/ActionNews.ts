@@ -15,22 +15,22 @@ class ActionNews implements Action {
 
   private getNews(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const { queryParams, limitList = null } = actionParam || {};
-    const { keys = [] } = <Record<string, string[]>>queryParams || {};
+    const { keys = [] } = (queryParams as Record<string, string[]>) || {};
     const params: ActionParams =
-      _.isEmpty(queryParams) || !(<Record<string, string[]>>queryParams).keys
+      _.isEmpty(queryParams) || !(queryParams as Record<string, string[]>).keys
         ? {}
-        : <ActionParams>queryParams;
+        : (queryParams as ActionParams);
     const parsedKeys: Array<ObjectId> = keys.map((id) => Types.ObjectId(id));
     const query = {
       where: '_id',
       in: parsedKeys,
     };
 
-    return this.getEntity().getAll(model, _.isEmpty(params) ? params : query, <number | null>limitList);
+    return this.getEntity().getAll(model, _.isEmpty(params) ? params : query, limitList as number | null);
   }
 
   private createNews(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
-    const body: object = <Record<string, any>>actionParam || {};
+    const body: object = (actionParam as Record<string, object>) || {};
     return this.getEntity().createEntity(model, body);
   }
 

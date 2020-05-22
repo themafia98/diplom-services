@@ -42,7 +42,8 @@ class ActionWiki implements Action {
 
   private async getWikiPage(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const { methodQuery = {} } = actionParam as Record<string, ActionParams>;
-    return await this.getEntity().findOnce(model, methodQuery);
+    const result = await this.getEntity().findOnce(model, methodQuery);
+    return result;
   }
 
   private async update(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {

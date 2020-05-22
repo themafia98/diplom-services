@@ -1,7 +1,7 @@
 import { ActionParams, Actions, Action } from '../../../Utils/Interfaces';
 import { ParserData } from '../../../Utils/Types';
 import { files } from 'dropbox';
-import _ from 'lodash';
+
 class ActionGlobal implements Action {
   constructor(private entity: Actions) {}
 
@@ -12,7 +12,7 @@ class ActionGlobal implements Action {
   private async loadFiles(actionParam: ActionParams): Promise<ParserData> {
     const {
       body: { queryParams = {} },
-    } = <Record<string, any>>actionParam;
+    } = actionParam as Record<string, any>;
 
     const entityId: string = (queryParams as Record<string, string>).entityId;
     const moduleName: string = (actionParam as Record<string, string>).moduleName;
@@ -23,7 +23,7 @@ class ActionGlobal implements Action {
   }
 
   private async deleteFile(actionParam: ActionParams): Promise<ParserData> {
-    const { body: { queryParams = {} } = {}, store = '' } = <Record<string, any>>actionParam;
+    const { body: { queryParams = {} } = {}, store = '' } = actionParam as Record<string, any>;
 
     const file: object = (queryParams as Record<string, any>).file;
     const url: string = (file as Record<string, string>).url || '';
@@ -43,7 +43,8 @@ class ActionGlobal implements Action {
 
     const path: string = `/${moduleName}/${entityId}/${filename}`;
 
-    return await this.getEntity().getStore().downloadFile(path);
+    const result = await this.getEntity().getStore().downloadFile(path);
+    return result;
   }
 
   public async run(actionParam: ActionParams): Promise<ParserData> {

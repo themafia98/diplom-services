@@ -19,10 +19,10 @@ class ActionUsers implements Action {
   }
 
   private async recovoryPassword(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
-    const filed: string = (<Record<string, string>>actionParam).recovoryField;
-    const mode: string = (<Record<string, string>>actionParam).mode;
+    const filed: string = (actionParam as Record<string, string>).recovoryField;
+    const mode: string = (actionParam as Record<string, string>).mode;
 
-    const props: object = mode == 'emailMode' ? { email: filed } : { login: filed };
+    const props: object = mode === 'emailMode' ? { email: filed } : { login: filed };
 
     const result: ParserData = await this.getEntity().findOnce(model, { ...props });
 
@@ -36,7 +36,7 @@ class ActionUsers implements Action {
         numbers: true,
       });
 
-      const passwordHash: string | null = await (<User>result).changePassword(password);
+      const passwordHash: string | null = await (result as User).changePassword(password);
 
       if (!passwordHash) {
         return null;
@@ -56,7 +56,7 @@ class ActionUsers implements Action {
   }
 
   private async changePassword(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
-    const { queryParams = {} } = <Record<string, any>>actionParam;
+    const { queryParams = {} } = actionParam as Record<string, any>;
     const { oldPassword = '', newPassword = '', uid = '' } = queryParams || {};
 
     const checkProps = {
@@ -72,7 +72,7 @@ class ActionUsers implements Action {
       return null;
     }
 
-    const isValid: boolean = await (<User>result).checkPassword(oldPassword);
+    const isValid: boolean = await (result as User).checkPassword(oldPassword);
 
     if (!isValid) {
       console.error('Bad old password for change password action');
@@ -82,7 +82,7 @@ class ActionUsers implements Action {
     const { _id: id } = (result as Record<string, string>) || {};
     const _id = Types.ObjectId(id);
     const password: string = newPassword;
-    const passwordHash: string | null = await (<User>result).changePassword(password);
+    const passwordHash: string | null = await (result as User).changePassword(password);
 
     if (!passwordHash) {
       return null;
@@ -96,7 +96,7 @@ class ActionUsers implements Action {
   }
 
   private async updateProfileChanges(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
-    const { queryParams = {} } = ({} = <Record<string, any>>actionParam);
+    const { queryParams = {} } = actionParam as Record<string, any>;
     const { isHidePhone = null, isHideEmail = null, uid = '' } = queryParams || {};
 
     if (!uid || (_.isNull(isHidePhone) && _.isNull(isHideEmail))) {
@@ -111,8 +111,8 @@ class ActionUsers implements Action {
 
     const updateProps: Record<string, boolean> = {};
 
-    if (!_.isNull(isHidePhone)) updateProps.isHidePhone = <boolean>isHidePhone;
-    if (!_.isNull(isHideEmail)) updateProps.isHideEmail = <boolean>isHideEmail;
+    if (!_.isNull(isHidePhone)) updateProps.isHidePhone = isHidePhone as boolean;
+    if (!_.isNull(isHideEmail)) updateProps.isHideEmail = isHideEmail as boolean;
 
     const res = await this.getEntity().updateEntity(model, { _id, updateProps });
 

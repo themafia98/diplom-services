@@ -38,7 +38,7 @@ class ActionTasks implements Action {
 
       if (typeAction.includes('single')) {
         const updateField: string = (actionParam as Record<string, string>).updateField;
-        (updateProps as Record<string, string>)[updateField] = <string>updateItem;
+        (updateProps as Record<string, string>)[updateField] = updateItem as string;
       } else if (typeAction.includes('many')) {
         const { updateItem = '' } = actionParam;
         updateProps = updateItem;
@@ -56,20 +56,20 @@ class ActionTasks implements Action {
 
   private async getTasks(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const { queryParams, limitList = 20, saveData = {}, filterCounter = '' } = actionParam || {};
-    const _id: ObjectID = Types.ObjectId(<string>filterCounter);
+    const _id: ObjectID = Types.ObjectId(filterCounter as string);
 
-    const { pagination = null } = <Record<string, any>>saveData;
+    const { pagination = null } = saveData as Record<string, any>;
     const params: ActionParams =
-      _.isEmpty(queryParams) || !(<Record<string, string[]>>queryParams).keys
+      _.isEmpty(queryParams) || !(queryParams as Record<string, string[]>).keys
         ? {}
-        : <ActionParams>queryParams;
+        : (queryParams as ActionParams);
     const filter: Record<string, Array<object>> = await this.getDataByFilter(
       actionParam,
-      _id ? <string>filterCounter : null,
+      _id ? (filterCounter as string) : null,
     );
     const query = {
       where: 'key',
-      in: (<Record<string, string[]>>queryParams).keys,
+      in: (queryParams as Record<string, string[]>).keys,
       filter,
     };
 
@@ -77,7 +77,7 @@ class ActionTasks implements Action {
 
     const isPagerParams = pagination && pagination.current && pagination.pageSize;
     const skip: number = isPagerParams && limitList ? (pagination.current - 1) * pagination.pageSize : 0;
-    return this.getEntity().getAll(model, paramsList, <number | null>limitList, skip);
+    return this.getEntity().getAll(model, paramsList, limitList as number | null, skip);
   }
 
   private async getTaskCount(model: Model<Document>, actionParam: ActionParams): Promise<ParserData> {
@@ -102,7 +102,8 @@ class ActionTasks implements Action {
           ],
         };
 
-    return await this.getEntity().getCounter(model, query);
+    const result = await this.getEntity().getCounter(model, query);
+    return result;
   }
 
   private async getDataByFilter(
@@ -128,7 +129,7 @@ class ActionTasks implements Action {
           ? filteredInfo[key].map((val: string) => val.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&'))
           : filteredInfo[key];
 
-      const condtion: Readonly<Array<RegExp>> = (<string[]>parsedPatterns).map(
+      const condtion: Readonly<Array<RegExp>> = (parsedPatterns as Array<string>).map(
         (pattern: string) => new RegExp(pattern, 'gi'),
       );
       const query = !arrayKeys.some((arrKey: string) => key === arrKey)
@@ -188,7 +189,7 @@ class ActionTasks implements Action {
       } else metadata[field] = dataField;
     }
 
-    return <ParserData>metadata;
+    return metadata as ParserData;
   }
 
   private async regTicket(model: Model<Document>, actionParam: ActionParams): Promise<ParserData> {
@@ -209,7 +210,7 @@ class ActionTasks implements Action {
 
     const isValid: boolean =
       ticketKeys.every((key: string) => {
-        const value: string | number = (<Record<string, string>>ticket)[key];
+        const value: string | number = (ticket as Record<string, string>)[key];
 
         const isDateRange: boolean = key === 'date' && _.isArray(value);
 
@@ -217,11 +218,12 @@ class ActionTasks implements Action {
           return false;
         }
         return true;
-      }) && ticketRequiredValues.every((key: string) => (<Record<string, string>>ticket)[key]);
+      }) && ticketRequiredValues.every((key: string) => (ticket as Record<string, string>)[key]);
 
     if (!isValid) return null;
 
-    return await this.getEntity().createEntity(model, generateRemoteTask(<TicketRemote>ticket));
+    const result = await this.getEntity().createEntity(model, generateRemoteTask(ticket as TicketRemote));
+    return result;
   }
 
   public async run(actionParam: ActionParams): Promise<ParserData> {

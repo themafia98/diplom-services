@@ -141,7 +141,7 @@ namespace Tasks {
           return new Responser(res, req, params, null, 404, [], dbm).emit();
         }
 
-        const meta: Meta = parsePublicData(<ParserResult>[data]);
+        const meta: Meta = parsePublicData([data] as ParserResult);
         const metadata: ArrayLike<object> = Array.isArray(meta) && meta[0] ? meta[0] : null;
 
         return new Responser(res, req, params, null, 200, metadata, dbm).emit();
@@ -188,7 +188,7 @@ namespace Tasks {
           return new Responser(res, req, params, null, 404, [], dbm).emit();
         }
 
-        const meta: Meta = parsePublicData(<ParserResult>[data]);
+        const meta: Meta = parsePublicData([data] as ParserResult);
         const metadata: ArrayLike<object> = Array.isArray(meta) && meta[0] ? meta[0] : null;
 
         return new Responser(res, req, params, null, 200, metadata, dbm).emit();
