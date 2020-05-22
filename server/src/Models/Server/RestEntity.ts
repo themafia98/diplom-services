@@ -16,7 +16,7 @@ abstract class RestEntitiy implements Rest {
   }
 
   public getRest(): Application {
-    return <Application>this.rest;
+    return this.rest as Application;
   }
 
   public setRest(route: Application): void {
@@ -26,7 +26,7 @@ abstract class RestEntitiy implements Rest {
   }
 
   public getApp(): Application {
-    return <Application>this.application;
+    return this.application as Application;
   }
 
   public setApp(express: Application): void {

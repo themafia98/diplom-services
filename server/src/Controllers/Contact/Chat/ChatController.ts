@@ -110,8 +110,8 @@ namespace Chat {
             options: { actionPath: aPath = '', actionType: aType = '' } = {},
           } = {},
         } = req;
-        const actionType: string = aType ? aType : 'get_msg_by_token';
-        const actionPath: string = aPath ? aPath : 'chatMsg';
+        const actionType: string = aType || 'get_msg_by_token';
+        const actionPath: string = aPath || 'chatMsg';
         if (!actionPath || !actionType) throw new Error('Invalid action chat');
 
         const actionCreateRoom = new Action.ActionParser({ actionPath, actionType });

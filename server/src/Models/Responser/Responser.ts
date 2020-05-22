@@ -71,7 +71,7 @@ class Responser implements ResponseBuilder {
       getResponseJson(
         this.params.methodQuery,
         { params: this.params, metadata: this.metadata, done: true, status: 'OK' },
-        (<Record<string, any>>this.req).start,
+        (this.req as any).start,
       ),
     );
   }
@@ -79,7 +79,7 @@ class Responser implements ResponseBuilder {
   private async serverErrorResponse(): Promise<Response> {
     return this.res.json(
       getResponseJson(
-        (<Error>this.err).name,
+        (this.err as Error).name,
         { metadata: 'Server error', params: this.params, done: false, status: 'FAIL' },
         (this.req as Record<string, any>).start,
       ),

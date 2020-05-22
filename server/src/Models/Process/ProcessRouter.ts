@@ -31,7 +31,7 @@ class ProcessRouter {
   public onExit(worker: Worker): void {
     const { pid } = worker.process;
 
-    console.log(`${chalk.yellow('worker')} ${chalk.red(pid ? pid : '')} exit.`);
+    console.log(`${chalk.yellow('worker')} ${chalk.red(pid || '')} exit.`);
 
     this.removeWorker(worker.id);
 
@@ -41,7 +41,7 @@ class ProcessRouter {
     this.subscribe(child);
     this.addWorker(child);
 
-    console.log(`New ${chalk.yellow('worker')} ${chalk.red(pidChild ? pidChild : '')} born.`);
+    console.log(`New ${chalk.yellow('worker')} ${chalk.red(pidChild || '')} born.`);
   }
 
   public router(workerData: any): void {

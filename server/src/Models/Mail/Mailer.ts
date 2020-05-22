@@ -58,7 +58,7 @@ namespace Mailer {
           return null;
         }
 
-        const validEmail = /\w+\@\w+\.\D+/i.test(to);
+        const validEmail = /\w+@\w+\.\D+/i.test(to);
 
         if (!validEmail) {
           return null;

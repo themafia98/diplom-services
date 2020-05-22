@@ -122,7 +122,7 @@ class ActionUsers implements Action {
   }
 
   private async updateCommonChanges(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
-    const { queryParams = {} } = ({} = <Record<string, any>>actionParam);
+    const { queryParams = {} } = actionParam as Record<string, any>;
     const { newEmail = '', newPhone = '', uid = '' } = queryParams || {};
 
     if (!uid || (!newEmail && !newPhone)) {
@@ -144,8 +144,8 @@ class ActionUsers implements Action {
 
     const { _id: id } = (result as Record<string, string>) || {};
     const _id = Types.ObjectId(id);
-    const email: string = newEmail ? newEmail : null;
-    const phone: string = newPhone ? newPhone : null;
+    const email: string = newEmail || null;
+    const phone: string = newPhone || null;
 
     const updateProps: Record<string, string> = {};
 

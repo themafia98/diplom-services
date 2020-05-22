@@ -18,15 +18,15 @@ class ActionWiki implements Action {
   }
 
   private async createLeaf(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
-    const { item = null } = <Record<string, object>>actionParam || {};
+    const { item = null } = actionParam || {};
 
     if (!item || (item && _.isEmpty(item))) return null;
 
-    return this.getEntity().createEntity(model, item);
+    return this.getEntity().createEntity(model, item as object);
   }
 
   private async deleteLeafs(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
-    const { queryParams = null } = <Record<string, Array<string>>>actionParam || {};
+    const { queryParams = null } = (actionParam as Record<string, Array<string>>) || {};
 
     if (!queryParams || (queryParams && _.isEmpty(queryParams))) return null;
 
@@ -70,7 +70,7 @@ class ActionWiki implements Action {
   }
 
   public async run(actionParam: ActionParams): Promise<ParserData> {
-    const { type = 'wikiTree' } = <Record<string, string>>actionParam;
+    const { type = 'wikiTree' } = actionParam as Record<string, string>;
     const model: Model<Document> | null = getModelByName(type, type);
     if (!model) return null;
 

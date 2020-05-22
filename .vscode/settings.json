@@ -32,5 +32,6 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
+  "eslint.workingDirectories": ["./server", "./client"],
   "javascript.implicitProjectConfig.checkJs": false
 }

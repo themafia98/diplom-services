@@ -1,6 +1,6 @@
 import { NextFunction, Response, Request } from 'express';
 
-import { App, Params, Controller } from '../../Utils/Interfaces';
+import { App, Params, Controller as ControllerApi } from '../../Utils/Interfaces';
 import { ResRequest, FileBody } from '../../Utils/Types';
 
 import Responser from '../../Models/Responser';
@@ -11,7 +11,7 @@ namespace Cabinet {
   const { Controller, Post } = Decorators;
 
   @Controller('/cabinet')
-  export class CabinetController implements Controller<FunctionConstructor> {
+  export class CabinetController implements ControllerApi<FunctionConstructor> {
     @Post({ path: '/:uid/loadAvatar', private: true, file: true })
     protected async loadAvatar(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { dbm } = server.locals;

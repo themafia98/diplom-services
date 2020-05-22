@@ -14,7 +14,7 @@ namespace RouterInstance {
     }
 
     static instance(app: Application): Route {
-      if (instanceRoute !== null) return <Route>instanceRoute;
+      if (instanceRoute !== null) return instanceRoute as Route;
       else {
         instanceRoute = new Router(app);
         return instanceRoute;
@@ -30,7 +30,7 @@ namespace RouterInstance {
     }
 
     public getRest(): Application {
-      return <Application>this.restClient;
+      return this.restClient as Application;
     }
 
     public getEntrypoint(): Application {

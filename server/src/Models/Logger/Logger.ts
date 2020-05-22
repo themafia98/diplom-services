@@ -1,7 +1,7 @@
 import winston, { Logger } from 'winston';
 import Utils from '../../Utils';
 
-namespace Logger {
+namespace LoggerSpace {
   export const factory = (level: string, format: any, defaultMeta: Object): Logger => {
     return winston.createLogger({
       level,
@@ -12,4 +12,4 @@ namespace Logger {
   };
 }
 
-export default Logger;
+export default LoggerSpace;

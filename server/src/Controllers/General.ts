@@ -1,34 +1,22 @@
-import { Response, NextFunction } from "express";
-import _ from "lodash";
-import passport from "passport";
-import { UserModel } from "../Models/Database/Schema";
-import { ResRequest, ParserResult } from "../Utils/Types";
-import {
-  Request,
-  App,
-  BodyLogin,
-  Mail,
-  User,
-  Controller,
-} from "../Utils/Interfaces";
-import Action from "../Models/Action";
-import Decorators from "../Decorators";
-import { SentMessageInfo } from "nodemailer";
+import { Response, NextFunction } from 'express';
+import _ from 'lodash';
+import passport from 'passport';
+import { UserModel } from '../Models/Database/Schema';
+import { ResRequest, ParserResult } from '../Utils/Types';
+import { Request, App, BodyLogin, Mail, User, Controller } from '../Utils/Interfaces';
+import Action from '../Models/Action';
+import Decorators from '../Decorators';
+import { SentMessageInfo } from 'nodemailer';
 
 namespace General {
   const Post = Decorators.Post;
   const Delete = Decorators.Delete;
   const Controller = Decorators.Controller;
 
-  @Controller("/")
+  @Controller('/')
   export class Main implements Controller<FunctionConstructor> {
-    @Post({ path: "/auth", private: true })
-    protected auth(
-      req: Request,
-      res: Response,
-      next: NextFunction,
-      server: App,
-    ): Response {
+    @Post({ path: '/auth', private: true })
+    protected auth(req: Request, res: Response, next: NextFunction, server: App): Response {
       try {
         const { dbm = null } = server.locals || {};
         if (dbm) dbm.connection().catch((err) => console.error(err));
@@ -39,28 +27,23 @@ namespace General {
       }
     }
 
-    @Post({ path: "/reg", private: false })
-    protected async reg(
-      req: Request,
-      res: Response,
-      next: NextFunction,
-      server: App,
-    ): ResRequest {
+    @Post({ path: '/reg', private: false })
+    protected async reg(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       try {
         if (!req.body || (req.body && _.isEmpty(req.body))) {
-          throw new Error("Invalid auth data");
+          throw new Error('Invalid auth data');
         }
 
         const service = server.locals;
         const connect = await service.dbm.connection();
 
         if (!connect) {
-          console.log("Connect reg:", connect);
+          console.log('Connect reg:', connect);
           return res.sendStatus(503);
         }
 
         await UserModel.create(
-          { ...req.body, accept: true, rules: "full" },
+          { ...req.body, accept: true, rules: 'full' },
           async (err: Error): ResRequest => {
             if (err) {
               console.error(err);
@@ -75,40 +58,33 @@ namespace General {
       }
     }
 
-    @Post({ path: "/login", private: false })
-    protected async login(
-      req: Request,
-      res: Response,
-      next: NextFunction,
-      server: App,
-    ) {
+    @Post({ path: '/login', private: false })
+    protected async login(req: Request, res: Response, next: NextFunction, server: App) {
       const { dbm = null } = server.locals || {};
       const body: BodyLogin = req.body;
       if (dbm) dbm.connection().catch((err) => console.error(err));
       if (!body || (body && _.isEmpty(body))) return void res.sendStatus(503);
 
       return await passport.authenticate(
-        "local",
+        'local',
         async (err: Error, user: User): ResRequest => {
           try {
             if (!user || err) {
-              return res.status(401).send(
-                "Пользователь не найден, проверьте введеные данные.",
-              );
+              return res.status(401).send('Пользователь не найден, проверьте введеные данные.');
             }
-            const { password = "" } = body;
+            const { password = '' } = body;
 
             const isValidPassword = await user.checkPassword(password).catch(
               (err: Error): Response => {
                 console.error(err);
-                return res.status(503).send("Ошибка авторизации.");
+                return res.status(503).send('Ошибка авторизации.');
               },
             );
 
             if (res.headersSent) return;
 
             if (!isValidPassword) {
-              return res.status(401).send("Неверные данные для авторизации.");
+              return res.status(401).send('Неверные данные для авторизации.');
             }
             user.token = user.generateJWT();
             req.login(
@@ -123,42 +99,38 @@ namespace General {
           } catch (err) {
             console.error(err);
             if (!res.headersSent) {
-              return res.status(503).send("Ошибка авторизации.");
+              return res.status(503).send('Ошибка авторизации.');
             }
           }
         },
       )(req, res, next);
     }
 
-    @Post({ path: "/userload", private: true })
-    protected async userload(
-      req: Request,
-      res: Response,
-      server: App,
-    ): Promise<Response> {
+    @Post({ path: '/userload', private: true })
+    protected async userload(req: Request, res: Response, server: App): Promise<Response> {
       const { dbm = null } = server.locals || {};
       if (dbm) dbm.connection().catch((err) => console.error(err));
       const { user } = req;
-      if (user) return res.json({ user: (<User> user).toAuthJSON() });
+      if (user) return res.json({ user: (<User>user).toAuthJSON() });
       else {
-        res.clearCookie("connect.sid");
+        res.clearCookie('connect.sid');
         return res.sendStatus(302);
       }
     }
 
-    @Delete({ path: "/logout", private: true })
+    @Delete({ path: '/logout', private: true })
     protected async logout(req: Request, res: Response): Promise<Response> {
       return req.session.destroy(
         (err: Error): Response => {
           if (err) console.error(err);
           req.logOut(); // passportjs logout
-          res.clearCookie("connect.sid");
+          res.clearCookie('connect.sid');
           return res.sendStatus(200);
         },
       );
     }
 
-    @Post({ path: "/mailerResponse", private: true })
+    @Post({ path: '/mailerResponse', private: true })
     protected async mailerResponse(
       req: Request,
       res: Response,
@@ -170,20 +142,19 @@ namespace General {
         const body: BodyLogin = req.body;
 
         const { queryParams = {} } = body as Record<string, string>;
-        const { mailBody = "", themeMail = "", to = "" } =
-          queryParams as Record<string, string> || {};
+        const { mailBody = '', themeMail = '', to = '' } = (queryParams as Record<string, string>) || {};
 
         if (!mailBody || !to) {
-          throw new Error("Invalid mail data");
+          throw new Error('Invalid mail data');
         }
 
-        const result: Promise<SentMessageInfo> = await (<Mail> mailer).send(
+        const result: Promise<SentMessageInfo> = await (<Mail>mailer).send(
           to,
-          themeMail ? themeMail : "Письмо об оказании услуг",
+          themeMail || 'Письмо об оказании услуг',
           mailBody,
         );
 
-        if (!result) throw new Error("Invalid send mail");
+        if (!result) throw new Error('Invalid send mail');
 
         return res.sendStatus(200);
       } catch (error) {
@@ -193,7 +164,7 @@ namespace General {
       }
     }
 
-    @Post({ path: "/recovory", private: false })
+    @Post({ path: '/recovory', private: false })
     protected async recovoryPassword(
       req: Request,
       res: Response,
@@ -204,10 +175,10 @@ namespace General {
         const { mailer } = server.locals;
         const body: BodyLogin = req.body;
 
-        const { recovoryField = "" } = body;
+        const { recovoryField = '' } = body;
 
-        const actionPath: string = "users";
-        const actionType: string = "recovory_checker";
+        const actionPath: string = 'users';
+        const actionType: string = 'recovory_checker';
 
         const checkerAction: Action.ActionParser = new Action.ActionParser({
           actionPath,
@@ -218,19 +189,19 @@ namespace General {
         const password: ParserResult = await checkerAction.getActionData(body);
 
         if (!password) {
-          throw new Error("Invalid checker data");
+          throw new Error('Invalid checker data');
         }
 
-        const to: string = <string> recovoryField;
+        const to: string = <string>recovoryField;
 
-        const result: Promise<SentMessageInfo> = await (<Mail> mailer).send(
+        const result: Promise<SentMessageInfo> = await (<Mail>mailer).send(
           to,
-          "Восстановление пароля / ControllSystem",
+          'Восстановление пароля / ControllSystem',
           `Ваш новый пароль: ${password}`,
         );
 
         if (!result) {
-          throw new Error("Invalid send mail");
+          throw new Error('Invalid send mail');
         }
 
         return res.sendStatus(200);

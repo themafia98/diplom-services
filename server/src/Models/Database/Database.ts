@@ -1,6 +1,5 @@
 import mongoose, { Connection } from 'mongoose';
 import dotenv from 'dotenv';
-import _ from 'lodash';
 
 import { Dbms } from '../../Utils/Interfaces';
 

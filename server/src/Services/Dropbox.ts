@@ -92,7 +92,7 @@ namespace DropboxStorage {
      */
     public async downloadFileByProps<DownloadDropbox>(fileProps: DownloadDropbox): Promise<FileMetadata> {
       try {
-        const { moduleName = '', filename = '', cardName = '', ext = '' } = <Record<string, any>>fileProps;
+        const { moduleName = '', filename = '', cardName = '', ext = '' } = fileProps as Record<string, any>;
 
         const path: string = !cardName
           ? `/${moduleName}/${filename}.${ext}`

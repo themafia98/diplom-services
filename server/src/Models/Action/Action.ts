@@ -79,7 +79,7 @@ namespace Action {
       if (!model || !filter) return null;
       const query: FilterQuery<object> = filter;
       return await model.find(query).sort({
-        createdAt: sort ? sort : 'desc',
+        createdAt: sort || 'desc',
       });
     }
 
