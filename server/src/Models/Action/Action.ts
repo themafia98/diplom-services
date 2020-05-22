@@ -21,6 +21,9 @@ import ActionSettings from './ActionsEntity/ActionSettings';
 namespace ActionApi {
   const { getModelByName } = Utils;
   export class ActionParser extends ActionEntity implements Actions {
+    constructor(props: ActionProps) {
+      super(props);
+    }
     public async getCounter(
       model: Model<Document>,
       query: FilterQuery<any>,
