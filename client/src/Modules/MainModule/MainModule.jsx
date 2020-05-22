@@ -33,7 +33,7 @@ class MainModule extends React.PureComponent {
     this.onResizeWindow();
   };
 
-  onResizeWindow = () => {
+  onResizeWindow = _.debunce(() => {
     const { tableViewHeight = null } = this.state;
     const { visible = false } = this.props;
     const { current: rightColumnNode } = this.rightColumnRef || {};
@@ -52,7 +52,7 @@ class MainModule extends React.PureComponent {
         tableViewHeight: newTableViewHeight,
       });
     }
-  };
+  }, 300);
 
   render() {
     const { visible, setCurrentTab } = this.props;
