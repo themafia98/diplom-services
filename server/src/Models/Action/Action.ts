@@ -1,4 +1,4 @@
-import { ActionParams, Actions, Action } from '../../Utils/Interfaces';
+import { ActionParams, Actions, Action, ActionProps } from '../../Utils/Interfaces';
 import { Model, Document, Types, FilterQuery } from 'mongoose';
 import _ from 'lodash';
 import ActionEntity from './ActionEntity';
