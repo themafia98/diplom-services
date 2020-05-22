@@ -30,10 +30,11 @@ class MainModule extends React.PureComponent {
   };
 
   componentDidUpdate = () => {
-    this.onResizeWindow();
+    const { tableViewHeight = 0 } = this.state;
+    if (tableViewHeight) this.onResizeWindow();
   };
 
-  onResizeWindow = _.debunce(() => {
+  onResizeWindow = () => {
     const { tableViewHeight = null } = this.state;
     const { visible = false } = this.props;
     const { current: rightColumnNode } = this.rightColumnRef || {};
@@ -44,15 +45,16 @@ class MainModule extends React.PureComponent {
     const { height: heightWidgets = 0 } = widgetContainerNode.getBoundingClientRect() || {};
     if (heightColumn <= 0) return;
 
-    const newTableViewHeight = heightColumn - heightWidgets;
+    const newTableViewHeight = heightColumn - heightWidgets - 50;
+    const differense = +tableViewHeight !== newTableViewHeight;
 
-    if (tableViewHeight && Number(tableViewHeight) !== newTableViewHeight) {
+    if (tableViewHeight && differense) {
       this.setState({
         ...this.state,
         tableViewHeight: newTableViewHeight,
       });
     }
-  }, 300);
+  };
 
   render() {
     const { visible, setCurrentTab } = this.props;
