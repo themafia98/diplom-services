@@ -119,14 +119,16 @@ namespace System {
         methodQuery: 'load_files',
         status: 'done',
         done: true,
-        from: modcleuleName,
+        from: moduleName,
       };
+
+      const { dropbox } = server.locals;
 
       try {
         const downloadAction: Actions = new Action.ActionParser({
           actionPath: 'global',
           actionType: 'load_files',
-          store: (server as FileApi).locals.dropbox,
+          store: <FileApi>dropbox,
         });
 
         const data: ParserResult = await downloadAction.getActionData({
