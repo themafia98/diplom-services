@@ -93,7 +93,7 @@ class Schema {
             depKey: { type: 'string' },
             timeLost: { type: 'string' },
             editor: { type: 'string' },
-            date: { type: 'string' },
+            date: { type: 'array', items: { type: 'string' } },
             description: { type: 'string' },
           },
           ...this.addAdditionalProperty(),
