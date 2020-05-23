@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React, { useState, useEffect, useMemo } from 'react';
+import _ from 'lodash';
 import clsx from 'clsx';
 import { getComponentByKey } from 'Utils';
 import { drawerViewerType } from './types';
@@ -38,7 +39,7 @@ const DrawerViewer = (props) => {
           udata={udata}
         />
       ) : (
-        <span>{content.toString()}</span>
+        <span>{_.toString(content)}</span>
       )}
     </Drawer>
   );

@@ -497,6 +497,7 @@ class ModalWindow extends React.PureComponent {
       description,
     };
     const isVisibleMailResponser = visible && typeView === 'mailResponse';
+
     return (
       <>
         <div className="dropDownWrapper">
@@ -513,7 +514,7 @@ class ModalWindow extends React.PureComponent {
         ) : (
           <Modal
             className="modalWindow"
-            visible={visible}
+            visible={visible || modeEditContent}
             onOk={this.handleOk}
             destroyOnClose={true}
             onCancel={modeEditContent ? onCancelEditModeContent : this.handleCancel}

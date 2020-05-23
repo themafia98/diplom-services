@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import { connect } from 'react-redux';
 import { mainModuleType } from './types';
 import { Calendar } from 'antd';
 import modelContext from 'Models/context';
@@ -7,6 +8,8 @@ import ClockWidjet from 'Components/ClockWidjet/index';
 import TableView from 'Components/TableView';
 import StreamBox from 'Components/StreamBox';
 import TitleModule from 'Components/TitleModule';
+import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
+import { routePathNormalise, routeParser } from 'Utils';
 
 class MainModule extends React.PureComponent {
   static propTypes = mainModuleType;
@@ -21,17 +24,49 @@ class MainModule extends React.PureComponent {
   widgetsContainerRef = React.createRef();
 
   componentDidMount = () => {
+    const { onLoadCurrentData, visible } = this.props;
+
+    const { page = '', itemId = '', path: validPath = '' } = routeParser({
+      pageType: 'moduleItem',
+      path: 'mainModule__global',
+    });
+
+    if (visible && page === 'mainModule' && itemId === 'global') {
+      onLoadCurrentData({
+        path: validPath,
+        startPath: 'system',
+        xhrPath: 'userList',
+        storeLoad: 'users',
+        methodRequst: 'GET',
+      });
+    }
     this.onResizeWindow();
     window.addEventListener('resize', this.onResizeWindow.bind(this), false);
   };
 
-  componentWillUnmount = () => {
-    window.removeEventListener('resize', this.onResizeWindow.bind(this), false);
+  componentDidUpdate = (prevProps) => {
+    const { tableViewHeight = 0 } = this.state;
+    const { onLoadCurrentData, visible = false } = this.props;
+
+    const { path: validPath = '', page = '', itemId = '' } = routeParser({
+      pageType: 'moduleItem',
+      path: 'mainModule__global',
+    });
+
+    if (prevProps.visible !== visible && page === 'mainModule' && itemId === 'global') {
+      if (visible & onLoadCurrentData)
+        onLoadCurrentData({
+          path: validPath,
+          xhrPath: 'userList',
+          startPath: 'system',
+          storeLoad: 'users',
+          methodRequst: 'GET',
+        });
+    }
   };
 
-  componentDidUpdate = () => {
-    const { tableViewHeight = 0 } = this.state;
-    if (tableViewHeight) this.onResizeWindow();
+  componentWillUnmount = () => {
+    window.removeEventListener('resize', this.onResizeWindow.bind(this), false);
   };
 
   onResizeWindow = () => {
@@ -92,7 +127,7 @@ class MainModule extends React.PureComponent {
                 tableViewHeight={tableViewHeight}
                 visible={visible}
                 key="mainModule_table"
-                path="mainModule__table"
+                path="mainModule__global"
               />
             </div>
           </div>
@@ -102,4 +137,10 @@ class MainModule extends React.PureComponent {
   }
 }
 
-export default MainModule;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onLoadCurrentData: (props) => dispatch(loadCurrentData(props)),
+  };
+};
+
+export default connect(null, mapDispatchToProps)(MainModule);

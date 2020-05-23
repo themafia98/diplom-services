@@ -74,9 +74,22 @@ const loadFile = async (store = '', body = {}) => {
   return await rest.sendRequest(`/system/${store}/load/file`, 'PUT', body, true);
 };
 
+const findData = (target, key) => {
+  try {
+    if (!target || typeof target !== 'object') throw new TypeError('target is not object');
+
+    const resultKey = Object.keys(target).find((targetKey) => targetKey.includes(key));
+    return target[resultKey];
+  } catch (error) {
+    console.error(error);
+    return target;
+  }
+};
+
 export default {
   createNotification,
   createEntity,
   deleteFile,
   loadFile,
+  findData,
 };

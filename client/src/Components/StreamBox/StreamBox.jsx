@@ -304,7 +304,7 @@ class StreamBox extends React.Component {
     }
 
     const messageParts = message
-      .split('\n')
+      .split(/\n/)
       .map((part) => part.trim())
       .filter(Boolean);
 
@@ -406,7 +406,7 @@ class StreamBox extends React.Component {
                     <p className="name">{authorName}</p>
                   </div>
                   <p className="card_title">{title}</p>
-                  <p className="card_message">{this.onParserdMessage(message)}</p>
+                  <div className="card_message">{this.onParserdMessage(message)}</div>
                 </div>
               );
 

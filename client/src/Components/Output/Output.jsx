@@ -2,7 +2,7 @@
 import React from 'react';
 import { outputType } from './types';
 import clsx from 'clsx';
-import { routePathNormalise } from 'Utils';
+import { routePathNormalise, findData } from 'Utils';
 import { Tooltip, Button, message, Spin } from 'antd';
 import _ from 'lodash';
 import modelContext from 'Models/context';
@@ -111,7 +111,7 @@ class Output extends React.PureComponent {
       onOpenPageWithData,
       currentData: currentDataState = null,
       setCurrentTab,
-      depModuleName = '',
+      depDataKey = '',
     } = this.props;
 
     const isCurrentKey = uid === key;
@@ -124,10 +124,9 @@ class Output extends React.PureComponent {
     const page = `${action}Module`;
     const moduleId = !isCurrentKey ? 'personalPage' : '';
 
-    if (!currentDataState && depModuleName && routeData[depModuleName]) {
+    if (!currentDataState && depDataKey) {
       const store = action?.includes('cabinet') ? 'users' : action;
-      const { [store]: storeList = [] } = routeData[depModuleName] || {};
-
+      const { [store]: storeList = [] } = findData(routeData, depDataKey) || {};
       currentData = storeList.find((it) => it?._id === key) || {};
     }
 
@@ -229,6 +228,46 @@ class Output extends React.PureComponent {
     );
   };
 
+  renderTableOutput = (value) => {
+    const { className, typeOutput, id, action, list, isLink, outputClassName } = this.props;
+    const { showTooltip } = this.state;
+    const output = (
+      <td>
+        <div
+          className={clsx('output', outputClassName ? outputClassName : null, typeOutput ? 'withType' : null)}
+          ref={this.parentRef}
+        >
+          {typeOutput && typeOutput !== 'default' ? (
+            <>
+              {_.isPlainObject(value) ? (
+                this.renderLinks(value, 'single')
+              ) : (
+                <Button
+                  key={`${id}`}
+                  onClick={this.onOpenLink.bind(this, { action, id })}
+                  type={typeOutput}
+                  ref={this.childRef}
+                  className={className ? className : null}
+                >
+                  {value}
+                </Button>
+              )}
+            </>
+          ) : (
+            this.renderDefault(list, className, isLink, value)
+          )}
+        </div>
+      </td>
+    );
+    if (!showTooltip) return output;
+    else
+      return (
+        <Tooltip className="pointerTooltip" placement="topLeft" title={value}>
+          {output}
+        </Tooltip>
+      );
+  };
+
   render() {
     const {
       links,
@@ -245,6 +284,8 @@ class Output extends React.PureComponent {
     } = this.props;
     const { showTooltip } = this.state;
     let value = children;
+
+    if (type === 'table') return this.renderTableOutput(value);
 
     if (links || isStaticList) {
       if (Array.isArray(children)) {
@@ -264,65 +305,30 @@ class Output extends React.PureComponent {
         value = this.renderLinks(linksList);
       } else if (links) return this.renderLinks(links.find((link) => link?._id === children));
     }
-    if (type === 'table') {
-      const output = (
-        <td>
-          <div
-            className={clsx(
-              'output',
-              outputClassName ? outputClassName : null,
-              typeOutput ? 'withType' : null,
-            )}
-            ref={this.parentRef}
+
+    const output = (
+      <div className={clsx('output', outputClassName ? outputClassName : null)} ref={this.parentRef}>
+        {typeOutput && typeOutput !== 'default' && !Array.isArray(children) ? (
+          <Button
+            onClick={this.onOpenLink.bind(this, { action, id })}
+            type={typeOutput}
+            ref={this.childRef}
+            className={className ? className : null}
           >
-            {typeOutput && typeOutput !== 'default' ? (
-              <Button
-                key={`${id}`}
-                onClick={this.onOpenLink.bind(this, { action, id })}
-                type={typeOutput}
-                ref={this.childRef}
-                className={className ? className : null}
-              >
-                {_.isPlainObject(value) ? this.renderLinks(value, 'single') : value}
-              </Button>
-            ) : (
-              this.renderDefault(list, className, isLink, value)
-            )}
-          </div>
-        </td>
+            {value}
+          </Button>
+        ) : (
+          this.renderDefault(list, className, isLink, value)
+        )}
+      </div>
+    );
+    if (!showTooltip) return output;
+    else
+      return (
+        <Tooltip placement="topLeft" title={value}>
+          {output}
+        </Tooltip>
       );
-      if (!showTooltip) return output;
-      else
-        return (
-          <Tooltip className="pointerTooltip" placement="topLeft" title={value}>
-            {output}
-          </Tooltip>
-        );
-    } else {
-      const output = (
-        <div className={clsx('output', outputClassName ? outputClassName : null)} ref={this.parentRef}>
-          {typeOutput && typeOutput !== 'default' ? (
-            <Button
-              onClick={this.onOpenLink.bind(this, { action, id })}
-              type={typeOutput}
-              ref={this.childRef}
-              className={className ? className : null}
-            >
-              {value}
-            </Button>
-          ) : (
-            this.renderDefault(list, className, isLink, value)
-          )}
-        </div>
-      );
-      if (!showTooltip) return output;
-      else
-        return (
-          <Tooltip placement="topLeft" title={value}>
-            {output}
-          </Tooltip>
-        );
-    }
   }
 }
 

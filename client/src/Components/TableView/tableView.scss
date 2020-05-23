@@ -115,6 +115,10 @@ div.dynamicTable-controllers,
   }
 }
 
+.ant-table-thead > tr > th .ant-table-column-sorter .ant-table-column-sorter-inner-full {
+  cursor: pointer;
+}
+
 .wrapperLoaderTable {
   .tableLoader {
     width: 100px;

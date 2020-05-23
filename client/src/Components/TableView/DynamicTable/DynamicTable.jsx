@@ -5,7 +5,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import Output from 'Components/Output';
 import { Table, message, Input, Button, Icon, Empty } from 'antd';
-import { getDataSource } from 'Utils';
+import { getDataSource, findData } from 'Utils';
 import modelContext from 'Models/context';
 
 class DynamicTable extends React.PureComponent {
@@ -22,7 +22,7 @@ class DynamicTable extends React.PureComponent {
   static defaultProps = {
     counter: null,
     router: {},
-    depModuleName: '',
+    depDataKey: '',
     udata: {},
     filteredUsers: [],
     cachesAuthorList: [],
@@ -51,7 +51,7 @@ class DynamicTable extends React.PureComponent {
     const {
       router: { path = '' } = {},
       router,
-      depModuleName,
+      depDataKey,
       udata,
       filteredUsers,
       cachesAuthorList,
@@ -143,7 +143,7 @@ class DynamicTable extends React.PureComponent {
           return (
             <Output
               key={`${text}${row}${index}editor`}
-              depModuleName={depModuleName}
+              depDataKey={depDataKey}
               router={router}
               links={filteredUsers?.length ? filteredUsers : cachesEditorList}
               isLink={filteredUsers?.length ? Boolean(filteredUsers) : Boolean(cachesAuthorList)}
@@ -238,7 +238,7 @@ class DynamicTable extends React.PureComponent {
       }
     },
     render: (text, currentData) => {
-      const { router, depModuleName, udata } = this.props;
+      const { router, depDataKey, udata } = this.props;
       const isDateString = _.isArray(text) && moment(text[0], 'DD.MM.YYYY')?._isValid;
       const isArrayEditors = _.isArray(text) && !isDateString;
       const className =
@@ -251,7 +251,8 @@ class DynamicTable extends React.PureComponent {
           : text === 'Выполнен'
           ? 'done'
           : null;
-      const usersList = router?.routeData['mainModule__table']?.users;
+
+      const usersList = findData(router?.routeData, 'global')?.users;
       const listKeys = Object.keys(currentData);
       const index = listKeys.findIndex((key) => currentData[key] === text);
       const currentKey = listKeys[index] || null;
@@ -259,7 +260,7 @@ class DynamicTable extends React.PureComponent {
       let propsOutput = isEditor
         ? {
             typeOutput: 'default',
-            depModuleName,
+            depDataKey,
             router,
             links: usersList,
             list: true,

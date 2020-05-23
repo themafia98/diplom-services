@@ -418,7 +418,6 @@ class TaskView extends React.PureComponent {
 
   onEditContentMode = (event) => {
     event.preventDefault();
-    event.stopPropagation();
     this.setState({
       ...this.state,
       modeEditContent: true,
@@ -655,7 +654,7 @@ class TaskView extends React.PureComponent {
 
     const commonProps = {
       ...renderMethods,
-      depModuleName: 'mainModule__table',
+      depDataKey: 'global',
       cachesAuthorList,
       cachesEditorList,
       cachesJurnalList,

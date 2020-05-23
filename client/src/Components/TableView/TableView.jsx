@@ -11,7 +11,6 @@ import Output from 'Components/Output';
 import DynamicTable from './DynamicTable';
 
 import { openPageWithDataAction, removeTabAction, addToRouteDataAction } from 'Redux/actions/routerActions';
-import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
 import modelContext from 'Models/context';
 
 class TableView extends React.Component {
@@ -27,7 +26,6 @@ class TableView extends React.Component {
     tasks: [],
     filterBy: '',
     visible: false,
-    onLoadCurrentData: null,
     user: {},
     router: [],
     publicReducer: {},
@@ -43,39 +41,7 @@ class TableView extends React.Component {
     statusApp: '',
   };
 
-  componentDidUpdate = (prevProps) => {
-    const { path, onLoadCurrentData, visible = false } = this.props;
-    const { path: validPath = '', page = '', itemId = '' } = routeParser({
-      pageType: 'moduleItem',
-      path,
-    });
-
-    if (prevProps.visible !== visible && page === 'mainModule' && itemId === 'table') {
-      if (visible & onLoadCurrentData)
-        onLoadCurrentData({
-          path: validPath ? validPath : '',
-          xhrPath: 'userList',
-          startPath: 'system',
-          storeLoad: 'users',
-          methodRequst: 'GET',
-        });
-    }
-  };
-
   componentDidMount = () => {
-    const { path, onLoadCurrentData, visible } = this.props;
-    const parsePath = routeParser({ pageType: 'moduleItem', path });
-
-    if (visible && parsePath && parsePath.page === 'mainModule' && parsePath.itemId === 'table') {
-      const { path: validPath = '' } = parsePath;
-      onLoadCurrentData({
-        path: validPath ? validPath : '',
-        startPath: 'system',
-        xhrPath: 'userList',
-        storeLoad: 'users',
-        methodRequst: 'GET',
-      });
-    }
     window.addEventListener('resize', this.setSizeWindow);
   };
 
@@ -115,7 +81,7 @@ class TableView extends React.Component {
 
     const height = heightProps - 250;
 
-    if (path === 'mainModule__table' && visible) {
+    if (path === 'mainModule__global' && visible) {
       currentData = path && routeData[path] ? routeData[path] : currentData;
       const isUsers = currentData && currentData.users;
       const isLoad = currentData && currentData.load;
@@ -252,7 +218,6 @@ const mapDispatchToProps = (dispatch) => {
     removeTab: (tab) => dispatch(removeTabAction(tab)),
     onOpenPageWithData: (data) => dispatch(openPageWithDataAction(data)),
     onAddRouteData: (data) => dispatch(addToRouteDataAction(data)),
-    onLoadCurrentData: (props) => dispatch(loadCurrentData({ ...props })),
   };
 };
 

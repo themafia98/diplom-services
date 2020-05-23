@@ -43,7 +43,7 @@ const Comment = (props) => {
   const onEditMode = () => setEditable(!editable);
   const onChange = ({ target: { value = '' } }) => setValue(value);
   return (
-    <p className="block-comment">
+    <div className="block-comment">
       {rules ? (
         <span className="commentControllers">
           {userId === uId ? (
@@ -95,7 +95,7 @@ const Comment = (props) => {
           </Button>
         </div>
       )}
-    </p>
+    </div>
   );
 };
 Comment.defaultProps = {

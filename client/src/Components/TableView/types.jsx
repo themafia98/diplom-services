@@ -13,7 +13,6 @@ export const tableViewType = {
   user: oneOfType([string, object]),
   router: object.isRequired,
   publicReducer: object.isRequired,
-  onLoadCurrentData: func.isRequired,
   onOpenPageWithData: oneOfType([func, () => null]),
   loaderMethods: object.isRequired,
   loading: bool,

@@ -33,7 +33,7 @@ const {
   isTimeLostValue,
 } = namespaceParser;
 
-const { createNotification, createEntity, deleteFile, loadFile } = namespaceTools;
+const { createNotification, createEntity, deleteFile, loadFile, findData } = namespaceTools;
 
 export {
   dataParser,
@@ -60,4 +60,5 @@ export {
   validationItems,
   isTimeLostValue,
   getComponentByKey,
+  findData,
 };

@@ -127,6 +127,7 @@ export default (state = initialState, action) => {
         isPartData = false,
         shouldUpdate = false,
       } = action?.payload;
+
       const isLink = pathAction.includes('__link') && pathAction.split('__')[1];
       const pathLink = isLink ? pathAction.split('__')[1] : pathAction;
       const path = pathLink.split('__link')[0];
