@@ -188,7 +188,7 @@ class Schema {
 
   /**
    * Schema
-   * @deprecated 23.05
+   * @deprecated 23.05 2020
    * @param {Array<string>} keysData
    * @param {Array<object>} keysSchema
    * @param {Object} data

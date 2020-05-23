@@ -9,8 +9,6 @@ import {
   ResponseJson,
   WsWorker,
   ActionParams,
-  Params,
-  Dbms,
   TicketRemote,
   TaskEntity,
 } from './Interfaces';
@@ -144,62 +142,6 @@ namespace Utils {
       uptime: process.uptime(),
       responseTime: responseTime(start),
     };
-  };
-
-  /** @deprecated 18.04.20 */
-  export const responser = async (
-    res: Response,
-    req: Request,
-    params: Params,
-    err: Error | null,
-    status: number = 200,
-    metadata: ParserResult = null,
-    dbm: Dbms | null = null,
-  ): Promise<Response | void> => {
-    console.warn('deprecated responser, use new Responser class');
-    // if (res.headersSent) return res;
-    // if (status) res.status(status);
-    // if (dbm) await dbm.disconnect().catch((err: Error) => console.error(err));
-    // //const start: Date = req.start as Date;
-    // switch (status) {
-    //   case 200:
-    //     return res.json(
-    //       getResponseJson(params.methodQuery, { params, metadata, done: true, status: 'OK' }, start),
-    //     );
-    //   case 503:
-    //     return res.json(
-    //       getResponseJson(
-    //         (err as Error).name,
-    //         { metadata: 'Server error', params, done: false, status: 'FAIL' },
-    //         start,
-    //       ),
-    //     );
-    //   default:
-    //     return res.json(
-    //       getResponseJson(
-    //         `error or status not connected to responser, ${params.methodQuery}`,
-    //         { status: params.status, params, done: false, metadata },
-    //         new Da,
-    //       ),
-    //     );
-    // }
-  };
-
-  export const isImage = (buffer: Buffer): boolean => {
-    if (!buffer || buffer.length < 8) {
-      return false;
-    }
-
-    return (
-      buffer[0] === 0x89 &&
-      buffer[1] === 0x50 &&
-      buffer[2] === 0x4e &&
-      buffer[3] === 0x47 &&
-      buffer[4] === 0x0d &&
-      buffer[5] === 0x0a &&
-      buffer[6] === 0x1a &&
-      buffer[7] === 0x0a
-    );
   };
 
   export const parsePublicData = (data: ParserResult, mode: string = 'default', rules = ''): Array<Meta> => {

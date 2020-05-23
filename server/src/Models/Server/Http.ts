@@ -29,8 +29,6 @@ import Mailer from '../Mail';
 import DropboxStorage from '../../Services/Dropbox';
 
 import { UserModel } from '../Database/Schema';
-
-import jwt, { StrategyOptions } from 'passport-jwt';
 import * as passportLocal from 'passport-local';
 
 import wsWorkerManager from '../../Utils/instanseWs';
@@ -99,7 +97,7 @@ namespace Http {
       next();
     }
 
-    public initJWT(dbm: Dbms): void {
+    public jsonWebTokenExec(dbm: Dbms): void {
       passport.use(
         new LocalStrategy(
           {
@@ -107,6 +105,7 @@ namespace Http {
             passwordField: 'password',
           },
           async (email: string, password: string, done: Function): Promise<Function> => {
+            /** auth */
             try {
               const connect = await dbm.connection();
               if (!connect) throw new Error('Bad connect');
@@ -134,37 +133,15 @@ namespace Http {
         ),
       );
 
-      const jwtOptions: Readonly<object> = {
-        jwtFromRequest: jwt.ExtractJwt.fromAuthHeaderWithScheme('jwt'),
-        secretOrKey: 'jwtsecret',
-      };
-
-      passport.use(
-        new jwt.Strategy(jwtOptions as StrategyOptions, async function (
-          payload: Record<string, ObjectId>,
-          done: Function,
-        ) {
-          try {
-            const { id } = payload || {};
-            const connect = await dbm.connection();
-            if (!connect) throw new Error('bad connection');
-
-            const result = await UserModel.findOne(id);
-            if (!result) return done(result);
-            else return done(null, result);
-          } catch (err) {
-            return done(err);
-          }
-        }),
-      );
-
       passport.serializeUser((user: Record<string, ObjectId>, done: Function): void => {
+        /** save cookie sesson */
         const { id } = user || {};
         done(null, id);
       });
 
       passport.deserializeUser(
         async (id: string, done: Function): Promise<void | Function> => {
+          /** clear cookie session */
           try {
             const connect = await dbm.connection();
             if (!connect) throw new Error('Bad connect');
@@ -246,7 +223,7 @@ namespace Http {
       this.getApp().locals.dbm = dbm;
       this.getApp().locals.dropbox = dropbox;
       this.getApp().locals.mailer = mailer;
-      this.initJWT(dbm);
+      this.jsonWebTokenExec(dbm);
 
       const instanceRouter: Route = RouterInstance.Router.instance(this.getApp());
 
