@@ -1,4 +1,5 @@
 // @ts-nocheck
+import { createAction } from 'redux-actions';
 import {
   SET_ACTIVE_CHAT_TOKEN,
   SET_SOCKET_CONNECTION,
@@ -8,44 +9,9 @@ import {
   UPDATE_ENTITY_SOCKET,
 } from './const';
 
-export const setActiveChatToken = (state) => {
-  return {
-    type: SET_ACTIVE_CHAT_TOKEN,
-    payload: state,
-  };
-};
-
-export const onLoadActiveChats = (state) => {
-  return {
-    type: LOAD_CHATS_LIST,
-    payload: state,
-  };
-};
-
-export const addMsg = (state) => {
-  return {
-    type: ADD_CHAT_MSG,
-    payload: state,
-  };
-};
-
-export const setSocketConnection = (state) => {
-  return {
-    type: SET_SOCKET_CONNECTION,
-    payload: state,
-  };
-};
-
-export const setSocketError = (state) => {
-  return {
-    type: INVALID_LOAD_SOCKET,
-    payload: state,
-  };
-};
-
-export const updateRoom = (state) => {
-  return {
-    type: UPDATE_ENTITY_SOCKET,
-    payload: state,
-  };
-};
+export const setActiveChatToken = createAction(SET_ACTIVE_CHAT_TOKEN);
+export const onLoadActiveChats = createAction(LOAD_CHATS_LIST);
+export const setSocketConnection = createAction(SET_SOCKET_CONNECTION);
+export const setSocketError = createAction(INVALID_LOAD_SOCKET);
+export const updateRoom = createAction(UPDATE_ENTITY_SOCKET);
+export const addMsg = createAction(ADD_CHAT_MSG);
