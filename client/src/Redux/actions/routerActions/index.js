@@ -1,4 +1,6 @@
 // @ts-nocheck
+import { createAction } from 'redux-actions';
+import { setLogoutTabs } from '../tabActions';
 import {
   ADD_TAB,
   SET_ACTIVE_TAB,
@@ -12,77 +14,16 @@ import {
   ADD_TO_ROUTE_DATA,
 } from './const';
 
-import { setLogoutTabs } from '../tabActions';
-
-export const addTabAction = (state) => {
-  return {
-    type: ADD_TAB,
-    payload: state,
-  };
-};
-
-export const shouldUpdateAction = (state) => {
-  return {
-    type: SET_UPDATE,
-    payload: state,
-  };
-};
-
-export const setActiveTabAction = (state) => {
-  return {
-    type: SET_ACTIVE_TAB,
-    payload: state,
-  };
-};
-
-export const openPageWithDataAction = (state) => {
-  return {
-    type: OPEN_PAGE_WITH_DATA,
-    payload: state,
-  };
-};
-
-export const removeTabAction = (state) => {
-  return {
-    type: REMOVE_TAB,
-    payload: state,
-  };
-};
-
-export const logoutRouterAction = (state) => {
-  return {
-    type: LOGOUT,
-    payload: state,
-  };
-};
-
-export const saveComponentStateAction = (state) => {
-  return {
-    type: SAVE_STATE,
-    payload: state,
-  };
-};
-
-export const addToRouteDataAction = (state) => {
-  return {
-    type: ADD_TO_ROUTE_DATA,
-    payload: state,
-  };
-};
-
-export const updateItemStateAction = (state) => {
-  return {
-    type: UPDATE_ITEM,
-    payload: state,
-  };
-};
-
-export const loadFlagAction = (state) => {
-  return {
-    type: SET_FLAG_LOAD_DATA,
-    payload: state,
-  };
-};
+export const addTabAction = createAction(ADD_TAB);
+export const shouldUpdateAction = createAction(SET_UPDATE);
+export const setActiveTabAction = createAction(SET_ACTIVE_TAB);
+export const openPageWithDataAction = createAction(OPEN_PAGE_WITH_DATA);
+export const removeTabAction = createAction(REMOVE_TAB);
+export const logoutRouterAction = createAction(LOGOUT);
+export const saveComponentStateAction = createAction(SAVE_STATE);
+export const addToRouteDataAction = createAction(ADD_TO_ROUTE_DATA);
+export const updateItemStateAction = createAction(UPDATE_ITEM);
+export const loadFlagAction = createAction(SET_FLAG_LOAD_DATA);
 
 export const logoutAction = () => (dispatch) => {
   dispatch(setLogoutTabs());

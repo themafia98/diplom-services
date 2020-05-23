@@ -1,5 +1,5 @@
 // @ts-nocheck
-/** Here action constants import */
+import { createAction } from 'redux-actions';
 import {
   SET_ERROR,
   SET_CACHE,
@@ -12,65 +12,12 @@ import {
   LOAD_SETTINGS,
 } from './const';
 
-export const errorRequestAction = (state) => {
-  return {
-    type: SET_ERROR,
-    payload: state,
-  };
-};
-
-export const onLoadArtifacts = (state) => {
-  return {
-    type: LOAD_ARTIFACT,
-    payload: state,
-  };
-};
-
-export const onLoadSettings = (state) => {
-  return {
-    type: LOAD_SETTINGS,
-    payload: state,
-  };
-};
-
-export const updateUdata = (state) => {
-  return {
-    type: UPDATE_UDATA,
-    payload: state,
-  };
-};
-
-export const showGuile = (state) => {
-  return {
-    type: SHOW_GUIDE,
-    payload: state,
-  };
-};
-
-export const loadUdata = (state) => {
-  return {
-    type: UDATA_LOAD,
-    payload: state,
-  };
-};
-
-export const сachingAction = (state) => {
-  return {
-    type: SET_CACHE,
-    payload: state,
-  };
-};
-
-export const clearCache = (state) => {
-  return {
-    type: CLEAR_CACHE,
-    payload: state,
-  };
-};
-
-export const setStatus = (state) => {
-  return {
-    type: SET_STATUS,
-    payload: state,
-  };
-};
+export const errorRequestAction = createAction(SET_ERROR);
+export const onLoadArtifacts = createAction(LOAD_ARTIFACT);
+export const onLoadSettings = createAction(LOAD_SETTINGS);
+export const updateUdata = createAction(UPDATE_UDATA);
+export const showGuile = createAction(SHOW_GUIDE);
+export const loadUdata = createAction(UDATA_LOAD);
+export const сachingAction = createAction(SET_CACHE);
+export const clearCache = createAction(CLEAR_CACHE);
+export const setStatus = createAction(SET_STATUS);

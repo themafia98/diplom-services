@@ -1,4 +1,5 @@
 // @ts-nocheck
+import { handleActions } from 'redux-actions';
 import {
   SET_ERROR,
   SET_CACHE,
@@ -23,21 +24,20 @@ const initialState = {
   artifacts: [],
 };
 
-export default (state = initialState, action) => {
-  switch (action.type) {
-    case SET_ERROR: {
+export default handleActions(
+  {
+    [SET_ERROR]: (state, { payload }) => {
       return {
         ...state,
         requestError:
-          action.payload && Array.isArray(state.requestError)
-            ? [...state.requestError, action.payload]
-            : action.payload
-            ? [action.payload]
+          payload && Array.isArray(state.requestError)
+            ? [...state.requestError, payload]
+            : payload
+            ? [payload]
             : null,
       };
-    }
-    case LOAD_SETTINGS: {
-      const { payload = [] } = action;
+    },
+    [LOAD_SETTINGS]: (state, { payload }) => {
       const { settings: settingsState = [] } = state;
       if (payload && typeof payload === 'object' && !Array.isArray(payload)) {
         const { type = '', metadata = {}, depKey = '' } = payload || {};
@@ -66,27 +66,20 @@ export default (state = initialState, action) => {
         ...state,
         settings: payload,
       };
-    }
-
-    case LOAD_ARTIFACT: {
-      const { payload = [] } = action;
+    },
+    [LOAD_ARTIFACT]: (state, { payload }) => {
       return {
         ...state,
         artifacts: payload,
       };
-    }
-
-    case UDATA_LOAD: {
-      const { payload = {} } = action;
+    },
+    [UDATA_LOAD]: (state, { payload }) => {
       return {
         ...state,
         udata: { ...payload },
       };
-    }
-
-    case UPDATE_UDATA: {
-      const { payload = {} } = action;
-
+    },
+    [UPDATE_UDATA]: (state, { payload }) => {
       return {
         ...state,
         udata: {
@@ -94,18 +87,15 @@ export default (state = initialState, action) => {
           ...payload,
         },
       };
-    }
-
-    case SHOW_GUIDE: {
+    },
+    [SHOW_GUIDE]: (state, { payload }) => {
       return {
         ...state,
-        firstConnect: action.payload,
+        firstConnect: payload,
       };
-    }
-    case SET_CACHE: {
-      const { primaryKey } = action.payload;
-      const { pk = null } = action.payload;
-      const { data, customDepKey = '', union = true } = action.payload;
+    },
+    [SET_CACHE]: (state, { payload }) => {
+      const { primaryKey, pk = null, data, customDepKey = '', union = true } = payload;
       const { caches = {} } = state;
       let keys = null;
 
@@ -152,12 +142,11 @@ export default (state = initialState, action) => {
           caches: { ...caches, [keys]: validData[0] ? { ...validData[0] } : validData },
         };
       }
-    }
-
-    case CLEAR_CACHE: {
-      const deleteKey =
-        action.payload.type === 'itemTab' ? action.payload.path.split('__')[1] : action.payload.path;
+    },
+    [CLEAR_CACHE]: (state, { payload }) => {
+      const { type = '', path } = payload;
       const { caches = {} } = state || {};
+      const deleteKey = type === 'itemTab' ? path.split('__')[1] : path;
       const copyCahes = { ...caches };
 
       const filterCaches = Object.keys(copyCahes).reduce((filterObj, key) => {
@@ -171,20 +160,19 @@ export default (state = initialState, action) => {
         ...state,
         caches: filterCaches,
       };
-    }
-
-    case SET_STATUS: {
-      const { statusRequst = null, params = null, clearParams = false } = action.payload;
-      const paramsListNew = params ? [...state.paramsList, params] : [...state.paramsList];
+    },
+    [SET_STATUS]: (state, { payload }) => {
+      const { paramsList = [], status = '' } = state;
+      const { statusRequst = null, params = null, clearParams = false } = payload;
+      const paramsListNew = params ? [...paramsList, params] : [...paramsList];
 
       return {
         ...state,
-        status: statusRequst ? statusRequst : state.status,
-        prewStatus: state.status,
+        status: statusRequst ? statusRequst : status,
+        prewStatus: status,
         paramsList: clearParams ? [] : paramsListNew,
       };
-    }
-    default:
-      return state;
-  }
-};
+    },
+  },
+  initialState,
+);
