@@ -8,6 +8,7 @@ import {
   CREATE_TASK_SCHEMA,
   WIKI_NODE_TREE,
 } from './const';
+import Ajv from 'ajv';
 
 class Schema {
   /**
@@ -20,8 +21,25 @@ class Schema {
     this.#mode = modeProp;
   }
 
+  /**
+   * @api
+   */
+  validator = new Ajv();
+
   getMode() {
     return this.#mode;
+  }
+
+  addAdditionalProperty() {
+    return {
+      additionalProperties: {
+        _id: { type: 'string' },
+        updatedAt: { type: 'string' },
+        createdAt: { type: 'string' },
+        offline: { type: 'boolean' },
+        _v: { type: 'string' },
+      },
+    };
   }
 
   /** @param {string} type */
@@ -29,75 +47,103 @@ class Schema {
     switch (type) {
       case TASK_SCHEMA:
         return {
-          _id: null,
-          type: null,
-          editor: null,
-          date: null,
-          comments: null, // array [{ id: null, username: null, message: null }]
-          key: null,
-          status: null,
-          name: null,
-          priority: null,
-          uidCreater: null,
-          authorName: null,
-          description: null,
-          additionalCreaterData: null,
-          tags: null,
+          type: 'object',
+          additionalProperties: true,
+          properties: {
+            _id: { type: 'string' },
+            type: { type: 'string' },
+            editor: { type: 'array' },
+            date: { type: 'array', items: { type: 'string' } },
+            comments: { type: 'array', items: { type: 'object' } },
+            key: { type: 'string' },
+            status: { type: 'string' },
+            name: { type: 'string' },
+            priority: { type: 'string' },
+            uidCreater: { type: 'string' },
+            authorName: { type: 'string' },
+            description: { type: 'string' },
+            additionalCreaterData: { type: 'object', default: {} },
+            tags: { type: 'array' },
+          },
+          ...this.addAdditionalProperty(),
         };
       case CREATE_TASK_SCHEMA:
         return {
-          key: null,
-          editor: null,
-          date: null,
-          comments: null,
-          status: null,
-          name: null,
-          priority: null,
-          authorName: null,
-          uidCreater: null,
-          description: null,
+          type: 'object',
+          additionalProperties: false,
+          properties: {
+            key: { type: 'string' },
+            editor: { type: 'array', items: { type: 'string' } },
+            date: { type: 'array', items: { type: 'string' } },
+            comments: { type: 'array' },
+            status: { type: 'string' },
+            name: { type: 'string' },
+            priority: { type: 'string' },
+            authorName: { type: 'string' },
+            uidCreater: { type: 'string' },
+            description: { type: 'string' },
+          },
         };
       case TASK_CONTROLL_JURNAL_SCHEMA:
         return {
-          _id: null,
-          depKey: null,
-          timeLost: null,
-          editor: null,
-          date: null,
-          description: null,
+          type: 'object',
+          additionalProperties: true,
+          properties: {
+            _id: { type: 'string' },
+            depKey: { type: 'string' },
+            timeLost: { type: 'string' },
+            editor: { type: 'string' },
+            date: { type: 'string' },
+            description: { type: 'string' },
+          },
+          ...this.addAdditionalProperty(),
         };
       case USER_SCHEMA:
         return {
-          _id: null,
-          email: null,
-          displayName: null,
-          summary: null,
-          phone: null,
-          isOnline: null,
-          departament: null,
-          position: null,
-          rules: null,
-          accept: null,
-          avatar: null,
-          isHideEmail: null,
-          isHidePhone: null,
+          type: 'object',
+          additionalProperties: false,
+          properties: {
+            _id: { type: 'string' },
+            email: { type: 'string' },
+            displayName: { type: 'string' },
+            summary: { type: 'string' },
+            phone: { type: 'string' },
+            isOnline: { type: 'boolean', default: false },
+            departament: { type: 'string' },
+            position: { type: 'string' },
+            rules: { type: 'string' },
+            accept: { type: 'boolean' },
+            avatar: { type: 'string', default: '' },
+            isHideEmail: { type: 'boolean' },
+            isHidePhone: { type: 'boolean' },
+          },
         };
       case NEWS_SCHEMA:
         return {
-          title: null,
-          content: null, // { entityMap: null,blocks: null },
-          key: null,
+          type: 'object',
+          additionalProperties: true,
+          properties: {
+            title: { type: 'string' },
+            content: { type: 'object' }, // { entityMap: null,blocks: null },
+            key: { type: 'string' },
+          },
+          ...this.addAdditionalProperty(),
         };
       case WIKI_NODE_TREE:
         return {
-          _id: null,
-          title: null,
-          level: null,
-          path: null,
-          index: null,
-          parentId: null,
-          accessGroups: null,
-          key: null,
+          type: 'object',
+          additionalProperties: true,
+          properties: {
+            _id: { type: 'string' },
+            title: { type: 'string' },
+            level: { type: 'number' },
+            path: { type: 'string' },
+            index: { type: 'number' },
+            parentId: { type: 'string' },
+            accessGroups: { type: 'array' },
+            key: { type: 'string' },
+          },
+          ...this.addAdditionalProperty(),
         };
       default:
         return null;
@@ -142,12 +188,13 @@ class Schema {
 
   /**
    * Schema
+   * @deprecated 23.05
    * @param {Array<string>} keysData
    * @param {Array<object>} keysSchema
    * @param {Object} data
    * @return {boolean}
    */
-  validateSchema(keysData, keysSchema, data, type = '') {
+  deprecated_validateSchema(keysData, keysSchema, data, type = '') {
     if (!_.isArray(keysData) || !_.isArray(keysSchema)) return false;
     let validLenth = keysData.length;
     let IS_SHOULD_USE_KEY = false;
@@ -156,7 +203,9 @@ class Schema {
     if (isFindMode) validLenth--;
 
     const isCreated = keysData.findIndex((it) => it === 'createdAt' && _.isString(data[it])) !== -1;
-    if (isCreated) validLenth--;
+    if (isCreated) {
+      validLenth--;
+    }
 
     const isUpdated = keysData.findIndex((it) => it === 'updatedAt' && _.isString(data[it])) !== -1;
     if (isUpdated) validLenth--;
@@ -183,12 +232,28 @@ class Schema {
         });
   }
 
+  getSchema(type, data) {
+    if (!_.isObject(data)) return null;
+    if (!_.isString(type)) return null;
+    if (_.isNull(data)) return null;
+
+    const schema = this.getValidateSchema(type);
+    const validate = this.validator.compile(schema);
+
+    if (validate(data)) return data;
+    else {
+      console.error('invalid data:', type);
+      return null;
+    }
+  }
+
   /**
+   * @deprecated 23.05.2020
    * @return {Object} valid schema object or null
    * @param {string} type string
    * @param {Object} data string
    */
-  getSchema(type, data) {
+  deprecated_getSchema(type, data) {
     if (!_.isObject(data)) return null;
     if (!_.isString(type)) return null;
     if (_.isNull(data)) return null;
@@ -200,7 +265,7 @@ class Schema {
     if (schema) keysSchema = Object.keys(schema);
     else return null;
 
-    if (this.validateSchema(keysData, keysSchema, data, type)) {
+    if (this.deprecated_validateSchema(keysData, keysSchema, data, type)) {
       return { ...data };
     } else return null;
   }
