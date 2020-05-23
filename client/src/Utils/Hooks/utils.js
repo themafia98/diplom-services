@@ -1,6 +1,5 @@
 // @ts-nocheck
 import _ from 'lodash';
-import Request from 'Models/Rest';
 import { sucessEvent } from '../';
 import { dataParser } from '../';
 

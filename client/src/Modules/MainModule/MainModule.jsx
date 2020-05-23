@@ -9,7 +9,7 @@ import TableView from 'Components/TableView';
 import StreamBox from 'Components/StreamBox';
 import TitleModule from 'Components/TitleModule';
 import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
-import { routePathNormalise, routeParser } from 'Utils';
+import { routeParser } from 'Utils';
 
 class MainModule extends React.PureComponent {
   static propTypes = mainModuleType;
@@ -45,7 +45,6 @@ class MainModule extends React.PureComponent {
   };
 
   componentDidUpdate = (prevProps) => {
-    const { tableViewHeight = 0 } = this.state;
     const { onLoadCurrentData, visible = false } = this.props;
 
     const { path: validPath = '', page = '', itemId = '' } = routeParser({

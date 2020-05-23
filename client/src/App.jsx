@@ -41,7 +41,7 @@ class App extends React.Component {
       onLoadUdata,
       onLoadSettings,
     } = this.props;
-    const { config = {}, Request, config: { appActive = true } = {}, clientDB } = this.context;
+    const { config = {}, Request, config: { appActive = true } = {} } = this.context;
     if (!appActive) return;
     const rest = new Request();
 

@@ -136,7 +136,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
 };
 
 const multipleLoadData = (params) => async (dispatch, getState, { schema, Request, clientDB }) => {
-  const { requestsParamsList = [], pipe = true, saveModuleName = '', sync = false } = params;
+  const { requestsParamsList = [], pipe = true, saveModuleName = '' } = params;
 
   const primaryKey = 'uuid';
   const { requestError, status = 'online' } = getState().publicReducer;
