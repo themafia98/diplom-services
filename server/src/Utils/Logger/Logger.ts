@@ -10,7 +10,7 @@ namespace LoggerSpace {
     includeDailyLogs: boolean = false,
     onlyDaily: boolean = true,
   ): Logger => {
-    const transport: Array<any> = onlyDaily && includeDailyLogs ? Utils.getLoggerTransports(level) : [];
+    const transport: Array<any> = !onlyDaily && includeDailyLogs ? Utils.getLoggerTransports(level) : [];
     const daily: Array<DailyRotateFile | void> =
       includeDailyLogs || (<any>process).NODE_ENV === 'production'
         ? [
