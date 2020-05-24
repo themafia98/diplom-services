@@ -22,8 +22,8 @@ jobs:
       - node/with-cache:
           steps:
             - run: cd client
-            - run: npm install --no-package-lock
-            - run: npm test
+            - run: yarn install --no-package-lock
+            - run: yarn test
 workflows:
   build-and-test:
     jobs:
