@@ -1,4 +1,10 @@
 version: 2.1 # use CircleCI 2.1
+dependencies:
+  pre:
+    - npm install -g now
+test:
+  override:
+    - npm test
 jobs: # a collection of steps
   build: # runs not using Workflows must have a `build` job as entry point
     working_directory: ~/diplom-services/client # directory where steps will run
