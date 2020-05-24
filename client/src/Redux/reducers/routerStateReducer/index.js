@@ -13,6 +13,7 @@ import {
   SET_UPDATE,
   ADD_TO_ROUTE_DATA,
 } from 'Redux/actions/routerActions/const';
+import { ON_END_DRAG_TAB } from 'Redux/actions/tabActions/const';
 import { validationItems } from 'Utils';
 import { SET_STATUS } from 'Redux/actions/publicActions/const';
 
@@ -41,6 +42,12 @@ export default handleActions(
         actionTabs: [...state.actionTabs, tab],
         shouldUpdate: true,
         currentActionTab: tab,
+      };
+    },
+    [ON_END_DRAG_TAB]: (state, { payload = [] }) => {
+      return {
+        ...state,
+        actionTabs: payload.map(({ EUID = '' }) => EUID),
       };
     },
     [SET_UPDATE]: (state, { payload }) => {
@@ -313,6 +320,7 @@ export default handleActions(
     [SET_ACTIVE_TAB]: (state, { payload }) => {
       const { routeData: routeDataState = {}, routeDataActive = {} } = state;
       const content = payload.split('__')[1];
+
       const selectModule = payload;
       let currentActive = null;
       let isDataPage = false;
@@ -408,12 +416,21 @@ export default handleActions(
 
       const indexFind = actionTabs.findIndex((it) => it === currentActionTab);
       const currentFind = filterArray.findIndex((tab) => tab === currentActionTab);
-      const nextTab = currentFind !== -1 ? currentActionTab : filterArray[indexFind - 1];
+      let nextTab = null;
+
+      if (currentFind !== -1) nextTab = currentActionTab;
+      else if (indexFind === 0) nextTab = filterArray[indexFind];
+      else nextTab = filterArray[indexFind - 1];
 
       const uuid = typeof nextTab === 'string' && type === 'itemTab' ? nextTab.split('__')[1] : nextTab;
 
       const copyData = routeDataNew;
       let current = null;
+
+      if (!nextTab) {
+        console.warn('Next tab not found');
+        return state;
+      }
 
       const isSimple =
         copyData[nextTab.split('__')[1]] && copyData[nextTab.split('__')[1]].key === nextTab.split('__')[1];

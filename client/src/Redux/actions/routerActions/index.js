@@ -1,6 +1,5 @@
 // @ts-nocheck
 import { createAction } from 'redux-actions';
-import { setLogoutTabs } from '../tabActions';
 import {
   ADD_TAB,
   SET_ACTIVE_TAB,
@@ -19,13 +18,8 @@ export const shouldUpdateAction = createAction(SET_UPDATE);
 export const setActiveTabAction = createAction(SET_ACTIVE_TAB);
 export const openPageWithDataAction = createAction(OPEN_PAGE_WITH_DATA);
 export const removeTabAction = createAction(REMOVE_TAB);
-export const logoutRouterAction = createAction(LOGOUT);
+export const logoutAction = createAction(LOGOUT);
 export const saveComponentStateAction = createAction(SAVE_STATE);
 export const addToRouteDataAction = createAction(ADD_TO_ROUTE_DATA);
 export const updateItemStateAction = createAction(UPDATE_ITEM);
 export const loadFlagAction = createAction(SET_FLAG_LOAD_DATA);
-
-export const logoutAction = () => (dispatch) => {
-  dispatch(setLogoutTabs());
-  dispatch(logoutRouterAction());
-};

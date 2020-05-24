@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import { Draggable } from 'react-beautiful-dnd';
 import { tabType } from './types';
 import clsx from 'clsx';
 import { Icon, Tooltip } from 'antd';
@@ -51,29 +52,40 @@ class Tab extends React.PureComponent {
   tabRef = (node) => (this.tab = node);
 
   render() {
-    const { value, active, hendlerTab: callbackHendlerTab, itemKey } = this.props;
+    const { value, active, hendlerTab: callbackHendlerTab, itemKey, index = 0 } = this.props;
     const tabStyle = this.getTabStyle();
     const closeIconStyle = this.getIconStyle();
     return (
-      <li
-        style={tabStyle}
-        onClick={callbackHendlerTab ? this.eventHandler : null}
-        className={clsx(active ? 'active' : null)}
-        key={itemKey}
-        ref={this.tabRef}
-      >
-        <span className={clsx(active ? 'tabWrapper-content selected' : 'tabWrapper-content')}>
-          <Tooltip title={value} placement="bottom">
-            <span className="tab-content">{value}</span>
-          </Tooltip>
-        </span>
-        <Icon
-          style={closeIconStyle}
-          className={clsx('closeTab')}
-          onClick={callbackHendlerTab ? this.eventCloseHandler : null}
-          type="close"
-        />
-      </li>
+      <Draggable key={`${itemKey}-wrapper`} draggableId={itemKey} index={index}>
+        {(provided, snapshot) => (
+          <div
+            className="draggable-wrapper"
+            ref={provided.innerRef}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+          >
+            <li
+              style={tabStyle}
+              onClick={callbackHendlerTab ? this.eventHandler : null}
+              className={clsx(active ? 'active' : null)}
+              key={itemKey}
+              ref={this.tabRef}
+            >
+              <span className={clsx(active ? 'tabWrapper-content selected' : 'tabWrapper-content')}>
+                <Tooltip title={value} placement="bottom">
+                  <span className="tab-content">{value}</span>
+                </Tooltip>
+              </span>
+              <Icon
+                style={closeIconStyle}
+                className={clsx('closeTab')}
+                onClick={callbackHendlerTab ? this.eventCloseHandler : null}
+                type="close"
+              />
+            </li>
+          </div>
+        )}
+      </Draggable>
     );
   }
 }

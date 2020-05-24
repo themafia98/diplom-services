@@ -15,82 +15,86 @@ header {
     width: $boxTab;
   }
 
-  ul {
-    &.tabsMenu {
+  .draggable-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+  }
+
+  ul.tabsMenu,
+  .droppable-wrapper {
+    display: flex;
+    align-items: center;
+    //width: $boxTab;
+    height: 100%;
+    flex-grow: 1;
+    padding: 0;
+    margin: 0;
+    li {
+      margin: 0 5px;
+      cursor: pointer;
+      span {
+        cursor: pointer;
+      }
+    }
+
+    .closeTab {
+      position: absolute;
+      top: 3%;
+      left: 95%;
+      transform: translate(-50%);
+      color: $selected;
+      font-size: 15px;
+      &.resizeTab {
+        left: 90%;
+      }
+
+      &:hover {
+        color: red;
+      }
+    }
+    li {
+      border: 1px solid $tabBorder;
+      position: relative;
+      &.active {
+        background-color: $tab;
+      }
+
       display: flex;
+      justify-content: center;
       align-items: center;
-      //width: $boxTab;
-      height: 100%;
-      flex-grow: 1;
+      height: 90%;
+      cursor: pointer;
+      background-color: $unactiveTab;
       padding: 0;
-      margin: 0;
-      li {
-        margin: 0 5px;
-        cursor: pointer;
-        span {
-          cursor: pointer;
-        }
+      // flex: 0 0 10%;
+      list-style-type: none;
+      margin: 0 5px;
+
+      span {
+        font-weight: bold;
       }
 
-      .closeTab {
-        position: absolute;
-        top: 3%;
-        left: 95%;
-        transform: translate(-50%);
-        color: $selected;
-        font-size: 15px;
-        &.resizeTab {
-          left: 90%;
-        }
-
-        &:hover {
-          color: red;
-        }
-      }
-      li {
-        border: 1px solid $tabBorder;
-        position: relative;
-        &.active {
-          background-color: $tab;
-        }
-
-        display: flex;
-        justify-content: center;
+      .tabWrapper-content {
+        height: 100%;
+        overflow: hidden;
+        width: 90%;
         align-items: center;
-        height: 65%;
-        cursor: pointer;
-        background-color: $unactiveTab;
-        padding: 0;
-        // flex: 0 0 10%;
-        list-style-type: none;
-        margin: 0 5px;
-
-        span {
+        justify-content: center;
+        display: flex;
+        white-space: nowrap;
+        .tab-content {
           font-weight: bold;
-        }
-
-        .tabWrapper-content {
-          height: 100%;
+          text-align: center;
           overflow: hidden;
-          width: 90%;
-          align-items: center;
-          justify-content: center;
-          display: flex;
           white-space: nowrap;
-          .tab-content {
-            font-weight: bold;
-            text-align: center;
-            overflow: hidden;
-            display: block;
-            white-space: nowrap;
-            width: 90%;
-
-            user-select: none;
-            text-overflow: ellipsis;
-          }
-          &.selected {
-            color: $selected;
-          }
+          width: 90%;
+          user-select: none;
+          text-overflow: ellipsis;
+        }
+        &.selected {
+          color: $selected;
         }
       }
     }

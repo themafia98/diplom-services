@@ -1,8 +1,11 @@
+// @ts-nocheck
 import React from 'react';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { headerViewType } from './types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { Layout } from 'antd';
+import { dragEndTabAction } from 'Redux/actions/tabActions';
 import { saveComponentStateAction } from 'Redux/actions/routerActions';
 import Tab from './Tab';
 import RightPanel from './RightPanel';
@@ -45,6 +48,20 @@ class HeaderView extends React.PureComponent {
     }
   };
 
+  reorder = (list, dragIndex, dropIndex) => {
+    const [removed] = list.splice(dragIndex, 1);
+    list.splice(dropIndex, 0, removed);
+    return list;
+  };
+
+  onDragEnd = (event, tabsList) => {
+    const { onDragEndTabAction } = this.props;
+    if (!event.destination) {
+      return;
+    }
+    onDragEndTabAction(this.reorder(tabsList, event.source.index, event.destination.index));
+  };
+
   wrapper = null;
   refWrapper = (node) => (this.wrapper = node);
 
@@ -53,20 +70,29 @@ class HeaderView extends React.PureComponent {
     const { activeTabEUID = 'mainModule', cbMenuTabHandler } = this.props;
 
     return (
-      <ul ref={this.refWrapper} className="tabsMenu">
-        {items.map((item) => {
-          return (
-            <Tab
-              hendlerTab={cbMenuTabHandler}
-              active={activeTabEUID === item.EUID}
-              key={item.EUID}
-              itemKey={item.EUID}
-              value={item.VALUE}
-              sizeTab={size}
-            />
-          );
-        })}
-      </ul>
+      <DragDropContext onDragEnd={(event) => this.onDragEnd(event, items)}>
+        <Droppable direction="horizontal" droppableId="droppable">
+          {(provided, snapshot) => (
+            <div className="droppable-wrapper" ref={provided.innerRef}>
+              <ul ref={this.refWrapper} {...provided.droppableProps} className="tabsMenu">
+                {items.map((item, index) => {
+                  return (
+                    <Tab
+                      hendlerTab={cbMenuTabHandler}
+                      active={activeTabEUID === item.EUID}
+                      key={item.EUID}
+                      itemKey={item.EUID}
+                      value={item.VALUE}
+                      sizeTab={size}
+                      index={index}
+                    />
+                  );
+                })}
+              </ul>
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
     );
   };
 
@@ -126,6 +152,7 @@ const mapStateTopProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     onSaveComponentState: (data) => dispatch(saveComponentStateAction(data)),
+    onDragEndTabAction: (payload) => dispatch(dragEndTabAction(payload)),
   };
 };
 

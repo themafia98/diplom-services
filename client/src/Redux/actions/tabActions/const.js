@@ -1,2 +1,1 @@
-export const SET_PARENT_SIZE = 'SET_PARENT_SIZE';
-export const SET_LOGOUT_TABS = 'SET_LOGOUT_TABS';
+export const ON_END_DRAG_TAB = 'ON_END_DRAG_TAB';
