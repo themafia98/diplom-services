@@ -1,37 +1,49 @@
-version: 2.1 # use CircleCI 2.1
+version: 2.1
+orbs:
+  node: circleci/node@12.16.3
+machine:
+  environment:
+    DOWNLOADS_PATH: '$HOME/downloads'
+    YARN_PATH: '$HOME/.yarn'
+    YARN_VERSION: 1.19.0
+    PATH: '${PATH}:${HOME}/.yarn/bin:${HOME}/${CIRCLE_PROJECT_REPONAME}/client/node_modules/.bin'
+  post:
+    - mkdir -p $DOWNLOADS_PATH
+    - mkdir -p $YARN_PATH
+jobs:
+  build-and-test:
+    executor:
+      name: node/default
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restore Yarn Package Cache
+          keys:
+            - yarn-packages-{{ checksum "yarn.lock" }}
+      - run:
+          name: Install Dependencies
+          command: yarn install --frozen-lockfile
+      - save_cache:
+          name: Save Yarn Package Cache
+          key: yarn-packages-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
+      - node/with-cache:
+          steps:
+            - run: cd client
+            - run: yarn install
+            - run: yarn test
+workflows:
+  build-and-test:
+    jobs:
+      - build-and-test
 dependencies:
   pre:
-    - npm install -g now
-test:
+    - ./bin/install-yarn
+  cache_directories:
+    - ~/downloads
+    - ~/.cache/yarn
+    - ~/.yarn
   override:
-    - npm test
-jobs: # a collection of steps
-  build: # runs not using Workflows must have a `build` job as entry point
-    working_directory: ~/diplom-services/client # directory where steps will run
-    docker: # run the steps with Docker
-      - image: circleci/node:10.16.3 # ...with this image as the primary container; this is where all `steps` will run
-      - image: mongo:4.2.0 # and this image as the secondary service container
-    steps: # a collection of executable commands
-      - checkout # special step to check out source code to working directory
-      - run:
-          name: update-npm
-          command: 'sudo npm install -g npm@latest'
-      - run:
-          name: install-npm-wee
-          command: npm install
-      - save_cache: # special step to save the dependency cache
-          key: dependency-cache-{{ checksum "package-lock.json" }}
-          paths:
-            - ./node_modules
-      - run: # run tests
-          name: test
-          command: npm test -- --coverage
-      - store_artifacts: # special step to save test results as as artifact
-          # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
-          path: test-results.xml
-          prefix: tests
-      - store_artifacts: # for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
-          path: coverage
-          prefix: coverage
-      - store_test_results: # for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
-          path: test-results.xml
+    - yarn install
+    - ./bin/update-docker
