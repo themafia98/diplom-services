@@ -105,6 +105,12 @@
       "PARENT_CODE": "contactModule"
     },
     {
+      "EUID": "contactModule_createNews",
+      "VALUE": "Создание новой новости",
+      "ICON": null,
+      "SIGN": "freedom"
+    },
+    {
       "EUID": "contactModule_chat",
       "VALUE": "Корпоративный чат",
       "ICON": null,

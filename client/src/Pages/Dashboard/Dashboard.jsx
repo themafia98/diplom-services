@@ -222,7 +222,7 @@ class Dashboard extends React.PureComponent {
     const path = event['key'] ? event['key'] : key;
     const { config: { tabsLimit = 50 } = {} } = this.context;
     const {
-      router: { currentActionTab, actionTabs = [] } = {},
+      router: { currentActionTab, actionTabs = [], routeData } = {},
       addTab,
       setCurrentTab,
       removeTab,
@@ -238,7 +238,8 @@ class Dashboard extends React.PureComponent {
 
       if (!isFind) addTab(routeParser({ path }));
       else if (currentActionTab !== path) {
-        setCurrentTab(path);
+        const { config = null } = routeData[path] || {};
+        setCurrentTab({ tab: path, config });
       }
     } else if (mode === 'close') {
       let type = 'deafult';
@@ -417,9 +418,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addTab: (tab) => dispatch(addTabAction(tab)),
     onShowGuide: (show) => dispatch(showGuile(show)),
     removeTab: (tab) => dispatch(removeTabAction(tab)),
+    addTab: (tab) => dispatch(addTabAction(tab)),
     onSetStatus: (status) => dispatch(setStatus(status)),
     onClearCache: (props) => dispatch(clearCache(props)),
     setCurrentTab: (tab) => dispatch(setActiveTabAction(tab)),

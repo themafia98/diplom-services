@@ -6,14 +6,14 @@ import _ from 'lodash';
 import { Pagination, Button, message, Empty, Spin } from 'antd';
 
 import Scrollbars from 'react-custom-scrollbars';
-import { setActiveTabAction, openPageWithDataAction } from 'Redux/actions/routerActions';
+import { setActiveTabAction, openPageWithDataAction, addTabAction } from 'Redux/actions/routerActions';
 import { middlewareCaching } from 'Redux/actions/publicActions/middleware';
 
 import TabContainer from 'Components/TabContainer';
 import NewsCard from './NewsCard';
 import TitleModule from 'Components/TitleModule';
 
-import { routePathNormalise } from 'Utils';
+import { routePathNormalise, routeParser } from 'Utils';
 
 import modelContext from 'Models/context';
 
@@ -42,26 +42,24 @@ class News extends React.PureComponent {
   };
 
   onOpenCreateNews = (event) => {
-    const { onOpenPageWithData, router: { actionTabs = [] } = {}, setCurrentTab } = this.props;
+    const { addTab, router: { actionTabs = [] } = {}, setCurrentTab } = this.props;
     const moduleId = 'createNews';
     const page = 'contactModule';
     const { config = {} } = this.context;
 
-    const routeNormalize = routePathNormalise({
+    const { path: pathNormalize = '' } = routePathNormalise({
       pathData: { page, moduleId },
     });
 
-    const index = actionTabs.findIndex((tab) => tab === routeNormalize.path);
+    const index = actionTabs.findIndex((tab) => tab === pathNormalize);
     const isFind = index !== -1;
 
     if (!isFind) {
+      const config = { hardCodeUpdate: false };
       if (config.tabsLimit <= actionTabs.length)
         return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
-      onOpenPageWithData({
-        activePage: routeNormalize,
-        routeDataActive: { key: routeNormalize.path, title: 'Создание новой новости' },
-      });
-    } else setCurrentTab(actionTabs[index]);
+      if (!isFind) addTab(routeParser({ path: pathNormalize }), config);
+    } else setCurrentTab(actionTabs[index], config);
   };
 
   onOpen = (openKey = '') => {
@@ -137,7 +135,6 @@ class News extends React.PureComponent {
     const { currentPage, isOpen } = this.state;
     const {
       data = {},
-      statusApp,
       router: { routeData: { contactModule: { news = [] } = {} } = {} },
       isLoading = false,
     } = this.props;
@@ -152,7 +149,7 @@ class News extends React.PureComponent {
       <div className="news">
         <TitleModule classNameTitle="mainModuleTitle" title="Информация" />
         {rules ? (
-          <Button disabled={statusApp === 'offline'} onClick={this.onOpenCreateNews} type="primary">
+          <Button onClick={this.onOpenCreateNews} type="primary">
             Создать новость
           </Button>
         ) : null}
@@ -189,7 +186,8 @@ const mapStateToProps = (state) => {
 const mapDispathToProps = (dispatch) => {
   return {
     onOpenPageWithData: (data) => dispatch(openPageWithDataAction(data)),
-    setCurrentTab: (tab) => dispatch(setActiveTabAction(tab)),
+    addTab: (tab, config = {}) => dispatch(addTabAction({ tab, config })),
+    setCurrentTab: (tab, config = {}) => dispatch(setActiveTabAction({ tab, config })),
     onCaching: async (props) => await dispatch(middlewareCaching(props)),
   };
 };

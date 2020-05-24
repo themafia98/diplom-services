@@ -53,8 +53,8 @@ class App extends React.Component {
       }
 
       let path = 'mainModule';
-      const defaultModule = config.menu.find((item) => item['SIGN'] === 'default');
-      if (defaultModule) path = defaultModule.EUID;
+      const defaultModule = config.menu.find((item) => item?.SIGN === 'default');
+      if (defaultModule) path = defaultModule?.EUID;
 
       const actionTabsCopy = [...actionTabs];
       const isFind = actionTabsCopy.findIndex((tab) => tab === path) !== -1;
@@ -62,11 +62,12 @@ class App extends React.Component {
       const { data: { user = {} } = {} } = res || {};
 
       const udata = Object.keys(user).reduce((accumulator, key) => {
-        if (key !== 'token') {
-          accumulator[key] = res.data['user'][key];
-        }
-
-        return accumulator || {};
+        return key !== 'token'
+          ? {
+              ...accumulator,
+              [key]: res.data?.user[key],
+            }
+          : accumulator || {};
       }, {});
 
       if (!isFind && config.tabsLimit <= actionTabsCopy.length)

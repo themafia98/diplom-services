@@ -187,8 +187,6 @@ class ContentView extends React.Component {
               visible={path.startsWith('taskModule')}
               onErrorRequestAction={onErrorRequestAction}
               getBackground={this.getBackground}
-              setCurrentTab={setCurrentTab}
-              onSetStatus={onSetStatus}
               key="taskModule"
               rest={rest}
               loaderMethods={loaderMethods}

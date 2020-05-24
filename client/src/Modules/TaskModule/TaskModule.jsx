@@ -10,7 +10,13 @@ import { Button, message } from 'antd';
 import { routeParser } from 'Utils';
 import { settingsStatusSelector } from 'Utils/selectors';
 import TabContainer from 'Components/TabContainer';
-import { addTabAction, openPageWithDataAction, removeTabAction } from 'Redux/actions/routerActions';
+import {
+  addTabAction,
+  openPageWithDataAction,
+  removeTabAction,
+  setActiveTabAction,
+} from 'Redux/actions/routerActions';
+import { setStatus } from 'Redux/actions/publicActions';
 import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
 import { loadCacheData } from 'Redux/actions/publicActions/middleware';
 import TaskModuleCalendar from './TaskModuleCalendar';
@@ -221,9 +227,9 @@ class TaskModule extends React.PureComponent {
         return message.error(`Максимальное количество вкладок: ${tabsLimit}`);
       const path = 'taskModule_createTask';
       const isFind = actionTabs.findIndex((tab) => tab === path) !== -1;
-
-      if (!isFind) addTab(routeParser({ path }));
-      else if (currentActionTab !== path) setCurrentTab(path);
+      const config = { hardCodeUpdate: false };
+      if (!isFind) addTab(routeParser({ path }), config);
+      else if (currentActionTab !== path) setCurrentTab(path, config);
     }
   };
 
@@ -412,7 +418,9 @@ const mapStateToProps = (state, props) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addTab: (tab) => dispatch(addTabAction(tab)),
+    addTab: (tab, config = {}) => dispatch(addTabAction({ tab, config })),
+    setCurrentTab: (tab, config = {}) => dispatch(setActiveTabAction({ tab, config })),
+    onSetStatus: (status) => dispatch(setStatus(status)),
     removeTab: (tab) => dispatch(removeTabAction(tab)),
     onOpenPageWithData: (data) => dispatch(openPageWithDataAction(data)),
     onLoadCacheData: (props) => dispatch(loadCacheData(props)),
