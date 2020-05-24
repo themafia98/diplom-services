@@ -1,6 +1,4 @@
 version: 2.1
-orbs:
-  node: twuni/nodejs@12.10.0
 machine:
   environment:
     DOWNLOADS_PATH: '$HOME/downloads'
@@ -12,8 +10,10 @@ machine:
     - mkdir -p $YARN_PATH
 jobs:
   build-and-test:
-    executor:
-      name: node/default
+    working_directory: ~/diplom-services/client # directory where steps will run
+    docker: # run the steps with Docker
+      - image: circleci/node:10.16.3 # ...with this image as the primary container; this is where all `steps` will run
+      - image: mongo:4.2.0 # and this image as the secondary service container
     steps:
       - checkout
       - restore_cache:
