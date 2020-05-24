@@ -3,6 +3,7 @@ import { Model, Document, Types, FilterQuery } from 'mongoose';
 import _ from 'lodash';
 import ActionEntity from './ActionEntity';
 import Utils from '../../Utils';
+import Logger from '../../Utils/Logger';
 import { ParserData, limiter, OptionsUpdate, Filter, DeleteEntitiyParams } from '../../Utils/Types';
 
 /** Actions */
@@ -20,6 +21,7 @@ import ActionSettings from './ActionsEntity/ActionSettings';
 
 namespace ActionApi {
   const { getModelByName } = Utils;
+  const { loggerInfo } = Logger;
   export class ActionParser extends ActionEntity implements Actions {
     constructor(props: ActionProps) {
       super(props);
@@ -254,7 +256,7 @@ namespace ActionApi {
 
     public async getActionData(this: Actions, actionParam: ActionParams = {}): Promise<ParserData> {
       try {
-        console.log(`Run action. actionType: ${this.getActionType()},
+        loggerInfo(`Run action. actionType: ${this.getActionType()},
                             actionPath: ${this.getActionPath()}`);
 
         if (this.getActionType() === 'sync') {

@@ -1,0 +1,14 @@
+{
+  "keep": {
+    "days": true,
+    "amount": 1
+  },
+  "auditLog": "logger.error-audit.json",
+  "files": [
+    {
+      "date": 1590325346258,
+      "name": "logs\\logs-error-2020-05-24-16.log",
+      "hash": "8ce322a491639a93b72c008cba641f32"
+    }
+  ]
+}

@@ -3,8 +3,10 @@ import { Params } from '../../Utils/Interfaces';
 import { Response, Request } from 'express';
 import { ParserResult } from '../../Utils/Types';
 import Utils from '../../Utils';
+import Logger from '../../Utils/Logger';
 
 const { getResponseJson } = Utils;
+const { loggerError } = Logger;
 
 class Responser implements ResponseBuilder {
   private readonly response: Response;
@@ -77,6 +79,7 @@ class Responser implements ResponseBuilder {
   }
 
   private async serverErrorResponse(): Promise<Response> {
+    loggerError(JSON.stringify(this.err));
     return this.res.json(
       getResponseJson(
         (this.err as Error).name,

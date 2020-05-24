@@ -1,3 +1,4 @@
+import path from 'path';
 import { NextFunction, Response, Request } from 'express';
 import multer from 'multer';
 import winston from 'winston';
@@ -55,11 +56,17 @@ namespace Utils {
     return true;
   };
 
-  export const getLoggerTransports = (level: string) => {
+  export const getLoggerTransports = (level: string | Array<string>): Array<object> => {
+    if (Array.isArray(level)) {
+      return level.map(
+        (value) => new winston.transports.File({ filename: path.join('logs', `${value}.log`), level: value }),
+      );
+    }
+
     if (level === 'info') {
-      return [new winston.transports.File({ filename: 'info.log', level: 'info' })];
+      return [new winston.transports.File({ filename: path.join('logs', 'info.log'), level: 'info' })];
     } else {
-      return new winston.transports.File({ filename: 'error.log', level: 'error' });
+      return [new winston.transports.File({ filename: path.join('logs', 'error.log'), level: 'error' })];
     }
   };
 

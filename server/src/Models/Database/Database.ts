@@ -33,8 +33,12 @@ namespace Database {
       );
     }
 
-    public get db() {
+    get db() {
       return this.dbClient;
+    }
+
+    public getStatus(): number {
+      return mongoose.connection.readyState;
     }
 
     public getConnectionString(): string {
@@ -43,15 +47,13 @@ namespace Database {
 
     public async connection(): Promise<Connection | typeof mongoose> {
       try {
-        const status = mongoose.connection.readyState;
-        console.log('status mongoose connect:', status);
-
         return mongoose.connection;
       } catch (err) {
         return this.connect;
       }
     }
 
+    /** @deprecated */
     public async disconnect(): Promise<typeof mongoose | null> {
       try {
         // await mongoose.disconnect();

@@ -4,6 +4,7 @@ import fs from 'fs';
 import os from 'os';
 
 import { ServerRun } from './Utils/Interfaces';
+import Logger from './Utils/Logger';
 import Utils from './Utils';
 import wsWorkerManager from './Utils/instanseWs';
 import ProcessRouter from './Models/Process/ProcessRouter';
@@ -14,6 +15,7 @@ if (Utils.isProd()) {
 }
 
 namespace Entrypoint {
+  const { loggerError, loggerInfo } = Logger;
   const cpuLentgh: number = os.cpus().length;
   const workers: Array<Worker> = [];
 
@@ -25,12 +27,13 @@ namespace Entrypoint {
       workersRouter.subscribe(worker);
       workersRouter.addWorker(worker);
     }
+    loggerInfo('Server and workers to born');
   } else {
     try {
       const app: ServerRun = new Http.ServerRunner(process.env.APP_PORT || '3001');
       app.start();
     } catch (err) {
-      console.error(err);
+      loggerError(`PPID: ${process.ppid} || ${err}`);
       process.kill(process.ppid);
     }
   }
