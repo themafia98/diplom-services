@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  node: circleci/node@12.16.3
+  node: twuni/nodejs@12.10.0
 machine:
   environment:
     DOWNLOADS_PATH: '$HOME/downloads'
