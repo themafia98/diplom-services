@@ -10,7 +10,7 @@
 # testing
 /coverage
 
-.circleci
+.circleci-deprecated
 
 # production
 /build
