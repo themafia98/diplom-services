@@ -59,7 +59,7 @@ class HeaderView extends React.PureComponent {
     if (!event.destination) {
       return;
     }
-    onDragEndTabAction(this.reorder(tabsList, event.source.index, event.destination.index));
+    onDragEndTabAction(this.reorder([...tabsList], event.source.index, event.destination.index));
   };
 
   wrapper = null;
