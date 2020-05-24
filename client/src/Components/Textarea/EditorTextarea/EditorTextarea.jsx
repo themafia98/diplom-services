@@ -94,6 +94,7 @@ class EditorTextarea extends React.Component {
           }
         : {};
     const classNameButton = buttonName ? 'customButton-editor' : 'createNews-button';
+    if (!contentState) return null;
     return (
       <div className={clsx('content', readOnly ? 'readOnly' : null)}>
         <Editor

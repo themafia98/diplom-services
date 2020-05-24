@@ -5,7 +5,7 @@ import _ from 'lodash';
 import { v4 as uuid } from 'uuid';
 
 import TitleModule from 'Components/TitleModule';
-import EditorTextarea from 'Components/Textarea/EditorTextarea';
+import Textarea from 'Components/Textarea';
 
 const NewsViewPage = (props) => {
   const { content: contentEntity, title, id: _id } = props;
@@ -43,7 +43,7 @@ const NewsViewPage = (props) => {
     <div className="newsView-page">
       <TitleModule classNameTitle="tittle_contactModule_pageNews" title={title ? title : `Новость № ${id}`} />
       <div className="newsView-page__main">
-        <EditorTextarea key={id} readOnly={true} contentState={getNormalizeContent()} />
+        <Textarea editor={true} key={id} readOnly={true} contentState={getNormalizeContent()} />
       </div>
     </div>
   );
