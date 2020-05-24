@@ -25,12 +25,14 @@ exports[`<TableView /> Should TableView render dep on path 1`] = `
     user={Object {}}
   >
     <TableView
+      counter={null}
       data={Object {}}
       filterBy=""
       flag={true}
       height={150}
+      loaderMethods={Object {}}
+      loading={false}
       onAddRouteData={[Function]}
-      onLoadCurrentData={[Function]}
       onOpenPageWithData={[Function]}
       path="mainModule__table"
       publicReducer={
@@ -53,6 +55,8 @@ exports[`<TableView /> Should TableView render dep on path 1`] = `
         }
       }
       setCurrentTab={[Function]}
+      statusApp=""
+      tableViewHeight={314}
       tasks={Array []}
       udata={Object {}}
       user={Object {}}
@@ -87,12 +91,14 @@ exports[`<TableView /> Should TableView render dep on path 2`] = `
     user={Object {}}
   >
     <TableView
+      counter={null}
       data={Object {}}
       filterBy=""
       flag={true}
       height={150}
+      loaderMethods={Object {}}
+      loading={false}
       onAddRouteData={[Function]}
-      onLoadCurrentData={[Function]}
       onOpenPageWithData={[Function]}
       path="searchTable"
       publicReducer={
@@ -115,18 +121,25 @@ exports[`<TableView /> Should TableView render dep on path 2`] = `
         }
       }
       setCurrentTab={[Function]}
+      statusApp=""
+      tableViewHeight={314}
       tasks={Array []}
       udata={Object {}}
       user={Object {}}
       visible={false}
     >
       <DynamicTable
+        cachesAuthorList={Array []}
+        cachesEditorList={Array []}
         counter={null}
         dataSource={Array []}
+        depDataKey=""
         filterBy=""
+        filteredUsers={Array []}
         height={-100}
         key="mainModule"
         loaderMethods={Object {}}
+        loading={false}
         onAddRouteData={[Function]}
         onOpenPageWithData={[Function]}
         routeParser={[Function]}

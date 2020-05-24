@@ -121,7 +121,7 @@ exports[`<SettingsModule /> template Should be render 2`] = `
       className="col-6"
     >
       <ObserverTime
-        isLoading={false}
+        isLoading={true}
         settingsLogs={Array []}
         title=""
       />

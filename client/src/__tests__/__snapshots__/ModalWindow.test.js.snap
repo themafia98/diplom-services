@@ -10,7 +10,11 @@ exports[`<ModalWindow /> Should works with mode 1`] = `
       "В работе",
     ]
   }
+  actionType=""
+  actionTypeList="default"
+  defaultView={false}
   editableContent=""
+  isLoadList={true}
   keyTask=""
   mode="reg"
   modeControll=""
@@ -24,8 +28,11 @@ exports[`<ModalWindow /> Should works with mode 1`] = `
   path=""
   primaryKey=""
   routeDataActive={Object {}}
+  rulesEdit={true}
+  rulesStatus={true}
   statusTaskValue="В работе"
   typeRequst=""
+  udata={Object {}}
 >
   <Button
     aria-label="reg-button"
@@ -110,58 +117,73 @@ exports[`<ModalWindow /> Should works with mode 1`] = `
 </ModalWindow>
 `;
 
-exports[`<ModalWindow /> Should works with mode 2`] = `""`;
+exports[`<ModalWindow /> Should works with mode 2`] = `
+<Fragment>
+  <div
+    className="dropDownWrapper"
+  >
+    <ActionList
+      entityName="taskView"
+      isLoadList={true}
+      modeControll=""
+      onEdit={[Function]}
+      onMessage={[Function]}
+      onRejectEdit={[Function]}
+      onUpdateEditable={[Function]}
+      rulesEdit={true}
+      rulesStatus={true}
+      showModal={[Function]}
+      viewType="default"
+    />
+  </div>
+  <Modal
+    className="modalWindow"
+    confirmLoading={false}
+    destroyOnClose={true}
+    maskTransitionName="fade"
+    okType="primary"
+    onCancel={[Function]}
+    onOk={[Function]}
+    title="Отчет времени"
+    transitionName="zoom"
+    visible={false}
+    width={520}
+  />
+</Fragment>
+`;
 
 exports[`<ModalWindow /> Should works with mode 3`] = `
 <Fragment>
   <div
     className="dropDownWrapper"
   >
-    <Dropdown
-      mouseEnterDelay={0.15}
-      mouseLeaveDelay={0.1}
-      overlay={
-        <React.Fragment>
-          <Menu>
-            <MenuItem>
-              <p
-                className="jur"
-                onClick={[Function]}
-              >
-                Занести в журнал работы
-              </p>
-            </MenuItem>
-            <MenuItem>
-              <p
-                className="statusTask"
-                onClick={[Function]}
-              >
-                Сменить статус задачи
-              </p>
-            </MenuItem>
-            <MenuItem>
-              <p
-                className="statusTask"
-                onClick={[Function]}
-              >
-                Редактировать задачу
-              </p>
-            </MenuItem>
-          </Menu>
-        </React.Fragment>
-      }
-      placement="bottomLeft"
-    >
-      <p
-        className="action-dropdown-link"
-      >
-        Управление задачей
-        <Icon
-          type="down"
-        />
-      </p>
-    </Dropdown>
+    <ActionList
+      entityName="taskView"
+      isLoadList={true}
+      modeControll=""
+      onEdit={[Function]}
+      onMessage={[Function]}
+      onRejectEdit={[Function]}
+      onUpdateEditable={[Function]}
+      rulesEdit={true}
+      rulesStatus={true}
+      showModal={[Function]}
+      viewType="default"
+    />
   </div>
+  <Modal
+    className="modalWindow"
+    confirmLoading={false}
+    destroyOnClose={true}
+    maskTransitionName="fade"
+    okType="primary"
+    onCancel={[Function]}
+    onOk={[Function]}
+    title="Отчет времени"
+    transitionName="zoom"
+    visible={false}
+    width={520}
+  />
 </Fragment>
 `;
 
@@ -170,66 +192,24 @@ exports[`<ModalWindow /> Should works with mode 4`] = `
   <div
     className="dropDownWrapper"
   >
-    <Dropdown
-      mouseEnterDelay={0.15}
-      mouseLeaveDelay={0.1}
-      overlay={
-        <React.Fragment>
-          <Menu>
-            <MenuItem>
-              <p
-                className="jur"
-                onClick={[Function]}
-              >
-                Занести в журнал работы
-              </p>
-            </MenuItem>
-            <MenuItem>
-              <p
-                className="statusTask"
-                onClick={[Function]}
-              >
-                Сменить статус задачи
-              </p>
-            </MenuItem>
-            <MenuItem>
-              <p
-                className="statusTask"
-                onClick={[Function]}
-              >
-                Редактировать задачу
-              </p>
-            </MenuItem>
-          </Menu>
-        </React.Fragment>
-      }
-      placement="bottomLeft"
-    >
-      <p
-        className="action-dropdown-link"
-      >
-        Управление задачей
-        <Icon
-          type="down"
-        />
-      </p>
-    </Dropdown>
-    <p
-      className="modeControllEdit"
-      onClick={[Function]}
-    >
-      Сохранить изменения
-    </p>
-    <p
-      className="modeControllEditReject"
-      onClick={[Function]}
-    >
-      Отмена изменений
-    </p>
+    <ActionList
+      entityName="taskView"
+      isLoadList={true}
+      modeControll="edit"
+      onEdit={[Function]}
+      onMessage={[Function]}
+      onRejectEdit={[Function]}
+      onUpdateEditable={[Function]}
+      rulesEdit={true}
+      rulesStatus={true}
+      showModal={[Function]}
+      viewType="default"
+    />
   </div>
   <Modal
     className="modalWindow"
     confirmLoading={false}
+    destroyOnClose={true}
     maskTransitionName="fade"
     okType="primary"
     onCancel={[Function]}
@@ -243,6 +223,7 @@ exports[`<ModalWindow /> Should works with mode 4`] = `
       className="editContentDescription"
       defaultValue=""
       editor={false}
+      editorKey=""
       key="textAreaEdit"
       name=""
       onChange={[Function]}
@@ -260,63 +241,33 @@ exports[`<ModalWindow /> Should works with mode 5`] = `
   <div
     className="dropDownWrapper"
   >
-    <Dropdown
-      mouseEnterDelay={0.15}
-      mouseLeaveDelay={0.1}
-      overlay={
-        <React.Fragment>
-          <Menu>
-            <MenuItem>
-              <p
-                className="jur"
-                onClick={[Function]}
-              >
-                Занести в журнал работы
-              </p>
-            </MenuItem>
-            <MenuItem>
-              <p
-                className="statusTask"
-                onClick={[Function]}
-              >
-                Сменить статус задачи
-              </p>
-            </MenuItem>
-            <MenuItem>
-              <p
-                className="statusTask"
-                onClick={[Function]}
-              >
-                Редактировать задачу
-              </p>
-            </MenuItem>
-          </Menu>
-        </React.Fragment>
-      }
-      placement="bottomLeft"
-    >
-      <p
-        className="action-dropdown-link"
-      >
-        Управление задачей
-        <Icon
-          type="down"
-        />
-      </p>
-    </Dropdown>
-    <p
-      className="modeControllEdit"
-      onClick={[Function]}
-    >
-      Сохранить изменения
-    </p>
-    <p
-      className="modeControllEditReject"
-      onClick={[Function]}
-    >
-      Отмена изменений
-    </p>
+    <ActionList
+      entityName="taskView"
+      isLoadList={true}
+      modeControll="edit"
+      onEdit={[Function]}
+      onMessage={[Function]}
+      onRejectEdit={[Function]}
+      onUpdateEditable={[Function]}
+      rulesEdit={true}
+      rulesStatus={true}
+      showModal={[Function]}
+      viewType="default"
+    />
   </div>
+  <Modal
+    className="modalWindow"
+    confirmLoading={false}
+    destroyOnClose={true}
+    maskTransitionName="fade"
+    okType="primary"
+    onCancel={[Function]}
+    onOk={[Function]}
+    title="Отчет времени"
+    transitionName="zoom"
+    visible={false}
+    width={520}
+  />
 </Fragment>
 `;
 
@@ -325,54 +276,24 @@ exports[`<ModalWindow /> Should works with mode 6`] = `
   <div
     className="dropDownWrapper"
   >
-    <Dropdown
-      mouseEnterDelay={0.15}
-      mouseLeaveDelay={0.1}
-      overlay={
-        <React.Fragment>
-          <Menu>
-            <MenuItem>
-              <p
-                className="jur"
-                onClick={[Function]}
-              >
-                Занести в журнал работы
-              </p>
-            </MenuItem>
-            <MenuItem>
-              <p
-                className="statusTask"
-                onClick={[Function]}
-              >
-                Сменить статус задачи
-              </p>
-            </MenuItem>
-            <MenuItem>
-              <p
-                className="statusTask"
-                onClick={[Function]}
-              >
-                Редактировать задачу
-              </p>
-            </MenuItem>
-          </Menu>
-        </React.Fragment>
-      }
-      placement="bottomLeft"
-    >
-      <p
-        className="action-dropdown-link"
-      >
-        Управление задачей
-        <Icon
-          type="down"
-        />
-      </p>
-    </Dropdown>
+    <ActionList
+      entityName="taskView"
+      isLoadList={true}
+      modeControll="default"
+      onEdit={[Function]}
+      onMessage={[Function]}
+      onRejectEdit={[Function]}
+      onUpdateEditable={[Function]}
+      rulesEdit={true}
+      rulesStatus={true}
+      showModal={[Function]}
+      viewType="default"
+    />
   </div>
   <Modal
     className="modalWindow"
     confirmLoading={false}
+    destroyOnClose={true}
     maskTransitionName="fade"
     okType="primary"
     onCancel={[Function]}
@@ -386,6 +307,7 @@ exports[`<ModalWindow /> Should works with mode 6`] = `
       className="editContentDescription"
       defaultValue=""
       editor={false}
+      editorKey=""
       key="textAreaEdit"
       name=""
       onChange={[Function]}

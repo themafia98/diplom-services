@@ -15,6 +15,7 @@ exports[`<HeaderView /> and children Should render 1`] = `
   </ul>
   <RightPanel
     active={true}
+    goCabinet={null}
     notificationDep={
       Object {
         "filterStream": "uidCreater",
@@ -26,6 +27,9 @@ exports[`<HeaderView /> and children Should render 1`] = `
     }
     onLogout={[Function]}
     onUpdate={[Function]}
+    shouldUpdate={false}
+    status=""
+    udata={Object {}}
   />
 </Header>
 `;
@@ -45,6 +49,7 @@ exports[`<HeaderView /> and children Should render 2`] = `
   </ul>
   <RightPanel
     active={true}
+    goCabinet={null}
     notificationDep={
       Object {
         "filterStream": "uidCreater",
@@ -56,6 +61,9 @@ exports[`<HeaderView /> and children Should render 2`] = `
     }
     onLogout={[Function]}
     onUpdate={[Function]}
+    shouldUpdate={false}
+    status=""
+    udata={Object {}}
   />
 </Header>
 `;

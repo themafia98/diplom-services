@@ -130,6 +130,7 @@ exports[`<CreateTask /> template Should be render 1`] = `
               className=""
               defaultValue=""
               editor={false}
+              editorKey=""
               key="createTextare"
               name="description"
               onChange={[Function]}
@@ -140,27 +141,14 @@ exports[`<CreateTask /> template Should be render 1`] = `
               value={null}
             />
             <label>
-              Прикрепить файлы: 
-            </label>
-            <File
-              isLocal={true}
-              module="tasks"
-              moduleData={
-                Object {
-                  "id": "00fdee7d-e507-4427-9a64-c9f0c965660d_virtual",
-                  "name": " taskModule",
-                }
-              }
-            />
-            <label>
               Срок сдачи: 
             </label>
             <PickerWrapper
               className=""
               defaultValue={
                 Array [
-                  "2020-05-09T21:00:00.000Z",
-                  "2020-05-09T21:00:00.000Z",
+                  "2020-05-23T21:00:00.000Z",
+                  "2020-05-23T21:00:00.000Z",
                 ]
               }
               format="DD.MM.YYYY"
@@ -330,6 +318,7 @@ exports[`<CreateTask /> template Should be render 2`] = `
               className=""
               defaultValue=""
               editor={false}
+              editorKey=""
               key="createTextare"
               name="description"
               onChange={[Function]}
@@ -340,27 +329,14 @@ exports[`<CreateTask /> template Should be render 2`] = `
               value={null}
             />
             <label>
-              Прикрепить файлы: 
-            </label>
-            <File
-              isLocal={true}
-              module="tasks"
-              moduleData={
-                Object {
-                  "id": "00fdee7d-e507-4427-9a64-c9f0c965660d_virtual",
-                  "name": " taskModule",
-                }
-              }
-            />
-            <label>
               Срок сдачи: 
             </label>
             <PickerWrapper
               className=""
               defaultValue={
                 Array [
-                  "2020-05-09T21:00:00.000Z",
-                  "2020-05-09T21:00:00.000Z",
+                  "2020-05-23T21:00:00.000Z",
+                  "2020-05-23T21:00:00.000Z",
                 ]
               }
               format="DD.MM.YYYY"

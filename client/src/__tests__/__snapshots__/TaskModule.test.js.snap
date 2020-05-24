@@ -68,6 +68,7 @@ exports[`<TaskModule /> template Should be render 1`] = `
           }
         }
         setCurrentTab={[Function]}
+        statusApp="online"
         urrentActionTab="mainModule"
         visible={true}
       />
@@ -103,6 +104,7 @@ exports[`<TaskModule /> template Should be render 1`] = `
           }
         }
         setCurrentTab={[Function]}
+        statusApp="online"
         udata={Object {}}
         visible={false}
       />
@@ -124,6 +126,7 @@ exports[`<TaskModule /> template Should be render 1`] = `
         loaderMethods={Object {}}
         onLoadCurrentData={[Function]}
         onOpenPageWithData={[Function]}
+        onSetStatus={null}
         rest={Object {}}
         router={
           Object {
@@ -158,6 +161,7 @@ exports[`<TaskModule /> template Should be render 1`] = `
         key="createTaskModule"
         onLoadCurrentData={[Function]}
         onOpenPageWithData={[Function]}
+        onSetStatus={null}
         removeTab={[Function]}
         rest={Object {}}
         router={

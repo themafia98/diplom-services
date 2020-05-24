@@ -81,5 +81,8 @@
     },
     "resolutions": {
         "moment": "2.24.0"
+    },
+    "moduleNameMapper": {
+        "workerize-loader!worker": "<rootDir>/src/worker.js"
     }
 }
