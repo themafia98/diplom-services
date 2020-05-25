@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { udataType, contentType, emptyShape, newsItemType } from 'types';
+import { udataType, contentState, emptyShape, newsItemType } from 'types';
 const { func, string, bool, object, oneOf, arrayOf, objectOf, oneOfType, number, array } = PropTypes;
 
 export const contactModuleType = {
@@ -31,7 +31,7 @@ export const newsType = {
 export const newsViewType = {
   isBackground: bool.isRequired,
   visible: bool.isRequired,
-  content: oneOfType([emptyShape.isRequired, contentType.isRequired]).isRequired,
+  content: oneOfType([emptyShape.isRequired, contentState.isRequired]).isRequired,
   title: string.isRequired,
   id: string.isRequired,
 };

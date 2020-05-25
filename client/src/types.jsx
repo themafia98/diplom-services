@@ -14,7 +14,7 @@ export const udataType = shape({
   avatar: string,
 });
 
-export const contentType = shape({
+export const contentState = shape({
   entityMap: object.isRequired,
   blocks: array.isRequired,
 });
@@ -36,7 +36,7 @@ export const taskEntityType = shape({
 export const newsItemType = shape({
   _id: string.isRequired,
   title: string.isRequired,
-  content: contentType.isRequired,
+  content: contentState.isRequired,
 });
 
 export const emptyShape = shape({});

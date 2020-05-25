@@ -24,7 +24,7 @@ class EditorTextarea extends React.Component {
     readOnly: false,
     clear: false,
     mode: '',
-    contentType: {},
+    contentState: {},
     onChange: null,
     clearStatus: null,
     onPublish: null,
@@ -33,9 +33,10 @@ class EditorTextarea extends React.Component {
   };
 
   static getDerivedStateFromProps = (props, state) => {
-    const { onChange, contentState } = props;
+    const { contentState } = props;
+    const { contentState: content } = state;
 
-    if (_.isFunction(onChange) && contentState) {
+    if (_.isEmpty(content)) {
       return {
         ...state,
         contentState: getValidContent(contentState),

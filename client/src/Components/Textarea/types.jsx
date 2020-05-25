@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { contentType, emptyShape } from 'types';
+import { contentState, emptyShape } from 'types';
 const { number, bool, string, func, oneOfType } = PropTypes;
 
 export const textAreaType = {
@@ -11,7 +11,7 @@ export const textAreaType = {
   onClick: oneOfType([() => null, func.isRequired]),
   onChange: oneOfType([() => null, func.isRequired]),
   shouldDisplayButton: bool,
-  contentState: contentType,
+  contentState: contentState,
   buttonName: string,
   editorKey: string,
   editor: bool.isRequired,
@@ -27,5 +27,5 @@ export const editorTextareaType = {
   onChange: func,
   shouldDisplayButton: bool,
   buttonName: string,
-  contentType: oneOfType([emptyShape.isRequired, contentType.isRequired]).isRequired,
+  contentState: oneOfType([emptyShape.isRequired, contentState.isRequired]).isRequired,
 };
