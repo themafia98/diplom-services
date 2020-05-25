@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { streamBoxType } from './types';
 import { connect } from 'react-redux';

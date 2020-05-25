@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { taskModuleListType } from '../types';
 import TableView from 'Components/TableView';

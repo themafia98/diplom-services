@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { getNormalizedPath, sucessEvent, errorHook, coreUpdaterDataHook } from 'Utils';
 import { saveComponentStateAction, loadFlagAction } from '../';
 import { errorRequestAction, setStatus } from '../../publicActions';
@@ -49,8 +48,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
         const res = await rest.sendRequest(normalizeReqPath, methodRequst, { methodQuery, options }, true);
 
         const [items, error] = rest.parseResponse(res);
-        const { dataItems: copyStore = [], responseOptions = {} } = items;
-        const { isPartData } = responseOptions || {};
+        const { dataItems: copyStore = [] } = items;
 
         if (error) throw new Error(error);
 
@@ -60,7 +58,6 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
           copyStore,
           sortBy,
           pathValid,
-          isPartData,
           schema,
           storeLoad,
           clientDB,
@@ -104,7 +101,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
         };
 
         if (error?.status === 404) {
-          await coreUpdaterDataHook(dispatch, { ...dep, isPartData: true });
+          await coreUpdaterDataHook(dispatch, { ...dep });
           return;
         }
 
@@ -184,8 +181,7 @@ const multipleLoadData = (params) => async (dispatch, getState, { schema, Reques
             break;
           }
 
-          const { dataItems: copyStore = [], responseOptions = {} } = items;
-          const { isPartData } = responseOptions || {};
+          const { dataItems: copyStore = [] } = items;
 
           if (error) throw new Error(error);
 
@@ -195,7 +191,6 @@ const multipleLoadData = (params) => async (dispatch, getState, { schema, Reques
             copyStore,
             sortBy,
             pathValid,
-            isPartData,
             schema,
             storeLoad,
             clientDB,

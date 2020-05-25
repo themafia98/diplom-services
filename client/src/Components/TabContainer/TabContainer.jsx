@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useCallback, useMemo, useEffect } from 'react';
 import { tabContainerType } from './types';
 import clsx from 'clsx';

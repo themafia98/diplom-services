@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { newsViewType } from '../../types';
 import _ from 'lodash';

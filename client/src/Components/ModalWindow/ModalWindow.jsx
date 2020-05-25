@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { modalWindowType } from './types';
 import { v4 as uuid } from 'uuid';

@@ -44,7 +44,6 @@ namespace Tasks {
 
         const actionTasks = new Action.ActionParser({ actionPath: 'tasks', actionType: 'get_all' });
         const data: ParserResult = await actionTasks.getActionData(actionParams);
-        const isPartData: boolean = Boolean(keys);
 
         if (!data) {
           params.done = false;
@@ -57,7 +56,7 @@ namespace Tasks {
         if (data && Array.isArray(data)) {
           metadata = parsePublicData(data);
         }
-        params.isPartData = isPartData;
+
         return new Responser(res, req, params, null, 200, metadata, dbm).emit();
       } catch (err) {
         console.error(err);

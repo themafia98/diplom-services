@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { forwardRef, useState, useMemo } from 'react';
 import fixedToolbarType from './types';
 import _ from 'lodash';

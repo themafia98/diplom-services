@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { outputType } from './types';
 import clsx from 'clsx';

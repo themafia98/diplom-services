@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { privateType } from './types';

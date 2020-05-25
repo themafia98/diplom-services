@@ -1,4 +1,3 @@
-// @ts-nocheck
 import _ from 'lodash';
 import {
   TASK_SCHEMA,
@@ -157,17 +156,6 @@ class Schema {
   getEditorJSON() {
     return {
       entityMap: {},
-      blocks: [
-        {
-          key: '637gr',
-          text: 'Initialized from content state.',
-          type: 'unstyled',
-          depth: 0,
-          inlineStyleRanges: [],
-          entityRanges: [],
-          data: {},
-        },
-      ],
     };
   }
 

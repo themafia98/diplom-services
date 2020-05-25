@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect, useCallback } from 'react';
 import { panelPasswordType } from './types';
 import { Input, Collapse, Button } from 'antd';

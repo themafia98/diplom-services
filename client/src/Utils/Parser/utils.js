@@ -2,7 +2,7 @@
 import moment from 'moment';
 /** Utils parser */
 
-const runNoCorsParser = (copyStore, sortBy, storeLoad, pathValid, isPartData) => {
+const runNoCorsParser = (copyStore, sortBy, storeLoad, pathValid) => {
   const sortedCopyStore =
     !sortBy && copyStore.every((it) => it.createdAt)
       ? copyStore.sort((a, b) => {
@@ -14,7 +14,7 @@ const runNoCorsParser = (copyStore, sortBy, storeLoad, pathValid, isPartData) =>
       ? copyStore.sort((a, b) => a[sortBy] - b[sortBy])
       : copyStore;
 
-  const data = { [storeLoad]: sortedCopyStore, load: true, path: pathValid, isPartData };
+  const data = { [storeLoad]: sortedCopyStore, load: true, path: pathValid };
   return { data, shouldUpdateState: Boolean(storeLoad) };
 };
 

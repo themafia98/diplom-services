@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { headerViewType } from './types';

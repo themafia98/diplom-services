@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect, useState, useMemo } from 'react';
 import { barType } from '../types';
 import { Spin } from 'antd';

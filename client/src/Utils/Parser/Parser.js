@@ -1,4 +1,3 @@
-// @ts-nocheck
 import moment from 'moment';
 import _ from 'lodash';
 import { clientDB } from 'Models/ClientSideDatabase';
@@ -8,7 +7,6 @@ import { getStoreSchema } from '../utilsHook';
 const dataParser = (flag = false, isLocalUpdate = true, dep = {}, offlineStore = []) => {
   const {
     copyStore = [],
-    isPartData = false,
     storeLoad = '',
     methodQuery,
     schema,
@@ -40,7 +38,7 @@ const dataParser = (flag = false, isLocalUpdate = true, dep = {}, offlineStore =
   }
 
   if (noCorsClient) {
-    return runNoCorsParser(store, sortBy, storeLoad, pathValid, isPartData);
+    return runNoCorsParser(store, sortBy, storeLoad, pathValid);
   }
 
   let shouldClearError = false;
@@ -62,7 +60,7 @@ const dataParser = (flag = false, isLocalUpdate = true, dep = {}, offlineStore =
       ? storeCopyValid.sort((a, b) => a[sortBy] - b[sortBy])
       : storeCopyValid;
 
-  const data = { [storeLoad]: sortedCopyStore, load: true, path: pathValid, isPartData };
+  const data = { [storeLoad]: sortedCopyStore, load: true, path: pathValid };
   return { data, shouldClearError, shouldUpdateState: Boolean(storeLoad) };
 };
 

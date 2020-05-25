@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { forwardRef, useMemo } from 'react';
 import clsx from 'clsx';
 import Scrollbars from 'react-custom-scrollbars';

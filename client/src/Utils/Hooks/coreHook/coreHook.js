@@ -1,4 +1,3 @@
-// @ts-nocheck
 import _ from 'lodash';
 import { clientDB } from 'Models/ClientSideDatabase';
 import utilsHooks from '../utils';
@@ -13,7 +12,6 @@ const coreUpdaterDataHook = async (dispatch, dep = {}, multiple = false, badNetw
     copyStore,
     sortBy,
     pathValid,
-    isPartData,
     schema,
     storeLoad,
     clientDB,
@@ -47,7 +45,6 @@ const coreUpdaterDataHook = async (dispatch, dep = {}, multiple = false, badNetw
   if (!isLocalUpdate) {
     const depParser = {
       copyStore,
-      isPartData,
       storeLoad,
       methodQuery,
       schema,

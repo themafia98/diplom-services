@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { getStoreSchema } from '../../utilsHook';
 
 const cachingHook = async (dispatch, dep = {}, depActions = {}) => {

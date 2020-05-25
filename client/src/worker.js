@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { clientDB } from 'Models/ClientSideDatabase';
 import Request from 'Models/Rest';
 

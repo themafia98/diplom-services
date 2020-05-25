@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { handleActions } from 'redux-actions';
 import {
   ADD_TAB,
@@ -13,7 +12,6 @@ import {
   ADD_TO_ROUTE_DATA,
 } from 'Redux/actions/routerActions/const';
 import { ON_END_DRAG_TAB } from 'Redux/actions/tabActions/const';
-import { validationItems } from 'Utils';
 import { SET_STATUS } from 'Redux/actions/publicActions/const';
 
 const initialState = {
@@ -23,7 +21,6 @@ const initialState = {
   routeDataActive: {},
   routeData: {},
   load: false,
-  isPartData: false,
   partDataPath: null,
   shouldUpdate: false,
 };
@@ -263,18 +260,15 @@ export default handleActions(
       };
     },
     [SAVE_STATE]: (state, { payload }) => {
-      const { routeData = {}, partDataPath = null } = state;
+      const { routeData = {} } = state;
       let copyRouteData = { ...routeData };
       const {
         multiple = false,
         stateList = null,
         params: paramsAction = {},
         loading,
-        shouldParseToUniq = false,
         path: pathAction = '',
-        isPartData = false,
         shouldUpdate = false,
-        mode = '',
         load = false,
       } = payload;
 
@@ -295,14 +289,7 @@ export default handleActions(
             items = actionItem['news'];
           }
 
-          const isExists = routeData[path] && routeData[path][storeName];
-          if (isExists && actionItem[storeName]) {
-            const currentItems = actionItem[storeName];
-            const prevItems = routeData[path][storeName];
-
-            items = shouldParseToUniq ? validationItems(currentItems, prevItems) : currentItems;
-          }
-          const isEmptyParams = JSON.stringify(paramsAction) === '{}' && routeData[path];
+          const isEmptyParams = JSON.stringify(paramsAction) === '{}' && !!routeData[path];
           const params = isEmptyParams ? routeData[path]?.params : paramsAction;
           const currentStateData = routeData[path] ? { ...routeData[path] } : {};
 
@@ -339,24 +326,13 @@ export default handleActions(
         }
       }
 
-      copyRouteData[path] = payload;
-      if (mode === 'offline') copyRouteData[path].mode = 'offlineLoading';
-      else if (mode === 'online' && copyRouteData[path].mode === 'offlineLoading') {
-        delete copyRouteData[path].mode;
-      }
-      const isNewPartData = partDataPath === null || partDataPath === path;
+      copyRouteData[path] = { ...payload };
 
       let storeName = path.split('Module')[0];
       storeName = storeName[storeName.length] !== 's' ? `${storeName}s` : storeName;
 
       if (copyRouteData[path][storeName] && routeData[path] && routeData[path][storeName]) {
-        const currenItems = copyRouteData[path][storeName];
-        const prevItems = routeData[path][storeName];
-
-        const items = shouldParseToUniq
-          ? validationItems(currenItems, prevItems)
-          : copyRouteData[path][storeName];
-
+        const items = copyRouteData[path][storeName];
         const currentStateData = routeData[path] ? { ...routeData[path] } : {};
 
         copyRouteData = {
@@ -371,7 +347,7 @@ export default handleActions(
           },
         };
       }
-      const currentStateData = routeData[path] ? { ...payload, ...routeData[path], shouldUpdate: false } : {};
+      const currentStateData = routeData[path] ? { ...routeData[path], shouldUpdate: false } : {};
       copyRouteData[path] = {
         ...currentStateData,
         ...payload,
@@ -384,8 +360,6 @@ export default handleActions(
           path,
           routeData: copyRouteData,
           load,
-          isPartData: isNewPartData ? isPartData : state.isPartData,
-          partDataPath: isNewPartData ? path : state.partDataPath,
           shouldUpdate,
         };
       } else return state;

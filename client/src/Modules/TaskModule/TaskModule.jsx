@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { taskModuleType } from './types';
 import _ from 'lodash';

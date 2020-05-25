@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Utils events */
 import {
   WIKI_NODE_TREE,

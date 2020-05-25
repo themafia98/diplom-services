@@ -1,4 +1,3 @@
-// @ts-nocheck
 import PropTypes from 'prop-types';
 
 const { string, func, bool } = PropTypes;

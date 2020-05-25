@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { createAction } from 'redux-actions';
 import {
   SET_ACTIVE_CHAT_TOKEN,
