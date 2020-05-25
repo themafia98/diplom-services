@@ -1,7 +1,5 @@
 import React from 'react';
 import { modalWindowType } from './types';
-import { v4 as uuid } from 'uuid';
-import axios from 'axios';
 import _ from 'lodash';
 import moment from 'moment';
 import { Modal, Button, message, Select } from 'antd';
@@ -110,21 +108,28 @@ class ModalWindow extends React.PureComponent {
 
   onRegUser = async () => {
     const { reg: { name, password, departament, email, surname } = {}, type = '', loading } = this.state;
+    const { Request } = this.context;
 
     if (!name || !password || !departament || !email || loading) {
       return;
     }
 
     try {
-      const res = await axios.post('/rest/reg', {
-        email,
-        password,
-        displayName: `${name} ${surname}`,
-        departament,
-        position: 'Master',
-        rules: 'full',
-        accept: true,
-      });
+      const rest = new Request();
+      const res = await rest.sendRequest(
+        '/reg',
+        'POST',
+        {
+          email,
+          password,
+          displayName: `${name} ${surname}`,
+          departament,
+          position: 'Master',
+          rules: 'full',
+          accept: true,
+        },
+        false,
+      );
 
       if (!res || res.status !== 200) {
         throw new Error('Bad registration data');
@@ -319,6 +324,7 @@ class ModalWindow extends React.PureComponent {
     const {
       jurnal: { timeLost = null, date = moment(), description = null },
       error = [],
+      udata: { displayName = '' } = {},
       type = '',
     } = this.state;
 
@@ -347,10 +353,9 @@ class ModalWindow extends React.PureComponent {
     const validData = schema?.getSchema(TASK_CONTROLL_JURNAL_SCHEMA, {
       depKey: keyTask,
       timeLost: timeLost,
-      editor: '',
+      editor: displayName,
       date: date,
       description: description,
-      _id: uuid(),
     });
 
     if (validData) return _valid;

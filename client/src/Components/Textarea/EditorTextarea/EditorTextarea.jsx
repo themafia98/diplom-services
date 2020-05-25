@@ -50,7 +50,9 @@ class EditorTextarea extends React.Component {
     if (contentState && (!_.isEmpty(contentState) || _.isString(contentState))) {
       try {
         this.setState({
-          contentState: _.isString(contentState) ? stateFromHTML(contentState) : contentState,
+          contentState: _.isString(contentState)
+            ? stateFromHTML(contentState)
+            : getValidContent(contentState),
         });
       } catch (error) {
         if (error?.response?.status !== 404) console.error(error);
@@ -99,6 +101,7 @@ class EditorTextarea extends React.Component {
     return (
       <div className={clsx('content', readOnly ? 'readOnly' : null)}>
         <Editor
+          key="editor"
           readOnly={disabled || readOnly}
           toolbarHidden={readOnly}
           localization={{ locale: 'ru' }}

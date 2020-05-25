@@ -88,11 +88,12 @@ class Schema {
           type: 'object',
           additionalProperties: true,
           properties: {
-            _id: { type: 'string' },
             depKey: { type: 'string' },
             timeLost: { type: 'string' },
             editor: { type: 'string' },
-            date: { type: 'array', items: { type: 'string' } },
+            date: {
+              oneOf: [{ type: 'array', items: { type: 'string' } }, { type: 'string' }],
+            },
             description: { type: 'string' },
           },
           ...this.addAdditionalProperty(),
@@ -156,6 +157,17 @@ class Schema {
   getEditorJSON() {
     return {
       entityMap: {},
+      blocks: [
+        {
+          key: '637gr',
+          text: '',
+          type: 'unstyled',
+          depth: 0,
+          inlineStyleRanges: [],
+          entityRanges: [],
+          data: {},
+        },
+      ],
     };
   }
 
@@ -227,7 +239,7 @@ class Schema {
 
     const schema = this.getValidateSchema(type);
     const validate = this.validator.compile(schema);
-
+    debugger;
     if (validate(data)) return data;
     else {
       console.error('invalid data:', type);

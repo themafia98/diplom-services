@@ -211,7 +211,18 @@ const getValidContent = (contentState) => {
     ...contentState,
   };
 
-  if (!contentState?.blocks) validContentState.blocks = [];
+  if (!contentState?.blocks || (contentState?.blocks && _.isEmpty(contentState.blocks)))
+    validContentState.blocks = [
+      {
+        key: '637gr',
+        text: '',
+        type: 'unstyled',
+        depth: 0,
+        inlineStyleRanges: [],
+        entityRanges: [],
+        data: {},
+      },
+    ];
   if (!contentState?.entityMap) validContentState.entityMap = {};
   return validContentState;
 };
