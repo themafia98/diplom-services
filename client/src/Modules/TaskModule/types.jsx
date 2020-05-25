@@ -27,7 +27,7 @@ export const taskViewType = {
   height: oneOfType([string.isRequired, number.isRequired]),
   onLoadCurrentData: func.isRequired,
   onLoadCacheData: func.isRequired,
-  data: taskEntityType.isRequired,
+  data: taskEntityType,
   router: object.isRequired,
   publicReducer: object.isRequired,
   modeControllEdit: oneOfType([bool.isRequired, object.isRequired, () => null]),

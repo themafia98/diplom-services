@@ -371,8 +371,8 @@ export default handleActions(
       const isExist = routeDataActive && routeDataActive[updateBy];
       const currentModule = currentActionTab.split('__')[0];
 
-      const isExistModule = Boolean(routeData[currentModule]);
-      const isExistStore = isExistModule ? Boolean(routeData[currentModule][store]) : null;
+      const isExistModule = !!routeData[currentModule];
+      const isExistStore = isExistModule ? !!routeData[currentModule][store] : null;
 
       const updateCurrent = isExist && routeDataActive[updateBy] === id ? true : false;
       const dataList = isExistStore && isExistModule ? routeData[currentModule][store] : [];

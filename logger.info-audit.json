@@ -19,6 +19,16 @@
       "date": 1590429782499,
       "name": "logs\\logs-info-2020-05-25-21.log",
       "hash": "ae18d3348f6f42919d69a0eadd2598c3"
+    },
+    {
+      "date": 1590440660773,
+      "name": "logs\\logs-info-2020-05-26-00.log",
+      "hash": "222291f71503df4de08d1a8f96c8b8be"
+    },
+    {
+      "date": 1590445236194,
+      "name": "logs\\logs-info-2020-05-26-01.log",
+      "hash": "2b5a7744e9dac0e654e96f1a3ea6d85b"
     }
   ]
 }

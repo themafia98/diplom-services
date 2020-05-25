@@ -162,7 +162,7 @@ class StreamBox extends React.Component {
 
       if (visiblePopover && (shouldUpdatePrivate || (type === 'private' && metadata?.length))) {
         const ids = metadata.reduce((idsList, data) => {
-          if (!it?.isRead) return [...idsList, data?._id];
+          if (!data?.isRead) return [...idsList, data?._id];
           else return idsList;
         }, []);
 

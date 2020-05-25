@@ -41,6 +41,7 @@ export default handleActions(
       const { settings: settingsState = [] } = state;
       if (payload && typeof payload === 'object' && !Array.isArray(payload)) {
         const { type = '', metadata = {}, depKey = '' } = payload || {};
+
         const parsedSettings = settingsState.map((item) => {
           const { idSettings = '', settings = [] } = item || {};
           const isDepItem = idSettings === depKey;
@@ -99,41 +100,40 @@ export default handleActions(
       const { caches = {} } = state;
       let keys = null;
 
-      const isObjectsArray = !Object.keys(data).every((key) => isNaN(Number(key)));
+      const isValidKeys = !Object.keys(data).every((key) => Number.isNaN(+key));
 
-      const validData = isObjectsArray
-        ? Object.entries(data)
-            .map(([key, value]) => value)
-            .filter(Boolean)
+      const validData = isValidKeys
+        ? Object.values(data).reduce((list, value) => {
+            if (value) return [...list, value];
+            return list;
+          }, [])
         : data;
 
       if (validData.length > 1) {
-        keys = [];
-        validData.forEach((item) => {
-          if (pk) {
-            keys.push(`${customDepKey ? customDepKey : item.depKey}${item._id}${primaryKey}${pk}`);
-          } else keys.push(`${customDepKey ? customDepKey : item.depKey}${item._id}${primaryKey}`);
-        });
+        keys = new Set(
+          validData.map((item) => {
+            if (pk) return `${customDepKey ? customDepKey : item.depKey}${item._id}${primaryKey}${pk}`;
+            return `${customDepKey ? customDepKey : item.depKey}${item._id}${primaryKey}`;
+          }),
+        );
 
-        keys = new Set(keys);
-        const _items = {};
+        const tmp = Array.from(keys).reduce((currentTmp, value, i) => {
+          const _tmp = { ...currentTmp };
+          _tmp[value] = { ...validData[i] };
 
-        let i = 0;
-        keys.forEach((value) => {
-          _items[value] = { ...validData[i] };
-          i += 1;
-        });
+          return _tmp;
+        }, {});
 
         return {
           ...state,
-          caches: !union ? { ..._items } : { ...caches, ..._items },
+          caches: !union ? { ...tmp } : { ...caches, ...tmp },
         };
       } else {
         const key = Object.keys(validData)[0];
 
         const depKey = validData.depKey;
 
-        keys = !isObjectsArray
+        keys = !isValidKeys
           ? `${customDepKey ? customDepKey : depKey ? depKey : ''}${primaryKey}`
           : `${customDepKey ? customDepKey : validData[key].depKey}${primaryKey}`;
 

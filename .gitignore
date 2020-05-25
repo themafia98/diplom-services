@@ -12,6 +12,8 @@
 
 .circleci-deprecated
 
+/logs
+
 # production
 /build
 /server/build

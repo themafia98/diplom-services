@@ -48,7 +48,7 @@ const PrivateRoute = ({ component: Component, onLogoutAction, onSetStatus, ...ro
   const getRouters = useCallback(getRoutersFunc, [rest]);
 
   const startTimer = useCallback(() => {
-    timerRef.current = setInterval(getRouters, 20000);
+    timerRef.current = setInterval(getRouters, 50000);
   }, [timerRef, getRouters]);
 
   const clearTimer = useCallback(() => clearInterval(timerRef.current), [timerRef]);

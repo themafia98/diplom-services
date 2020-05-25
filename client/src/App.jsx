@@ -31,6 +31,7 @@ class App extends React.Component {
 
   static contextType = modelContext;
   static propTypes = appType;
+  loadingSettingsLoop = null;
 
   loadAppSession = async () => {
     const {
@@ -38,7 +39,6 @@ class App extends React.Component {
       setCurrentTab,
       router: { currentActionTab = '', actionTabs = [] } = {},
       onLoadUdata,
-      onLoadSettings,
     } = this.props;
     const { config = {}, Request, config: { appActive = true } = {} } = this.context;
     if (!appActive) return;
@@ -77,7 +77,7 @@ class App extends React.Component {
         if (isUserData) {
           try {
             await onLoadUdata(udata);
-            await onLoadSettings({ wishList: [{ name: 'statusList' }] });
+            this.loadSettings();
             addTab(routeParser({ path }));
 
             workerInstanse.runSync(localStorage.getItem('token'));
@@ -89,7 +89,7 @@ class App extends React.Component {
         if (isUserData) {
           try {
             await onLoadUdata(udata);
-            await onLoadSettings({ wishList: [{ name: 'statusList' }] });
+            this.loadSettings();
             workerInstanse.runSync(localStorage.getItem('token'));
             setCurrentTab(path);
           } catch (error) {
@@ -103,6 +103,17 @@ class App extends React.Component {
     }
 
     return this.setState({ authLoad: true, loadState: true });
+  };
+
+  loadSettings = async () => {
+    const { onLoadSettings = null } = this.props;
+
+    if (this.loadingSettingsLoop) clearInterval(this.loadingSettingsLoop);
+    await onLoadSettings({ wishList: [{ name: 'statusList' }] });
+
+    this.loadingSettingsLoop = setInterval(async () => {
+      await onLoadSettings({ wishList: [{ name: 'statusList' }] });
+    }, 30000);
   };
 
   loadApp = () => {
