@@ -1,8 +1,5 @@
-import { SET_LOGOUT_TABS } from "./const";
+// @ts-nocheck
+import { createAction } from 'redux-actions';
+import { ON_END_DRAG_TAB } from './const';
 
-export const setLogoutTabs = state => {
-    return {
-        type: SET_LOGOUT_TABS,
-        payload: state
-    };
-};
+export const dragEndTabAction = createAction(ON_END_DRAG_TAB);

@@ -14,7 +14,7 @@ exports[`<ContentView /> Should render component 1`] = `
       autoHide={false}
       autoHideDuration={200}
       autoHideTimeout={1000}
-      hideTracksWhenNotNeeded={false}
+      hideTracksWhenNotNeeded={true}
       renderThumbHorizontal={[Function]}
       renderThumbVertical={[Function]}
       renderTrackHorizontal={[Function]}
@@ -35,7 +35,10 @@ exports[`<ContentView /> Should render component 1`] = `
         }
         key="213123"
         onDelete={[Function]}
+        onEdit={[Function]}
         rules={true}
+        uId=""
+        userId="asda"
       />
     </Scrollbars>
   </div>
@@ -44,9 +47,15 @@ exports[`<ContentView /> Should render component 1`] = `
   >
     <Textarea
       className="comments_textarea_fild"
+      defaultValue=""
+      editor={false}
+      editorKey=""
       key="comments_textarea_fild"
+      name=""
       onChange={[Function]}
+      onClick={null}
       onKeyDown={[Function]}
+      row={5}
       rows={4}
       value={null}
     />
@@ -80,7 +89,7 @@ exports[`<ContentView /> Should render component 2`] = `
       autoHide={false}
       autoHideDuration={200}
       autoHideTimeout={1000}
-      hideTracksWhenNotNeeded={false}
+      hideTracksWhenNotNeeded={true}
       renderThumbHorizontal={[Function]}
       renderThumbVertical={[Function]}
       renderTrackHorizontal={[Function]}
@@ -101,7 +110,10 @@ exports[`<ContentView /> Should render component 2`] = `
         }
         key="213123"
         onDelete={[Function]}
+        onEdit={[Function]}
         rules={true}
+        uId=""
+        userId="asda"
       />
     </Scrollbars>
   </div>
@@ -110,9 +122,15 @@ exports[`<ContentView /> Should render component 2`] = `
   >
     <Textarea
       className="comments_textarea_fild"
+      defaultValue=""
+      editor={false}
+      editorKey=""
       key="comments_textarea_fild"
+      name=""
       onChange={[Function]}
+      onClick={null}
       onKeyDown={[Function]}
+      row={5}
       rows={4}
       value={null}
     />
@@ -146,7 +164,7 @@ exports[`<ContentView /> Should render component 3`] = `
       autoHide={false}
       autoHideDuration={200}
       autoHideTimeout={1000}
-      hideTracksWhenNotNeeded={false}
+      hideTracksWhenNotNeeded={true}
       renderThumbHorizontal={[Function]}
       renderThumbVertical={[Function]}
       renderTrackHorizontal={[Function]}
@@ -167,7 +185,10 @@ exports[`<ContentView /> Should render component 3`] = `
         }
         key="213123"
         onDelete={[Function]}
+        onEdit={[Function]}
         rules={true}
+        uId=""
+        userId="asda"
       />
     </Scrollbars>
   </div>
@@ -176,9 +197,15 @@ exports[`<ContentView /> Should render component 3`] = `
   >
     <Textarea
       className="comments_textarea_fild"
+      defaultValue=""
+      editor={false}
+      editorKey=""
       key="comments_textarea_fild"
+      name=""
       onChange={[Function]}
+      onClick={null}
       onKeyDown={[Function]}
+      row={5}
       rows={4}
       value={null}
     />
@@ -212,7 +239,7 @@ exports[`<ContentView /> Should render component 4`] = `
       autoHide={false}
       autoHideDuration={200}
       autoHideTimeout={1000}
-      hideTracksWhenNotNeeded={false}
+      hideTracksWhenNotNeeded={true}
       renderThumbHorizontal={[Function]}
       renderThumbVertical={[Function]}
       renderTrackHorizontal={[Function]}
@@ -233,7 +260,10 @@ exports[`<ContentView /> Should render component 4`] = `
         }
         key="213123"
         onDelete={[Function]}
+        onEdit={[Function]}
         rules={true}
+        uId=""
+        userId="asda"
       />
     </Scrollbars>
   </div>
@@ -242,9 +272,15 @@ exports[`<ContentView /> Should render component 4`] = `
   >
     <Textarea
       className="comments_textarea_fild"
+      defaultValue=""
+      editor={false}
+      editorKey=""
       key="comments_textarea_fild"
+      name=""
       onChange={[Function]}
+      onClick={null}
       onKeyDown={[Function]}
+      row={5}
       rows={4}
       value={null}
     />

@@ -1,41 +1,44 @@
 .rightPanel {
-    position: relative;
-    overflow: hidden;
-    width: 25%;
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 300px;
+  max-width: 500px;
+  font-weight: bold;
+  .userPopup {
     display: flex;
     align-items: center;
-    justify-content: center;
-
-    font-weight: bold;
-    .userPopup {
-        height: 100%;
-        margin-right: 30px;
-        .userPopupMain {
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            height: 100%;
-            & > * {
-                cursor: pointer;
-            }
-            & > a {
-                margin-left: 5px;
-            }
-        }
-    }
-    .groupControllers {
-        display: flex;
-        align-items: center;
-        & > * {
-            padding: 5px;
-        }
-        .alertBell {
-            cursor: pointer;
-            font-size: 25px;
-        }
-    }
-    .logout:hover {
+    height: 100%;
+    margin-right: 30px;
+    .userPopupMain {
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      height: 100%;
+      & > * {
         cursor: pointer;
-        color: $important_default;
+      }
+      & > a {
+        margin-left: 5px;
+      }
     }
+  }
+  .groupControllers {
+    display: flex;
+    align-items: center;
+    & > * {
+      padding: 5px;
+    }
+    .alertBell {
+      cursor: pointer;
+      font-size: 25px;
+    }
+  }
+  .logout:hover {
+    cursor: pointer;
+    color: $important_default;
+  }
 }

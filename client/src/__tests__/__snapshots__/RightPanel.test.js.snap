@@ -4,21 +4,36 @@ exports[`<RightPanel /> template should be render 1`] = `
 <div
   className="headerControllers rightPanel"
 >
-  <UserPopup />
+  <UserPopup
+    goCabinet={null}
+    statusApp=""
+    udata={Object {}}
+  />
   <div
     className="groupControllers"
   >
-    <NotificationPopup />
+    <NotificationPopup
+      notificationDep={Object {}}
+      statusApp=""
+      type="private"
+      udata={Object {}}
+    />
     <Updater
       additionalClassName="updaterDefault"
+      className=""
       onClick={[Function]}
+      statusApp=""
     />
     <div
       className="logout"
+      onClick={null}
     >
       Выйти
     </div>
-    <Status />
+    <Status
+      shouldUpdate={false}
+      statusApp=""
+    />
   </div>
 </div>
 `;

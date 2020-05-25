@@ -1,52 +1,72 @@
-import React, { useState, useEffect } from "react";
-import _ from "lodash";
-import PropTypes from "prop-types";
-import { Route, Redirect } from "react-router-dom";
-import Loader from "../Loader";
+// @ts-nocheck
+import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
+import { useHistory } from 'react-router-dom';
+import { privateType } from './types';
+import { Route } from 'react-router-dom';
+import Loader from 'Components/Loader';
+import modelsContext from 'Models/context';
 
-export const PrivateRoute = ({ component: Component, rest, onLogoutAction, ...routeProps }) => {
-    let timer = null;
-    let counterError = 0;
-    const [route, setRoute] = useState(<Loader />);
-    const [status, setStatus] = useState(null);
-    const [init, setInit] = useState(null);
+const PrivateRoute = ({ component: Component, onLogoutAction, onSetStatus, ...routeProps }) => {
+  /**
+   * @type {import('react').MutableRefObject}
+   */
+  const timerRef = useRef(); // instance timer
+  const history = useHistory();
+  const { rest } = useContext(modelsContext);
 
-    const getRouters = async () => {
-        await rest
-            .authCheck()
-            .then(res => {
-                if (res.status === 200) {
-                    if (res.status !== status) {
-                        counterError = 0;
-                        setRoute(<Component rest={rest} />);
-                        setStatus(res.status);
-                    }
-                } else {
-                    rest.restartApp();
-                }
-            })
-            .catch(err => {
-                rest.restartApp();
-            });
-    };
+  const [route, setRoute] = useState(<Loader />);
+  /** @type {[number|null, Function|null]} */
+  const [status, setStatus] = useState(null);
+  const [init, setInit] = useState(null);
 
-    const debounceGetRouters = _.debounce(getRouters, 1000);
-
-    useEffect(() => {
-        if (!init) {
-            setInit(true);
-            debounceGetRouters();
+  const getRoutersFunc = async () => {
+    await rest
+      .authCheck()
+      .then((res) => {
+        if (res.status === 200) {
+          if (res.status !== status) {
+            onSetStatus('online');
+            setRoute(<Component rest={rest} />);
+            setStatus(res.status);
+          }
+        } else {
+          rest.restartApp();
         }
-        if (status !== "error") {
-            timer = setInterval(() => {
-                debounceGetRouters();
-            }, 20000);
-        }
-        return () => clearInterval(timer);
-    }, [""]);
-    return <Route exact {...routeProps} render={props => route} />;
+      })
+      .catch((err) => {
+        if (err?.message.toLowerCase().includes('network error')) {
+          console.warn(err);
+          setStatus(522);
+          onSetStatus('offline');
+        } else rest.restartApp();
+      });
+  };
+
+  useEffect(() => {
+    history.push(history.location.pathname);
+  }, [history]);
+
+  const getRouters = useCallback(getRoutersFunc, [rest]);
+
+  const startTimer = useCallback(() => {
+    timerRef.current = setInterval(getRouters, 20000);
+  }, [timerRef, getRouters]);
+
+  const clearTimer = useCallback(() => clearInterval(timerRef.current), [timerRef]);
+
+  useEffect(() => {
+    if (!init) {
+      setInit(true);
+      getRouters();
+    }
+    if (status !== 'error') {
+      startTimer();
+    }
+    return () => clearTimer();
+  }, [getRouters, status, init, clearTimer, startTimer]);
+  return <Route exact {...routeProps} render={(props) => route} />;
 };
 
-PrivateRoute.propTypes = {
-    component: PropTypes.object.isRequired
-};
+PrivateRoute.propTypes = privateType;
+
+export { PrivateRoute };

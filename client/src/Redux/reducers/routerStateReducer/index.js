@@ -1,246 +1,478 @@
+// @ts-nocheck
+import { handleActions } from 'redux-actions';
 import {
-    ADD_TAB,
-    SET_ACTIVE_TAB,
-    REMOVE_TAB,
-    LOGOUT,
-    OPEN_PAGE_WITH_DATA,
-    SAVE_STATE,
-    SET_FLAG_LOAD_DATA,
-    UPDATE_ITEM,
-    SET_UPDATE
-} from "../../actions/routerActions/const";
-import { SET_STATUS } from "../../actions/publicActions/const";
+  ADD_TAB,
+  SET_ACTIVE_TAB,
+  REMOVE_TAB,
+  LOGOUT,
+  OPEN_PAGE_WITH_DATA,
+  SAVE_STATE,
+  SET_FLAG_LOAD_DATA,
+  UPDATE_ITEM,
+  SET_UPDATE,
+  ADD_TO_ROUTE_DATA,
+} from 'Redux/actions/routerActions/const';
+import { ON_END_DRAG_TAB } from 'Redux/actions/tabActions/const';
+import { validationItems } from 'Utils';
+import { SET_STATUS } from 'Redux/actions/publicActions/const';
 
 const initialState = {
-    currentActionTab: "mainModule",
-    actionTabs: [],
-    routeDataActive: {},
-    routeData: {},
-    load: false,
-    shouldUpdate: false
+  path: null,
+  currentActionTab: 'mainModule',
+  actionTabs: [],
+  routeDataActive: {},
+  routeData: {},
+  load: false,
+  isPartData: false,
+  partDataPath: null,
+  shouldUpdate: false,
 };
 
-export default (state = initialState, action) => {
-    switch (action.type) {
-        case ADD_TAB: {
-            const isString = typeof action.payload === "string";
+export default handleActions(
+  {
+    [ADD_TAB]: (state, { payload }) => {
+      const { actionTabs = [], routeData = {} } = state;
+      const { tab: { path: configPath = '' } = {}, path: pathDefault = '', config = {} } = payload || {};
 
-            const tab = isString
-                ? action.payload
-                : action.payload.pageType === "module"
-                ? `${action.payload.page}${action.payload.moduleId}`
-                : `${action.payload.path}`;
+      const withConfig = config && !!Object.keys(config).length;
+      const isString = typeof payload === 'string';
 
+      const path = withConfig ? configPath : pathDefault;
+      const tab = isString ? payload : path;
+
+      const newRouteData = withConfig
+        ? {
+            ...routeData,
+            [path]: { config: { ...config } },
+          }
+        : routeData;
+
+      return {
+        ...state,
+        actionTabs: [...actionTabs, tab],
+        shouldUpdate: true,
+        currentActionTab: tab,
+        routeData: newRouteData,
+      };
+    },
+    [SET_ACTIVE_TAB]: (state, { payload: draftPayload }) => {
+      const { routeData: routeDataState = {}, routeDataActive = {} } = state;
+      const withConfig = draftPayload && typeof draftPayload === 'object' && !!draftPayload?.config;
+      const { config: { hardCodeUpdate = true } = {}, tab: tabWithConfig = '', config = {} } = withConfig
+        ? draftPayload
+        : {};
+
+      const payload = withConfig
+        ? tabWithConfig
+        : typeof draftPayload === 'string'
+        ? draftPayload
+        : draftPayload?.tab;
+      const content =
+        typeof payload === 'string' ? payload?.split('__')[1] : draftPayload?.tab?.split('__')[1];
+
+      const selectModule = payload;
+      let currentActive = null;
+      let isDataPage = false;
+
+      if (content || withConfig) {
+        isDataPage = true;
+        currentActive = withConfig && !content ? { config } : routeDataState[content];
+      }
+
+      const isExistModule = routeDataState[selectModule] || null;
+      const { config: { hardCodeUpdate: updater } = {} } = isExistModule ? routeDataState[selectModule] : {};
+
+      const existModuleProps = isExistModule
+        ? {
+            ...routeDataState[selectModule],
+            load: false,
+          }
+        : {};
+
+      const routeData = isExistModule
+        ? {
+            ...routeDataState,
+            [selectModule]: {
+              ...routeDataState[selectModule],
+              ...existModuleProps,
+              hardCodeUpdate: hardCodeUpdate ? !!payload : null,
+            },
+          }
+        : { ...routeDataState };
+      const shouldUpdate = updater || (updater === undefined && hardCodeUpdate);
+      return {
+        ...state,
+        path: payload,
+        currentActionTab: payload,
+        routeDataActive: isDataPage
+          ? { ...currentActive }
+          : { ...routeDataState[selectModule], ...routeDataActive },
+        routeData,
+        shouldUpdate,
+      };
+    },
+    [REMOVE_TAB]: (state, { payload }) => {
+      const { type = '', path = '' } = payload;
+      const {
+        routeData = {},
+        currentActionTab = '',
+        actionTabs = [],
+        routeDataActive = {},
+        routeDataActive: { key = '' } = {},
+      } = state;
+
+      let deleteKey = type === 'itemTab' ? path.split('__')[1] : path;
+      let deleteKeyOnce = !deleteKey ? path : null;
+
+      const filterArray = actionTabs.filter((tab, i) => {
+        if (
+          deleteKey &&
+          ((type === 'itemTab' && tab.includes(path.split('__')[1]) && path.split('__')[1] === deleteKey) ||
+            (!tab.split('__')[1] && tab.includes(path)))
+        )
+          return false;
+        return tab !== payload;
+      });
+
+      const keys = Object.keys(routeData);
+      const routeDataNew = {};
+
+      for (let i = 0; i < keys.length; i++) {
+        if ((type === 'itemTab' && routeData[keys[i]].key !== deleteKey) || !keys[i].includes(deleteKey)) {
+          routeDataNew[keys[i]] = { ...routeData[keys[i]] };
+        }
+      }
+
+      const indexFind = actionTabs.findIndex((it) => it === currentActionTab);
+      const currentFind = filterArray.findIndex((tab) => tab === currentActionTab);
+      let nextTab = null;
+
+      if (currentFind !== -1) nextTab = currentActionTab;
+      else if (indexFind === 0) nextTab = filterArray[indexFind];
+      else nextTab = filterArray[indexFind - 1];
+
+      const uuid = typeof nextTab === 'string' && type === 'itemTab' ? nextTab.split('__')[1] : nextTab;
+
+      const copyData = routeDataNew;
+      let current = null;
+
+      if (!nextTab) {
+        console.warn('Next tab not found');
+        return state;
+      }
+
+      const isSimple =
+        copyData[nextTab.split('__')[1]] && copyData[nextTab.split('__')[1]].key === nextTab.split('__')[1];
+
+      const isDelete = routeDataActive && deleteKey === routeDataActive && uuid && !deleteKeyOnce;
+
+      const isNext = routeDataActive && nextTab.split('__')[1] && key === nextTab.split('__')[1];
+
+      current = isSimple
+        ? { ...copyData[nextTab.split('__')[1]] }
+        : isDelete
+        ? routeDataNew[uuid]
+        : isNext
+        ? { ...routeDataActive }
+        : {};
+
+      const selectModule = nextTab ? nextTab || nextTab.split('__')[1] || nextTab : nextTab;
+
+      return {
+        ...state,
+        currentActionTab: nextTab || 'mainModule',
+        actionTabs: filterArray,
+        routeDataActive: current,
+        routeData: copyData,
+        shouldUpdate: !routeData[selectModule] ? false : true,
+      };
+    },
+    [ON_END_DRAG_TAB]: (state, { payload = [] }) => {
+      return {
+        ...state,
+        actionTabs: payload.map(({ EUID = '' }) => EUID),
+      };
+    },
+    [SET_UPDATE]: (state, { payload }) => {
+      return { ...state, shouldUpdate: payload };
+    },
+    [OPEN_PAGE_WITH_DATA]: (state, { payload }) => {
+      const { routeData = {}, actionTabs = [] } = state;
+      const copyRouteData = { ...routeData };
+      const {
+        activePage = {},
+        routeDataActive: RDA = {},
+        routeDataActive: { key: keyRouteData = '', _id: id = '' } = {},
+      } = payload || {};
+
+      const isEmptyActivePage = !activePage || typeof activePage !== 'object';
+      const isEqualKeys = (activePage && activePage?.key === keyRouteData) || activePage?.key === id;
+      const isValidModuleId = activePage && activePage?.moduleId;
+
+      if (isEmptyActivePage || (!isEqualKeys && isValidModuleId)) {
+        return { ...state };
+      }
+
+      const { path: pathPage = '' } = activePage || {};
+
+      const linkEntity = pathPage.includes('___link') && pathPage.split('__')[1];
+      let currentActionTab = pathPage;
+
+      if (linkEntity) {
+        const pathLink = linkEntity ? pathPage.split('___link')[0] : pathPage;
+        const moduleName = pathLink.split('#')[0];
+        currentActionTab = `${moduleName}__${linkEntity}`;
+      }
+
+      if (!pathPage) return { ...state };
+
+      const validKey = keyRouteData || id || 'undefiendModule';
+      const isString = typeof RDA === 'string';
+
+      const routeDataActive = !isString ? RDA : routeData[pathPage] || {};
+      copyRouteData[validKey] = !isString ? RDA : routeData[pathPage] || {};
+
+      return {
+        ...state,
+        currentActionTab,
+        actionTabs: [...actionTabs, currentActionTab],
+        routeDataActive: { ...routeDataActive },
+        routeData: copyRouteData,
+      };
+    },
+    [ADD_TO_ROUTE_DATA]: (state, { payload }) => {
+      const { path, saveData = {}, loading } = payload;
+      const { routeData = {} } = state;
+      const savedCurrentData = routeData[path]
+        ? {
+            ...routeData[path],
+          }
+        : {};
+      const shouldUpdate = loading !== undefined ? loading : routeData[path]?.loading;
+      return {
+        ...state,
+        routeData: {
+          ...state.routeData,
+          [path]: {
+            ...savedCurrentData,
+            saveData: { ...saveData },
+            loading: shouldUpdate,
+            shouldUpdate,
+          },
+        },
+      };
+    },
+    [SAVE_STATE]: (state, { payload }) => {
+      const { routeData = {}, partDataPath = null } = state;
+      let copyRouteData = { ...routeData };
+      const {
+        multiple = false,
+        stateList = null,
+        params: paramsAction = {},
+        loading,
+        shouldParseToUniq = false,
+        path: pathAction = '',
+        isPartData = false,
+        shouldUpdate = false,
+        mode = '',
+        load = false,
+      } = payload;
+
+      const isLink = pathAction.includes('__link') && pathAction.split('__')[1];
+      const pathLink = isLink ? pathAction.split('__')[1] : pathAction;
+      const path = pathLink.split('__link')[0];
+
+      if (stateList && Array.isArray(stateList) && multiple) {
+        const modulesState = stateList.reduce((newState, actionItem) => {
+          const { path = '' } = actionItem;
+
+          let storeName = path ? path.split('Module')[0] : '';
+          storeName = storeName[storeName.length] !== 's' ? `${storeName}s` : storeName;
+          if (!storeName) return newState;
+          let items = actionItem[storeName];
+
+          if (!actionItem[storeName] && storeName.includes('contact')) {
+            items = actionItem['news'];
+          }
+
+          const isExists = routeData[path] && routeData[path][storeName];
+          if (isExists && actionItem[storeName]) {
+            const currentItems = actionItem[storeName];
+            const prevItems = routeData[path][storeName];
+
+            items = shouldParseToUniq ? validationItems(currentItems, prevItems) : currentItems;
+          }
+          const isEmptyParams = JSON.stringify(paramsAction) === '{}' && routeData[path];
+          const params = isEmptyParams ? routeData[path]?.params : paramsAction;
+          const currentStateData = routeData[path] ? { ...routeData[path] } : {};
+
+          if (path)
             return {
-                ...state,
-                actionTabs: [...state.actionTabs, tab],
-                currentActionTab: tab
+              ...newState,
+              [path]: {
+                ...currentStateData,
+                ...actionItem,
+                [storeName]: items,
+                shouldUpdate: false,
+                loading,
+                params,
+              },
             };
+          else return newState;
+        }, {});
+
+        const shouldUpdateList = Object.keys(routeData).every((key) => {
+          if (stateList.some((actionItem) => actionItem?.path && key === actionItem.path)) {
+            return routeData[key]?.load;
+          }
+          return true;
+        });
+
+        if (shouldUpdateList) {
+          return {
+            ...state,
+            routeData: {
+              ...routeData,
+              ...modulesState,
+            },
+          };
         }
+      }
 
-        case SET_UPDATE: {
-            const { payload = {} } = action;
+      copyRouteData[path] = payload;
+      if (mode === 'offline') copyRouteData[path].mode = 'offlineLoading';
+      else if (mode === 'online' && copyRouteData[path].mode === 'offlineLoading') {
+        delete copyRouteData[path].mode;
+      }
+      const isNewPartData = partDataPath === null || partDataPath === path;
 
-            return { ...state, shouldUpdate: payload };
-        }
-        case OPEN_PAGE_WITH_DATA: {
-            const copyRouteData = { ...state.routeData };
-            const { activePage = {} } = action.payload || {};
+      let storeName = path.split('Module')[0];
+      storeName = storeName[storeName.length] !== 's' ? `${storeName}s` : storeName;
 
-            if (
-                !activePage ||
-                typeof activePage !== "object" ||
-                activePage === null ||
-                (activePage &&
-                    activePage.key !== action.payload.routeDataActive.key &&
-                    activePage &&
-                    activePage["moduleId"] &&
-                    activePage["moduleId"] !== "createNews")
-            ) {
-                return { ...state };
+      if (copyRouteData[path][storeName] && routeData[path] && routeData[path][storeName]) {
+        const currenItems = copyRouteData[path][storeName];
+        const prevItems = routeData[path][storeName];
+
+        const items = shouldParseToUniq
+          ? validationItems(currenItems, prevItems)
+          : copyRouteData[path][storeName];
+
+        const currentStateData = routeData[path] ? { ...routeData[path] } : {};
+
+        copyRouteData = {
+          ...copyRouteData,
+          [path]: {
+            ...currentStateData,
+            ...copyRouteData[path],
+            shouldUpdate: false,
+            load: true,
+            loading,
+            [storeName]: items,
+          },
+        };
+      }
+      const currentStateData = routeData[path] ? { ...payload, ...routeData[path], shouldUpdate: false } : {};
+      copyRouteData[path] = {
+        ...currentStateData,
+        ...payload,
+        shouldUpdate: false,
+        loading,
+      };
+      if (path) {
+        return {
+          ...state,
+          path,
+          routeData: copyRouteData,
+          load,
+          isPartData: isNewPartData ? isPartData : state.isPartData,
+          partDataPath: isNewPartData ? path : state.partDataPath,
+          shouldUpdate,
+        };
+      } else return state;
+    },
+    [UPDATE_ITEM]: (state, { payload }) => {
+      const { routeDataActive, currentActionTab = '', routeData = {}, path = '' } = state;
+      const { id, updateBy = '_id', updaterItem = {}, store = path.split('__')[0] } = payload;
+
+      const isExist = routeDataActive && routeDataActive[updateBy];
+      const currentModule = currentActionTab.split('__')[0];
+
+      const isExistModule = Boolean(routeData[currentModule]);
+      const isExistStore = isExistModule ? Boolean(routeData[currentModule][store]) : null;
+
+      const updateCurrent = isExist && routeDataActive[updateBy] === id ? true : false;
+      const dataList = isExistStore && isExistModule ? routeData[currentModule][store] : [];
+
+      const newStore =
+        Array.isArray(dataList) && dataList?.length
+          ? dataList.map((item) => {
+              if (item[updateBy] && item[updateBy] !== id) return item;
+              const isObject = updaterItem && typeof updaterItem === 'object';
+              return isObject
+                ? {
+                    ...updaterItem,
+                  }
+                : updaterItem;
+            })
+          : null;
+
+      const updateCurrentModule =
+        newStore && newStore.length
+          ? {
+              [currentModule]: {
+                ...routeData[currentModule],
+                [store]: newStore,
+              },
             }
+          : {};
 
-            const { path = "" } = action.payload.activePage || {};
-            if (!path) return { ...state };
+      return {
+        ...state,
+        routeDataActive: updateCurrent
+          ? { ...updaterItem }
+          : state.routeDataActive
+          ? { ...state.routeDataActive }
+          : {},
+        routeData: {
+          ...state.routeData,
+          ...updateCurrentModule,
+          [id]: { ...updaterItem },
+        },
+      };
+    },
+    [SET_FLAG_LOAD_DATA]: (state, { payload }) => {
+      const { routeData = {} } = state;
+      const copyRouteData = { ...routeData };
+      const { path, load, loading } = payload;
 
-            copyRouteData[action.payload.routeDataActive.key || action.payload.routeDataActive] =
-                typeof action.payload.routeDataActive !== "string" ? action.payload.routeDataActive : {};
-
-            return {
-                ...state,
-                currentActionTab: path,
-                actionTabs: [...state.actionTabs, path],
-                routeDataActive: { ...action.payload.routeDataActive },
-                routeData: copyRouteData
-            };
-        }
-        case SAVE_STATE: {
-            const copyRouteData = { ...state.routeData };
-            let path = action.payload.path;
-            const update = action.shouldUpdate || false;
-            let pathParse = path.split("_");
-            if (
-                pathParse[0] === "taskModule" &&
-                pathParse[1] &&
-                (pathParse[1] === "myTasks" || pathParse[1] === "all")
-            ) {
-                path = pathParse[0];
-            }
-            copyRouteData[path] = action.payload;
-            if (action.payload.mode === "offline") copyRouteData[path].mode = "offlineLoading";
-            else if (action.payload.mode === "online" && copyRouteData[path].mode === "offlineLoading") {
-                delete copyRouteData[path].mode;
-            }
-
-            return {
-                ...state,
-                routeData: copyRouteData,
-                load: action.payload.load,
-                shouldUpdate: update
-            };
-        }
-
-        case UPDATE_ITEM: {
-            const { routeDataActive } = state;
-
-            const updateCurrent = routeDataActive && routeDataActive.key === action.payload.id ? true : false;
-
-            return {
-                ...state,
-                routeDataActive: updateCurrent
-                    ? { ...action.payload.updaterItem }
-                    : state.routeDataActive
-                    ? { ...state.routeDataActive }
-                    : {},
-                routeData: {
-                    ...state.routeData,
-                    [action.payload.id]: { ...action.payload.updaterItem }
-                }
-            };
-        }
-        case SET_FLAG_LOAD_DATA: {
-            const copyRouteData = { ...state.routeData };
-            copyRouteData[action.payload.path].load = action.payload.load;
-
-            return {
-                ...state,
-                load: action.payload.load,
-                routeData: copyRouteData
-            };
-        }
-        case SET_ACTIVE_TAB: {
-            const content = action.payload.split("__")[1];
-            const selectModule = action.payload.split("_")[0];
-            let currentActive = null;
-            let isDataPage = false;
-            if (content) {
-                isDataPage = true;
-                currentActive = state.routeData[content];
-            }
-            const searchPathContent = selectModule || action.payload || content;
-
-            return {
-                ...state,
-                currentActionTab: action.payload,
-                routeDataActive: isDataPage ? { ...currentActive } : { ...state.routeDataActive },
-                shouldUpdate: !state.routeData[
-                    searchPathContent === "statisticModule"
-                        ? "taskModule"
-                        : action.payload === "contactModule_feedback"
-                        ? action.payload
-                        : searchPathContent
-                ]
-                    ? false
-                    : true
-            };
-        }
-        case SET_STATUS: {
-            const { shouldUpdate = false } = action.payload;
-
-            return {
-                ...state,
-                shouldUpdate: shouldUpdate
-            };
-        }
-        case REMOVE_TAB: {
-            let deleteKey =
-                action.payload.type === "itemTab" ? action.payload.path.split("__")[1] : action.payload.path;
-            const { currentActionTab } = state;
-            let deleteKeyOnce = !deleteKey ? action.payload.path : null;
-            const filterArray = state.actionTabs.filter((tab, i) => {
-                if (
-                    deleteKey &&
-                    ((action.payload.type === "itemTab" &&
-                        tab.includes(action.payload.path.split("__")[1]) &&
-                        action.payload.path.split("__")[1] === deleteKey) ||
-                        (!tab.split("__")[1] && tab.includes(action.payload.path)))
-                )
-                    return false;
-                return tab !== action.payload;
-            });
-
-            const keys = Object.keys(state.routeData);
-            const routeDataNew = {};
-
-            for (let i = 0; i < keys.length; i++) {
-                if (
-                    (action.payload.type === "itemTab" && state.routeData[keys[i]].key !== deleteKey) ||
-                    !keys[i].includes(deleteKey)
-                ) {
-                    routeDataNew[keys[i]] = { ...state.routeData[keys[i]] };
-                }
-            }
-
-            const indexFind = state.actionTabs.findIndex(it => it === state.currentActionTab);
-            const currentFind = filterArray.findIndex(tab => tab === currentActionTab);
-            const nextTab = currentFind !== -1 ? currentActionTab : filterArray[indexFind - 1];
-
-            const uuid =
-                typeof nextTab === "string" && action.payload.type === "itemTab" ? nextTab.split("__")[1] : nextTab;
-
-            const copyData = routeDataNew;
-            let current = null;
-            try {
-                const isSimple =
-                    copyData[nextTab.split("__")[1]] && copyData[nextTab.split("__")[1]].key === nextTab.split("__")[1];
-
-                const isDelete =
-                    state.routeDataActive && deleteKey === state.routeDataActive.key && uuid && !deleteKeyOnce;
-
-                const isNext =
-                    state.routeDataActive &&
-                    nextTab.split("__")[1] &&
-                    state.routeDataActive.key === nextTab.split("__")[1];
-
-                current = isSimple
-                    ? { ...copyData[nextTab.split("__")[1]] }
-                    : isDelete
-                    ? routeDataNew[uuid]
-                    : isNext
-                    ? { ...state.routeDataActive }
-                    : {};
-            } catch {
-                current = {};
-            }
-            const selectModule = nextTab.split("_")[0] || nextTab.split("__")[1] || nextTab;
-
-            return {
-                ...state,
-                currentActionTab: nextTab || "mainModule",
-                actionTabs: filterArray,
-                routeDataActive: current,
-                routeData: copyData,
-                shouldUpdate: !state.routeData[selectModule] ? false : true
-            };
-        }
-        case LOGOUT: {
-            return {
-                ...state,
-                currentActionTab: "mainModule",
-                actionTabs: []
-            };
-        }
-        default:
-            return state;
-    }
-};
+      return {
+        ...state,
+        load,
+        routeData: {
+          ...routeData,
+          ...copyRouteData,
+          [path]: {
+            ...copyRouteData[path],
+            load,
+            loading,
+          },
+        },
+      };
+    },
+    [SET_STATUS]: (state, { payload }) => {
+      const { shouldUpdate = false } = payload;
+      return {
+        ...state,
+        shouldUpdate,
+      };
+    },
+    [LOGOUT]: (state) => {
+      return {
+        ...state,
+        currentActionTab: 'mainModule',
+        actionTabs: [],
+      };
+    },
+  },
+  initialState,
+);

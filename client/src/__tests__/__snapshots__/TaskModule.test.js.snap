@@ -12,7 +12,7 @@ exports[`<TaskModule /> template Should be render 1`] = `
     autoHide={false}
     autoHideDuration={200}
     autoHideTimeout={1000}
-    hideTracksWhenNotNeeded={false}
+    hideTracksWhenNotNeeded={true}
     renderThumbHorizontal={[Function]}
     renderThumbVertical={[Function]}
     renderTrackHorizontal={[Function]}
@@ -41,40 +41,20 @@ exports[`<TaskModule /> template Should be render 1`] = `
     <TabContainer
       className="tabList"
       isBackground={false}
+      isPortal={false}
+      isTab={false}
+      key="mainModuletaskModule_alltaskList_tab"
+      onChangeVisibleAction={null}
       visible={true}
     >
       <TaskModuleList
+        counter={null}
+        data={Object {}}
         height={null}
         isBackground={false}
-        key="taskList"
-        setCurrentTab={[Function]}
-        visible={true}
-      />
-    </TabContainer>
-    <TabContainer
-      className="tabList"
-      isBackground={false}
-      visible={false}
-    >
-      <TaskModuleMyList
-        height={null}
-        isBackground={false}
-        key="myListTask"
-        setCurrentTab={[Function]}
-        user="Павел Петрович"
-        visible={false}
-      />
-    </TabContainer>
-    <TabContainer
-      className="validateStyleWrapper"
-      isBackground={false}
-      visible={false}
-    >
-      <TaskModuleCalendar
-        height={null}
-        isBackground={false}
-        key="calendarTaskModule"
-        onOpenPageWithData={[Function]}
+        key="taskModule_listAll"
+        loaderMethods={Object {}}
+        rest={Object {}}
         router={
           Object {
             "actionTabs": Array [
@@ -88,33 +68,140 @@ exports[`<TaskModule /> template Should be render 1`] = `
           }
         }
         setCurrentTab={[Function]}
+        statusApp="online"
+        urrentActionTab="mainModule"
+        visible={true}
+      />
+    </TabContainer>
+    <TabContainer
+      className="tabList"
+      isBackground={false}
+      isPortal={false}
+      isTab={false}
+      key="mainModuletaskModule_allmyTaskList_tab"
+      onChangeVisibleAction={null}
+      visible={false}
+    >
+      <TaskModuleMyList
+        counter={null}
+        currentActionTab="mainModule"
+        data={Object {}}
+        height={null}
+        isBackground={false}
+        key="myList_tasks"
+        loaderMethods={Object {}}
+        rest={Object {}}
+        router={
+          Object {
+            "actionTabs": Array [
+              "MainModule",
+            ],
+            "currentActionTab": "mainModule",
+            "routeData": Object {
+              "taskModule__all": Object {},
+            },
+            "routeDataActive": Object {},
+          }
+        }
+        setCurrentTab={[Function]}
+        statusApp="online"
+        udata={Object {}}
         visible={false}
       />
     </TabContainer>
     <TabContainer
       className="validateStyleWrapper"
       isBackground={false}
+      isPortal={false}
+      isTab={false}
+      key="calendarTaskModule_tab"
+      onChangeVisibleAction={null}
+      visible={false}
+    >
+      <TaskModuleCalendar
+        data={Object {}}
+        height={null}
+        isBackground={false}
+        key="calendarTaskModule"
+        loaderMethods={Object {}}
+        onLoadCurrentData={[Function]}
+        onOpenPageWithData={[Function]}
+        onSetStatus={null}
+        rest={Object {}}
+        router={
+          Object {
+            "actionTabs": Array [
+              "MainModule",
+            ],
+            "currentActionTab": "mainModule",
+            "routeData": Object {
+              "taskModule__all": Object {},
+            },
+            "routeDataActive": Object {},
+          }
+        }
+        setCurrentTab={[Function]}
+        statusApp="online"
+        statusList={Object {}}
+        udata={Object {}}
+        visible={false}
+      />
+    </TabContainer>
+    <TabContainer
+      className="validateStyleWrapper"
+      isBackground={false}
+      isPortal={false}
+      isTab={false}
+      key="createTask_module_tab"
+      onChangeVisibleAction={null}
       visible={false}
     >
       <CreateTask
-        firebase={Object {}}
-        height={null}
         isBackground={false}
-        key="createTask_module"
+        key="createTaskModule"
         onLoadCurrentData={[Function]}
+        onOpenPageWithData={[Function]}
+        onSetStatus={null}
+        removeTab={[Function]}
+        rest={Object {}}
+        router={
+          Object {
+            "actionTabs": Array [
+              "MainModule",
+            ],
+            "currentActionTab": "mainModule",
+            "routeData": Object {
+              "taskModule__all": Object {},
+            },
+            "routeDataActive": Object {},
+          }
+        }
         statusApp="online"
+        statusList={Object {}}
+        udata={Object {}}
         visible={false}
+        visibleMode="default"
       />
     </TabContainer>
     <TabContainer
       className="validateStyleWrapper"
       isBackground={false}
+      isPortal={false}
+      isTab={false}
+      key="taskView_tab"
+      onChangeVisibleAction={null}
       visible={false}
     >
       <Connect(TaskView)
         height={null}
         isBackground={false}
+        key="taskViewModule"
+        onLoadCacheData={[Function]}
         onLoadCurrentData={[Function]}
+        onOpenPageWithData={[Function]}
+        rest={Object {}}
+        setCurrentTab={[Function]}
+        uuid=""
         visible={false}
       />
     </TabContainer>

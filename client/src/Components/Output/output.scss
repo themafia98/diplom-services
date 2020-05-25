@@ -1,27 +1,72 @@
 .output {
-    overflow: hidden;
-    white-space: nowrap;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: center;
+
+  &.output--inline {
+    display: inline;
+    button {
+      padding: 0 2px;
+      box-sizing: content-box;
+      height: 100%;
+    }
+  }
+
+  .list-mode {
     text-overflow: ellipsis;
-    text-align: center;
+    overflow: hidden;
+    span:not(:last-child):after {
+      content: ',';
+    }
+    &.link {
+      display: flex;
+      align-items: flex-start;
+      flex-direction: column;
+    }
+    p {
+      margin: 0;
+    }
+  }
 
-    .active {
-        color: $active;
+  button {
+    cursor: pointer;
+    &.nameSurname:hover {
+      color: $antBlueHover;
     }
-    .done {
-        color: $done;
-    }
+  }
 
-    .close {
-        color: $close;
-    }
+  &.withType {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    cursor: pointer;
+  }
+
+  .active {
+    color: $active;
+  }
+  .done {
+    color: $done;
+  }
+
+  .close {
+    color: $close;
+  }
 }
 
 .pointerTooltip {
-    .output {
-        padding-left: 8px;
+  .output {
+    padding-left: 8px;
+    button {
+      width: 100%;
+      overflow: hidden;
+      padding: 0;
+      text-overflow: ellipsis;
     }
+  }
+  cursor: pointer;
+  span {
     cursor: pointer;
-    span {
-        cursor: pointer;
-    }
+  }
 }

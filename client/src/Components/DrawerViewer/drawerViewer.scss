@@ -1,0 +1,15 @@
+.drawerViewer {
+  .ant-drawer-body {
+    padding: 0 24px;
+    height: calc(100% - 58px);
+  }
+  .createTask {
+    height: unset;
+    .createTask__main {
+      .col-task {
+        max-height: 81vh;
+        height: 81vh;
+      }
+    }
+  }
+}

@@ -1,42 +1,42 @@
 .errorPage {
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  .errorStatus {
+    color: $errorText;
+    font-size: 70px;
+    margin: 0;
+  }
+  .message {
+    font-size: 35px;
+    margin-bottom: 0;
+    color: $textBlack;
+  }
+
+  .messageError {
+    text-align: center;
+    font-size: 25px;
+    width: 30%;
+    margin-bottom: 0;
+    color: $textBlack;
+  }
+
+  button {
+    cursor: pointer;
+    padding: 10px;
+    border: 2px solid $textBlack;
+    background: $errorButton;
     font-weight: bold;
-    .errorStatus {
-        color: $errorText;
-        font-size: 70px;
-        margin: 0;
+    color: $selected;
+    margin: 10px;
+    transition: 0.3s all ease-in-out;
+    &:hover {
+      cursor: pointer;
+      background: $errorText;
     }
-    .message {
-        font-size: 35px;
-        margin-bottom: 0;
-        color: #000;
-    }
-
-    .messageError {
-        text-align: center;
-        font-size: 25px;
-        width: 30%;
-        margin-bottom: 0;
-        color: #000;
-    }
-
-    button {
-        cursor: pointer;
-        padding: 10px;
-        border: 2px solid #000;
-        background: $errorButton;
-        font-weight: bold;
-        color: white;
-        margin: 10px;
-        transition: 0.3s all ease-in-out;
-        &:hover {
-            cursor: pointer;
-            background: $errorText;
-        }
-    }
+  }
 }

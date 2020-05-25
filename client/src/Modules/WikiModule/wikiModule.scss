@@ -1,0 +1,115 @@
+.wikiModule {
+  .wikiModuleTitle {
+    font-size: 30px;
+    font-weight: bold;
+    margin: 0;
+    user-select: none;
+  }
+  .wikiModule__main {
+    display: flex;
+    height: calc(100vh - 248px);
+    .wikiModule__searchInput {
+      margin: 8px 0;
+      width: 60%;
+    }
+
+    .edit-inform {
+      p {
+        margin: 0;
+      }
+    }
+
+    .wikiPage-content {
+      div.editor-wrapper {
+        div.rdw-editor-main {
+          resize: none;
+        }
+      }
+    }
+
+    .empty-tree {
+      margin: 10px;
+      font-size: 19px;
+    }
+
+    .ant-spin {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+    }
+
+    .ant-tree {
+      span {
+        font-size: 17px;
+      }
+      &.ant-tree-directory {
+        .ant-tree-node-content-wrapper {
+          &:hover {
+            cursor: pointer;
+            color: #5ca4bf;
+          }
+          &:before {
+            background: none;
+          }
+          &.ant-tree-node-selected {
+            span {
+              color: green;
+              font-weight: bold;
+            }
+          }
+        }
+      }
+      li {
+        .ant-tree-title {
+          cursor: pointer;
+        }
+        cursor: pointer;
+      }
+      &.ant-tree-directory {
+        .ant-tree-child-tree {
+          .ant-tree-treenode-selected {
+            span {
+              &.ant-tree-node-content-wrapper {
+                color: green;
+                font-weight: bold;
+                &:hover {
+                  background: none;
+                }
+                &:before {
+                  background: none;
+                }
+              }
+            }
+          }
+          li:not(.ant-tree-treenode-selected) {
+            span {
+              &.ant-tree-node-content-wrapper {
+                &:hover {
+                  color: #5ca4bf;
+                  &::before {
+                    background: none;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.site-tree-search-value {
+  color: blue;
+}
+
+.dropdown-action {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding: 10px;
+  input {
+    width: 60%;
+    margin-right: 5px;
+  }
+}

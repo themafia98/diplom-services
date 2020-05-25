@@ -1,44 +1,23 @@
-/** Here action constants import */
-import { SET_ERROR, SET_CACHE, SET_STATUS, SET_ACTIVE_CHAT_TOKEN, SHOW_GUIDE, UDATA_LOAD } from "./const";
+// @ts-nocheck
+import { createAction } from 'redux-actions';
+import {
+  SET_ERROR,
+  SET_CACHE,
+  SET_STATUS,
+  SHOW_GUIDE,
+  UDATA_LOAD,
+  CLEAR_CACHE,
+  UPDATE_UDATA,
+  LOAD_ARTIFACT,
+  LOAD_SETTINGS,
+} from './const';
 
-export const errorRequstAction = state => {
-    return {
-        type: SET_ERROR,
-        payload: state
-    };
-};
-
-export const showGuile = state => {
-    return {
-        type: SHOW_GUIDE,
-        payload: state
-    };
-};
-
-export const loadUdata = state => {
-    return {
-        type: UDATA_LOAD,
-        payload: state
-    };
-};
-
-export const setActiveChatToken = state => {
-    return {
-        type: SET_ACTIVE_CHAT_TOKEN,
-        payload: state
-    };
-};
-
-export const сachingAction = state => {
-    return {
-        type: SET_CACHE,
-        payload: state
-    };
-};
-
-export const setStatus = state => {
-    return {
-        type: SET_STATUS,
-        payload: state
-    };
-};
+export const errorRequestAction = createAction(SET_ERROR);
+export const onLoadArtifacts = createAction(LOAD_ARTIFACT);
+export const onLoadSettings = createAction(LOAD_SETTINGS);
+export const updateUdata = createAction(UPDATE_UDATA);
+export const showGuile = createAction(SHOW_GUIDE);
+export const loadUdata = createAction(UDATA_LOAD);
+export const сachingAction = createAction(SET_CACHE);
+export const clearCache = createAction(CLEAR_CACHE);
+export const setStatus = createAction(SET_STATUS);

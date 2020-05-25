@@ -1,0 +1,5 @@
+{
+  "moduleNameMapper": {
+    "workerize-loader!worker": "<rootDir>/src/worker.js"
+  }
+}

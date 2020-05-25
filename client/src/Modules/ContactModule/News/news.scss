@@ -1,0 +1,36 @@
+.news {
+  height: calc(100vh - 100px);
+  .news__main {
+    height: calc(100% - 145px);
+    display: flex;
+    .col-fullscreen {
+      display: flex;
+      flex-wrap: wrap;
+
+      .ant-spin {
+        position: absolute;
+        left: 50%;
+        top: 25%;
+      }
+
+      .ant-empty {
+        width: 100%;
+      }
+    }
+  }
+
+  .pagination-news {
+    margin-left: 10px;
+  }
+}
+
+.tittle_contactModule_pageNews {
+  font-size: 30px;
+  font-weight: bold;
+  margin: 0;
+  user-select: none;
+}
+
+.rdw-block-dropdown {
+  width: 150px;
+}

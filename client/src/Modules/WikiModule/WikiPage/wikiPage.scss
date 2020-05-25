@@ -1,0 +1,40 @@
+.wikiPage {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 248px);
+  .wikiPage__title {
+    text-align: center;
+    width: 100%;
+  }
+  .wikiPage-content,
+  .empty-wikiPage {
+    position: relative;
+    width: 100%;
+    height: calc(100vh - 248px - 70px);
+    .content {
+      &.readOnly {
+        height: 100%;
+        .rdw-editor-wrapper {
+          height: 100%;
+          .rdw-editor-main {
+            height: 100%;
+          }
+        }
+      }
+    }
+    .rdw-editor-main {
+      overflow: auto;
+      width: 100%;
+      height: calc(100vh - 380px);
+      background-color: $selected;
+      .DraftEditor-root {
+        width: 100%;
+        height: 100%;
+        .DraftEditor-editorContainer {
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+  }
+}

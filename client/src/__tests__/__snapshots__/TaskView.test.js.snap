@@ -8,7 +8,7 @@ exports[`<TaskView /> template Should be render with data 1`] = `
   autoHide={false}
   autoHideDuration={200}
   autoHideTimeout={1000}
-  hideTracksWhenNotNeeded={false}
+  hideTracksWhenNotNeeded={true}
   renderThumbHorizontal={[Function]}
   renderThumbVertical={[Function]}
   renderTrackHorizontal={[Function]}
@@ -19,20 +19,19 @@ exports[`<TaskView /> template Should be render with data 1`] = `
   universal={false}
 >
   <TitleModule
+    additional=""
+    className=""
     classNameTitle="taskModuleTittle"
     title="Карточка задачи"
   />
   <ModalWindow
-    accessStatus={
-      Array [
-        "В работе",
-        "Открыт",
-        "Выполнен",
-        "Закрыт",
-      ]
-    }
+    accessStatus={Array []}
+    actionType="__getJurnal"
+    actionTypeList="default"
+    defaultView={false}
     description="asdasd"
     editableContent="asdasd"
+    isLoadList={false}
     key="testTask"
     keyTask="testTask"
     mode="jur"
@@ -44,10 +43,13 @@ exports[`<TaskView /> template Should be render with data 1`] = `
     onRejectEdit={[Function]}
     onUpdate={[Function]}
     onUpdateEditable={[Function]}
-    primaryKey="___taskViewSetJurnal"
+    path=""
     routeDataActive={
       Object {
+        "_id": "asdas",
         "author": "Павел Петрович",
+        "authorName": "asdas",
+        "comments": Array [],
         "date": Array [],
         "description": "asdasd",
         "editor": Array [
@@ -60,8 +62,15 @@ exports[`<TaskView /> template Should be render with data 1`] = `
         "status": "В работе",
       }
     }
+    rulesEdit={false}
+    rulesStatus={false}
     statusTaskValue="В работе"
-    typeRequst="POST"
+    udata={
+      Object {
+        "_id": "adasd",
+        "displayName": "asdas",
+      }
+    }
   />
   <div
     className="taskView"
@@ -76,7 +85,7 @@ exports[`<TaskView /> template Should be render with data 1`] = `
         autoHide={false}
         autoHideDuration={200}
         autoHideTimeout={1000}
-        hideTracksWhenNotNeeded={false}
+        hideTracksWhenNotNeeded={true}
         renderThumbHorizontal={[Function]}
         renderThumbVertical={[Function]}
         renderTrackHorizontal={[Function]}
@@ -104,7 +113,17 @@ exports[`<TaskView /> template Should be render with data 1`] = `
             label="Артикул"
           >
             <Output
+              action=""
               className="key"
+              id=""
+              isLink={false}
+              isLoad={false}
+              isStaticList={false}
+              links={null}
+              list={false}
+              outputClassName=""
+              type=""
+              typeOutput=""
             >
               testTask
             </Output>
@@ -113,7 +132,17 @@ exports[`<TaskView /> template Should be render with data 1`] = `
             label="Название"
           >
             <Output
+              action=""
               className="name"
+              id=""
+              isLink={false}
+              isLoad={false}
+              isStaticList={false}
+              links={null}
+              list={false}
+              outputClassName=""
+              type=""
+              typeOutput=""
             >
               Task1
             </Output>
@@ -122,7 +151,17 @@ exports[`<TaskView /> template Should be render with data 1`] = `
             label="Статус"
           >
             <Output
+              action=""
               className="status active"
+              id=""
+              isLink={false}
+              isLoad={false}
+              isStaticList={false}
+              links={null}
+              list={false}
+              outputClassName=""
+              type=""
+              typeOutput=""
             >
               В работе
             </Output>
@@ -131,7 +170,17 @@ exports[`<TaskView /> template Should be render with data 1`] = `
             label="Приоритет"
           >
             <Output
+              action=""
               className="priority"
+              id=""
+              isLink={false}
+              isLoad={false}
+              isStaticList={false}
+              links={null}
+              list={false}
+              outputClassName=""
+              type=""
+              typeOutput=""
             >
               Средний
             </Output>
@@ -140,25 +189,147 @@ exports[`<TaskView /> template Should be render with data 1`] = `
             label="Автор задачи"
           >
             <Output
+              action=""
               className="author"
-            >
-              Павел Петрович
-            </Output>
+              depDataKey="global"
+              id=""
+              isLink={true}
+              isLoad={false}
+              isStaticList={true}
+              links={Array []}
+              list={true}
+              outputClassName=""
+              router={
+                Object {
+                  "actionTabs": Array [
+                    "MainModule",
+                  ],
+                  "currentActionTab": "mainModule",
+                  "routeData": Object {},
+                  "routeDataActive": Object {
+                    "_id": "asdas",
+                    "author": "Павел Петрович",
+                    "authorName": "asdas",
+                    "comments": Array [],
+                    "date": Array [],
+                    "description": "asdasd",
+                    "editor": Array [
+                      "Павел Петрович",
+                      "Гена Букин",
+                    ],
+                    "key": "testTask",
+                    "name": "Task1",
+                    "priority": "Средний",
+                    "status": "В работе",
+                  },
+                }
+              }
+              type=""
+              typeOutput="link"
+              udata={
+                Object {
+                  "_id": "adasd",
+                  "displayName": "asdas",
+                }
+              }
+            />
           </DescriptionsItem>
           <DescriptionsItem
             label="Исполнитель"
           >
             <Output
+              action=""
               className="editor"
+              depDataKey="global"
+              id=""
+              isLink={true}
+              isLoad={false}
+              isStaticList={false}
+              links={Array []}
+              list={true}
+              outputClassName=""
+              router={
+                Object {
+                  "actionTabs": Array [
+                    "MainModule",
+                  ],
+                  "currentActionTab": "mainModule",
+                  "routeData": Object {},
+                  "routeDataActive": Object {
+                    "_id": "asdas",
+                    "author": "Павел Петрович",
+                    "authorName": "asdas",
+                    "comments": Array [],
+                    "date": Array [],
+                    "description": "asdasd",
+                    "editor": Array [
+                      "Павел Петрович",
+                      "Гена Букин",
+                    ],
+                    "key": "testTask",
+                    "name": "Task1",
+                    "priority": "Средний",
+                    "status": "В работе",
+                  },
+                }
+              }
+              type=""
+              typeOutput="link"
+              udata={
+                Object {
+                  "_id": "adasd",
+                  "displayName": "asdas",
+                }
+              }
             >
-              Павел Петрович,Гена Букин
+              Павел Петрович
+              Гена Букин
             </Output>
+          </DescriptionsItem>
+          <DescriptionsItem
+            label="Метки"
+          >
+            <div
+              className="tags"
+            >
+              <TagsContainer
+                modeControll="default"
+                modeControllEdit={
+                  Object {
+                    "authorName": null,
+                    "date": null,
+                    "description": null,
+                    "editor": null,
+                    "key": null,
+                    "name": null,
+                    "priority": null,
+                    "status": null,
+                    "tags": Array [],
+                    "uidCreater": null,
+                  }
+                }
+                onChangeTagList={[Function]}
+                shouldVisibleButtonAddTag={false}
+                tagList={Array []}
+                tagsView={Array []}
+              />
+            </div>
           </DescriptionsItem>
           <DescriptionsItem
             label="Дата назначения"
           >
             <Output
+              action=""
               className="startDate"
+              id=""
+              isLink={false}
+              isLoad={false}
+              isStaticList={false}
+              links={null}
+              list={false}
+              outputClassName=""
+              type=""
+              typeOutput=""
             >
                
             </Output>
@@ -167,75 +338,113 @@ exports[`<TaskView /> template Should be render with data 1`] = `
             label="Дата завершения"
           >
             <Output
+              action=""
               className="endDate"
+              id=""
+              isLink={false}
+              isLoad={false}
+              isStaticList={false}
+              links={null}
+              list={false}
+              outputClassName=""
+              type=""
+              typeOutput=""
             >
                
+            </Output>
+          </DescriptionsItem>
+          <DescriptionsItem
+            label="Затрачено времени"
+          >
+            <Output
+              action=""
+              className=""
+              id=""
+              isLink={false}
+              isLoad={false}
+              isStaticList={false}
+              links={null}
+              list={false}
+              outputClassName=""
+              type=""
+              typeOutput=""
+            >
+              0.0 ч
             </Output>
           </DescriptionsItem>
         </Descriptions>
         <div
           className="descriptionTask"
         >
-          <p
-            className="descriptionTask__title"
-          >
-            Задача
-          </p>
-          <div
-            className="description descriptionTask__content editable"
-            onClick={[Function]}
-          >
-            <Scrollbars
-              autoHeight={false}
-              autoHeightMax={200}
-              autoHeightMin={0}
-              autoHide={false}
-              autoHideDuration={200}
-              autoHideTimeout={1000}
-              hideTracksWhenNotNeeded={false}
-              renderThumbHorizontal={[Function]}
-              renderThumbVertical={[Function]}
-              renderTrackHorizontal={[Function]}
-              renderTrackVertical={[Function]}
-              renderView={[Function]}
-              style={
-                Object {
-                  "height": "150px",
-                }
-              }
-              tagName="div"
-              thumbMinSize={30}
-              universal={false}
-            >
-              <span
-                className="descriptionContent"
-              >
-                asdasd
-              </span>
-              <span
-                className="icon-wrapper"
-              >
-                <i
-                  className="icon-pencil"
-                />
-              </span>
-            </Scrollbars>
-          </div>
-          <p
-            className="task_file"
-          >
-            Дополнительные файлы для задачи
-          </p>
-          <File />
-          <p
-            className="descriptionTask__comment"
-          >
-            Коментарии
-          </p>
-          <Comments
-            data={
+          <ForwardRef
+            cachesAuthorList={Array []}
+            cachesEditorList={Array []}
+            cachesJurnalList={Array []}
+            calcSumWorkTime={[Function]}
+            commentProps={
               Object {
+                "cachesAuthorList": Array [],
+                "cachesEditorList": Array [],
+                "cachesJurnalList": Array [],
+                "calcSumWorkTime": [Function],
+                "depDataKey": "global",
+                "filteredUsers": Array [],
+                "onAddFileList": [Function],
+                "onChangeEditable": [Function],
+                "onChangeEditableEnd": [Function],
+                "onChangeEditableStart": [Function],
+                "onChangeTagList": [Function],
+                "onEditContentMode": [Function],
+                "onOpenPageWithData": undefined,
+                "onRemoveFile": [Function],
+                "router": Object {
+                  "actionTabs": Array [
+                    "MainModule",
+                  ],
+                  "currentActionTab": "mainModule",
+                  "routeData": Object {},
+                  "routeDataActive": Object {
+                    "_id": "asdas",
+                    "author": "Павел Петрович",
+                    "authorName": "asdas",
+                    "comments": Array [],
+                    "date": Array [],
+                    "description": "asdasd",
+                    "editor": Array [
+                      "Павел Петрович",
+                      "Гена Букин",
+                    ],
+                    "key": "testTask",
+                    "name": "Task1",
+                    "priority": "Средний",
+                    "status": "В работе",
+                  },
+                },
+                "udata": Object {
+                  "_id": "adasd",
+                  "displayName": "asdas",
+                },
+              }
+            }
+            depDataKey="global"
+            description="asdasd"
+            filesArray={Array []}
+            filteredUsers={Array []}
+            onAddFileList={[Function]}
+            onChangeEditable={[Function]}
+            onChangeEditableEnd={[Function]}
+            onChangeEditableStart={[Function]}
+            onChangeTagList={[Function]}
+            onEditContentMode={[Function]}
+            onRemoveFile={[Function]}
+            onUpdate={[Function]}
+            rest={Object {}}
+            routeDataActive={
+              Object {
+                "_id": "asdas",
                 "author": "Павел Петрович",
+                "authorName": "asdas",
+                "comments": Array [],
                 "date": Array [],
                 "description": "asdasd",
                 "editor": Array [
@@ -248,8 +457,38 @@ exports[`<TaskView /> template Should be render with data 1`] = `
                 "status": "В работе",
               }
             }
-            onUpdate={[Function]}
-            rules={true}
+            router={
+              Object {
+                "actionTabs": Array [
+                  "MainModule",
+                ],
+                "currentActionTab": "mainModule",
+                "routeData": Object {},
+                "routeDataActive": Object {
+                  "_id": "asdas",
+                  "author": "Павел Петрович",
+                  "authorName": "asdas",
+                  "comments": Array [],
+                  "date": Array [],
+                  "description": "asdasd",
+                  "editor": Array [
+                    "Павел Петрович",
+                    "Гена Букин",
+                  ],
+                  "key": "testTask",
+                  "name": "Task1",
+                  "priority": "Средний",
+                  "status": "В работе",
+                },
+              }
+            }
+            rulesEdit={false}
+            udata={
+              Object {
+                "_id": "adasd",
+                "displayName": "asdas",
+              }
+            }
           />
         </div>
       </Scrollbars>
@@ -258,6 +497,8 @@ exports[`<TaskView /> template Should be render with data 1`] = `
       className="col-6 col-taskDescription"
     >
       <TitleModule
+        additional=""
+        className=""
         classNameTitle="historyTaskTitle"
         title="Журнал работы"
       />
@@ -268,7 +509,7 @@ exports[`<TaskView /> template Should be render with data 1`] = `
         autoHide={false}
         autoHideDuration={200}
         autoHideTimeout={1000}
-        hideTracksWhenNotNeeded={false}
+        hideTracksWhenNotNeeded={true}
         renderThumbHorizontal={[Function]}
         renderThumbVertical={[Function]}
         renderTrackHorizontal={[Function]}
@@ -277,7 +518,15 @@ exports[`<TaskView /> template Should be render with data 1`] = `
         tagName="div"
         thumbMinSize={30}
         universal={false}
-      />
+      >
+        <Empty
+          description={
+            <span>
+              Нету данных в журнале
+            </span>
+          }
+        />
+      </Scrollbars>
     </div>
   </div>
 </Scrollbars>

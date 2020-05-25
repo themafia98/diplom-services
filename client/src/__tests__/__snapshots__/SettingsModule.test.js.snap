@@ -5,6 +5,8 @@ exports[`<SettingsModule /> template Should be render 1`] = `
   className="settingsModule"
 >
   <TitleModule
+    additional=""
+    className=""
     classNameTitle="settingsModuleTitle"
     title="Настройки"
   />
@@ -32,162 +34,32 @@ exports[`<SettingsModule /> template Should be render 1`] = `
         universal={false}
       >
         <div>
-          <Collapse
-            bordered={true}
-            defaultActiveKey={
-              Array [
-                "common",
-              ]
-            }
-            expandIconPosition="left"
-            openAnimation={
-              Object {
-                "appear": [Function],
-                "enter": [Function],
-                "leave": [Function],
-              }
-            }
-          >
-            <CollapsePanel
-              header="Общие настройки"
-              key="common"
-            >
-              <div
-                className="settingsPanel--center-flex"
-              >
-                <div
-                  className="configWrapper flexWrapper"
-                >
-                  <span>
-                    Сменить почту:
-                  </span>
-                  <Input
-                    allowClear={true}
-                    data-id="email"
-                    onChange={[Function]}
-                    type="text"
-                    value=""
-                  />
-                </div>
-                <div
-                  className="configWrapper flexWrapper"
-                >
-                  <span>
-                    Сменить телефон:
-                  </span>
-                  <Input
-                    allowClear={true}
-                    data-id="tel"
-                    onChange={[Function]}
-                    type="tel"
-                    value=""
-                  />
-                </div>
-              </div>
-            </CollapsePanel>
-            <CollapsePanel
-              header="Настройки профиля"
-              key="profile"
-            >
-              <div
-                className="configWrapper"
-              >
-                <Switch
-                  defaultChecked={false}
-                  onChange={[Function]}
-                />
-                <span
-                  className="configTitle"
-                >
-                  Скрывать почту
-                </span>
-              </div>
-              <div
-                className="configWrapper"
-              >
-                <Switch
-                  defaultChecked={false}
-                  onChange={[Function]}
-                />
-                <span
-                  className="configTitle"
-                >
-                  Скрывать телефон
-                </span>
-              </div>
-            </CollapsePanel>
-            <CollapsePanel
-              header="Настройки уровней доступа"
-              key="access"
-            >
-              <Collapse
-                bordered={false}
-                expandIconPosition="left"
-                openAnimation={
-                  Object {
-                    "appear": [Function],
-                    "enter": [Function],
-                    "leave": [Function],
-                  }
-                }
-              >
-                <CollapsePanel
-                  header="Администратор"
-                  key="admin"
-                >
-                   A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-                </CollapsePanel>
-                <CollapsePanel
-                  header="Начальник отдела"
-                  key="headDepartament"
-                >
-                   A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-                </CollapsePanel>
-                <CollapsePanel
-                  header="Сотрудник"
-                  key="solider"
-                >
-                   A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-                </CollapsePanel>
-              </Collapse>
-            </CollapsePanel>
-          </Collapse>
+          <PanelPassword
+            newPassword=""
+            oldPassword=""
+            onSaveSettings={[Function]}
+          />
+          <PanelCommon
+            emailValue={null}
+            onSaveSettings={[Function]}
+            telValue={null}
+          />
+          <PanelProfile
+            isHideEmail={null}
+            isHidePhone={null}
+            onSaveSettings={[Function]}
+          />
         </div>
-        <Button
-          block={false}
-          className="submit"
-          disabled={true}
-          ghost={false}
-          htmlType="button"
-          loading={false}
-          type="primary"
-        >
-          Принять изменения
-        </Button>
       </Scrollbars>
     </div>
     <div
       className="col-6"
     >
-      <ObserverTime />
+      <ObserverTime
+        isLoading={true}
+        settingsLogs={Array []}
+        title=""
+      />
     </div>
   </div>
 </div>
@@ -198,6 +70,8 @@ exports[`<SettingsModule /> template Should be render 2`] = `
   className="settingsModule"
 >
   <TitleModule
+    additional=""
+    className=""
     classNameTitle="settingsModuleTitle"
     title="Настройки"
   />
@@ -225,162 +99,32 @@ exports[`<SettingsModule /> template Should be render 2`] = `
         universal={false}
       >
         <div>
-          <Collapse
-            bordered={true}
-            defaultActiveKey={
-              Array [
-                "common",
-              ]
-            }
-            expandIconPosition="left"
-            openAnimation={
-              Object {
-                "appear": [Function],
-                "enter": [Function],
-                "leave": [Function],
-              }
-            }
-          >
-            <CollapsePanel
-              header="Общие настройки"
-              key="common"
-            >
-              <div
-                className="settingsPanel--center-flex"
-              >
-                <div
-                  className="configWrapper flexWrapper"
-                >
-                  <span>
-                    Сменить почту:
-                  </span>
-                  <Input
-                    allowClear={true}
-                    data-id="email"
-                    onChange={[Function]}
-                    type="text"
-                    value=""
-                  />
-                </div>
-                <div
-                  className="configWrapper flexWrapper"
-                >
-                  <span>
-                    Сменить телефон:
-                  </span>
-                  <Input
-                    allowClear={true}
-                    data-id="tel"
-                    onChange={[Function]}
-                    type="tel"
-                    value=""
-                  />
-                </div>
-              </div>
-            </CollapsePanel>
-            <CollapsePanel
-              header="Настройки профиля"
-              key="profile"
-            >
-              <div
-                className="configWrapper"
-              >
-                <Switch
-                  defaultChecked={false}
-                  onChange={[Function]}
-                />
-                <span
-                  className="configTitle"
-                >
-                  Скрывать почту
-                </span>
-              </div>
-              <div
-                className="configWrapper"
-              >
-                <Switch
-                  defaultChecked={false}
-                  onChange={[Function]}
-                />
-                <span
-                  className="configTitle"
-                >
-                  Скрывать телефон
-                </span>
-              </div>
-            </CollapsePanel>
-            <CollapsePanel
-              header="Настройки уровней доступа"
-              key="access"
-            >
-              <Collapse
-                bordered={false}
-                expandIconPosition="left"
-                openAnimation={
-                  Object {
-                    "appear": [Function],
-                    "enter": [Function],
-                    "leave": [Function],
-                  }
-                }
-              >
-                <CollapsePanel
-                  header="Администратор"
-                  key="admin"
-                >
-                   A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-                </CollapsePanel>
-                <CollapsePanel
-                  header="Начальник отдела"
-                  key="headDepartament"
-                >
-                   A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-                </CollapsePanel>
-                <CollapsePanel
-                  header="Сотрудник"
-                  key="solider"
-                >
-                   A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-        A dog is a type of domesticated animal. A dog is a type of domesticated animal.
-                </CollapsePanel>
-              </Collapse>
-            </CollapsePanel>
-          </Collapse>
+          <PanelPassword
+            newPassword=""
+            oldPassword=""
+            onSaveSettings={[Function]}
+          />
+          <PanelCommon
+            emailValue={null}
+            onSaveSettings={[Function]}
+            telValue={null}
+          />
+          <PanelProfile
+            isHideEmail={null}
+            isHidePhone={null}
+            onSaveSettings={[Function]}
+          />
         </div>
-        <Button
-          block={false}
-          className="submit"
-          disabled={true}
-          ghost={false}
-          htmlType="button"
-          loading={false}
-          type="primary"
-        >
-          Принять изменения
-        </Button>
       </Scrollbars>
     </div>
     <div
       className="col-6"
     >
-      <ObserverTime />
+      <ObserverTime
+        isLoading={true}
+        settingsLogs={Array []}
+        title=""
+      />
     </div>
   </div>
 </div>

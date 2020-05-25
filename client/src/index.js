@@ -1,38 +1,35 @@
+// @ts-nocheck
 /** IE supports polyfills */
-import "core-js/features";
+import 'react-app-polyfill/ie11';
+import 'react-app-polyfill/stable';
 /** --------------------- */
 
-import React from "react";
-import { IntlProvider } from "react-intl";
-import { BrowserRouter } from "react-router-dom";
-import { Provider } from "react-redux";
-import ReactDOM from "react-dom";
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-import "normalize.css";
-import "antd/dist/antd.css";
-import "./index.scss";
-import "./Utils/styles/fontello.css";
+import 'normalize.css';
+import 'antd/dist/antd.css';
+import './index.scss';
+import './Utils/styles/fontello.css';
 
-import App from "./App";
-import * as serviceWorker from "./serviceWorker";
-import ErrorBoundary from "./Components/ErrorBoundary";
-import store from "./Redux/store";
+import App from './App';
+import * as serviceWorker from './serviceWorker';
+import * as Sentry from '@sentry/browser';
 
-import Request from './Utils/xhr';
+import Root from './Root';
+import ModelContext, { modelMethods } from './Models/context';
 
-require("es6-promise").polyfill();
+if (process.env.NODE_ENV === 'production') {
+  Sentry.init({ dsn: process.env.REACT_APP_LOGGER_DSN });
+}
 
 ReactDOM.render(
-    <BrowserRouter basename={"/"}>
-        <ErrorBoundary>
-            <Provider store={store}>
-                <IntlProvider locale={"ru"}>
-                    <App rest = {new Request()} />
-                </IntlProvider>
-            </Provider>
-        </ErrorBoundary>
-    </BrowserRouter>,
-    document.getElementById("root")
+  <Root>
+    <ModelContext.Provider value={modelMethods}>
+      <App />
+    </ModelContext.Provider>
+  </Root>,
+  document.getElementById('root'),
 );
 
 serviceWorker.register();

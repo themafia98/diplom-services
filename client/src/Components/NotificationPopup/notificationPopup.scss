@@ -1,68 +1,84 @@
 .notificationControllers {
-    display: flex;
-    .notificationCounter {
-        position: absolute;
-        pointer-events: none;
-        top: 5px;
-        transform: translate(15px, 0);
-        sup {
-            padding: 0 2px;
-            font-weight: bold;
-            text-align: center;
-            width: 100%;
-            background-color: #1890ff;
-            font-size: 11px;
-            display: flex;
-            border-radius: 50%;
-            align-items: center;
-            justify-content: center;
-        }
+  display: flex;
+  .notificationCounter {
+    position: absolute;
+    pointer-events: none;
+    top: 5px;
+    transform: translate(15px, 0);
+    sup {
+      padding: 0 2px;
+      font-weight: bold;
+      text-align: center;
+      width: 100%;
+      background-color: $antBlue;
+      font-size: 11px;
+      display: flex;
+      border-radius: 50%;
+      align-items: center;
+      justify-content: center;
     }
+  }
 }
 
 .itemWrapper {
-    padding: 10px 20px;
+  padding: 10px;
 }
 
 .ant-popover-title {
-    padding: 0;
-    .headerPopover {
-        .title {
-            width: 100%;
-            text-align: center;
-            font-weight: bold;
-            color: #fff;
-            padding: 10px;
-            background-color: $blueDark;
-        }
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+  padding: 0;
+  .headerPopover {
+    .title {
+      width: 100%;
+      text-align: center;
+      font-weight: bold;
+      color: $selected;
+      padding: 10px;
+      background-color: $blueDark;
     }
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 }
 
 .notificationContent {
-    max-height: 300px;
-    min-width: 100px;
-    .notificationItem {
-        display: flex;
-        align-items: center;
+  max-height: 300px;
+  min-width: 100px;
 
-        .notificationItem__content {
-            padding-left: 5px;
-            word-break: break-all;
-        }
+  .notificationItem {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
 
-        &.centerContent {
-            padding-left: 0;
-            justify-content: center;
-        }
+    .author,
+    .title_author {
+      margin: 0;
     }
+
+    .title_author {
+      text-align: center;
+    }
+
+    .notificationItem__content {
+      padding-left: 5px;
+      word-break: break-all;
+      &:hover {
+        color: $selected;
+        cursor: pointer;
+        background-color: $antBlueHover;
+      }
+    }
+
+    &.centerContent {
+      padding-left: 0;
+      justify-content: center;
+    }
+  }
 }
 
 .ant-popover {
-    width: 100%;
-    padding-right: 20px;
-    max-width: 300px;
-    max-height: 300px;
+  width: 100%;
+  padding-right: 20px;
+  max-width: 300px;
+  max-height: 300px;
 }

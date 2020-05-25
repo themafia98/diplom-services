@@ -1,11 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<Dashboard /> main page Should render component 1`] = `
-<Fragment>
+<div
+  className="dashboard"
+>
   <Loader
     className="mainLoader"
+    classNameSpiner={null}
   />
-  <Adapter
+  <Layout
     className="layout_menu"
   >
     <MenuView
@@ -14,110 +17,10 @@ exports[`<Dashboard /> main page Should render component 1`] = `
       cbMenuHandler={[Function]}
       cbOnCollapse={[Function]}
       collapsed={false}
-      items={
-        Array [
-          Object {
-            "EUID": "mainModule",
-            "ICON": "home",
-            "PARENT_CODE": null,
-            "SIGN": "default",
-            "VALUE": "Главное меню",
-          },
-          Object {
-            "EUID": "cabinetModule",
-            "ICON": "user",
-            "PARENT_CODE": null,
-            "VALUE": "Личный кабинет",
-          },
-          Object {
-            "EUID": "taskModule",
-            "ICON": "project",
-            "PARENT_CODE": null,
-            "VALUE": "Задачи",
-          },
-          Object {
-            "EUID": "taskModule_all",
-            "ICON": null,
-            "PARENT_CODE": "taskModule",
-            "VALUE": "Все задачи",
-          },
-          Object {
-            "EUID": "taskModule_myTasks",
-            "ICON": null,
-            "PARENT_CODE": "taskModule",
-            "VALUE": "Мои задачи",
-          },
-          Object {
-            "EUID": "taskModule_сalendar",
-            "ICON": null,
-            "PARENT_CODE": "taskModule",
-            "VALUE": "Календарь задач",
-          },
-          Object {
-            "EUID": "taskModule_createTask",
-            "ICON": null,
-            "SIGN": "freedom",
-            "VALUE": "Новая задача",
-          },
-          Object {
-            "EUID": "documentModule",
-            "ICON": "file-sync",
-            "PARENT_CODE": null,
-            "VALUE": "Документы",
-          },
-          Object {
-            "EUID": "customersModule",
-            "ICON": "global",
-            "PARENT_CODE": null,
-            "VALUE": "Работа с клиентами",
-          },
-          Object {
-            "EUID": "customersModule_contacts",
-            "ICON": null,
-            "PARENT_CODE": "customersModule",
-            "VALUE": "Контакты",
-          },
-          Object {
-            "EUID": "customersModule_reception",
-            "ICON": null,
-            "PARENT_CODE": "customersModule",
-            "VALUE": "Обращения",
-          },
-          Object {
-            "EUID": "contactModule",
-            "ICON": "wechat",
-            "PARENT_CODE": null,
-            "VALUE": "Связь",
-          },
-          Object {
-            "EUID": "contactModule_feedback",
-            "ICON": null,
-            "PARENT_CODE": "contactModule",
-            "VALUE": "Информация",
-          },
-          Object {
-            "EUID": "contactModule_chat",
-            "ICON": null,
-            "PARENT_CODE": "contactModule",
-            "VALUE": "Корпоративный чат",
-          },
-          Object {
-            "EUID": "statisticModule",
-            "ICON": "line-chart",
-            "PARENT_CODE": null,
-            "VALUE": "Статистика",
-          },
-          Object {
-            "EUID": "settingsModule",
-            "ICON": "build",
-            "PARENT_CODE": null,
-            "VALUE": "Настройки",
-          },
-        ]
-      }
+      items={null}
       key="menu"
     />
-    <Adapter
+    <Layout
       key="main"
     >
       <Connect(HeaderView)
@@ -138,6 +41,7 @@ exports[`<Dashboard /> main page Should render component 1`] = `
             "_events": Object {},
             "_eventsCount": 0,
             "_maxListeners": undefined,
+            Symbol(kCapture): false,
           }
         }
         goCabinet={[Function]}
@@ -155,16 +59,19 @@ exports[`<Dashboard /> main page Should render component 1`] = `
             "_events": Object {},
             "_eventsCount": 0,
             "_maxListeners": undefined,
+            Symbol(kCapture): false,
           }
         }
-        firebase={
-          Object {
-            "getCurrentUser": [Function],
-          }
-        }
+        isToolbarActive={false}
         key="contentView"
-        onErrorRequstAction={[Function]}
+        onChangeVisibleAction={[Function]}
+        onErrorRequestAction={[Function]}
+        onHideLoader={[Function]}
+        onSetStatus={[Function]}
+        onShoudUpdate={[Function]}
+        onShowLoader={[Function]}
         path="MainModule"
+        rest={Object {}}
         router={
           Object {
             "actionTabs": Array [
@@ -180,35 +87,230 @@ exports[`<Dashboard /> main page Should render component 1`] = `
           }
         }
         setCurrentTab={[Function]}
+        shouldRenderMenu={true}
         shouldUpdate={false}
         statusApp="online"
+        udata={
+          Object {
+            "_id": "dasd",
+            "displayName": "asdas",
+          }
+        }
         updateLoader={[Function]}
+        visibilityPortal={false}
+        webSocket={
+          Socket {
+            "_callbacks": Object {
+              "$connect": Array [
+                [Function],
+              ],
+              "$connecting": Array [
+                [Function],
+              ],
+            },
+            "acks": Object {},
+            "connected": false,
+            "disconnected": true,
+            "flags": Object {},
+            "ids": 0,
+            "io": Manager {
+              "_callbacks": Object {
+                "$close": Array [
+                  [Function],
+                ],
+                "$open": Array [
+                  [Function],
+                ],
+                "$packet": Array [
+                  [Function],
+                ],
+              },
+              "_randomizationFactor": 0.5,
+              "_reconnection": true,
+              "_reconnectionAttempts": Infinity,
+              "_reconnectionDelay": 1000,
+              "_reconnectionDelayMax": 5000,
+              "_timeout": 20000,
+              "autoConnect": true,
+              "backoff": Backoff {
+                "attempts": 0,
+                "factor": 2,
+                "jitter": 0.5,
+                "max": 5000,
+                "ms": 1000,
+              },
+              "connecting": Array [
+                [Circular],
+              ],
+              "decoder": Decoder {
+                "reconstructor": null,
+              },
+              "encoder": Encoder {},
+              "encoding": false,
+              "engine": Socket {
+                "_callbacks": Object {
+                  "$error": Array [
+                    [Function],
+                  ],
+                  "$open": Array [
+                    [Function],
+                  ],
+                },
+                "agent": false,
+                "binaryType": null,
+                "ca": null,
+                "cert": null,
+                "ciphers": null,
+                "enablesXDR": false,
+                "forceBase64": false,
+                "forceJSONP": false,
+                "forceNode": false,
+                "hostname": "localhost",
+                "id": null,
+                "isReactNative": false,
+                "jsonp": true,
+                "key": null,
+                "onlyBinaryUpgrades": undefined,
+                "passphrase": null,
+                "path": "/socket.io/",
+                "perMessageDeflate": Object {
+                  "threshold": 1024,
+                },
+                "pfx": null,
+                "pingInterval": null,
+                "pingIntervalTimer": null,
+                "pingTimeout": null,
+                "pingTimeoutTimer": null,
+                "policyPort": 843,
+                "port": "80",
+                "prevBufferLen": 0,
+                "query": Object {},
+                "readyState": "opening",
+                "rejectUnauthorized": true,
+                "rememberUpgrade": false,
+                "secure": false,
+                "timestampParam": "t",
+                "timestampRequests": undefined,
+                "transport": WS {
+                  "_callbacks": Object {
+                    "$close": Array [
+                      [Function],
+                    ],
+                    "$drain": Array [
+                      [Function],
+                    ],
+                    "$error": Array [
+                      [Function],
+                    ],
+                    "$packet": Array [
+                      [Function],
+                    ],
+                  },
+                  "agent": false,
+                  "ca": null,
+                  "cert": null,
+                  "ciphers": null,
+                  "enablesXDR": false,
+                  "extraHeaders": undefined,
+                  "forceNode": false,
+                  "hostname": "localhost",
+                  "isReactNative": false,
+                  "key": null,
+                  "localAddress": undefined,
+                  "passphrase": null,
+                  "path": "/socket.io/",
+                  "perMessageDeflate": Object {
+                    "threshold": 1024,
+                  },
+                  "pfx": null,
+                  "port": "80",
+                  "protocols": undefined,
+                  "query": Object {
+                    "EIO": 3,
+                    "transport": "websocket",
+                  },
+                  "readyState": "opening",
+                  "rejectUnauthorized": true,
+                  "secure": false,
+                  "socket": [Circular],
+                  "timestampParam": "t",
+                  "timestampRequests": undefined,
+                  "usingBrowserWebSocket": true,
+                  "withCredentials": true,
+                  "ws": WebSocket {},
+                },
+                "transportOptions": Object {},
+                "transports": Array [
+                  "websocket",
+                ],
+                "upgrade": true,
+                "upgrades": null,
+                "withCredentials": true,
+                "writeBuffer": Array [],
+              },
+              "lastPing": null,
+              "nsps": Object {
+                "/": [Circular],
+              },
+              "opts": Object {
+                "hostname": "localhost",
+                "path": "/socket.io",
+                "port": "80",
+                "secure": false,
+                "transports": Array [
+                  "websocket",
+                ],
+              },
+              "packetBuffer": Array [],
+              "readyState": "opening",
+              "skipReconnect": false,
+              "subs": Array [
+                Object {
+                  "destroy": [Function],
+                },
+                Object {
+                  "destroy": [Function],
+                },
+                Object {
+                  "destroy": [Function],
+                },
+              ],
+              "uri": "http://localhost/",
+            },
+            "json": [Circular],
+            "nsp": "/",
+            "receiveBuffer": Array [],
+            "sendBuffer": Array [],
+            "subs": Array [
+              Object {
+                "destroy": [Function],
+              },
+              Object {
+                "destroy": [Function],
+              },
+              Object {
+                "destroy": [Function],
+              },
+            ],
+          }
+        }
       />
-      <Modal
-        className="guideModal"
-        confirmLoading={false}
-        maskTransitionName="fade"
-        okText="Закрыть"
-        okType="primary"
-        onOk={[Function]}
-        title="Добро пожаловать в систему."
-        transitionName="zoom"
-        visible={false}
-        width={520}
-      >
-        <p>
-          Спасибо что выбрали 
-          Controll system
-        </p>
-      </Modal>
-    </Adapter>
-  </Adapter>
-</Fragment>
+    </Layout>
+  </Layout>
+  <ForwardRef
+    customRender={null}
+    key="toolbar"
+    name="Чат"
+    onChangeVisibleAction={[Function]}
+  />
+</div>
 `;
 
 exports[`<Dashboard /> main page Should render component 2`] = `
-<Fragment>
-  <Adapter
+<div
+  className="dashboard"
+>
+  <Layout
     className="layout_menu"
   >
     <MenuView
@@ -217,110 +319,10 @@ exports[`<Dashboard /> main page Should render component 2`] = `
       cbMenuHandler={[Function]}
       cbOnCollapse={[Function]}
       collapsed={false}
-      items={
-        Array [
-          Object {
-            "EUID": "mainModule",
-            "ICON": "home",
-            "PARENT_CODE": null,
-            "SIGN": "default",
-            "VALUE": "Главное меню",
-          },
-          Object {
-            "EUID": "cabinetModule",
-            "ICON": "user",
-            "PARENT_CODE": null,
-            "VALUE": "Личный кабинет",
-          },
-          Object {
-            "EUID": "taskModule",
-            "ICON": "project",
-            "PARENT_CODE": null,
-            "VALUE": "Задачи",
-          },
-          Object {
-            "EUID": "taskModule_all",
-            "ICON": null,
-            "PARENT_CODE": "taskModule",
-            "VALUE": "Все задачи",
-          },
-          Object {
-            "EUID": "taskModule_myTasks",
-            "ICON": null,
-            "PARENT_CODE": "taskModule",
-            "VALUE": "Мои задачи",
-          },
-          Object {
-            "EUID": "taskModule_сalendar",
-            "ICON": null,
-            "PARENT_CODE": "taskModule",
-            "VALUE": "Календарь задач",
-          },
-          Object {
-            "EUID": "taskModule_createTask",
-            "ICON": null,
-            "SIGN": "freedom",
-            "VALUE": "Новая задача",
-          },
-          Object {
-            "EUID": "documentModule",
-            "ICON": "file-sync",
-            "PARENT_CODE": null,
-            "VALUE": "Документы",
-          },
-          Object {
-            "EUID": "customersModule",
-            "ICON": "global",
-            "PARENT_CODE": null,
-            "VALUE": "Работа с клиентами",
-          },
-          Object {
-            "EUID": "customersModule_contacts",
-            "ICON": null,
-            "PARENT_CODE": "customersModule",
-            "VALUE": "Контакты",
-          },
-          Object {
-            "EUID": "customersModule_reception",
-            "ICON": null,
-            "PARENT_CODE": "customersModule",
-            "VALUE": "Обращения",
-          },
-          Object {
-            "EUID": "contactModule",
-            "ICON": "wechat",
-            "PARENT_CODE": null,
-            "VALUE": "Связь",
-          },
-          Object {
-            "EUID": "contactModule_feedback",
-            "ICON": null,
-            "PARENT_CODE": "contactModule",
-            "VALUE": "Информация",
-          },
-          Object {
-            "EUID": "contactModule_chat",
-            "ICON": null,
-            "PARENT_CODE": "contactModule",
-            "VALUE": "Корпоративный чат",
-          },
-          Object {
-            "EUID": "statisticModule",
-            "ICON": "line-chart",
-            "PARENT_CODE": null,
-            "VALUE": "Статистика",
-          },
-          Object {
-            "EUID": "settingsModule",
-            "ICON": "build",
-            "PARENT_CODE": null,
-            "VALUE": "Настройки",
-          },
-        ]
-      }
+      items={null}
       key="menu"
     />
-    <Adapter
+    <Layout
       key="main"
     >
       <Connect(HeaderView)
@@ -341,6 +343,7 @@ exports[`<Dashboard /> main page Should render component 2`] = `
             "_events": Object {},
             "_eventsCount": 0,
             "_maxListeners": undefined,
+            Symbol(kCapture): false,
           }
         }
         goCabinet={[Function]}
@@ -358,16 +361,19 @@ exports[`<Dashboard /> main page Should render component 2`] = `
             "_events": Object {},
             "_eventsCount": 0,
             "_maxListeners": undefined,
+            Symbol(kCapture): false,
           }
         }
-        firebase={
-          Object {
-            "getCurrentUser": [Function],
-          }
-        }
+        isToolbarActive={false}
         key="contentView"
-        onErrorRequstAction={[Function]}
+        onChangeVisibleAction={[Function]}
+        onErrorRequestAction={[Function]}
+        onHideLoader={[Function]}
+        onSetStatus={[Function]}
+        onShoudUpdate={[Function]}
+        onShowLoader={[Function]}
         path="MainModule"
+        rest={Object {}}
         router={
           Object {
             "actionTabs": Array [
@@ -383,35 +389,230 @@ exports[`<Dashboard /> main page Should render component 2`] = `
           }
         }
         setCurrentTab={[Function]}
+        shouldRenderMenu={true}
         shouldUpdate={false}
         statusApp="online"
+        udata={
+          Object {
+            "_id": "dasd",
+            "displayName": "asdas",
+          }
+        }
         updateLoader={[Function]}
+        visibilityPortal={false}
+        webSocket={
+          Socket {
+            "_callbacks": Object {
+              "$connect": Array [
+                [Function],
+              ],
+              "$connecting": Array [
+                [Function],
+              ],
+            },
+            "acks": Object {},
+            "connected": false,
+            "disconnected": true,
+            "flags": Object {},
+            "ids": 0,
+            "io": Manager {
+              "_callbacks": Object {
+                "$close": Array [
+                  [Function],
+                ],
+                "$open": Array [
+                  [Function],
+                ],
+                "$packet": Array [
+                  [Function],
+                ],
+              },
+              "_randomizationFactor": 0.5,
+              "_reconnection": true,
+              "_reconnectionAttempts": Infinity,
+              "_reconnectionDelay": 1000,
+              "_reconnectionDelayMax": 5000,
+              "_timeout": 20000,
+              "autoConnect": true,
+              "backoff": Backoff {
+                "attempts": 0,
+                "factor": 2,
+                "jitter": 0.5,
+                "max": 5000,
+                "ms": 1000,
+              },
+              "connecting": Array [
+                [Circular],
+              ],
+              "decoder": Decoder {
+                "reconstructor": null,
+              },
+              "encoder": Encoder {},
+              "encoding": false,
+              "engine": Socket {
+                "_callbacks": Object {
+                  "$error": Array [
+                    [Function],
+                  ],
+                  "$open": Array [
+                    [Function],
+                  ],
+                },
+                "agent": false,
+                "binaryType": null,
+                "ca": null,
+                "cert": null,
+                "ciphers": null,
+                "enablesXDR": false,
+                "forceBase64": false,
+                "forceJSONP": false,
+                "forceNode": false,
+                "hostname": "localhost",
+                "id": null,
+                "isReactNative": false,
+                "jsonp": true,
+                "key": null,
+                "onlyBinaryUpgrades": undefined,
+                "passphrase": null,
+                "path": "/socket.io/",
+                "perMessageDeflate": Object {
+                  "threshold": 1024,
+                },
+                "pfx": null,
+                "pingInterval": null,
+                "pingIntervalTimer": null,
+                "pingTimeout": null,
+                "pingTimeoutTimer": null,
+                "policyPort": 843,
+                "port": "80",
+                "prevBufferLen": 0,
+                "query": Object {},
+                "readyState": "opening",
+                "rejectUnauthorized": true,
+                "rememberUpgrade": false,
+                "secure": false,
+                "timestampParam": "t",
+                "timestampRequests": undefined,
+                "transport": WS {
+                  "_callbacks": Object {
+                    "$close": Array [
+                      [Function],
+                    ],
+                    "$drain": Array [
+                      [Function],
+                    ],
+                    "$error": Array [
+                      [Function],
+                    ],
+                    "$packet": Array [
+                      [Function],
+                    ],
+                  },
+                  "agent": false,
+                  "ca": null,
+                  "cert": null,
+                  "ciphers": null,
+                  "enablesXDR": false,
+                  "extraHeaders": undefined,
+                  "forceNode": false,
+                  "hostname": "localhost",
+                  "isReactNative": false,
+                  "key": null,
+                  "localAddress": undefined,
+                  "passphrase": null,
+                  "path": "/socket.io/",
+                  "perMessageDeflate": Object {
+                    "threshold": 1024,
+                  },
+                  "pfx": null,
+                  "port": "80",
+                  "protocols": undefined,
+                  "query": Object {
+                    "EIO": 3,
+                    "transport": "websocket",
+                  },
+                  "readyState": "opening",
+                  "rejectUnauthorized": true,
+                  "secure": false,
+                  "socket": [Circular],
+                  "timestampParam": "t",
+                  "timestampRequests": undefined,
+                  "usingBrowserWebSocket": true,
+                  "withCredentials": true,
+                  "ws": WebSocket {},
+                },
+                "transportOptions": Object {},
+                "transports": Array [
+                  "websocket",
+                ],
+                "upgrade": true,
+                "upgrades": null,
+                "withCredentials": true,
+                "writeBuffer": Array [],
+              },
+              "lastPing": null,
+              "nsps": Object {
+                "/": [Circular],
+              },
+              "opts": Object {
+                "hostname": "localhost",
+                "path": "/socket.io",
+                "port": "80",
+                "secure": false,
+                "transports": Array [
+                  "websocket",
+                ],
+              },
+              "packetBuffer": Array [],
+              "readyState": "opening",
+              "skipReconnect": false,
+              "subs": Array [
+                Object {
+                  "destroy": [Function],
+                },
+                Object {
+                  "destroy": [Function],
+                },
+                Object {
+                  "destroy": [Function],
+                },
+              ],
+              "uri": "http://localhost/",
+            },
+            "json": [Circular],
+            "nsp": "/",
+            "receiveBuffer": Array [],
+            "sendBuffer": Array [],
+            "subs": Array [
+              Object {
+                "destroy": [Function],
+              },
+              Object {
+                "destroy": [Function],
+              },
+              Object {
+                "destroy": [Function],
+              },
+            ],
+          }
+        }
       />
-      <Modal
-        className="guideModal"
-        confirmLoading={false}
-        maskTransitionName="fade"
-        okText="Закрыть"
-        okType="primary"
-        onOk={[Function]}
-        title="Добро пожаловать в систему."
-        transitionName="zoom"
-        visible={false}
-        width={520}
-      >
-        <p>
-          Спасибо что выбрали 
-          Controll system
-        </p>
-      </Modal>
-    </Adapter>
-  </Adapter>
-</Fragment>
+    </Layout>
+  </Layout>
+  <ForwardRef
+    customRender={null}
+    key="toolbar"
+    name="Чат"
+    onChangeVisibleAction={[Function]}
+  />
+</div>
 `;
 
 exports[`<Dashboard /> main page Should render component 3`] = `
-<Fragment>
-  <Adapter
+<div
+  className="dashboard"
+>
+  <Layout
     className="layout_menu"
   >
     <MenuView
@@ -423,7 +624,7 @@ exports[`<Dashboard /> main page Should render component 3`] = `
       items={Array []}
       key="menu"
     />
-    <Adapter
+    <Layout
       key="main"
     >
       <Connect(HeaderView)
@@ -444,6 +645,7 @@ exports[`<Dashboard /> main page Should render component 3`] = `
             "_events": Object {},
             "_eventsCount": 0,
             "_maxListeners": undefined,
+            Symbol(kCapture): false,
           }
         }
         goCabinet={[Function]}
@@ -461,16 +663,19 @@ exports[`<Dashboard /> main page Should render component 3`] = `
             "_events": Object {},
             "_eventsCount": 0,
             "_maxListeners": undefined,
+            Symbol(kCapture): false,
           }
         }
-        firebase={
-          Object {
-            "getCurrentUser": [Function],
-          }
-        }
+        isToolbarActive={false}
         key="contentView"
-        onErrorRequstAction={[Function]}
+        onChangeVisibleAction={[Function]}
+        onErrorRequestAction={[Function]}
+        onHideLoader={[Function]}
+        onSetStatus={[Function]}
+        onShoudUpdate={[Function]}
+        onShowLoader={[Function]}
         path="MainModule"
+        rest={Object {}}
         router={
           Object {
             "actionTabs": Array [
@@ -486,28 +691,221 @@ exports[`<Dashboard /> main page Should render component 3`] = `
           }
         }
         setCurrentTab={[Function]}
+        shouldRenderMenu={true}
         shouldUpdate={false}
         statusApp="online"
+        udata={
+          Object {
+            "_id": "dasd",
+            "displayName": "asdas",
+          }
+        }
         updateLoader={[Function]}
+        visibilityPortal={false}
+        webSocket={
+          Socket {
+            "_callbacks": Object {
+              "$connect": Array [
+                [Function],
+              ],
+              "$connecting": Array [
+                [Function],
+              ],
+            },
+            "acks": Object {},
+            "connected": false,
+            "disconnected": true,
+            "flags": Object {},
+            "ids": 0,
+            "io": Manager {
+              "_callbacks": Object {
+                "$close": Array [
+                  [Function],
+                ],
+                "$open": Array [
+                  [Function],
+                ],
+                "$packet": Array [
+                  [Function],
+                ],
+              },
+              "_randomizationFactor": 0.5,
+              "_reconnection": true,
+              "_reconnectionAttempts": Infinity,
+              "_reconnectionDelay": 1000,
+              "_reconnectionDelayMax": 5000,
+              "_timeout": 20000,
+              "autoConnect": true,
+              "backoff": Backoff {
+                "attempts": 0,
+                "factor": 2,
+                "jitter": 0.5,
+                "max": 5000,
+                "ms": 1000,
+              },
+              "connecting": Array [
+                [Circular],
+              ],
+              "decoder": Decoder {
+                "reconstructor": null,
+              },
+              "encoder": Encoder {},
+              "encoding": false,
+              "engine": Socket {
+                "_callbacks": Object {
+                  "$error": Array [
+                    [Function],
+                  ],
+                  "$open": Array [
+                    [Function],
+                  ],
+                },
+                "agent": false,
+                "binaryType": null,
+                "ca": null,
+                "cert": null,
+                "ciphers": null,
+                "enablesXDR": false,
+                "forceBase64": false,
+                "forceJSONP": false,
+                "forceNode": false,
+                "hostname": "localhost",
+                "id": null,
+                "isReactNative": false,
+                "jsonp": true,
+                "key": null,
+                "onlyBinaryUpgrades": undefined,
+                "passphrase": null,
+                "path": "/socket.io/",
+                "perMessageDeflate": Object {
+                  "threshold": 1024,
+                },
+                "pfx": null,
+                "pingInterval": null,
+                "pingIntervalTimer": null,
+                "pingTimeout": null,
+                "pingTimeoutTimer": null,
+                "policyPort": 843,
+                "port": "80",
+                "prevBufferLen": 0,
+                "query": Object {},
+                "readyState": "opening",
+                "rejectUnauthorized": true,
+                "rememberUpgrade": false,
+                "secure": false,
+                "timestampParam": "t",
+                "timestampRequests": undefined,
+                "transport": WS {
+                  "_callbacks": Object {
+                    "$close": Array [
+                      [Function],
+                    ],
+                    "$drain": Array [
+                      [Function],
+                    ],
+                    "$error": Array [
+                      [Function],
+                    ],
+                    "$packet": Array [
+                      [Function],
+                    ],
+                  },
+                  "agent": false,
+                  "ca": null,
+                  "cert": null,
+                  "ciphers": null,
+                  "enablesXDR": false,
+                  "extraHeaders": undefined,
+                  "forceNode": false,
+                  "hostname": "localhost",
+                  "isReactNative": false,
+                  "key": null,
+                  "localAddress": undefined,
+                  "passphrase": null,
+                  "path": "/socket.io/",
+                  "perMessageDeflate": Object {
+                    "threshold": 1024,
+                  },
+                  "pfx": null,
+                  "port": "80",
+                  "protocols": undefined,
+                  "query": Object {
+                    "EIO": 3,
+                    "transport": "websocket",
+                  },
+                  "readyState": "opening",
+                  "rejectUnauthorized": true,
+                  "secure": false,
+                  "socket": [Circular],
+                  "timestampParam": "t",
+                  "timestampRequests": undefined,
+                  "usingBrowserWebSocket": true,
+                  "withCredentials": true,
+                  "ws": WebSocket {},
+                },
+                "transportOptions": Object {},
+                "transports": Array [
+                  "websocket",
+                ],
+                "upgrade": true,
+                "upgrades": null,
+                "withCredentials": true,
+                "writeBuffer": Array [],
+              },
+              "lastPing": null,
+              "nsps": Object {
+                "/": [Circular],
+              },
+              "opts": Object {
+                "hostname": "localhost",
+                "path": "/socket.io",
+                "port": "80",
+                "secure": false,
+                "transports": Array [
+                  "websocket",
+                ],
+              },
+              "packetBuffer": Array [],
+              "readyState": "opening",
+              "skipReconnect": false,
+              "subs": Array [
+                Object {
+                  "destroy": [Function],
+                },
+                Object {
+                  "destroy": [Function],
+                },
+                Object {
+                  "destroy": [Function],
+                },
+              ],
+              "uri": "http://localhost/",
+            },
+            "json": [Circular],
+            "nsp": "/",
+            "receiveBuffer": Array [],
+            "sendBuffer": Array [],
+            "subs": Array [
+              Object {
+                "destroy": [Function],
+              },
+              Object {
+                "destroy": [Function],
+              },
+              Object {
+                "destroy": [Function],
+              },
+            ],
+          }
+        }
       />
-      <Modal
-        className="guideModal"
-        confirmLoading={false}
-        maskTransitionName="fade"
-        okText="Закрыть"
-        okType="primary"
-        onOk={[Function]}
-        title="Добро пожаловать в систему."
-        transitionName="zoom"
-        visible={false}
-        width={520}
-      >
-        <p>
-          Спасибо что выбрали 
-          Controll system
-        </p>
-      </Modal>
-    </Adapter>
-  </Adapter>
-</Fragment>
+    </Layout>
+  </Layout>
+  <ForwardRef
+    customRender={null}
+    key="toolbar"
+    name="Чат"
+    onChangeVisibleAction={[Function]}
+  />
+</div>
 `;

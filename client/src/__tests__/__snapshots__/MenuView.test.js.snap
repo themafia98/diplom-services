@@ -83,18 +83,6 @@ exports[`<MenuView /> Should MenuView render with itemsMenu 1`] = `
         Календарь задач
       </MenuItem>
     </SubMenu>
-    <MenuItem
-      className="menuItem"
-      key="documentModule"
-      onClick={[Function]}
-    >
-      <Icon
-        type="file-sync"
-      />
-      <span>
-        Документы
-      </span>
-    </MenuItem>
     <SubMenu
       className="menuItem"
       key="customersModule"
@@ -104,7 +92,7 @@ exports[`<MenuView /> Should MenuView render with itemsMenu 1`] = `
             type="global"
           />
           <span>
-            Работа с клиентами
+            Связь
           </span>
         </span>
       }
@@ -114,12 +102,6 @@ exports[`<MenuView /> Should MenuView render with itemsMenu 1`] = `
         onClick={[Function]}
       >
         Контакты
-      </MenuItem>
-      <MenuItem
-        key="customersModule_reception"
-        onClick={[Function]}
-      >
-        Обращения
       </MenuItem>
     </SubMenu>
     <SubMenu
@@ -159,6 +141,18 @@ exports[`<MenuView /> Should MenuView render with itemsMenu 1`] = `
       />
       <span>
         Статистика
+      </span>
+    </MenuItem>
+    <MenuItem
+      className="menuItem"
+      key="wikiModule"
+      onClick={[Function]}
+    >
+      <Icon
+        type="file-sync"
+      />
+      <span>
+        Википедия
       </span>
     </MenuItem>
     <MenuItem
@@ -260,18 +254,6 @@ exports[`<MenuView /> Should MenuView render with itemsMenu 2`] = `
         Календарь задач
       </MenuItem>
     </SubMenu>
-    <MenuItem
-      className="menuItem"
-      key="documentModule"
-      onClick={[Function]}
-    >
-      <Icon
-        type="file-sync"
-      />
-      <span>
-        Документы
-      </span>
-    </MenuItem>
     <SubMenu
       className="menuItem"
       key="customersModule"
@@ -281,7 +263,7 @@ exports[`<MenuView /> Should MenuView render with itemsMenu 2`] = `
             type="global"
           />
           <span>
-            Работа с клиентами
+            Связь
           </span>
         </span>
       }
@@ -291,12 +273,6 @@ exports[`<MenuView /> Should MenuView render with itemsMenu 2`] = `
         onClick={[Function]}
       >
         Контакты
-      </MenuItem>
-      <MenuItem
-        key="customersModule_reception"
-        onClick={[Function]}
-      >
-        Обращения
       </MenuItem>
     </SubMenu>
     <SubMenu
@@ -336,6 +312,18 @@ exports[`<MenuView /> Should MenuView render with itemsMenu 2`] = `
       />
       <span>
         Статистика
+      </span>
+    </MenuItem>
+    <MenuItem
+      className="menuItem"
+      key="wikiModule"
+      onClick={[Function]}
+    >
+      <Icon
+        type="file-sync"
+      />
+      <span>
+        Википедия
       </span>
     </MenuItem>
     <MenuItem

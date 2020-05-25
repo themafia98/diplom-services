@@ -1,61 +1,106 @@
 $cardCount: 6;
 
 .streamBox {
+  display: flex;
+  flex-direction: column;
+  height: 73%;
+  align-items: center;
+  width: 100%;
+
+  .ant-spin {
+    margin-top: 10px;
+  }
+
+  .cardStream {
     display: flex;
     flex-direction: column;
-    height: 73%;
     align-items: center;
-    width: 100%;
-    .cardStream {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 70%;
-        font-weight: bold;
-        background-color: $cardColorBg;
-        max-height: 250px;
-        min-height: 175px;
-        margin-top: 10px;
-        box-shadow: $cardBorderShadow;
-        margin: 10px;
+    width: 70%;
+    font-weight: bold;
+    background-color: $cardColorBg;
+    max-height: 250px;
+    margin-top: 10px;
+    box-shadow: $cardBorderShadow;
+    margin: 10px;
 
-        .about {
-            display: flex;
-            width: 100%;
-            justify-content: center;
-            align-items: center;
-
-            p {
-                padding-left: 10px;
-                margin: 0;
-            }
-
-            span {
-                margin-top: 2px;
-            }
-        }
-
-        .card_message {
-            width: 85%;
-            cursor: pointer;
-            text-align: center;
-            display: -webkit-box;
-            -webkit-line-clamp: $cardCount;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            line-height: 1.2;
-        }
+    &.withAction {
+      cursor: pointer;
     }
+
+    .card_title {
+      color: rgb(69, 111, 240);
+    }
+
+    .about {
+      display: flex;
+      width: 100%;
+      justify-content: center;
+      align-items: center;
+
+      p {
+        padding-left: 10px;
+        margin: 0;
+      }
+
+      span {
+        margin-top: 2px;
+      }
+    }
+
+    .card_message {
+      width: 85%;
+      cursor: pointer;
+      word-break: break-word;
+      display: -webkit-box;
+      -webkit-line-clamp: $cardCount;
+      -webkit-box-orient: vertical;
+      overflow: auto;
+      line-height: 1.2;
+      &::-webkit-scrollbar {
+        width: 4px;
+      }
+      &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: #888;
+      }
+      p {
+        margin: 0;
+      }
+    }
+  }
 }
 
 .columnModuleLeft {
-    .streamBox {
-        .cardStream {
-            width: 80%;
-        }
+  .streamBox {
+    .cardStream {
+      width: 80%;
     }
+  }
 }
 
 .ant-tooltip {
-    max-width: 475px;
+  max-width: 475px;
+}
+
+.popover-spiner {
+  position: absolute;
+  left: calc(50% - 6px);
+}
+
+@media screen and (max-width: 700px) {
+  .streamBox {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: unset;
+    width: 100%;
+    .cardStream {
+      display: flex;
+      flex: 0 0 80%;
+      text-align: center;
+    }
+  }
 }

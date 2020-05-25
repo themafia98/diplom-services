@@ -1,77 +1,69 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<HeaderView /> and children Should render 1`] = `
-<Adapter>
-  <Scrollbars
-    autoHeight={false}
-    autoHeightMax={200}
-    autoHeightMin={0}
-    autoHide={false}
-    autoHideDuration={200}
-    autoHideTimeout={1000}
-    hideTracksWhenNotNeeded={false}
-    renderThumbHorizontal={[Function]}
-    renderThumbVertical={[Function]}
-    renderTrackHorizontal={[Function]}
-    renderTrackVertical={[Function]}
-    renderView={[Function]}
-    tagName="div"
-    thumbMinSize={30}
-    universal={false}
+<Header>
+  <ul
+    className="tabsMenu"
   >
-    <ul
-      className="tabsMenu"
-    >
-      <Tab
-        active={true}
-        hendlerTab={[Function]}
-        itemKey="mainModule"
-        key="mainModule"
-        sizeTab={160}
-      />
-    </ul>
-  </Scrollbars>
+    <Tab
+      active={true}
+      hendlerTab={[Function]}
+      itemKey="mainModule"
+      key="mainModule"
+      sizeTab={160}
+    />
+  </ul>
   <RightPanel
+    active={true}
+    goCabinet={null}
+    notificationDep={
+      Object {
+        "filterStream": "uidCreater",
+        "onSaveComponentState": undefined,
+        "store": "redux",
+        "streamModule": "system",
+        "streamStore": "streamList",
+      }
+    }
     onLogout={[Function]}
     onUpdate={[Function]}
+    shouldUpdate={false}
+    status=""
+    udata={Object {}}
   />
-</Adapter>
+</Header>
 `;
 
 exports[`<HeaderView /> and children Should render 2`] = `
-<Adapter>
-  <Scrollbars
-    autoHeight={false}
-    autoHeightMax={200}
-    autoHeightMin={0}
-    autoHide={false}
-    autoHideDuration={200}
-    autoHideTimeout={1000}
-    hideTracksWhenNotNeeded={false}
-    renderThumbHorizontal={[Function]}
-    renderThumbVertical={[Function]}
-    renderTrackHorizontal={[Function]}
-    renderTrackVertical={[Function]}
-    renderView={[Function]}
-    tagName="div"
-    thumbMinSize={30}
-    universal={false}
+<Header>
+  <ul
+    className="tabsMenu"
   >
-    <ul
-      className="tabsMenu"
-    >
-      <Tab
-        active={false}
-        hendlerTab={[Function]}
-        itemKey="mainModule1"
-        key="mainModule1"
-        sizeTab={160}
-      />
-    </ul>
-  </Scrollbars>
+    <Tab
+      active={false}
+      hendlerTab={[Function]}
+      itemKey="mainModule1"
+      key="mainModule1"
+      sizeTab={160}
+    />
+  </ul>
   <RightPanel
+    active={true}
+    goCabinet={null}
+    notificationDep={
+      Object {
+        "filterStream": "uidCreater",
+        "onSaveComponentState": undefined,
+        "store": "redux",
+        "streamModule": "system",
+        "streamStore": "streamList",
+      }
+    }
     onLogout={[Function]}
     onUpdate={[Function]}
+    shouldUpdate={false}
+    status=""
+    udata={Object {}}
   />
-</Adapter>
+</Header>
 `;

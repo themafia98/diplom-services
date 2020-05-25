@@ -1,0 +1,67 @@
+.mainModule {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  .titleModule {
+    flex: 0 0 10%;
+    user-select: none;
+    span {
+      font-weight: bold;
+      font-size: 22px;
+    }
+    margin-bottom: 10px;
+  }
+
+  .mainModuleTitle {
+    font-size: 30px;
+    font-weight: bold;
+    margin: 0;
+    user-select: none;
+  }
+  .mainModule_main {
+    display: flex;
+    flex: 0 0 88%;
+    height: calc(100% - 100px);
+    .columnModuleRight {
+      position: relative;
+      display: flex;
+
+      flex-direction: column;
+      .widgets {
+        display: flex;
+        width: 95%;
+        height: 50%;
+        .clockWrapper {
+          width: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+    }
+
+    .columnModuleLeft {
+      padding-right: 2em;
+    }
+
+    .mainModule_calendar {
+      width: 100%;
+      display: flex;
+      padding: 0 20px;
+      justify-content: center;
+      flex-direction: column;
+      .ant-fullcalendar {
+        table {
+          height: 210px;
+        }
+      }
+    }
+  }
+}
+
+.mainModuleTitle {
+  font-size: 30px;
+  font-weight: bold;
+  margin: 0;
+  user-select: none;
+}

@@ -1,8 +1,10 @@
-import { combineReducers } from "redux";
-import publicReducer from "./publicReducer";
-import routerStateReducer from "./routerStateReducer";
+import { combineReducers } from 'redux';
+import publicReducer from './publicReducer';
+import router from './routerStateReducer';
+import socketReducer from './socketReducer';
 
 export default combineReducers({
-    publicReducer: publicReducer,
-    router: routerStateReducer
+  publicReducer,
+  router,
+  socketReducer,
 });

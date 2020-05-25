@@ -1,192 +1,199 @@
 header {
-    $boxTab: 100%;
+  $boxTab: 100%;
 
-    &.ant-layout-header {
-        padding: 0;
-        background-color: $headerColor;
-    }
+  &.ant-layout-header {
     display: flex;
-    flex-direction: row;
+    justify-content: space-between;
+    padding: 0;
+    background-color: $selected;
+  }
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .wrapperTabs {
+    width: $boxTab;
+  }
+
+  .draggable-wrapper {
+    display: flex;
+    justify-content: center;
     align-items: center;
+    height: 50px;
+  }
 
-    .wrapperTabs {
-        width: $boxTab;
+  ul.tabsMenu,
+  .droppable-wrapper {
+    display: flex;
+    align-items: center;
+    //width: $boxTab;
+    height: 100%;
+    flex-grow: 1;
+    padding: 0;
+    margin: 0;
+    li {
+      margin: 0 5px;
+      cursor: pointer;
+      span {
+        cursor: pointer;
+      }
     }
 
-    ul {
-        &.tabsMenu {
-            display: flex;
-            align-items: center;
-            width: $boxTab;
-            height: 100%;
-            padding: 0;
-            margin: 0;
-            li {
-                margin: 0 5px;
-                cursor: pointer;
-                span {
-                    cursor: pointer;
-                }
-            }
+    .closeTab {
+      position: absolute;
+      top: 3%;
+      left: 95%;
+      transform: translate(-50%);
+      color: $selected;
+      font-size: 15px;
+      &.resizeTab {
+        left: 90%;
+      }
 
-            .closeTab {
-                position: absolute;
-                top: 3%;
-                left: 95%;
-                transform: translate(-50%);
-                color: $headerColor;
-                font-size: 15px;
-                &.resizeTab {
-                    left: 90%;
-                }
+      &:hover {
+        color: red;
+      }
+    }
+    li {
+      border: 1px solid $tabBorder;
+      position: relative;
+      &.active {
+        background-color: $tab;
+      }
 
-                &:hover {
-                    color: red;
-                }
-            }
-            li {
-                border: 1px solid $tabBorder;
-                position: relative;
-                &.active {
-                    background-color: $tab;
-                }
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 90%;
+      cursor: pointer;
+      background-color: $unactiveTab;
+      padding: 0;
+      // flex: 0 0 10%;
+      list-style-type: none;
+      margin: 0 5px;
 
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 65%;
-                cursor: pointer;
-                background-color: $unactiveTab;
-                padding: 0;
-                // flex: 0 0 10%;
-                list-style-type: none;
-                margin: 0 5px;
+      span {
+        font-weight: bold;
+      }
 
-                span {
-                    font-weight: bold;
-                }
-
-                .tabWrapper-content {
-                    height: 100%;
-                    overflow: hidden;
-                    width: 90%;
-                    align-items: center;
-                    justify-content: center;
-                    display: flex;
-                    white-space: nowrap;
-                    .tab-content {
-                        font-weight: bold;
-                        text-align: center;
-                        overflow: hidden;
-                        display: block;
-                        white-space: nowrap;
-                        width: 90%;
-
-                        user-select: none;
-                        text-overflow: ellipsis;
-                    }
-                    &.selected {
-                        color: $selected;
-                    }
-                }
-            }
+      .tabWrapper-content {
+        height: 100%;
+        overflow: hidden;
+        width: 90%;
+        align-items: center;
+        justify-content: center;
+        display: flex;
+        white-space: nowrap;
+        .tab-content {
+          font-weight: bold;
+          text-align: center;
+          overflow: hidden;
+          white-space: nowrap;
+          width: 90%;
+          user-select: none;
+          text-overflow: ellipsis;
         }
+        &.selected {
+          color: $selected;
+        }
+      }
     }
+  }
 }
 
 .statusApp {
-    position: absolute;
-    top: 0;
-    right: 0;
-    display: flex;
-    .statusAppIcon {
-        width: 15px;
-        height: 15px;
-        margin-left: 5px;
-        border-radius: 50%;
-        border: 1px solid black;
-        top: 5px;
-        right: 5px;
-        &.online {
-            background-color: green;
-        }
-        &.offline {
-            background-color: red;
-        }
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  .statusAppIcon {
+    width: 15px;
+    height: 15px;
+    margin-left: 5px;
+    border-radius: 50%;
+    border: 1px solid black;
+    top: 5px;
+    right: 5px;
+    &.online {
+      background-color: $done;
     }
+    &.offline {
+      background-color: $close;
+    }
+  }
 }
 
-@media screen and (max-width: 1456px){
-    header {
-        .headerControllers {
-            &.rightPanel {
-                width: 30%;
-            }
-        }
+@media screen and (max-width: 1456px) {
+  header {
+    .headerControllers {
+      &.rightPanel {
+        width: 30%;
+      }
     }
+  }
 }
 
 @media screen and (max-width: 1351px) {
-    header {
-        .headerControllers {
-            &.rightPanel {
-                width: 50%;
-            }
-        }
+  header {
+    .headerControllers {
+      &.rightPanel {
+        width: 50%;
+      }
     }
+  }
 }
 
 @media screen and (max-width: 956px) {
-    header {
-        .headerControllers {
-            &.rightPanel {
-                width: 55%;
-            }
-        }
+  header {
+    .headerControllers {
+      &.rightPanel {
+        width: 55%;
+      }
     }
+  }
 }
 
 @media screen and (max-width: 914px) {
-    header {
-        .headerControllers {
-            &.rightPanel {
-                width: 67%;
-            }
-        }
+  header {
+    .headerControllers {
+      &.rightPanel {
+        width: 67%;
+      }
     }
+  }
 }
 
 @media screen and (max-width: 820px) {
-    header {
-        .headerControllers {
-            &.rightPanel {
-                width: 82%;
-            }
-        }
+  header {
+    .headerControllers {
+      &.rightPanel {
+        width: 82%;
+      }
     }
+  }
 }
 
 @media screen and (max-width: 760px) {
-    header {
-        .headerControllers {
-            &.rightPanel {
-                .userPopup {
-                    display: none;
-                }
-                width: 55%;
-            }
+  header {
+    .headerControllers {
+      &.rightPanel {
+        .userPopup {
+          display: none;
         }
+        width: 55%;
+      }
     }
+  }
 }
 
 @media screen and (max-width: 420px) {
-    header {
-        .headerControllers {
-            &.rightPanel {
-                .notificationControllers {
-                    display: none;
-                }
-            }
+  header {
+    .headerControllers {
+      &.rightPanel {
+        .notificationControllers {
+          display: none;
         }
+      }
     }
+  }
 }

@@ -1,156 +1,227 @@
-import _ from "lodash";
-import { USER_SCHEMA, TASK_SCHEMA, TASK_CONTROLL_JURNAL_SCHEMA } from "../../../../Utils/schema/const";
-import { saveComponentStateAction, loadFlagAction } from "../";
-import { errorRequstAction, setStatus } from "../../publicActions";
+// @ts-nocheck
+import { getNormalizedPath, sucessEvent, errorHook, coreUpdaterDataHook } from 'Utils';
+import { saveComponentStateAction, loadFlagAction } from '../';
+import { errorRequestAction, setStatus } from '../../publicActions';
+//import workerInstanse from 'workerInstanse';
 
-export const loadCurrentData = ({
-    path = "",
-    primaryKey = "uuid",
-    typeReq = "",
-    storeLoad = "",
+const loadCurrentData = (params) => async (dispatch, getState, { schema, Request, clientDB }) => {
+  const {
+    path = '',
+    startPath = '',
+    storeLoad = '',
     useStore = false,
-    methodRequst = "POST",
-    methodQuery = "all",
-    xhrPath = "/list",
-    pathValidStart = "_",
+    methodRequst = 'POST',
+    methodQuery = 'get_all',
+    xhrPath = 'list',
     noCorsClient = false,
-    pathValid = path.startsWith(pathValidStart) ? pathValidStart.split("_")[0] || "" : path.split("__")[0]
-}) => async (dispatch, getState, { getSchema, request, clientDB }) => {
-    const router = getState().router;
+    sortBy = '',
+    options = {},
+    shouldSetLoading = false,
+    indStoreName = '',
+    sync = false,
+  } = params;
 
-    const { requestError, status = "online" } = getState().publicReducer;
+  let isLocalUpdate = true;
+  const primaryKey = 'uuid';
+  const pathValid = path.includes('_') ? path : path.split('__')[0];
+  const router = getState().router;
 
-    if (router.routeData && router.routeData[pathValid] && router.routeData[pathValid].load) {
-        dispatch(loadFlagAction({ path: pathValid, load: false }));
-    }
-    if (status === "online") {
-        const normalizeReqPath = useStore
-            ? `/${typeReq}/${storeLoad}${xhrPath}`.trim().replace("//", "/")
-            : `/${typeReq}${xhrPath}`.trim().replace("//", "/");
-        await request
-            .sendRequest(normalizeReqPath, methodRequst, { methodQuery }, true)
-            .then(res => {
-                const method = res.config && res.config.method ? res.config.method.toUpperCase() : "GET";
-                const { data: { response: { [method]: { metadata = [], fromCache = false } } = {} } = {} } = res || {};
-                const storeArray = [];
-                metadata.forEach((doc, index) => {
-                    if (_.isNumber(index)) storeArray.push(doc);
-                });
+  const { requestError, status = 'online' } = getState().publicReducer;
+  const isExist = router.routeData && router.routeData[pathValid];
 
-                if (storeArray.length) return storeArray.filter(it => !_.isEmpty(it));
-                else if (fromCache && !storeArray.length) throw new Error("Network error");
-            })
-            .then(items => {
-                const copyStore = [...items];
-                const undefiendCopyStore = [];
+  if (isExist && !router.routeData[pathValid].load) {
+    dispatch(loadFlagAction({ path: pathValid, load: true, loading: true }));
+  } else if (pathValid && shouldSetLoading) {
+    dispatch(loadFlagAction({ path: pathValid, loading: true }));
+  }
 
-                if (noCorsClient) {
-                    if (requestError !== null) dispatch(errorRequstAction(null));
-                    return dispatch(saveComponentStateAction({ [storeLoad]: copyStore, load: true, path: pathValid }));
-                }
+  const rest = new Request();
 
-                const cursor = clientDB.getCursor(storeLoad);
+  switch (status) {
+    case 'online': {
+      const normalizeReqPath = getNormalizedPath(useStore, {
+        xhrPath,
+        startPath,
+        storeLoad,
+      });
 
-                cursor.onsuccess = async event => {
-                    const {
-                        target: { result: cursor }
-                    } = event;
-                    if (!cursor) return await next(true);
+      try {
+        const res = await rest.sendRequest(normalizeReqPath, methodRequst, { methodQuery, options }, true);
 
-                    const index = copyStore.findIndex(
-                        it =>
-                            (it[primaryKey] || it["key"]) && (it[primaryKey] === cursor.key || it["key"] === cursor.key)
-                    );
-                    const iEmpty = index === -1;
-                    if (copyStore && iEmpty) {
-                        if (cursor.value.modeAdd === "offline") {
-                            const copy = { ...cursor.value, modeAdd: "online" };
-                            cursor.value.modeAdd = "online";
-                            undefiendCopyStore.push({ ...copy });
-                        }
-                    }
-                    cursor.continue();
-                };
+        const [items, error] = rest.parseResponse(res);
+        const { dataItems: copyStore = [], responseOptions = {} } = items;
+        const { isPartData } = responseOptions || {};
 
-                const next = async (flag = false) => {
-                    const schema =
-                        storeLoad === "jurnalWork"
-                            ? TASK_CONTROLL_JURNAL_SCHEMA
-                            : storeLoad === "users"
-                            ? USER_SCHEMA
-                            : storeLoad === "tasks"
-                            ? TASK_SCHEMA
-                            : null;
+        if (error) throw new Error(error);
 
-                    let storeCopyValid = copyStore.map(it => getSchema(schema, it)).filter(Boolean);
-
-                    storeCopyValid.forEach(it => {
-                        clientDB.updateItem(storeLoad, it);
-                    });
-
-                    const onAction = async () => {
-                        if (requestError !== null) await dispatch(errorRequstAction(null));
-
-                        await dispatch(
-                            saveComponentStateAction({ [storeLoad]: copyStore, load: true, path: pathValid })
-                        );
-                    };
-
-                    if (flag && undefiendCopyStore.length) {
-                        //if (firebase) {
-                        // const items = firebase.db.collection(storeLoad);
-                        //  const batch = firebase.db.batch();
-                        // _.uniqBy(undefiendCopyStore, "key" || "uuid").forEach(it => {
-                        //     const itRef = items.doc();
-                        //     batch.set(itRef, it);
-                        // });
-                        // await batch.commit();
-                        // }
-                        // await onAction();
-                        await onAction();
-                    } else await onAction();
-                };
-            })
-            .catch(error => {
-                if (error.status === 400) {
-                    dispatch(setStatus({ statusRequst: "offline" }));
-                    dispatch(errorRequstAction(error.message));
-                    request.follow(
-                        "offline",
-                        statusRequst => {
-                            if (getState().publicReducer.status !== statusRequst && statusRequst === "online") {
-                                request.unfollow();
-
-                                dispatch(setStatus({ statusRequst }));
-                                dispatch(errorRequstAction(null));
-                                dispatch(loadCurrentData({ path, storeLoad }));
-                            }
-                        },
-                        3000
-                    );
-                }
-            });
-    } else {
-        if (!noCorsClient) return;
-
-        const items = clientDB.getAllItems(storeLoad);
-        items.onsuccess = event => {
-            const {
-                target: { result }
-            } = event;
-            const schema =
-                storeLoad === "jurnalWork"
-                    ? TASK_CONTROLL_JURNAL_SCHEMA
-                    : storeLoad === "users"
-                    ? USER_SCHEMA
-                    : storeLoad === "tasks"
-                    ? TASK_SCHEMA
-                    : null;
-
-            const itemsCopy = result.map(it => getSchema(schema, it)).filter(Boolean);
-            dispatch(
-                saveComponentStateAction({ [storeLoad]: itemsCopy, load: true, path: pathValid, mode: "offline" })
-            );
+        const dep = {
+          noCorsClient,
+          requestError,
+          copyStore,
+          sortBy,
+          pathValid,
+          isPartData,
+          schema,
+          storeLoad,
+          clientDB,
+          methodQuery,
+          primaryKey,
+          params,
+          saveComponentStateAction,
+          multipleLoadData,
+          errorRequestAction,
+          isLocalUpdate,
+          indStoreName,
+          rest,
+          sync,
         };
+
+        await coreUpdaterDataHook(dispatch, dep);
+      } catch (error) {
+        const dep = {
+          Request,
+          setStatus,
+          params,
+          errorRequestAction,
+          loadCurrentData,
+          multipleLoadData,
+          copyStore: [],
+          getState,
+          storeLoad,
+          saveComponentStateAction,
+          isLocalUpdate,
+          indStoreName,
+          path,
+          rest,
+          noCorsClient,
+          requestError,
+          sortBy,
+          pathValid,
+          schema,
+          clientDB,
+          methodQuery,
+          primaryKey,
+        };
+
+        if (error?.status === 404) {
+          await coreUpdaterDataHook(dispatch, { ...dep, isPartData: true });
+          return;
+        }
+
+        await errorHook(error, dispatch, dep, loadCurrentData.bind(this, params));
+      }
+      return;
     }
+
+    default: {
+      const dep = {
+        storeLoad,
+        methodQuery,
+        schema,
+        clientDB,
+        sortBy,
+        params,
+        pathValid,
+        requestError,
+        primaryKey,
+        saveComponentStateAction,
+        errorRequestAction,
+      };
+
+      dispatch(setStatus({ params, path }));
+      const cursor = await clientDB.getAllItems(indStoreName ? indStoreName : storeLoad);
+      return await sucessEvent(dispatch, dep, 'offline', false, cursor);
+    }
+  }
 };
+
+const multipleLoadData = (params) => async (dispatch, getState, { schema, Request, clientDB }) => {
+  const { requestsParamsList = [], pipe = true, saveModuleName = '' } = params;
+
+  const primaryKey = 'uuid';
+  const { requestError, status = 'online' } = getState().publicReducer;
+
+  if (status !== 'online') return;
+
+  switch (pipe) {
+    case false: {
+      /** TODO: for future release */
+      return;
+    }
+    default: {
+      const responseList = [];
+      const rest = new Request();
+
+      for await (let requestParam of requestsParamsList) {
+        const {
+          useStore = false,
+          storeLoad = '',
+          startPath = '',
+          methodRequst = 'POST',
+          methodQuery = 'get_all',
+          xhrPath = 'list',
+          options = {},
+          noCorsClient = false,
+          sortBy = '',
+          path: pathName = '',
+        } = requestParam;
+        const path = saveModuleName ? saveModuleName : pathName;
+        let isLocalUpdate = true;
+        const pathValid = path.includes('_') ? path : path.split('__')[0];
+
+        const normalizeReqPath = getNormalizedPath(useStore, {
+          xhrPath,
+          startPath,
+          storeLoad,
+        });
+
+        try {
+          const res = await rest.sendRequest(normalizeReqPath, methodRequst, { methodQuery, options }, true);
+          const [items, error] = rest.parseResponse(res);
+
+          if (error) {
+            console.error(error);
+            break;
+          }
+
+          const { dataItems: copyStore = [], responseOptions = {} } = items;
+          const { isPartData } = responseOptions || {};
+
+          if (error) throw new Error(error);
+
+          const dep = {
+            noCorsClient,
+            requestError,
+            copyStore,
+            sortBy,
+            pathValid,
+            isPartData,
+            schema,
+            storeLoad,
+            clientDB,
+            methodQuery,
+            primaryKey,
+            saveComponentStateAction,
+            errorRequestAction,
+            isLocalUpdate,
+          };
+
+          responseList.push({ parsedItems: items, dep });
+        } catch (error) {}
+      }
+      let hookData = [];
+
+      for await (let res of responseList) {
+        const { dep } = res;
+        const resultHook = await coreUpdaterDataHook(dispatch, dep, true);
+        if (resultHook) hookData.push(resultHook);
+      }
+
+      if (hookData.length) {
+        dispatch(saveComponentStateAction({ stateList: [...hookData], multiple: true, loading: false }));
+      }
+    }
+  }
+};
+
+export { loadCurrentData, multipleLoadData };

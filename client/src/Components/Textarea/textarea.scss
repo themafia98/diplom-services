@@ -1,38 +1,53 @@
 textarea.defaultTextArea {
-    &.ant-input {
-        height: 120px;
-    }
+  &.ant-input {
+    height: 120px;
+  }
 }
 
 textarea {
-    &::-webkit-scrollbar-thumb {
-        border-radius: 50px;
-        background: rgba(0, 0, 0, 0.2);
-    }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 50px;
+    background: rgba(0, 0, 0, 0.2);
+  }
 
-    &::-webkit-scrollbar {
-        width: 6px;
-    }
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
 }
 
 .rdw-editor-main {
-    resize: vertical;
+  resize: vertical;
 }
 
 .createNews-button {
-    margin-top: 5px;
+  margin-top: 5px;
 }
 
 .content {
-    &.readOnly {
-        .editor-wrapper {
-            &.rdw-editor-wrapper {
-                .editor {
-                    &.rdw-editor-main {
-                        background-color: inherit;
-                    }
-                }
-            }
+  &.readOnly {
+    .editor-wrapper {
+      &.rdw-editor-wrapper {
+        .editor {
+          &.rdw-editor-main {
+            background-color: inherit;
+          }
         }
+      }
     }
+  }
+}
+
+div.editor-wrapper {
+  div.rdw-editor-main {
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: $shadowBlack;
+    }
+  }
 }

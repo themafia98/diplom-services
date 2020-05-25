@@ -1,115 +1,139 @@
 {
-    "title": "Controll system",
-    "icon": "/img/logo.svg",
-    "firebase": {
-        "session": "SESSION",
-        "lowConnection": "false"
+  "title": "Controll system",
+  "icon": "/img/logo.svg",
+  "supportIE": true,
+  "clientDB": {
+    "name": "controllSystemDB",
+    "version": 5
+  },
+  "appActive": true,
+  "regInclude": true,
+  "recovoryInclude": true,
+  "forceUpdate": false,
+  "visibilityWidgets": {
+    "mainModule": {
+      "clockVisibility": true,
+      "calendarVisibility": true
+    }
+  },
+  "msTimeoutLoading": 0,
+  "IntervalPrivateNotifications": 7000,
+  "intervalNotification": 30000,
+  "tabsLimit": 40,
+  "task": {
+    "frontFilter": false,
+    "limitList": 20,
+    "tableSize": "default"
+  },
+  "statistics": {
+    "limitListTasks": 200
+  },
+  "settings": {
+    "includeChangeEmail": false,
+    "includeRulesSettings": true,
+    "includeChangeProfile": true
+  },
+  "actionRoot": {
+    "visibilityActionRoot": true
+  },
+  "menu": [
+    {
+      "EUID": "mainModule",
+      "VALUE": "Главное меню",
+      "ICON": "home",
+      "SIGN": "default",
+      "PARENT_CODE": null
     },
-    "clientDB": {
-        "name": "controllSystemDB",
-        "version": 2
+    {
+      "EUID": "cabinetModule",
+      "VALUE": "Личный кабинет",
+      "ICON": "user",
+      "PARENT_CODE": null
     },
-    "forceUpdate": false,
-    "msTimeoutLoading": 0,
-    "tabsLimit": 20,
-    "menu": [
-        {
-            "EUID": "mainModule",
-            "VALUE": "Главное меню",
-            "ICON": "home",
-            "SIGN": "default",
-            "PARENT_CODE": null
-        },
-        {
-            "EUID": "cabinetModule",
-            "VALUE": "Личный кабинет",
-            "ICON": "user",
-            "PARENT_CODE": null
-        },
-        {
-            "EUID": "taskModule",
-            "VALUE": "Задачи",
-            "ICON": "project",
-            "PARENT_CODE": null
-        },
-        {
-            "EUID": "taskModule_all",
-            "VALUE": "Все задачи",
-            "ICON": null,
-            "PARENT_CODE": "taskModule"
-        },
-        {
-            "EUID": "taskModule_myTasks",
-            "VALUE": "Мои задачи",
-            "ICON": null,
-            "PARENT_CODE": "taskModule"
-        },
-        {
-            "EUID": "taskModule_сalendar",
-            "VALUE": "Календарь задач",
-            "ICON": null,
-            "PARENT_CODE": "taskModule"
-        },
-        {
-            "EUID": "taskModule_createTask",
-            "VALUE": "Новая задача",
-            "ICON": null,
-            "SIGN": "freedom"
-        },
-
-        {
-            "EUID": "documentModule",
-            "VALUE": "Документы",
-            "ICON": "file-sync",
-            "PARENT_CODE": null
-        },
-        {
-            "EUID": "customersModule",
-            "VALUE": "Работа с клиентами",
-            "ICON": "global",
-            "PARENT_CODE": null
-        },
-        {
-            "EUID": "customersModule_contacts",
-            "VALUE": "Контакты",
-            "ICON": null,
-            "PARENT_CODE": "customersModule"
-        },
-        {
-            "EUID": "customersModule_reception",
-            "VALUE": "Обращения",
-            "ICON": null,
-            "PARENT_CODE": "customersModule"
-        },
-        {
-            "EUID": "contactModule",
-            "VALUE": "Связь",
-            "ICON": "wechat",
-            "PARENT_CODE": null
-        },
-        {
-            "EUID": "contactModule_feedback",
-            "VALUE": "Информация",
-            "ICON": null,
-            "PARENT_CODE": "contactModule"
-        },
-        {
-            "EUID": "contactModule_chat",
-            "VALUE": "Корпоративный чат",
-            "ICON": null,
-            "PARENT_CODE": "contactModule"
-        },
-        {
-            "EUID": "statisticModule",
-            "VALUE": "Статистика",
-            "ICON": "line-chart",
-            "PARENT_CODE": null
-        },
-        {
-            "EUID": "settingsModule",
-            "VALUE": "Настройки",
-            "ICON": "build",
-            "PARENT_CODE": null
-        }
-    ]
+    {
+      "EUID": "taskModule",
+      "VALUE": "Задачи",
+      "ICON": "project",
+      "PARENT_CODE": null
+    },
+    {
+      "EUID": "taskModule_all",
+      "VALUE": "Все задачи",
+      "ICON": null,
+      "PARENT_CODE": "taskModule"
+    },
+    {
+      "EUID": "taskModule_myTasks",
+      "VALUE": "Мои задачи",
+      "ICON": null,
+      "PARENT_CODE": "taskModule"
+    },
+    {
+      "EUID": "taskModule_сalendar",
+      "VALUE": "Календарь задач",
+      "ICON": null,
+      "PARENT_CODE": "taskModule"
+    },
+    {
+      "EUID": "taskModule_createTask",
+      "VALUE": "Новая задача",
+      "ICON": null,
+      "SIGN": "freedom"
+    },
+    {
+      "EUID": "customersModule",
+      "VALUE": "Связь",
+      "ICON": "global",
+      "PARENT_CODE": null
+    },
+    {
+      "EUID": "customersModule_contacts",
+      "VALUE": "Контакты",
+      "ICON": null,
+      "PARENT_CODE": "customersModule"
+    },
+    {
+      "EUID": "contactModule",
+      "VALUE": "Связь",
+      "ICON": "wechat",
+      "PARENT_CODE": null
+    },
+    {
+      "EUID": "contactModule_feedback",
+      "VALUE": "Информация",
+      "ICON": null,
+      "PARENT_CODE": "contactModule"
+    },
+    {
+      "EUID": "contactModule_createNews",
+      "VALUE": "Создание новой новости",
+      "ICON": null,
+      "SIGN": "freedom"
+    },
+    {
+      "EUID": "contactModule_chat",
+      "VALUE": "Корпоративный чат",
+      "ICON": null,
+      "PARENT_CODE": "contactModule"
+    },
+    {
+      "EUID": "statisticModule",
+      "VALUE": "Статистика",
+      "ICON": "line-chart",
+      "PARENT_CODE": null
+    },
+    {
+      "EUID": "wikiModule",
+      "VALUE": "Википедия",
+      "ICON": "file-sync",
+      "PARENT_CODE": null
+    },
+    {
+      "EUID": "settingsModule",
+      "VALUE": "Настройки",
+      "ICON": "build",
+      "PARENT_CODE": null
+    }
+  ],
+  "unactiveAppMsg": "Приложение времено отключено, возможно ведутся тех.работы. Попробуйте позже."
 }

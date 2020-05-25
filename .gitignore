@@ -5,8 +5,12 @@
 /.pnp
 .pnp.js
 
+/server/node_modules
+
 # testing
 /coverage
+
+.circleci-deprecated
 
 # production
 /build
