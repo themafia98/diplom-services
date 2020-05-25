@@ -239,7 +239,7 @@ class Schema {
 
     const schema = this.getValidateSchema(type);
     const validate = this.validator.compile(schema);
-    debugger;
+
     if (validate(data)) return data;
     else {
       console.error('invalid data:', type);
