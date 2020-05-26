@@ -185,14 +185,13 @@ class TaskView extends React.PureComponent {
 
             const { data: { response = null } = {} } = await loadFile('tasks', fileLoaderBody);
             if (response && response?.done) {
-              const { metadata: filesArray } = response;
+              const { metadata } = response;
+              const filesArray = _.isArray(metadata) ? metadata : _.isPlainObject(metadata) ? [metadata] : [];
 
-              this.setState({
-                ...this.state,
-                statusListName: filteredStatusNames,
-                filesArray: filesArray.map((it) => {
-                  const { name, path_display: url, id: uid } = it;
-                  const [module, taskId, filename] = url.slice(1).split(/\//gi);
+              const files = filesArray
+                .map((it) => {
+                  const { name = '', path_display: url = '', id: uid = '' } = it?.entries || {};
+                  const [module, taskId, filename] = url?.slice(1)?.split(/\//gi);
 
                   return {
                     name,
@@ -200,7 +199,13 @@ class TaskView extends React.PureComponent {
                     status: 'done',
                     uid,
                   };
-                }),
+                })
+                .filter(({ name = '', url = '', uid = '' } = {}) => name && url && uid);
+
+              this.setState({
+                ...this.state,
+                statusListName: filteredStatusNames,
+                filesArray: files,
               });
             }
           },

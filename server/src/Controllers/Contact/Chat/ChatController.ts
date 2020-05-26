@@ -1,9 +1,7 @@
-import Responser from '../../../Models/Responser';
-import { ParserResult, ResRequest, Meta } from '../../../Utils/Types';
+import { ParserResult, ResRequest } from '../../../Utils/Types';
 import { Request, Response } from 'express';
 
 import Decorators from '../../../Decorators';
-import Utils from '../../../Utils';
 import Action from '../../../Models/Action';
 import { Controller as ControllerApi } from '../../../Utils/Interfaces';
 
@@ -12,7 +10,6 @@ namespace Chat {
   const Delete = Decorators.Delete;
   const Put = Decorators.Put;
   const Controller = Decorators.Controller;
-  const { parsePublicData } = Utils;
 
   export const createRealRoom = async (
     fakeMsg: Record<string, string | object>,
@@ -23,8 +20,7 @@ namespace Chat {
 
     const actionCreateRoom = new Action.ActionParser({ actionPath, actionType });
     const queryParams = { fakeMsg, interlocutorId };
-    const data: ParserResult = await actionCreateRoom.getActionData(queryParams);
-    console.log('CreateRealRoom', data);
+    const data: ParserResult = await actionCreateRoom.actionsRunner(queryParams);
 
     return data;
   };
@@ -35,44 +31,20 @@ namespace Chat {
     protected async loadChats(req: Request, res: Response): ResRequest {
       const { body: { actionPath = '', actionType = '', queryParams: params = {} } = {} } = req;
 
-      try {
-        if (!actionPath || !actionType) {
-          throw new Error('Invalid action chat');
-        }
+      const actionLoadChats = new Action.ActionParser({ actionPath, actionType });
 
-        const actionLoadChats = new Action.ActionParser({ actionPath, actionType });
-        const data: ParserResult = await actionLoadChats.getActionData(params);
-
-        if (!data) throw new TypeError('Bad action data');
-
-        const filterData: Meta = parsePublicData(data);
-
-        return new Responser(res, req, params, null, 200, filterData).emit();
-      } catch (err) {
-        console.error(err);
-        if (!res.headersSent) res.sendStatus(503);
-      }
+      const responseExec: Function = await actionLoadChats.actionsRunner(params);
+      return responseExec(req, res, params, true);
     }
 
     @Put({ path: '/createRoom', private: true })
     protected async createRoom(req: Request, res: Response): ResRequest {
       const { body: { actionPath = '', actionType = '', queryParams: params = {} } = {} } = req;
 
-      try {
-        if (!actionPath || !actionType) {
-          throw new Error('Invalid action chat');
-        }
+      const actionCreateRoom = new Action.ActionParser({ actionPath, actionType });
 
-        const actionCreateRoom = new Action.ActionParser({ actionPath, actionType });
-        const data: ParserResult = await actionCreateRoom.getActionData(params);
-
-        if (!data) throw new TypeError('Bad action data');
-
-        return new Responser(res, req, params, null, 200, data).emit();
-      } catch (err) {
-        console.error(err);
-        if (!res.headersSent) res.sendStatus(503);
-      }
+      const responseExec: Function = await actionCreateRoom.actionsRunner(params);
+      return responseExec(req, res, params);
     }
 
     @Delete({ path: '/leaveRoom', private: true })
@@ -80,49 +52,28 @@ namespace Chat {
       const { body: { queryParams: params = {} } = {} } = req;
       const actionType: string = 'chatRoom';
       const actionPath: string = 'leave_room';
-      try {
-        if (!actionPath || !actionType) {
-          throw new Error('Invalid action chat');
-        }
 
-        const leaveRoomAction = new Action.ActionParser({ actionPath, actionType });
+      const leaveRoomAction = new Action.ActionParser({ actionPath, actionType });
 
-        const data: ParserResult = await leaveRoomAction.getActionData(params);
-
-        if (!data) {
-          throw new TypeError('Bad action data');
-        }
-
-        return new Responser(res, req, params, null, 200, data).emit();
-      } catch (err) {
-        console.error(err);
-        if (!res.headersSent) res.sendStatus(503);
-      }
+      const responseExec: Function = await leaveRoomAction.actionsRunner(params);
+      return responseExec(req, res, params);
     }
 
     @Post({ path: '/load/tokenData', private: true })
     protected async loadTokenData(req: Request, res: Response): ResRequest {
-      try {
-        const {
-          body: {
-            queryParams: params = {},
-            options: { actionPath: aPath = '', actionType: aType = '' } = {},
-          } = {},
-        } = req;
-        const actionType: string = aType || 'get_msg_by_token';
-        const actionPath: string = aPath || 'chatMsg';
-        if (!actionPath || !actionType) throw new Error('Invalid action chat');
+      const {
+        body: {
+          queryParams: params = {},
+          options: { actionPath: aPath = '', actionType: aType = '' } = {},
+        } = {},
+      } = req;
+      const actionType: string = aType || 'get_msg_by_token';
+      const actionPath: string = aPath || 'chatMsg';
+      if (!actionPath || !actionType) throw new Error('Invalid action chat');
 
-        const actionCreateRoom = new Action.ActionParser({ actionPath, actionType });
-        const data: ParserResult = await actionCreateRoom.getActionData(params);
-
-        if (!data) throw new TypeError('Bad action data');
-
-        return new Responser(res, req, params, null, 200, data).emit();
-      } catch (err) {
-        console.error(err);
-        if (!res.headersSent) res.sendStatus(503);
-      }
+      const actionCreateRoom = new Action.ActionParser({ actionPath, actionType });
+      const responseExec: Function = await actionCreateRoom.actionsRunner(params);
+      return responseExec(req, res, params);
     }
   }
 }

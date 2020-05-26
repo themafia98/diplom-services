@@ -1,8 +1,7 @@
-import { NextFunction, Response, Request } from 'express';
+import { Response, Request } from 'express';
 import _ from 'lodash';
 import { Params, ActionParams, Controller as ControllerApi } from '../../Utils/Interfaces';
-import { ParserResult, ResRequest } from '../../Utils/Types';
-import Responser from '../../Models/Responser';
+import { ResRequest } from '../../Utils/Types';
 
 import Action from '../../Models/Action';
 import Decorators from '../../Decorators';
@@ -13,38 +12,27 @@ namespace Settings {
   @Controller('/settings')
   export class SettingsController implements ControllerApi<FunctionConstructor> {
     @Post({ path: '/password', private: true })
-    protected async passwordChanged(req: Request, res: Response, next: NextFunction): ResRequest {
+    protected async passwordChanged(req: Request, res: Response): ResRequest {
       const params: Params = {
         methodQuery: 'change_password',
         from: 'users',
         done: true,
         status: 'OK',
       };
-      try {
-        const body: Record<string, object> = req.body;
-        const { queryParams } = body;
 
-        if (!queryParams || _.isEmpty(queryParams)) {
-          throw new Error('Invalid queryParams for change_password action');
-        }
+      const body: Record<string, object> = req.body;
+      const { queryParams } = body;
 
-        const changePasswordAction = new Action.ActionParser({
-          actionPath: 'users',
-          actionType: 'change_password',
-          body,
-        });
+      const changePasswordAction = new Action.ActionParser({
+        actionPath: 'users',
+        actionType: 'change_password',
+        body,
+      });
 
-        const actionParams: ActionParams = { queryParams };
-        const data: ParserResult = await changePasswordAction.getActionData(actionParams);
+      const actionParams: ActionParams = { queryParams };
 
-        if (!data) throw new Error('Invalid change_password action data');
-        else return res.sendStatus(200);
-      } catch (err) {
-        console.error(err);
-        params.done = false;
-        params.status = 'FAIL';
-        return new Responser(res, req, params, err, 503, []).emit();
-      }
+      const responseExec: Function = await changePasswordAction.actionsRunner(actionParams);
+      return responseExec(req, res, params);
     }
 
     @Get({ path: '/statusList', private: true })
@@ -58,34 +46,23 @@ namespace Settings {
         done: true,
         status: 'OK',
       };
-      try {
-        const body: Record<string, object> = req.body;
-        const { queryParams = {} } = body;
-        const { items = [] } = queryParams as Record<string, Array<object>>;
-        const { idSettings = '' } = queryParams as Record<string, string>;
 
-        if (!isGetter && (!queryParams || _.isEmpty(queryParams))) {
-          throw new Error(`Invalid queryParams for ${!isGetter ? 'change_statusList' : 'statusList'} action`);
-        }
+      const body: Record<string, object> = req.body;
+      const { queryParams = {} } = body;
+      const { items = [] } = queryParams as Record<string, Array<object>>;
+      const { idSettings = '' } = queryParams as Record<string, string>;
 
-        const changeStatusList = new Action.ActionParser({
-          actionPath: 'settings',
-          actionType: isGetter ? 'get_statusList' : 'change_statusList',
-        });
+      const changeStatusList = new Action.ActionParser({
+        actionPath: 'settings',
+        actionType: isGetter ? 'get_statusList' : 'change_statusList',
+      });
 
-        const actionParams: ActionParams = !isGetter ? { items, idSettings } : {};
-        const data: ParserResult = await changeStatusList.getActionData(actionParams);
+      const actionParams: ActionParams = !isGetter ? { items, idSettings } : {};
 
-        if (!data) throw new Error('Invalid action data');
-
-        return new Responser(res, req, params, null, 200, data).emit();
-      } catch (err) {
-        console.error(err);
-        params.status = 'FAIL';
-        params.done = false;
-        return new Responser(res, req, params, err, 503, []).emit();
-      }
+      const responseExec: Function = await changeStatusList.actionsRunner(actionParams);
+      return responseExec(req, res, params);
     }
+
     @Post({ path: '/common', private: true })
     protected async commonSettings(req: Request, res: Response): ResRequest {
       const params: Params = {
@@ -94,30 +71,19 @@ namespace Settings {
         done: true,
         status: 'OK',
       };
-      try {
-        const body: Record<string, object> = req.body;
-        const { queryParams } = body;
 
-        if (!queryParams || _.isEmpty(queryParams)) {
-          throw new Error('Invalid queryParams for common_changes action');
-        }
+      const body: Record<string, object> = req.body;
+      const { queryParams } = body;
 
-        const changeCommonAction = new Action.ActionParser({
-          actionPath: 'users',
-          actionType: 'common_changes',
-        });
+      const changeCommonAction = new Action.ActionParser({
+        actionPath: 'users',
+        actionType: 'common_changes',
+      });
 
-        const actionParams: ActionParams = { queryParams };
-        const data: ParserResult = await changeCommonAction.getActionData(actionParams);
+      const actionParams: ActionParams = { queryParams };
 
-        if (!data) throw new Error('Invalid action data');
-        else return res.sendStatus(200);
-      } catch (err) {
-        console.error(err);
-        params.status = 'FAIL';
-        params.done = false;
-        return new Responser(res, req, params, err, 503, []).emit();
-      }
+      const responseExec: Function = await changeCommonAction.actionsRunner(actionParams);
+      return responseExec(req, res, params);
     }
 
     @Post({ path: '/profile', private: true })
@@ -128,37 +94,26 @@ namespace Settings {
         done: true,
         status: 'OK',
       };
-      try {
-        const body: Record<string, object> = req.body;
-        const { queryParams } = body;
 
-        if (!queryParams || _.isEmpty(queryParams)) {
-          throw new Error('Invalid queryParams for profile_changes action');
-        }
+      const body: Record<string, object> = req.body;
+      const { queryParams } = body;
 
-        const changeProfileAction = new Action.ActionParser({
-          actionPath: 'users',
-          actionType: 'profile_changes',
-        });
+      const changeProfileAction = new Action.ActionParser({
+        actionPath: 'users',
+        actionType: 'profile_changes',
+      });
 
-        const actionParams: ActionParams = { queryParams };
-        const data: ParserResult = await changeProfileAction.getActionData(actionParams);
+      const actionParams: ActionParams = { queryParams };
 
-        if (!data) throw new Error('Invalid action data');
-        else return res.sendStatus(200);
-      } catch (err) {
-        console.error(err);
-        params.status = 'FAIL';
-        params.done = false;
-        return new Responser(res, req, params, err, 503, []).emit();
-      }
+      const responseExec: Function = await changeProfileAction.actionsRunner(actionParams);
+      return responseExec(req, res, params);
     }
 
     @Put({ path: '/logger', private: true })
     @Post({ path: '/logger', private: true })
     protected async logger(req: Request, res: Response): ResRequest {
       const body: Record<string, object | string> = req.body;
-      const { actionType = '', queryParams } = body;
+      const { actionType = '' } = body;
 
       const params: Params = {
         methodQuery: actionType as string,
@@ -167,29 +122,12 @@ namespace Settings {
         status: 'OK',
       };
 
-      try {
-        if (!queryParams || _.isEmpty(queryParams)) {
-          throw new Error('Invalid queryParams for common_changes action');
-        }
-
-        const settingsLogger = new Action.ActionParser({
-          actionPath: 'settingsLog',
-          actionType: actionType as string,
-        });
-
-        const data: ParserResult = await settingsLogger.getActionData(body);
-
-        if (!data) throw new Error('Invalid action data');
-
-        if (!(actionType as string).includes('get')) return res.sendStatus(200);
-
-        return new Responser(res, req, params, null, 200, data).emit();
-      } catch (err) {
-        console.error(err);
-        params.status = 'FAIL';
-        params.done = false;
-        return new Responser(res, req, params, err, 503, []).emit();
-      }
+      const settingsLogger = new Action.ActionParser({
+        actionPath: 'settingsLog',
+        actionType: actionType as string,
+      });
+      const responseExec: Function = await settingsLogger.actionsRunner(body);
+      return responseExec(req, res, params);
     }
   }
 }

@@ -16,10 +16,8 @@ namespace General {
   @Controller('/')
   export class Main implements ControllerApi<FunctionConstructor> {
     @Post({ path: '/auth', private: true })
-    protected auth(req: Request, res: Response, next: NextFunction, server: App): Response {
+    protected auth(req: Request, res: Response): Response {
       try {
-        const { dbm = null } = server.locals || {};
-        if (dbm) dbm.connection().catch((err) => console.error(err));
         return res.sendStatus(200);
       } catch (err) {
         console.error(err);
@@ -28,18 +26,10 @@ namespace General {
     }
 
     @Post({ path: '/reg', private: false })
-    protected async reg(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    protected async reg(req: Request, res: Response): ResRequest {
       try {
         if (!req.body || (req.body && _.isEmpty(req.body))) {
           throw new Error('Invalid auth data');
-        }
-
-        const service = server.locals;
-        const connect = await service.dbm.connection();
-
-        if (!connect) {
-          console.log('Connect reg:', connect);
-          return res.sendStatus(503);
         }
 
         await UserModel.create(
@@ -59,10 +49,9 @@ namespace General {
     }
 
     @Post({ path: '/login', private: false })
-    protected async login(req: Request, res: Response, next: NextFunction, server: App) {
-      const { dbm = null } = server.locals || {};
+    protected async login(req: Request, res: Response, next: NextFunction) {
       const body: BodyLogin = req.body;
-      if (dbm) dbm.connection().catch((err) => console.error(err));
+
       if (!body || (body && _.isEmpty(body))) return void res.sendStatus(503);
 
       const result = await passport.authenticate(
@@ -109,9 +98,7 @@ namespace General {
     }
 
     @Post({ path: '/userload', private: true })
-    protected async userload(req: Request, res: Response, server: App): Promise<Response> {
-      const { dbm = null } = server.locals || {};
-      if (dbm) dbm.connection().catch((err) => console.error(err));
+    protected async userload(req: Request, res: Response): Promise<Response> {
       const { user } = req;
       if (user) return res.json({ user: (user as User).toAuthJSON() });
       else {
@@ -188,7 +175,7 @@ namespace General {
           body,
         });
 
-        const password: ParserResult = await checkerAction.getActionData(body);
+        const password: ParserResult = await checkerAction.actionsRunner(body);
 
         if (!password) {
           throw new Error('Invalid checker data');

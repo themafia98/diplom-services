@@ -156,6 +156,7 @@ class ActionTasks implements Action {
       string,
       string
     >;
+
     const { statsListFields = [] } = (queryParams as Record<string, Array<string>>) || {};
     const dateQuery: object =
       todayISO && queryType !== 'full'
@@ -189,7 +190,7 @@ class ActionTasks implements Action {
       } else metadata[field] = dataField;
     }
 
-    return metadata as ParserData;
+    return !_.isArray(metadata) ? ([metadata] as ParserData) : (metadata as ParserData);
   }
 
   private async regTicket(model: Model<Document>, actionParam: ActionParams): Promise<ParserData> {

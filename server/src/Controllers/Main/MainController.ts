@@ -1,6 +1,5 @@
 import { NextFunction, Response, Request } from 'express';
 import _ from 'lodash';
-import { Document } from 'mongoose';
 import {
   App,
   Params,
@@ -9,8 +8,7 @@ import {
   BodyLogin,
   Actions,
 } from '../../Utils/Interfaces';
-import { ParserResult, ResRequest, Meta } from '../../Utils/Types';
-import Utils from '../../Utils';
+import { ParserResult, ResRequest } from '../../Utils/Types';
 import Responser from '../../Models/Responser';
 import Decorators from '../../Decorators';
 import Action from '../../Models/Action';
@@ -26,30 +24,14 @@ namespace System {
   @Controller('/system')
   export class SystemData implements ControllerApi<FunctionConstructor> {
     @Get({ path: '/userList', private: true })
-    protected async getUsersList(req: Request, res: Response, next: NextFunction): ResRequest {
+    protected async getUsersList(req: Request, res: Response): ResRequest {
       const params: Params = { methodQuery: 'get_all', status: 'done', done: true, from: 'users' };
-      try {
-        const actionUserList: Actions = new Action.ActionParser({
-          actionPath: 'users',
-          actionType: 'get_all',
-        });
-        const data: ParserResult = await actionUserList.getActionData({});
-
-        if (!data) {
-          params.status = 'error';
-          params.done = false;
-          return new Responser(res, req, params, null, 404, []).emit();
-        }
-
-        const metadata: Meta = Utils.parsePublicData(data);
-
-        return new Responser(res, req, params, null, 200, metadata).emit();
-      } catch (err) {
-        console.error(err);
-        params.done = false;
-        params.status = 'FAIL';
-        return new Responser(res, req, params, err, 503, []).emit();
-      }
+      const actionUserList: Actions = new Action.ActionParser({
+        actionPath: 'users',
+        actionType: 'get_all',
+      });
+      const responseExec: Function = await actionUserList.actionsRunner({});
+      return responseExec(req, res, params, true);
     }
 
     @Post({ path: '/:module/file', private: true, file: true })
@@ -117,32 +99,19 @@ namespace System {
       };
 
       const { dropbox } = server.locals;
+      const downloadAction: Actions = new Action.ActionParser({
+        actionPath: 'global',
+        actionType: 'load_files',
+        store: <FileApi>dropbox,
+      });
 
-      try {
-        const downloadAction: Actions = new Action.ActionParser({
-          actionPath: 'global',
-          actionType: 'load_files',
-          store: <FileApi>dropbox,
-        });
+      const body = {
+        body: req.body,
+        moduleName,
+      };
 
-        const data: ParserResult = await downloadAction.getActionData({
-          body: req.body,
-          moduleName,
-        });
-
-        if (!data) {
-          params.done = false;
-          params.status = 'FAIL';
-          return new Responser(res, req, params, null, 404, []).emit();
-        }
-
-        const metadata: ParserResult = (data as Document[]).entries;
-        return new Responser(res, req, params, null, 200, metadata).emit();
-      } catch (err) {
-        params.done = false;
-        console.error(err);
-        return new Responser(res, req, params, err, 503, []).emit();
-      }
+      const responseExec: Function = await downloadAction.actionsRunner(body);
+      return responseExec(req, res, params);
     }
 
     @Get({ path: '/:module/download/:entityId/:filename', private: true })
@@ -169,7 +138,7 @@ namespace System {
           store,
         });
 
-        const actionData: ParserResult = await downloadAction.getActionData({
+        const actionData: ParserResult = await downloadAction.actionsRunner({
           entityId,
           moduleName,
           filename,
@@ -207,72 +176,42 @@ namespace System {
         from: moduleName,
       };
 
-      try {
-        const deleteFileAction: Actions = new Action.ActionParser({
-          actionPath: 'global',
-          actionType: 'delete_file',
-          store,
-        });
+      const deleteFileAction: Actions = new Action.ActionParser({
+        actionPath: 'global',
+        actionType: 'delete_file',
+        store,
+      });
 
-        const actionData: ParserResult = await deleteFileAction.getActionData({
-          body: { ...req.body },
-          store: `/${moduleName}`,
-        });
-
-        return new Responser(res, req, { ...req.body, ...params }, null, 200, actionData).emit();
-      } catch (err) {
-        console.error(err);
-        params.status = 'FAIL';
-        params.done = false;
-        return new Responser(res, req, params, err, 503, []).emit();
-      }
+      const body = {
+        body: { ...req.body },
+        store: `/${moduleName}`,
+      };
+      const responseExec: Function = await deleteFileAction.actionsRunner(body);
+      return responseExec(req, res, params);
     }
 
     @Post({ path: '/:module/update/single', private: true })
-    protected async updateSingle(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    protected async updateSingle(req: Request, res: Response): ResRequest {
       const { module: moduleName = '' } = req.params;
-      const body: object = req.body;
+      const body: BodyLogin = req.body;
       const params: Params = {
         methodQuery: 'update_single',
         status: 'done',
         done: true,
         from: moduleName,
       };
-      try {
-        if (!req.body || _.isEmpty(req.body)) {
-          params.done = false;
-          params.status = 'FAIL BODY';
-          return new Responser(res, req, params, null, 404, []).emit();
-        }
+      const updateSingleAction: Actions = new Action.ActionParser({
+        actionPath: moduleName,
+        actionType: 'update_single',
+        body,
+      });
 
-        const createTaskAction: Actions = new Action.ActionParser({
-          actionPath: moduleName,
-          actionType: 'update_single',
-          body,
-        });
-
-        const data: ParserResult = await createTaskAction.getActionData(req.body);
-
-        if (!data) {
-          params.done = false;
-          params.status = 'FAIL';
-          return new Responser(res, req, params, null, 404, data).emit();
-        }
-
-        const meta = Utils.parsePublicData([data] as ParserResult) as ArrayLike<object>;
-        const metadata: ArrayLike<object> = Array.isArray(meta) && meta[0] ? meta[0] : null;
-
-        return new Responser(res, req, { ...req.body, ...params }, null, 200, metadata).emit();
-      } catch (err) {
-        console.log(err.message);
-        params.status = 'FAIL';
-        params.done = false;
-        return new Responser(res, req, params, err, 503, []).emit();
-      }
+      const responseExec: Function = await updateSingleAction.actionsRunner(body);
+      return responseExec(req, res, params);
     }
 
     @Post({ path: '/:module/update/many', private: true })
-    protected async updateMany(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    protected async updateMany(req: Request, res: Response): ResRequest {
       const { module: moduleName = '' } = req.params;
       const params: Params = {
         methodQuery: 'update_many',
@@ -281,43 +220,20 @@ namespace System {
         from: moduleName,
       };
 
-      try {
-        if (!req.body || _.isEmpty(req.body)) {
-          params.done = false;
-          params.status = 'FAIL BODY';
-          return new Responser(res, req, params, null, 404, []).emit();
-        }
+      const body: BodyLogin = req.body;
 
-        const body: object = req.body;
+      const updateManyAction: Actions = new Action.ActionParser({
+        actionPath: moduleName,
+        actionType: 'update_many',
+        body,
+      });
 
-        const createTaskAction: Actions = new Action.ActionParser({
-          actionPath: moduleName,
-          actionType: 'update_many',
-          body,
-        });
-
-        const data: ParserResult = await createTaskAction.getActionData(req.body);
-
-        if (!data) {
-          params.done = false;
-          params.status = 'FAIL';
-          return new Responser(res, req, params, null, 404, []).emit();
-        }
-
-        const meta = Utils.parsePublicData([data] as ParserResult) as ArrayLike<object>;
-        const metadata: ArrayLike<object> = Array.isArray(meta) && meta[0] ? meta[0] : null;
-
-        return new Responser(res, req, params, null, 200, metadata).emit();
-      } catch (err) {
-        console.error(err.message);
-        params.status = 'FAIL';
-        params.done = false;
-        return new Responser(res, req, params, err, 503, []).emit();
-      }
+      const responseExec: Function = await updateManyAction.actionsRunner(body);
+      return responseExec(req, res, params, true);
     }
 
     @Post({ path: '/:type/notification', private: true })
-    protected async notification(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    protected async notification(req: Request, res: Response): ResRequest {
       const { type = '' } = req.params;
       const params: Params = {
         methodQuery: type,
@@ -326,44 +242,24 @@ namespace System {
         from: 'notification',
       };
 
-      try {
-        if (type !== 'private' && type !== 'global') {
-          throw new TypeError('Bad type notification');
-        }
-
-        if (!req.body || _.isEmpty(req.body)) {
-          params.done = false;
-          params.status = 'FAIL BODY';
-          return new Responser(res, req, params, null, 404, []).emit();
-        }
-        const body: BodyLogin = req.body;
-        const { actionType = '' } = body;
-
-        const createNotificationAction: Actions = new Action.ActionParser({
-          actionPath: 'notification',
-          actionType: actionType as string,
-        });
-
-        const data: ParserResult = await createNotificationAction.getActionData({ ...req.body, type });
-
-        if (!data) {
-          params.done = false;
-          params.status = 'FAIL';
-          return new Responser(res, req, params, null, 404, []).emit();
-        }
-
-        const sortData = Array.isArray(data) ? data.reverse() : data;
-        return new Responser(res, req, params, null, 200, sortData).emit();
-      } catch (err) {
-        console.error(err.message);
-        params.status = 'FAIL';
-        params.done = false;
-        return new Responser(res, req, params, err, 503, []).emit();
+      if (type !== 'private' && type !== 'global') {
+        return res.sendStatus(500);
       }
+
+      const body: BodyLogin = req.body;
+      const { actionType = '' } = body;
+
+      const createNotificationAction: Actions = new Action.ActionParser({
+        actionPath: 'notification',
+        actionType: actionType as string,
+      });
+
+      const responseExec: Function = await createNotificationAction.actionsRunner({ ...req.body, type });
+      return responseExec(req, res, params, true);
     }
 
     @Post({ path: '/sync', private: true })
-    protected async syncClientData(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    protected async syncClientData(req: Request, res: Response): ResRequest {
       const { module: moduleName = '' } = req.params;
       const params: Params = {
         methodQuery: 'sync',
@@ -371,39 +267,16 @@ namespace System {
         done: true,
         from: 'sync_all',
       };
+      const body: BodyLogin = req.body;
 
-      try {
-        if (!req.body || _.isEmpty(req.body)) {
-          params.done = false;
-          params.status = 'FAIL BODY';
-          return new Responser(res, req, params, null, 404, []).emit();
-        }
+      const syncAction: Actions = new Action.ActionParser({
+        actionPath: moduleName,
+        actionType: 'sync',
+        body,
+      });
 
-        const body: object = req.body;
-
-        const syncAction: Actions = new Action.ActionParser({
-          actionPath: moduleName,
-          actionType: 'sync',
-          body,
-        });
-
-        const data: ParserResult = await syncAction.getActionData(req.body);
-
-        if (!data) {
-          params.done = false;
-          params.status = 'FAIL';
-          return new Responser(res, req, params, null, 404, []).emit();
-        }
-
-        const metadata: any = Array.isArray(data as object) ? data : [data as object];
-
-        return new Responser(res, req, params, null, 200, metadata).emit();
-      } catch (err) {
-        console.error(err.message);
-        params.status = 'FAIL';
-        params.done = false;
-        return new Responser(res, req, params, err, 503, []).emit();
-      }
+      const responseExec: Function = await syncAction.actionsRunner(body);
+      return responseExec(req, res, params);
     }
   }
 }

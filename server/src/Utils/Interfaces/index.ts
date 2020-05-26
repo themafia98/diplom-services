@@ -338,7 +338,7 @@ export interface Actions extends EntityActionApi {
   deleteEntity(model: Model<Document>, query: ActionParams): Promise<ParserData>;
   updateEntity(model: Model<Document>, query: ActionParams, options?: OptionsUpdate): Promise<ParserData>;
   findOnce(model: Model<Document>, actionParam: ActionParams): Promise<ParserData>;
-  getActionData(this: Actions, actionParam: ActionParams): Promise<ParserData>;
+  actionsRunner(this: Actions, actionParam: ActionParams): Promise<Function>;
   runSyncClient(actionParam: ActionParams): Promise<ParserData>;
 }
 

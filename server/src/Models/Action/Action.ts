@@ -1,10 +1,18 @@
-import { ActionParams, Actions, Action, ActionProps } from '../../Utils/Interfaces';
+import { ActionParams, Actions, Action, ActionProps, Params } from '../../Utils/Interfaces';
 import { Model, Document, Types, FilterQuery } from 'mongoose';
 import _ from 'lodash';
 import ActionEntity from './ActionEntity';
 import Utils from '../../Utils';
 //import Logger from '../../Utils/Logger';
-import { ParserData, limiter, OptionsUpdate, Filter, DeleteEntitiyParams } from '../../Utils/Types';
+import {
+  ParserData,
+  limiter,
+  OptionsUpdate,
+  Filter,
+  DeleteEntitiyParams,
+  ResRequest,
+  Meta,
+} from '../../Utils/Types';
 
 /** Actions */
 import ActionLogger from './ActionsEntity/ActionLogger';
@@ -18,9 +26,11 @@ import ActionGlobal from './ActionsEntity/ActionGlobal';
 import ActionTasks from './ActionsEntity/ActionTasks';
 import ActionWiki from './ActionsEntity/ActionWiki';
 import ActionSettings from './ActionsEntity/ActionSettings';
+import Responser from '../Responser';
+import { Response, Request } from 'express';
 
 namespace ActionApi {
-  const { getModelByName } = Utils;
+  const { getModelByName, parsePublicData } = Utils;
   //const { loggerInfo } = Logger;
   export class ActionParser extends ActionEntity implements Actions {
     constructor(props: ActionProps) {
@@ -254,81 +264,103 @@ namespace ActionApi {
       return [{ syncDone: true }];
     }
 
-    public async getActionData(this: Actions, actionParam: ActionParams = {}): Promise<ParserData> {
-      try {
-        const connect = await this.getDbm()
-          .connection()
-          .catch((err: Error) => console.error(err));
-        if (!connect) throw new Error('Bad connect');
-
-        if (this.getActionType() === 'sync') {
-          return await this.runSyncClient(actionParam);
-        }
-
-        switch (this.getActionPath()) {
-          case 'global': {
-            const action: Action = new ActionGlobal(this);
-            return action.run(actionParam);
-          }
-
-          case 'notification': {
-            const action: Action = new ActionNotification(this);
-            return action.run(actionParam);
-          }
-
-          case 'chatRoom': {
-            const action: Action = new ActionChatRoom(this);
-            return action.run(actionParam);
-          }
-
-          case 'chatMsg': {
-            const action: Action = new ActionChatMessage(this);
-            return action.run(actionParam);
-          }
-
-          case 'users': {
-            const action: Action = new ActionUsers(this);
-            return action.run(actionParam);
-          }
-
-          case 'jurnalworks': {
-            const action: Action = new ActionJournal(this);
-            return action.run(actionParam);
-          }
-
-          case 'tasks': {
-            const action: Action = new ActionTasks(this);
-            return action.run(actionParam);
-          }
-
-          case 'news': {
-            const action: Action = new ActionNews(this);
-            return action.run(actionParam);
-          }
-
-          case 'settingsLog': {
-            const action: Action = new ActionLogger(this);
-            return action.run(actionParam);
-          }
-
-          case 'wiki': {
-            const action: Action = new ActionWiki(this);
-            return action.run(actionParam);
-          }
-
-          case 'settings': {
-            const action: Action = new ActionSettings(this);
-            return action.run(actionParam);
-          }
-
-          default: {
-            return null;
-          }
-        }
-      } catch (err) {
-        console.error(err);
-        return null;
+    private async actionExec(actionParam: ActionParams): Promise<ParserData> {
+      if (this.getActionType() === 'sync') {
+        return await this.runSyncClient(actionParam);
       }
+
+      switch (this.getActionPath()) {
+        case 'global': {
+          const action: Action = new ActionGlobal(this);
+          return action.run(actionParam);
+        }
+
+        case 'notification': {
+          const action: Action = new ActionNotification(this);
+          return action.run(actionParam);
+        }
+
+        case 'chatRoom': {
+          const action: Action = new ActionChatRoom(this);
+          return action.run(actionParam);
+        }
+
+        case 'chatMsg': {
+          const action: Action = new ActionChatMessage(this);
+          return action.run(actionParam);
+        }
+
+        case 'users': {
+          const action: Action = new ActionUsers(this);
+          return action.run(actionParam);
+        }
+
+        case 'jurnalworks': {
+          const action: Action = new ActionJournal(this);
+          return action.run(actionParam);
+        }
+
+        case 'tasks': {
+          const action: Action = new ActionTasks(this);
+          return action.run(actionParam);
+        }
+
+        case 'news': {
+          const action: Action = new ActionNews(this);
+          return action.run(actionParam);
+        }
+
+        case 'settingsLog': {
+          const action: Action = new ActionLogger(this);
+          return action.run(actionParam);
+        }
+
+        case 'wiki': {
+          const action: Action = new ActionWiki(this);
+          return action.run(actionParam);
+        }
+
+        case 'settings': {
+          const action: Action = new ActionSettings(this);
+          return action.run(actionParam);
+        }
+
+        default: {
+          return null;
+        }
+      }
+    }
+
+    public async actionsRunner(actionParam: ActionParams = {}): Promise<Function> {
+      const connect = await this.getDbm()
+        .connection()
+        .catch((err: Error) => console.error(err));
+
+      if (!connect) throw new Error('Bad connect');
+
+      const actionResult: ParserData = await this.actionExec(actionParam);
+
+      return async (req: Request, res: Response, paramsEntity: Params, isPublic: boolean): ResRequest => {
+        const params: Params = { ...paramsEntity };
+        try {
+          if (!actionResult) {
+            params.done = false;
+            params.status = 'FAIL';
+            return await new Responser(res, req, params, null, 404, []).emit();
+          }
+
+          let metadata: Meta = [];
+          if (isPublic) metadata = parsePublicData(actionResult);
+          else metadata = actionResult;
+
+          return await new Responser(res, req, params, null, 200, metadata).emit();
+        } catch (err) {
+          console.error(err);
+          params.status = 'FAIL';
+          params.done = false;
+          return await new Responser(res, req, params, err, 503, []).emit();
+        }
+      };
     }
   }
 }

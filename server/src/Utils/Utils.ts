@@ -1,4 +1,5 @@
 import path from 'path';
+import _ from 'lodash';
 import { NextFunction, Response, Request } from 'express';
 import multer from 'multer';
 import winston from 'winston';
@@ -152,6 +153,7 @@ namespace Utils {
   };
 
   export const parsePublicData = (data: ParserResult, mode: string = 'default', rules = ''): Array<Meta> => {
+    if (!_.isArray(data)) return [data];
     switch (mode) {
       case 'access':
       case 'accessGroups':

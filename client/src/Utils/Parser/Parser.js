@@ -170,11 +170,11 @@ const routePathNormalise = ({
 const buildRequestList = (metadata = [], prefix = '') => {
   if (!metadata || (metadata && !metadata.length)) return metadata;
 
-  const actionTypes = _.uniq(metadata.map(({ action: { type = '' } }) => type));
+  const actionTypes = _.uniq(metadata.map(({ action: { type = '' } = {} }) => type));
   const actionsList = [];
 
   actionTypes.forEach((actionType) => {
-    const action = metadata.filter(({ action: { type = '' } }) => type === actionType);
+    const action = metadata.filter(({ action: { type = '' } = {} }) => type === actionType);
     actionsList.push([...action]);
   });
 
