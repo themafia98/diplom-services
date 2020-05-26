@@ -256,8 +256,10 @@ namespace ActionApi {
 
     public async getActionData(this: Actions, actionParam: ActionParams = {}): Promise<ParserData> {
       try {
-        // loggerInfo(`Run action. actionType: ${this.getActionType()},
-        //                     actionPath: ${this.getActionPath()}`);
+        const connect = await this.getDbm()
+          .connection()
+          .catch((err: Error) => console.error(err));
+        if (!connect) throw new Error('Bad connect');
 
         if (this.getActionType() === 'sync') {
           return await this.runSyncClient(actionParam);

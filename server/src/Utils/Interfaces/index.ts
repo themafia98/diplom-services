@@ -316,6 +316,7 @@ export interface EntityActionApi {
   getActionPath(): string;
   getActionType(): string;
   getStore(): FileApi;
+  getDbm(): Dbms;
 }
 
 export interface Action {
@@ -373,6 +374,5 @@ export interface ResponseBuilder {
   err: Error | null;
   status: number;
   metadata: ParserResult;
-  dbm: Dbms | null;
   emit(): Promise<Response>;
 }

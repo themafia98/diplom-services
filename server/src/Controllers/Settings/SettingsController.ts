@@ -1,6 +1,6 @@
 import { NextFunction, Response, Request } from 'express';
 import _ from 'lodash';
-import { App, Params, ActionParams, Controller as ControllerApi } from '../../Utils/Interfaces';
+import { Params, ActionParams, Controller as ControllerApi } from '../../Utils/Interfaces';
 import { ParserResult, ResRequest } from '../../Utils/Types';
 import Responser from '../../Models/Responser';
 
@@ -13,13 +13,7 @@ namespace Settings {
   @Controller('/settings')
   export class SettingsController implements ControllerApi<FunctionConstructor> {
     @Post({ path: '/password', private: true })
-    protected async passwordChanged(
-      req: Request,
-      res: Response,
-      next: NextFunction,
-      server: App,
-    ): ResRequest {
-      const { dbm } = server.locals;
+    protected async passwordChanged(req: Request, res: Response, next: NextFunction): ResRequest {
       const params: Params = {
         methodQuery: 'change_password',
         from: 'users',
@@ -49,14 +43,13 @@ namespace Settings {
         console.error(err);
         params.done = false;
         params.status = 'FAIL';
-        return new Responser(res, req, params, err, 503, [], dbm).emit();
+        return new Responser(res, req, params, err, 503, []).emit();
       }
     }
 
     @Get({ path: '/statusList', private: true })
     @Put({ path: '/statusList', private: true })
-    protected async statusList(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
-      const { dbm } = server.locals;
+    protected async statusList(req: Request, res: Response): ResRequest {
       const isGetter = req.method === 'GET';
 
       const params: Params = {
@@ -85,17 +78,16 @@ namespace Settings {
 
         if (!data) throw new Error('Invalid action data');
 
-        return new Responser(res, req, params, null, 200, data, dbm).emit();
+        return new Responser(res, req, params, null, 200, data).emit();
       } catch (err) {
         console.error(err);
         params.status = 'FAIL';
         params.done = false;
-        return new Responser(res, req, params, err, 503, [], dbm).emit();
+        return new Responser(res, req, params, err, 503, []).emit();
       }
     }
     @Post({ path: '/common', private: true })
-    protected async commonSettings(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
-      const { dbm } = server.locals;
+    protected async commonSettings(req: Request, res: Response): ResRequest {
       const params: Params = {
         methodQuery: 'common_changes',
         from: 'users',
@@ -124,18 +116,12 @@ namespace Settings {
         console.error(err);
         params.status = 'FAIL';
         params.done = false;
-        return new Responser(res, req, params, err, 503, [], dbm).emit();
+        return new Responser(res, req, params, err, 503, []).emit();
       }
     }
 
     @Post({ path: '/profile', private: true })
-    protected async profileSettings(
-      req: Request,
-      res: Response,
-      next: NextFunction,
-      server: App,
-    ): ResRequest {
-      const { dbm } = server.locals;
+    protected async profileSettings(req: Request, res: Response): ResRequest {
       const params: Params = {
         methodQuery: 'profile_changes',
         from: 'users',
@@ -164,14 +150,13 @@ namespace Settings {
         console.error(err);
         params.status = 'FAIL';
         params.done = false;
-        return new Responser(res, req, params, err, 503, [], dbm).emit();
+        return new Responser(res, req, params, err, 503, []).emit();
       }
     }
 
     @Put({ path: '/logger', private: true })
     @Post({ path: '/logger', private: true })
-    protected async logger(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
-      const { dbm } = server.locals;
+    protected async logger(req: Request, res: Response): ResRequest {
       const body: Record<string, object | string> = req.body;
       const { actionType = '', queryParams } = body;
 
@@ -198,12 +183,12 @@ namespace Settings {
 
         if (!(actionType as string).includes('get')) return res.sendStatus(200);
 
-        return new Responser(res, req, params, null, 200, data, dbm).emit();
+        return new Responser(res, req, params, null, 200, data).emit();
       } catch (err) {
         console.error(err);
         params.status = 'FAIL';
         params.done = false;
-        return new Responser(res, req, params, err, 503, [], dbm).emit();
+        return new Responser(res, req, params, err, 503, []).emit();
       }
     }
   }

@@ -1,4 +1,4 @@
-import { ResponseBuilder, Dbms } from '../../Utils/Interfaces';
+import { ResponseBuilder } from '../../Utils/Interfaces';
 import { Params } from '../../Utils/Interfaces';
 import { Response, Request } from 'express';
 import { ParserResult } from '../../Utils/Types';
@@ -15,7 +15,6 @@ class Responser implements ResponseBuilder {
   private readonly error: Error | null;
   private readonly statusResponse: number;
   private readonly data: ParserResult;
-  private readonly db: Dbms | null;
 
   constructor(
     res: Response,
@@ -24,7 +23,6 @@ class Responser implements ResponseBuilder {
     err: Error | null,
     status: number = 200,
     metadata: ParserResult = null,
-    dbm: Dbms | null = null,
   ) {
     this.response = res;
     this.request = req;
@@ -32,7 +30,6 @@ class Responser implements ResponseBuilder {
     this.error = err;
     this.statusResponse = status;
     this.data = metadata;
-    this.db = dbm;
   }
 
   public get res(): Response {
@@ -57,10 +54,6 @@ class Responser implements ResponseBuilder {
 
   public get metadata(): ParserResult {
     return this.data;
-  }
-
-  public get dbm(): Dbms | null {
-    return this.db;
   }
 
   private getErrorStatus(): string {
@@ -103,7 +96,6 @@ class Responser implements ResponseBuilder {
   public async emit(): Promise<Response> {
     if (this.res.headersSent) return this.res;
     if (this.status) this.res.status(this.status);
-    if (this.dbm) await this.dbm.disconnect().catch((err: Error) => console.error(err));
 
     switch (this.status) {
       case 200:

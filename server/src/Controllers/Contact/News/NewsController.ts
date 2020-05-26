@@ -1,6 +1,6 @@
 import { NextFunction, Response, Request } from 'express';
 import Responser from '../../../Models/Responser';
-import { App, Params, ActionParams, Controller as ControllerApi, BodyLogin } from '../../../Utils/Interfaces';
+import { Params, ActionParams, Controller as ControllerApi, BodyLogin } from '../../../Utils/Interfaces';
 import { ParserResult, ResRequest } from '../../../Utils/Types';
 
 import Decorators from '../../../Decorators';
@@ -14,20 +14,13 @@ namespace News {
   @Controller('/news')
   export class NewsController implements ControllerApi<FunctionConstructor> {
     @Post({ path: '/createNews', private: true })
-    protected async createNews(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
-      const service = server.locals;
-      const { dbm } = service;
+    protected async createNews(req: Request, res: Response, next: NextFunction): ResRequest {
       try {
         const bodyRequest: BodyLogin = req.body;
-        const connect = await dbm.connection().catch((err: Error) => {
-          console.error(err);
-        });
 
         const { queryParams = {} } = bodyRequest;
         const { actionType = '' } = queryParams as Record<string, string>;
         const body: ActionParams = bodyRequest.metadata as ActionParams;
-
-        if (!connect) throw new Error('Bad connect');
 
         const params: Params = {
           methodQuery: actionType,
@@ -41,10 +34,10 @@ namespace News {
 
         if (!data) {
           params.status = 'error';
-          return new Responser(res, req, params, null, 404, [], dbm).emit();
+          return new Responser(res, req, params, null, 404, []).emit();
         }
 
-        return new Responser(res, req, params, null, 200, data, dbm).emit();
+        return new Responser(res, req, params, null, 200, data).emit();
       } catch (err) {
         console.error(err);
         const bodyRequest: BodyLogin = req.body;
@@ -57,24 +50,17 @@ namespace News {
           done: true,
           from: 'news',
         };
-        return new Responser(res, req, params, err, 503, [], dbm).emit();
+        return new Responser(res, req, params, err, 503, []).emit();
       }
     }
 
     @Post({ path: '/list', private: true })
     @Get({ path: '/list', private: true })
-    protected async getNewsList(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    protected async getNewsList(req: Request, res: Response, next: NextFunction): ResRequest {
       let data: Readonly<ParserResult>;
-      const service = server.locals;
-      const { dbm } = service;
+
       const params: Params = { methodQuery: 'get_all', status: 'done', done: true, from: 'news' };
       try {
-        const connect = await dbm.connection().catch((err: Error) => {
-          console.error(err);
-        });
-
-        if (!connect) throw new Error('Bad connect');
-
         const { options: { limitList = null, keys = null } = {} } = req.body || {};
         const actionParams: ActionParams = { queryParams: keys ? { keys } : {}, limitList };
 
@@ -83,10 +69,10 @@ namespace News {
 
         if (!data) {
           params.status = 'error';
-          return new Responser(res, req, params, null, 404, [], dbm).emit();
+          return new Responser(res, req, params, null, 404, []).emit();
         }
 
-        return new Responser(res, req, params, null, 200, data, dbm).emit();
+        return new Responser(res, req, params, null, 200, data).emit();
       } catch (err) {
         console.error(err);
         params.done = false;

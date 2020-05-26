@@ -1,9 +1,11 @@
-import { ActionProps, EntityActionApi, FileApi } from '../../Utils/Interfaces';
+import { ActionProps, EntityActionApi, FileApi, Dbms } from '../../Utils/Interfaces';
+import Instanse from '../../Utils/instanse';
 
 abstract class ActionEntity implements EntityActionApi {
   private actionPath: string = '';
   private actionType: string = '';
   private store: FileApi;
+  private dbm: Dbms = Instanse.dbm;
 
   protected constructor(props: ActionProps) {
     this.actionPath = props.actionPath;
@@ -21,6 +23,10 @@ abstract class ActionEntity implements EntityActionApi {
 
   public getStore(): FileApi {
     return this.store;
+  }
+
+  public getDbm(): Dbms {
+    return this.dbm;
   }
 }
 

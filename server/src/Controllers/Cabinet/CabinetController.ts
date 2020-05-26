@@ -14,7 +14,6 @@ namespace Cabinet {
   export class CabinetController implements ControllerApi<FunctionConstructor> {
     @Post({ path: '/:uid/loadAvatar', private: true, file: true })
     protected async loadAvatar(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
-      const { dbm } = server.locals;
       const params: Params = {
         methodQuery: 'update_avatar',
         from: 'users',
@@ -37,9 +36,6 @@ namespace Cabinet {
           throw new Error('Bad convert to base64');
         }
 
-        const connect = await dbm.connection().catch((err: Error) => console.error(err));
-        if (!connect) throw new Error('Bad connect');
-
         const updateAvatarAction = new Action.ActionParser({
           actionPath: 'users',
           actionType: 'update_single',
@@ -48,7 +44,7 @@ namespace Cabinet {
         const body = { queryParams: { uid }, updateItem: { avatar: dataUrl } };
         await updateAvatarAction.getActionData(body);
 
-        return new Responser(res, req, params, null, 200, dataUrl, dbm).emit();
+        return new Responser(res, req, params, null, 200, dataUrl).emit();
       } catch (err) {
         console.error(err);
         return new Responser(res, req, params, err, 503, []).emit();

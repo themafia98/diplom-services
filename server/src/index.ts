@@ -6,9 +6,9 @@ import os from 'os';
 import { ServerRun } from './Utils/Interfaces';
 import Logger from './Utils/Logger';
 import Utils from './Utils';
-import wsWorkerManager from './Utils/instanseWs';
 import ProcessRouter from './Models/Process/ProcessRouter';
 import Http from './Models/Server';
+import Instanse from './Utils/instanse';
 
 if (Utils.isProd()) {
   fs.openSync('/tmp/app-initialized', 'w');
@@ -19,7 +19,7 @@ namespace Entrypoint {
   const cpuLentgh: number = os.cpus().length;
   const workers: Array<Worker> = [];
 
-  const workersRouter = new ProcessRouter(workers, wsWorkerManager);
+  const workersRouter = new ProcessRouter(workers, Instanse.ws);
 
   if (cluster.isMaster) {
     for (let i = 0; i < cpuLentgh; i++) {

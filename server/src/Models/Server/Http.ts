@@ -23,7 +23,6 @@ import Chat from '../../Controllers/Contact/Chat';
 import Tasks from '../../Controllers/Tasks';
 import Wiki from '../../Controllers/Wiki';
 import News from '../../Controllers/Contact/News';
-import Database from '../Database';
 import Mailer from '../Mail';
 
 import DropboxStorage from '../../Services/Dropbox';
@@ -31,11 +30,11 @@ import DropboxStorage from '../../Services/Dropbox';
 import { UserModel } from '../Database/Schema';
 import * as passportLocal from 'passport-local';
 
-import wsWorkerManager from '../../Utils/instanseWs';
 import wsEvents from '../../Controllers/Contact/Chat/wsEvents';
 
 import limiter from '../../config/limiter';
 import { ObjectId } from 'mongodb';
+import Instanse from '../../Utils/instanse';
 
 namespace Http {
   const LocalStrategy = passportLocal.Strategy;
@@ -178,7 +177,6 @@ namespace Http {
       this.getApp().set('port', this.getPort());
 
       const SessionStore = MongoStore(session);
-      const MONGODB_URI: Readonly<string> = process.env.MONGODB_URI as string;
       const DROPBOX_TOKEN: Readonly<string> = process.env.DROPBOX_TOKEN as string;
 
       this.getApp().use(
@@ -187,7 +185,7 @@ namespace Http {
           saveUninitialized: true,
           resave: true,
           store: new SessionStore({
-            url: MONGODB_URI,
+            url: process.env.MONGODB_URI as string,
             collection: 'sessions',
           }),
         }),
@@ -195,8 +193,6 @@ namespace Http {
       this.getApp().use(passport.initialize());
       this.getApp().use(passport.session());
       this.getApp().use(this.errorLogger);
-
-      const dbm: Dbms = new Database.ManagmentDatabase('controllSystem', MONGODB_URI);
 
       const dropbox = new DropboxStorage.DropboxManager({ token: DROPBOX_TOKEN });
       const mailer: Readonly<Mail> = new Mailer.MailManager(
@@ -220,10 +216,9 @@ namespace Http {
         console.error('Invalid create transport mailer');
       }
 
-      this.getApp().locals.dbm = dbm;
       this.getApp().locals.dropbox = dropbox;
       this.getApp().locals.mailer = mailer;
-      this.jsonWebTokenExec(dbm);
+      this.jsonWebTokenExec(Instanse.dbm);
 
       const instanceRouter: Route = RouterInstance.Router.instance(this.getApp());
 
@@ -246,9 +241,8 @@ namespace Http {
       this.getRest().use(limiter);
       this.getRest().use('/tasks/regTicket', regTicketLimitter);
 
-      wsWorkerManager.startSocketConnection(socketio(server));
-
-      wsEvents(wsWorkerManager, dbm, server); /** chat */
+      Instanse.ws.startSocketConnection(socketio(server));
+      wsEvents(Instanse.ws, Instanse.dbm, server); /** chat */
 
       Utils.initControllers(
         [
@@ -265,10 +259,10 @@ namespace Http {
         this.getApp.bind(this),
         this.getRest.bind(this),
         this.isPrivateRoute.bind(this),
-        wsWorkerManager,
+        Instanse.ws,
       );
 
-      this.initErrorHandler(server, dbm);
+      this.initErrorHandler(server, Instanse.dbm);
     }
   }
 }

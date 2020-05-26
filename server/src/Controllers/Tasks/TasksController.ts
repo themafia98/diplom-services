@@ -1,7 +1,7 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 import _ from 'lodash';
 import Utils from '../../Utils';
-import { App, Params, ActionParams, BodyLogin } from '../../Utils/Interfaces';
+import { Params, ActionParams, BodyLogin } from '../../Utils/Interfaces';
 import { ResRequest, ParserResult, Meta } from '../../Utils/Types';
 import Responser from '../../Models/Responser';
 import Action from '../../Models/Action';
@@ -18,8 +18,7 @@ namespace Tasks {
   export class TasksController {
     @Post({ path: '/list', private: true })
     @Get({ path: '/list', private: true })
-    protected async getList(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
-      const { dbm } = server.locals;
+    protected async getList(req: Request, res: Response): ResRequest {
       const params: Params = {
         methodQuery: 'get_all',
         status: 'done',
@@ -27,10 +26,6 @@ namespace Tasks {
         from: 'tasks',
       };
       try {
-        const connect = await dbm.connection().catch((err: Error) => {
-          console.error(err);
-        });
-
         const { options: { limitList = null, keys = null, saveData = {}, filterCounter = null } = {} } =
           req.body || {};
         const actionParams: ActionParams = {
@@ -40,15 +35,13 @@ namespace Tasks {
           filterCounter,
         };
 
-        if (!connect) throw new Error('Bad connect');
-
         const actionTasks = new Action.ActionParser({ actionPath: 'tasks', actionType: 'get_all' });
         const data: ParserResult = await actionTasks.getActionData(actionParams);
 
         if (!data) {
           params.done = false;
           params.status = 'FAIL';
-          return new Responser(res, req, params, null, 404, [], dbm).emit();
+          return new Responser(res, req, params, null, 404, []).emit();
         }
 
         let metadata: Meta = [];
@@ -57,20 +50,20 @@ namespace Tasks {
           metadata = parsePublicData(data);
         }
 
-        return new Responser(res, req, params, null, 200, metadata, dbm).emit();
+        return new Responser(res, req, params, null, 200, metadata).emit();
       } catch (err) {
         console.error(err);
         params.status = 'FAIL';
         params.done = false;
-        return new Responser(res, req, params, err, 503, [], dbm).emit();
+        return new Responser(res, req, params, err, 503, []).emit();
       }
     }
 
     @Post({ path: '/listCounter', private: true })
     @Get({ path: '/listCounter', private: true })
-    protected async getListCounter(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+    protected async getListCounter(req: Request, res: Response): ResRequest {
       const { filterCounter = null, saveData = {} } = req.body || {}; // uid
-      const { dbm } = server.locals;
+
       const params: Params = {
         methodQuery: 'list_counter',
         status: 'done',
@@ -78,10 +71,6 @@ namespace Tasks {
         from: 'tasks',
       };
       try {
-        const connect = await dbm.connection().catch((err: Error) => console.error(err));
-
-        if (!connect) throw new Error('Bad connect');
-
         const listCounterAction = new Action.ActionParser({
           actionPath: 'tasks',
           actionType: 'list_counter',
@@ -94,21 +83,20 @@ namespace Tasks {
         if (!data && !_.isNumber(data)) {
           params.done = false;
           params.status = 'FAIL';
-          return new Responser(res, req, params, null, 404, 0, dbm).emit();
+          return new Responser(res, req, params, null, 404, 0).emit();
         }
 
-        return new Responser(res, req, params, null, 200, data, dbm).emit();
+        return new Responser(res, req, params, null, 200, data).emit();
       } catch (err) {
         console.log(err.message);
         params.status = 'FAIL';
         params.done = false;
-        return new Responser(res, req, params, err, 503, [], dbm).emit();
+        return new Responser(res, req, params, err, 503, []).emit();
       }
     }
 
     @Post({ path: '/createTask', private: true })
-    protected async create(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
-      const { dbm } = server.locals;
+    protected async create(req: Request, res: Response): ResRequest {
       const body: BodyLogin = req.body;
       const params: Params = {
         methodQuery: 'set_single',
@@ -120,12 +108,8 @@ namespace Tasks {
         if (!body || _.isEmpty(body)) {
           params.done = false;
           params.status = 'FAIL BODY';
-          return new Responser(res, req, params, null, 404, [], dbm).emit();
+          return new Responser(res, req, params, null, 404, []).emit();
         }
-
-        const connect = await dbm.connection().catch((err: Error) => console.error(err));
-
-        if (!connect) throw new Error('Bad connect');
 
         const createTaskAction = new Action.ActionParser({
           actionPath: 'tasks',
@@ -137,24 +121,23 @@ namespace Tasks {
         if (!data) {
           params.done = false;
           params.status = 'FAIL';
-          return new Responser(res, req, params, null, 404, [], dbm).emit();
+          return new Responser(res, req, params, null, 404, []).emit();
         }
 
         const meta: Meta = parsePublicData([data] as ParserResult);
         const metadata: ArrayLike<object> = Array.isArray(meta) && meta[0] ? meta[0] : null;
 
-        return new Responser(res, req, params, null, 200, metadata, dbm).emit();
+        return new Responser(res, req, params, null, 200, metadata).emit();
       } catch (err) {
         console.log(err.message);
         params.status = 'FAIL';
         params.done = false;
-        return new Responser(res, req, params, err, 503, [], dbm).emit();
+        return new Responser(res, req, params, err, 503, []).emit();
       }
     }
 
     @Put({ path: '/caching/jurnal', private: true })
-    protected async setJurnalWorks(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
-      const { dbm } = server.locals;
+    protected async setJurnalWorks(req: Request, res: Response): ResRequest {
       const params: Params = {
         methodQuery: 'set_jurnal',
         status: 'done',
@@ -165,13 +148,10 @@ namespace Tasks {
         if (!req.body || _.isEmpty(req.body)) {
           params.done = false;
           params.status = 'FAIL BODY';
-          return new Responser(res, req, params, null, 404, [], dbm).emit();
+          return new Responser(res, req, params, null, 404, []).emit();
         }
 
         const body: object = req.body;
-        const connect = await dbm.connection().catch((err: Error) => console.error(err));
-
-        if (!connect) throw new Error('Bad connect');
 
         const createJurnalAction = new Action.ActionParser({
           actionPath: 'jurnalworks',
@@ -184,24 +164,23 @@ namespace Tasks {
         if (!data) {
           params.done = false;
           params.status = 'FAIL';
-          return new Responser(res, req, params, null, 404, [], dbm).emit();
+          return new Responser(res, req, params, null, 404, []).emit();
         }
 
         const meta: Meta = parsePublicData([data] as ParserResult);
         const metadata: ArrayLike<object> = Array.isArray(meta) && meta[0] ? meta[0] : null;
 
-        return new Responser(res, req, params, null, 200, metadata, dbm).emit();
+        return new Responser(res, req, params, null, 200, metadata).emit();
       } catch (err) {
         console.log(err.message);
         params.status = 'FAIL';
         params.done = false;
-        return new Responser(res, req, params, err, 503, [], dbm).emit();
+        return new Responser(res, req, params, err, 503, []).emit();
       }
     }
 
     @Put({ path: '/caching/list', private: true })
-    protected async getCachingList(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
-      const { dbm } = server.locals;
+    protected async getCachingList(req: Request, res: Response): ResRequest {
       const { queryParams = {}, actionType = '' } = req.body;
       const params: Params = {
         methodQuery: actionType,
@@ -210,13 +189,7 @@ namespace Tasks {
         from: 'tasks',
       };
       try {
-        const connect = await dbm.connection().catch((err: Error) => {
-          console.error(err);
-        });
-
         const { store = '' } = queryParams || {};
-
-        if (!connect) throw new Error('Bad connect');
 
         const actionTasks = new Action.ActionParser({ actionPath: store, actionType: actionType });
         const data: ParserResult = await actionTasks.getActionData(queryParams);
@@ -224,7 +197,7 @@ namespace Tasks {
         if (!data) {
           params.done = false;
           params.status = 'FAIL';
-          return new Responser(res, req, params, null, 404, [], dbm).emit();
+          return new Responser(res, req, params, null, 404, []).emit();
         }
 
         let metadata: Meta = [];
@@ -232,18 +205,17 @@ namespace Tasks {
           metadata = parsePublicData(data);
         }
 
-        return new Responser(res, req, params, null, 200, metadata, dbm).emit();
+        return new Responser(res, req, params, null, 200, metadata).emit();
       } catch (err) {
         console.error(err);
         params.status = 'FAIL';
         params.done = false;
-        return new Responser(res, req, params, err, 503, [], dbm).emit();
+        return new Responser(res, req, params, err, 503, []).emit();
       }
     }
 
     @Put({ path: '/regTicket', private: false, file: true })
-    protected async regTicket(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
-      const { dbm } = server.locals;
+    protected async regTicket(req: Request, res: Response): ResRequest {
       const body = { ticket: req.body, actionType: 'reg_crossOrigin_ticket' };
       const params: Params = {
         methodQuery: body.actionType,
@@ -252,27 +224,21 @@ namespace Tasks {
         from: 'tasks',
       };
       try {
-        const connect = await dbm.connection().catch((err: Error) => {
-          console.error(err);
-        });
-
-        if (!connect) throw new Error('Bad connect');
-
         const actionTasks = new Action.ActionParser({ actionPath: 'tasks', actionType: body.actionType });
         const data: ParserResult = await actionTasks.getActionData(body);
 
         if (!data) {
           params.done = false;
           params.status = 'FAIL';
-          return new Responser(res, req, params, null, 404, [], dbm).emit();
+          return new Responser(res, req, params, null, 404, []).emit();
         }
 
-        return new Responser(res, req, params, null, 200, [], dbm).emit();
+        return new Responser(res, req, params, null, 200, []).emit();
       } catch (err) {
         console.error(err);
         params.status = 'FAIL';
         params.done = false;
-        return new Responser(res, req, params, err, 503, [], dbm).emit();
+        return new Responser(res, req, params, err, 503, []).emit();
       }
     }
   }

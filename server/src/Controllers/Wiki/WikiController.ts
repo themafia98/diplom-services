@@ -1,6 +1,6 @@
-import { NextFunction, Response, Request } from 'express';
+import { Response, Request } from 'express';
 import _ from 'lodash';
-import { App, Params, ActionParams, Controller as ControllerApi } from '../../Utils/Interfaces';
+import { Params, ActionParams, Controller as ControllerApi } from '../../Utils/Interfaces';
 import { ParserResult, ResRequest } from '../../Utils/Types';
 
 import Responser from '../../Models/Responser';
@@ -17,14 +17,9 @@ namespace Wiki {
   @Controller('/wiki')
   export class WikiController implements ControllerApi<FunctionConstructor> {
     @Get({ path: '/list', private: true })
-    protected async getTreeList(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
-      const { dbm } = server.locals;
+    protected async getTreeList(req: Request, res: Response): ResRequest {
       const params: Params = { methodQuery: 'get_all', status: 'done', done: true, from: 'wiki' };
       try {
-        const connect = await dbm.connection().catch((err: Error) => console.error(err));
-
-        if (!connect) throw new Error('Bad connect');
-
         const actionTreeList = new Action.ActionParser({
           actionPath: 'wiki',
           actionType: 'get_all',
@@ -34,30 +29,24 @@ namespace Wiki {
         if (!data) {
           params.done = false;
           params.status = 'FAIL';
-          return new Responser(res, req, params, null, 404, [], dbm).emit();
+          return new Responser(res, req, params, null, 404, []).emit();
         }
 
         const metadata: Array<object> = (data as Array<object>).reverse();
-        return new Responser(res, req, params, null, 200, metadata, dbm).emit();
+        return new Responser(res, req, params, null, 200, metadata).emit();
       } catch (err) {
         console.error(err);
         params.status = 'FAIL';
         params.done = false;
-        return new Responser(res, req, params, err, 503, [], dbm).emit();
+        return new Responser(res, req, params, err, 503, []).emit();
       }
     }
 
     @Put({ path: '/createLeaf', private: true })
-    protected async createLeaf(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
-      const { dbm } = server.locals;
+    protected async createLeaf(req: Request, res: Response): ResRequest {
       const params: Params = { methodQuery: 'create_leaf', status: 'done', done: true, from: 'wiki' };
       try {
-        const service = server.locals;
         const body: ActionParams = req.body;
-        const connect = await service.dbm.connection().catch((err: Error) => console.error(err));
-
-        if (!connect) throw new Error('Bad connect');
-
         const actionCreateLeaf = new Action.ActionParser({
           actionPath: 'wiki',
           actionType: 'create_leaf',
@@ -73,27 +62,23 @@ namespace Wiki {
         if (!data || !metadata) {
           params.done = false;
           params.status = 'FAIL';
-          return new Responser(res, req, params, null, 404, [], dbm).emit();
+          return new Responser(res, req, params, null, 404, []).emit();
         }
 
-        return new Responser(res, req, params, null, 200, metadata, dbm).emit();
+        return new Responser(res, req, params, null, 200, metadata).emit();
       } catch (err) {
         console.error(err);
         params.status = 'FAIL';
         params.done = false;
-        return new Responser(res, req, params, err, 503, [], dbm).emit();
+        return new Responser(res, req, params, err, 503, []).emit();
       }
     }
 
     @Delete({ path: '/deleteLeafs', private: true })
-    protected async deleteLeafs(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
-      const { dbm } = server.locals;
+    protected async deleteLeafs(req: Request, res: Response): ResRequest {
       const params: Params = { methodQuery: 'delete_leafs', status: 'done', done: true, from: 'wiki' };
       try {
         const body: ActionParams = req.body;
-        const connect = await dbm.connection().catch((err: Error) => console.error(err));
-
-        if (!connect) throw new Error('Bad connect');
 
         const actionDeleteLeafs = new Action.ActionParser({
           actionPath: 'wiki',
@@ -105,30 +90,26 @@ namespace Wiki {
         if (!data) {
           params.done = false;
           params.status = 'FAIL';
-          return new Responser(res, req, params, null, 404, [], dbm).emit();
+          return new Responser(res, req, params, null, 404, []).emit();
         }
 
         const { deletedCount = 0, ok = 0 } = (data as Record<string, number>) || {};
         const metadata: Record<string, number> = { deletedCount, ok };
 
-        return new Responser(res, req, params, null, 200, metadata, dbm).emit();
+        return new Responser(res, req, params, null, 200, metadata).emit();
       } catch (err) {
         console.error(err);
         params.status = 'FAIL';
         params.done = false;
-        return new Responser(res, req, params, err, 503, [], dbm).emit();
+        return new Responser(res, req, params, err, 503, []).emit();
       }
     }
 
     @Post({ path: '/wikiPage', private: true })
-    protected async getWikiPage(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
-      const { dbm } = server.locals;
+    protected async getWikiPage(req: Request, res: Response): ResRequest {
       const params: Params = { methodQuery: 'wiki_page', status: 'done', done: true, from: 'wiki' };
       try {
         const body: ActionParams = req.body;
-        const connect = await dbm.connection().catch((err: Error) => console.error(err));
-
-        if (!connect) throw new Error('Bad connect');
 
         const actionWikiPage = new Action.ActionParser({
           actionPath: 'wiki',
@@ -140,15 +121,15 @@ namespace Wiki {
         if (!data) {
           params.done = false;
           params.status = 'FAIL';
-          return new Responser(res, req, params, null, 404, [], dbm).emit();
+          return new Responser(res, req, params, null, 404, []).emit();
         }
 
-        return new Responser(res, req, params, null, 200, data, dbm).emit();
+        return new Responser(res, req, params, null, 200, data).emit();
       } catch (err) {
         console.error(err);
         params.status = 'FAIL';
         params.done = false;
-        return new Responser(res, req, params, err, 503, [], dbm).emit();
+        return new Responser(res, req, params, err, 503, []).emit();
       }
     }
   }

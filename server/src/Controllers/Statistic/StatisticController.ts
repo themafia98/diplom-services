@@ -1,6 +1,6 @@
-import { NextFunction, Response, Request } from 'express';
+import { Response, Request } from 'express';
 import _ from 'lodash';
-import { App, Params, Controller as ControllerApi } from '../../Utils/Interfaces';
+import { Params, Controller as ControllerApi } from '../../Utils/Interfaces';
 import { ParserResult, ResRequest } from '../../Utils/Types';
 
 import Responser from '../../Models/Responser';
@@ -14,19 +14,10 @@ namespace Statistic {
   @Controller('/statistic')
   export class StatisticController implements ControllerApi<FunctionConstructor> {
     @Post({ path: '/taskBar', private: true })
-    protected async getTaskBarStats(
-      req: Request,
-      res: Response,
-      next: NextFunction,
-      server: App,
-    ): ResRequest {
-      const { dbm } = server.locals;
+    protected async getTaskBarStats(req: Request, res: Response): ResRequest {
       const params: Params = { methodQuery: 'get_stats', status: 'done', done: true, from: 'tasks' };
       try {
         const { options = {} } = req.body || {};
-        const connect = await dbm.connection().catch((err: Error) => console.error(err));
-
-        if (!connect) throw new Error('Bad connect');
 
         const actionStats = new Action.ActionParser({
           actionPath: 'tasks',
@@ -38,19 +29,19 @@ namespace Statistic {
         if (!data) {
           params.done = false;
           params.status = 'FAIL';
-          return new Responser(res, req, params, null, 404, [], dbm).emit();
+          return new Responser(res, req, params, null, 404, []).emit();
         }
         const parsedMetadata: Array<object> = _.isArray(data)
           ? (data as Array<object>)
           : ([data] as Array<object>);
         const metadata: Array<object> = parsedMetadata.reverse();
 
-        return new Responser(res, req, params, null, 200, metadata, dbm).emit();
+        return new Responser(res, req, params, null, 200, metadata).emit();
       } catch (err) {
         console.error(err);
         params.status = 'FAIL';
         params.done = false;
-        return new Responser(res, req, params, err, 503, [], dbm).emit();
+        return new Responser(res, req, params, err, 503, []).emit();
       }
     }
   }
