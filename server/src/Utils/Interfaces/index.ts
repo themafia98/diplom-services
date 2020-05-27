@@ -288,7 +288,7 @@ export interface WikiPage {
 export interface FileApi {
   getAllFiles(): Promise<files.ListFolderResult | null>;
   downloadFileByProps<Props>(fileProps: Props): Promise<files.FileMetadata | null>;
-  downloadFile(path: string): Promise<files.FileMetadata | null>;
+  downloadFile(path: string): Promise<files.GetTemporaryLinkResult | null>;
   saveFile<Props>(saveProps: Props): Promise<files.FileMetadata | null>;
   getFilesByPath(path: string): Promise<files.ListFolderResult | null>;
   deleteFile(path: string): Promise<files.DeleteResult | null>;

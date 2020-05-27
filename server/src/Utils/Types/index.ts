@@ -17,6 +17,7 @@ import { DocumentQuery, Document } from 'mongoose';
 import { Response } from 'express';
 import { Socket } from 'socket.io';
 import { BinaryLike } from 'crypto';
+import { WriteStream } from 'fs';
 
 export type Payload = string | object | string | null | Socket;
 export type limiter = number | null | undefined;
@@ -25,7 +26,7 @@ export type FileMetadata = files.FileMetadata | null;
 export type DeleteFile = files.DeleteResult;
 export type Entity = Document | null | string | number;
 export type BuilderResponse = Promise<DocumentQuery<any, Document> | object | null>;
-export type ResRequest = Promise<Response | void>;
+export type ResRequest = Promise<Response | void | WriteStream | ReadableStream | WritableStream>;
 export type Decorator = <Function extends ClassDecorator>(target: object, propKey?: string) => void;
 export type FileTransportInstance = winston.transports.FileTransportInstance;
 export type docResponse = string | number | object | null | Array<any>;

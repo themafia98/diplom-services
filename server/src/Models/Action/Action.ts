@@ -1,4 +1,5 @@
 import { ActionParams, Actions, Action, ActionProps, Params } from '../../Utils/Interfaces';
+import request from 'request';
 import mime from 'mime';
 import { Model, Document, Types, FilterQuery } from 'mongoose';
 import _ from 'lodash';
@@ -14,7 +15,7 @@ import {
   ResRequest,
   Meta,
 } from '../../Utils/Types';
-
+import { files } from 'dropbox';
 /** Actions */
 import ActionLogger from './ActionsEntity/ActionLogger';
 import ActionNotification from './ActionsEntity/ActionNotification';
@@ -29,7 +30,6 @@ import ActionWiki from './ActionsEntity/ActionWiki';
 import ActionSettings from './ActionsEntity/ActionSettings';
 import Responser from '../Responser';
 import { Response, Request } from 'express';
-import { BinaryLike } from 'crypto';
 
 namespace ActionApi {
   const { getModelByName, parsePublicData } = Utils;
@@ -340,20 +340,21 @@ namespace ActionApi {
 
       if (!connect) throw new Error('Bad connect');
 
-      const actionResult: ParserData = await this.actionExec(actionParam);
+      const actionResult = await this.actionExec(actionParam);
 
       return async (req: Request, res: Response, paramsEntity: Params, isPublic: boolean): ResRequest => {
         const params: Params = { ...paramsEntity };
         try {
           if (this.getActionType() === 'download_files' && actionResult) {
+            const file: files.GetTemporaryLinkResult = actionResult as files.GetTemporaryLinkResult;
+            const { link } = file;
             const { filename = '' } = actionParam;
             const mimetype = mime.getType(filename as string);
 
             res.setHeader('Content-disposition', 'attachment; filename=' + filename);
             res.setHeader('Content-type', mimetype ? mimetype : 'plain/text');
 
-            res.write(Buffer.from(actionResult as BinaryLike));
-            res.end(undefined, 'binary');
+            return request(link).pipe(res);
           }
 
           if (!actionResult) {

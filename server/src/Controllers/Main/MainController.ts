@@ -103,7 +103,7 @@ namespace System {
         moduleName,
         filename,
       });
-      return responseExec(req, res, params);
+      responseExec(req, res, params);
     }
 
     @Delete({ path: '/:module/delete/file', private: true })

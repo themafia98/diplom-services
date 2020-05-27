@@ -2,7 +2,7 @@ import { ActionParams, Actions, Action } from '../../../Utils/Interfaces';
 import path from 'path';
 import { ParserData } from '../../../Utils/Types';
 import { files } from 'dropbox';
-import { BinaryLike } from 'crypto';
+//import { BinaryLike } from 'crypto';
 
 class ActionGlobal implements Action {
   constructor(private entity: Actions) {}
@@ -45,11 +45,7 @@ class ActionGlobal implements Action {
 
     const pathFile: string = `/${moduleName}/${entityId}/${filename}`;
 
-    const result: any = await this.getEntity().getStore().downloadFile(pathFile);
-
-    const isBinary: boolean = Boolean(result.fileBinary as BinaryLike);
-
-    return isBinary ? result.fileBinary : null;
+    return await this.getEntity().getStore().downloadFile(pathFile);
   }
 
   private async saveFile(actionParam: ActionParams): Promise<ParserData> {

@@ -108,9 +108,11 @@ namespace DropboxStorage {
      * Download file by url address
      * @param path file url
      */
-    public async downloadFile(path: string): Promise<FileMetadata> {
+    public async downloadFile(path: string): Promise<files.GetTemporaryLinkResult | null> {
       try {
-        return await this.getService().filesDownload({ path });
+        return await this.getService().filesGetTemporaryLink({
+          path,
+        });
       } catch (err) {
         console.error(err);
         return null;
