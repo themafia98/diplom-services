@@ -67,8 +67,9 @@ class File extends React.Component {
     const { Request } = this.context;
     const rest = new Request();
     const { filesArray = [] } = this.state;
+    debugger;
     return {
-      name: `${uuid()}__${_id}`,
+      name: `${uuid()}_$FT$P$_${_id}`,
       multiple: !isLocal,
       withCredentials: true,
       headers: rest && isLocal ? rest.getHeaders() : null,

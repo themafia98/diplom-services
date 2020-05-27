@@ -5,6 +5,7 @@ import {
   Response,
   NextFunction,
 } from 'express';
+
 import nodemailer, { SendMailOptions, Transporter, SentMessageInfo } from 'nodemailer';
 import { files } from 'dropbox';
 import { transOptions, ParserData, ParserResult, Meta, limiter, OptionsUpdate } from '../Types';
@@ -126,7 +127,7 @@ export interface MetadataMongo extends Metadata {
 }
 
 export interface ActionParams {
-  [key: string]: boolean | number | string | Date | object;
+  [key: string]: boolean | number | string | Date | object | Express.Multer.File[] | Express.Multer.File;
 }
 
 export interface ResponseDocument {

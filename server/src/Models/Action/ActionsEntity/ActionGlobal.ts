@@ -1,6 +1,8 @@
 import { ActionParams, Actions, Action } from '../../../Utils/Interfaces';
+import path from 'path';
 import { ParserData } from '../../../Utils/Types';
 import { files } from 'dropbox';
+import { BinaryLike } from 'crypto';
 
 class ActionGlobal implements Action {
   constructor(private entity: Actions) {}
@@ -17,8 +19,8 @@ class ActionGlobal implements Action {
     const entityId: string = (queryParams as Record<string, string>).entityId;
     const moduleName: string = (actionParam as Record<string, string>).moduleName;
 
-    const path: string = `/${moduleName}/${entityId}/`;
-    const files: files.ListFolderResult | null = await this.getEntity().getStore().getFilesByPath(path);
+    const pathFile: string = `/${moduleName}/${entityId}/`;
+    const files: files.ListFolderResult | null = await this.getEntity().getStore().getFilesByPath(pathFile);
     return files;
   }
 
@@ -28,9 +30,9 @@ class ActionGlobal implements Action {
     const file: object = (queryParams as Record<string, any>).file;
     const url: string = (file as Record<string, string>).url || '';
 
-    const path: string = `${store}${url.split('download')[1]}` || '';
+    const pathFile: string = `${store}${url.split('download')[1]}` || '';
     console.log(this.getEntity().getStore());
-    const deleteFile: files.DeleteResult | null = await this.getEntity().getStore().deleteFile(path);
+    const deleteFile: files.DeleteResult | null = await this.getEntity().getStore().deleteFile(pathFile);
 
     if (!deleteFile) return null;
     else return deleteFile;
@@ -41,10 +43,40 @@ class ActionGlobal implements Action {
     const filename: string = (actionParam as Record<string, string>).filename;
     const moduleName: string = (actionParam as Record<string, string>).moduleName;
 
-    const path: string = `/${moduleName}/${entityId}/${filename}`;
+    const pathFile: string = `/${moduleName}/${entityId}/${filename}`;
 
-    const result = await this.getEntity().getStore().downloadFile(path);
-    return result;
+    const result: any = await this.getEntity().getStore().downloadFile(pathFile);
+
+    const isBinary: boolean = Boolean(result.fileBinary as BinaryLike);
+
+    return isBinary ? result.fileBinary : null;
+  }
+
+  private async saveFile(actionParam: ActionParams): Promise<ParserData> {
+    const { files = [], moduleName = '' } = actionParam as Record<string, Array<any>>;
+    let responseSave: Array<object> = [];
+    for await (let file of files) {
+      const [filename, entityId] = file.fieldname.split('_$FT$P$_');
+      const ext = path.extname(file.originalname);
+
+      const pathFile: string = `/${moduleName}/${entityId}/${file.originalname}`;
+      const result = await this.getEntity().getStore().saveFile({ path: pathFile, contents: file.buffer });
+
+      if (result) {
+        responseSave.push({
+          name: result.name,
+          isSave: true,
+        });
+      } else {
+        responseSave.push({
+          name: `${filename}.${ext}`,
+          isSave: false,
+        });
+      }
+    }
+
+    responseSave = responseSave.filter(Boolean);
+    return responseSave;
   }
 
   public async run(actionParam: ActionParams): Promise<ParserData> {
@@ -55,6 +87,8 @@ class ActionGlobal implements Action {
         return this.deleteFile(actionParam);
       case 'download_files':
         return this.download(actionParam);
+      case 'save_file':
+        return this.saveFile(actionParam);
       default:
         return null;
     }

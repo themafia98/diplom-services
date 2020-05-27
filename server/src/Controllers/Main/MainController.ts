@@ -7,12 +7,12 @@ import {
   Controller as ControllerApi,
   BodyLogin,
   Actions,
+  ActionParams,
 } from '../../Utils/Interfaces';
-import { ParserResult, ResRequest } from '../../Utils/Types';
-import Responser from '../../Models/Responser';
+import { ResRequest } from '../../Utils/Types';
+
 import Decorators from '../../Decorators';
 import Action from '../../Models/Action';
-import { BinaryLike } from 'crypto';
 
 namespace System {
   const Controller = Decorators.Controller;
@@ -37,6 +37,7 @@ namespace System {
     @Post({ path: '/:module/file', private: true, file: true })
     protected async saveFile(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { module: moduleName = '' } = req.params;
+      const { dropbox: store } = server.locals;
       const params: Params = {
         methodQuery: 'save_file',
         status: 'done',
@@ -44,48 +45,15 @@ namespace System {
         from: moduleName,
       };
 
-      try {
-        const files = Array.isArray(req.files) ? req.files : null;
-        if (!files) throw new Error('Bad file');
+      const files: ActionParams = req.files as any;
+      const saveFileAction: Actions = new Action.ActionParser({
+        actionPath: 'global',
+        actionType: 'save_file',
+        store,
+      });
 
-        const { dropbox: store } = server.locals;
-        let responseSave: Array<object | null> = [];
-
-        for await (let file of files) {
-          const [filename, entityId] = file.fieldname.split('__');
-          const parseOriginalName = file.originalname.split(/\./gi);
-          const ext = parseOriginalName[parseOriginalName.length - 1];
-
-          const path: string = `/${moduleName}/${entityId}/${file.originalname}`;
-          const result = await (store as FileApi).saveFile({ path, contents: file.buffer });
-
-          if (result) {
-            responseSave.push({
-              name: result.name,
-              isSave: true,
-            });
-          } else {
-            responseSave.push({
-              name: `${filename}.${ext}`,
-              isSave: false,
-            });
-          }
-        }
-
-        responseSave = responseSave.filter(Boolean);
-
-        if (!responseSave.length) {
-          params.done = false;
-          params.status = 'FAIL';
-          return new Responser(res, req, params, null, 404, []).emit();
-        }
-
-        return new Responser(res, req, params, null, 200, responseSave).emit();
-      } catch (err) {
-        params.done = false;
-        console.log(err.message);
-        return new Responser(res, req, params, err, 503, []).emit();
-      }
+      const responseExec: Function = await saveFileAction.actionsRunner({ files, moduleName });
+      return responseExec(req, res, params);
     }
 
     @Put({ path: '/:module/load/file', private: true })
@@ -123,46 +91,19 @@ namespace System {
         done: true,
         from: 'tasks',
       };
+      const { dropbox: store } = server.locals;
+      const downloadAction: Actions = new Action.ActionParser({
+        actionPath: 'global',
+        actionType: 'download_files',
+        store,
+      });
 
-      try {
-        if (!entityId || !filename) {
-          params.done = false;
-          params.status = 'FAIL NAME';
-          return new Responser(res, req, params, null, 404, []).emit();
-        }
-
-        const { dropbox: store } = server.locals;
-        const downloadAction: Actions = new Action.ActionParser({
-          actionPath: 'global',
-          actionType: 'download_files',
-          store,
-        });
-
-        const actionData: ParserResult = await downloadAction.actionsRunner({
-          entityId,
-          moduleName,
-          filename,
-        });
-
-        const isBinary: boolean = Boolean(
-          actionData && (actionData as Record<string, BinaryLike>).fileBinary,
-        );
-        const fileBinary: BinaryLike | null = isBinary
-          ? (actionData as Record<string, BinaryLike>).fileBinary
-          : null;
-
-        if (!actionData || !fileBinary) {
-          params.done = false;
-          params.status = 'FAIL';
-          return new Responser(res, req, params, null, 404, fileBinary).emit();
-        }
-
-        return res.send(Buffer.from(fileBinary));
-      } catch (err) {
-        console.error(err);
-        params.done = false;
-        return new Responser(res, req, params, err, 503, []).emit();
-      }
+      const responseExec: Function = await downloadAction.actionsRunner({
+        entityId,
+        moduleName,
+        filename,
+      });
+      return responseExec(req, res, params);
     }
 
     @Delete({ path: '/:module/delete/file', private: true })

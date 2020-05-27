@@ -1,4 +1,5 @@
 import { ActionParams, Actions, Action, ActionProps, Params } from '../../Utils/Interfaces';
+import mime from 'mime';
 import { Model, Document, Types, FilterQuery } from 'mongoose';
 import _ from 'lodash';
 import ActionEntity from './ActionEntity';
@@ -28,6 +29,7 @@ import ActionWiki from './ActionsEntity/ActionWiki';
 import ActionSettings from './ActionsEntity/ActionSettings';
 import Responser from '../Responser';
 import { Response, Request } from 'express';
+import { BinaryLike } from 'crypto';
 
 namespace ActionApi {
   const { getModelByName, parsePublicData } = Utils;
@@ -343,6 +345,17 @@ namespace ActionApi {
       return async (req: Request, res: Response, paramsEntity: Params, isPublic: boolean): ResRequest => {
         const params: Params = { ...paramsEntity };
         try {
+          if (this.getActionType() === 'download_files' && actionResult) {
+            const { filename = '' } = actionParam;
+            const mimetype = mime.getType(filename as string);
+
+            res.setHeader('Content-disposition', 'attachment; filename=' + filename);
+            res.setHeader('Content-type', mimetype ? mimetype : 'plain/text');
+
+            res.write(Buffer.from(actionResult as BinaryLike));
+            res.end(undefined, 'binary');
+          }
+
           if (!actionResult) {
             params.done = false;
             params.status = 'FAIL';
