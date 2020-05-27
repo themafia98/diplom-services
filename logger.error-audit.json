@@ -6,69 +6,9 @@
   "auditLog": "logger.error-audit.json",
   "files": [
     {
-      "date": 1590519881319,
-      "name": "logs\\logs-error-2020-05-26-22.log",
-      "hash": "fda03bfb45d77bb7b71aec2ca7e73509"
-    },
-    {
-      "date": 1590523299755,
-      "name": "logs\\logs-error-2020-05-26-23.log",
-      "hash": "67b772fe027e1944da2dcc0a0eef4509"
-    },
-    {
-      "date": 1590526860217,
-      "name": "logs\\logs-error-2020-05-27-00.log",
-      "hash": "d1f8a7f451a701622b28adc1a6daa31b"
-    },
-    {
-      "date": 1590530892611,
-      "name": "logs\\logs-error-2020-05-27-01.log",
-      "hash": "88e1c841e895dc53657be83371cb6155"
-    },
-    {
-      "date": 1590534028077,
-      "name": "logs\\logs-error-2020-05-27-02.log",
-      "hash": "9b2c94c9125fd6d5566eb3d93157e502"
-    },
-    {
-      "date": 1590537611619,
-      "name": "logs\\logs-error-2020-05-27-03.log",
-      "hash": "0609cd42d4aec4d71b775bcffab5b551"
-    },
-    {
-      "date": 1590575284605,
-      "name": "logs\\logs-error-2020-05-27-13.log",
-      "hash": "a96a418740b7741d5941625343be609e"
-    },
-    {
-      "date": 1590577203811,
-      "name": "logs\\logs-error-2020-05-27-14.log",
-      "hash": "e099dadf8c015cb91df521c3fb7f884a"
-    },
-    {
-      "date": 1590585287579,
-      "name": "logs\\logs-error-2020-05-27-16.log",
-      "hash": "9a064579a6bc7722ae9c427f07b69841"
-    },
-    {
-      "date": 1590588121164,
-      "name": "logs\\logs-error-2020-05-27-17.log",
-      "hash": "56d5e914eb8d88675644aa9a82d6c67a"
-    },
-    {
-      "date": 1590598634606,
-      "name": "logs\\logs-error-2020-05-27-19.log",
-      "hash": "7e0002391847ebeaf104da691df34480"
-    },
-    {
-      "date": 1590598831711,
-      "name": "logs\\logs-error-2020-05-27-20.log",
-      "hash": "401c158918fa44d4e5c59371e472b566"
-    },
-    {
-      "date": 1590603975352,
-      "name": "logs\\logs-error-2020-05-27-21.log",
-      "hash": "0f0e1bfa5db887664cba9b4e60b286ad"
+      "date": 1590616869109,
+      "name": "logs\\logs-error-2020-05-28-01.log",
+      "hash": "cc1d503cda888743179f4bd89c77c66e"
     }
   ]
 }

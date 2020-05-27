@@ -2,12 +2,14 @@ import { DropboxAccess, FileApi } from '../Utils/Interfaces';
 import { Dropbox, files } from 'dropbox';
 import { FileMetadata, ListFolderResult } from '../Utils/Types';
 import Service from '../Models/Service';
+import Logger from '../Utils/Logger';
 
 /**
  *
  * Remote service Dropbox module
  */
 namespace DropboxStorage {
+  const { loggerError } = Logger;
   export class DropboxManager extends Service<Dropbox> implements FileApi {
     /**
      * @param props init service
@@ -30,7 +32,7 @@ namespace DropboxStorage {
         if (result as files.ListFolderResult) return result;
         else return null;
       } catch (err) {
-        console.error(err);
+        loggerError(err);
         return null;
       }
     }
@@ -44,7 +46,7 @@ namespace DropboxStorage {
         if (result as files.DeleteResult) return result;
         else return null;
       } catch (err) {
-        console.error(err);
+        loggerError(err);
         return null;
       }
     }
@@ -61,7 +63,7 @@ namespace DropboxStorage {
 
         return response;
       } catch (err) {
-        console.error(err);
+        loggerError(err);
         return null;
       }
     }
@@ -82,7 +84,7 @@ namespace DropboxStorage {
           contents,
         });
       } catch (err) {
-        console.error(err);
+        loggerError(err);
         return null;
       }
     }
@@ -99,7 +101,7 @@ namespace DropboxStorage {
           : `/${moduleName}/${cardName}/${filename}.${ext}`;
         return await this.getService().filesDownload({ path });
       } catch (err) {
-        console.error(err);
+        loggerError(err);
         return null;
       }
     }
@@ -114,7 +116,7 @@ namespace DropboxStorage {
           path,
         });
       } catch (err) {
-        console.error(err);
+        loggerError(err);
         return null;
       }
     }

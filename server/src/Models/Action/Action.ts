@@ -347,13 +347,16 @@ namespace ActionApi {
         try {
           if (this.getActionType() === 'download_files' && actionResult) {
             const file: files.GetTemporaryLinkResult = actionResult as files.GetTemporaryLinkResult;
-            const { link } = file;
+            const { link = '' } = file;
             const { filename = '' } = actionParam;
             const mimetype = mime.getType(filename as string);
 
             res.setHeader('Content-disposition', 'attachment; filename=' + filename);
             res.setHeader('Content-type', mimetype ? mimetype : 'plain/text');
 
+            if (process.env.NODE_ENV === 'development') {
+              console.log('trace memory:', process.memoryUsage());
+            }
             return request(link).pipe(res);
           }
 
@@ -364,6 +367,7 @@ namespace ActionApi {
           }
 
           let metadata: Meta = [];
+
           if (isPublic) metadata = parsePublicData(actionResult);
           else metadata = actionResult;
 

@@ -7,9 +7,12 @@
   "license": "MIT",
   "scripts": {
     "heroku-postbuild": "cd client && yarn install && yarn add node-sass --dev && cd ../ && yarn buildprod",
+    "dev": "run-p dev:**",
     "start": "node --inspect=9229 -r ts-node/register ./server/src/index.ts && start:watch",
-    "start:watch": "nodemon",
+    "start:watch": "nodemon --watch ./server",
     "start:app": "cd client && yarn start",
+    "dev:server": "cross-env NODE_ENV=development nodemon ./server/src/index.ts --inspect",
+    "dev:app": "cd client && yarn start",
     "build": "run-p build:**",
     "buildprod": "cd server && tsc && cd ../ cd client && yarn build",
     "client": "cd client && yarn build",

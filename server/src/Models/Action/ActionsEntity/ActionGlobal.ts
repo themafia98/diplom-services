@@ -31,7 +31,7 @@ class ActionGlobal implements Action {
     const url: string = (file as Record<string, string>).url || '';
 
     const pathFile: string = `${store}${url.split('download')[1]}` || '';
-    console.log(this.getEntity().getStore());
+
     const deleteFile: files.DeleteResult | null = await this.getEntity().getStore().deleteFile(pathFile);
 
     if (!deleteFile) return null;

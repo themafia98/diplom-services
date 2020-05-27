@@ -29,7 +29,7 @@ class ProcessRouter {
   }
 
   public onExit(worker: Worker): void {
-    const { pid } = worker.process;
+    const { pid = '' } = worker.process;
 
     console.log(`${chalk.yellow('worker')} ${chalk.red(pid || '')} exit.`);
 

@@ -38,7 +38,7 @@ namespace LoggerSpace {
     });
   };
 
-  export const loggerInfo = factory('info', true, true).info;
+  export const loggerInfo = factory('info', false, false).info;
   export const loggerError = factory('error', true, true).error;
 }
 
