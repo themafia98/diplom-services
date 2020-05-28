@@ -111,6 +111,7 @@ class ModalWindow extends React.PureComponent {
     const { Request } = this.context;
 
     if (!name || !password || !departament || !email || loading) {
+      message.warning('Не все поля заполнены');
       return;
     }
 
@@ -268,7 +269,7 @@ class ModalWindow extends React.PureComponent {
 
   handleOk = async (event, action = '', response = '') => {
     const { type } = this.state;
-
+    debugger;
     if (action === 'close') {
       this.showModal(event, type, response, action);
       this.onChangeStatusTask('Закрыт');
@@ -291,10 +292,10 @@ class ModalWindow extends React.PureComponent {
   };
 
   onChangeSelect = (event) => {
-    const { type } = this.state;
+    const { type, reg = {} } = this.state;
     if (type === 'statusTask') {
       this.setState({ ...this.state, taskStatus: event });
-    } else this.setState({ ...this.state, departament: event });
+    } else this.setState({ ...this.state, reg: { ...reg, departament: event } });
   };
 
   onChange = (event) => {
