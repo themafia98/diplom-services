@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useContext, useEffect, useCallback } from 'react';
 import { v4 as uuid } from 'uuid';
 import { getValidContent } from 'Utils';

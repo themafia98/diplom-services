@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { editorTextareaType } from '../types';
 import clsx from 'clsx';

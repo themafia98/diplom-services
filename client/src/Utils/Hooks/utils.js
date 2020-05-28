@@ -1,4 +1,3 @@
-// @ts-nocheck
 import _ from 'lodash';
 import { sucessEvent } from '../';
 import { dataParser } from '../';

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { taskViewType } from '../types';
 import { v4 as uuid } from 'uuid';

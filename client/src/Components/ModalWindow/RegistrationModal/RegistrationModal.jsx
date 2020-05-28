@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { formRegType } from '../types';
 import { Input, Select } from 'antd';

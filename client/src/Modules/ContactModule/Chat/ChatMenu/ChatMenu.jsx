@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect, useState } from 'react';
 import { chatMenuType } from '../../types';
 import clsx from 'clsx';
@@ -58,27 +57,35 @@ const ChatMenu = (props) => {
   }, [usersList.length, iDs.length, isWs]);
 
   useEffect(() => {
-    const singleRooms = listdata.filter((room) => room.type === 'single');
     if (!isWs) return;
-    const rooms = [];
-    for (let j = 0; j < usersList.length; j++) {
-      const user = usersList[j];
+    let tmpRoomCounter = 0;
+    updateRooms(
+      [...listdata, ...usersList].reduce((roomsList, item) => {
+        const _roomsList = [...roomsList];
+        const isRoom = item && !!item?.tokenRoom;
+        if (isRoom) {
+          _roomsList.push(item);
+          return _roomsList;
+        }
 
-      const room = singleRooms.find((room) => room.membersIds.includes(user._id)) || null;
+        if (roomsList.some((it) => it?.type === 'single' && it?.membersIds.includes(item?._id))) {
+          return _roomsList;
+        }
 
-      if (!room) {
-        rooms.push({
+        const tmp = {
           _id: ~~(Math.random() * -10000000),
           type: 'single',
           moduleName: 'chat',
-          tokenRoom: iDs[j],
-          membersIds: uid !== user._id ? [uid, user._id] : [null],
-        });
-        continue;
-      }
-    }
+          tokenRoom: iDs[tmpRoomCounter],
+          membersIds: uid !== item._id ? [uid, item._id] : [null],
+        };
 
-    updateRooms([...singleRooms, ...rooms]);
+        tmpRoomCounter += 1;
+        _roomsList.push(tmp);
+
+        return _roomsList;
+      }, []),
+    );
   }, [usersList, listdata, iDs, uid, isWs]);
 
   return (
@@ -107,7 +114,7 @@ const ChatMenu = (props) => {
                   const { membersIds = [], type } = it || {};
 
                   const chatJson = parseChatJson({ type, item: it }) || {};
-                  const { displayName = '', avatar = null } = chatJson;
+                  const { displayName = '', avatar = null } = chatJson || {};
 
                   const descriptionChatMenu = false ? (
                     <span className="descriptionChatMenu">{/* lastMsg */}</span>

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { сachingAction, errorRequestAction, setStatus } from '../';
 import { cachingHook, getterCacheHook, putterCacheHook, errorHook, updateEntityHook } from 'Utils';
 import { onLoadArtifacts, onLoadSettings } from '../';

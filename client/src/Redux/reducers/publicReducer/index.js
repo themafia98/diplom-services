@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { handleActions } from 'redux-actions';
 import {
   SET_ERROR,

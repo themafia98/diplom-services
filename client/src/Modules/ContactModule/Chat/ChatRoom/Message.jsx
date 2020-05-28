@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { messageType } from '../../types';
 import { Tooltip } from 'antd';

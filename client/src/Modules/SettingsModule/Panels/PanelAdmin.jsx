@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect, useMemo } from 'react';
 import { v4 as uuid } from 'uuid';
 import _ from 'lodash';

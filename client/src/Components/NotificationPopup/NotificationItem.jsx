@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { notificationItemType } from './types';
 import clsx from 'clsx';

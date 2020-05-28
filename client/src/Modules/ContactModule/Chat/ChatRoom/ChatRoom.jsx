@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import moment from 'moment';
 import { chatRoomType } from '../../types';
 import _ from 'lodash';
 import clsx from 'clsx';
@@ -57,12 +56,7 @@ const ChatRoom = (props) => {
     if (messages.length !== msgProps.length) setMessages([...msgProps]);
 
     if (messages && messages.length) {
-      scrollHandler(
-        messages.sort(
-          (a, b) =>
-            moment(a.date, 'DD.MM.YYYY hh:mm:ss').unix() - moment(b.date, 'DD.MM.YYYY hh:mm:ss').unix(),
-        )[messages.length - 1].authorId !== uid,
-      );
+      scrollHandler(messages[messages.length - 1].authorId !== uid);
     }
   }, [messages, msgProps, scrollHandler, uid]);
 

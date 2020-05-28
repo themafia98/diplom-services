@@ -1,4 +1,4 @@
-// @ts-nocheck
+import moment from 'moment';
 import _ from 'lodash';
 import { setSocketConnection, onLoadActiveChats, setSocketError, setActiveChatToken, updateRoom } from '../';
 import { errorRequestAction } from '../../publicActions';
@@ -149,8 +149,12 @@ const loadingDataByToken = (token, listdata, activeModule, isFake = null) => asy
     }
 
     const {
-      data: { response: { metadata: listdataMsgs = [] } = {} },
+      data: { response: { metadata: unsortlistdataMsgs = [] } = {} },
     } = res || {};
+
+    const listdataMsgs = unsortlistdataMsgs.sort(
+      (a, b) => moment(a.date, 'DD.MM.YYYY hh:mm:ss').unix() - moment(b.date, 'DD.MM.YYYY hh:mm:ss').unix(),
+    );
 
     dispatch(
       setActiveChatToken({

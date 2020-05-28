@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import Node from 'Models/Node';
 import modalContext from 'Models/context';

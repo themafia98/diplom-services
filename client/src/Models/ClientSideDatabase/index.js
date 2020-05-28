@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { openDB, deleteDB } from 'idb';
 import _ from 'lodash';
 import config from 'config.json';

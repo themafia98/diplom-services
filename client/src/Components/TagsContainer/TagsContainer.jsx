@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useCallback } from 'react';
 import { v4 as uuid } from 'uuid';
 import clsx from 'clsx';

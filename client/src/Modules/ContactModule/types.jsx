@@ -55,7 +55,7 @@ export const chatRoomType = {
   shouldScroll: bool.isRequired,
   messages: array.isRequired,
   usersList: array.isRequired,
-  tokenRoom: string.isRequired,
+  tokenRoom: oneOfType([string, () => null]),
   myAvatar: string.isRequired,
   messagesLength: oneOfType([number, string]).isRequired,
   onClearScroll: oneOfType([func, () => null]),
@@ -67,10 +67,10 @@ export const chatMenuType = {
   type: string.isRequired,
   isWs: bool.isRequired,
   socketConnection: bool.isRequired,
-  socketErrorStatus: string.isRequired,
+  socketErrorStatus: oneOfType([string, () => null]),
   listdata: array.isRequired,
   usersList: array.isRequired,
-  tokenRoom: string.isRequired,
+  tokenRoom: oneOfType([string, () => null]),
   parseChatJson: oneOfType([func, () => null]),
   onCreateRoom: oneOfType([func, () => null]),
   uid: string.isRequired,
@@ -80,7 +80,7 @@ export const chatMenuType = {
 export const messageType = {
   it: oneOfType([object, () => null]),
   children: oneOfType([object, () => null]),
-  showTooltip: bool.isRequired,
+  showTooltip: bool,
   className: string.isRequired,
 };
 
@@ -93,7 +93,7 @@ export const chatType = {
   webSocket: oneOfType([object, () => null]),
   onUpdateRoom: func,
   onLoadingDataByToken: func,
-  tokenRoom: string.isRequired,
+  tokenRoom: oneOfType([string, () => null]),
   onLoadActiveChats: func,
   onSetSocketConnection: func,
 };

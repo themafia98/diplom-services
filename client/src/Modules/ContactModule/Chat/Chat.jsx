@@ -247,9 +247,9 @@ class Chat extends React.PureComponent {
       udata: { displayName = '' } = {},
       onLoadingDataByToken = null,
     } = this.props;
-
-    if (id < 0) {
-      if (onLoadingDataByToken) onLoadingDataByToken(token, listdata, 'chat', membersIds[1]);
+    debugger;
+    if (id < 0 && onLoadingDataByToken) {
+      onLoadingDataByToken(token, listdata, 'chat', membersIds[1]);
       return;
     }
 
@@ -326,7 +326,7 @@ class Chat extends React.PureComponent {
       else return interlocutor;
     }
 
-    if (type === 'group') return groupName;
+    if (type === 'group') return { displayName: groupName };
   };
 
   getUsersList = () => {

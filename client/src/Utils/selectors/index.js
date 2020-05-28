@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { createSelector } from 'reselect';
 import _ from 'lodash';
 import { cache, settings, artifacts } from './selectors';

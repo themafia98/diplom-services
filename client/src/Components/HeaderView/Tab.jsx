@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import { tabType } from './types';

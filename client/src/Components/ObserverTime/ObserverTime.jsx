@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { observerTimeType } from './types';
 import Scrollbars from 'react-custom-scrollbars';
