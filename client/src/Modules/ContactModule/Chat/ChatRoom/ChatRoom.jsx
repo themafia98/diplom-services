@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import moment from 'moment';
 import { chatRoomType } from '../../types';
 import _ from 'lodash';
 import clsx from 'clsx';
@@ -34,33 +35,36 @@ const ChatRoom = (props) => {
 
   const scrollHandler = useCallback(
     (event) => {
-      if (refScrollbar && refScrollbar.current) {
-        const scrollTop = refScrollbar.current.getScrollTop();
-        const scrollHeight = refScrollbar.current.getScrollHeight();
+      const { current: scrollNode = null } = refScrollbar || {};
+      if (!scrollNode) return;
 
-        if (!event) {
-          refScrollbar.current.scrollToBottom();
-          return;
-        }
+      if (!event) {
+        refScrollbar.current.scrollToBottom();
+        return;
+      }
 
-        if (scrollHeight - scrollTop < 350 && isMount) {
-          return;
-        }
+      const { top: positionX } = scrollNode.getValues();
 
-        if (scrollHeight - scrollTop < 350 && onClearScroll) {
-          refScrollbar.current.scrollToBottom();
-          onClearScroll();
-        }
+      if (event && onClearScroll && positionX >= 0.9) {
+        refScrollbar.current.scrollToBottom();
+        onClearScroll();
       }
     },
-    [isMount, refScrollbar, onClearScroll],
+    [refScrollbar, onClearScroll],
   );
 
   useEffect(() => {
     if (messages.length !== msgProps.length) setMessages([...msgProps]);
 
-    scrollHandler({});
-  }, [messages, msgProps, scrollHandler]);
+    if (messages && messages.length) {
+      scrollHandler(
+        messages.sort(
+          (a, b) =>
+            moment(a.date, 'DD.MM.YYYY hh:mm:ss').unix() - moment(b.date, 'DD.MM.YYYY hh:mm:ss').unix(),
+        )[messages.length - 1].authorId !== uid,
+      );
+    }
+  }, [messages, msgProps, scrollHandler, uid]);
 
   useEffect(() => {
     if (isMount) return;
@@ -84,13 +88,12 @@ const ChatRoom = (props) => {
         event.preventDefault();
       }
       onKeyDown(event, msgValue ? msgValue : msg);
-      scrollHandler();
       setMsg('');
     } else if (event && !_.isNull(msgValue)) {
       pushMessage(event, msgValue);
-      scrollHandler();
       setMsg('');
     }
+    scrollHandler();
   };
 
   const renderChat = (messages) => {
