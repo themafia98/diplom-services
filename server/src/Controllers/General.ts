@@ -176,7 +176,7 @@ namespace General {
         });
 
         const responseExec: Function = await checkerAction.actionsRunner(body, 'exec');
-        const password: ParserResult = responseExec(req, res, { done: true }, false);
+        const password: ParserResult = await responseExec(req, res, { done: true }, false);
 
         if (!password) {
           throw new Error('Invalid checker data');
