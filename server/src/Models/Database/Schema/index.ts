@@ -1,4 +1,4 @@
-import { Schema, model, Model, Document } from 'mongoose';
+import { Schema, model, Model, Document, Types } from 'mongoose';
 import { SchemaEntity } from '../../../Utils/Types';
 import {
   User,
@@ -138,12 +138,14 @@ export const task: Schema<Task> = new Schema(
       phone: String,
       default: {},
     },
+    jurnalItem: { type: Types.ObjectId, ref: 'jurnalItem', required: false },
   },
   { timestamps: true },
 );
 
 export const jurnalItem: Schema<Jurnal> = new Schema(
   {
+    taskKey: { type: Types.ObjectId, ref: 'task', required: false },
     depKey: { type: String, required: true },
     timeLost: { type: String, required: true },
     editor: { type: String, required: true },

@@ -333,7 +333,7 @@ namespace ActionApi {
       }
     }
 
-    public async actionsRunner(actionParam: ActionParams = {}): Promise<Function> {
+    public async actionsRunner(actionParam: ActionParams = {}, mode?: string) {
       const connect = await this.getDbm()
         .connection()
         .catch((err: Error) => console.error(err));
@@ -359,6 +359,8 @@ namespace ActionApi {
             }
             return request(link).pipe(res);
           }
+
+          if (mode === 'exec') return actionResult as any;
 
           if (!actionResult) {
             params.done = false;

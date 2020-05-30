@@ -104,6 +104,7 @@ const loadingDataByToken = (token, listdata, activeModule, isFake = null) => asy
   getState,
   { schema, Request, clientDB },
 ) => {
+  debugger;
   try {
     if (isFake) {
       dispatch(

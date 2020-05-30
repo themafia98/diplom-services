@@ -61,15 +61,11 @@ const ChatMenu = (props) => {
     let tmpRoomCounter = 0;
     updateRooms(
       [...listdata, ...usersList].reduce((roomsList, item) => {
-        const _roomsList = [...roomsList];
         const isRoom = item && !!item?.tokenRoom;
-        if (isRoom) {
-          _roomsList.push(item);
-          return _roomsList;
-        }
+        if (isRoom) return [...roomsList, item];
 
         if (roomsList.some((it) => it?.type === 'single' && it?.membersIds.includes(item?._id))) {
-          return _roomsList;
+          return roomsList;
         }
 
         const tmp = {
@@ -81,9 +77,7 @@ const ChatMenu = (props) => {
         };
 
         tmpRoomCounter += 1;
-        _roomsList.push(tmp);
-
-        return _roomsList;
+        return [...roomsList, tmp];
       }, []),
     );
   }, [usersList, listdata, iDs, uid, isWs]);
@@ -105,7 +99,7 @@ const ChatMenu = (props) => {
         <div className="menuLoading-skeleton">
           <Scrollbars hideTracksWhenNotNeeded={true}>
             {!socketConnection && !socketErrorStatus && isWs ? (
-              generateSkeleton(listdata && listdata?.length ? listdata?.length : 5)
+              generateSkeleton(usersList && usersList?.length ? usersList?.length : 5)
             ) : isWs ? (
               <List
                 key="list-chat"
@@ -129,7 +123,7 @@ const ChatMenu = (props) => {
                       key={it?._id + i}
                     >
                       <Meta
-                        key={`${it}${i}`}
+                        key={`${it?._id}${i}`}
                         avatar={
                           <Avatar
                             src={`data:image/png;base64,${avatar}`}

@@ -22,13 +22,12 @@ namespace Entrypoint {
   const workersRouter = new ProcessRouter(workers, Instanse.ws);
 
   if (cluster.isMaster) {
-    // if setInterval(() => console.log(process.), 100000);
     for (let i = 0; i < cpuLentgh; i++) {
-      debugger;
       const worker: Worker = cluster.fork();
       workersRouter.subscribe(worker);
       workersRouter.addWorker(worker);
     }
+
     loggerInfo('Server and workers to born');
   } else {
     try {
