@@ -247,7 +247,7 @@ class Chat extends React.PureComponent {
       udata: { displayName = '' } = {},
       onLoadingDataByToken = null,
     } = this.props;
-    debugger;
+
     if (id < 0 && onLoadingDataByToken) {
       onLoadingDataByToken(token, listdata, 'chat', membersIds[1]);
       return;
@@ -264,9 +264,8 @@ class Chat extends React.PureComponent {
 
   /**
    * @param {boolean} visible
-   * @param {boolean} shouldUpdate
    */
-  onVisibleChange = (visible, shouldUpdate) => {
+  onVisibleChange = (visible) => {
     this.setState({
       ...this.state,
       shouldUpdate: true,

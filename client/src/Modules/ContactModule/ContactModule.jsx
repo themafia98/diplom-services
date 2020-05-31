@@ -160,7 +160,6 @@ class ContactModule extends React.PureComponent {
         </TabContainer>
         <TabContainer isBackground={isBackgroundCreateNews} visible={path === 'contactModule_createNews'}>
           <CreateNews
-            readOnly={statusApp === 'offline'}
             key="createNews"
             udata={udata}
             statusApp={statusApp}

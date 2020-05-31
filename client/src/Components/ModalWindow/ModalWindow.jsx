@@ -189,7 +189,7 @@ class ModalWindow extends React.PureComponent {
 
     const {
       onCaching,
-      routeDataActive: { key = null, name: nameTask = '' } = {},
+      routeDataActive: { key = '', _id: id = '', name: nameTask = '' } = {},
       actionType,
       keyTask,
       udata: { displayName = '', _id: uid = '' } = {},
@@ -209,7 +209,7 @@ class ModalWindow extends React.PureComponent {
       action: {
         type: 'tasks_link',
         moduleName: 'taskModule',
-        link: key,
+        link: id ? id : key,
       },
       uidCreater: uid,
       authorName: displayName,
@@ -269,7 +269,7 @@ class ModalWindow extends React.PureComponent {
 
   handleOk = async (event, action = '', response = '') => {
     const { type } = this.state;
-    debugger;
+
     if (action === 'close') {
       this.showModal(event, type, response, action);
       this.onChangeStatusTask('Закрыт');

@@ -138,15 +138,13 @@ export const task: Schema<Task> = new Schema(
       phone: String,
       default: {},
     },
-    jurnalItem: { type: Types.ObjectId, ref: 'jurnalItem', required: false },
   },
   { timestamps: true },
 );
 
 export const jurnalItem: Schema<Jurnal> = new Schema(
   {
-    taskKey: { type: Types.ObjectId, ref: 'task', required: false },
-    depKey: { type: String, required: true },
+    depKey: { type: Types.ObjectId, ref: 'task', required: true },
     timeLost: { type: String, required: true },
     editor: { type: String, required: true },
     date: { type: [String], required: true },
@@ -162,7 +160,7 @@ export const logger: Schema<Logger> = new Schema(
     uid: { type: String, required: true },
     message: { type: String, required: true },
     date: { type: Date, required: true },
-    depKey: { type: String, required: true },
+    depKey: { type: String, required: true } /** name of settings */,
   },
   { timestamps: true },
 );
@@ -198,7 +196,16 @@ export const chatRoom: Schema<ChatRoom> = new Schema(
     type: { type: String, required: true },
     moduleName: { type: String, required: true },
     tokenRoom: { type: String, required: true },
-    membersIds: { type: [String], required: true },
+    membersIds: {
+      type: [
+        {
+          type: Types.ObjectId,
+          ref: 'users',
+          required: true,
+        },
+      ],
+      required: true,
+    },
     groupName: String,
   },
   { timestamps: true },
@@ -213,7 +220,7 @@ export const notification: Schema<Notification> = new Schema(
     isRead: { type: Boolean, require: true },
     action: {
       type: { type: String, required: true },
-      link: { type: String, required: true },
+      link: { type: Types.ObjectId, required: true },
       moduleName: { type: String, required: true },
     },
     uidCreater: { type: String, required: true },
@@ -229,7 +236,7 @@ export const wikiTree: Schema<WikiTree> = new Schema(
     title: { type: String, required: true },
     level: { type: Number, required: true },
     path: { type: String, reuired: true },
-    parentId: { type: String, required: true },
+    parentId: { type: Types.ObjectId, required: true },
     index: { type: Number, required: true },
     accessGroups: { type: [String], required: true },
     key: { type: String },
@@ -241,7 +248,7 @@ export const wikiTree: Schema<WikiTree> = new Schema(
 
 export const wikiPage: Schema<WikiPage> = new Schema(
   {
-    treeId: { type: String, required: true },
+    treeId: { type: Types.ObjectId, ref: 'wikiTree', required: true },
     lastEditName: { type: String, required: true },
     lastEditDate: { type: String, required: true },
     content: {

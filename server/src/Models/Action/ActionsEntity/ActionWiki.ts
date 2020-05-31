@@ -26,7 +26,7 @@ class ActionWiki implements Action {
   }
 
   private async deleteLeafs(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
-    const { queryParams = null } = (actionParam as Record<string, Array<string>>) || {};
+    const { queryParams = null } = (actionParam as Record<string, object>) || {};
 
     if (!queryParams || (queryParams && _.isEmpty(queryParams))) return null;
 
@@ -37,7 +37,33 @@ class ActionWiki implements Action {
       queryParams,
     };
 
-    return this.getEntity().deleteEntity(model, query);
+    const { ids = [] } = (queryParams as Record<string, string[]>) || {};
+    let idsPages: Array<Types.ObjectId> = [];
+    const pageModel: Model<Document> | null = getModelByName('wikiPage', 'wikiPage');
+
+    if (pageModel) idsPages = await this.getWikiPageList(ids, pageModel);
+
+    const deleteResult: ParserData = await this.getEntity().deleteEntity(model, query);
+    const { deletedCount = 0 } = (deleteResult as Record<string, number>) || {};
+
+    if (deletedCount && _.isArray(idsPages) && pageModel)
+      await this.getEntity().deleteEntity(pageModel, {
+        _id: { $in: idsPages },
+      });
+
+    return deleteResult;
+  }
+
+  private async getWikiPageList(ids: Array<string>, model: Model<Document>): Promise<Array<Types.ObjectId>> {
+    if (!ids || !_.isArray(ids)) return [];
+
+    const idsObjectId: Array<Types.ObjectId> = ids.map((id) => Types.ObjectId(id)).filter(Boolean);
+
+    const pagesList = await this.getEntity().getAll(model, {
+      _id: { $in: idsObjectId },
+    });
+
+    return _.isArray(pagesList) ? pagesList.map(({ _id = '' }) => Types.ObjectId(_id)).filter(Boolean) : [];
   }
 
   private async getWikiPage(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {

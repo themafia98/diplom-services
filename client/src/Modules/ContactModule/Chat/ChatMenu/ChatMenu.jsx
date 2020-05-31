@@ -99,7 +99,7 @@ const ChatMenu = (props) => {
         <div className="menuLoading-skeleton">
           <Scrollbars hideTracksWhenNotNeeded={true}>
             {!socketConnection && !socketErrorStatus && isWs ? (
-              generateSkeleton(usersList && usersList?.length ? usersList?.length : 5)
+              generateSkeleton(listdata && listdata?.length ? listdata?.length : 5)
             ) : isWs ? (
               <List
                 key="list-chat"

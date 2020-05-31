@@ -203,9 +203,9 @@ const buildRequestList = (metadata = [], prefix = '') => {
   }, []);
 };
 
-const getValidContent = (contentState) => {
+const getValidContent = (contentStateProp) => {
+  const contentState = contentStateProp ? contentStateProp : {};
   /** Validation for drawer lib */
-  if (!contentState) return null;
 
   const validContentState = {
     ...contentState,

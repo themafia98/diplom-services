@@ -35,7 +35,7 @@ class EditorTextarea extends React.Component {
     const { contentState } = props;
     const { contentState: content } = state;
 
-    if (_.isEmpty(content)) {
+    if (_.isEmpty(content) || _.isNull(contentState)) {
       return {
         ...state,
         contentState: getValidContent(contentState),

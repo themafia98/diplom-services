@@ -225,6 +225,10 @@ namespace Utils {
       },
     };
   };
+
+  export const isValidObjectId = (id: string): boolean => {
+    return !!id && _.isString(id) && id.length <= 24;
+  };
 }
 
 export default Utils;

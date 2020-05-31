@@ -8,4 +8,8 @@ declare namespace NodeJS {
     DB_URL: string;
     DB_NAME?: string;
   }
+
+  export interface Process {
+    send(params: any): any;
+  }
 }

@@ -87,7 +87,25 @@ class CreateTask extends React.PureComponent {
     return state;
   };
 
+  getFilteredUsers = (list) => {
+    return list.reduce((usersList, user) => {
+      const { _id = '', displayName = '' } = user;
+
+      if (!user || !_id || !displayName) return usersList;
+
+      return [
+        ...usersList,
+        {
+          _id,
+          displayName,
+        },
+      ];
+    }, []);
+  };
+
   componentDidMount = async () => {
+    const { router: { routeData = {} } = {} } = this.props;
+
     const { Request = null } = this.context;
     if (!Request) return;
 
@@ -98,25 +116,18 @@ class CreateTask extends React.PureComponent {
       if (response && response.status === 200) {
         const { data: { response: { metadata = [] } = {} } = {} } = response || {};
 
-        const filteredUsers = metadata.reduce((usersList, user) => {
-          const { _id = '', displayName = '' } = user;
-
-          if (!user || !_id || !displayName) return usersList;
-
-          return [
-            ...usersList,
-            {
-              _id,
-              displayName,
-            },
-          ];
-        }, []);
+        const filteredUsers = this.getFilteredUsers(metadata);
 
         this.setState({
           filteredUsers,
         });
       } else throw new Error('fail load user list');
     } catch (err) {
+      const { mainModule__global: { users = [] } = {} } = routeData || {};
+      this.setState({
+        ...this.state,
+        filteredUsers: this.getFilteredUsers(users),
+      });
       message.error('Ошибка загрузки сотрудников.');
       console.error(err);
     }
@@ -319,7 +330,8 @@ class CreateTask extends React.PureComponent {
         },
         () => {
           message.success(`Задача создана.`);
-          const { key = '' } = metadata[0] || metadata || {};
+          const { key: recordKey = '', _id: id = '' } = metadata[0] || metadata || {};
+          const key = id ? id : recordKey;
           if (!key || statusApp !== 'online') return;
 
           const itemNotification = {

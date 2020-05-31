@@ -101,7 +101,7 @@ class File extends React.Component {
     const { directory = false } = this.state;
     return (
       <div className="file">
-        <Checkbox defaultChecked={false} onChange={this.onChangeMode} value={directory}>
+        <Checkbox defaultChecked={false} onChange={this.onChangeMode} checked={directory}>
           Загрузка дирректории
         </Checkbox>
         <Dragger

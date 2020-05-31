@@ -64,7 +64,7 @@ class CreateNews extends React.PureComponent {
         const res = await createEntity('news', body, { clientDB, statusApp, onSetStatus });
         const { result: { data = {} } = {}, offline = false } = res || {};
         const { response = {} } = data || {};
-        const { metadata: { _id: key = '' } = {}, params: { done = false } = {} } = response;
+        const { metadata: { _id: id = '', key = '' } = {}, params: { done = false } = {} } = response;
 
         if (!done && !offline) {
           throw new Error('Bad create news');
@@ -79,7 +79,7 @@ class CreateNews extends React.PureComponent {
             action: {
               type: 'news_link',
               moduleName: 'contactModule',
-              link: key,
+              link: id ? id : key,
             },
             uidCreater: uid,
             authorName: displayName,

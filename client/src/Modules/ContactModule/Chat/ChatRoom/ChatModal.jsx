@@ -11,6 +11,8 @@ class ChatModal extends React.PureComponent {
     type: 'single',
     membersIds: [],
   };
+  groupNameRef = React.createRef();
+
   static contextType = modelContext;
   static defaultProps = {
     visible: false,
@@ -23,11 +25,12 @@ class ChatModal extends React.PureComponent {
     const { Request = null } = this.context;
     const { visible, onVisibleChange, uid } = this.props;
     const { type = '', membersIds = [] } = this.state;
+    const { current: groupNameNode = null } = this.groupNameRef || {};
     try {
       const groupProps =
         type !== 'single'
           ? {
-              groupName: this.groupNameRef ? this.groupNameRef.state.value : null,
+              groupName: groupNameNode ? groupNameNode?.state?.value : null,
             }
           : {};
 
@@ -47,7 +50,7 @@ class ChatModal extends React.PureComponent {
         throw new Error('Bad response create chat room');
       }
 
-      if (onVisibleChange) onVisibleChange(visible, res.status === 200);
+      if (onVisibleChange) onVisibleChange(visible);
     } catch (error) {
       if (error?.response?.status !== 404) console.error(error.message);
       if (onVisibleChange) onVisibleChange(visible);
@@ -82,12 +85,6 @@ class ChatModal extends React.PureComponent {
       membersIds: isMore ? [membersIds[0]] : [...membersIds],
     });
   };
-
-  groupNameRef = null;
-  /**
-   * @param {HTMLElement} node
-   */
-  groupNameRefFunc = (node) => (this.groupNameRef = node);
 
   render() {
     const { confirmLoading, type = 'single', membersIds = [] } = this.state;

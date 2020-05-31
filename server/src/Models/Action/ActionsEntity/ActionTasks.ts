@@ -4,7 +4,7 @@ import { ParserData } from '../../../Utils/Types';
 import Utils from '../../../Utils';
 import _ from 'lodash';
 import { ObjectID } from 'mongodb';
-const { getModelByName, generateRemoteTask } = Utils;
+const { getModelByName, generateRemoteTask, isValidObjectId } = Utils;
 
 class ActionTasks implements Action {
   constructor(private entity: Actions) {}
@@ -63,13 +63,22 @@ class ActionTasks implements Action {
       _.isEmpty(queryParams) || !(queryParams as Record<string, string[]>).keys
         ? {}
         : (queryParams as ActionParams);
+    const { keys = [] } = (queryParams as Record<string, string[]>) || {};
+    const parsedKeys: Array<Types.ObjectId> = _.isArray(keys)
+      ? keys.reduce((keysList: Array<Types.ObjectId>, key: string) => {
+          if (isValidObjectId(key)) return [...keysList, Types.ObjectId(key)];
+
+          return keysList;
+        }, [])
+      : keys;
     const filter: Record<string, Array<object>> = await this.getDataByFilter(
       actionParam,
       _id ? (filterCounter as string) : null,
     );
+
     const query = {
-      where: 'key',
-      in: (queryParams as Record<string, string[]>).keys,
+      where: '_id',
+      in: parsedKeys,
       filter,
     };
 

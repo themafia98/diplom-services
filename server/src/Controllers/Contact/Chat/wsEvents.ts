@@ -23,9 +23,8 @@ export default (ws: WebSocketWorker, dbm: Dbms, server: HttpServer) => {
       const { tokenRoom = '' } = (result as Record<string, string>) || {};
       socket.join(tokenRoom);
       const response = { room: result, msg: fakeMsg };
-      const send: Function = process.send as Function;
 
-      send({
+      (process as any).send({
         action: 'emitSocket',
         payload: {
           event: 'updateFakeRoom',

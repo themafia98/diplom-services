@@ -302,9 +302,9 @@ class DynamicTable extends React.PureComponent {
         } = this.props;
         const { config = {} } = this.context;
 
-        const { key = '' } = record || {};
-        if (!key) return;
-
+        const { key: recordKey = '', _id: id = '' } = record || {};
+        if (!id && !recordKey) return;
+        const key = id ? id : recordKey;
         if (config.tabsLimit <= actionTabs.length)
           return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
 

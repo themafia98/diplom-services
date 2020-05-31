@@ -80,17 +80,17 @@ class TaskView extends React.PureComponent {
     const {
       publicReducer: { caches = {} } = {},
       router: {
-        routeDataActive: { key = '', editor = '', uidCreater = '', authorName = '' } = {},
+        routeDataActive: { _id: id = '', key = '', editor = '', uidCreater = '', authorName = '' } = {},
         routeDataActive = {},
       },
       onLoadCacheData,
-      data: { key: keyProps = '' } = {},
+      data: { id: idProps = '' } = {},
       onSaveCache = null,
     } = this.props;
     const { Request = {} } = this.context;
     const { actionType, key: taskId } = this.state;
 
-    const idTask = !_.isEmpty(routeDataActive) && key ? key : keyProps ? keyProps : '';
+    const idTask = !_.isEmpty(routeDataActive) && id ? id : idProps ? idProps : '';
 
     if (_.isEmpty(caches) || (key && !caches[key]) || (!key && onLoadCacheData)) {
       onSaveCache({
@@ -564,7 +564,7 @@ class TaskView extends React.PureComponent {
     const { router: { routeDataActive = {} } = {}, onCaching, onUpdate, path, uuid, udata = {} } = this.props;
     const { mode, actionType, modeControll, modeEditContent, isLoad = false, type = 'default' } = this.state;
 
-    const { key = '', status = '', description = '' } = routeDataActive || {};
+    const { _id: id = '', key = '', status = '', description = '' } = routeDataActive || {};
     return (
       <ModalWindow
         actionTypeList={type}
@@ -574,7 +574,7 @@ class TaskView extends React.PureComponent {
         mode={mode}
         path={path}
         key={key ? key : uuid()}
-        keyTask={key ? key : null}
+        keyTask={id ? id : null}
         accessStatus={accessStatus}
         onUpdate={onUpdate}
         onEdit={this.onEdit}

@@ -1,9 +1,10 @@
-import { Model, Document } from 'mongoose';
+import { Model, Document, Types } from 'mongoose';
+import _ from 'lodash';
 import { ActionParams, Actions, Action } from '../../../Utils/Interfaces';
 import { ParserData } from '../../../Utils/Types';
 import Utils from '../../../Utils';
 
-const { getModelByName } = Utils;
+const { getModelByName, isValidObjectId } = Utils;
 
 class ActionJournal implements Action {
   constructor(private entity: Actions) {}
@@ -13,7 +14,14 @@ class ActionJournal implements Action {
   }
 
   private async getJurnal(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
-    const { depKey } = actionParam;
+    const { depKey: dirtyKey = '' } = actionParam as Record<string, string>;
+
+    if (!isValidObjectId(dirtyKey)) return null;
+
+    const depKey = Types.ObjectId(dirtyKey);
+
+    if (!depKey) return null;
+
     const conditions = { depKey };
     const actionData: ParserData = await this.getEntity().getAll(model, conditions);
     return actionData;
@@ -21,8 +29,14 @@ class ActionJournal implements Action {
 
   private async setJournal(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     try {
-      const { item = {} } = actionParam;
-      const actionData: ParserData = await this.getEntity().createEntity(model, item as object);
+      const { item = {} } = actionParam as Record<string, object>;
+      const { depKey: dirtyKey = '' } = (item as Record<string, string>) || {};
+      const depKey = Types.ObjectId(dirtyKey);
+
+      if (!depKey) return null;
+
+      const jurnalItem = { ...item, depKey };
+      const actionData: ParserData = await this.getEntity().createEntity(model, jurnalItem);
 
       return actionData;
     } catch (err) {

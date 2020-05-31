@@ -223,7 +223,7 @@ export default handleActions(
 
       if (!pathPage) return { ...state };
 
-      const validKey = keyRouteData || id || 'undefiendModule';
+      const validKey = id || keyRouteData || 'undefiendModule';
       const isString = typeof RDA === 'string';
 
       const routeDataActive = !isString ? RDA : routeData[pathPage] || {};
