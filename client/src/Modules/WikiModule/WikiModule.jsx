@@ -129,7 +129,7 @@ class WikiModule extends React.PureComponent {
       }
       const index = ++metadata.filter((nodeMeta) => nodeMeta?.parentId === indexId).length;
       const rest = new Request();
-      const key = uuid();
+
       const res = await rest.sendRequest('/wiki/createLeaf', 'PUT', {
         type: 'wikiTree',
         item: !item
@@ -139,9 +139,8 @@ class WikiModule extends React.PureComponent {
               path: `0-${index}`,
               index,
               accessGroups: node?.accessGroups?.length ? [...node.accessGroups] : ['full'],
-              key,
             }
-          : { ...item, key },
+          : { ...item },
       });
 
       if (res.status !== 200) {
@@ -383,7 +382,7 @@ class WikiModule extends React.PureComponent {
       selectedNodeMetadata = null,
       selectedNode = '',
     } = this.state;
-    const { _id: key = '' } = selectedNodeMetadata || {};
+    const { _id: id = '' } = selectedNodeMetadata || {};
     const { metadata = [], router: { shouldUpdate = false } = {}, udata = {} } = this.props;
     const isLoading = isLoadingState || (shouldUpdate && !metadata?.length);
 
@@ -423,7 +422,7 @@ class WikiModule extends React.PureComponent {
             <div className="col-8 viewport-max">
               {selectedNode ? (
                 <WikiPage
-                  key={key}
+                  key={id}
                   udata={udata}
                   onChangeWikiPage={this.onChangeWikiPage}
                   metadata={selectedNodeMetadata}

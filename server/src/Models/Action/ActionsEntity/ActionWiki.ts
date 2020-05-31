@@ -1,4 +1,4 @@
-import { Model, Document, Types } from 'mongoose';
+import { Model, Document, Types, isValidObjectId } from 'mongoose';
 import { ActionParams, Actions, Action } from '../../../Utils/Interfaces';
 import { ParserData } from '../../../Utils/Types';
 import Utils from '../../../Utils';
@@ -18,11 +18,18 @@ class ActionWiki implements Action {
   }
 
   private async createLeaf(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
-    const { item = null } = actionParam || {};
+    const { item = null } = (actionParam as Record<string, object>) || {};
+    const { parentId = 'root' } = (item as Record<string, string>) || {};
+    const isRoot = parentId === 'root';
 
-    if (!item || (item && _.isEmpty(item))) return null;
+    if (!item || (item && _.isEmpty(item)) || _.isNull(parentId) || (!isRoot && !isValidObjectId(parentId))) {
+      return null;
+    }
 
-    return this.getEntity().createEntity(model, item as object);
+    const validId = !isRoot ? Types.ObjectId(parentId) : parentId;
+    if (!validId) return null;
+
+    return this.getEntity().createEntity(model, { ...item, parentId: validId } as object);
   }
 
   private async deleteLeafs(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {

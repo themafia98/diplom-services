@@ -236,7 +236,7 @@ export const wikiTree: Schema<WikiTree> = new Schema(
     title: { type: String, required: true },
     level: { type: Number, required: true },
     path: { type: String, reuired: true },
-    parentId: { type: Types.ObjectId, required: true },
+    parentId: { type: Schema.Types.Mixed, required: true, default: 'root' }, // ObjectId | root string
     index: { type: Number, required: true },
     accessGroups: { type: [String], required: true },
     key: { type: String },
