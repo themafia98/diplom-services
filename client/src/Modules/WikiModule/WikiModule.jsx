@@ -1,6 +1,5 @@
 import React from 'react';
 import { wikiModuleType } from './types';
-import { v4 as uuid } from 'uuid';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import Scrollbars from 'react-custom-scrollbars';

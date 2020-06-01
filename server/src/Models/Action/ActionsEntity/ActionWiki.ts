@@ -29,45 +29,53 @@ class ActionWiki implements Action {
     const validId = !isRoot ? Types.ObjectId(parentId) : parentId;
     if (!validId) return null;
 
-    return this.getEntity().createEntity(model, { ...item, parentId: validId } as object);
+    return await this.getEntity().createEntity(model, { ...item, parentId: validId } as object);
   }
 
   private async deleteLeafs(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const { queryParams = null } = (actionParam as Record<string, object>) || {};
 
     if (!queryParams || (queryParams && _.isEmpty(queryParams))) return null;
+    const { ids = [] } = (queryParams as Record<string, string[]>) || {};
+    const parsedIds: Array<Types.ObjectId | string> = _.isArray(ids)
+      ? ids.map((id) => (isValidObjectId ? Types.ObjectId(id) : id))
+      : ids;
 
     const query: ActionParams = {
       multiple: true,
       mode: 'many',
       findBy: '_id',
-      queryParams,
+      queryParams: { ids: parsedIds },
     };
 
-    const { ids = [] } = (queryParams as Record<string, string[]>) || {};
     let idsPages: Array<Types.ObjectId> = [];
     const pageModel: Model<Document> | null = getModelByName('wikiPage', 'wikiPage');
 
-    if (pageModel) idsPages = await this.getWikiPageList(ids, pageModel);
+    if (pageModel) idsPages = await this.getWikiPageList(parsedIds, pageModel);
 
     const deleteResult: ParserData = await this.getEntity().deleteEntity(model, query);
     const { deletedCount = 0 } = (deleteResult as Record<string, number>) || {};
 
-    if (deletedCount && _.isArray(idsPages) && pageModel)
+    if (deletedCount && _.isArray(idsPages) && pageModel) {
       await this.getEntity().deleteEntity(pageModel, {
-        _id: { $in: idsPages },
+        multiple: true,
+        mode: 'many',
+        findBy: '_id',
+        queryParams: { ids: idsPages },
       });
+    }
 
     return deleteResult;
   }
 
-  private async getWikiPageList(ids: Array<string>, model: Model<Document>): Promise<Array<Types.ObjectId>> {
+  private async getWikiPageList(
+    ids: Array<Types.ObjectId>,
+    model: Model<Document>,
+  ): Promise<Array<Types.ObjectId>> {
     if (!ids || !_.isArray(ids)) return [];
 
-    const idsObjectId: Array<Types.ObjectId> = ids.map((id) => Types.ObjectId(id)).filter(Boolean);
-
     const pagesList = await this.getEntity().getAll(model, {
-      _id: { $in: idsObjectId },
+      treeId: { $in: ids },
     });
 
     return _.isArray(pagesList) ? pagesList.map(({ _id = '' }) => Types.ObjectId(_id)).filter(Boolean) : [];
@@ -75,23 +83,45 @@ class ActionWiki implements Action {
 
   private async getWikiPage(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const { methodQuery = {} } = actionParam as Record<string, ActionParams>;
-    const result = await this.getEntity().findOnce(model, methodQuery);
+    const { treeId: treeIdDirty = '' } = (methodQuery as Record<string, string>) || {};
+    const treeId: Types.ObjectId | null = isValidObjectId(treeIdDirty) ? Types.ObjectId(treeIdDirty) : null;
+
+    if (!treeId) return null;
+
+    const result = await this.getEntity().findOnce(model, { ...methodQuery, treeId });
     return result;
   }
 
   private async update(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     try {
-      const { queryParams = {}, updateItem: updateProps = {} } = actionParam as Record<string, object>;
-      const { pageId: _id } = queryParams as Record<string, string>;
-      const isVirtual = _id.includes('virtual');
+      const { queryParams = {}, updateItem: updateItemDirty = {} } = actionParam as Record<string, object>;
+      const { pageId: pageIdDirty = '' } = queryParams as Record<string, string>;
+
+      const isVirtual = pageIdDirty.includes('virtual');
+
+      const { treeId: treeIdDirty = '' } = (updateItemDirty as Record<string, string>) || {};
+
+      const treeId: Types.ObjectId | string = isValidObjectId(treeIdDirty)
+        ? Types.ObjectId(treeIdDirty)
+        : treeIdDirty;
+
+      const updateProps = {
+        ...updateItemDirty,
+        treeId,
+      };
 
       if (isVirtual) {
         const actionData: ParserData = await this.getEntity().createEntity(model, updateProps);
         return actionData;
       }
 
-      const queryFind: ActionParams = { _id: Types.ObjectId(_id) };
-      const query: ActionParams = { _id: Types.ObjectId(_id), updateProps };
+      const isValidId = isValidObjectId(pageIdDirty);
+      const pageId = isValidId ? Types.ObjectId(pageIdDirty) : null;
+
+      const queryFind: ActionParams = pageId ? { _id: pageId } : {};
+      const query: ActionParams = { updateProps };
+
+      if (pageId) query._id = pageId;
 
       await this.getEntity().updateEntity(model, query);
       const actionData: ParserData = await this.getEntity().findOnce(model, queryFind);
