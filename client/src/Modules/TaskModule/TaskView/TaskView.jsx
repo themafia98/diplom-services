@@ -333,6 +333,7 @@ class TaskView extends React.PureComponent {
     const { modeControllEdit: { date = [] } = {} } = this.state;
     const newDate = [...date];
     newDate[1] = dateString;
+
     return this.setState({
       ...this.state,
       modeEditContent: false,
@@ -404,7 +405,7 @@ class TaskView extends React.PureComponent {
         id,
         key,
         path,
-        updateBy: 'key',
+        updateBy: '_id',
         actionType: 'update_many',
         updateItem: { ...validHash },
         item: { ...routeDataActive },

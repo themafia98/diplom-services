@@ -175,7 +175,7 @@ const middlewareUpdate = (props = {}) => async (dispatch, getState, { schema, Re
   } = props;
   const rest = new Request();
   /**
-   * update by @property {string} key more prioritized than @property {string} id
+   * update by @property {string} id more prioritized than @property {string} key
    */
   try {
     const isMany = actionType === 'update_many';
@@ -188,7 +188,15 @@ const middlewareUpdate = (props = {}) => async (dispatch, getState, { schema, Re
     const { dataItems = null } = items;
 
     if (error) throw new Error(error);
-    const dep = { updateBy, store, schema, dataItems, id: key ? key : id, updateItemStateAction };
+    const dep = {
+      updateBy,
+      store,
+      schema,
+      dataItems:
+        Array.isArray(dataItems) && dataItems.length === 1 ? dataItems[dataItems.length - 1] : dataItems,
+      id: id ? id : key,
+      updateItemStateAction,
+    };
 
     await updateEntityHook(dispatch, dep);
   } catch (error) {

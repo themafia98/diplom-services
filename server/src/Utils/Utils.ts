@@ -184,7 +184,7 @@ namespace Utils {
             const { _doc: item = {} } = it as Record<string, object>;
 
             const itemValid = Object.keys(item).reduce((obj: ResponseDocument, key: string): object => {
-              const addditionalRule = rules === 'users' ? !key.includes('At') : true;
+              const addditionalRule: boolean = rules === 'users' ? !key.includes('At') : true;
               if (!key.includes('password') && !key.includes('__v') && addditionalRule) {
                 obj[key] = (item as ResponseDocument)[key];
               }

@@ -71,7 +71,7 @@ const updateEntityHook = async (dispatch, dep = {}) => {
 
   const schemaTemplate = getStoreSchema(store);
 
-  const dataList = Array.isArray(dataItems) ? dataItems : [dataItems];
+  const dataList = Array.isArray(dataItems) && dataItems.length === 1 ? dataItems : [dataItems];
   const storeCopy = dataList.map((it) => schema?.getSchema(schemaTemplate, it)).filter(Boolean);
 
   if (!storeCopy) return;

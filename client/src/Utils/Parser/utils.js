@@ -2,11 +2,9 @@ import moment from 'moment';
 /** Utils parser */
 
 const runNoCorsParser = (copyStore, sortBy, storeLoad, pathValid) => {
-  debugger;
   const sortedCopyStore =
     !sortBy && copyStore.every((it) => it.createdAt)
       ? copyStore.sort((a, b) => {
-          debugger;
           const aDate = moment(a.createdAt).unix();
           const bDate = moment(b.createdAt).unix();
           return bDate - aDate;

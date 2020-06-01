@@ -48,7 +48,7 @@ const dataParser = (flag = false, isLocalUpdate = true, dep = {}, offlineStore =
   storeCopyValid.forEach((it) => schema.isPublicKey(it) && clientDB.updateItem(storeLoad, it));
 
   if (requestError !== null) shouldClearError = true;
-  debugger;
+
   const sortedCopyStore =
     !sortBy && storeCopyValid.every((it) => it.createdAt)
       ? storeCopyValid.sort((a, b) => {
