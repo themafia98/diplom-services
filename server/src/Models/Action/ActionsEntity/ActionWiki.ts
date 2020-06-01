@@ -37,8 +37,11 @@ class ActionWiki implements Action {
 
     if (!queryParams || (queryParams && _.isEmpty(queryParams))) return null;
     const { ids = [] } = (queryParams as Record<string, string[]>) || {};
-    const parsedIds: Array<Types.ObjectId | string> = _.isArray(ids)
-      ? ids.map((id) => (isValidObjectId ? Types.ObjectId(id) : id))
+    const parsedIds: Array<Types.ObjectId> = _.isArray(ids)
+      ? ids.reduce((list: Array<Types.ObjectId>, id: string) => {
+          if (isValidObjectId(id)) return [...list, Types.ObjectId(id)];
+          return list;
+        }, [])
       : ids;
 
     const query: ActionParams = {
