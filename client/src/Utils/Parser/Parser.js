@@ -72,7 +72,7 @@ const getNormalizedPath = (useStore = false, dep = {}) => {
 };
 
 /**
- * @deprecated 06.06.2020
+ * @deprecated 06.05.2020
  * @param {string} b64Data
  * @param contentType
  * @param sliceSize

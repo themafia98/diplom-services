@@ -1,10 +1,10 @@
-import { Model, Document, Types } from 'mongoose';
+import { Model, Document, Types, isValidObjectId } from 'mongoose';
 import _ from 'lodash';
 import { ActionParams, Actions, Action } from '../../../Utils/Interfaces';
 import { ParserData } from '../../../Utils/Types';
 import Utils from '../../../Utils';
 
-const { getModelByName, isValidObjectId } = Utils;
+const { getModelByName } = Utils;
 
 class ActionJournal implements Action {
   constructor(private entity: Actions) {}

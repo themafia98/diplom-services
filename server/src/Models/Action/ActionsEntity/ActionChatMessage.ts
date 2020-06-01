@@ -1,9 +1,9 @@
-import { Model, Document, Types } from 'mongoose';
+import { Model, Document, Types, isValidObjectId } from 'mongoose';
 import { ActionParams, Actions, Action } from '../../../Utils/Interfaces';
 import { ParserData, MessageOptions } from '../../../Utils/Types';
 import Utils from '../../../Utils';
 
-const { getModelByName, isValidObjectId } = Utils;
+const { getModelByName } = Utils;
 
 class ActionChatMessage implements Action {
   constructor(private entity: Actions) {}

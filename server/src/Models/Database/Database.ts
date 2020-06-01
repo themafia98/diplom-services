@@ -53,7 +53,7 @@ namespace Database {
       }
     }
 
-    /** @deprecated */
+    /** @deprecated 20.05.2020 */
     public async disconnect(): Promise<typeof mongoose | null> {
       try {
         // await mongoose.disconnect();

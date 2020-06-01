@@ -226,6 +226,7 @@ namespace Utils {
     };
   };
 
+  /** @deprecated 01.06.2020 should use mongoose isValidObjectId */
   export const isValidObjectId = (id: string): boolean => {
     return !!id && _.isString(id) && id.length <= 24;
   };

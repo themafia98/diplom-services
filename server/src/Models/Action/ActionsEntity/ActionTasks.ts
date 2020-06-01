@@ -1,10 +1,10 @@
-import { Model, Document, Types, FilterQuery } from 'mongoose';
+import { Model, Document, Types, FilterQuery, isValidObjectId } from 'mongoose';
 import { ActionParams, Actions, Action, TicketRemote } from '../../../Utils/Interfaces';
 import { ParserData } from '../../../Utils/Types';
 import Utils from '../../../Utils';
 import _ from 'lodash';
 import { ObjectID } from 'mongodb';
-const { getModelByName, generateRemoteTask, isValidObjectId } = Utils;
+const { getModelByName, generateRemoteTask } = Utils;
 
 class ActionTasks implements Action {
   constructor(private entity: Actions) {}

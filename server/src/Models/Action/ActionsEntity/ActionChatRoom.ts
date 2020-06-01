@@ -1,9 +1,9 @@
-import { Model, Document, Types } from 'mongoose';
+import { Model, Document, Types, isValidObjectId } from 'mongoose';
 import { v4 as uuid } from 'uuid';
 import { ActionParams, Actions, Action } from '../../../Utils/Interfaces';
 import { ParserData } from '../../../Utils/Types';
 import Utils from '../../../Utils';
-const { getModelByName, checkEntity, isValidObjectId } = Utils;
+const { getModelByName, checkEntity } = Utils;
 
 class ActionChatRoom implements Action {
   constructor(private entity: Actions) {}
