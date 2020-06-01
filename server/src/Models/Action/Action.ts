@@ -370,7 +370,7 @@ namespace ActionApi {
 
           let metadata: Meta = [];
 
-          if (isPublic) metadata = parsePublicData(actionResult);
+          if (isPublic) metadata = parsePublicData(actionResult, 'default', this.getActionPath());
           else metadata = actionResult;
 
           return await new Responser(res, req, params, null, 200, metadata).emit();

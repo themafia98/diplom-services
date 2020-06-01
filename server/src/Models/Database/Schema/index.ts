@@ -62,8 +62,8 @@ userSchema.methods.checkPassword = async function (password: string): Promise<bo
 
 userSchema.methods.changePassword = async function (password: string): Promise<string | null> {
   try {
-    const passwordHash: string = bcrypt.hashSync(password as string, 10);
-
+    debugger;
+    const passwordHash: string = await bcrypt.hash(password as string, 10);
     if (!passwordHash) throw new Error('Bad password string for change');
 
     return passwordHash;

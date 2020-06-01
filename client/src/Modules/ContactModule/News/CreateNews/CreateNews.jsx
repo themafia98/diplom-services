@@ -75,7 +75,7 @@ class CreateNews extends React.PureComponent {
             type: 'global',
             title: 'Новость',
             isRead: false,
-            message: `${titleNews}. Добавлена: ${moment().format('MM.DD.YYYY HH:mm')}`,
+            message: `${titleNews}. Добавлена: ${moment().format('DD.MM.YYYY HH:mm')}`,
             action: {
               type: 'news_link',
               moduleName: 'contactModule',
