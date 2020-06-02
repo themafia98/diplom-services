@@ -241,12 +241,14 @@ class Dashboard extends React.PureComponent {
         setCurrentTab({ tab: path, config });
       }
     } else if (mode === 'close') {
+      const entityId = path.split('__')[1];
       let type = 'deafult';
-      if (path.split('__')[1]) type = 'itemTab';
-      if (isFind) {
-        removeTab({ path: path, type: type });
-        onClearCache({ path, type: type, currentActionTab });
-      }
+      if (entityId) type = 'itemTab';
+
+      if (!isFind) return;
+
+      removeTab({ path: path, type: type });
+      onClearCache({ path, type: type, currentActionTab });
     }
   };
 

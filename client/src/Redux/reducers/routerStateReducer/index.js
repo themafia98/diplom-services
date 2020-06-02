@@ -115,16 +115,17 @@ export default handleActions(
         currentActionTab = '',
         actionTabs = [],
         routeDataActive = {},
-        routeDataActive: { key = '' } = {},
+        routeDataActive: { _id: id = '' } = {},
       } = state;
 
-      let deleteKey = type === 'itemTab' ? path.split('__')[1] : path;
+      const entityId = path.split('__')[1];
+      let deleteKey = type === 'itemTab' ? entityId : path;
       let deleteKeyOnce = !deleteKey ? path : null;
 
       const filterArray = actionTabs.filter((tab, i) => {
         if (
           deleteKey &&
-          ((type === 'itemTab' && tab.includes(path.split('__')[1]) && path.split('__')[1] === deleteKey) ||
+          ((type === 'itemTab' && tab.includes(entityId) && entityId === deleteKey) ||
             (!tab.split('__')[1] && tab.includes(path)))
         )
           return false;
@@ -148,7 +149,8 @@ export default handleActions(
       else if (indexFind === 0) nextTab = filterArray[indexFind];
       else nextTab = filterArray[indexFind - 1];
 
-      const uuid = typeof nextTab === 'string' && type === 'itemTab' ? nextTab.split('__')[1] : nextTab;
+      const parsedTabEntity = nextTab.split('__')[1];
+      const uuidEntityItem = typeof nextTab === 'string' && type === 'itemTab' ? parsedTabEntity : nextTab;
 
       const copyData = routeDataNew;
       let current = null;
@@ -157,29 +159,29 @@ export default handleActions(
         console.warn('Next tab not found');
         return state;
       }
+      const { [parsedTabEntity]: tabItem = {} } = copyData || {};
+      const { _id: tabId = '' } = tabItem || {};
 
-      const isSimple =
-        copyData[nextTab.split('__')[1]] && copyData[nextTab.split('__')[1]].key === nextTab.split('__')[1];
+      const isSimple = copyData[parsedTabEntity] && tabId === parsedTabEntity;
 
-      const isDelete = routeDataActive && deleteKey === routeDataActive && uuid && !deleteKeyOnce;
-
-      const isNext = routeDataActive && nextTab.split('__')[1] && key === nextTab.split('__')[1];
+      const isDelete = routeDataActive && uuidEntityItem && !deleteKeyOnce;
+      const isNext = routeDataActive && parsedTabEntity && id === parsedTabEntity;
 
       current = isSimple
-        ? { ...copyData[nextTab.split('__')[1]] }
-        : isDelete
-        ? routeDataNew[uuid]
+        ? { ...copyData[parsedTabEntity] }
+        : isDelete && uuidEntityItem && routeDataNew[uuidEntityItem]
+        ? routeDataNew[uuidEntityItem]
         : isNext
         ? { ...routeDataActive }
         : {};
 
-      const selectModule = nextTab ? nextTab || nextTab.split('__')[1] || nextTab : nextTab;
+      const selectModule = nextTab ? nextTab || parsedTabEntity || nextTab : nextTab;
 
       return {
         ...state,
         currentActionTab: nextTab || 'mainModule',
         actionTabs: filterArray,
-        routeDataActive: current,
+        routeDataActive: current || {},
         routeData: copyData,
         shouldUpdate: !routeData[selectModule] ? false : true,
       };
