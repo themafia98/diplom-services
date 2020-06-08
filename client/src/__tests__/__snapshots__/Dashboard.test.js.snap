@@ -24,7 +24,7 @@ exports[`<Dashboard /> main page Should render component 1`] = `
       key="main"
     >
       <Connect(HeaderView)
-        actionTabs={
+        activeTabs={
           Array [
             Object {
               "DATAKEY": "MainModule",
@@ -49,7 +49,7 @@ exports[`<Dashboard /> main page Should render component 1`] = `
         logout={[Function]}
       />
       <ContentView
-        actionTabs={
+        activeTabs={
           Array [
             "MainModule",
           ]
@@ -74,7 +74,7 @@ exports[`<Dashboard /> main page Should render component 1`] = `
         rest={Object {}}
         router={
           Object {
-            "actionTabs": Array [
+            "activeTabs": Array [
               "MainModule",
             ],
             "currentActionTab": "MainModule",
@@ -326,7 +326,7 @@ exports[`<Dashboard /> main page Should render component 2`] = `
       key="main"
     >
       <Connect(HeaderView)
-        actionTabs={
+        activeTabs={
           Array [
             Object {
               "DATAKEY": "MainModule",
@@ -351,7 +351,7 @@ exports[`<Dashboard /> main page Should render component 2`] = `
         logout={[Function]}
       />
       <ContentView
-        actionTabs={
+        activeTabs={
           Array [
             "MainModule",
           ]
@@ -376,7 +376,7 @@ exports[`<Dashboard /> main page Should render component 2`] = `
         rest={Object {}}
         router={
           Object {
-            "actionTabs": Array [
+            "activeTabs": Array [
               "MainModule",
             ],
             "currentActionTab": "MainModule",
@@ -628,7 +628,7 @@ exports[`<Dashboard /> main page Should render component 3`] = `
       key="main"
     >
       <Connect(HeaderView)
-        actionTabs={
+        activeTabs={
           Array [
             Object {
               "DATAKEY": "MainModule",
@@ -653,7 +653,7 @@ exports[`<Dashboard /> main page Should render component 3`] = `
         logout={[Function]}
       />
       <ContentView
-        actionTabs={
+        activeTabs={
           Array [
             "MainModule",
           ]
@@ -678,7 +678,7 @@ exports[`<Dashboard /> main page Should render component 3`] = `
         rest={Object {}}
         router={
           Object {
-            "actionTabs": Array [
+            "activeTabs": Array [
               "MainModule",
             ],
             "currentActionTab": "MainModule",

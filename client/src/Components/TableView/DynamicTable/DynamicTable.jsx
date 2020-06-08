@@ -295,7 +295,7 @@ class DynamicTable extends React.PureComponent {
       onClick: () => {
         const {
           onOpenPageWithData,
-          router: { currentActionTab: path, actionTabs = [] },
+          router: { currentActionTab: path, activeTabs = [] },
           setCurrentTab,
           routeParser,
           routePathNormalise,
@@ -305,13 +305,13 @@ class DynamicTable extends React.PureComponent {
         const { key: recordKey = '', _id: id = '' } = record || {};
         if (!id && !recordKey) return;
         const key = id ? id : recordKey;
-        if (config.tabsLimit <= actionTabs.length)
+        if (config.tabsLimit <= activeTabs.length)
           return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
 
         const { moduleId = '', page = '' } = routeParser({ path });
         if (!moduleId || !page) return;
 
-        const index = actionTabs.findIndex((tab) => tab.includes(page) && tab.includes(key));
+        const index = activeTabs.findIndex((tab) => tab.includes(page) && tab.includes(key));
         const isFind = index !== -1;
 
         if (!isFind) {
@@ -323,7 +323,7 @@ class DynamicTable extends React.PureComponent {
             routeDataActive: record,
           });
         } else {
-          setCurrentTab(actionTabs[index]);
+          setCurrentTab(activeTabs[index]);
         }
       },
     };

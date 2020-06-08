@@ -1,22 +1,28 @@
 import React, { useCallback, useMemo, useEffect } from 'react';
 import { tabContainerType } from './types';
 import clsx from 'clsx';
-import ActionPortal from 'Components/ActionPortal';
 
 const TabContainer = (props) => {
   const { isBackground, visible, children, className, isPortal, isTab, onChangeVisibleAction } = props;
 
   const changeActionVisible = useCallback(onChangeVisibleAction, []);
+  const isVisibility = useMemo(() => (isBackground || visible) && !!children, [
+    isBackground,
+    visible,
+    children,
+  ]);
+  const isValidTabType = useMemo(() => !isPortal || (isPortal && isTab), [isPortal, isTab]);
+  const shouldRender = isVisibility && isValidTabType;
 
   const visibilityClass = useMemo(
     () =>
       clsx(
         'tabContainer',
-        visible ? 'visible' : 'hidden',
+        visible && shouldRender ? 'visible' : 'hidden',
         className ? className : null,
-        isBackground ? 'isBackground' : null,
+        !visible && isBackground && shouldRender ? 'isBackground' : null,
       ),
-    [visible, className, isBackground],
+    [visible, className, isBackground, shouldRender],
   );
 
   useEffect(() => {
@@ -26,12 +32,10 @@ const TabContainer = (props) => {
 
   return (
     <>
-      {(isBackground || visible) && (!isPortal || (isPortal && isTab)) ? (
+      {shouldRender ? (
         <div key={children.key + 'tab'} className={visibilityClass}>
           {children}
         </div>
-      ) : isPortal && !isTab ? (
-        <ActionPortal visible={isPortal}>{children}</ActionPortal>
       ) : null}
     </>
   );

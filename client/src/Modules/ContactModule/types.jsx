@@ -6,7 +6,7 @@ export const contactModuleType = {
   onErrorRequestAction: func.isRequired,
   path: string.isRequired,
   visible: bool.isRequired,
-  actionTabs: arrayOf(string.isRequired).isRequired,
+  activeTabs: arrayOf(string.isRequired).isRequired,
   statusApp: string.isRequired,
   router: object.isRequired,
   rest: object.isRequired,

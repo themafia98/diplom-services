@@ -22,7 +22,7 @@ class TaskModuleMyList extends React.PureComponent {
     const { tasks = [] } = data || {};
     return (
       <div ref={this.refModuleTask} className="taskModule_all">
-        <TitleModule additional="Мои задачи" classNameTitle="taskModuleTittle" title="Список моих задач" />
+        <TitleModule additional="Мои задачи" classNameTitle="taskModuleTitle" title="Список моих задач" />
         <div className="taskModuleAll_main">
           <TableView
             key={currentActionTab}

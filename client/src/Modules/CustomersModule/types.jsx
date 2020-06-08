@@ -5,7 +5,7 @@ export const customersModuleType = {
   onErrorRequestAction: func.isRequired,
   path: string.isRequired,
   visible: bool.isRequired,
-  actionTabs: arrayOf(string),
+  activeTabs: arrayOf(string),
   rest: object.isRequired,
   onSetStatus: func.isRequired,
   router: object.isRequired,

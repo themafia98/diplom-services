@@ -106,7 +106,7 @@ class Output extends React.PureComponent {
 
     const {
       udata: { _id: uid = '' } = {},
-      router: { actionTabs = [], routeData = {} } = {},
+      router: { activeTabs = [], routeData = {} } = {},
       onOpenPageWithData,
       currentData: currentDataState = null,
       setCurrentTab,
@@ -116,7 +116,7 @@ class Output extends React.PureComponent {
     const isCurrentKey = uid === key;
     const { config = {} } = this.context;
 
-    if (config.tabsLimit <= actionTabs.length)
+    if (config.tabsLimit <= activeTabs.length)
       return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
 
     let currentData = currentDataState;
@@ -138,7 +138,7 @@ class Output extends React.PureComponent {
       pathData: { page, moduleId, key },
     });
 
-    const index = actionTabs.findIndex(
+    const index = activeTabs.findIndex(
       (tab) => (isCurrentKey && tab === page) || (tab.includes(page) && tab.includes(key)),
     );
     const isFind = index !== -1;
@@ -149,7 +149,7 @@ class Output extends React.PureComponent {
         routeDataActive: { ...currentData, key },
       });
     } else if (setCurrentTab) {
-      setCurrentTab(actionTabs[index]);
+      setCurrentTab(activeTabs[index]);
     }
   };
 

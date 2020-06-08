@@ -17,7 +17,7 @@ export const initialState = {
   },
   router: {
     currentActionTab: 'mainModule',
-    actionTabs: ['MainModule'],
+    activeTabs: ['MainModule'],
     routeDataActive: {},
     routeData: {},
   },

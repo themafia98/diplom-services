@@ -7,7 +7,7 @@ import TitleModule from 'Components/TitleModule';
 import Textarea from 'Components/Textarea';
 
 const NewsViewPage = (props) => {
-  const { content: contentEntity, title, id: _id } = props;
+  const { id: _id, listdata: { content: contentEntity = {}, title = '' } = {} } = props;
   const [id] = useState(_id);
 
   const getNormalizeContent = () => {
@@ -49,9 +49,8 @@ const NewsViewPage = (props) => {
 };
 
 NewsViewPage.defaultProps = {
-  visible: false,
   isBackground: false,
-  content: {},
+  content: null,
   title: '',
   id: uuid(),
 };

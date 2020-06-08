@@ -5,7 +5,7 @@ export const headerViewType = {
   dashboardStrem: object.isRequired,
   cbMenuTabHandler: func.isRequired,
   activeTabEUID: string.isRequired,
-  actionTabs: oneOfType([array, bool]).isRequired,
+  activeTabs: oneOfType([array, bool]).isRequired,
   logout: PropTypes.func.isRequired,
 };
 

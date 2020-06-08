@@ -57,7 +57,7 @@ exports[`<TaskModule /> template Should be render 1`] = `
         rest={Object {}}
         router={
           Object {
-            "actionTabs": Array [
+            "activeTabs": Array [
               "MainModule",
             ],
             "currentActionTab": "mainModule",
@@ -93,7 +93,7 @@ exports[`<TaskModule /> template Should be render 1`] = `
         rest={Object {}}
         router={
           Object {
-            "actionTabs": Array [
+            "activeTabs": Array [
               "MainModule",
             ],
             "currentActionTab": "mainModule",
@@ -130,7 +130,7 @@ exports[`<TaskModule /> template Should be render 1`] = `
         rest={Object {}}
         router={
           Object {
-            "actionTabs": Array [
+            "activeTabs": Array [
               "MainModule",
             ],
             "currentActionTab": "mainModule",
@@ -166,7 +166,7 @@ exports[`<TaskModule /> template Should be render 1`] = `
         rest={Object {}}
         router={
           Object {
-            "actionTabs": Array [
+            "activeTabs": Array [
               "MainModule",
             ],
             "currentActionTab": "mainModule",

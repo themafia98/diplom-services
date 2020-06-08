@@ -102,7 +102,7 @@ class HeaderView extends React.PureComponent {
 
   render() {
     const {
-      actionTabs = ['mainModule'],
+      activeTabs = ['mainModule'],
       goCabinet,
       status,
       shouldUpdate,
@@ -121,7 +121,7 @@ class HeaderView extends React.PureComponent {
 
     return (
       <Header>
-        {actionTabs ? this.renderTabs(actionTabs) : null}
+        {activeTabs ? this.renderTabs(activeTabs) : null}
         <RightPanel
           udata={udata}
           shouldUpdate={shouldUpdate}
@@ -140,7 +140,7 @@ const mapStateTopProps = (state) => {
   const { status = 'online', udata = {} } = state.publicReducer;
   const { shouldUpdate = false, routeData = {} } = state.router;
   return {
-    tabArray: state.router.actionTabs,
+    tabArray: state.router.activeTabs,
     shouldUpdate,
     status,
     udata,

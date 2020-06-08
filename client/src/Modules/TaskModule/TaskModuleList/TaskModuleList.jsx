@@ -21,7 +21,7 @@ class TaskModuleList extends React.PureComponent {
 
     return (
       <div ref={this.refModuleTask} className="taskModule_all">
-        <TitleModule additional="Все задачи" classNameTitle="taskModuleTittle" title="Список всех задач" />
+        <TitleModule additional="Все задачи" classNameTitle="taskModuleTitle" title="Список всех задач" />
         <div className="taskModuleAll_main">
           <TableView
             key="taskModule_tableTask"
