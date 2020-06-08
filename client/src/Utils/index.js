@@ -1,14 +1,13 @@
 import namespaceParser from './Parser';
 import namespaceEvents from './Events';
 import namespaceHooks from './Hooks';
-import namespaceTools, { components } from './Tools';
+import namespaceTools from './Tools';
 
 /**
  * Utils
  * export some utils from namespaces
  */
 
-const { getComponentByKey } = components;
 const { sucessEvent, forceUpdateDetectedInit } = namespaceEvents;
 const {
   errorHook,
@@ -31,9 +30,20 @@ const {
   getDataSource,
   validationItems,
   isTimeLostValue,
+  parseModuleKey,
+  getModuleTypeByParsedKey,
 } = namespaceParser;
 
-const { createNotification, createEntity, deleteFile, loadFile, findData } = namespaceTools;
+const {
+  createNotification,
+  createEntity,
+  deleteFile,
+  loadFile,
+  findData,
+  getComponentByKey,
+  getDependencyModules,
+  oneOfType,
+} = namespaceTools;
 
 export {
   dataParser,
@@ -61,4 +71,8 @@ export {
   isTimeLostValue,
   getComponentByKey,
   findData,
+  parseModuleKey,
+  getModuleTypeByParsedKey,
+  getDependencyModules,
+  oneOfType,
 };

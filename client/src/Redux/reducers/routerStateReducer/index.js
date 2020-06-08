@@ -17,7 +17,7 @@ import { SET_STATUS } from 'Redux/actions/publicActions/const';
 const initialState = {
   path: null,
   currentActionTab: 'mainModule',
-  actionTabs: [],
+  activeTabs: [],
   routeDataActive: {},
   routeData: {},
   load: false,
@@ -28,7 +28,7 @@ const initialState = {
 export default handleActions(
   {
     [ADD_TAB]: (state, { payload }) => {
-      const { actionTabs = [], routeData = {} } = state;
+      const { activeTabs = [], routeData = {} } = state;
       const { tab: { path: configPath = '' } = {}, path: pathDefault = '', config = {} } = payload || {};
 
       const withConfig = config && !!Object.keys(config).length;
@@ -46,7 +46,7 @@ export default handleActions(
 
       return {
         ...state,
-        actionTabs: [...actionTabs, tab],
+        activeTabs: [...activeTabs, tab],
         shouldUpdate: true,
         currentActionTab: tab,
         routeData: newRouteData,
@@ -113,7 +113,7 @@ export default handleActions(
       const {
         routeData = {},
         currentActionTab = '',
-        actionTabs = [],
+        activeTabs = [],
         routeDataActive = {},
         routeDataActive: { _id: id = '' } = {},
       } = state;
@@ -122,7 +122,7 @@ export default handleActions(
       let deleteKey = type === 'itemTab' ? entityId : path;
       let deleteKeyOnce = !deleteKey ? path : null;
 
-      const filterArray = actionTabs.filter((tab, i) => {
+      const filterArray = activeTabs.filter((tab, i) => {
         if (
           deleteKey &&
           ((type === 'itemTab' && tab.includes(entityId) && entityId === deleteKey) ||
@@ -141,7 +141,7 @@ export default handleActions(
         }
       }
 
-      const indexFind = actionTabs.findIndex((it) => it === currentActionTab);
+      const indexFind = activeTabs.findIndex((it) => it === currentActionTab);
       const currentFind = filterArray.findIndex((tab) => tab === currentActionTab);
       let nextTab = null;
 
@@ -180,7 +180,7 @@ export default handleActions(
       return {
         ...state,
         currentActionTab: nextTab || 'mainModule',
-        actionTabs: filterArray,
+        activeTabs: filterArray,
         routeDataActive: current || {},
         routeData: copyData,
         shouldUpdate: !routeData[selectModule] ? false : true,
@@ -189,17 +189,18 @@ export default handleActions(
     [ON_END_DRAG_TAB]: (state, { payload = [] }) => {
       return {
         ...state,
-        actionTabs: payload.map(({ EUID = '' }) => EUID),
+        activeTabs: payload.map(({ EUID = '' }) => EUID),
       };
     },
     [SET_UPDATE]: (state, { payload }) => {
       return { ...state, shouldUpdate: payload };
     },
     [OPEN_PAGE_WITH_DATA]: (state, { payload }) => {
-      const { routeData = {}, actionTabs = [] } = state;
+      const { routeData = {}, activeTabs = [] } = state;
       const copyRouteData = { ...routeData };
       const {
         activePage = {},
+        activePage: { from = 'default' } = {},
         routeDataActive: RDA = {},
         routeDataActive: { key: keyRouteData = '', _id: id = '' } = {},
       } = payload || {};
@@ -228,13 +229,22 @@ export default handleActions(
       const validKey = id || keyRouteData || 'undefiendModule';
       const isString = typeof RDA === 'string';
 
-      const routeDataActive = !isString ? RDA : routeData[pathPage] || {};
-      copyRouteData[validKey] = !isString ? RDA : routeData[pathPage] || {};
+      const routeDataActive = !isString
+        ? { ...RDA, from }
+        : routeData[pathPage]
+        ? { ...routeData[pathPage], from }
+        : {};
+
+      copyRouteData[validKey] = !isString
+        ? { ...RDA, from }
+        : routeData[pathPage]
+        ? { ...routeData[pathPage], from }
+        : {};
 
       return {
         ...state,
         currentActionTab,
-        actionTabs: [...actionTabs, currentActionTab],
+        activeTabs: [...activeTabs, currentActionTab],
         routeDataActive: { ...routeDataActive },
         routeData: copyRouteData,
       };
@@ -446,7 +456,7 @@ export default handleActions(
       return {
         ...state,
         currentActionTab: 'mainModule',
-        actionTabs: [],
+        activeTabs: [],
       };
     },
   },

@@ -12,7 +12,7 @@ describe('<HeaderView /> and children', () => {
       ...initialState,
       dashboardStrem: new EventEmitter(),
       cbMenuTabHandler: () => {},
-      actionTabs: [{ EUID: 'mainModule' }],
+      activeTabs: [{ EUID: 'mainModule' }],
       activeTabEUID: 'mainModule',
       logout: () => {},
     };
@@ -24,7 +24,7 @@ describe('<HeaderView /> and children', () => {
 
     const nextProps = {
       ...props,
-      actionTabs: [{ EUID: 'mainModule1' }],
+      activeTabs: [{ EUID: 'mainModule1' }],
     };
 
     const HeaderViewWrapperNewProps = shallow(<HeaderView {...nextProps} />);

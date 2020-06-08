@@ -107,6 +107,7 @@ class MainModule extends React.PureComponent {
         <div className="mainModule_main">
           <div className="col-4 columnModuleLeft">
             <StreamBox
+              visible={visible}
               prefix="#notification"
               parentDataName="users"
               parentPath={path}

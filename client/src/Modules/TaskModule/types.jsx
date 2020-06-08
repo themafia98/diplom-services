@@ -23,7 +23,6 @@ export const taskViewType = {
   uuid: string.isRequired,
   rest: object.isRequired,
   isBackground: bool.isRequired,
-  visible: bool.isRequired,
   height: oneOfType([string.isRequired, number.isRequired]),
   onLoadCurrentData: func.isRequired,
   onLoadCacheData: func.isRequired,

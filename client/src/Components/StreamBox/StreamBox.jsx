@@ -65,7 +65,7 @@ class StreamBox extends React.Component {
 
     await this.onLoadingStreamList(shouldUpdatePrivate);
     if (!isSingleLoading)
-      this.onLoadingInterval = setInterval(this.fetchNotification.bind(this, true), intervalNotification);
+      this.onLoadingInterval = setInterval(() => this.fetchNotification(true), intervalNotification);
   };
 
   componentDidUpdate = () => {
@@ -201,7 +201,7 @@ class StreamBox extends React.Component {
     const {
       setCurrentTab,
       onOpenPageWithData,
-      router: { routeData = {}, actionTabs = [] } = {},
+      router: { routeData = {}, activeTabs = [] } = {},
       store,
       prefix,
       streamModule,
@@ -227,20 +227,22 @@ class StreamBox extends React.Component {
 
     switch (typeCurrentAction) {
       case 'link': {
-        if (config?.tabsLimit <= actionTabs?.length)
-          return message.error(`Максимальное количество вкладок: ${config?.tabsLimit}`);
+        if (config?.tabsLimit <= activeTabs?.length) {
+          this.showMessageError();
+          return;
+        }
 
-        const path = `${moduleName}_${type}Notification`;
+        const path = this.getPathLink(moduleName, type);
 
-        const { moduleId = '', page = '' } = routeParser({ path });
+        const { moduleId = '', page = '' } = routeParser({ path, pageType: 'link' });
         if (!moduleId || !page) return;
 
         const { [storeName]: data = [] } = routeData[page] || {};
         const tabPage = page.split('#')[0];
-        const index = actionTabs.findIndex((tab) => tab.includes(tabPage) && tab.includes(key));
+        const index = activeTabs.findIndex((tab) => tab.includes(tabPage) && tab.includes(key));
         const isFind = index !== -1;
 
-        if (isFind) return setCurrentTab(actionTabs[index]);
+        if (isFind) return setCurrentTab(activeTabs[index]);
 
         const item = data.find((it) => it?.key === key || it?._id === key);
         if (!item) {
@@ -249,19 +251,22 @@ class StreamBox extends React.Component {
         }
 
         const activePageParsed = routePathNormalise({
-          pathType: 'moduleItem',
+          pathType: 'link',
           pathData: { page, moduleId, key },
         });
 
+        const { path: normalizePath = '' } = activePageParsed || {};
+
         const pathParsed =
           moduleName === 'news'
-            ? activePageParsed?.path.replace(`_${type}Notification`, '_informationPage')
-            : activePageParsed?.path.replace(`_${type}Notification`, '');
+            ? normalizePath.replace(`_${type}Notification`, '_informationPage')
+            : normalizePath;
 
         onOpenPageWithData({
           activePage: {
             ...activePageParsed,
-            path: pathParsed + '___link',
+            path: pathParsed,
+            from: 'link',
           },
           routeDataActive: { ...item },
         });
@@ -272,6 +277,12 @@ class StreamBox extends React.Component {
     }
     return;
   };
+
+  showMessageError = (config) => {
+    message.error('Максимальное количество вкладок:' + config?.tabsLimit);
+  };
+
+  getPathLink = (moduleName, type) => `${moduleName}_$link$__${type}Notification`;
 
   /**
    * @param {string} id

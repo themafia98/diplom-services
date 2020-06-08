@@ -21,7 +21,7 @@ exports[`<TaskView /> template Should be render with data 1`] = `
   <TitleModule
     additional=""
     className=""
-    classNameTitle="taskModuleTittle"
+    classNameTitle="taskModuleTitle"
     title="Карточка задачи"
   />
   <ModalWindow
@@ -201,7 +201,7 @@ exports[`<TaskView /> template Should be render with data 1`] = `
               outputClassName=""
               router={
                 Object {
-                  "actionTabs": Array [
+                  "activeTabs": Array [
                     "MainModule",
                   ],
                   "currentActionTab": "mainModule",
@@ -250,7 +250,7 @@ exports[`<TaskView /> template Should be render with data 1`] = `
               outputClassName=""
               router={
                 Object {
-                  "actionTabs": Array [
+                  "activeTabs": Array [
                     "MainModule",
                   ],
                   "currentActionTab": "mainModule",
@@ -331,7 +331,7 @@ exports[`<TaskView /> template Should be render with data 1`] = `
               type=""
               typeOutput=""
             >
-               
+
             </Output>
           </DescriptionsItem>
           <DescriptionsItem
@@ -350,7 +350,7 @@ exports[`<TaskView /> template Should be render with data 1`] = `
               type=""
               typeOutput=""
             >
-               
+
             </Output>
           </DescriptionsItem>
           <DescriptionsItem
@@ -398,7 +398,7 @@ exports[`<TaskView /> template Should be render with data 1`] = `
                 "onOpenPageWithData": undefined,
                 "onRemoveFile": [Function],
                 "router": Object {
-                  "actionTabs": Array [
+                  "activeTabs": Array [
                     "MainModule",
                   ],
                   "currentActionTab": "mainModule",
@@ -459,7 +459,7 @@ exports[`<TaskView /> template Should be render with data 1`] = `
             }
             router={
               Object {
-                "actionTabs": Array [
+                "activeTabs": Array [
                   "MainModule",
                 ],
                 "currentActionTab": "mainModule",

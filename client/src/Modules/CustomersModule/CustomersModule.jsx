@@ -8,8 +8,8 @@ class CustomersModule extends React.PureComponent {
   static propTypes = customersModuleType;
 
   checkBackground = (path) => {
-    const { actionTabs = [] } = this.props;
-    return actionTabs.some((actionTab) => actionTab.startsWith(path) || actionTab === path);
+    const { activeTabs = [] } = this.props;
+    return activeTabs.some((actionTab) => actionTab.startsWith(path) || actionTab === path);
   };
 
   getComponentByPath = (path) => {

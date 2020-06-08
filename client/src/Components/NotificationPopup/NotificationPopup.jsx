@@ -29,10 +29,7 @@ class NotificationPopup extends React.PureComponent {
     const { isCounter } = this.state;
     const { config: { IntervalPrivateNotifications = 10000 } = {} } = this.context;
     if (isCounter) this.fetchNotification();
-    this.intervalNotif = setInterval(
-      this.fetchNotification.bind(this, false, true),
-      IntervalPrivateNotifications,
-    );
+    this.intervalNotif = setInterval(() => this.fetchNotification(false, true), IntervalPrivateNotifications);
   };
 
   componentWillUnmount = () => {

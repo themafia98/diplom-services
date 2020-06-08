@@ -28,7 +28,7 @@ class TaskModuleCalendar extends React.PureComponent {
   onClick = (id = '') => {
     const {
       onOpenPageWithData,
-      router: { routeData = {}, currentActionTab = '', actionTabs = [] } = {},
+      router: { routeData = {}, currentActionTab = '', activeTabs = [] } = {},
       setCurrentTab,
     } = this.props;
     const { config = {} } = this.context;
@@ -42,14 +42,14 @@ class TaskModuleCalendar extends React.PureComponent {
 
     if (_.isEmpty(routeNormalize)) return;
 
-    const index = actionTabs.findIndex((tab) => tab === routeNormalize.page || tab === routeNormalize.path);
+    const index = activeTabs.findIndex((tab) => tab === routeNormalize.page || tab === routeNormalize.path);
     const isFind = index !== -1;
 
     if (!isFind) {
       const item = tasks.find(({ _id: taskId = '' }) => taskId === id);
       if (!item) return;
 
-      if (config.tabsLimit <= actionTabs.length)
+      if (config.tabsLimit <= activeTabs.length)
         return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
 
       onOpenPageWithData({
@@ -60,7 +60,7 @@ class TaskModuleCalendar extends React.PureComponent {
         routeDataActive: { ...item },
       });
     } else {
-      setCurrentTab(actionTabs[index]);
+      setCurrentTab(activeTabs[index]);
     }
   };
   getListData = (value) => {
@@ -194,7 +194,7 @@ class TaskModuleCalendar extends React.PureComponent {
     return (
       <Scrollbars hideTracksWhenNotNeeded={true}>
         <div className="taskModuleCalendar">
-          <TitleModule classNameTitle="taskModuleTittle" title="Календарь задач" />
+          <TitleModule classNameTitle="taskModuleTitle" title="Календарь задач" />
           <div className="taskModuleCalendar__main">
             <Calendar
               fullscreen={true}

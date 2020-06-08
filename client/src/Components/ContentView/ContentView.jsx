@@ -1,19 +1,14 @@
-import React from 'react';
+import React, { Fragment } from 'react';
+import { getComponentByKey, parseModuleKey, getModuleTypeByParsedKey } from 'Utils';
 import { contentViewType } from './types';
 import _ from 'lodash';
 import { Layout } from 'antd';
 
+import ActionPortal from 'Components/ActionPortal';
+import Chat from 'Modules/ContactModule/Chat';
 import TabContainer from 'Components/TabContainer';
-import MainModule from 'Modules/MainModule';
-import CabinetModule from 'Modules/CabinetModule';
-import TaskModule from 'Modules/TaskModule';
-import StatisticsModule from 'Modules/StatisticsModule';
-import SettingsModule from 'Modules/SettingsModule';
-import ContactModule from 'Modules/ContactModule';
-import CustomersModule from 'Modules/CustomersModule';
-import WikiModule from 'Modules/WikiModule';
-
 import { v4 as uuid } from 'uuid';
+import types from 'types';
 
 const { Content } = Layout;
 
@@ -28,7 +23,7 @@ class ContentView extends React.Component {
     dashboardStrem: null,
     shouldRenderMenu: true,
     path: '',
-    actionTabs: [],
+    activeTabs: [],
     router: {},
     onErrorRequestAction: null,
     setCurrentTab: null,
@@ -87,18 +82,19 @@ class ContentView extends React.Component {
   };
 
   getBackground = (moduleName) => {
-    return this.checkBackground(moduleName);
+    const { path } = this.props;
+    return !path?.includes(moduleName) && this.checkBackground(moduleName);
   };
 
   /**
    * @param {string} path
    */
   checkBackground = (path) => {
-    const { actionTabs = [], router: { currentActionTab = '' } = {} } = this.props;
+    const { activeTabs = [], router: { currentActionTab = '' } = {} } = this.props;
     /**
      * @param {string} actionTab
      */
-    return actionTabs.some(
+    return activeTabs.some(
       (actionTab) => (actionTab.startsWith(path) || actionTab === path) && currentActionTab !== actionTab,
     );
   };
@@ -119,12 +115,12 @@ class ContentView extends React.Component {
     }
   };
 
-  render() {
+  tabsCreate = () => {
     const {
       path,
       onErrorRequestAction,
       setCurrentTab,
-      actionTabs,
+      activeTabs,
       router,
       statusApp,
       rest,
@@ -133,143 +129,113 @@ class ContentView extends React.Component {
       onSetStatus,
       webSocket,
       onChangeVisibleAction,
+      router: { currentActionTab = '' } = {},
     } = this.props;
-    const { key, visibilityPortal = false } = this.state;
+    const { visibilityPortal = false } = this.state;
 
     const loaderMethods = {
       onShowLoader,
       onHideLoader,
     };
 
-    if (!key) return <div>no menu</div>;
+    const tabProps = {
+      onErrorRequestAction: onErrorRequestAction,
+      loaderMethods: loaderMethods,
+      setCurrentTab: setCurrentTab,
+      getBackground: this.getBackground,
+      activeTabs,
+      visibilityPortal,
+      onChangeVisibleAction,
+      router,
+      webSocket,
+      onSetStatus,
+      statusApp,
+      rest,
+      path,
+    };
 
+    return activeTabs.reduce((tabsComponents, tabKey, index, tabs) => {
+      const [moduleNameDirty = '', subModuleName = '', entityDataId = ''] = parseModuleKey(tabKey);
+
+      const moduleName = moduleNameDirty.split('#')[0];
+      const type = getModuleTypeByParsedKey(moduleNameDirty, subModuleName, entityDataId);
+      const Component = getComponentByKey(tabKey, types.$entrypoint_module);
+      const entrypointChildrenExist = !!tabs.find(
+        (tab) => path.includes(moduleName) && tab !== tabKey && tab.includes(moduleName),
+      );
+
+      const isExistTab = tabs.slice(0, index + 1).some((tab) => tab?.includes(moduleName));
+      const isExsistModule = tabsComponents.find(({ type: typeModule = '', tabKey: key }) => {
+        switch (typeModule) {
+          case types.$entity_entrypoint:
+            return key.includes(moduleName) && !key.includes(entityDataId) && isExistTab;
+          default:
+            return key.includes(moduleName) && isExistTab;
+        }
+      });
+
+      const tabParams = {
+        visible: entrypointChildrenExist || path === tabKey,
+        type,
+      };
+
+      tabParams.isBackground = !tabParams?.visible && this.getBackground(tabKey);
+      const isLink = type === types.$link_entrypoint;
+
+      if (tabsComponents.length && ((isExsistModule && !isLink) || (isLink && entrypointChildrenExist))) {
+        return tabsComponents;
+      }
+
+      const validModuleName = entityDataId ? moduleName : tabKey;
+      return [
+        ...tabsComponents,
+        {
+          tabKey,
+          type,
+          component: (
+            <Fragment key={`wrapper${validModuleName}`}>
+              <TabContainer
+                key={`${validModuleName}-container`}
+                {...tabParams}
+                isBackground={path !== validModuleName && currentActionTab.includes(moduleName)}
+              >
+                <Component
+                  key={`${validModuleName}_${Symbol.keyFor(type)}`}
+                  type={type}
+                  isBackground={tabParams.isBackground}
+                  visible={entrypointChildrenExist ? true : path?.includes(validModuleName)}
+                  {...tabProps}
+                />
+              </TabContainer>
+            </Fragment>
+          ),
+        },
+      ];
+    }, []);
+  };
+
+  render() {
+    const { key, visibilityPortal } = this.state;
+    const { webSocket, path } = this.props;
+
+    if (!key) return <div>Not available</div>;
+
+    const isBackgroundChat = this.getBackground('contactModule_chat');
+    const tabs = this.tabsCreate();
+    console.log(tabs);
     return (
       <>
         <Content key={key}>
-          <TabContainer
-            key="mainModule"
-            isBackground={this.getBackground('mainModule')}
-            visible={path === 'mainModule'}
-          >
-            <MainModule
-              visible={path === 'mainModule'}
-              rest={rest}
-              onErrorRequestAction={onErrorRequestAction}
-              loaderMethods={loaderMethods}
-              setCurrentTab={setCurrentTab}
-              getBackground={this.getBackground}
-              key="mainModule"
-            />
-          </TabContainer>
-          <TabContainer
-            key={path?.includes('personal') ? 'cabinetModulePersonal' : 'cabinetModule'}
-            isBackground={this.getBackground('cabinetModule')}
-            visible={path.startsWith('cabinetModule')}
-          >
-            <CabinetModule
-              visible={path.startsWith('cabinetModule')}
-              rest={rest}
-              loaderMethods={loaderMethods}
-              getBackground={this.getBackground}
-              onErrorRequestAction={onErrorRequestAction}
-              path={path}
-              key={path?.includes('personal') ? 'cabinetModulePersonal' : 'cabinetModule'}
-            />
-          </TabContainer>
-          <TabContainer
-            path={'taskModule'}
-            key="taskModule"
-            isBackground={this.getBackground('taskModule')}
-            visible={path.startsWith('taskModule')}
-          >
-            <TaskModule
-              visible={path.startsWith('taskModule')}
-              onErrorRequestAction={onErrorRequestAction}
-              getBackground={this.getBackground}
-              key="taskModule"
-              rest={rest}
-              loaderMethods={loaderMethods}
-              path={path}
-            />
-          </TabContainer>
-          <TabContainer isBackground={this.getBackground('wikiModule')} visible={path === 'wikiModule'}>
-            <WikiModule
-              visible={path === 'wikiModule'}
-              onErrorRequestAction={onErrorRequestAction}
-              key="wikiModule"
-              path={path}
-              getBackground={this.getBackground}
-              loaderMethods={loaderMethods}
-              rest={rest}
-              statusApp={statusApp}
-            />
-          </TabContainer>
-          <TabContainer
-            isBackground={visibilityPortal || this.getBackground('contactModule')}
-            visible={path.startsWith('contactModule')}
-          >
-            <ContactModule
-              visible={path.startsWith('contactModule')}
-              actionTabs={actionTabs}
-              visibilityPortal={visibilityPortal}
-              onChangeVisibleAction={onChangeVisibleAction}
-              statusApp={statusApp}
-              getBackground={this.getBackground}
-              router={router}
-              rest={rest}
+          {tabs.map(({ component = null }) => component)}
+          <ActionPortal visible={visibilityPortal}>
+            <Chat
+              key="chatModule"
+              isBackground={isBackgroundChat}
               webSocket={webSocket}
-              onSetStatus={onSetStatus}
-              loaderMethods={loaderMethods}
-              onErrorRequestAction={onErrorRequestAction}
-              key="contact"
-              path={path}
+              type="modal"
+              visible={visibilityPortal || path === 'contactModule_chat'}
             />
-          </TabContainer>
-          <TabContainer
-            isBackground={this.getBackground('customersModule')}
-            visible={path.startsWith('customersModule')}
-          >
-            <CustomersModule
-              visible={path.startsWith('customersModule')}
-              onErrorRequestAction={onErrorRequestAction}
-              actionTabs={actionTabs}
-              rest={rest}
-              getBackground={this.getBackground}
-              onSetStatus={onSetStatus}
-              router={router}
-              loaderMethods={loaderMethods}
-              key="customers"
-              path={path}
-            />
-          </TabContainer>
-          <TabContainer
-            isBackground={this.getBackground('settingsModule')}
-            visible={path === 'settingsModule'}
-          >
-            <SettingsModule
-              visible={path === 'settingsModule'}
-              onErrorRequestAction={onErrorRequestAction}
-              key="settings"
-              getBackground={this.getBackground}
-              loaderMethods={loaderMethods}
-              rest={rest}
-              path={path}
-            />
-          </TabContainer>
-          <TabContainer
-            isBackground={this.getBackground('statisticModule')}
-            visible={path === 'statisticModule'}
-          >
-            <StatisticsModule
-              visible={path === 'statisticModule'}
-              onErrorRequestAction={onErrorRequestAction}
-              key="statistic"
-              getBackground={this.getBackground}
-              loaderMethods={loaderMethods}
-              rest={rest}
-              path={path}
-            />
-          </TabContainer>
+          </ActionPortal>
         </Content>
       </>
     );

@@ -175,7 +175,7 @@ class Dashboard extends React.PureComponent {
       : DATAKEY;
   };
 
-  getActionTabs = (tabs = [], menu) => {
+  getactiveTabs = (tabs = [], menu) => {
     const { router: { routeData = {} } = {} } = this.props;
     const tabsCopy = [...tabs];
     const tabsArray = [];
@@ -194,25 +194,25 @@ class Dashboard extends React.PureComponent {
   };
 
   goHome = (event) => {
-    const { addTab, setCurrentTab, router: { currentActionTab = '', actionTabs = [] } = {} } = this.props;
+    const { addTab, setCurrentTab, router: { currentActionTab = '', activeTabs = [] } = {} } = this.props;
     const { config: { tabsLimit = 50 } = {} } = this.context;
     if (currentActionTab === 'mainModule') return;
 
-    if (tabsLimit <= actionTabs.length) return message.error(`Максимальное количество вкладок: ${tabsLimit}`);
+    if (tabsLimit <= activeTabs.length) return message.error(`Максимальное количество вкладок: ${tabsLimit}`);
 
-    let tabItem = actionTabs.find((tab) => tab === 'mainModule');
+    let tabItem = activeTabs.find((tab) => tab === 'mainModule');
     if (!tabItem) addTab('mainModule');
     else setCurrentTab('mainModule');
   };
 
   goCabinet = (event) => {
-    const { addTab, setCurrentTab, router: { currentActionTab = '', actionTabs = [] } = {} } = this.props;
+    const { addTab, setCurrentTab, router: { currentActionTab = '', activeTabs = [] } = {} } = this.props;
     const { config: { tabsLimit = 50 } = {} } = this.context;
     if (currentActionTab === 'cabinetModule') return;
 
-    if (tabsLimit <= actionTabs.length) return message.error(`Максимальное количество вкладок: ${tabsLimit}`);
+    if (tabsLimit <= activeTabs.length) return message.error(`Максимальное количество вкладок: ${tabsLimit}`);
 
-    let tabItem = actionTabs.find((tab) => tab === 'cabinetModule');
+    let tabItem = activeTabs.find((tab) => tab === 'cabinetModule');
     if (!tabItem) addTab('cabinetModule');
     else setCurrentTab('cabinetModule');
   };
@@ -221,18 +221,18 @@ class Dashboard extends React.PureComponent {
     const path = event['key'] ? event['key'] : key;
     const { config: { tabsLimit = 50 } = {} } = this.context;
     const {
-      router: { currentActionTab, actionTabs = [], routeData } = {},
+      router: { currentActionTab, activeTabs = [], routeData } = {},
       addTab,
       setCurrentTab,
       removeTab,
       onClearCache,
     } = this.props;
 
-    const actionTabsCopy = [...actionTabs];
-    const isFind = actionTabsCopy.findIndex((tab) => tab === path) !== -1;
+    const activeTabsCopy = [...activeTabs];
+    const isFind = activeTabsCopy.findIndex((tab) => tab === path) !== -1;
 
     if (mode === 'open') {
-      if (!isFind && tabsLimit <= actionTabsCopy.length)
+      if (!isFind && tabsLimit <= activeTabsCopy.length)
         return message.error(`Максимальное количество вкладок: ${tabsLimit}`);
 
       if (!isFind) addTab(routeParser({ path }));
@@ -317,7 +317,7 @@ class Dashboard extends React.PureComponent {
       isToolbarActive = false,
     } = this.state;
     const {
-      router: { actionTabs = [], currentActionTab, shouldUpdate = false } = {},
+      router: { activeTabs = [], currentActionTab, shouldUpdate = false } = {},
       router = {},
       rest,
       onErrorRequestAction,
@@ -332,7 +332,7 @@ class Dashboard extends React.PureComponent {
 
     if (redirect) return <Redirect to={{ pathname: '/' }} />;
 
-    const actionTabsData = this.getActionTabs(actionTabs, menuItems);
+    const activeTabsData = this.getactiveTabs(activeTabs, menuItems);
 
     return (
       <div ref={this.dashboardRef} className="dashboard">
@@ -353,13 +353,13 @@ class Dashboard extends React.PureComponent {
               dashboardStrem={this.dashboardStrem}
               cbMenuTabHandler={this.menuHandler}
               activeTabEUID={currentActionTab}
-              actionTabs={actionTabsData ? actionTabsData : false}
+              activeTabs={activeTabsData ? activeTabsData : false}
               logout={this.logout}
               goCabinet={this.goCabinet}
             />
             <ContentView
               dashboardStrem={this.dashboardStrem}
-              actionTabs={actionTabs}
+              activeTabs={activeTabs}
               udata={udata}
               isToolbarActive={isToolbarActive}
               webSocket={this.webSocket}

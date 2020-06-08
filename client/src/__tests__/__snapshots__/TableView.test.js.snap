@@ -46,7 +46,7 @@ exports[`<TableView /> Should TableView render dep on path 1`] = `
       removeTab={[Function]}
       router={
         Object {
-          "actionTabs": Array [
+          "activeTabs": Array [
             "MainModule",
           ],
           "currentActionTab": "mainModule",
@@ -112,7 +112,7 @@ exports[`<TableView /> Should TableView render dep on path 2`] = `
       removeTab={[Function]}
       router={
         Object {
-          "actionTabs": Array [
+          "activeTabs": Array [
             "MainModule",
           ],
           "currentActionTab": "mainModule",
@@ -146,7 +146,7 @@ exports[`<TableView /> Should TableView render dep on path 2`] = `
         routePathNormalise={[Function]}
         router={
           Object {
-            "actionTabs": Array [
+            "activeTabs": Array [
               "MainModule",
             ],
             "currentActionTab": "mainModule",

@@ -268,7 +268,7 @@ class CreateTask extends React.PureComponent {
     const {
       statusApp = '',
       onOpenPageWithData,
-      router: { currentActionTab: path, actionTabs = [] },
+      router: { currentActionTab: path, activeTabs = [] },
       setCurrentTab,
       removeTab,
       udata: { _id: uid = '', displayName = '' } = {},
@@ -355,13 +355,13 @@ class CreateTask extends React.PureComponent {
             });
           }
 
-          if (config.tabsLimit <= actionTabs.length)
+          if (config.tabsLimit <= activeTabs.length)
             return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
 
           const { moduleId = '', page = '' } = routeParser({ path });
           if (!moduleId || !page) return;
 
-          const index = actionTabs.findIndex((tab) => tab.includes(page) && tab.includes(key));
+          const index = activeTabs.findIndex((tab) => tab.includes(page) && tab.includes(key));
           const isFind = index !== -1;
 
           let type = 'deafult';
@@ -378,7 +378,7 @@ class CreateTask extends React.PureComponent {
               routeDataActive: metadata[0] || metadata || {},
             });
           } else if (setCurrentTab) {
-            setCurrentTab(actionTabs[index]);
+            setCurrentTab(activeTabs[index]);
           }
         },
       );

@@ -37,7 +37,7 @@ class App extends React.Component {
     const {
       addTab,
       setCurrentTab,
-      router: { currentActionTab = '', actionTabs = [] } = {},
+      router: { currentActionTab = '', activeTabs = [] } = {},
       onLoadUdata,
     } = this.props;
     const { config = {}, Request, config: { appActive = true } = {} } = this.context;
@@ -55,8 +55,8 @@ class App extends React.Component {
       const defaultModule = config.menu.find((item) => item?.SIGN === 'default');
       if (defaultModule) path = defaultModule?.EUID;
 
-      const actionTabsCopy = [...actionTabs];
-      const isFind = actionTabsCopy.findIndex((tab) => tab === path) !== -1;
+      const activeTabsCopy = [...activeTabs];
+      const isFind = activeTabsCopy.findIndex((tab) => tab === path) !== -1;
 
       const { data: { user = {} } = {} } = res || {};
 
@@ -69,7 +69,7 @@ class App extends React.Component {
           : accumulator || {};
       }, {});
 
-      if (!isFind && config.tabsLimit <= actionTabsCopy.length)
+      if (!isFind && config.tabsLimit <= activeTabsCopy.length)
         return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
       const isUserData = udata && !_.isEmpty(udata);
 

@@ -21,7 +21,7 @@ describe('<Dashboard /> main page', () => {
       },
       router: {
         currentActionTab: 'MainModule',
-        actionTabs: ['MainModule'],
+        activeTabs: ['MainModule'],
         routeDataActive: null,
         routeData: { MainModule: { name: 'MainModule' } },
       },

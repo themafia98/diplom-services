@@ -41,7 +41,7 @@ class News extends React.PureComponent {
   };
 
   onOpenCreateNews = (event) => {
-    const { addTab, router: { actionTabs = [] } = {}, setCurrentTab } = this.props;
+    const { addTab, router: { activeTabs = [] } = {}, setCurrentTab } = this.props;
     const moduleId = 'createNews';
     const page = 'contactModule';
     const { config = {} } = this.context;
@@ -50,21 +50,21 @@ class News extends React.PureComponent {
       pathData: { page, moduleId },
     });
 
-    const index = actionTabs.findIndex((tab) => tab === pathNormalize);
+    const index = activeTabs.findIndex((tab) => tab === pathNormalize);
     const isFind = index !== -1;
 
     if (!isFind) {
       const config = { hardCodeUpdate: false };
-      if (config.tabsLimit <= actionTabs.length)
+      if (config.tabsLimit <= activeTabs.length)
         return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
       if (!isFind) addTab(routeParser({ path: pathNormalize }), config);
-    } else setCurrentTab(actionTabs[index], config);
+    } else setCurrentTab(activeTabs[index], config);
   };
 
   onOpen = (openKey = '') => {
     const {
       onOpenPageWithData,
-      router: { actionTabs = [], routeData: { contactModule: { news = [] } = {} } = {} } = {},
+      router: { activeTabs = [], routeData: { contactModule: { news = [] } = {} } = {} } = {},
       setCurrentTab,
       data = {},
     } = this.props;
@@ -81,13 +81,13 @@ class News extends React.PureComponent {
       pathData: { page, key },
     });
 
-    const index = actionTabs.findIndex((tab) => tab.replace('_informationPage', '') === routeNormalize.path);
+    const index = activeTabs.findIndex((tab) => tab.replace('_informationPage', '') === routeNormalize.path);
     const findItem = listdata.find((it) => it._id === key);
     const dataFind = findItem ? { ...findItem } : {};
     const isFind = index !== -1;
 
     if (!isFind) {
-      if (config.tabsLimit <= actionTabs.length)
+      if (config.tabsLimit <= activeTabs.length)
         return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
       onOpenPageWithData({
         activePage: routePathNormalise({
@@ -96,7 +96,7 @@ class News extends React.PureComponent {
         }),
         routeDataActive: { key, listdata: dataFind ? { ...dataFind } : {} },
       });
-    } else setCurrentTab(actionTabs[index]);
+    } else setCurrentTab(activeTabs[index]);
   };
 
   renderNewsBlock = (currentPage) => {

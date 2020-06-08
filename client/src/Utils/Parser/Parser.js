@@ -1,7 +1,7 @@
 import moment from 'moment';
 import _ from 'lodash';
 import { clientDB } from 'Models/ClientSideDatabase';
-import { runNoCorsParser } from './utils';
+import { runNoCorsParser, toSymbol } from './utils';
 import { getStoreSchema } from '../utilsHook';
 
 const dataParser = (flag = false, isLocalUpdate = true, dep = {}, offlineStore = []) => {
@@ -115,10 +115,11 @@ const getBase64 = (img, callback) => {
 const routeParser = ({ pageType = 'module', path: route = null }) => {
   if (typeof route !== 'string') return '';
 
-  if (pageType === 'page') {
-    const arrayDataRoute = route.split(/__/gi);
-    const page = arrayDataRoute[0];
-    const pageChild = arrayDataRoute[1] ? arrayDataRoute[1] : null;
+  if (pageType === 'link') {
+    const [page = '', moduleId = '', entityKey = ''] = route.split(/__|_/gi);
+    return { page, itemId: entityKey, moduleId, path: route };
+  } else if (pageType === 'page') {
+    const [page = '', pageChild = ''] = route.split(/__/gi);
     return { page, pageChild, path: route };
   } else if (pageType === 'moduleItem') {
     const arrayDataRoute = route.split(/__/gi);
@@ -154,9 +155,20 @@ const routePathNormalise = ({
 }) => {
   if (!page && !moduleId && !key) return '';
   if (typeof page !== 'string' || typeof moduleId !== 'string' || typeof key !== 'string') return '';
-  if (pathType === 'module') {
+  if (pathType === 'module' || pathType === 'link') {
     if (!page) return '';
-    return { path: moduleId ? `${page}_${moduleId}` : page, moduleId: moduleId, page: page };
+
+    return {
+      path:
+        moduleId && pathType !== 'link'
+          ? `${page}_${moduleId}`
+          : pathType === 'link'
+          ? `${page}_${moduleId}__${key}`
+          : page,
+      moduleId: moduleId,
+      key: pathType === 'link' ? key : '',
+      page: page,
+    };
   } else if (pathType === 'moduleItem') {
     if (!key) return '';
     return {
@@ -262,6 +274,36 @@ const isTimeLostValue = (value) => {
   return /\w+[m|м|h|ч]$/gi.test(value);
 };
 
+/**
+ * @param {string} tabKey
+ * @returns {string[]} [moduleName, subModuleName, entityKey]
+ */
+const parseModuleKey = (tabKey) => {
+  const parsedModuleKeys = tabKey.split(/__|_/gi);
+  const [moduleName = '', subModuleName = '', entityKey = ''] = parsedModuleKeys;
+  if (subModuleName === '$link$') return [moduleName, '', entityKey];
+  return parsedModuleKeys;
+};
+
+/**
+ *
+ * @param {string} moduleName
+ * @param {string} subModuleName
+ * @param {string} entityKey
+ * @returns {string} one of type module:
+ *                   $entrypoint_module |
+ *                   $sub_entrypoint_module |
+ *                   $entity_entrypoint | l
+ *                   $link_entrypoint
+ */
+const getModuleTypeByParsedKey = (moduleName, subModuleName, entityKey) => {
+  if (moduleName && !subModuleName && !entityKey) return toSymbol('$entrypoint_module');
+  else if (moduleName && subModuleName && !entityKey) return toSymbol('$sub_entrypoint_module');
+  else if (moduleName && subModuleName && entityKey) return toSymbol('$entity_entrypoint');
+  else if (moduleName && !subModuleName && entityKey) return toSymbol('$link_entrypoint');
+  return null;
+};
+
 const namespaceParser = {
   dataParser,
   getNormalizedPath,
@@ -275,6 +317,8 @@ const namespaceParser = {
   getDataSource,
   validationItems,
   isTimeLostValue,
+  parseModuleKey,
+  getModuleTypeByParsedKey,
 };
 
 export default namespaceParser;
