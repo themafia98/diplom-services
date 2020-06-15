@@ -65,7 +65,7 @@ function renderDescription(theme = 'default') {
               name="priority"
               type="text"
             >
-              {accessStatus.map((it, index) => (
+              {accessStatus?.map((it, index) => (
                 <Option key={`${it}${index}`} value={it}>
                   {it}
                 </Option>

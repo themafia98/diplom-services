@@ -11,7 +11,7 @@ const entityRender = (entitysList = [], routeData = {}, subTabProps = {}, config
   const validPath = !!path?.includes(moduleName) ? path : null;
   const entitys = _.uniq([...entitysList, validPath]);
 
-  return entitys.reduce((components, entityKey, i, entityComponents) => {
+  return entitys.reduce((components, entityKey) => {
     if (!entityKey) return components;
     const { uuid = '', router: { routeData = {} } = {}, data: dataTab = {} } = subTabProps || {};
 

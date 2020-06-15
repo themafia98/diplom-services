@@ -317,7 +317,8 @@ class TaskModule extends React.PureComponent {
 
       return (
         <>
-          {oneOfType(types.$sub_entrypoint_module, types.$entrypoint_module)(type) ? (
+          {oneOfType(types.$sub_entrypoint_module, types.$entrypoint_module)(type) &&
+          (path?.includes('all') || path?.includes('myTasks')) ? (
             <div key="controllers" ref={this.refControllers} className="controllersWrapper">
               <Button className="newTaskButton" onClick={this.handlerNewTask} type="primary">
                 Создать новую задачу

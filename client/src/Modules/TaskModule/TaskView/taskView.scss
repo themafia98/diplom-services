@@ -197,3 +197,59 @@
     }
   }
 }
+
+@media print {
+  body {
+    overflow: visible !important;
+  }
+  * {
+    overflow: visible !important;
+    overflow-x: visible !important;
+  }
+  .taskModule {
+    .dropDownWrapper {
+      display: none;
+    }
+
+    .col-6 {
+      display: inline-block;
+      width: 100%;
+    }
+
+    .taskView {
+      display: inline-block;
+      width: 100%;
+
+      div:last-child {
+        page-break-before: always;
+        .titleModule {
+          page-break-before: always;
+        }
+      }
+
+      .descriptionTask {
+        display: none !important;
+      }
+
+      .col-taskDescription:first-child {
+        div:first-child:not(.titleModule) > div:last-child > div {
+          display: none !important;
+        }
+      }
+
+      .col-taskDescription:last-child {
+        div:last-child:not(.titleModule) > div:last-child > div {
+          display: none !important;
+        }
+      }
+
+      .col-taskDescription {
+        &:first-child {
+          &:last-child {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+}
