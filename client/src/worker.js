@@ -1,9 +1,21 @@
 import { clientDB } from 'Models/ClientSideDatabase';
 import Request from 'Models/Rest';
 
+/**
+ * web worker
+ */
+
 let initial = null;
 
+/**
+ *
+ * @param {string} token jwt token
+ */
+
 export function runSync(token) {
+  /**
+   * sync client data with server data
+   */
   async function loop() {
     if (initial) clearTimeout(initial);
     const rest = new Request(token);

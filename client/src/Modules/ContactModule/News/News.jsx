@@ -32,19 +32,19 @@ class News extends React.PureComponent {
   componentDidUpdate = () => {
     const { load, isLoading } = this.state;
 
-    if (load && isLoading) {
-      this.setState({
-        ...this.state,
-        load: true,
-      });
-    }
+    if (!load && !isLoading) return;
+
+    this.setState({
+      ...this.state,
+      load: true,
+    });
   };
 
-  onOpenCreateNews = (event) => {
+  onOpenCreateNews = () => {
     const { addTab, router: { activeTabs = [] } = {}, setCurrentTab } = this.props;
     const moduleId = 'createNews';
     const page = 'contactModule';
-    const { config = {} } = this.context;
+    const { config = {}, config: { tabsLimit = 0 } = {} } = this.context;
 
     const { path: pathNormalize = '' } = routePathNormalise({
       pathData: { page, moduleId },
@@ -53,12 +53,14 @@ class News extends React.PureComponent {
     const index = activeTabs.findIndex((tab) => tab === pathNormalize);
     const isFind = index !== -1;
 
-    if (!isFind) {
-      const config = { hardCodeUpdate: false };
-      if (config.tabsLimit <= activeTabs.length)
-        return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
-      if (!isFind) addTab(routeParser({ path: pathNormalize }), config);
-    } else setCurrentTab(activeTabs[index], config);
+    if (isFind) setCurrentTab(activeTabs[index], { hardCodeUpdate: false });
+
+    if (tabsLimit <= activeTabs.length) {
+      message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
+      return;
+    }
+
+    if (!isFind) addTab(routeParser({ path: pathNormalize }), { hardCodeUpdate: false });
   };
 
   onOpen = (openKey = '') => {
@@ -86,17 +88,23 @@ class News extends React.PureComponent {
     const dataFind = findItem ? { ...findItem } : {};
     const isFind = index !== -1;
 
-    if (!isFind) {
-      if (config.tabsLimit <= activeTabs.length)
-        return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
-      onOpenPageWithData({
-        activePage: routePathNormalise({
-          pathType: 'moduleItem',
-          pathData: { page, key, moduleId },
-        }),
-        routeDataActive: { key, listdata: dataFind ? { ...dataFind } : {} },
-      });
-    } else setCurrentTab(activeTabs[index]);
+    if (isFind) {
+      setCurrentTab(activeTabs[index]);
+      return;
+    }
+
+    if (config.tabsLimit <= activeTabs.length) {
+      message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
+      return;
+    }
+
+    onOpenPageWithData({
+      activePage: routePathNormalise({
+        pathType: 'moduleItem',
+        pathData: { page, key, moduleId },
+      }),
+      routeDataActive: { key, listdata: dataFind ? { ...dataFind } : {} },
+    });
   };
 
   renderNewsBlock = (currentPage) => {
@@ -109,25 +117,21 @@ class News extends React.PureComponent {
     let listdata = news;
     if (!listdata.length) return <Empty description={<span>Данных нету</span>} />;
 
-    /**
-     * @type {Array}
-     */
-    const pageCards = listdata.slice(start, start + 4 > listdata.length ? listdata.length : start + 4);
-
-    return pageCards.map((it, index) => {
-      return (
+    return listdata
+      .slice(start, start + 4 > listdata.length ? listdata.length : start + 4)
+      ?.map((it, index) => (
         <NewsCard key={it._id || index} onClick={this.onOpen.bind(this, it._id)} className="card" data={it} />
-      );
-    });
+      ));
   };
 
   onChange = (pageNumber) => {
     const { currentPage } = this.state;
-    if (currentPage !== pageNumber)
-      this.setState({
-        ...this.state,
-        currentPage: pageNumber,
-      });
+    if (currentPage === pageNumber) return;
+
+    this.setState({
+      ...this.state,
+      currentPage: pageNumber,
+    });
   };
 
   render() {
@@ -137,11 +141,10 @@ class News extends React.PureComponent {
       router: { routeData: { contactModule: { news = [] } = {} } = {} },
       isLoading = false,
     } = this.props;
-    let listdata = data && data.news && Array.isArray(data.news) ? [...data.news] : news.length ? news : data;
+    let listdata = data?.news && Array.isArray(data.news) ? [...data.news] : news.length ? news : data;
     const rules = true;
 
     const pageSize = 4;
-
     const total = Math.ceil(listdata.length - 1 / pageSize);
 
     return (

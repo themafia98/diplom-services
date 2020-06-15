@@ -18,7 +18,7 @@ export const textAreaType = {
 };
 
 export const editorTextareaType = {
-  disabled: bool.isRequired,
+  disabled: oneOfType([bool, string]).isRequired,
   clear: bool.isRequired,
   mode: string.isRequired,
   readOnly: bool.isRequired,

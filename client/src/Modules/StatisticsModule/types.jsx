@@ -2,8 +2,7 @@ import PropTypes from 'prop-types';
 const { func, bool, object, string, arrayOf, objectOf, array, number, oneOfType } = PropTypes;
 
 export const statisticsModuleType = {
-  visible: bool.isRequired,
-  onErrorRequestAction: func.isRequired,
+  visible: bool,
   loaderMethods: objectOf(func.isRequired).isRequired,
   rest: object.isRequired,
   path: string.isRequired,

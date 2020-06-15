@@ -4,7 +4,7 @@ import config from 'config.json';
 import NotFound from 'Modules/NotFound';
 import subModulesComponents from './subComponents';
 import componentsModules from './components';
-import types from 'types';
+import types from 'types.modules';
 
 /**
  *
@@ -141,11 +141,13 @@ const getComponentByKey = (key, type = types.$entrypoint_module) => {
   }
 };
 
-const getDependencyModules = (moduleName, configuration = config) => {
+const getDependencyModules = (moduleName, configuration = config, exclude = []) => {
   const { menu = [] } = configuration || {};
 
   return menu.reduce((depList, item) => {
     const { EUID = '' } = item || {};
+
+    if (exclude.some((key) => key === EUID)) return depList;
     if (moduleName && EUID.includes(moduleName) && EUID !== moduleName) {
       return [...depList, EUID];
     }
@@ -153,6 +155,12 @@ const getDependencyModules = (moduleName, configuration = config) => {
   }, []);
 };
 
+/**
+ *
+ * @param  {...Symbol} types
+ *
+ * Compare types function
+ */
 const oneOfType = (...types) => (type) => types.find((typeName) => typeName === type);
 
 export default {

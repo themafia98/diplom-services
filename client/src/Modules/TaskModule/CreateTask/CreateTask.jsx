@@ -74,17 +74,15 @@ class CreateTask extends React.PureComponent {
       };
     }
 
-    if (_.isNull(date)) {
-      return {
-        ...state,
-        card: {
-          ...state.card,
-          ...dateUpdater,
-        },
-      };
-    }
+    if (!_.isNull(date)) return state;
 
-    return state;
+    return {
+      ...state,
+      card: {
+        ...state.card,
+        ...dateUpdater,
+      },
+    };
   };
 
   getFilteredUsers = (list) => {

@@ -22,15 +22,15 @@ class ChatModal extends React.PureComponent {
   };
 
   handleOk = async () => {
-    const { Request = null } = this.context;
+    const { Request } = this.context;
     const { visible, onVisibleChange, uid } = this.props;
     const { type = '', membersIds = [] } = this.state;
-    const { current: groupNameNode = null } = this.groupNameRef || {};
+    const { current: { state: { value: groupName = '' } = {} } = {} } = this.groupNameRef || {};
     try {
       const groupProps =
         type !== 'single'
           ? {
-              groupName: groupNameNode ? groupNameNode?.state?.value : null,
+              groupName: groupName ? groupName : null,
             }
           : {};
 
@@ -46,15 +46,14 @@ class ChatModal extends React.PureComponent {
         },
       });
 
-      if (!res || res.status !== 200) {
+      if (!res || res?.status !== 200) {
         throw new Error('Bad response create chat room');
       }
 
       if (onVisibleChange) onVisibleChange(visible);
-    } catch (error) {
-      if (error?.response?.status !== 404) console.error(error.message);
+    } catch ({ message: msg = '', response: { status = 503 } = {} }) {
       if (onVisibleChange) onVisibleChange(visible);
-      message.error(error.message);
+      message.error(msg);
     }
   };
 
@@ -63,9 +62,6 @@ class ChatModal extends React.PureComponent {
     if (onVisibleChange) onVisibleChange(visible);
   };
 
-  /**
-   * @param {any} eventData
-   */
   onChangeSelect = (eventData) => {
     this.setState({
       ...this.state,
@@ -73,14 +69,12 @@ class ChatModal extends React.PureComponent {
     });
   };
 
-  /**
-   * @param {string} eventType
-   */
   onChangeType = (eventType) => {
     const { membersIds = [] } = this.state;
     const isMore = eventType === 'single' && membersIds.length > 1;
 
     this.setState({
+      ...this.state,
       type: eventType,
       membersIds: isMore ? [membersIds[0]] : [...membersIds],
     });
@@ -90,7 +84,8 @@ class ChatModal extends React.PureComponent {
     const { confirmLoading, type = 'single', membersIds = [] } = this.state;
     const { visible, usersList } = this.props;
 
-    const valueUser = type === 'single' && Array.isArray(membersIds) ? membersIds[0] : membersIds;
+    const isPrivateRoom = type === 'single' && _.isArray(membersIds);
+    const valueUser = isPrivateRoom ? membersIds[0] : membersIds;
 
     return (
       <Modal

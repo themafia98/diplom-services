@@ -3,8 +3,7 @@ import { udataType } from 'types';
 const { func, bool, object, string, objectOf, array } = PropTypes;
 
 export const settingsModuleType = {
-  visible: bool.isRequired,
-  onErrorRequestAction: func.isRequired,
+  visible: bool,
   loaderMethods: objectOf(func.isRequired).isRequired,
   rest: object.isRequired,
   path: string.isRequired,

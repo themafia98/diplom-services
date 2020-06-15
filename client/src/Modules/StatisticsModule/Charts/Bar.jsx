@@ -3,18 +3,16 @@ import { barType } from '../types';
 import { Spin } from 'antd';
 import { ResponsiveBar } from '@nivo/bar';
 
-const Bar = (props) => {
-  const {
-    data,
-    subDataList,
-    textContent,
-    schemeBarProps,
-    legendName,
-    anchor,
-    customLegendEffects,
-    loading,
-  } = props;
-
+const Bar = ({
+  data,
+  subDataList,
+  textContent,
+  schemeBarProps,
+  legendName,
+  anchor,
+  customLegendEffects,
+  loading,
+}) => {
   const [source, setSource] = useState([]);
 
   useEffect(() => {

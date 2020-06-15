@@ -6,15 +6,9 @@ import _ from 'lodash';
 import io from 'socket.io-client';
 import { Layout, message, notification, Modal, Button } from 'antd';
 import { connect } from 'react-redux';
-import {
-  addTabAction,
-  setActiveTabAction,
-  removeTabAction,
-  logoutAction,
-  shouldUpdateAction,
-} from 'Redux/actions/routerActions';
-import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
-import { errorRequestAction, clearCache, setStatus, showGuile } from 'Redux/actions/publicActions';
+import { addTabAction, setActiveTabAction, removeTabAction, logoutAction } from 'Redux/actions/routerActions';
+
+import { clearCache, showGuile } from 'Redux/actions/publicActions';
 import { routeParser } from 'Utils';
 
 import FixedToolbar from 'Components/FixedToolbar';
@@ -320,13 +314,9 @@ class Dashboard extends React.PureComponent {
       router: { activeTabs = [], currentActionTab, shouldUpdate = false } = {},
       router = {},
       rest,
-      onErrorRequestAction,
-      onShoudUpdate,
       publicReducer = {},
       firstConnect = false,
       udata = {},
-      setCurrentTab,
-      onSetStatus,
     } = this.props;
     const { config = {} } = this.context;
 
@@ -363,17 +353,13 @@ class Dashboard extends React.PureComponent {
               udata={udata}
               isToolbarActive={isToolbarActive}
               webSocket={this.webSocket}
-              onSetStatus={onSetStatus}
               shouldUpdate={shouldUpdate}
               onShowLoader={this.onShowLoader}
               onHideLoader={this.onHideLoader}
               router={router}
               onChangeVisibleAction={this.onChangeVisibleAction}
               statusApp={publicReducer.status}
-              onShoudUpdate={onShoudUpdate}
-              setCurrentTab={setCurrentTab}
               updateLoader={this.updateLoader}
-              onErrorRequestAction={onErrorRequestAction}
               key="contentView"
               rest={rest}
               path={currentActionTab}
@@ -422,12 +408,8 @@ const mapDispatchToProps = (dispatch) => {
     onShowGuide: (show) => dispatch(showGuile(show)),
     removeTab: (tab) => dispatch(removeTabAction(tab)),
     addTab: (tab) => dispatch(addTabAction(tab)),
-    onSetStatus: (status) => dispatch(setStatus(status)),
     onClearCache: (props) => dispatch(clearCache(props)),
     setCurrentTab: (tab) => dispatch(setActiveTabAction(tab)),
-    onLoadCurrentData: ({ path, storeLoad }) => dispatch(loadCurrentData({ path, storeLoad })),
-    onErrorRequestAction: async (error) => await dispatch(errorRequestAction(error)),
-    onShoudUpdate: async (update) => await dispatch(shouldUpdateAction(update)),
     onLogoutAction: async () => await dispatch(logoutAction()),
   };
 };

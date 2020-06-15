@@ -1,9 +1,8 @@
 import PropTypes from 'prop-types';
 import { udataType, contentState, emptyShape, newsItemType } from 'types';
-const { func, string, bool, object, oneOf, arrayOf, objectOf, oneOfType, number, array } = PropTypes;
+const { func, string, bool, object, oneOf, arrayOf, objectOf, oneOfType, number, array, symbol } = PropTypes;
 
 export const contactModuleType = {
-  onErrorRequestAction: func.isRequired,
   path: string.isRequired,
   visible: bool.isRequired,
   activeTabs: arrayOf(string.isRequired).isRequired,
@@ -19,8 +18,8 @@ export const contactModuleType = {
 export const newsType = {
   data: object.isRequired,
   isLoading: bool.isRequired,
-  isBackground: bool.isRequired,
-  visible: bool.isRequired,
+  isBackground: bool,
+  visible: bool,
   router: object.isRequired,
   statusApp: string.isRequired,
   onOpenPageWithData: func.isRequired,
@@ -29,9 +28,9 @@ export const newsType = {
 };
 
 export const newsViewType = {
-  isBackground: bool.isRequired,
-  visible: bool.isRequired,
-  content: oneOfType([emptyShape.isRequired, contentState.isRequired]).isRequired,
+  isBackground: bool,
+  visible: bool,
+  content: oneOfType([emptyShape, contentState, oneOf([null])]),
   title: string.isRequired,
   id: string.isRequired,
 };
@@ -43,11 +42,11 @@ export const newsCardType = {
 };
 
 export const createNewsType = {
-  readOnly: bool.isRequired,
+  readOnly: bool,
   udata: udataType.isRequired,
   statusApp: string.isRequired,
-  isBackground: bool.isRequired,
-  visible: bool.isRequired,
+  isBackground: bool,
+  visible: bool,
 };
 
 export const chatRoomType = {
@@ -64,7 +63,7 @@ export const chatRoomType = {
 };
 
 export const chatMenuType = {
-  type: string.isRequired,
+  type: oneOfType([string, symbol]),
   isWs: bool.isRequired,
   socketConnection: bool.isRequired,
   socketErrorStatus: oneOfType([string, () => null]),
@@ -85,7 +84,7 @@ export const messageType = {
 };
 
 export const chatType = {
-  type: string.isRequired,
+  type: oneOfType([string, symbol]),
   chat: object.isRequired,
   udata: udataType,
   socketConnection: bool.isRequired,

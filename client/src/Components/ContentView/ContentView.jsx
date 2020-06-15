@@ -8,7 +8,7 @@ import ActionPortal from 'Components/ActionPortal';
 import Chat from 'Modules/ContactModule/Chat';
 import TabContainer from 'Components/TabContainer';
 import { v4 as uuid } from 'uuid';
-import types from 'types';
+import types from 'types.modules';
 
 const { Content } = Layout;
 
@@ -25,13 +25,10 @@ class ContentView extends React.Component {
     path: '',
     activeTabs: [],
     router: {},
-    onErrorRequestAction: null,
-    setCurrentTab: null,
     statusApp: 'online',
     rest: null,
     onShowLoader: null,
     onHideLoader: false,
-    onSetStatus: null,
     webSocket: null,
     onChangeVisibleAction: null,
     isToolbarActive: false,
@@ -118,15 +115,12 @@ class ContentView extends React.Component {
   tabsCreate = () => {
     const {
       path,
-      onErrorRequestAction,
-      setCurrentTab,
       activeTabs,
       router,
       statusApp,
       rest,
       onShowLoader,
       onHideLoader,
-      onSetStatus,
       webSocket,
       onChangeVisibleAction,
       router: { currentActionTab = '' } = {},
@@ -139,16 +133,13 @@ class ContentView extends React.Component {
     };
 
     const tabProps = {
-      onErrorRequestAction: onErrorRequestAction,
       loaderMethods: loaderMethods,
-      setCurrentTab: setCurrentTab,
       getBackground: this.getBackground,
       activeTabs,
       visibilityPortal,
       onChangeVisibleAction,
       router,
       webSocket,
-      onSetStatus,
       statusApp,
       rest,
       path,
@@ -222,7 +213,7 @@ class ContentView extends React.Component {
 
     const isBackgroundChat = this.getBackground('contactModule_chat');
     const tabs = this.tabsCreate();
-    console.log(tabs);
+
     return (
       <>
         <Content key={key}>

@@ -30,27 +30,23 @@ class SettingsModule extends React.PureComponent {
     statusList: [],
   };
 
+  refWrapper = React.createRef();
+  refColumn = React.createRef();
+
   static propTypes = settingsModuleType;
   static contextType = modelContext;
   static defaultProps = {
-    udata: {},
+    udata: {
+      email: null,
+      phone: null,
+      isHideEmail: null,
+      isHidePhone: null,
+    },
     settingsLogs: [],
   };
 
-  refWrapper = null;
-  refColumn = null;
-  refFunc = (node) => (this.refWrapper = node);
-  refColumnFunc = (node) => (this.refColumn = node);
-
   static getDerivedStateFromProps = (props, state) => {
-    const {
-      udata: {
-        email: emailValue = null,
-        phone: telValue = null,
-        isHideEmail = null,
-        isHidePhone = null,
-      } = {},
-    } = props;
+    const { udata: { email: emailValue, phone: telValue, isHideEmail, isHidePhone } = {} } = props;
     const enumState = [state.emailValue, state.telValue, state.isHideEmail, state.isHidePhone];
     if (enumState.every((value) => _.isNull(value))) {
       return {
@@ -66,50 +62,34 @@ class SettingsModule extends React.PureComponent {
 
   componentDidMount = async () => {
     const { isLoadingLogs = false } = this.state;
-    const {
-      router,
-      path,
-      settingsLogs = [],
-      udata: { _id: uid = '' } = {},
-      onCaching,
-      onSetStatus,
-    } = this.props;
+    const { router, path, settingsLogs = [], udata: { _id: uid = '' } = {}, onCaching } = this.props;
 
-    if (router && router.routeData[path] && router.routeData[path].haveChanges) {
+    if (router?.routeData[path] && router?.routeData[path]?.haveChanges) {
       this.setState({ ...this.state, ...router.routeData[path] });
     }
 
-    if (!Object.keys(settingsLogs).length && !isLoadingLogs && onCaching) {
-      await onSetStatus(false);
-      this.setState(
-        {
-          ...this.state,
-          isLoadingLogs: true,
-        },
-        () => {
-          onCaching({
-            uid,
-            actionType: 'get_user_settings_log',
-            depStore: 'settings',
-            type: 'logger',
-          });
-        },
-      );
+    if (!Object.keys(settingsLogs)?.length) {
+      onCaching({
+        uid,
+        actionType: 'get_user_settings_log',
+        depStore: 'settings',
+        type: 'logger',
+      });
     }
   };
 
-  componentDidUpdate = async (props, state) => {
+  componentDidUpdate = async (prevProps, state) => {
     const { showScrollbar, emailValue = '', telValue = '' } = this.state;
     const {
       udata: { _id: uid = '' } = {},
-      router: { shouldUpdate = false } = {},
+      router: { currentActionTab = '' } = {},
       onCaching,
       onSetStatus,
+      visible,
     } = this.props;
 
-    if (onCaching && shouldUpdate) {
-      await onSetStatus(false);
-
+    if (prevProps?.visible !== visible && currentActionTab?.includes('settingsModule')) {
+      onSetStatus(false);
       onCaching({
         uid,
         actionType: 'get_user_settings_log',
@@ -118,19 +98,20 @@ class SettingsModule extends React.PureComponent {
       });
     }
 
-    if (this.refWrapper && this.refColumn) {
-      const heightWrapper = this.refWrapper.getBoundingClientRect().height;
-      const heightColumn = this.refColumn.getBoundingClientRect().height;
+    if (this.refWrapper?.current && this.refColumn?.current) {
+      const { current: wrapperNode } = this.refWrapper;
+      const { current: columnNode } = this.refColumn;
+
+      const heightWrapper = wrapperNode?.getBoundingClientRect()?.height || 0;
+      const heightColumn = columnNode?.getBoundingClientRect()?.height || 0;
 
       const isShow = heightWrapper > heightColumn;
 
-      if (isShow !== showScrollbar) {
-        return this.setState({
-          showScrollbar: isShow,
-        });
-      }
+      if (isShow === showScrollbar) return;
+
+      this.setState({ ...this.state, showScrollbar: isShow });
     } else if (!_.isNull(emailValue) || !_.isNull(telValue)) {
-      this.setState({ emailValue: null, telValue: null });
+      this.setState({ ...this.state, emailValue: null, telValue: null });
     }
   };
 
@@ -358,9 +339,9 @@ class SettingsModule extends React.PureComponent {
       <div className="settingsModule">
         <TitleModule classNameTitle="settingsModuleTitle" title="Настройки" />
         <div className="settingsModule__main">
-          <div ref={this.refColumnFunc} className="col-6">
+          <div ref={this.refColumn} className="col-6">
             <Scrollbars>
-              <div ref={this.refFunc}>
+              <div ref={this.refWrapper}>
                 <PanelPassword
                   oldPassword={oldPassword}
                   newPassword={newPassword}

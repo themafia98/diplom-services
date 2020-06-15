@@ -2,13 +2,19 @@ import React from 'react';
 import _ from 'lodash';
 import TabContainer from 'Components/TabContainer';
 import { getComponentByKey } from 'Utils';
-import types from 'types';
+import types from 'types.modules';
 
 const entityRender = (entitysList = [], routeData = {}, subTabProps = {}, config = {}) => {
-  const { validation = null, path = '', viewModuleName = '', moduleName = '', type: typeEntity = [] } =
-    config || {};
+  const {
+    validation = null,
+    path = '',
+    viewModuleName = '',
+    moduleName = '',
+    type: typeEntity = [],
+    exclude = [],
+  } = config || {};
 
-  const validPath = !!path?.includes(moduleName) ? path : null;
+  const validPath = !!path?.includes(moduleName) && !exclude?.some((it) => it === path) ? path : null;
   const entitys = _.uniq([...entitysList, validPath]);
 
   return entitys.reduce((components, entityKey) => {
@@ -25,8 +31,8 @@ const entityRender = (entitysList = [], routeData = {}, subTabProps = {}, config
     )
       return components;
 
-    const [, moduleViewKey] = path?.split('__');
-    const isView = path?.includes(moduleName) && !!moduleViewKey;
+    const [, moduleViewKey] = entityKey?.split('__');
+    const isView = entityKey?.includes(moduleName) && !!moduleViewKey;
 
     const type = isView
       ? _.isFunction(typeEntity)
@@ -56,6 +62,7 @@ const entityRender = (entitysList = [], routeData = {}, subTabProps = {}, config
     const propsModuleViewKey =
       !uuid && moduleViewKey && data
         ? {
+            listdata: data,
             ...data,
           }
         : {};
@@ -71,7 +78,6 @@ const entityRender = (entitysList = [], routeData = {}, subTabProps = {}, config
               <Component
                 key={`${entityKey}_${Symbol.keyFor(type)}`}
                 {...subTabProps}
-                data={data}
                 {...propsModuleViewKey}
                 type={type}
               />

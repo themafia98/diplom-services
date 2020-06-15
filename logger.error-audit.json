@@ -6,29 +6,19 @@
   "auditLog": "logger.error-audit.json",
   "files": [
     {
-      "date": 1592172101491,
-      "name": "logs\\logs-error-2020-06-15-01.log",
-      "hash": "eef658aaca411abf2b52941f6447e4e6"
+      "date": 1592930475795,
+      "name": "logs\\logs-error-2020-06-23-19.log",
+      "hash": "7cf6b1680f38ec7312d004c3dff7f6a5"
     },
     {
-      "date": 1592207799158,
-      "name": "logs\\logs-error-2020-06-15-10.log",
-      "hash": "b42ff84a2d8cd814d96b1d094212b1ba"
+      "date": 1592947952098,
+      "name": "logs\\logs-error-2020-06-24-00.log",
+      "hash": "2fc2cb216ff9ec3e4e5450d6a97e887c"
     },
     {
-      "date": 1592213219481,
-      "name": "logs\\logs-error-2020-06-15-12.log",
-      "hash": "507a3fab81b2787f574f3437c31da7a1"
-    },
-    {
-      "date": 1592240368159,
-      "name": "logs\\logs-error-2020-06-15-19.log",
-      "hash": "3a5ca923783df56f10b32fb977911edc"
-    },
-    {
-      "date": 1592249038169,
-      "name": "logs\\logs-error-2020-06-15-22.log",
-      "hash": "d42a9826e50cf700592f9d343cdf7ffa"
+      "date": 1592952114435,
+      "name": "logs\\logs-error-2020-06-24-01.log",
+      "hash": "8ce6f2545e981515f8045fb5c9ac01f6"
     }
   ]
 }

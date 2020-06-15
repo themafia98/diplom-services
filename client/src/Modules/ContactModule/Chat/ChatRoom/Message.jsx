@@ -2,7 +2,7 @@ import React from 'react';
 import { messageType } from '../../types';
 import { Tooltip } from 'antd';
 
-const Message = ({ it = null, children = null, showTooltip, className = '' }) => {
+const Message = ({ it, children, showTooltip, className }) => {
   if (!it) return null;
 
   return showTooltip ? (

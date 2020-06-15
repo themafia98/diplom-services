@@ -3,7 +3,6 @@ import { udataType, taskEntityType } from '../../types';
 const { func, string, object, bool, objectOf, number, oneOfType, oneOf } = PropTypes;
 
 export const taskModuleType = {
-  onErrorRequestAction: func.isRequired,
   onOpenPageWithData: func.isRequired,
   onLoadCurrentData: func.isRequired,
   setCurrentTab: func.isRequired,
@@ -58,8 +57,8 @@ export const taskModuleMyListType = {
 };
 
 export const taskModuleCalendarType = {
-  isBackground: bool.isRequired,
-  visible: bool.isRequired,
+  isBackground: bool,
+  visible: bool,
   rest: object.isRequired,
   data: object.isRequired,
   router: object.isRequired,

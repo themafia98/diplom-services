@@ -40,7 +40,7 @@ class MainModule extends React.PureComponent {
       });
     }
     this.onResizeWindow();
-    window.addEventListener('resize', this.onResizeWindow.bind(this), false);
+    window.addEventListener('resize', this.onResizeWindow, false);
   };
 
   componentDidUpdate = (prevProps) => {
@@ -64,7 +64,7 @@ class MainModule extends React.PureComponent {
   };
 
   componentWillUnmount = () => {
-    window.removeEventListener('resize', this.onResizeWindow.bind(this), false);
+    window.removeEventListener('resize', this.onResizeWindow, false);
   };
 
   onResizeWindow = () => {

@@ -8,20 +8,18 @@ import { Button, Avatar } from 'antd';
 import Textarea from 'Components/Textarea';
 import Message from './Message';
 
-const ChatRoom = (props) => {
-  const {
-    uid,
-    shouldScroll,
-    messagesLength,
-    messages: msgProps,
-    usersList,
-    tokenRoom,
-    onClearScroll,
-    onKeyDown,
-    pushMessage,
-    myAvatar,
-  } = props;
-
+const ChatRoom = ({
+  uid,
+  shouldScroll,
+  messagesLength,
+  messages: msgProps,
+  usersList,
+  tokenRoom,
+  onClearScroll,
+  onKeyDown,
+  pushMessage,
+  myAvatar,
+}) => {
   const refScrollbar = useRef(null);
   const [isMount, setMount] = useState(false);
   const [token] = useState(tokenRoom);
@@ -142,8 +140,8 @@ const ChatRoom = (props) => {
           </Scrollbars>
         </div>
       </div>
-      <Textarea value={msg} onChange={onChange} onKeyDown={(e) => onSubmit(e)} className="chat-area" />
-      <Button onClick={(e) => onSubmit(e, msg)} type="primary">
+      <Textarea value={msg} onChange={onChange} onKeyDown={onSubmit} className="chat-area" />
+      <Button onClick={(event) => onSubmit(event, msg)} type="primary">
         Отправить
       </Button>
     </div>

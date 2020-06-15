@@ -8,21 +8,19 @@ import { v4 as uuid } from 'uuid';
 
 const { Item: { Meta } = {}, Item = {} } = List || {};
 
-const ChatMenu = (props) => {
-  const {
-    socketConnection,
-    socketErrorStatus,
-    listdata,
-    usersList,
-    tokenRoom,
-    parseChatJson,
-    onCreateRoom,
-    uid,
-    setActiveChatRoom,
-    type,
-    isWs,
-  } = props;
-
+const ChatMenu = ({
+  socketConnection,
+  socketErrorStatus,
+  listdata,
+  usersList,
+  tokenRoom,
+  parseChatJson,
+  onCreateRoom,
+  uid,
+  setActiveChatRoom,
+  type,
+  isWs,
+}) => {
   const [iDs, setIDs] = useState([]);
   const [visible, setVisible] = useState(false);
   const [rooms, updateRooms] = useState([]);
@@ -99,7 +97,7 @@ const ChatMenu = (props) => {
         <div className="menuLoading-skeleton">
           <Scrollbars hideTracksWhenNotNeeded={true}>
             {!socketConnection && !socketErrorStatus && isWs ? (
-              generateSkeleton(listdata && listdata?.length ? listdata?.length : 5)
+              generateSkeleton(7)
             ) : isWs ? (
               <List
                 key="list-chat"
@@ -109,12 +107,6 @@ const ChatMenu = (props) => {
 
                   const chatJson = parseChatJson({ type, item: it }) || {};
                   const { displayName = '', avatar = null } = chatJson || {};
-
-                  const descriptionChatMenu = false ? (
-                    <span className="descriptionChatMenu">{/* lastMsg */}</span>
-                  ) : (
-                    <span className="descriptionChatMenu"></span>
-                  );
 
                   return (
                     <Item
@@ -133,7 +125,7 @@ const ChatMenu = (props) => {
                           />
                         }
                         title={<p>{`${displayName}`}</p>}
-                        description={descriptionChatMenu}
+                        description={<span className="descriptionChatMenu"></span>}
                       />
                     </Item>
                   );

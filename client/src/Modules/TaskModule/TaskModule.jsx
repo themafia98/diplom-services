@@ -14,13 +14,12 @@ import {
   removeTabAction,
   setActiveTabAction,
 } from 'Redux/actions/routerActions';
-import { setStatus } from 'Redux/actions/publicActions';
 import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
 import { loadCacheData } from 'Redux/actions/publicActions/middleware';
 import modelContext from 'Models/context';
 import entityRender from 'Utils/Tools/entityRender';
 import withRouter from 'Components/withRouter';
-import types from 'types';
+import types from 'types.modules';
 
 class TaskModule extends React.PureComponent {
   state = {
@@ -367,7 +366,6 @@ const mapDispatchToProps = (dispatch) => {
   return {
     addTab: (tab, config = {}) => dispatch(addTabAction({ tab, config })),
     setCurrentTab: (tab, config = {}) => dispatch(setActiveTabAction({ tab, config })),
-    onSetStatus: (status) => dispatch(setStatus(status)),
     removeTab: (tab) => dispatch(removeTabAction(tab)),
     onOpenPageWithData: (data) => dispatch(openPageWithDataAction(data)),
     onLoadCacheData: (props) => dispatch(loadCacheData(props)),

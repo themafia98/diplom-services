@@ -3,6 +3,8 @@ import { customersModuleType } from './types';
 
 import TabContainer from 'Components/TabContainer';
 import Contacts from './Contacts';
+import { connect } from 'react-redux';
+import { setStatus } from 'Redux/actions/publicActions';
 
 class CustomersModule extends React.PureComponent {
   static propTypes = customersModuleType;
@@ -38,4 +40,11 @@ class CustomersModule extends React.PureComponent {
     return <div className="contactModule">{component ? component : null}</div>;
   }
 }
-export default CustomersModule;
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onSetStatus: (status) => dispatch(setStatus({ statusRequst: status })),
+  };
+};
+
+export default connect(null, mapDispatchToProps)(CustomersModule);

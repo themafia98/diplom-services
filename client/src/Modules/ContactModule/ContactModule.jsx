@@ -6,10 +6,15 @@ import _ from 'lodash';
 import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
 import entityRender from 'Utils/Tools/entityRender';
 import withRouter from 'Components/withRouter';
-import types from 'types';
+import types from 'types.modules';
 import { oneOfType } from 'Utils';
+import { setStatus } from 'Redux/actions/publicActions';
 
 class ContactModule extends React.PureComponent {
+  state = {
+    isLoading: false,
+  };
+
   static propTypes = contactModuleType;
   static defaultProps = {
     statusApp: '',
@@ -18,17 +23,12 @@ class ContactModule extends React.PureComponent {
     webSocket: null,
     visibilityPorta: false,
     onChangeVisibleAction: null,
-    onSetStatus: null,
-  };
-
-  state = {
-    isLoading: false,
   };
 
   componentDidMount = () => {
-    const { onLoadCurrentData, path } = this.props;
+    const { onLoadCurrentData, path, type = Symbol('') } = this.props;
 
-    if (path === 'contactModule_feedback') {
+    if (path === 'contactModule_feedback' && type === types.$sub_entrypoint_module) {
       onLoadCurrentData({
         path,
         storeLoad: 'news',
@@ -40,51 +40,52 @@ class ContactModule extends React.PureComponent {
   };
 
   componentDidUpdate = () => {
-    const { router: { shouldUpdate = false, routeData = {} } = {}, path, onLoadCurrentData } = this.props;
+    const {
+      router: { shouldUpdate = false, routeData = {} } = {},
+      path,
+      onLoadCurrentData,
+      type = Symbol(''),
+    } = this.props;
+
     const { initModule = false } = this.state;
     const isUpdate = shouldUpdate && routeData[path]?.load;
     const shoudInit = path && !routeData[path] && !initModule;
-    const isAvailable = path === 'contactModule_feedback';
-    if (isAvailable && (isUpdate || shoudInit)) {
-      if (!routeData[path] && !initModule) {
-        this.setState({
-          initModule: true,
-        });
-      }
 
-      onLoadCurrentData({
-        path,
-        storeLoad: 'news',
-        methodRequst: 'GET',
-        noCorsClient: false,
-        useStore: true,
+    const isAvailable = path === 'contactModule_feedback' && type === types.$sub_entrypoint_module;
+
+    if (!isAvailable && (!isUpdate || !shoudInit)) return;
+
+    if (!routeData[path] && !initModule) {
+      this.setState({
+        ...this.state,
+        initModule: true,
       });
     }
+
+    onLoadCurrentData({
+      path,
+      storeLoad: 'news',
+      methodRequst: 'GET',
+      noCorsClient: false,
+      useStore: true,
+    });
   };
 
   getContactContentByPath = (path) => {
     const {
       getBackground,
       statusApp,
-      router: { routeData = {} } = {},
+      router: { routeData = {}, activeTabs = [] } = {},
       router = {},
       udata,
       webSocket,
       visibilityPortal,
       onChangeVisibleAction,
-      onSetStatus,
       entitysList = [],
       type,
     } = this.props;
-    if (!path?.includes('contactModule'))
-      return (
-        <div
-          className="_"
-          style={{
-            display: 'none',
-          }}
-        ></div>
-      );
+
+    if (!path?.includes('contactModule')) return <div className="invalid-contactModule"></div>;
 
     const linkPath = _.isString(path) && path.includes('LINK') ? path.split('__')[1] || '' : '';
     const data = routeData[path] || routeData[linkPath] || {};
@@ -95,7 +96,7 @@ class ContactModule extends React.PureComponent {
           ...data,
         }
       : {};
-    //const visibleEntity = (linkPath && path.includes(linkPath)) || path === 'contactModule_informationPage';
+
     const isVisibleChatModal = visibilityPortal && path !== 'contactModule_chat';
 
     const subTabProps = {
@@ -110,7 +111,6 @@ class ContactModule extends React.PureComponent {
       linkPath,
       udata,
       statusApp,
-      onSetStatus,
       router,
       ...entityLinkProps,
     };
@@ -124,13 +124,19 @@ class ContactModule extends React.PureComponent {
       type: oneOfType(types.$sub_entrypoint_module, types.$entity_entrypoint),
     };
 
-    const entityList = entityRender(entitysList, routeData, subTabProps, config);
+    const entityList = entityRender(
+      activeTabs.filter((tab) => tab === entitysList),
+      routeData,
+      subTabProps,
+      config,
+    );
     return entityList.map(({ component = null }) => component);
   };
   render() {
     const { path } = this.props;
     if (!path?.includes('contactModule')) return null;
     const component = this.getContactContentByPath(path);
+
     return (
       <div key="contactModule" className="contactModule">
         {component ? component : null}
@@ -149,7 +155,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onLoadCurrentData: (props) => dispatch(loadCurrentData({ ...props })),
+    onLoadCurrentData: (props) => dispatch(loadCurrentData(props)),
+    onSetStatus: (props) => dispatch(setStatus(props)),
   };
 };
 

@@ -2,9 +2,8 @@ import PropTypes from 'prop-types';
 const { func, string, bool, object, arrayOf, objectOf } = PropTypes;
 
 export const customersModuleType = {
-  onErrorRequestAction: func.isRequired,
   path: string.isRequired,
-  visible: bool.isRequired,
+  visible: bool,
   activeTabs: arrayOf(string),
   rest: object.isRequired,
   onSetStatus: func.isRequired,
@@ -13,9 +12,9 @@ export const customersModuleType = {
 };
 
 export const contactsType = {
-  isBackground: bool.isRequired,
+  isBackground: bool,
   router: object.isRequired,
   onSetStatus: func.isRequired,
   path: string.isRequired,
-  visible: bool.isRequired,
+  visible: bool,
 };

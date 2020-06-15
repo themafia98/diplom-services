@@ -3,7 +3,7 @@ import { udataType } from '../../types';
 const { func, string, number, object, bool, array, oneOfType, arrayOf } = PropTypes;
 
 export const tableViewType = {
-  setCurrentTab: func.isRequired,
+  setCurrentTab: func,
   height: oneOfType([string, number]),
   tasks: array.isRequired,
   filterBy: oneOfType([string.isRequired, arrayOf(string).isRequired]).isRequired,

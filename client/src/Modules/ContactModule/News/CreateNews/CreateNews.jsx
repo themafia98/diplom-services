@@ -18,18 +18,15 @@ class CreateNews extends React.PureComponent {
   static contextType = modelContext;
   static propTypes = createNewsType;
 
-  setEditorValue = (event) => {
-    this.setState({
-      editorValue: event,
-    });
-  };
-
-  clearStatus = (event) => {
+  clearStatus = () => {
     const { clear } = this.state;
-    if (clear)
-      this.setState({
-        clear: false,
-      });
+
+    if (!clear) return;
+
+    this.setState({
+      ...this.state,
+      clear: false,
+    });
   };
 
   onChange = ({ currentTarget: { value = '' } = {} }) => {
@@ -44,72 +41,68 @@ class CreateNews extends React.PureComponent {
     const { titleNews = '' } = this.state;
     const { clientDB = null } = this.context;
 
-    if (!contentState) {
-      return message.error('Ничего не найдено');
-    }
-
-    if (!titleNews) {
+    if (!titleNews || !contentState) {
       return message.error('Название не найдено');
     }
 
-    if (statusApp === 'online') {
-      try {
-        const body = {
-          queryParams: {
-            actionPath: 'news',
-            actionType: 'create_single_news',
-          },
-          metadata: { title: titleNews, content: contentState, key: uuid() },
-        };
-        const res = await createEntity('news', body, { clientDB, statusApp, onSetStatus });
-        const { result: { data = {} } = {}, offline = false } = res || {};
-        const { response = {} } = data || {};
-        const { metadata: { _id: id = '', key = '' } = {}, params: { done = false } = {} } = response;
-
-        if (!done && !offline) {
-          throw new Error('Bad create news');
-        }
-
-        if (!offline) {
-          const itemNotification = {
-            type: 'global',
-            title: 'Новость',
-            isRead: false,
-            message: `${titleNews}. Добавлена: ${moment().format('DD.MM.YYYY HH:mm')}`,
-            action: {
-              type: 'news_link',
-              moduleName: 'contactModule',
-              link: id ? id : key,
-            },
-            uidCreater: uid,
-            authorName: displayName,
-          };
-
-          createNotification('global', itemNotification).catch((error) => {
-            if (error?.response?.status !== 404) console.error(error);
-            message.error('Error create notification');
-          });
-        }
-
-        this.setState(
-          {
-            ...this.state,
-            clear: true,
-          },
-          () => message.success('Новость создана.'),
-        );
-      } catch (error) {
-        if (error?.response?.status !== 404) console.error(error);
-        notification.error({
-          title: 'Ошибка создания новой новости',
-          message: 'Возможно данные повреждены',
-        });
-      }
-    } else
-      return notification.error({
+    if (statusApp !== 'online') {
+      notification.error({
         title: 'Ошибка сети',
         message: 'Интернет соединение отсутствует',
       });
+      return;
+    }
+
+    try {
+      const body = {
+        queryParams: {
+          actionPath: 'news',
+          actionType: 'create_single_news',
+        },
+        metadata: { title: titleNews, content: contentState, key: uuid() },
+      };
+      const res = await createEntity('news', body, { clientDB, statusApp, onSetStatus });
+      const { result: { data = {} } = {}, offline = false } = res || {};
+      const { response = {} } = data || {};
+      const { metadata: { _id: id = '', key = '' } = {}, params: { done = false } = {} } = response;
+
+      if (!done && !offline) throw new Error('Bad create news');
+
+      if (!offline) {
+        const itemNotification = {
+          type: 'global',
+          title: 'Новость',
+          isRead: false,
+          message: `${titleNews}. Добавлена: ${moment().format('DD.MM.YYYY HH:mm')}`,
+          action: {
+            type: 'news_link',
+            moduleName: 'contactModule',
+            link: id ? id : key,
+          },
+          uidCreater: uid,
+          authorName: displayName,
+        };
+
+        createNotification('global', itemNotification).catch((error) => {
+          if (error?.response?.status !== 404) console.error(error);
+          message.error('Error create notification');
+        });
+      }
+
+      this.setState(
+        {
+          ...this.state,
+          clear: true,
+        },
+        () => message.success('Новость создана.'),
+      );
+    } catch (error) {
+      if (error?.response?.status !== 404) console.error(error);
+      notification.error({
+        title: 'Ошибка создания новой новости',
+        message: 'Возможно данные повреждены',
+      });
+    }
   };
   render() {
     const { clear = false, titleNews = '' } = this.state;
