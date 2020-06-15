@@ -222,7 +222,7 @@ class ContentView extends React.Component {
 
     const isBackgroundChat = this.getBackground('contactModule_chat');
     const tabs = this.tabsCreate();
-    console.log(tabs);
+
     return (
       <>
         <Content key={key}>

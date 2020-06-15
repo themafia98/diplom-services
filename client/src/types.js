@@ -4,14 +4,19 @@ const types = Object.freeze({
    * @requires $path var with entity key
    *
    * Entrypoint type for any entity in application with entity key,
-   * for example task card or news card
+   * for example task card or news card,
+   *
+   * path example: 'taskModule_all__entityKey'
    */
   $entity_entrypoint: Symbol.for('$entity_entrypoint'),
   /**
    * @readonly
    * @requires $link string var (entity key)
+   * for building path to module
    *
    * Entrypoint type for links in application
+   *
+   * path example: 'taskModule_$link$__entityKey
    */
   $link_entrypoint: Symbol.for('$link_entrypoint'),
   /**
@@ -19,13 +24,17 @@ const types = Object.freeze({
    * @requires $path with sub module
    *
    * Entrypoint type for sub modules,
-   * for example 'TaskModule_all', where '_all' is a sub module
+   * for example 'taskModule_all', where '_all' is a sub module
+   *
+   * path example: 'taskModule_all'
    */
   $sub_entrypoint_module: Symbol.for('$sub_entrypoint_module'),
   /**
    * @readonly
    * @requires $path
-   *  Entrypoint for root modules, for example mainModule
+   *  Entrypoint for root modules
+   *
+   * path example: 'mainModule'
    */
   $entrypoint_module: Symbol.for('$entrypoint_module'),
 });
