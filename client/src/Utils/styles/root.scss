@@ -2,6 +2,11 @@ body {
   overflow: hidden;
   font-family: Roboto, Arial, sans-serif;
 }
+
+* {
+  -webkit-print-color-adjust: exact;
+}
+
 .ant-calendar-time {
   .ant-calendar-footer {
     .ant-calendar-time-picker-btn {
@@ -141,4 +146,28 @@ ul {
 
 .isError {
   border: 1px solid red;
+}
+
+@media print {
+  .ant-layout-header {
+    display: none !important;
+  }
+
+  aside.ant-layout-sider {
+    display: none !important;
+  }
+
+  .runAction-button {
+    display: none !important;
+  }
+
+  * {
+    font-family: 'Times New Roman', Times, serif;
+    .output {
+      font-size: 14px;
+      .output-list-wrapper {
+        font-size: 14px;
+      }
+    }
+  }
 }
