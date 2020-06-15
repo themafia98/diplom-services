@@ -155,7 +155,7 @@ const getDependencyModules = (moduleName, configuration = config) => {
 
 /**
  *
- * @param  {...Symbol[]} types
+ * @param  {...Symbol} types
  *
  * Compare types function
  */
