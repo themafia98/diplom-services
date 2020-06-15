@@ -153,6 +153,12 @@ const getDependencyModules = (moduleName, configuration = config) => {
   }, []);
 };
 
+/**
+ *
+ * @param  {...Symbol[]} types
+ *
+ * Compare types function
+ */
 const oneOfType = (...types) => (type) => types.find((typeName) => typeName === type);
 
 export default {
