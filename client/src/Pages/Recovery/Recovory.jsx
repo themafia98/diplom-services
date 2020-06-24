@@ -3,6 +3,7 @@ import { recovoryType } from './types';
 import { Button, Input } from 'antd';
 
 import modelContext from 'Models/context';
+import actionsTypes from 'actions.types';
 
 const Recovory = (props) => {
   const { Request } = useContext(modelContext);
@@ -24,6 +25,7 @@ const Recovory = (props) => {
       }
 
       const recovoryData = {
+        actionType: actionsTypes.$RECOVORY,
         recovoryField,
         mode,
       };

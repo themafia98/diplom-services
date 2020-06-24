@@ -2,6 +2,7 @@ import moment from 'moment';
 import _ from 'lodash';
 import { setSocketConnection, onLoadActiveChats, setSocketError, setActiveChatToken, updateRoom } from '../';
 import { errorRequestAction } from '../../publicActions';
+import actionsTypes from 'actions.types';
 
 /**
  * Middleware
@@ -41,6 +42,7 @@ const loadActiveChats = (payload) => async (dispatch, getState, { schema, Reques
     } = res || {};
 
     const rest = new Request();
+    /** dynamic loading chats */
     const response = await rest.sendRequest(
       `/${activeModule}/${path}`,
       'POST',
@@ -136,6 +138,7 @@ const loadingDataByToken = (token, listdata, activeModule, isFake = null) => asy
       `/${activeModule}/load/tokenData`,
       'POST',
       {
+        actionType: actionsTypes.$LOAD_TOKEN_DATA,
         queryParams: {
           tokenRoom: token,
           options,
@@ -199,7 +202,7 @@ const updateRooms = (payload) => async (dispatch, getState, { schema, Request, c
         },
         options: {
           actionPath: 'chatRoom',
-          actionType: 'get_update_rooms',
+          actionType: actionsTypes.$GET_UPDATE_ROOMS,
         },
       },
       true,

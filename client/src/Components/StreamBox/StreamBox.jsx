@@ -10,6 +10,7 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import clsx from 'clsx';
 import { routeParser, routePathNormalise, buildRequestList } from 'Utils';
 import modelContext from 'Models/context';
+import actionsTypes from 'actions.types';
 
 class StreamBox extends React.Component {
   state = {
@@ -99,10 +100,15 @@ class StreamBox extends React.Component {
     try {
       const { Request } = this.context;
       const rest = new Request();
-      const res = await rest.sendRequest('/system/notification/update/many', 'POST', {
-        actionType: 'get_notifications',
-        query: { ids, updateProps: { isRead: true } },
-      });
+      const res = await rest.sendRequest(
+        '/system/notification/update/many',
+        'POST',
+        {
+          actionType: actionsTypes.$GET_NOTIFICATIONS,
+          query: { ids, updateProps: { isRead: true } },
+        },
+        true,
+      );
       const {
         data: { response: { metadata: metadataReadable = {} } = {} },
       } = res;
@@ -142,10 +148,15 @@ class StreamBox extends React.Component {
       }
 
       const rest = new Request();
-      const res = await rest.sendRequest(`/system/${type}/notification`, 'POST', {
-        actionType: 'get_notifications',
-        methodQuery,
-      });
+      const res = await rest.sendRequest(
+        `/system/${type}/notification`,
+        'POST',
+        {
+          actionType: actionsTypes.$GET_NOTIFICATIONS,
+          methodQuery,
+        },
+        true,
+      );
 
       if (res.status !== 200 && res.status !== 404) {
         throw new Error('Bad get notification request');

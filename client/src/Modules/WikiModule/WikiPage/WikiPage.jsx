@@ -6,6 +6,7 @@ import { wikiPageTypes } from '../types';
 import modelContext from 'Models/context';
 import { Spin, Button, message } from 'antd';
 import moment from 'moment';
+import actionsTypes from 'actions.types';
 
 const WikiPage = (props) => {
   const { selectedNode = null, metadata = null, onChangeWikiPage, udata: { displayName = '' } = {} } = props;
@@ -27,6 +28,7 @@ const WikiPage = (props) => {
       const { _id, path, accessGroups = [] } = nodeMetadata;
       const rest = new Request();
       const query = {
+        actionType: actionsTypes.$GET_WIKI_PAGE,
         type: 'wikiPage',
         methodQuery: {
           treeId: _id,

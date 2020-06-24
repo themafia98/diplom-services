@@ -10,6 +10,7 @@ import { addTabAction, setActiveTabAction } from 'Redux/actions/routerActions';
 import Logo from 'Components/Logo';
 import ModalWindow from 'Components/ModalWindow';
 import modelContext from 'Models/context';
+import actionsTypes from 'actions.types';
 
 class LoginPage extends React.Component {
   state = {

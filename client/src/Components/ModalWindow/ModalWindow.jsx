@@ -13,6 +13,7 @@ import MailResponserModal from './MailResponserModal';
 
 import Textarea from 'Components/Textarea';
 import modelContext from 'Models/context';
+import actionsTypes from 'actions.types';
 
 const { Option } = Select;
 
@@ -121,13 +122,16 @@ class ModalWindow extends React.PureComponent {
         '/reg',
         'POST',
         {
-          email,
-          password,
-          displayName: `${name} ${surname}`,
-          departament,
-          position: 'Master',
-          rules: 'full',
-          accept: true,
+          actionType: actionsTypes.$REG_USER,
+          user: {
+            email,
+            password,
+            displayName: `${name} ${surname}`,
+            departament,
+            position: 'Master',
+            rules: 'full',
+            accept: true,
+          },
         },
         false,
       );

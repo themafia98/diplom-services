@@ -2,6 +2,7 @@ import React from 'react';
 import _ from 'lodash';
 import { Modal, Select, message, Input } from 'antd';
 import modelContext from 'Models/context';
+import actionsTypes from 'actions.types';
 
 const { Option } = Select;
 
@@ -35,16 +36,21 @@ class ChatModal extends React.PureComponent {
           : {};
 
       const rest = new Request();
-      const res = await rest.sendRequest('/chat/createRoom', 'PUT', {
-        actionPath: 'chatRoom',
-        actionType: 'create_chatRoom',
-        queryParams: {
-          type,
-          moduleName: 'chat',
-          membersIds: _.uniq([uid, ...membersIds]),
-          ...groupProps,
+      const res = await rest.sendRequest(
+        '/chat/createRoom',
+        'PUT',
+        {
+          actionType: actionsTypes.$CREATE_CHAT_ROOM,
+          actionPath: 'chatRoom',
+          queryParams: {
+            type,
+            moduleName: 'chat',
+            membersIds: _.uniq([uid, ...membersIds]),
+            ...groupProps,
+          },
         },
-      });
+        true,
+      );
 
       if (!res || res?.status !== 200) {
         throw new Error('Bad response create chat room');

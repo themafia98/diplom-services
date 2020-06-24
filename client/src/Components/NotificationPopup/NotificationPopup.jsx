@@ -5,6 +5,7 @@ import { Icon, Badge, Popover } from 'antd';
 import NotificationItem from './NotificationItem';
 import StreamBox from 'Components/StreamBox';
 import modelContext from 'Models/context';
+import actionsTypes from 'actions.types';
 class NotificationPopup extends React.PureComponent {
   state = {
     counter: 0,
@@ -49,10 +50,15 @@ class NotificationPopup extends React.PureComponent {
       const { notificationDep = {}, udata: { _id: uid } = {}, type } = this.props;
       const { filterStream = '' } = notificationDep;
       const rest = new Request();
-      const res = await rest.sendRequest(`/system/${type}/notification`, 'POST', {
-        actionType: 'get_notifications',
-        methodQuery: _.isString(filterStream) ? { [filterStream]: uid } : {},
-      });
+      const res = await rest.sendRequest(
+        `/system/${type}/notification`,
+        'POST',
+        {
+          actionType: actionsTypes.$GET_NOTIFICATIONS,
+          methodQuery: _.isString(filterStream) ? { [filterStream]: uid } : {},
+        },
+        true,
+      );
 
       if (res.status !== 200 && res.status !== 404) throw new Error('Bad get notification request');
 

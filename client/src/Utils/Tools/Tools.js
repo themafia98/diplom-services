@@ -5,6 +5,7 @@ import NotFound from 'Modules/NotFound';
 import subModulesComponents from './subComponents';
 import componentsModules from './components';
 import types from 'types.modules';
+import actionsTypes from 'actions.types';
 
 /**
  *
@@ -12,7 +13,7 @@ import types from 'types.modules';
  * @param {object} item notification entity
  * @param {string} actionType - default: set
  */
-const createNotification = async (type = '', item = {}, actionType = 'set_notification') => {
+const createNotification = async (type = '', item = {}, actionType = actionsTypes.$SET_NOTIFICATION) => {
   if (!type || _.isEmpty(item)) return;
   const rest = new Request();
   return rest.sendRequest(
@@ -87,7 +88,15 @@ const createEntity = async (storeName = '', body = {}, dep = {}, sliceCreaterNum
 const deleteFile = async (store = '', body = {}) => {
   if (!store || _.isEmpty(body)) return;
   const rest = new Request();
-  return await rest.sendRequest(`/system/${store}/delete/file`, 'DELETE', body, true);
+  return await rest.sendRequest(
+    `/system/${store}/delete/file`,
+    'DELETE',
+    {
+      actionType: actionsTypes.$DELETE_FILE,
+      ...body,
+    },
+    true,
+  );
 };
 
 /**
@@ -98,7 +107,15 @@ const deleteFile = async (store = '', body = {}) => {
 const loadFile = async (store = '', body = {}) => {
   if (!store || _.isEmpty(body)) return;
   const rest = new Request();
-  return await rest.sendRequest(`/system/${store}/load/file`, 'PUT', body, true);
+  return await rest.sendRequest(
+    `/system/${store}/load/file`,
+    'PUT',
+    {
+      actionType: actionsTypes.$PUT_FILE,
+      ...body,
+    },
+    true,
+  );
 };
 
 /**

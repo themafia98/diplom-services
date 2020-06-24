@@ -16,6 +16,7 @@ import PanelPassword from './Panels/PanelPassword';
 import PanelCommon from './Panels/PanelCommon';
 import PanelAdmin from './Panels/PanelAdmin';
 import PanelProfile from './Panels/PanelProfile';
+import actionsTypes from 'actions.types';
 
 class SettingsModule extends React.PureComponent {
   state = {
@@ -126,7 +127,15 @@ class SettingsModule extends React.PureComponent {
       };
 
       const rest = new Request();
-      const res = await rest.sendRequest('/settings/statusList', 'PUT', { queryParams }, true);
+      const res = await rest.sendRequest(
+        '/settings/statusList',
+        'PUT',
+        {
+          actionType: actionsTypes.$SETTINGS_PUT,
+          queryParams,
+        },
+        true,
+      );
 
       if (!res || res.status !== 200) {
         throw new Error('Bad request profile settings');
@@ -184,7 +193,15 @@ class SettingsModule extends React.PureComponent {
         uid,
       };
       const rest = new Request();
-      const res = await rest.sendRequest('/settings/profile', 'POST', { queryParams }, true);
+      const res = await rest.sendRequest(
+        '/settings/profile',
+        'POST',
+        {
+          actionType: actionsTypes.$SETTINGS_PUT,
+          queryParams,
+        },
+        true,
+      );
 
       if (!res || res.status !== 200) {
         throw new Error('Bad request profile settings');
@@ -224,7 +241,15 @@ class SettingsModule extends React.PureComponent {
           }
         : { newPhone, uid };
       const rest = new Request();
-      const res = await rest.sendRequest('/settings/common', 'POST', { queryParams }, true);
+      const res = await rest.sendRequest(
+        '/settings/common',
+        'POST',
+        {
+          actionType: actionsTypes.$SETTINGS_PUT,
+          queryParams,
+        },
+        true,
+      );
 
       if (!res || res.status !== 200) {
         throw new Error('Bad request change password');
@@ -288,7 +313,15 @@ class SettingsModule extends React.PureComponent {
         uid,
       };
       const rest = new Request();
-      const res = await rest.sendRequest('/settings/password', 'POST', { queryParams }, true);
+      const res = await rest.sendRequest(
+        '/settings/password',
+        'POST',
+        {
+          actionType: actionsTypes.$SETTINGS_PUT,
+          queryParams,
+        },
+        true,
+      );
 
       if (!res || res.status !== 200) {
         throw new Error('Bad request change password');

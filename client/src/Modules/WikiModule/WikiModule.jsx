@@ -10,6 +10,7 @@ import WikiPage from './WikiPage';
 import ModalWindow from 'Components/ModalWindow';
 import TitleModule from 'Components/TitleModule';
 import modalContext from 'Models/context';
+import actionsTypes from 'actions.types';
 
 const { Option } = Select;
 const { Search } = Input;
@@ -129,18 +130,24 @@ class WikiModule extends React.PureComponent {
       const index = ++metadata.filter((nodeMeta) => nodeMeta?.parentId === indexId).length;
       const rest = new Request();
 
-      const res = await rest.sendRequest('/wiki/createLeaf', 'PUT', {
-        type: 'wikiTree',
-        item: !item
-          ? {
-              ...node,
-              level: 1,
-              path: `0-${index}`,
-              index,
-              accessGroups: node?.accessGroups?.length ? [...node.accessGroups] : ['full'],
-            }
-          : { ...item },
-      });
+      const res = await rest.sendRequest(
+        '/wiki/createLeaf',
+        'PUT',
+        {
+          actionType: actionsTypes.$CREATE_LEAF,
+          type: 'wikiTree',
+          item: !item
+            ? {
+                ...node,
+                level: 1,
+                path: `0-${index}`,
+                index,
+                accessGroups: node?.accessGroups?.length ? [...node.accessGroups] : ['full'],
+              }
+            : { ...item },
+        },
+        true,
+      );
 
       if (res.status !== 200) {
         throw new Error('Bad create');
@@ -159,7 +166,15 @@ class WikiModule extends React.PureComponent {
       const { Request } = this.context;
       const rest = new Request();
 
-      const res = await rest.sendRequest('/wiki/deleteLeafs', 'DELETE', body, true);
+      const res = await rest.sendRequest(
+        '/wiki/deleteLeafs',
+        'DELETE',
+        {
+          actionType: actionsTypes.$DELETE_LEAF,
+          ...body,
+        },
+        true,
+      );
 
       if (!res || res?.status !== 200) {
         throw new Error('Bad delete leaf');
@@ -360,7 +375,15 @@ class WikiModule extends React.PureComponent {
     try {
       const { Request } = this.context;
       const rest = new Request();
-      const res = await rest.sendRequest('/system/wiki/update/single', 'POST', paramsState, true);
+      const res = await rest.sendRequest(
+        '/system/wiki/update/single',
+        'POST',
+        {
+          actionType: actionsTypes.$UPDATE_WIKI_PAGE,
+          ...paramsState,
+        },
+        true,
+      );
       const { data: { response = {} } = {} } = res || {};
       if (res?.status !== 200 && res?.status !== 404) {
         throw new Error(`Bad fetch update wikiPage. ${paramsState}`);

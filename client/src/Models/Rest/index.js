@@ -176,7 +176,12 @@ class Request {
           headers: {
             Authorization: auth === 'worker' ? this.getLocalToken() : this.getToken(auth),
           },
-          data: body,
+          data: _.isPlainObject(body)
+            ? {
+                actionType: null,
+                ...body,
+              }
+            : body,
         }
       : {
           headers: {

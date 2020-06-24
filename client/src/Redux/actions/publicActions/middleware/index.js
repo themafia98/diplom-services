@@ -3,6 +3,7 @@ import { cachingHook, getterCacheHook, putterCacheHook, errorHook, updateEntityH
 import { onLoadArtifacts, onLoadSettings } from '../';
 import { multipleLoadData } from '../../routerActions/middleware';
 import { updateItemStateAction } from '../../routerActions';
+import actionsTypes from 'actions.types';
 
 /**
  * Middleware
@@ -34,7 +35,11 @@ const middlewareCaching = (props) => async (dispatch, getState, { schema, Reques
       /** caching items middleware */
 
       const path = `/${depStore}/caching/jurnal`;
-      const body = { queryParams: { depKey, depStore }, item };
+      const body = {
+        actionType: actionsTypes.$CACHING_JURNAL,
+        queryParams: { depKey, depStore },
+        item,
+      };
 
       const res = await rest.sendRequest(path, 'PUT', body, true);
       const [items, error] = rest.parseResponse(res);
@@ -105,6 +110,7 @@ const loadCacheData = (props) => async (dispatch, getState, { schema, Request, c
   try {
     const path = `/${depStore}/caching/list`;
 
+    /** with dynamic actionType */
     const body = { queryParams: { depKey, store }, actionType };
 
     const res = await rest.sendRequest(path, 'PUT', body, true);
@@ -178,8 +184,14 @@ const middlewareUpdate = (props = {}) => async (dispatch, getState, { schema, Re
    * update by @property {string} id more prioritized than @property {string} key
    */
   try {
-    const isMany = actionType === 'update_many';
-    const path = isMany ? `/system/${store}/update/many` : `/system/${store}/update/single`;
+    const path =
+      actionType === actionsTypes.$UPDATE_MANY
+        ? `/system/${store}/update/many`
+        : actionType === actionsTypes.$UPDATE_SINGLE
+        ? `/system/${store}/update/single`
+        : '';
+
+    if (!path) throw new TypeError('Bad action type');
 
     const body = { queryParams: { id, key }, updateItem, updateField };
 
@@ -228,8 +240,12 @@ const settingsLoader = (props) => async (dispatch, getState, { schema, Request, 
     try {
       const { name = '', params = {} } = wish;
       const { method = 'GET', body = {} } = params;
+      const paramsRequest = {
+        actionType: actionsTypes.$SETTINGS_LOAD,
+        ...body,
+      };
 
-      const res = await rest.sendRequest(`/settings/${name}`, method, body, true);
+      const res = await rest.sendRequest(`/settings/${name}`, method, paramsRequest, true);
 
       if (!res || (res.status !== 200 && res.status !== 404)) {
         throw new Error('Invalid loading settings');

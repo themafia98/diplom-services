@@ -1,5 +1,6 @@
 import { clientDB } from 'Models/ClientSideDatabase';
 import Request from 'Models/Rest';
+import actionsTypes from 'actions.types';
 
 /**
  * web worker
@@ -56,7 +57,15 @@ async function runServerSync(list = [], rest, loop) {
     if (!rest instanceof Request) {
       throw new TypeError('invalid request model entity');
     }
-    await rest.sendRequest('/system/sync', 'POST', { syncList: list }, 'worker');
+    await rest.sendRequest(
+      '/system/sync',
+      'POST',
+      {
+        actionType: actionsTypes.$SYNC_DATA,
+        syncList: list,
+      },
+      'worker',
+    );
     initial = setTimeout(loop, 10000);
   } catch (error) {
     console.error(error);

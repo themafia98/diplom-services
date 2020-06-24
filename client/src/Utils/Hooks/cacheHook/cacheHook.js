@@ -1,4 +1,5 @@
 import { getStoreSchema } from '../../utilsHook';
+import actionsTypes from 'actions.types';
 
 const cachingHook = async (dispatch, dep = {}, depActions = {}) => {
   const { dataItems = {}, store, actionType, clientDB, schema, updateBy } = dep;
@@ -34,7 +35,12 @@ const putterCacheHook = async (dispatch, dep = {}, depActions = {}) => {
     const path = `/${depStore}/${type ? type : 'caching'}`;
     const rest = new Request();
 
-    const body = { queryParams: { uid }, item, actionType };
+    /** dynamic actionType */
+    const body = {
+      queryParams: { uid },
+      item,
+      actionType,
+    };
 
     const res = await rest.sendRequest(path, 'PUT', body, true);
     const [items, error] = rest.parseResponse(res);
@@ -42,12 +48,13 @@ const putterCacheHook = async (dispatch, dep = {}, depActions = {}) => {
     if (error) throw new Error(error);
 
     if (items && type === 'logger') {
-      const actionType = 'get_user_settings_log';
-
       const path = `/${depStore}/${type ? type : 'caching'}`;
       const rest = new Request();
 
-      const body = { queryParams: { uid }, actionType };
+      const body = {
+        queryParams: { uid },
+        actionType: actionsTypes.$GET_USER_SETTINGS_LOGS,
+      };
 
       const res = await rest.sendRequest(path, 'POST', body, true);
       const [items, error] = rest.parseResponse(res);

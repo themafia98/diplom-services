@@ -21,6 +21,7 @@ import 'moment/locale/ru';
 import modelContext from './Models/context';
 import Demo from './Pages/Demo';
 import worker from 'workerize-loader!worker'; // eslint-disable-line import/no-webpack-loader-syntax
+import actionsTypes from 'actions.types';
 const workerInstanse = worker();
 
 class App extends React.Component {
@@ -45,7 +46,14 @@ class App extends React.Component {
     const rest = new Request();
 
     try {
-      const res = await rest.sendRequest('/userload', 'POST', null, true);
+      const res = await rest.sendRequest(
+        '/userload',
+        'POST',
+        {
+          actionType: actionsTypes.$LOAD_SESSION_USER,
+        },
+        true,
+      );
 
       if (res.status !== 200) {
         throw new Error('Bad user data');

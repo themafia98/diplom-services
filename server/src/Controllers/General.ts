@@ -32,8 +32,14 @@ namespace General {
           throw new Error('Invalid auth data');
         }
 
+        const { user = {} } = req.body as Record<string, User>;
+
+        if (!user || _.isEmpty(user)) {
+          throw new Error('Bad user data for registration');
+        }
+
         await UserModel.create(
-          { ...req.body, accept: true, rules: 'full' },
+          { ...user, accept: true, rules: 'full' },
           async (err: Error): ResRequest => {
             if (err) {
               console.error(err);

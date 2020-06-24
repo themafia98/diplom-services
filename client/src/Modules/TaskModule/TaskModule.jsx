@@ -20,6 +20,7 @@ import modelContext from 'Models/context';
 import entityRender from 'Utils/Tools/entityRender';
 import withRouter from 'Components/withRouter';
 import types from 'types.modules';
+import actionsTypes from 'actions.types';
 
 class TaskModule extends React.PureComponent {
   state = {
@@ -157,7 +158,11 @@ class TaskModule extends React.PureComponent {
           const res = await rest.sendRequest(
             '/tasks/listCounter',
             'POST',
-            { filterCounter: path.includes('all') ? null : uid, saveData: { ...saveDataState, arrayKeys } },
+            {
+              actionType: actionsTypes.$CURRENT_LIST_COUNTER,
+              filterCounter: path.includes('all') ? null : uid,
+              saveData: { ...saveDataState, arrayKeys },
+            },
             true,
           );
           if (res.status !== 200) throw new Error('Bad list');

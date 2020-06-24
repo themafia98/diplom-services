@@ -1,6 +1,7 @@
 import { getNormalizedPath, sucessEvent, errorHook, coreUpdaterDataHook } from 'Utils';
 import { saveComponentStateAction, loadFlagAction } from '../';
 import { errorRequestAction, setStatus } from '../../publicActions';
+import actionsTypes from 'actions.types';
 //import workerInstanse from 'workerInstanse';
 
 const loadCurrentData = (params) => async (dispatch, getState, { schema, Request, clientDB }) => {
@@ -45,7 +46,16 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
       });
 
       try {
-        const res = await rest.sendRequest(normalizeReqPath, methodRequst, { methodQuery, options }, true);
+        const res = await rest.sendRequest(
+          normalizeReqPath,
+          methodRequst,
+          {
+            actionType: actionsTypes.$LOAD_CURRENT_DATA,
+            methodQuery,
+            options,
+          },
+          true,
+        );
 
         const [items, error] = rest.parseResponse(res);
         const { dataItems: copyStore = [] } = items;
@@ -173,7 +183,16 @@ const multipleLoadData = (params) => async (dispatch, getState, { schema, Reques
         });
 
         try {
-          const res = await rest.sendRequest(normalizeReqPath, methodRequst, { methodQuery, options }, true);
+          const res = await rest.sendRequest(
+            normalizeReqPath,
+            methodRequst,
+            {
+              actionType: actionsTypes.$LOAD_NOTIFICATION_DATA,
+              methodQuery,
+              options,
+            },
+            true,
+          );
           const [items, error] = rest.parseResponse(res);
 
           if (error) {
