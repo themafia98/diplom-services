@@ -26,8 +26,8 @@ class CabinetModule extends React.PureComponent {
     modePage: '',
   };
 
-  static getDerivedStateFromProps = (props, state) => {
-    const { path = '' } = props || {};
+  static getDerivedStateFromProps = (nextProps, state) => {
+    const { path = '' } = nextProps || {};
     const { modePage = '' } = state || {};
 
     const isPersonalPage = path && path.includes('personalPage');
@@ -36,6 +36,13 @@ class CabinetModule extends React.PureComponent {
       return {
         ...state,
         modePage: 'personal',
+      };
+    }
+
+    if (!isPersonalPage && modePage === 'personal') {
+      return {
+        ...state,
+        modePage: '',
       };
     }
 

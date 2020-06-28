@@ -1,5 +1,6 @@
 const actionsTypes = Object.freeze({
   /**
+   * @private
    * param key: actionType
    *
    * action for get notifications list

@@ -5,6 +5,9 @@ const types = Object.freeze({
    *
    * Entrypoint type for any entity in application with entity key,
    * for example task card or news card,
+   * if path include subModule with the same name '$$name$$',
+   * it's virtual entity type and working how simple module with type
+   * $entity_entrypoint
    *
    * path example: 'taskModule_all__entityKey'
    */

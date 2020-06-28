@@ -297,10 +297,14 @@ const parseModuleKey = (tabKey) => {
  *                   $link_entrypoint
  */
 const getModuleTypeByParsedKey = (moduleName, subModuleName, entityKey) => {
-  if (moduleName && !subModuleName && !entityKey) return toSymbol('$entrypoint_module');
-  else if (moduleName && subModuleName && !entityKey) return toSymbol('$sub_entrypoint_module');
-  else if (moduleName && subModuleName && entityKey) return toSymbol('$entity_entrypoint');
-  else if (moduleName && !subModuleName && entityKey) return toSymbol('$link_entrypoint');
+  if (!moduleName) return null;
+
+  const isVirtualEntrypoint = entityKey && /\${2}(\w)+\${2}/.test(subModuleName);
+
+  if ((!subModuleName && !entityKey) || isVirtualEntrypoint) return toSymbol('$entrypoint_module');
+  else if (subModuleName && !entityKey) return toSymbol('$sub_entrypoint_module');
+  else if (subModuleName && entityKey) return toSymbol('$entity_entrypoint');
+  else if (!subModuleName && entityKey) return toSymbol('$link_entrypoint');
   return null;
 };
 

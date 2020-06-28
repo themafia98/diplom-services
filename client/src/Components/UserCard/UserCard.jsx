@@ -42,6 +42,13 @@ class UserCard extends React.Component {
       };
     }
 
+    if (!isPersonalPage && modePage === 'personal') {
+      return {
+        ...state,
+        modePage: '',
+      };
+    }
+
     return state;
   };
 

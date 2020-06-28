@@ -110,7 +110,7 @@ class MainModule extends React.PureComponent {
               visible={visible}
               prefix="#notification"
               parentDataName="users"
-              parentPath={path}
+              parentPath="mainModule__global"
               key="streamMain"
               type="global"
             />
