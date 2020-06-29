@@ -377,17 +377,32 @@ export default handleActions(
       } else return state;
     },
     [UPDATE_ITEM]: (state, { payload }) => {
-      const { routeDataActive, currentActionTab = '', routeData = {}, path = '' } = state;
-      const { id, updateBy = '_id', updaterItem = {}, store = path.split('__')[0] } = payload;
+      const { routeDataActive, routeData = {}, path: currentPath = '' } = state;
+      const {
+        id,
+        updateBy = '_id',
+        updaterItem = {},
+        store = currentPath.split('__')[0],
+        parsedRoutePath = {},
+      } = payload;
+      const { itemId = '', path = '' } = parsedRoutePath || {};
 
       const isExist = routeDataActive && routeDataActive[updateBy];
-      const currentModule = currentActionTab.split('__')[0];
+      const currentModule = path.split('__');
 
-      const isExistModule = !!routeData[currentModule];
-      const isExistStore = isExistModule ? !!routeData[currentModule][store] : null;
+      const [moduleName = '', entityId = ''] = currentModule || [];
+      const itemName = moduleName && entityId ? entityId : moduleName;
+
+      const { [store]: dataArray = [], ...data } =
+        !itemId && routeData[currentModule[0]]
+          ? routeData[itemName]
+          : currentModule[1] && itemId && routeData[itemId]
+          ? routeData[itemId]
+          : {};
+
+      const dataList = Array.isArray(dataArray) && dataArray?.length ? dataArray : data;
 
       const updateCurrent = isExist && routeDataActive[updateBy] === id ? true : false;
-      const dataList = isExistStore && isExistModule ? routeData[currentModule][store] : [];
 
       const newStore =
         Array.isArray(dataList) && dataList?.length
@@ -400,17 +415,21 @@ export default handleActions(
                   }
                 : updaterItem;
             })
-          : null;
+          : dataList;
 
-      const updateCurrentModule =
-        newStore && newStore.length
-          ? {
-              [currentModule]: {
-                ...routeData[currentModule],
-                [store]: newStore,
-              },
-            }
-          : {};
+      const updateCurrentModule = dataList
+        ? {
+            [itemName]: {
+              ...routeData[itemName],
+              [store]:
+                Array.isArray(newStore) && newStore?.length
+                  ? newStore
+                  : !!routeData[itemName][store]
+                  ? [...Array.from(routeData[currentModule][store]), newStore]
+                  : [newStore],
+            },
+          }
+        : {};
 
       return {
         ...state,

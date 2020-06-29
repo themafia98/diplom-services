@@ -19,6 +19,7 @@ const DescriptionTask = forwardRef(
       onUpdate,
       udata,
       rest,
+      path,
     },
     ref,
   ) => {
@@ -55,6 +56,7 @@ const DescriptionTask = forwardRef(
         <Comments
           commentProps={commentProps}
           udata={udata}
+          path={path}
           rules={true}
           onUpdate={onUpdate}
           data={routeDataActive}

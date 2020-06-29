@@ -178,11 +178,13 @@ const middlewareUpdate = (props = {}) => async (dispatch, getState, { schema, Re
     store = {},
     actionType = 'default',
     updateBy = '_id',
+    parsedRoutePath,
   } = props;
   const rest = new Request();
   /**
    * update by @property {string} id more prioritized than @property {string} key
    */
+
   try {
     const path =
       actionType === actionsTypes.$UPDATE_MANY
@@ -201,6 +203,7 @@ const middlewareUpdate = (props = {}) => async (dispatch, getState, { schema, Re
 
     if (error) throw new Error(error);
     const dep = {
+      parsedRoutePath,
       updateBy,
       store,
       schema,
@@ -213,6 +216,7 @@ const middlewareUpdate = (props = {}) => async (dispatch, getState, { schema, Re
     await updateEntityHook(dispatch, dep);
   } catch (error) {
     const depError = {
+      parsedRoutePath,
       store,
       actionType,
       clientDB,

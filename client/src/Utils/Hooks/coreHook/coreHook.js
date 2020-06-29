@@ -67,7 +67,7 @@ const coreUpdaterDataHook = async (dispatch, dep = {}, multiple = false, badNetw
 };
 
 const updateEntityHook = async (dispatch, dep = {}) => {
-  const { store, schema, dataItems, id, updateItemStateAction, updateBy = '' } = dep;
+  const { parsedRoutePath = null, store, schema, dataItems, id, updateItemStateAction, updateBy = '' } = dep;
 
   const schemaTemplate = getStoreSchema(store);
 
@@ -81,6 +81,7 @@ const updateEntityHook = async (dispatch, dep = {}) => {
       updaterItem: dataItems,
       type: 'UPDATE',
       updateBy,
+      parsedRoutePath,
       store,
       id,
     }),

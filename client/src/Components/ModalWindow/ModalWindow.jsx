@@ -4,7 +4,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import { Modal, Button, message, Select } from 'antd';
 import { TASK_CONTROLL_JURNAL_SCHEMA } from 'Models/Schema/const';
-import { createNotification, isTimeLostValue } from 'Utils';
+import { createNotification, isTimeLostValue, routeParser } from 'Utils';
 import SimpleEditableModal from './SimpleEditableModal';
 import RegistrationModal from './RegistrationModal';
 import ActionList from 'Components/ActionList';
@@ -154,10 +154,19 @@ class ModalWindow extends React.PureComponent {
       routeDataActive = {},
       routeDataActive: { key = null } = {},
       onCancelEditModeContent,
+      path,
     } = this.props;
+
+    const parsedRoutePath = routeParser({
+      pageType: 'moduleItem',
+      path,
+    });
+
     onUpdate({
+      actionType: actionsTypes.$UPDATE_MANY,
+      parsedRoutePath,
       key,
-      updateBy: 'key',
+      updateBy: '_id',
       id: routeDataActive?._id,
       updateItem: valueDescription,
       updateField: 'description',
@@ -248,11 +257,18 @@ class ModalWindow extends React.PureComponent {
       });
 
     try {
+      const parsedRoutePath = routeParser({
+        pageType: 'moduleItem',
+        path,
+      });
+
       await onUpdate({
+        actionType: actionsTypes.$UPDATE_SINGLE,
+        parsedRoutePath,
         path,
         id: routeDataActive?._id,
         key,
-        updateBy: 'key',
+        updateBy: '_id',
         updateItem: _.isString(customStatus) ? customStatus : taskStatus,
         updateField: 'status',
         item: { ...routeDataActive },
@@ -416,6 +432,7 @@ class ModalWindow extends React.PureComponent {
     const { statusTaskValue, accessStatus } = this.props;
     const { type = '' } = this.state;
     const { [type]: visible = false } = this.state;
+
     return (
       <div className="dropDownWrapper">
         <ActionList {...actionProps} />
@@ -427,13 +444,13 @@ class ModalWindow extends React.PureComponent {
           title="Смена статуса"
         >
           <Select onChange={this.onChangeSelect} defaultValue={statusTaskValue}>
-            {accessStatus.map((status, i) =>
-              i === 0 ? (
-                <Option key={i + status} value={statusTaskValue}>
+            {accessStatus.map((status, index) =>
+              index === 0 ? (
+                <Option key={index + status} value={statusTaskValue}>
                   {statusTaskValue}
                 </Option>
               ) : (
-                <Option key={i + status} value={status}>
+                <Option key={status} value={status}>
                   {status}
                 </Option>
               ),

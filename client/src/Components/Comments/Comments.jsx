@@ -8,6 +8,8 @@ import { Button, Empty, message, notification } from 'antd';
 
 import Textarea from 'Components/Textarea';
 import Comment from './Comment';
+import actionsTypes from 'actions.types';
+import { routeParser } from 'Utils';
 
 class Comments extends React.PureComponent {
   state = {
@@ -29,6 +31,7 @@ class Comments extends React.PureComponent {
         onUpdate,
         data: { key = '', comments = [], _id: id = '' } = {},
         data = {},
+        path,
         udata: { displayName = '', _id: uId = '' } = {},
       } = this.props;
 
@@ -50,10 +53,17 @@ class Comments extends React.PureComponent {
 
         this.setState({ ...this.state, onUpdateDisabled: true, value: '' });
 
+        const parsedRoutePath = routeParser({
+          pageType: 'moduleItem',
+          path,
+        });
+
         await onUpdate({
+          actionType: actionsTypes.$UPDATE_SINGLE,
+          parsedRoutePath,
           key,
           id,
-          updateBy: 'key',
+          updateBy: '_id',
           updateItem: [...comments, comment],
           updateField: 'comments',
           store: 'tasks',
@@ -84,15 +94,22 @@ class Comments extends React.PureComponent {
   };
 
   onDelete = async (event, idComment) => {
-    const { onUpdate, data: { _id: id = '', key = '', comments = [] } = {}, data = {} } = this.props;
+    const { path, onUpdate, data: { _id: id = '', key = '', comments = [] } = {}, data = {} } = this.props;
     const filterComments = comments.filter((it) => it.id !== idComment);
     try {
+      const parsedRoutePath = routeParser({
+        pageType: 'moduleItem',
+        path,
+      });
+
       await onUpdate({
+        actionType: actionsTypes.$UPDATE_SINGLE,
+        parsedRoutePath,
         id,
         key,
         item: data,
         store: 'tasks',
-        updateBy: 'key',
+        updateBy: '_id',
         updateItem: filterComments,
         updateField: 'comments',
       });
@@ -122,11 +139,12 @@ class Comments extends React.PureComponent {
 
     try {
       await onUpdate({
+        actionType: actionsTypes.$UPDATE_SINGLE,
         id,
         key,
         item: data,
         store: 'tasks',
-        updateBy: 'key',
+        updateBy: '_id',
         updateItem: newCommentsArray,
         updateField: 'comments',
       });

@@ -18,6 +18,7 @@ import TitleModule from 'Components/TitleModule';
 import modelContext from 'Models/context';
 import DescriptionTask from './DescriptionTask';
 import renderDescription from './renderDescription';
+import actionsTypes from 'actions.types';
 
 class TaskView extends React.PureComponent {
   state = {
@@ -416,11 +417,11 @@ class TaskView extends React.PureComponent {
     const { _id: id = '', key = '' } = modeControllEdit || {};
     try {
       await onUpdate({
+        actionType: actionsTypes.$UPDATE_MANY,
         id,
         key,
         path,
         updateBy: '_id',
-        actionType: 'update_many',
         updateItem: { ...validHash },
         item: { ...routeDataActive },
         store: 'tasks',
@@ -619,6 +620,7 @@ class TaskView extends React.PureComponent {
       setCurrentTab,
       router = {},
       columnStyleConfig = {},
+      currentActionTab: path = '',
     } = this.props;
 
     const {
@@ -685,7 +687,7 @@ class TaskView extends React.PureComponent {
       router,
       udata,
     };
-
+    console.log(path);
     const descriptionTaskProps = {
       ...commonProps,
       routeDataActive,
@@ -694,6 +696,7 @@ class TaskView extends React.PureComponent {
       filesArray,
       onUpdate,
       udata,
+      path,
       rest,
     };
 
@@ -763,7 +766,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onCaching: async (props) => await dispatch(middlewareCaching(props)),
     onSaveCache: (props) => dispatch(сachingAction(props)),
-    onUpdate: (props) => dispatch(middlewareUpdate({ ...props })),
+    onUpdate: (props) => dispatch(middlewareUpdate(props)),
   };
 };
 
