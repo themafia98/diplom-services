@@ -50,14 +50,14 @@
     "*.{js,jsx,ts,json,scss,css,md}": "prettier --write"
   },
   "dependencies": {
-    "bcrypt": "^4.0.1",
+    "bcrypt": "^5.0.0",
     "chalk": "^4.0.0",
     "connect-mongo": "^3.2.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "dropbox": "^4.0.30",
     "express": "^4.16.4",
-    "express-jwt": "^5.3.1",
+    "express-jwt": "^6.0.0",
     "express-rate-limit": "^5.0.0",
     "express-session": "^1.17.0",
     "forever": "^2.0.0",
