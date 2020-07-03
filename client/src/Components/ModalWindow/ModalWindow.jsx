@@ -55,6 +55,7 @@ class ModalWindow extends React.PureComponent {
     rulesStatus: true,
     isLoadList: true,
     routeDataActive: {},
+    route: null,
     actionTypeList: 'default',
     mode: '',
     actionType: '',
@@ -66,8 +67,15 @@ class ModalWindow extends React.PureComponent {
   };
 
   static getDerivedStateFromProps = (props, state) => {
-    const { mode } = props;
+    const { mode, customTypeModal } = props;
     const { type = '' } = state;
+
+    if (customTypeModal && !type) {
+      return {
+        ...state,
+        type: customTypeModal,
+      };
+    }
 
     if (mode === 'reg' && _.isNull(type)) {
       return {
@@ -151,16 +159,20 @@ class ModalWindow extends React.PureComponent {
 
     const {
       onUpdate,
-      routeDataActive = {},
-      routeDataActive: { key = null } = {},
+      routeDataActive,
+      routeDataActive: { key = null },
       onCancelEditModeContent,
+      route,
       path,
     } = this.props;
 
-    const parsedRoutePath = routeParser({
-      pageType: 'moduleItem',
-      path,
-    });
+    const parsedRoutePath =
+      !route || (route && _.isEmpty(route))
+        ? routeParser({
+            pageType: 'moduleItem',
+            path,
+          })
+        : route;
 
     onUpdate({
       actionType: actionsTypes.$UPDATE_MANY,
@@ -202,10 +214,10 @@ class ModalWindow extends React.PureComponent {
 
     const {
       onCaching,
-      routeDataActive: { key = '', _id: id = '', name: nameTask = '' } = {},
+      routeDataActive: { key = '', _id: id = '', name: nameTask = '' },
       actionType,
       keyTask,
-      udata: { displayName = '', _id: uid = '' } = {},
+      udata: { displayName = '', _id: uid = '' },
     } = this.props;
     const item = { ...jurnal, depKey: keyTask, editor: displayName, uid };
     const { timeLost = '', description = '', date = '' } = jurnal || {};
@@ -246,7 +258,7 @@ class ModalWindow extends React.PureComponent {
   onChangeStatusTask = async (customStatus = null) => {
     const { taskStatus = null, type = '' } = this.state;
 
-    const { onUpdate, routeDataActive = {}, routeDataActive: { key = null } = {}, path } = this.props;
+    const { onUpdate, routeDataActive = {}, routeDataActive: { key = null } = {}, path, route } = this.props;
 
     if (_.isNull(taskStatus) && !_.isString(customStatus))
       return this.setState({
@@ -257,10 +269,13 @@ class ModalWindow extends React.PureComponent {
       });
 
     try {
-      const parsedRoutePath = routeParser({
-        pageType: 'moduleItem',
-        path,
-      });
+      const parsedRoutePath =
+        !route || (route && _.isEmpty(route))
+          ? routeParser({
+              pageType: 'moduleItem',
+              path,
+            })
+          : route;
 
       await onUpdate({
         actionType: actionsTypes.$UPDATE_SINGLE,
@@ -298,6 +313,9 @@ class ModalWindow extends React.PureComponent {
     if (type === 'regType') return this.onRegUser(event);
     else if (type === 'jur' && this.validation()) return this.onTrackTask();
     else if (type === 'statusTask') return this.onChangeStatusTask();
+    else if (type === 'editDescription') return this.onSaveEdit(event);
+
+    message.warning('Not found event handler for save modalWindow action');
   };
 
   handleCancel = (event) => {
@@ -444,17 +462,13 @@ class ModalWindow extends React.PureComponent {
           title="Смена статуса"
         >
           <Select onChange={this.onChangeSelect} defaultValue={statusTaskValue}>
-            {accessStatus.map((status, index) =>
-              index === 0 ? (
-                <Option key={index + status} value={statusTaskValue}>
-                  {statusTaskValue}
-                </Option>
-              ) : (
-                <Option key={status} value={status}>
+            {accessStatus.map((status, index) => {
+              return (
+                <Option key={`${index}${status}`} label={status} value={status}>
                   {status}
                 </Option>
-              ),
-            )}
+              );
+            })}
           </Select>
         </Modal>
       </div>
@@ -550,7 +564,6 @@ class ModalWindow extends React.PureComponent {
               <Textarea
                 key="textAreaEdit"
                 className="editContentDescription"
-                //editor={true}
                 row={10}
                 onChange={this.onChangeDescription}
                 value={valueDesc ? valueDesc : ''}

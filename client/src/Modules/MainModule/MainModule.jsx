@@ -91,7 +91,7 @@ class MainModule extends React.PureComponent {
 
   render() {
     const { visible, setCurrentTab } = this.props;
-    const { path, tableViewHeight } = this.state;
+    const { tableViewHeight } = this.state;
     const {
       config: {
         visibilityWidgets: { mainModule: { clockVisibility = true, calendarVisibility = true } = {} } = {},
@@ -109,6 +109,9 @@ class MainModule extends React.PureComponent {
             <StreamBox
               visible={visible}
               prefix="#notification"
+              streamModule="mainModule"
+              withStore={true}
+              streamStore="streamList"
               parentDataName="users"
               parentPath="mainModule__global"
               key="streamMain"

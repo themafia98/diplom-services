@@ -177,6 +177,7 @@ class CabinetModule extends React.PureComponent {
               type="global"
               prefix="#notification"
               isSingleLoading={true}
+              withStore={true}
               streamStore="streamList"
               streamModule="cabinetModule"
               filterStream="uidCreater"

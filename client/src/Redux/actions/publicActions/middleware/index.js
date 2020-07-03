@@ -195,7 +195,7 @@ const middlewareUpdate = (props = {}) => async (dispatch, getState, { schema, Re
 
     if (!path) throw new TypeError('Bad action type');
 
-    const body = { queryParams: { id, key }, updateItem, updateField };
+    const body = { actionType, queryParams: { id, key }, updateItem, updateField };
 
     const res = await rest.sendRequest(path, 'POST', body, true);
     const [items, error] = rest.parseResponse(res);

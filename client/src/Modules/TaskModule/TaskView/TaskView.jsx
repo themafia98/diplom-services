@@ -6,7 +6,7 @@ import moment from 'moment';
 import { Descriptions, Empty, message } from 'antd';
 import { connect } from 'react-redux';
 import Scrollbars from 'react-custom-scrollbars';
-import { deleteFile, loadFile } from 'Utils';
+import { deleteFile, loadFile, routeParser } from 'Utils';
 import { TASK_SCHEMA } from 'Models/Schema/const';
 import { settingsStatusSelector } from 'Utils/selectors';
 import { middlewareCaching, middlewareUpdate } from 'Redux/actions/publicActions/middleware';
@@ -41,6 +41,7 @@ class TaskView extends React.PureComponent {
       tags: [],
     },
     actionType: '__getJurnal',
+    customTypeModal: '',
     isLoadingFiles: false,
     filesArray: [],
     filteredUsers: [],
@@ -406,7 +407,12 @@ class TaskView extends React.PureComponent {
   };
 
   onUpdateEditable = async (event) => {
-    const { onUpdate, router: { routeDataActive = {} } = {}, path = '' } = this.props;
+    const {
+      onUpdate,
+      router: { routeDataActive = {} } = {},
+      router: { path = '' },
+      route = null,
+    } = this.props;
     const { modeControllEdit = {} } = this.state;
     const validHashCopy = [{ ...modeControllEdit }];
     const { schema = {} } = this.context;
@@ -416,8 +422,17 @@ class TaskView extends React.PureComponent {
     if (!validHash) return;
     const { _id: id = '', key = '' } = modeControllEdit || {};
     try {
+      const parsedRoutePath =
+        !route || (route && _.isEmpty(route))
+          ? routeParser({
+              pageType: 'moduleItem',
+              path,
+            })
+          : route;
+
       await onUpdate({
         actionType: actionsTypes.$UPDATE_MANY,
+        parsedRoutePath,
         id,
         key,
         path,
@@ -440,11 +455,12 @@ class TaskView extends React.PureComponent {
     });
   };
 
-  onEditContentMode = (event) => {
+  onEditContentMode = (event, customTypeModal) => {
     event.preventDefault();
     this.setState({
       ...this.state,
       modeEditContent: true,
+      customTypeModal,
     });
   };
 
@@ -577,19 +593,36 @@ class TaskView extends React.PureComponent {
   };
 
   getModalWindow = (accessStatus, rulesEdit = true, rulesStatus = false) => {
-    const { router: { routeDataActive = {} } = {}, onCaching, onUpdate, path, uuid, udata = {} } = this.props;
-    const { mode, actionType, modeControll, modeEditContent, isLoad = false, type = 'default' } = this.state;
+    const {
+      router: { routeDataActive = {} } = {},
+      onCaching,
+      onUpdate,
+      router: { path = '' },
+      route,
+      uuid,
+      udata = {},
+    } = this.props;
+    const {
+      mode,
+      actionType,
+      modeControll,
+      modeEditContent,
+      isLoad = false,
+      type = 'default',
+      customTypeModal,
+    } = this.state;
 
     const { _id: id = '', key = '', status = '', description = '' } = routeDataActive || {};
     return (
       <ModalWindow
+        key={key ? key : uuid()}
         actionTypeList={type}
         onCaching={onCaching}
         actionType={actionType}
         routeDataActive={routeDataActive}
         mode={mode}
         path={path}
-        key={key ? key : uuid()}
+        route={route}
         keyTask={id ? id : null}
         accessStatus={accessStatus}
         onUpdate={onUpdate}
@@ -606,6 +639,7 @@ class TaskView extends React.PureComponent {
         rulesEdit={rulesEdit}
         rulesStatus={rulesStatus}
         isLoadList={isLoad}
+        customTypeModal={customTypeModal}
       />
     );
   };

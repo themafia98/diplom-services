@@ -3,7 +3,12 @@ import { streamBoxType } from './types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { loadCurrentData, multipleLoadData } from 'Redux/actions/routerActions/middleware';
-import { addTabAction, openPageWithDataAction, setActiveTabAction } from 'Redux/actions/routerActions';
+import {
+  addTabAction,
+  openPageWithDataAction,
+  setActiveTabAction,
+  saveComponentStateAction,
+} from 'Redux/actions/routerActions';
 import _ from 'lodash';
 import { Avatar, message, Tooltip, Spin } from 'antd';
 import { Scrollbars } from 'react-custom-scrollbars';
@@ -38,7 +43,7 @@ class StreamBox extends React.Component {
     setCurrentTab: null,
     onOpenPageWithData: null,
     router: {},
-    store: '',
+    store: false,
     prefix: '',
     boxClassName: '',
     parentPath: '',
@@ -120,6 +125,12 @@ class StreamBox extends React.Component {
     }
   };
 
+  getNormalizeUidNotification = () => {
+    const { udata: { _id = '' } = {}, personalUid } = this.props;
+
+    return !personalUid ? _id : personalUid;
+  };
+
   fetchNotification = async () => {
     try {
       const { Request } = this.context;
@@ -128,16 +139,15 @@ class StreamBox extends React.Component {
         onMultipleLoadData,
         onSaveComponentState,
         streamStore,
-        streamModule,
         filterStream,
-        setCounter = null,
+        setCounter,
         visiblePopover,
         isLoadPopover,
         onLoadPopover,
-        personalUid = null,
-        udata: { _id = '' } = {},
       } = this.props;
-      const uid = !personalUid ? _id : personalUid;
+
+      const uid = this.getNormalizeUidNotification();
+
       const shouldUpdatePrivate = setCounter && visiblePopover && !isLoadPopover;
 
       let methodQuery = filterStream && uid ? { [filterStream]: uid } : {};
@@ -185,7 +195,7 @@ class StreamBox extends React.Component {
         return this.setState({ streamList: metadata, isLoading: true });
       }
 
-      const path = type === 'private' ? `${streamModule}#private` : `${streamModule}#notification`;
+      const path = this.getNotificationPath(uid);
 
       await onSaveComponentState({
         [streamStore]:
@@ -213,17 +223,14 @@ class StreamBox extends React.Component {
       setCurrentTab,
       onOpenPageWithData,
       router: { routeData = {}, activeTabs = [] } = {},
-      store,
+      withStore,
       prefix,
-      streamModule,
       streamStore,
-      type: typeStream = '',
     } = this.props;
 
-    const nameModuleStream =
-      typeStream === 'private' ? `${streamModule}#private` : `${streamModule}#notification`;
+    const nameModuleStream = this.getNotificationPath(this.getNormalizeUidNotification());
 
-    const streamList = store
+    const streamList = withStore
       ? routeData[nameModuleStream] && routeData[nameModuleStream][streamStore]
         ? routeData[nameModuleStream][streamStore]
         : []
@@ -338,30 +345,32 @@ class StreamBox extends React.Component {
     else return message;
   };
 
+  getNotificationPath = (uid = '') => {
+    const { prefix, streamModule, type } = this.props;
+    return `${streamModule}${type !== 'global' ? `#${type}` : prefix}${uid ? uid : ''}`.trim();
+  };
+
   render() {
     const {
       mode,
       boxClassName,
       type,
-      udata: { _id = '' } = {},
       udata: { avatar: myAvatar = null } = {},
       parentPath,
       parentDataName,
       router: { routeData = {} } = {},
-      streamModule,
       streamStore,
-      store,
+      withStore,
       buildItems,
       listHeight,
-      personalUid,
     } = this.props;
 
-    const uid = !personalUid ? _id : personalUid;
+    const uid = this.getNormalizeUidNotification();
     const { streamList: streamListState = [], isLoading = false } = this.state;
 
-    const nameModuleStream = type === 'private' ? `${streamModule}#private` : streamModule;
+    const nameModuleStream = this.getNotificationPath(uid);
 
-    const streamList = store
+    const streamList = withStore
       ? routeData[nameModuleStream] && routeData[nameModuleStream][streamStore]
         ? routeData[nameModuleStream][streamStore]
         : []
@@ -465,7 +474,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     addTab: (tab) => dispatch(addTabAction(tab)),
     setCurrentTab: (tab) => dispatch(setActiveTabAction(tab)),
-    onLoadCurrentData: (props) => dispatch(loadCurrentData({ ...props })),
+    onLoadCurrentData: (props) => dispatch(loadCurrentData(props)),
+    onSaveComponentState: (data) => dispatch(saveComponentStateAction(data)),
     onMultipleLoadData: (props) => dispatch(multipleLoadData(props)),
     onOpenPageWithData: (data) => dispatch(openPageWithDataAction(data)),
   };

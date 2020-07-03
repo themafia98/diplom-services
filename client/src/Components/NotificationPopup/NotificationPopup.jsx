@@ -135,6 +135,7 @@ class NotificationPopup extends React.PureComponent {
         <StreamBox
           key="private_streamBox"
           type="private"
+          withStore={true}
           prefix="#notification"
           setCounter={this.setCounter}
           visiblePopover={visible}

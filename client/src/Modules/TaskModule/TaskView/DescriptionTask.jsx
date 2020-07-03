@@ -31,7 +31,7 @@ const DescriptionTask = forwardRef(
         <p className="descriptionTask__title">Задача</p>
         <div
           ref={ref}
-          onDoubleClick={rulesEdit ? onEditContentMode : null}
+          onDoubleClick={rulesEdit ? (event) => onEditContentMode(event, 'editDescription') : null}
           className={clsx('description', 'descriptionTask__content', rulesEdit ? 'editable' : null)}
         >
           <span className="icon-wrapper">

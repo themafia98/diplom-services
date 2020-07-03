@@ -22,7 +22,7 @@ export const streamBoxType = {
   setCurrentTab: func,
   onOpenPageWithData: func,
   router: oneOfType([object, () => null]),
-  store: string.isRequired,
+  withStore: bool.isRequired,
   prefix: string.isRequired,
   parentPath: string,
   buildItems: oneOfType([func, () => null]),
