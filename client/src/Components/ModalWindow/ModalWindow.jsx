@@ -70,7 +70,7 @@ class ModalWindow extends React.PureComponent {
     const { mode, customTypeModal } = props;
     const { type = '' } = state;
 
-    if (customTypeModal && !type) {
+    if (customTypeModal && customTypeModal !== type) {
       return {
         ...state,
         type: customTypeModal,
