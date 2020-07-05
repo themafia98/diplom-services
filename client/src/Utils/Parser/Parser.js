@@ -308,6 +308,36 @@ const getModuleTypeByParsedKey = (moduleName, subModuleName, entityKey) => {
   return null;
 };
 
+/**
+ *
+ * @param {any[]} array unsorting array
+ * @param {string} key key for sorting
+ * @param {string} type type sorting element (def: string)
+ * @param {any} customParamsForSort custom params for specific type sorting, for example,
+ *                                  date type is format: 'DD.MM.YYY'. (expandable as needed)
+ * @param {number} index if sorting element is array, choose element for sorting from array(def: 0)
+ */
+const sortedByKey = (array, key, type = 'string', customParamsForSort, index = 0) => {
+  if (!_.isArray(array) || !key) return array;
+
+  return array.sort((a, b) => {
+    if (!_.isPlainObject(a) || !_.isPlainObject(b) || !a[key] || !b[key]) {
+      return a - b;
+    }
+
+    const sortElementA = _.isArray(a[key]) ? a[key][index] : a[key];
+    const sortElementB = _.isArray(b[key]) ? b[key][index] : b[key];
+
+    if (type === 'date' && customParamsForSort) {
+      const dateParsedA = moment(sortElementA, customParamsForSort).unix();
+      const dateParsedB = moment(sortElementB, customParamsForSort).unix();
+      if (dateParsedA && dateParsedB) return dateParsedA - dateParsedB;
+    }
+
+    return sortElementA - sortElementB;
+  });
+};
+
 const namespaceParser = {
   dataParser,
   getNormalizedPath,
@@ -323,6 +353,7 @@ const namespaceParser = {
   isTimeLostValue,
   parseModuleKey,
   getModuleTypeByParsedKey,
+  sortedByKey,
 };
 
 export default namespaceParser;

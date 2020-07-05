@@ -39,37 +39,38 @@ class ContactModule extends React.PureComponent {
     }
   };
 
-  componentDidUpdate = () => {
-    const {
-      router: { shouldUpdate = false, routeData = {} } = {},
-      path,
-      onLoadCurrentData,
-      type = Symbol(''),
-    } = this.props;
+  /** TODO: should rework re-load data */
+  // componentDidUpdate = () => {
+  //   const {
+  //     router: { shouldUpdate = false, routeData = {} } = {},
+  //     path,
+  //     onLoadCurrentData,
+  //     type = Symbol(''),
+  //   } = this.props;
 
-    const { initModule = false } = this.state;
-    const isUpdate = shouldUpdate && routeData[path]?.load;
-    const shoudInit = path && !routeData[path] && !initModule;
+  //   const { initModule = false } = this.state;
+  //   const isUpdate = shouldUpdate && routeData[path]?.load;
+  //   const shoudInit = path && !routeData[path] && !initModule;
 
-    const isAvailable = path === 'contactModule_feedback' && type === types.$sub_entrypoint_module;
+  //   const isAvailable = path === 'contactModule_feedback' && type === types.$sub_entrypoint_module;
 
-    if (!isAvailable && (!isUpdate || !shoudInit)) return;
+  //   if (!isAvailable && (!isUpdate || !shoudInit)) return;
 
-    if (!routeData[path] && !initModule) {
-      this.setState({
-        ...this.state,
-        initModule: true,
-      });
-    }
+  //   if (!routeData[path] && !initModule) {
+  //     this.setState({
+  //       ...this.state,
+  //       initModule: true,
+  //     });
+  //   }
 
-    onLoadCurrentData({
-      path,
-      storeLoad: 'news',
-      methodRequst: 'GET',
-      noCorsClient: false,
-      useStore: true,
-    });
-  };
+  //   onLoadCurrentData({
+  //     path,
+  //     storeLoad: 'news',
+  //     methodRequst: 'GET',
+  //     noCorsClient: false,
+  //     useStore: true,
+  //   });
+  // };
 
   getContactContentByPath = (path) => {
     const {

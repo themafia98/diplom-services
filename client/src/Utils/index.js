@@ -32,6 +32,7 @@ const {
   isTimeLostValue,
   parseModuleKey,
   getModuleTypeByParsedKey,
+  sortedByKey,
 } = namespaceParser;
 
 const {
@@ -75,4 +76,5 @@ export {
   getModuleTypeByParsedKey,
   getDependencyModules,
   oneOfType,
+  sortedByKey,
 };

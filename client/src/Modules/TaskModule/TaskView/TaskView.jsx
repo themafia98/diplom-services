@@ -6,7 +6,7 @@ import moment from 'moment';
 import { Descriptions, Empty, message } from 'antd';
 import { connect } from 'react-redux';
 import Scrollbars from 'react-custom-scrollbars';
-import { deleteFile, loadFile, routeParser } from 'Utils';
+import { deleteFile, loadFile, routeParser, sortedByKey } from 'Utils';
 import { TASK_SCHEMA } from 'Models/Schema/const';
 import { settingsStatusSelector } from 'Utils/selectors';
 import { middlewareCaching, middlewareUpdate } from 'Redux/actions/publicActions/middleware';
@@ -536,7 +536,7 @@ class TaskView extends React.PureComponent {
     const cachesJurnalList = [];
 
     if (caches && typeof caches === 'object') {
-      for (let [key, value] of Object.entries({ ...caches })) {
+      for (let [key, value] of Object.entries(caches)) {
         if (key.includes('__getJurnal') && value?.depKey === UUID) {
           cachesJurnalList.push(value);
           continue;
@@ -554,7 +554,12 @@ class TaskView extends React.PureComponent {
         }
       }
     }
-    return [cachesAuthorList, cachesEditorList, cachesJurnalList];
+
+    return [
+      cachesAuthorList,
+      cachesEditorList,
+      sortedByKey(cachesJurnalList, 'date', 'date', 'DD.MM.YYYY HH:mm:ss'),
+    ];
   };
 
   getAccessStatus = () => {

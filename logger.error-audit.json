@@ -6,9 +6,19 @@
   "auditLog": "logger.error-audit.json",
   "files": [
     {
-      "date": 1593965027687,
+      "date": 1593964934640,
       "name": "logs\\logs-error-2020-07-05-19.log",
-      "hash": "dc5700d032eb50bbc819078430ea1117"
+      "hash": "fb4c5dee20fd3f9a72d80417d0d836a3"
+    },
+    {
+      "date": 1593968724704,
+      "name": "logs\\logs-error-2020-07-05-20.log",
+      "hash": "7fd2acfd558395e5a36f52daea31b1e8"
+    },
+    {
+      "date": 1593977094880,
+      "name": "logs\\logs-error-2020-07-05-22.log",
+      "hash": "1ec3f41d5ca1e812dd22fb3b36dba11a"
     }
   ]
 }

@@ -25,6 +25,7 @@ const middlewareCaching = (props) => async (dispatch, getState, { schema, Reques
     updateBy = '_id',
   } = props;
   const rest = new Request();
+
   const depActions = {
     errorRequestAction,
     сachingAction,
