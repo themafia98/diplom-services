@@ -65,13 +65,12 @@ class ActionGlobal implements Action {
         });
       } else {
         responseSave.push({
-          name: `${filename}.${ext}`,
+          name: `${filename}.${ext.replace('.', '')}`,
           isSave: false,
         });
       }
     }
 
-    responseSave = responseSave.filter(Boolean);
     return responseSave;
   }
 

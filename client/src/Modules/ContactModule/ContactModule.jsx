@@ -1,7 +1,6 @@
 import React from 'react';
 import { contactModuleType } from './types';
 import { connect } from 'react-redux';
-import _ from 'lodash';
 
 import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
 import entityRender from 'Utils/Tools/entityRender';
@@ -71,6 +70,7 @@ class ContactModule extends React.PureComponent {
   //     useStore: true,
   //   });
   // };
+  /***/
 
   getContactContentByPath = (path) => {
     const {
@@ -88,15 +88,8 @@ class ContactModule extends React.PureComponent {
 
     if (!path?.includes('contactModule')) return <div className="invalid-contactModule"></div>;
 
-    const linkPath = _.isString(path) && path.includes('LINK') ? path.split('__')[1] || '' : '';
-    const data = routeData[path] || routeData[linkPath] || {};
+    const data = routeData[path] || {};
     const { load = false, news = [] } = routeData[path] || {};
-
-    const entityLinkProps = linkPath
-      ? {
-          ...data,
-        }
-      : {};
 
     const isVisibleChatModal = visibilityPortal && path !== 'contactModule_chat';
 
@@ -105,15 +98,13 @@ class ContactModule extends React.PureComponent {
       onChangeVisibleAction,
       isTab: path === 'contactModule_chat',
       webSocket: webSocket,
-      type: isVisibleChatModal ? 'modal' : null,
+      type: isVisibleChatModal ? 'modal' : type,
       data,
       isLoading: !load && !news.length,
       path,
-      linkPath,
       udata,
       statusApp,
       router,
-      ...entityLinkProps,
     };
 
     const config = {
