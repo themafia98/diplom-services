@@ -62,7 +62,6 @@ class SettingsModule extends React.PureComponent {
   };
 
   componentDidMount = async () => {
-    const { isLoadingLogs = false } = this.state;
     const { router, path, settingsLogs = [], udata: { _id: uid = '' } = {}, onCaching } = this.props;
 
     if (router?.routeData[path] && router?.routeData[path]?.haveChanges) {

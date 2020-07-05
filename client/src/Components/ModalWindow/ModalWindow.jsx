@@ -154,7 +154,7 @@ class ModalWindow extends React.PureComponent {
     }
   };
 
-  onSaveEdit = (event) => {
+  onSaveEdit = async (event) => {
     const { description: { value: valueDescription = '' } = {}, type: typeState = '' } = this.state;
 
     const {
@@ -173,31 +173,30 @@ class ModalWindow extends React.PureComponent {
             path,
           })
         : route;
-
-    onUpdate({
-      actionType: actionsTypes.$UPDATE_MANY,
-      parsedRoutePath,
-      key,
-      updateBy: '_id',
-      id: routeDataActive?._id,
-      updateItem: valueDescription,
-      updateField: 'description',
-      item: { ...routeDataActive },
-      store: 'tasks',
-    })
-      .then((res) => {
-        if (onCancelEditModeContent) onCancelEditModeContent(event);
-        this.setState({
-          ...this.state,
-          [typeState]: false,
-          type: null,
-          loading: false,
-        });
-        message.success('Описание изменено.');
-      })
-      .catch((error) => {
-        message.error('Ошибка редактирования.');
+    try {
+      await onUpdate({
+        actionType: actionsTypes.$UPDATE_SINGLE,
+        parsedRoutePath,
+        key,
+        updateBy: '_id',
+        id: routeDataActive?._id,
+        updateItem: valueDescription,
+        updateField: 'description',
+        item: { ...routeDataActive },
+        store: 'tasks',
       });
+      if (onCancelEditModeContent) onCancelEditModeContent(event);
+      this.setState({
+        ...this.state,
+        [typeState]: false,
+        type: null,
+        loading: false,
+      });
+      message.success('Описание изменено.');
+    } catch (error) {
+      console.error(error);
+      message.error('Ошибка редактирования.');
+    }
   };
 
   getTemplate = (nameTask, timeLost, description, date) => {

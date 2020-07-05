@@ -390,6 +390,8 @@ export default handleActions(
       const isExist = routeDataActive && routeDataActive[updateBy];
       const currentModule = path.split('__');
 
+      if (!path || !currentModule) return state;
+
       const [moduleName = '', entityId = ''] = currentModule || [];
       const itemName = moduleName && entityId ? entityId : moduleName;
 

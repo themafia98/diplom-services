@@ -120,7 +120,7 @@ class Comments extends React.PureComponent {
   };
 
   onEdit = async (idComment, msg = null, callback = null) => {
-    const { onUpdate, data: { _id: id = '', key = '', comments = [] } = {}, data = {} } = this.props;
+    const { onUpdate, data: { _id: id = '', key = '', comments = [] } = {}, data = {}, path } = this.props;
 
     if (!_.isString(msg)) {
       message.error('Сообщение не валидно.');
@@ -138,8 +138,14 @@ class Comments extends React.PureComponent {
     newCommentsArray[commentIndex] = { ...comments[commentIndex], message: msg };
 
     try {
+      const parsedRoutePath = routeParser({
+        pageType: 'moduleItem',
+        path,
+      });
+
       await onUpdate({
         actionType: actionsTypes.$UPDATE_SINGLE,
+        parsedRoutePath,
         id,
         key,
         item: data,
