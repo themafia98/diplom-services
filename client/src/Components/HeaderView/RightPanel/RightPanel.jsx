@@ -6,9 +6,7 @@ import UserPopup from 'Components/UserPopup';
 import NotificationPopup from 'Components/NotificationPopup';
 import Status from './Status';
 
-const RightPanel = (props) => {
-  const { onUpdate, onLogout, goCabinet, status, shouldUpdate, udata, notificationDep } = props;
-
+const RightPanel = ({ onUpdate, onLogout, goCabinet, status, shouldUpdate, udata, notificationDep }) => {
   return (
     <div className="headerControllers rightPanel">
       <UserPopup statusApp={status} udata={udata} goCabinet={goCabinet} />

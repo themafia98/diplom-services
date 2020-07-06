@@ -6,9 +6,7 @@ const { Panel } = Collapse;
 
 const { Option } = Select;
 
-const PanelAdmin = (props) => {
-  const { onSaveSettings, statusList: { settings: statusListProps = [] } = {} } = props;
-
+const PanelAdmin = ({ onSaveSettings, statusList: { settings: statusListProps = [] } = {} }) => {
   const memoStatusList = useMemo(() => statusListProps.filter(({ active }) => active).map(({ id }) => id), [
     statusListProps,
   ]);

@@ -33,7 +33,7 @@ import { Response, Request } from 'express';
 
 namespace ActionApi {
   const { getModelByName, parsePublicData } = Utils;
-  //const { loggerInfo } = Logger;
+
   export class ActionParser extends ActionEntity implements Actions {
     constructor(props: ActionProps) {
       super(props);

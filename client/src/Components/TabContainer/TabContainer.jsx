@@ -2,9 +2,15 @@ import React, { useCallback, useMemo, useEffect } from 'react';
 import { tabContainerType } from './types';
 import clsx from 'clsx';
 
-const TabContainer = (props) => {
-  const { isBackground, visible, children, className, isPortal, isTab, onChangeVisibleAction } = props;
-
+const TabContainer = ({
+  isBackground,
+  visible,
+  children,
+  className,
+  isPortal,
+  isTab,
+  onChangeVisibleAction,
+}) => {
   const changeActionVisible = useCallback(onChangeVisibleAction, []);
   const isVisibility = useMemo(() => (isBackground || visible) && !!children, [
     isBackground,

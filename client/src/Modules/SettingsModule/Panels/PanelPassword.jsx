@@ -3,8 +3,7 @@ import { panelPasswordType } from './types';
 import { Input, Collapse, Button } from 'antd';
 const { Panel } = Collapse;
 
-const PanelPassword = (props) => {
-  const { onSaveSettings, oldPassword: oldPasswordProps, newPassword: newPasswordProps } = props;
+const PanelPassword = ({ onSaveSettings, oldPassword: oldPasswordProps, newPassword: newPasswordProps }) => {
   const [readOnly, setReadOnly] = useState(true);
   const [haveChanges, setChanges] = useState([]);
   const [newPassword, setNewPassword] = useState(newPasswordProps);

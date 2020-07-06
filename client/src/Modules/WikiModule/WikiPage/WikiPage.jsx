@@ -8,8 +8,7 @@ import { Spin, Button, message } from 'antd';
 import moment from 'moment';
 import actionsTypes from 'actions.types';
 
-const WikiPage = (props) => {
-  const { selectedNode = null, metadata = null, onChangeWikiPage, udata: { displayName = '' } = {} } = props;
+const WikiPage = ({ selectedNode, metadata, onChangeWikiPage, udata: { displayName } }) => {
   const models = useContext(modelContext);
 
   const [pageId, setPageId] = useState(`${uuid()}_virtual`);
@@ -154,4 +153,10 @@ const WikiPage = (props) => {
 };
 
 WikiPage.propTypes = wikiPageTypes;
+WikiPage.defaultProps = {
+  selectedNode: null,
+  metadata: null,
+  onChangeWikiPage: null,
+  udata: { displayName: '' },
+};
 export default WikiPage;

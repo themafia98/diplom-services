@@ -4,8 +4,7 @@ import updater from './updater.png';
 import { Tooltip } from 'antd';
 import clsx from 'clsx';
 
-const Updater = (props) => {
-  const { className, additionalClassName, onClick } = props;
+const Updater = ({ className, additionalClassName, onClick }) => {
   return (
     <div className={clsx('updater', className ? className : null)}>
       <Tooltip title="Обновить" placement="bottom">

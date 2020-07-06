@@ -5,9 +5,13 @@ import { ChromePicker } from 'react-color';
 import { tagsContainerType } from './types';
 import { Input, Tag, Button, Tooltip } from 'antd';
 
-const TagsContainer = (props) => {
-  const { shouldVisibleButtonAddTag, modeControll, modeControllEdit, tagList, onChangeTagList } = props;
-
+const TagsContainer = ({
+  shouldVisibleButtonAddTag,
+  modeControll,
+  modeControllEdit,
+  tagList,
+  onChangeTagList,
+}) => {
   const setTagList = useCallback(onChangeTagList, [onChangeTagList]);
 
   const [hex, setHex] = useState('#2db7f5');

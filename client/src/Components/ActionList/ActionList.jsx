@@ -3,21 +3,19 @@ import React, { useState } from 'react';
 import { Dropdown, Icon, Menu, Spin, Tooltip } from 'antd';
 import { ActionListType } from './types';
 
-const ActionList = (props) => {
-  const {
-    viewType,
-    entityName: entityNameProps,
-    showModal,
-    onMessage,
-    modeControll,
-    onUpdateEditable,
-    onRejectEdit,
-    isLoadList,
-    rulesStatus,
-    rulesEdit,
-    onEdit,
-  } = props;
-
+const ActionList = ({
+  viewType,
+  entityName: entityNameProps,
+  showModal,
+  onMessage,
+  modeControll,
+  onUpdateEditable,
+  onRejectEdit,
+  isLoadList,
+  rulesStatus,
+  rulesEdit,
+  onEdit,
+}) => {
   const onAction = (event, key) => {
     showModal(event, key);
   };

@@ -192,7 +192,7 @@ const mapStateToProps = (state, props) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onLoadCurrentData: (props) => dispatch(loadCurrentData({ ...props })),
+    onLoadCurrentData: (props) => dispatch(loadCurrentData(props)),
   };
 };
 

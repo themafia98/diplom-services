@@ -6,9 +6,15 @@ import clsx from 'clsx';
 import { Input, DatePicker } from 'antd';
 import Textarea from 'Components/Textarea';
 
-const TrackerModal = (props) => {
-  const { visible, typeView = '', onChangeTask, error, timeLost, description, descriptionDefault } = props;
-
+const TrackerModal = ({
+  visible,
+  typeView,
+  onChangeTask,
+  error,
+  timeLost,
+  description,
+  descriptionDefault,
+}) => {
   return (
     <>
       {visible && typeView === 'jur' ? (
@@ -46,6 +52,7 @@ const TrackerModal = (props) => {
 };
 
 TrackerModal.defaultProps = {
+  typeView: '',
   error: null,
   timeLost: '',
   description: '',

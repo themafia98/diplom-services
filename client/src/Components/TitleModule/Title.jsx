@@ -2,8 +2,7 @@ import React from 'react';
 import { titleType } from './types';
 import clsx from 'clsx';
 
-const TitleModule = (props) => {
-  const { title, className, classNameTitle, additional } = props;
+const TitleModule = ({ title, className, classNameTitle, additional }) => {
   return (
     <div className={clsx('titleModule', className ? className : null)}>
       <p className={clsx('titleModule_title', classNameTitle ? classNameTitle : null)}>{title}</p>

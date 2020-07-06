@@ -13,17 +13,16 @@ import actionsTypes from 'actions.types';
  * @param {object} clientDB - IndexedDB methods
  */
 
-const middlewareCaching = (props) => async (dispatch, getState, { schema, Request, clientDB }) => {
-  const {
-    actionType = '',
-    item = {},
-    depKey = '',
-    depStore = '',
-    store = '',
-    uid = '',
-    type = '',
-    updateBy = '_id',
-  } = props;
+const middlewareCaching = ({
+  actionType = '',
+  item = {},
+  depKey = '',
+  depStore = '',
+  store = '',
+  uid = '',
+  type = '',
+  updateBy = '_id',
+}) => async (dispatch, getState, { schema, Request, clientDB }) => {
   const rest = new Request();
 
   const depActions = {
@@ -94,14 +93,13 @@ const middlewareCaching = (props) => async (dispatch, getState, { schema, Reques
   }
 };
 
-const loadCacheData = (props) => async (dispatch, getState, { schema, Request, clientDB }) => {
-  const {
-    actionType = '', // key
-    depKey = '',
-    depStore = '',
-    store = '',
-    updateBy = '_id',
-  } = props;
+const loadCacheData = ({
+  actionType = '', // key
+  depKey = '',
+  depStore = '',
+  store = '',
+  updateBy = '_id',
+}) => async (dispatch, getState, { schema, Request, clientDB }) => {
   const rest = new Request();
   const depActions = {
     errorRequestAction,
@@ -152,15 +150,16 @@ const loadCacheData = (props) => async (dispatch, getState, { schema, Request, c
   }
 };
 
-/**
- * Middleware
- * @param {object} props
- * @param {object} schema - validator
- * @param {object} Request - http requests
- * @param {clientDB} clientDB - IndexedDB methods
- */
-
-const middlewareUpdate = (props = {}) => async (dispatch, getState, { schema, Request, clientDB }) => {
+const middlewareUpdate = ({
+  id = '',
+  key = '',
+  updateField = '',
+  updateItem,
+  store = {},
+  actionType = 'default',
+  updateBy = '_id',
+  parsedRoutePath,
+}) => async (dispatch, getState, { schema, Request, clientDB }) => {
   /**
    * Props
    * @param {string} id
@@ -171,16 +170,7 @@ const middlewareUpdate = (props = {}) => async (dispatch, getState, { schema, Re
    * @param {object} store
    * @param {string} actionType
    */
-  const {
-    id = '',
-    key = '',
-    updateField = '',
-    updateItem,
-    store = {},
-    actionType = 'default',
-    updateBy = '_id',
-    parsedRoutePath,
-  } = props;
+
   const rest = new Request();
   /**
    * update by @property {string} id more prioritized than @property {string} key
@@ -233,9 +223,7 @@ const middlewareUpdate = (props = {}) => async (dispatch, getState, { schema, Re
   }
 };
 
-const settingsLoader = (props) => async (dispatch, getState, { schema, Request, clientDB }) => {
-  const { wishList = [] } = props;
-
+const settingsLoader = ({ wishList = [] }) => async (dispatch, getState, { Request }) => {
   const rest = new Request();
 
   const artifacts = [];

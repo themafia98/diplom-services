@@ -6,9 +6,7 @@ import moment from 'moment';
 import TitleModule from 'Components/TitleModule';
 import { Timeline, Spin } from 'antd';
 
-const ObserverTime = (props) => {
-  const { title, settingsLogs, isLoading } = props;
-
+const ObserverTime = ({ title, settingsLogs, isLoading }) => {
   const renderLogs = (settingsLogs = []) => {
     if (!settingsLogs?.length) return null;
 

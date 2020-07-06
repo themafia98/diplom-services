@@ -6,8 +6,7 @@ import { v4 as uuid } from 'uuid';
 import TitleModule from 'Components/TitleModule';
 import Textarea from 'Components/Textarea';
 
-const NewsViewPage = (props) => {
-  const { id: _id, listdata: { content: contentEntity = {}, title = '' } = {} } = props;
+const NewsViewPage = ({ id: _id, listdata: { content: contentEntity = {}, title = '' } = {} }) => {
   const [id] = useState(_id);
 
   const getNormalizeContent = () => {

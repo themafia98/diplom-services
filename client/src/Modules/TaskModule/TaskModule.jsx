@@ -374,7 +374,7 @@ const mapDispatchToProps = (dispatch) => {
     removeTab: (tab) => dispatch(removeTabAction(tab)),
     onOpenPageWithData: (data) => dispatch(openPageWithDataAction(data)),
     onLoadCacheData: (props) => dispatch(loadCacheData(props)),
-    onLoadCurrentData: (props) => dispatch(loadCurrentData({ ...props })),
+    onLoadCurrentData: (props) => dispatch(loadCurrentData(props)),
   };
 };
 export { TaskModule };

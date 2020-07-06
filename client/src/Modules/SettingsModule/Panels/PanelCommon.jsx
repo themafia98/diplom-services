@@ -4,10 +4,9 @@ import { Button, Collapse, Input } from 'antd';
 import modelContext from 'Models/context';
 const { Panel } = Collapse;
 
-const PanelCommon = (props) => {
+const PanelCommon = ({ emailValue: emailValueProps, telValue: telValueProps, onSaveSettings }) => {
   const context = useContext(modelContext);
   const { config: { settings: { includeChangeEmail = false } = {} } = {} } = context;
-  const { emailValue: emailValueProps, telValue: telValueProps, onSaveSettings } = props;
 
   const [readOnly, setReadOnly] = useState(true);
   const [haveChanges, setChanges] = useState([]);

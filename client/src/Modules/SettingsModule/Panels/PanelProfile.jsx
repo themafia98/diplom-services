@@ -3,8 +3,7 @@ import { panelProfileType } from './types';
 import { Button, Collapse, Switch } from 'antd';
 const { Panel } = Collapse;
 
-const PanelProfile = (props) => {
-  const { onSaveSettings, isHideEmail: isHideEmailProps, isHidePhone: isHidePhoneProps } = props;
+const PanelProfile = ({ onSaveSettings, isHideEmail: isHideEmailProps, isHidePhone: isHidePhoneProps }) => {
   const [haveChanges, setChanges] = useState([]);
   const [isHideEmail, setHideEmail] = useState(isHideEmailProps);
   const [isHidePhone, setHidePhone] = useState(isHidePhoneProps);

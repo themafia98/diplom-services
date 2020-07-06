@@ -5,8 +5,7 @@ import { getComponentByKey } from 'Utils';
 import { drawerViewerType } from './types';
 import { Drawer } from 'antd';
 
-const DrawerViewer = (props) => {
-  const { onClose, visible, title, selectedEntity, contentKey, moduleProps, udata } = props;
+const DrawerViewer = ({ onClose, visible, title, selectedEntity, contentKey, moduleProps, udata }) => {
   const [content, setContent] = useState(selectedEntity);
 
   useEffect(() => {

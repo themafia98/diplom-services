@@ -3,13 +3,12 @@ import { mailResponserType } from '../types';
 import { Input, message, Modal } from 'antd';
 import modalContext from 'Models/context';
 
-const MailResponserModal = (props) => {
-  const {
-    routeDataActive: { additionalCreaterData: { email = '' } = {} } = {},
-    visibleModal,
-    handleCancel,
-    handleOk,
-  } = props || {};
+const MailResponserModal = ({
+  routeDataActive: { additionalCreaterData: { email = '' } = {} } = {},
+  visibleModal,
+  handleCancel,
+  handleOk,
+}) => {
   const context = useContext(modalContext);
   const [formData, setFormData] = useState({
     themeMail: 'Ответ на заявку об указании услуг',

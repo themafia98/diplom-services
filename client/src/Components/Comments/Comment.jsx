@@ -3,20 +3,19 @@ import { commentType } from './types';
 import Output from 'Components/Output';
 import { Icon, Tooltip, Input, Button } from 'antd';
 
-const Comment = (props) => {
-  const {
-    onDelete,
-    onEdit,
-    rules,
-    it,
-    userId,
-    uId,
-    router,
-    removeTab,
-    udata,
-    onOpenPageWithData,
-    setCurrentTab,
-  } = props;
+const Comment = ({
+  onDelete,
+  onEdit,
+  rules,
+  it,
+  userId,
+  uId,
+  router,
+  removeTab,
+  udata,
+  onOpenPageWithData,
+  setCurrentTab,
+}) => {
   const [key] = useState(it?.id ? it.id : it?._id);
   const [value, setValue] = useState(it?.message);
   const [editable, setEditable] = useState(false);
