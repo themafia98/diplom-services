@@ -53,7 +53,7 @@ class ContentView extends React.Component {
     const { key = null } = this.state;
     document.addEventListener('keydown', this.disableF5);
     dashboardStrem.on('EventUpdate', this.updateFunction);
-    if (_.isNull(key) && shouldRenderMenu) {
+    if (key === null && shouldRenderMenu) {
       this.setState({
         key: uuid(),
       });

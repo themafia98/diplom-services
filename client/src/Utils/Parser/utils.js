@@ -1,5 +1,4 @@
 import moment from 'moment';
-import _ from 'lodash';
 /** Utils parser */
 
 const runNoCorsParser = (copyStore, sortBy, storeLoad, pathValid) => {
@@ -24,7 +23,7 @@ const runNoCorsParser = (copyStore, sortBy, storeLoad, pathValid) => {
  * @returns {Symbol}
  */
 const toSymbol = (string) => {
-  if (_.isString(string)) return Symbol.for(string);
+  if (typeof string === 'string') return Symbol.for(string);
   else return Symbol.for('');
 };
 

@@ -2,7 +2,6 @@ import React from 'react';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { headerViewType } from './types';
 import { connect } from 'react-redux';
-import _ from 'lodash';
 import { Layout } from 'antd';
 import { dragEndTabAction } from 'Redux/actions/tabActions';
 import { saveComponentStateAction } from 'Redux/actions/routerActions';
@@ -32,14 +31,14 @@ class HeaderView extends React.PureComponent {
     const sizes = sizeParent / tabArray.length - MARGIN_TAB;
     const counter = ~~(sizeParent / size);
 
-    if (_.isNull(sizeParent) && this.wrapper) {
+    if (sizeParent === null && this.wrapper) {
       this.setState({
         length: tabArray.length,
         sizeParent: this.wrapper.getBoundingClientRect().width,
       });
     }
 
-    if ((tabArray.length >= counter && !_.isNull(sizeParent)) || (tabArray.length < length && size < 160)) {
+    if ((tabArray.length >= counter && sizeParent !== null) || (tabArray.length < length && size < 160)) {
       this.setState({
         length: tabArray.length,
         size: sizes,

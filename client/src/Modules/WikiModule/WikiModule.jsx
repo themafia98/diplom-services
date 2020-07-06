@@ -76,9 +76,7 @@ class WikiModule extends React.PureComponent {
         };
       },
       () => {
-        if (_.isFunction(callback)) {
-          callback();
-        }
+        if (typeof callback === 'function') callback();
       },
     );
   };
@@ -123,7 +121,7 @@ class WikiModule extends React.PureComponent {
     try {
       const node = !nodeState?.parentId ? { ...nodeState, parentId: 'root' } : { ...nodeState };
       const indexId = !item ? 'root' : item?.parentId;
-      if (_.isNull(indexId)) {
+      if (indexId === null) {
         message.error('Ошибка создания ветки или функция не доступна.');
         return this.onVisibleModalChange();
       }

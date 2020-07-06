@@ -1,5 +1,4 @@
 import { openDB, deleteDB } from 'idb';
-import _ from 'lodash';
 import config from 'config.json';
 import {
   TASK_SCHEMA,
@@ -339,11 +338,11 @@ class ClientSideDatabase {
     mode = 'readonly',
   ) {
     if (this.getCrashStatus()) return;
-    if (_.isNull(lowerKey) && _.isNull(upperKey) && _.isNull(index)) return;
+    if ([lowerKey, upperKey, index].every((type) => type === null)) return;
     let searchKeyRange = null;
 
-    if (_.isNull(lowerKey) && !_.isNull(upperKey)) searchKeyRange = IDBKeyRange.upperBound(upperKey);
-    else if (_.isNull(upperKey) && !_.isNull(lowerKey)) searchKeyRange = IDBKeyRange.lowerBound(lowerKey);
+    if (lowerKey === null && upperKey !== null) searchKeyRange = IDBKeyRange.upperBound(upperKey);
+    else if (upperKey === null && lowerKey !== null) searchKeyRange = IDBKeyRange.lowerBound(lowerKey);
     else searchKeyRange = IDBKeyRange.bound(lowerKey, upperKey);
     if (!searchKeyRange) return;
     const tx = this.db.transaction([nameStore], mode);

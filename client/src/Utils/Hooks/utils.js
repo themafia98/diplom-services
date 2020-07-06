@@ -73,7 +73,7 @@ const runRefreshIndexedDb = async (dispatch, storeName, dep, multiple) => {
   let shouldUpdate = isLocalUpdate;
   const cursor = await clientDB.getCursor(storeName, 'readwrite');
 
-  shouldUpdate = !_.isNull(cursor);
+  shouldUpdate = cursor !== null;
   if (cursor) {
     const eventResult = await sucessEvent(dispatch, dep, '', multiple, cursor);
     return [cursor, eventResult, shouldUpdate];

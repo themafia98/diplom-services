@@ -146,7 +146,7 @@ const getComponentByKey = (key, type = types.$entrypoint_module) => {
     const components = type === types.$entrypoint_module ? componentsModules : subModulesComponents;
     const Component = components[key];
 
-    if (!_.isUndefined(Component)) return Component;
+    if (Component !== undefined) return Component;
 
     const componentKey = Object.keys(components).find((componentKey) => key.includes(componentKey));
     if (componentKey) return components[componentKey];

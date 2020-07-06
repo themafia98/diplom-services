@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { cabinetType } from './types';
-import _ from 'lodash';
 import { Modal, Upload, message, Icon, Button } from 'antd';
 import { updateUdata } from 'Redux/actions/publicActions';
 import { saveComponentStateAction } from 'Redux/actions/routerActions';
@@ -111,7 +110,7 @@ class CabinetModule extends React.PureComponent {
       message.success(`${info.file.name} file uploaded successfully.`);
       const { file: { xhr: { response = null } = {} } = {} } = info;
 
-      const res = _.isString(response) ? JSON.parse(response) : response;
+      const res = typeof response === 'string' ? JSON.parse(response) : response;
 
       const { response: { metadata = '', done = false } = {} } = res || {};
 

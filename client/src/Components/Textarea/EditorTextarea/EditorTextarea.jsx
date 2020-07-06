@@ -35,7 +35,7 @@ class EditorTextarea extends React.Component {
     const { contentState } = props;
     const { contentState: content } = state;
 
-    if (_.isEmpty(content) || _.isNull(contentState)) {
+    if (_.isEmpty(content) || contentState === null) {
       return {
         ...state,
         contentState: getValidContent(contentState),
@@ -46,12 +46,11 @@ class EditorTextarea extends React.Component {
 
   componentDidMount = () => {
     const { contentState = {} } = this.props;
-    if (contentState && (!_.isEmpty(contentState) || _.isString(contentState))) {
+    if (contentState && (!_.isEmpty(contentState) || typeof contentState === 'string')) {
       try {
         this.setState({
-          contentState: _.isString(contentState)
-            ? stateFromHTML(contentState)
-            : getValidContent(contentState),
+          contentState:
+            typeof contentState === 'string' ? stateFromHTML(contentState) : getValidContent(contentState),
         });
       } catch (error) {
         if (error?.response?.status !== 404) console.error(error);

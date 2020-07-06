@@ -1,6 +1,5 @@
 import React from 'react';
 import { settingsModuleType } from './types';
-import _ from 'lodash';
 import { connect } from 'react-redux';
 import { settingsLogsSelector, settingsStatusSelector, settingsArtifactsSelector } from 'Utils/selectors';
 import { saveComponentStateAction } from 'Redux/actions/routerActions';
@@ -48,8 +47,12 @@ class SettingsModule extends React.PureComponent {
 
   static getDerivedStateFromProps = (props, state) => {
     const { udata: { email: emailValue, phone: telValue, isHideEmail, isHidePhone } = {} } = props;
-    const enumState = [state.emailValue, state.telValue, state.isHideEmail, state.isHidePhone];
-    if (enumState.every((value) => _.isNull(value))) {
+
+    if (
+      [state.emailValue, state.telValue, state.isHideEmail, state.isHidePhone].every(
+        (value) => value === null,
+      )
+    ) {
       return {
         ...state,
         emailValue,
@@ -110,7 +113,7 @@ class SettingsModule extends React.PureComponent {
       if (isShow === showScrollbar) return;
 
       this.setState({ ...this.state, showScrollbar: isShow });
-    } else if (!_.isNull(emailValue) || !_.isNull(telValue)) {
+    } else if ([emailValue, telValue].some((type) => type !== null)) {
       this.setState({ ...this.state, emailValue: null, telValue: null });
     }
   };

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { editableModalType } from '../types';
-import _ from 'lodash';
 import { Modal, Tooltip, message } from 'antd';
 
 import Textarea from 'Components/Textarea';
@@ -21,7 +20,7 @@ const SimpleEditableModal = (props) => {
   const [value, setValue] = useState(defaultValue);
 
   const onChange = ({ currentTarget: { value: val = '' } }) => {
-    if (!_.isNull(maxLength)) {
+    if (maxLength !== null) {
       if (val.length > maxLength) {
         message.warning(`Максимальная длинна: ${maxLength}`);
         return;

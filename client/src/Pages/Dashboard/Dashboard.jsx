@@ -2,7 +2,6 @@ import React from 'react';
 import { dashboardType } from './types';
 import { Redirect } from 'react-router-dom';
 import { EventEmitter } from 'events';
-import _ from 'lodash';
 import io from 'socket.io-client';
 import { Layout, message, notification, Modal, Button } from 'antd';
 import { connect } from 'react-redux';
@@ -71,7 +70,7 @@ class Dashboard extends React.PureComponent {
         description: 'Интернет соединение восстановлено.',
       });
 
-    if (showLoader && _.isNull(requestError) && status === 'online') {
+    if (showLoader && requestError === null && status === 'online') {
       const { routeData = {} } = router;
       const copyRouteData = { ...routeData };
       let currentArray = currentActionTab.split('_' || '__');
@@ -85,7 +84,7 @@ class Dashboard extends React.PureComponent {
             showLoader: false,
           });
         }, 500);
-      } else if (_.isNull(requestError) && status === 'online') {
+      } else if (requestError === null && status === 'online') {
         return setTimeout(() => {
           this.setState({
             counter: 0,
@@ -104,7 +103,7 @@ class Dashboard extends React.PureComponent {
     }
 
     if (
-      !_.isNull(requestError) &&
+      requestError !== null &&
       requestError[requestError?.length - 1] === 'Network error' &&
       status === 'offline' &&
       counterError === 0

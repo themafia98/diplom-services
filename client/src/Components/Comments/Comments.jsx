@@ -122,7 +122,7 @@ class Comments extends React.PureComponent {
   onEdit = async (idComment, msg = null, callback = null) => {
     const { onUpdate, data: { _id: id = '', key = '', comments = [] } = {}, data = {}, path } = this.props;
 
-    if (!_.isString(msg)) {
+    if (typeof msg !== 'string') {
       message.error('Сообщение не валидно.');
       if (callback) callback();
       return;

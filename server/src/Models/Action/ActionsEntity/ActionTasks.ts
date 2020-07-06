@@ -64,7 +64,7 @@ class ActionTasks implements Action {
         ? {}
         : (queryParams as ActionParams);
     const { keys = [] } = (queryParams as Record<string, string[]>) || {};
-    const parsedKeys: Array<Types.ObjectId> = _.isArray(keys)
+    const parsedKeys: Array<Types.ObjectId> = Array.isArray(keys)
       ? keys.reduce((keysList: Array<Types.ObjectId>, key: string) => {
           if (isValidObjectId(key)) return [...keysList, Types.ObjectId(key)];
 
@@ -134,7 +134,7 @@ class ActionTasks implements Action {
 
     filteredKeys.forEach((key: string) => {
       const parsedPatterns: string | Array<string> =
-        _.isArray(filteredInfo[key]) && filteredInfo[key].every((it: string) => _.isString(it))
+        Array.isArray(filteredInfo[key]) && filteredInfo[key].every((it: string) => typeof it === 'string')
           ? filteredInfo[key].map((val: string) => val.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&'))
           : filteredInfo[key];
 
@@ -199,7 +199,7 @@ class ActionTasks implements Action {
       } else metadata[field] = dataField;
     }
 
-    return !_.isArray(metadata) ? ([metadata] as ParserData) : (metadata as ParserData);
+    return !Array.isArray(metadata) ? ([metadata] as ParserData) : (metadata as ParserData);
   }
 
   private async regTicket(model: Model<Document>, actionParam: ActionParams): Promise<ParserData> {
@@ -222,9 +222,9 @@ class ActionTasks implements Action {
       ticketKeys.every((key: string) => {
         const value: string | number = (ticket as Record<string, string>)[key];
 
-        const isDateRange: boolean = key === 'date' && _.isArray(value);
+        const isDateRange: boolean = key === 'date' && Array.isArray(value);
 
-        if (!_.isString(value) && !_.isNumber(ticket) && !isDateRange) {
+        if (typeof value !== 'string' && typeof ticket !== 'number' && !isDateRange) {
           return false;
         }
         return true;

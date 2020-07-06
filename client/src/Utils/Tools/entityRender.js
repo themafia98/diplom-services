@@ -20,12 +20,12 @@ const entityRender = (entitysList = [], routeData = {}, subTabProps = {}, config
   return entitys.reduce((components, entityKey) => {
     if (!entityKey) return components;
     const { uuid = '', router: { routeData = {} } = {}, data: dataTab = {} } = subTabProps || {};
-
+    const isCheckerType = typeof typeEntity === 'function';
     if (
       components.some(({ type = Symbol(''), tabKey = '' }) => {
         return (
           tabKey?.includes(entityKey.split(/__/i)[1]) &&
-          type === (_.isFunction(typeEntity) ? typeEntity(type) : typeEntity)
+          type === (isCheckerType ? typeEntity(type) : typeEntity)
         );
       })
     )
@@ -35,10 +35,10 @@ const entityRender = (entitysList = [], routeData = {}, subTabProps = {}, config
     const isView = entityKey?.includes(moduleName) && !!moduleViewKey;
 
     const type = isView
-      ? _.isFunction(typeEntity)
+      ? isCheckerType
         ? typeEntity(types.$entity_entrypoint)
         : typeEntity
-      : _.isFunction(typeEntity)
+      : isCheckerType
       ? typeEntity(types.$sub_entrypoint_module)
       : typeEntity;
 

@@ -52,7 +52,7 @@ class StreamBox extends React.Component {
   };
 
   static getDerivedStateFromProps = (props, state) => {
-    if (_.isNull(state.type) && props.type) {
+    if (state.type === null && props.type) {
       return {
         ...state,
         type: props.type,
@@ -191,7 +191,7 @@ class StreamBox extends React.Component {
         if (setCounter) setCounter(-count, 'calc');
       }
 
-      if (!_.isFunction(onSaveComponentState)) {
+      if (typeof onSaveComponentState !== 'function') {
         return this.setState({ streamList: metadata, isLoading: true });
       }
 
@@ -327,7 +327,7 @@ class StreamBox extends React.Component {
   };
 
   onParserdMessage = (message) => {
-    if (!message || (message && !_.isString(message))) {
+    if (!message || (message && typeof message !== 'string')) {
       return message;
     }
 

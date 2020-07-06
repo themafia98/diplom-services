@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { newsViewType } from '../../types';
-import _ from 'lodash';
 import { v4 as uuid } from 'uuid';
 
 import TitleModule from 'Components/TitleModule';
@@ -12,22 +11,20 @@ const NewsViewPage = ({ id: _id, listdata: { content: contentEntity = {}, title 
   const getNormalizeContent = () => {
     const content = Object.keys(contentEntity).reduce((data, key) => {
       if (key.includes('entity') || key.includes('blocks')) {
-        const isArray = _.isArray(contentEntity[key]);
-        const isObject = _.isPlainObject(contentEntity[key]);
-        data[key] = isArray
+        data[key] = Array.isArray(contentEntity[key])
           ? [...contentEntity[key]]
-          : isObject
+          : contentEntity[key] && typeof contentEntity[key] === 'object'
           ? { ...contentEntity[key] }
           : contentEntity[key];
       }
       return data;
     }, {});
 
-    if (_.isPlainObject(contentEntity) && !contentEntity.entityMap) {
+    if (contentEntity && typeof contentEntity === 'object' && !contentEntity.entityMap) {
       content.entityMap = {};
     }
 
-    if (_.isPlainObject(contentEntity) && !contentEntity.blocks) {
+    if (contentEntity && typeof contentEntity === 'object' && !contentEntity.blocks) {
       content.blocks = [];
     }
 

@@ -1,7 +1,6 @@
 import React from 'react';
 import { tableViewType } from './types';
 import { connect } from 'react-redux';
-import _ from 'lodash';
 import { Empty, Spin, Tooltip, Icon } from 'antd';
 import Scrollbars from 'react-custom-scrollbars';
 
@@ -49,7 +48,7 @@ class TableView extends React.Component {
   };
 
   setSizeWindow = (event) => {
-    if (window.innerWidth <= 1450 && _.isNull(this.state.isScroll)) this.setState({ isScroll: true });
+    if (window.innerWidth <= 1450 && this.state.isScroll === null) this.setState({ isScroll: true });
     else if (this.state.isScroll && window.innerWidth > 1200) this.setState({ isScroll: null });
   };
 
@@ -147,7 +146,7 @@ class TableView extends React.Component {
   };
 
   onMail = (email) => {
-    if (!email || !_.isString(email)) return;
+    if (!email || typeof email !== 'string') return;
     const a = document.createElement('a');
     a.href = `mailto:${email}`;
     a.click();

@@ -24,7 +24,7 @@ const dataParser = (flag = false, isLocalUpdate = true, dep = {}, offlineStore =
       const item = { ...it };
       const { _id = 0, key = '' } = item || {};
       const index = store.findIndex(({ _id: idOffline = 0, key: keyOffline = '' }) => {
-        if (_.isString(idOffline) && _.isString(_id)) {
+        if ([typeof idOffline, typeof _id].every((type) => type === 'string')) {
           return idOffline === _id;
         }
 
@@ -198,7 +198,7 @@ const buildRequestList = (metadata = [], prefix = '') => {
     const { action = null } = item || {};
     if (!action) return actionsList;
     const { type = '', moduleName: path = '', link = '', method = '' } = action;
-    const storeLoad = _.isString(type) ? type.split('_')[0] : '';
+    const storeLoad = typeof type === 'string' ? type.split('_')[0] : '';
     const methodRequest = method ? method : link ? 'POST' : 'GET';
     return [
       ...actionsList,
@@ -251,16 +251,16 @@ const syncData = async (store = '', syncData = []) => {
 const getDataSource = (dataSource = [], filterBy = '', fid = '') => {
   if (!filterBy) return dataSource;
 
-  if (_.isString(filterBy))
-    return dataSource.filter((it) => _.isArray(it[filterBy]) && it[filterBy].some((id) => id === fid));
+  if (typeof filterBy === 'string')
+    return dataSource.filter((it) => Array.isArray(it[filterBy]) && it[filterBy].some((id) => id === fid));
 
   return dataSource.filter((it) => {
     return filterBy.some((filter) => {
-      if (!_.isString(it[filter]) && !_.isArray(it[filter])) {
+      if (typeof it[filter] !== 'string' && !Array.isArray(it[filter])) {
         return false;
       }
 
-      if (_.isString(it[filter])) return it[filter] === fid;
+      if (typeof it[filter] === 'string') return it[filter] === fid;
       else return it[filter].some((id) => id === fid);
     });
   });
@@ -318,20 +318,20 @@ const getModuleTypeByParsedKey = (moduleName, subModuleName, entityKey) => {
  * @param {number} index if sorting element is array, choose element for sorting from array(def: 0)
  */
 const sortedByKey = (array, key, type = 'string', customParamsForSort, index = 0) => {
-  if (!_.isArray(array) || !key) return array;
+  if (!Array.isArray(array) || !key) return array;
 
   return array.sort((a, b) => {
-    if (!_.isPlainObject(a) || !_.isPlainObject(b) || !a[key] || !b[key]) {
+    if ([a, b].every((element) => !element || typeof element !== 'object') || !a[key] || !b[key]) {
       return a - b;
     }
 
-    const sortElementA = _.isArray(a[key]) ? a[key][index] : a[key];
-    const sortElementB = _.isArray(b[key]) ? b[key][index] : b[key];
+    const sortElementA = Array.isArray(a[key]) ? a[key][index] : a[key];
+    const sortElementB = Array.isArray(b[key]) ? b[key][index] : b[key];
 
     if (type === 'date' && customParamsForSort) {
-      const dateParsedA = moment(sortElementA, customParamsForSort).unix();
-      const dateParsedB = moment(sortElementB, customParamsForSort).unix();
-      if (dateParsedA && dateParsedB) return dateParsedA - dateParsedB;
+      return (
+        moment(sortElementA, customParamsForSort).unix() - moment(sortElementB, customParamsForSort).unix()
+      );
     }
 
     return sortElementA - sortElementB;

@@ -52,17 +52,18 @@ class CreateTask extends React.PureComponent {
       contentDrawer = '',
     } = props;
 
-    const dateUpdater = _.isNull(date)
-      ? contentDrawer && contentDrawer instanceof moment
-        ? {
-            date: [contentDrawer.format(dateFormat), contentDrawer.format(dateFormat)],
-          }
-        : {
-            date: [moment().format(dateFormat), moment().format(dateFormat)],
-          }
-      : {};
+    const dateUpdater =
+      date === null
+        ? contentDrawer && contentDrawer instanceof moment
+          ? {
+              date: [contentDrawer.format(dateFormat), contentDrawer.format(dateFormat)],
+            }
+          : {
+              date: [moment().format(dateFormat), moment().format(dateFormat)],
+            }
+        : {};
 
-    if (_.isNull(uidCreater) && _.isNull(authorState) && uid && displayName) {
+    if ([uidCreater, authorState].every((type) => type === null) && uid && displayName) {
       return {
         ...state,
         card: {
@@ -74,7 +75,7 @@ class CreateTask extends React.PureComponent {
       };
     }
 
-    if (!_.isNull(date)) return state;
+    if (date !== null) return state;
 
     return {
       ...state,
@@ -162,7 +163,7 @@ class CreateTask extends React.PureComponent {
 
     let newErrorBundle = {};
     for (let [key, value] of Object.entries(copyErrorBundleState)) {
-      if (!_.isNull(value)) {
+      if (value !== null) {
         newErrorBundle[key] = value;
         continue;
       }
@@ -191,12 +192,13 @@ class CreateTask extends React.PureComponent {
 
   onChangeHandler = (event) => {
     const { target = null } = event;
-    if (_.isNull(target)) return;
-    if (!_.isNull(target) && target.name === 'name')
+    if (target === null) return;
+
+    if (target.name === 'name')
       return this.setState({ ...this.state, card: { ...this.state.card, name: target.value } }, () => {
         this.validation(true);
       });
-    else if (!_.isNull(target) && target.name === 'description')
+    else if (target.name === 'description')
       return this.setState(
         {
           ...this.state,
@@ -216,7 +218,7 @@ class CreateTask extends React.PureComponent {
   };
 
   onChangeHandlerDate = (date, dateArray) => {
-    if (_.isArray(dateArray) && dateArray !== this.state.date) {
+    if (Array.isArray(dateArray) && dateArray !== this.state.date) {
       return this.setState({ ...this.state, card: { ...this.state.card, date: dateArray } }, () => {
         this.validation(true);
       });
@@ -224,7 +226,7 @@ class CreateTask extends React.PureComponent {
   };
 
   onChangeHandlerSelectEditor = (eventArray) => {
-    if (!_.isArray(eventArray) || eventArray === this.state.card.editor) return;
+    if (!Array.isArray(eventArray) || eventArray === this.state.card.editor) return;
     else
       return this.setState({ ...this.state, card: { ...this.state.card, editor: eventArray } }, () => {
         this.validation(true);
@@ -232,7 +234,7 @@ class CreateTask extends React.PureComponent {
   };
 
   onChangeHandlerSelectPriority = (eventString) => {
-    if (!_.isString(eventString) || eventString === this.state.priority) return;
+    if (typeof eventString !== 'string' || eventString === this.state.priority) return;
     else {
       this.setState({ ...this.state, card: { ...this.state.card, priority: eventString } }, () => {
         this.validation(true);
@@ -241,7 +243,7 @@ class CreateTask extends React.PureComponent {
   };
 
   onChangeHandlerSelectState = (stateName) => {
-    if (!_.isString(stateName) || stateName === this.state.card?.status) return;
+    if (typeof stateName !== 'string' || stateName === this.state.card?.status) return;
     else {
       this.setState({ ...this.state, card: { ...this.state.card, status: stateName } }, () => {
         this.validation(true);
@@ -291,7 +293,7 @@ class CreateTask extends React.PureComponent {
 
     let keys = Object.keys(card);
 
-    if (keys.every((key) => _.isNull(card[key]))) return;
+    if (keys.every((key) => card[key] === null)) return;
 
     const validHashCopy = [{ ...card }];
     const validHash = validHashCopy.map((it) => schema?.getSchema(CREATE_TASK_SCHEMA, it)).filter(Boolean)[0];
@@ -310,7 +312,7 @@ class CreateTask extends React.PureComponent {
         4,
       );
 
-      if (_.isNull(res) && _.isNull(offline)) {
+      if ([res, offline].every((type) => type === null)) {
         throw new Error('Invalid create task');
       }
 

@@ -21,7 +21,7 @@ class ActionSettings implements Action {
 
       const settings: Array<Record<string, string>> = draftItems.map((item) => {
         const { id: idItem, value, active = false } = item as Record<string, any>;
-        if (item && _.isString(idItem) && idItem.includes('virtual')) {
+        if (item && typeof idItem === 'string' && idItem.includes('virtual')) {
           return {
             id: uuid(),
             value,
@@ -29,7 +29,7 @@ class ActionSettings implements Action {
           };
         }
 
-        return _.isPlainObject(item) ? { id: idItem, value, active } : item;
+        return item && typeof item === 'object' ? { id: idItem, value, active } : item;
       });
 
       const updateProps = {

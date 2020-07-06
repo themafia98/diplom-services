@@ -17,7 +17,7 @@ const PanelAdmin = ({ onSaveSettings, statusList: { settings: statusListProps = 
   const [haveChanges, setChanges] = useState([]);
 
   const onCear = (response) => {
-    if (_.isArray(response)) {
+    if (Array.isArray(response)) {
       setStatusList(response);
       setValue(response.filter(({ active }) => active).map(({ id }) => id));
     }
@@ -32,7 +32,7 @@ const PanelAdmin = ({ onSaveSettings, statusList: { settings: statusListProps = 
         return selectedId === statusId;
       });
 
-      const isObj = _.isPlainObject(item);
+      const isObj = item && typeof item === 'object';
 
       if (!statusId && isObj) {
         return { ...item, active: false };

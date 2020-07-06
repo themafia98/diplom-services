@@ -1,5 +1,4 @@
 import React from 'react';
-import _ from 'lodash';
 import clsx from 'clsx';
 import { statisticsModuleType } from './types';
 import moment from 'moment';
@@ -24,7 +23,7 @@ class StatisticsModule extends React.PureComponent {
     const { visible } = this.props;
     const { dateConfig = [] } = this.state;
 
-    if (visible && _.isArray(dateConfig)) {
+    if (visible && Array.isArray(dateConfig)) {
       this.fetchStatistics();
     }
   };
@@ -40,7 +39,7 @@ class StatisticsModule extends React.PureComponent {
     const { [path]: currentModule = null } = routeData || {};
     const shouldReload = currentModule && !currentModule?.loading && visible && !currentModule?.load;
 
-    if (_.isArray(dateConfig) && shouldReload) this.fetchStatistics();
+    if (Array.isArray(dateConfig) && shouldReload) this.fetchStatistics();
   };
 
   fetchStatistics = (shouldSetLoading = false) => {

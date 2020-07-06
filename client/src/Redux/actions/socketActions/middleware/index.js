@@ -217,7 +217,9 @@ const updateRooms = (payload) => async (dispatch, getState, { schema, Request, c
     }
 
     const rooms =
-      shouldAdd && _.isArray(metadata) && metadata[0] ? [...listdataState, metadata[0]] : [...listdataState];
+      shouldAdd && Array.isArray(metadata) && metadata[0]
+        ? [...listdataState, metadata[0]]
+        : [...listdataState];
 
     const normalizeRooms = _.uniqWith(rooms, (a, b) => a._id !== b._id);
 

@@ -1,12 +1,11 @@
 import React, { forwardRef, useState, useMemo } from 'react';
 import fixedToolbarType from './types';
-import _ from 'lodash';
 import { Button } from 'antd';
 
 const FixedToolbar = forwardRef((props, ref) => {
   const { customRender, name, onChangeVisibleAction } = props;
   const [visible, setVisible] = useState(false);
-  const [useCustomRender] = useState(!_.isNull(customRender));
+  const [useCustomRender] = useState(customRender === null);
 
   const onChangeCustomVisible = () => {
     setVisible((prevVisible) => !prevVisible);

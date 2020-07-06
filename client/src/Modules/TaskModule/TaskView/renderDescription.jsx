@@ -1,5 +1,4 @@
 import React from 'react';
-import _ from 'lodash';
 import clsx from 'clsx';
 import TagsContainer from 'Components/TagsContainer';
 import { Descriptions, Input, Select, DatePicker } from 'antd';
@@ -167,7 +166,7 @@ function renderDescription(theme = 'default') {
               value={
                 modeControllEdit
                   ? moment(
-                      _.isArray(modeControllEdit.date) && modeControllEdit.date[0]
+                      Array.isArray(modeControllEdit.date) && modeControllEdit.date[0]
                         ? modeControllEdit.date[0]
                         : date[0]
                         ? date[0]
@@ -191,7 +190,7 @@ function renderDescription(theme = 'default') {
               value={
                 modeControllEdit
                   ? moment(
-                      _.isArray(modeControllEdit.date) && modeControllEdit?.date[1]
+                      Array.isArray(modeControllEdit.date) && modeControllEdit?.date[1]
                         ? modeControllEdit.date[1]
                         : date[1]
                         ? date[1]

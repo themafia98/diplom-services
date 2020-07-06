@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { chatRoomType } from '../../types';
-import _ from 'lodash';
 import clsx from 'clsx';
 import Scrollbars from 'react-custom-scrollbars';
 import { Button, Avatar } from 'antd';
@@ -74,14 +73,14 @@ const ChatRoom = ({
   };
 
   const onSubmit = (event, msgValue = null) => {
-    if (_.isNull(msgValue)) {
+    if (msgValue === null) {
       if ((event.which || event.keyCode) && (event.which || event.keyCode) !== 13) return;
       if ((event.which || event.keyCode) && (event.which || event.keyCode) === 13) {
         event.preventDefault();
       }
       onKeyDown(event, msgValue ? msgValue : msg);
       setMsg('');
-    } else if (event && !_.isNull(msgValue)) {
+    } else if (event && msgValue !== null) {
       pushMessage(event, msgValue);
       setMsg('');
     }

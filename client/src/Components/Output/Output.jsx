@@ -38,8 +38,13 @@ class Output extends React.PureComponent {
   componentDidMount = () => {
     const { showTooltip, widthChild, widthParent } = this.state;
     const { typeOutput, children: child } = this.props;
-    const isDefaultList = _.isArray(child) && typeOutput === 'default';
-    if (_.isNull(widthChild) && _.isNull(widthParent) && !showTooltip && this.child && this.parent) {
+    const isDefaultList = Array.isArray(child) && typeOutput === 'default';
+    if (
+      [widthChild, widthParent].every((type) => type === null) &&
+      !showTooltip &&
+      this.child &&
+      this.parent
+    ) {
       let children =
         typeOutput === 'link'
           ? this.child?.buttonNode?.firstChild
@@ -55,7 +60,7 @@ class Output extends React.PureComponent {
           : null;
       const parentW = this.parent ? this.parent.getBoundingClientRect().width : null;
 
-      if (!_.isNull(childW) && !_.isNull(parentW))
+      if ([childW, parentW].every((type) => type !== null))
         this.setState({
           ...this.state,
           showTooltip: childW > parentW,
@@ -69,8 +74,8 @@ class Output extends React.PureComponent {
     const { showTooltip, widthChild, widthParent } = this.state;
     const { typeOutput, children: child } = this.props;
 
-    const isDefaultList = _.isArray(child) && typeOutput === 'default';
-    if (!_.isNull(widthChild) && !_.isNull(widthParent) && this.child && this.parent) {
+    const isDefaultList = Array.isArray(child) && typeOutput === 'default';
+    if ([widthChild, widthParent].every((type) => type !== null) && this.child && this.parent) {
       const children =
         typeOutput === 'link'
           ? this.child?.buttonNode?.firstChild
@@ -86,7 +91,7 @@ class Output extends React.PureComponent {
           : null;
       const parentW = this.parent ? this.parent.getBoundingClientRect().width : null;
 
-      if (_.isNull(childW) || _.isNull(parentW)) return;
+      if ([childW, parentW].some((type) => type === null)) return;
 
       const showTooltipUpdate = childW > parentW;
 
@@ -238,7 +243,7 @@ class Output extends React.PureComponent {
         >
           {typeOutput && typeOutput !== 'default' ? (
             <>
-              {_.isPlainObject(value) ? (
+              {value && typeof value === 'object' ? (
                 this.renderLinks(value, 'single')
               ) : (
                 <Button

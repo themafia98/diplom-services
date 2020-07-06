@@ -30,7 +30,7 @@ abstract class RestEntitiy implements Rest {
   }
 
   public setApp(express: Application): void {
-    if (_.isNull(this.application)) this.application = express;
+    if (this.application === null) this.application = express;
   }
 }
 

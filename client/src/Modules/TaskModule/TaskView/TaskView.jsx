@@ -206,9 +206,9 @@ class TaskView extends React.PureComponent {
           const { data: { response = null } = {} } = await loadFile('tasks', fileLoaderBody);
           if (response && response?.done) {
             const { metadata } = response;
-            const filesArray = _.isArray(metadata)
+            const filesArray = Array.isArray(metadata)
               ? metadata
-              : _.isPlainObject(metadata)
+              : metadata && typeof metadata === 'object'
               ? metadata?.entries
               : [];
 
@@ -362,7 +362,7 @@ class TaskView extends React.PureComponent {
 
   onChangeEditable = (event) => {
     const { currentTarget = {}, currentTarget: { value = '' } = {} } = event;
-    if (_.isObject(event) && currentTarget && !_.isEmpty(currentTarget)) {
+    if (event && typeof event === 'object' && currentTarget && !_.isEmpty(currentTarget)) {
       return this.setState({
         ...this.state,
         modeEditContent: false,
@@ -371,8 +371,8 @@ class TaskView extends React.PureComponent {
           name: value,
         },
       });
-    } else if (_.isObject(event)) {
-      if (_.isArray(event)) {
+    } else if (event && typeof event === 'object') {
+      if (Array.isArray(event)) {
         return this.setState({
           ...this.state,
           modeEditContent: false,
@@ -491,7 +491,7 @@ class TaskView extends React.PureComponent {
         }
 
         const plusValue = !min && hour ? hour : hour && min > 0 ? hour + min / 60 : min > 0 ? min / 60 : 0;
-        if (_.isNumber(plusValue)) return startValue + plusValue;
+        if (typeof plusValue === 'number') return startValue + plusValue;
         else return startValue;
       }, 0)
       .toFixed(1);

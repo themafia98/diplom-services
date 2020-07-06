@@ -22,7 +22,7 @@ class ActionWiki implements Action {
     const { parentId = 'root' } = (item as Record<string, string>) || {};
     const isRoot = parentId === 'root';
 
-    if (!item || (item && _.isEmpty(item)) || _.isNull(parentId) || (!isRoot && !isValidObjectId(parentId))) {
+    if (!item || (item && _.isEmpty(item)) || parentId === null || (!isRoot && !isValidObjectId(parentId))) {
       return null;
     }
 
@@ -37,7 +37,7 @@ class ActionWiki implements Action {
 
     if (!queryParams || (queryParams && _.isEmpty(queryParams))) return null;
     const { ids = [] } = (queryParams as Record<string, string[]>) || {};
-    const parsedIds: Array<Types.ObjectId> = _.isArray(ids)
+    const parsedIds: Array<Types.ObjectId> = Array.isArray(ids)
       ? ids.reduce((list: Array<Types.ObjectId>, id: string) => {
           if (isValidObjectId(id)) return [...list, Types.ObjectId(id)];
           return list;
@@ -59,7 +59,7 @@ class ActionWiki implements Action {
     const deleteResult: ParserData = await this.getEntity().deleteEntity(model, query);
     const { deletedCount = 0 } = (deleteResult as Record<string, number>) || {};
 
-    if (deletedCount && _.isArray(idsPages) && pageModel) {
+    if (deletedCount && Array.isArray(idsPages) && pageModel) {
       await this.getEntity().deleteEntity(pageModel, {
         multiple: true,
         mode: 'many',
@@ -75,13 +75,15 @@ class ActionWiki implements Action {
     ids: Array<Types.ObjectId>,
     model: Model<Document>,
   ): Promise<Array<Types.ObjectId>> {
-    if (!ids || !_.isArray(ids)) return [];
+    if (!ids || !Array.isArray(ids)) return [];
 
     const pagesList = await this.getEntity().getAll(model, {
       treeId: { $in: ids },
     });
 
-    return _.isArray(pagesList) ? pagesList.map(({ _id = '' }) => Types.ObjectId(_id)).filter(Boolean) : [];
+    return Array.isArray(pagesList)
+      ? pagesList.map(({ _id = '' }) => Types.ObjectId(_id)).filter(Boolean)
+      : [];
   }
 
   private async getWikiPage(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {

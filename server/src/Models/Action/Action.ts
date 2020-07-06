@@ -206,9 +206,11 @@ namespace ActionApi {
             const { _id: id, key } = query as Record<string, string>;
             const { customQuery, updateProps: upProps = {} } = query;
             const { [customQuery as string]: customQueryValue = '' } = query;
-            const updateProps: object = _.isPlainObject(upProps)
-              ? (upProps as object)
-              : { updateProps: query.updateProps };
+
+            const updateProps: object =
+              upProps && typeof upProps === 'object'
+                ? (upProps as object)
+                : { updateProps: query.updateProps };
 
             const _id: any = id ? Types.ObjectId(id) : null;
 

@@ -54,7 +54,7 @@ namespace Mailer {
     public async send(to: string, subject: string, text: string): Promise<SentMessageInfo> {
       try {
         const senderProps: object = this.getSender();
-        if (!senderProps || !_.isString(to) || !_.isString(subject) || !_.isString(text)) {
+        if (!senderProps || [to, subject, text].every((type) => typeof type !== 'string')) {
           return null;
         }
 

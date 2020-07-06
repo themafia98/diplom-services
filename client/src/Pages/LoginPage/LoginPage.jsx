@@ -1,5 +1,4 @@
 import React from 'react';
-import _ from 'lodash';
 import { loginType } from './types';
 import { Redirect, NavLink } from 'react-router-dom';
 import { Button, Input } from 'antd';
@@ -74,7 +73,7 @@ class LoginPage extends React.Component {
           const parser = new DOMParser();
           const doc = parser.parseFromString(data, 'text/html');
           const isHtml = Array.from(doc.body.childNodes).some((node) => node.nodeType === 1);
-          const isValid = _.isString(data) && data && !isHtml;
+          const isValid = data && typeof data === 'string' && !isHtml;
 
           const errorMessage = isValid
             ? data

@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import axios from 'axios';
 
 class Request {
@@ -51,18 +50,19 @@ class Request {
     } = requestResponse || {};
 
     const { metadata = [], params = {}, params: { fromCache = false } = {} } = response;
-    let items = [];
+
     const isArray = Array.isArray(metadata);
-    if (status !== 200) return [items, statusText];
+    if (status !== 200) return [metadata, statusText];
 
-    isArray && metadata.forEach((doc, index) => _.isNumber(index) && items.push(doc));
-
-    if (isArray && items.length) items = items.filter((it) => !_.isEmpty(it));
-    else if (isArray && fromCache && !items.length) {
-      return [items, 'Network error'];
+    if (isArray && fromCache && !metadata?.length) {
+      return [metadata, 'Network error'];
     }
 
-    const dataItems = isArray ? [...items] : _.isPlainObject(metadata) ? { ...metadata } : items;
+    const dataItems = isArray
+      ? [...metadata]
+      : metadata && typeof metadata === 'object'
+      ? { ...metadata }
+      : metadata;
 
     return [
       {
@@ -93,7 +93,7 @@ class Request {
    * @param {number|undefiend} timeout number
    */
   follow(mode = 'offline', callback, timeout = 5000) {
-    if (_.isNull(this.followObserver))
+    if (this.followObserver === null)
       this.followObserver = setInterval(() => {
         this.test(callback);
       }, timeout);
@@ -176,12 +176,13 @@ class Request {
           headers: {
             Authorization: auth === 'worker' ? this.getLocalToken() : this.getToken(auth),
           },
-          data: _.isPlainObject(body)
-            ? {
-                actionType: null,
-                ...body,
-              }
-            : body,
+          data:
+            body && typeof body === 'object'
+              ? {
+                  actionType: null,
+                  ...body,
+                }
+              : body,
         }
       : {
           headers: {
@@ -189,7 +190,7 @@ class Request {
           },
           data: body ? body : null,
         };
-    if ((_.isNull(props.headers.Authorization) && auth) || (!props.headers.Authorization && auth)) {
+    if ((props.headers.Authorization === null && auth) || (!props.headers.Authorization && auth)) {
       return this.signOut();
     }
 

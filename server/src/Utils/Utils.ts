@@ -153,7 +153,7 @@ namespace Utils {
   };
 
   export const parsePublicData = (data: ParserResult, mode: string = 'default', rules = ''): Array<Meta> => {
-    if (!_.isArray(data)) return [data];
+    if (!Array.isArray(data)) return [data];
     switch (mode) {
       case 'access':
       case 'accessGroups':
@@ -229,7 +229,7 @@ namespace Utils {
 
   /** @deprecated 01.06.2020 should use mongoose isValidObjectId */
   export const isValidObjectId = (id: string): boolean => {
-    return !!id && _.isString(id) && id.length <= 24;
+    return !!id && typeof id === 'string' && id.length <= 24;
   };
 }
 

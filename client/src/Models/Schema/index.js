@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import {
   TASK_SCHEMA,
   USER_SCHEMA,
@@ -177,8 +176,9 @@ class Schema {
    * @returns {boolean}
    */
   isPublicKey(value) {
-    if (Array.isArray(value) || _.isPlainObject(value)) {
-      if (_.isPlainObject(value)) {
+    const isObject = value && typeof value === 'object';
+    if (Array.isArray(value) || isObject) {
+      if (isObject) {
         return Object.keys(value).every((val) => val !== 'createdAt' && val !== 'updatedAt' && val !== '__v');
       }
       return value.every((val) => val !== 'createdAt' && val !== 'updatedAt' && val !== '__v');
@@ -195,25 +195,28 @@ class Schema {
    * @return {boolean}
    */
   deprecated_validateSchema(keysData, keysSchema, data, type = '') {
-    if (!_.isArray(keysData) || !_.isArray(keysSchema)) return false;
+    if ([keysData, keysSchema].some((type) => !Array.isArray(type))) return false;
     let validLenth = keysData.length;
     let IS_SHOULD_USE_KEY = false;
 
     const isFindMode = keysData.findIndex((it) => it === 'offline') !== -1;
     if (isFindMode) validLenth--;
 
-    const isCreated = keysData.findIndex((it) => it === 'createdAt' && _.isString(data[it])) !== -1;
+    const isCreated = keysData.findIndex((it) => it === 'createdAt' && typeof data[it] === 'string') !== -1;
     if (isCreated) {
       validLenth--;
     }
 
-    const isUpdated = keysData.findIndex((it) => it === 'updatedAt' && _.isString(data[it])) !== -1;
+    const isUpdated = keysData.findIndex((it) => it === 'updatedAt' && typeof data[it] === 'string') !== -1;
     if (isUpdated) validLenth--;
 
-    const isVersion = keysData.findIndex((it) => it === '__v' && _.isNumber(data[it])) !== -1;
+    const isVersion = keysData.findIndex((it) => it === '__v' && typeof data[it] === 'string') !== -1;
     if (isVersion) validLenth--;
 
-    if (type === NEWS_SCHEMA && keysData.findIndex((it) => it === '_id' && _.isString(data[it])) !== -1) {
+    if (
+      type === NEWS_SCHEMA &&
+      keysData.findIndex((it) => it === '_id' && typeof data[it] === 'string') !== -1
+    ) {
       validLenth--;
       IS_SHOULD_USE_KEY = true;
     }
@@ -233,9 +236,7 @@ class Schema {
   }
 
   getSchema(type, data) {
-    if (!_.isObject(data)) return null;
-    if (!_.isString(type)) return null;
-    if (_.isNull(data)) return null;
+    if (!(data && typeof data === 'object') || typeof type !== 'string' || data === null) return null;
 
     const schema = this.getValidateSchema(type);
     const validate = this.validator.compile(schema);
@@ -254,9 +255,7 @@ class Schema {
    * @param {Object} data string
    */
   deprecated_getSchema(type, data) {
-    if (!_.isObject(data)) return null;
-    if (!_.isString(type)) return null;
-    if (_.isNull(data)) return null;
+    if (!(data && typeof data === 'object') || typeof type !== 'string' || data === null) return null;
 
     let keysSchema = null;
     const keysData = Object.keys(data);

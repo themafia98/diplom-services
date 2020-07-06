@@ -99,7 +99,7 @@ class ActionUsers implements Action {
     const { queryParams = {} } = actionParam as Record<string, any>;
     const { isHidePhone = null, isHideEmail = null, uid = '' } = queryParams || {};
 
-    if (!uid || (_.isNull(isHidePhone) && _.isNull(isHideEmail))) {
+    if (!uid || [isHidePhone, isHideEmail].every((type) => type === null)) {
       return null;
     }
 
@@ -111,8 +111,8 @@ class ActionUsers implements Action {
 
     const updateProps: Record<string, boolean> = {};
 
-    if (!_.isNull(isHidePhone)) updateProps.isHidePhone = isHidePhone as boolean;
-    if (!_.isNull(isHideEmail)) updateProps.isHideEmail = isHideEmail as boolean;
+    if (isHidePhone !== null) updateProps.isHidePhone = isHidePhone as boolean;
+    if (isHideEmail !== null) updateProps.isHideEmail = isHideEmail as boolean;
 
     const res = await this.getEntity().updateEntity(model, { _id, updateProps });
 
@@ -149,8 +149,8 @@ class ActionUsers implements Action {
 
     const updateProps: Record<string, string> = {};
 
-    if (!_.isNull(phone)) updateProps.phone = phone;
-    if (!_.isNull(email)) updateProps.email = email;
+    if (phone !== null) updateProps.phone = phone;
+    if (email !== null) updateProps.email = email;
 
     const res = await this.getEntity().updateEntity(model, { _id, updateProps });
 

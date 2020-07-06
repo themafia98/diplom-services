@@ -77,7 +77,7 @@ class ModalWindow extends React.PureComponent {
       };
     }
 
-    if (mode === 'reg' && _.isNull(type)) {
+    if (mode === 'reg' && type === null) {
       return {
         ...state,
         type: 'regType',
@@ -259,7 +259,7 @@ class ModalWindow extends React.PureComponent {
 
     const { onUpdate, routeDataActive = {}, routeDataActive: { key = null } = {}, path, route } = this.props;
 
-    if (_.isNull(taskStatus) && !_.isString(customStatus))
+    if (taskStatus === null && typeof customStatus !== 'string')
       return this.setState({
         ...this.state,
         [type]: false,
@@ -283,7 +283,7 @@ class ModalWindow extends React.PureComponent {
         id: routeDataActive?._id,
         key,
         updateBy: '_id',
-        updateItem: _.isString(customStatus) ? customStatus : taskStatus,
+        updateItem: typeof customStatus === 'string' ? customStatus : taskStatus,
         updateField: 'status',
         item: { ...routeDataActive },
         store: 'tasks',
@@ -370,8 +370,8 @@ class ModalWindow extends React.PureComponent {
     const { schema = {} } = this.context;
     let _valid = true;
     let invalidDate = !date || !_.isDate(new Date(date));
-    let invalidTimeLost = !timeLost || !_.isString(timeLost) || !isTimeLostValue(timeLost);
-    let invalidDescription = !description || !_.isString(description);
+    let invalidTimeLost = !timeLost || typeof timeLost !== 'string' || !isTimeLostValue(timeLost);
+    let invalidDescription = !description || typeof description !== 'string';
 
     if (type === 'jur' && !modeEditContent && (invalidDate || invalidTimeLost || invalidDescription)) {
       _valid = false;

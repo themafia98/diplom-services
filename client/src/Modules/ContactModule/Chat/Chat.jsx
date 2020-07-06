@@ -54,7 +54,7 @@ class Chat extends React.PureComponent {
   };
 
   componentWillUnmount = () => {
-    if (!_.isNull(this.updaterChats)) clearInterval(this.updaterChats);
+    if (this.updaterChats !== null) clearInterval(this.updaterChats);
   };
 
   componentDidUpdate = (prevProps) => {
@@ -80,7 +80,7 @@ class Chat extends React.PureComponent {
       onLoadingDataByToken(chatToken, listdata, 'chat', false);
     }
 
-    if (_.isNull(this.updaterChats) && socketConnection) {
+    if (this.updaterChats === null && socketConnection) {
       this.updaterChats = setInterval(() => {
         onLoadActiveChats({
           path: 'loadChats',
@@ -99,7 +99,7 @@ class Chat extends React.PureComponent {
       }, 5000);
     }
 
-    if ((prevProps.tokenRoom !== tokenRoom && !_.isNull(prevProps.tokenRoom)) || shouldUpdate) {
+    if ((prevProps.tokenRoom !== tokenRoom && prevProps.tokenRoom !== null) || shouldUpdate) {
       if (onLoadActiveChats) {
         this.loadChat();
       }
@@ -119,7 +119,7 @@ class Chat extends React.PureComponent {
 
   addMsg = (msgObj) => {
     const { onAddMsg } = this.props;
-    if (_.isObject(msgObj)) onAddMsg(msgObj);
+    if (msgObj && typeof msgObj === 'object') onAddMsg(msgObj);
   };
 
   updateFakeRoom = (entity) => {
@@ -201,7 +201,7 @@ class Chat extends React.PureComponent {
       udata: { displayName = '', _id: authorId = '' } = {},
     } = this.props;
 
-    if (_.isNull(tokenRoom)) {
+    if (tokenRoom === null) {
       return notification.error({ message: 'Ошибка чата', description: 'Данные повреждены.' });
     }
 
@@ -349,7 +349,7 @@ class Chat extends React.PureComponent {
       type,
       webSocket,
     } = this.props;
-    const isWs = !_.isNull(webSocket);
+    const isWs = webSocket !== null;
 
     const { usersListComponent = null, count = 0 } = tokenRoom ? this.getUsersList() : {};
 

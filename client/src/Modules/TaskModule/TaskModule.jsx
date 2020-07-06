@@ -57,7 +57,7 @@ class TaskModule extends React.PureComponent {
 
     const isEmptyTasks = _.isEmpty(routeData[path]);
     const isTaskModule = path && path.includes('task') && !path.split('__')[1];
-    if (_.isNull(height) && !_.isNull(this.moduleTask) && visible) {
+    if (height === null && this.moduleTask !== null && visible) {
       this.recalcHeight();
     }
 
@@ -72,7 +72,7 @@ class TaskModule extends React.PureComponent {
       });
     }
 
-    if (_.isFunction(onShowLoader) && isEmptyTasks) {
+    if (typeof onShowLoader === 'function' && isEmptyTasks) {
       onShowLoader();
     }
 
@@ -102,7 +102,7 @@ class TaskModule extends React.PureComponent {
     } = this.props;
     const { isListCounterLoading = false } = this.state;
     const { config: { task: { limitList = 20 } = {} } = {} } = this.context;
-    if (!_.isNull(this.moduleTask) && !_.isNull(this.controller) && visible) {
+    if ([this.moduleTask, this.controller].every((type) => type !== null) && visible) {
       this.recalcHeight();
     }
 

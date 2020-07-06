@@ -1,7 +1,6 @@
 import React from 'react';
 import { newsType } from '../types';
 import { connect } from 'react-redux';
-import _ from 'lodash';
 import { Pagination, Button, message, Empty, Spin } from 'antd';
 
 import Scrollbars from 'react-custom-scrollbars';
@@ -72,7 +71,7 @@ class News extends React.PureComponent {
     } = this.props;
     const { config = {} } = this.context;
 
-    const key = _.isString(openKey) ? openKey.replace('_informationPage', '') : '';
+    const key = typeof openKey === 'string' ? openKey.replace('_informationPage', '') : '';
 
     let listdata = data && data.news && Array.isArray(data.news) ? [...data.news] : news;
     const moduleId = 'informationPage';

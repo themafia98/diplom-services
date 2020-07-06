@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import _ from 'lodash';
 import clsx from 'clsx';
 import { getComponentByKey } from 'Utils';
 import { drawerViewerType } from './types';
@@ -37,7 +36,7 @@ const DrawerViewer = ({ onClose, visible, title, selectedEntity, contentKey, mod
           udata={udata}
         />
       ) : (
-        <span>{_.toString(content)}</span>
+        <span>{content?.toString()}</span>
       )}
     </Drawer>
   );

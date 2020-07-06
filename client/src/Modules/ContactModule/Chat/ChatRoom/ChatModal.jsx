@@ -71,7 +71,7 @@ class ChatModal extends React.PureComponent {
   onChangeSelect = (eventData) => {
     this.setState({
       ...this.state,
-      membersIds: _.isString(eventData) ? [eventData] : eventData,
+      membersIds: typeof eventData === 'string' ? [eventData] : eventData,
     });
   };
 
@@ -90,7 +90,7 @@ class ChatModal extends React.PureComponent {
     const { confirmLoading, type = 'single', membersIds = [] } = this.state;
     const { visible, usersList } = this.props;
 
-    const isPrivateRoom = type === 'single' && _.isArray(membersIds);
+    const isPrivateRoom = type === 'single' && Array.isArray(membersIds);
     const valueUser = isPrivateRoom ? membersIds[0] : membersIds;
 
     return (

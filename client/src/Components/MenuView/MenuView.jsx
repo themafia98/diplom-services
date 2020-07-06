@@ -1,6 +1,5 @@
 import React from 'react';
 import { menuViewType } from './types';
-import _ from 'lodash';
 import { Menu, Layout, Icon } from 'antd';
 
 import Logo from 'Components/Logo';
@@ -11,7 +10,7 @@ const { SubMenu } = Menu;
 const MenuView = ({ collapsed, cbOnCollapse, items, cbMenuHandler, activeTabEUID, cbGoMain }) => {
   const renderMenu = (items) => {
     const parent = items.filter((parentItem) => {
-      return _.isNull(parentItem.PARENT_CODE);
+      return parentItem.PARENT_CODE === null;
     });
 
     return parent.map((item) => {

@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { clientDB } from 'Models/ClientSideDatabase';
 import utilsHooks from '../utils';
 import { getStoreSchema } from '../../utilsHook';
@@ -25,12 +24,12 @@ const coreUpdaterDataHook = async (dispatch, dep = {}, multiple = false, badNetw
 
   let isLocalUpdate = localUpdateStat;
 
-  if (noCorsClient && _.isNull(requestError)) {
+  if (noCorsClient && requestError === null) {
     const [isDone, data] = runNoCorsAction(dispatch, dep, multiple);
     if (isDone) return data;
   }
 
-  if (!_.isNull(requestError) && !badNetwork) dispatch(errorRequestAction(null));
+  if (requestError === null && !badNetwork) dispatch(errorRequestAction(null));
   const currentStore = indStoreName ? indStoreName : storeLoad;
   const [cursor, eventResult, shouldUpdate] = await runRefreshIndexedDb(
     dispatch,
@@ -94,8 +93,8 @@ const errorHook = async (error, dispatch, dep = {}, callback) => {
   const { errorRequestAction } = dep;
 
   if (error?.message === 'Network Error') {
-    await runBadNetworkAction(dispatch, error, dep);
-    if (_.isFunction(callback)) dispatch(callback());
+    runBadNetworkAction(dispatch, error, dep);
+    if (typeof callback === 'function') dispatch(callback());
   } else dispatch(errorRequestAction(error.message));
 };
 

@@ -1,6 +1,5 @@
 import React from 'react';
 import { notificationPopupType } from './types';
-import _ from 'lodash';
 import { Icon, Badge, Popover } from 'antd';
 import NotificationItem from './NotificationItem';
 import StreamBox from 'Components/StreamBox';
@@ -55,7 +54,7 @@ class NotificationPopup extends React.PureComponent {
         'POST',
         {
           actionType: actionsTypes.$GET_NOTIFICATIONS,
-          methodQuery: _.isString(filterStream) ? { [filterStream]: uid } : {},
+          methodQuery: typeof filterStream === 'string' ? { [filterStream]: uid } : {},
         },
         true,
       );
@@ -85,7 +84,7 @@ class NotificationPopup extends React.PureComponent {
   };
 
   parseContent = (message) => {
-    return _.isString(message) ? message : null;
+    return typeof message === 'string' ? message : null;
   };
 
   buildItems = (items, onRunAction) => {

@@ -1,6 +1,5 @@
 import React from 'react';
 import { dynamicTableType } from '../types';
-import _ from 'lodash';
 import moment from 'moment';
 import Output from 'Components/Output';
 import { Table, message, Input, Button, Icon, Empty } from 'antd';
@@ -36,7 +35,7 @@ class DynamicTable extends React.PureComponent {
   static getDerivedStateFromProps = (props, state) => {
     const { counter } = props;
     const { counter: counterState = null } = state;
-    if (!_.isNull(counter) && counter !== counterState) {
+    if (counter !== null && counter !== counterState) {
       return {
         ...state,
         counter,
@@ -238,8 +237,8 @@ class DynamicTable extends React.PureComponent {
     },
     render: (text, currentData) => {
       const { router, depDataKey, udata } = this.props;
-      const isDateString = _.isArray(text) && moment(text[0], 'DD.MM.YYYY')?._isValid;
-      const isArrayEditors = _.isArray(text) && !isDateString;
+      const isDateString = Array.isArray(text) && moment(text[0], 'DD.MM.YYYY')?._isValid;
+      const isArrayEditors = Array.isArray(text) && !isDateString;
       const className =
         text === 'В работе'
           ? 'active'
@@ -270,7 +269,7 @@ class DynamicTable extends React.PureComponent {
         : {};
 
       const children =
-        isEditor && _.isArray(text)
+        isEditor && Array.isArray(text)
           ? text.reduce((ids, id) => {
               const findUser = usersList?.find((it) => it?._id === id);
               if (findUser) return [...ids, findUser];
@@ -394,7 +393,7 @@ class DynamicTable extends React.PureComponent {
         onChange={this.handleTableChange}
         columns={columns}
         dataSource={source}
-        loading={loading || _.isNull(this.state.counter)}
+        loading={loading || this.state.counter === null}
         onRow={this.onClickRow}
       />
     );
