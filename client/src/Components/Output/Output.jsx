@@ -126,7 +126,7 @@ class Output extends React.PureComponent {
 
     let currentData = currentDataState;
     const page = `${action}Module`;
-    const moduleId = !isCurrentKey ? '$$personalPage$$' : '';
+    const moduleId = !isCurrentKey && action?.includes('cabinet') ? '$$personalPage$$' : '';
 
     if (!currentDataState && depDataKey) {
       const store = action?.includes('cabinet') ? 'users' : action;

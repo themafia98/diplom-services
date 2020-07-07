@@ -8,7 +8,12 @@ import { routePathNormalise, routeParser } from 'Utils';
 import Output from 'Components/Output';
 import DynamicTable from './DynamicTable';
 
-import { openPageWithDataAction, removeTabAction, addToRouteDataAction } from 'Redux/actions/routerActions';
+import {
+  openPageWithDataAction,
+  removeTabAction,
+  addToRouteDataAction,
+  setActiveTabAction,
+} from 'Redux/actions/routerActions';
 import modelContext from 'Models/context';
 
 class TableView extends React.Component {
@@ -215,6 +220,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     removeTab: (tab) => dispatch(removeTabAction(tab)),
     onOpenPageWithData: (data) => dispatch(openPageWithDataAction(data)),
+    setCurrentTab: (tab) => dispatch(setActiveTabAction(tab)),
     onAddRouteData: (data) => dispatch(addToRouteDataAction(data)),
   };
 };

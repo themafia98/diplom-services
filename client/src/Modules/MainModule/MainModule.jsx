@@ -90,7 +90,7 @@ class MainModule extends React.PureComponent {
   };
 
   render() {
-    const { visible, setCurrentTab } = this.props;
+    const { visible } = this.props;
     const { tableViewHeight } = this.state;
     const {
       config: {
@@ -125,7 +125,6 @@ class MainModule extends React.PureComponent {
             </div>
             <div className="tableView__wrapper">
               <TableView
-                setCurrentTab={setCurrentTab}
                 tableViewHeight={tableViewHeight}
                 visible={visible}
                 key="mainModule_table"

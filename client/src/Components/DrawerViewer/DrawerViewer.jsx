@@ -3,8 +3,18 @@ import clsx from 'clsx';
 import { getComponentByKey } from 'Utils';
 import { drawerViewerType } from './types';
 import { Drawer } from 'antd';
+import types from 'types.modules';
 
-const DrawerViewer = ({ onClose, visible, title, selectedEntity, contentKey, moduleProps, udata }) => {
+const DrawerViewer = ({
+  onClose,
+  visible,
+  title,
+  selectedEntity,
+  contentKey,
+  moduleProps,
+  udata,
+  contentType,
+}) => {
   const [content, setContent] = useState(selectedEntity);
 
   useEffect(() => {
@@ -13,7 +23,7 @@ const DrawerViewer = ({ onClose, visible, title, selectedEntity, contentKey, mod
     }
   }, [selectedEntity, content]);
 
-  const Component = useMemo(() => getComponentByKey(contentKey), [contentKey]);
+  const Component = useMemo(() => getComponentByKey(contentKey, contentType), [contentKey, contentType]);
 
   if (!content) return null;
 
@@ -51,6 +61,7 @@ DrawerViewer.defaultProps = {
   contentKey: '',
   udata: {},
   moduleProps: {},
+  contentType: types.$entrypoint_module,
 };
 
 export default DrawerViewer;

@@ -9,6 +9,7 @@ import DrawerViewer from 'Components/DrawerViewer';
 import modelContext from 'Models/context';
 import { routePathNormalise } from 'Utils';
 import Output from 'Components/Output';
+import types from 'types.modules';
 
 class TaskModuleCalendar extends React.PureComponent {
   state = {
@@ -23,12 +24,17 @@ class TaskModuleCalendar extends React.PureComponent {
   static defaultProps = {
     data: {},
     loaderMethods: {},
+    router: {
+      routeData: {},
+      currentActionTab: '',
+      activeTabs: [],
+    },
   };
 
   onClick = (id = '') => {
     const {
       onOpenPageWithData,
-      router: { routeData = {}, currentActionTab = '', activeTabs = [] } = {},
+      router: { routeData, currentActionTab, activeTabs } = {},
       setCurrentTab,
     } = this.props;
     const { config = {} } = this.context;
@@ -42,7 +48,11 @@ class TaskModuleCalendar extends React.PureComponent {
 
     if (_.isEmpty(routeNormalize)) return;
 
-    const index = activeTabs.findIndex((tab) => tab === routeNormalize.page || tab === routeNormalize.path);
+    const index = activeTabs.findIndex((tab) => {
+      const { page, path: pathNormalize, key } = routeNormalize || {};
+      return tab === page || tab === pathNormalize || (tab.includes(page) && tab.includes(key));
+    });
+
     const isFind = index !== -1;
 
     if (!isFind) {
@@ -64,7 +74,7 @@ class TaskModuleCalendar extends React.PureComponent {
     }
   };
   getListData = (value) => {
-    const { router: { routeData = {}, currentActionTab = '' } = {} } = this.props;
+    const { router: { routeData, currentActionTab } = {} } = this.props;
     const { tasks = [] } = routeData[currentActionTab] || routeData['taskModule'] || {};
     let valueDate = moment(value.toString()).format('DD.MM.YYYY').trim();
     let dateArrayTask =
@@ -84,14 +94,14 @@ class TaskModuleCalendar extends React.PureComponent {
           }, [])
         : null;
 
-    const listData = Array.isArray(dateArrayTask)
+    const listdata = Array.isArray(dateArrayTask)
       ? dateArrayTask.map((it) => {
           const { _id: id = '', name: content = '' } = it || {};
           return { type: 'success', content, id };
         })
       : [];
 
-    return listData || [];
+    return listdata || [];
   };
 
   createTask = (selectedEntity, event) => {
@@ -206,7 +216,8 @@ class TaskModuleCalendar extends React.PureComponent {
             title="Создание задачи"
             visible={drawerVisible}
             selectedEntity={selectedEntity}
-            contentKey="createTaskModule"
+            contentKey="taskModule_createTask"
+            contentType={types.$sub_entrypoint_module}
             onClose={this.onChangeDrawerVisible}
             udata={udata}
             moduleProps={this.props}
