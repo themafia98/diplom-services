@@ -338,6 +338,18 @@ const sortedByKey = (array, key, type = 'string', customParamsForSort, index = 0
   });
 };
 
+/**
+ *
+ * @param {any[]} array
+ * @param {{ listLimit: number, visibleItemIndex: number }} configuration
+ */
+const parseArrayByLimit = (array = [], configuration = {}) => {
+  const { listLimit = Number.MAX_SAFE_INTEGER, visibleItemIndex = 0 } = configuration;
+
+  if (!array?.length || array?.length < listLimit) return array;
+  return array.slice(visibleItemIndex, visibleItemIndex + listLimit);
+};
+
 const namespaceParser = {
   dataParser,
   getNormalizedPath,
@@ -354,6 +366,7 @@ const namespaceParser = {
   parseModuleKey,
   getModuleTypeByParsedKey,
   sortedByKey,
+  parseArrayByLimit,
 };
 
 export default namespaceParser;

@@ -10,10 +10,10 @@ import {
   saveComponentStateAction,
 } from 'Redux/actions/routerActions';
 import _ from 'lodash';
-import { Avatar, message, Tooltip, Spin } from 'antd';
+import { Avatar, message, Tooltip, Spin, Button } from 'antd';
 import { Scrollbars } from 'react-custom-scrollbars';
 import clsx from 'clsx';
-import { routeParser, routePathNormalise, buildRequestList } from 'Utils';
+import { routeParser, routePathNormalise, buildRequestList, parseArrayByLimit } from 'Utils';
 import modelContext from 'Models/context';
 import actionsTypes from 'actions.types';
 
@@ -21,7 +21,12 @@ class StreamBox extends React.Component {
   state = {
     type: null,
     streamList: [],
+    listLimit: null,
+    visibleItemIndex: 0,
   };
+
+  scrollRef = React.createRef();
+  streamListRef = React.createRef();
 
   static propTypes = streamBoxType;
   static contextType = modelContext;
@@ -52,22 +57,30 @@ class StreamBox extends React.Component {
   };
 
   static getDerivedStateFromProps = (props, state) => {
+    const newState = {
+      ...state,
+    };
+
     if (state.type === null && props.type) {
-      return {
-        ...state,
-        type: props.type,
-      };
+      newState.type = props.type;
     }
-    return state;
+
+    return newState;
   };
 
   onLoadingInterval = null;
 
   componentDidMount = async () => {
+    const { listLimit } = this.state;
     const { type, isSingleLoading, setCounter, visiblePopover, isLoadPopover } = this.props;
     const shouldUpdatePrivate = setCounter && visiblePopover && !isLoadPopover;
-    const { config: { intervalNotification = 30000 } = {} } = this.context;
+    const { config: { intervalNotification = 30000, streamLimit } = {} } = this.context;
+
     if (!type) return;
+
+    if (streamLimit && listLimit === null && listLimit !== streamLimit) {
+      this.setState({ listLimit: streamLimit });
+    }
 
     await this.onLoadingStreamList(shouldUpdatePrivate);
     if (!isSingleLoading)
@@ -239,13 +252,13 @@ class StreamBox extends React.Component {
     const { action: { type: typeAction = '', link: key = '', moduleName: name = '' } = {}, type = '' } =
       streamList[index] || {};
     const moduleName = `${name}${prefix}`;
-    const { config = {} } = this.context;
+    const { config: { tabsLimit } = {} } = this.context;
 
     const [storeName = '', typeCurrentAction = ''] = typeAction.split('_');
 
     switch (typeCurrentAction) {
       case 'link': {
-        if (config?.tabsLimit <= activeTabs?.length) {
+        if (tabsLimit <= activeTabs?.length) {
           this.showMessageError();
           return;
         }
@@ -296,8 +309,8 @@ class StreamBox extends React.Component {
     return;
   };
 
-  showMessageError = (config) => {
-    message.error('Максимальное количество вкладок:' + config?.tabsLimit);
+  showMessageError = ({ tabsLimit }) => {
+    message.error('Максимальное количество вкладок:' + tabsLimit);
   };
 
   getPathLink = (moduleName, type) => `${moduleName}_$link$__${type}Notification`;
@@ -350,6 +363,25 @@ class StreamBox extends React.Component {
     return `${streamModule}${type !== 'global' ? `#${type}` : prefix}${uid ? uid : ''}`.trim();
   };
 
+  onLoadItemsList = () => {
+    const {
+      config: { streamLimit },
+    } = this.context;
+    const currentScrollTop = this.scrollRef?.current?.getScrollTop();
+
+    this.setState(
+      (state) => {
+        return {
+          listLimit: streamLimit + state.listLimit,
+        };
+      },
+      () => {
+        const { current: scrollbar } = this.scrollRef;
+        if (currentScrollTop) scrollbar.scrollTop(currentScrollTop);
+      },
+    );
+  };
+
   render() {
     const {
       mode,
@@ -365,16 +397,20 @@ class StreamBox extends React.Component {
       listHeight,
     } = this.props;
 
-    const uid = this.getNormalizeUidNotification();
-    const { streamList: streamListState = [], isLoading = false } = this.state;
+    const { streamList: streamListState = [], isLoading = false, visibleItemIndex, listLimit } = this.state;
 
+    const uid = this.getNormalizeUidNotification();
     const nameModuleStream = this.getNotificationPath(uid);
 
-    const streamList = withStore
-      ? routeData[nameModuleStream] && routeData[nameModuleStream][streamStore]
-        ? routeData[nameModuleStream][streamStore]
-        : []
-      : streamListState;
+    /** TODO: removed when will be implemented backend (loading Listlimit) */
+    const _streamList = withStore ? routeData?.[nameModuleStream]?.[streamStore] : streamListState;
+
+    const streamList = parseArrayByLimit(_streamList, {
+      listLimit,
+      visibleItemIndex,
+    });
+
+    const totalVisible = typeof listLimit === 'number' ? visibleItemIndex + listLimit : 0;
 
     if (!type) return null;
     const { [parentPath]: { [parentDataName]: parentDataList = [] } = {} } = routeData || {};
@@ -396,12 +432,23 @@ class StreamBox extends React.Component {
       );
     }
 
+    const shouldShowLoadingButton = streamList?.length && totalVisible < _streamList?.length;
+
     return (
       <Scrollbars
+        ref={this.scrollRef}
         hideTracksWhenNotNeeded={true}
-        style={mode ? { height: listHeight ? listHeight : 'calc(100% - 100px)' } : null}
+        style={
+          mode
+            ? {
+                height: listHeight ? listHeight : 'calc(100% - 100px)',
+              }
+            : {
+                height: 'calc(100% - 20px)',
+              }
+        }
       >
-        <div className={clsx('streamBox', boxClassName ? boxClassName : null)}>
+        <div ref={this.streamListRef} className={clsx('streamBox', boxClassName ? boxClassName : null)}>
           {streamList?.length ? (
             streamList.map((card, index) => {
               const {
@@ -459,6 +506,7 @@ class StreamBox extends React.Component {
               <span>Уведомления отсутствуют</span>
             </div>
           )}
+          {shouldShowLoadingButton ? <Button onClick={this.onLoadItemsList}>Загрузить еще...</Button> : null}
         </div>
       </Scrollbars>
     );
