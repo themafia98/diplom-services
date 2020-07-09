@@ -20,6 +20,7 @@
   "IntervalPrivateNotifications": 7000,
   "intervalNotification": 30000,
   "tabsLimit": 40,
+  "streamLimit": 5,
   "task": {
     "frontFilter": false,
     "limitList": 20,

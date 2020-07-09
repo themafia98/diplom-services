@@ -33,6 +33,7 @@ const {
   parseModuleKey,
   getModuleTypeByParsedKey,
   sortedByKey,
+  parseArrayByLimit,
 } = namespaceParser;
 
 const {
@@ -77,4 +78,5 @@ export {
   getDependencyModules,
   oneOfType,
   sortedByKey,
+  parseArrayByLimit,
 };
