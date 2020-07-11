@@ -375,7 +375,7 @@ class SettingsModule extends React.PureComponent {
         <TitleModule classNameTitle="settingsModuleTitle" title="Настройки" />
         <div className="settingsModule__main">
           <div ref={this.refColumn} className="col-6">
-            <Scrollbars>
+            <Scrollbars autoHide hideTracksWhenNotNeeded>
               <div ref={this.refWrapper}>
                 <PanelPassword
                   oldPassword={oldPassword}

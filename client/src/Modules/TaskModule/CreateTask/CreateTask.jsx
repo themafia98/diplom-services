@@ -420,7 +420,7 @@ class CreateTask extends React.PureComponent {
     const defaultDate = this.getDefaultDate(dateFormat);
 
     return (
-      <Scrollbars hideTracksWhenNotNeeded={true}>
+      <Scrollbars autoHide hideTracksWhenNotNeeded>
         <div className="createTask">
           {visibleMode === 'default' ? (
             <TitleModule
@@ -431,7 +431,7 @@ class CreateTask extends React.PureComponent {
           ) : null}
           <div className="createTask__main">
             <div className={clsx(visibleMode !== 'default' ? 'col-fullscreen' : 'col-6', 'col-task')}>
-              <Scrollbars hideTracksWhenNotNeeded={true} autoHide>
+              <Scrollbars autoHide hideTracksWhenNotNeeded autoHide>
                 <form className="taskForm" name="taskForm">
                   <label>Название: </label>
                   <Input

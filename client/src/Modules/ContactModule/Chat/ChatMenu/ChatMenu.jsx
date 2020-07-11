@@ -95,7 +95,7 @@ const ChatMenu = ({
         }
       >
         <div className="menuLoading-skeleton">
-          <Scrollbars hideTracksWhenNotNeeded={true}>
+          <Scrollbars autoHide hideTracksWhenNotNeeded>
             {!socketConnection && !socketErrorStatus && isWs ? (
               generateSkeleton(7)
             ) : isWs ? (

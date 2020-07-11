@@ -411,6 +411,7 @@ class StreamBox extends React.Component {
     });
 
     const totalVisible = typeof listLimit === 'number' ? visibleItemIndex + listLimit : 0;
+    const shouldShowLoadingButton = streamList?.length && totalVisible < _streamList?.length;
 
     if (!type) return null;
     const { [parentPath]: { [parentDataName]: parentDataList = [] } = {} } = routeData || {};
@@ -418,9 +419,16 @@ class StreamBox extends React.Component {
     if (type === 'private' && buildItems) {
       const scrollStyle = { height: listHeight };
       return (
-        <Scrollbars hideTracksWhenNotNeeded={true} style={scrollStyle}>
+        <Scrollbars ref={this.scrollRef} autoHide hideTracksWhenNotNeeded style={scrollStyle}>
           {streamList && streamList?.length ? (
-            buildItems(streamList, this.onRunAction)
+            <div className="notification-content-wrapper">
+              {buildItems(streamList, this.onRunAction)}
+              {shouldShowLoadingButton ? (
+                <Button className="private-loadAction" onClick={this.onLoadItemsList}>
+                  Загрузить еще...
+                </Button>
+              ) : null}
+            </div>
           ) : !isLoading ? (
             <Spin className="popover-spiner" size="large" />
           ) : (
@@ -432,12 +440,11 @@ class StreamBox extends React.Component {
       );
     }
 
-    const shouldShowLoadingButton = streamList?.length && totalVisible < _streamList?.length;
-
     return (
       <Scrollbars
         ref={this.scrollRef}
-        hideTracksWhenNotNeeded={true}
+        hideTracksWhenNotNeeded
+        autoHide
         style={
           mode
             ? {

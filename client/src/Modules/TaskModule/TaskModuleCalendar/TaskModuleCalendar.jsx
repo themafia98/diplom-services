@@ -202,7 +202,7 @@ class TaskModuleCalendar extends React.PureComponent {
     const { drawerVisible = false, selectedEntity = null } = this.state;
     const { udata = {} } = this.props;
     return (
-      <Scrollbars hideTracksWhenNotNeeded={true}>
+      <Scrollbars autoHide hideTracksWhenNotNeeded>
         <div className="taskModuleCalendar">
           <TitleModule classNameTitle="taskModuleTitle" title="Календарь задач" />
           <div className="taskModuleCalendar__main">

@@ -45,6 +45,12 @@
   max-height: 300px;
   min-width: 100px;
 
+  .notification-content-wrapper {
+    .private-loadAction {
+      width: 100%;
+    }
+  }
+
   .notificationItem {
     cursor: pointer;
     display: flex;
