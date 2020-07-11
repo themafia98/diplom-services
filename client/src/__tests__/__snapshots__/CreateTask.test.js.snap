@@ -8,7 +8,7 @@ exports[`<CreateTask /> template Should be render 1`] = `
   autoHide={false}
   autoHideDuration={200}
   autoHideTimeout={1000}
-  hideTracksWhenNotNeeded={true}
+  hideTracksWhenNotNeeded
   renderThumbHorizontal={[Function]}
   renderThumbVertical={[Function]}
   renderTrackHorizontal={[Function]}
@@ -40,7 +40,7 @@ exports[`<CreateTask /> template Should be render 1`] = `
           autoHide={true}
           autoHideDuration={200}
           autoHideTimeout={1000}
-          hideTracksWhenNotNeeded={true}
+          hideTracksWhenNotNeeded
           renderThumbHorizontal={[Function]}
           renderThumbVertical={[Function]}
           renderTrackHorizontal={[Function]}
@@ -55,7 +55,7 @@ exports[`<CreateTask /> template Should be render 1`] = `
             name="taskForm"
           >
             <label>
-              Название: 
+              Название:
             </label>
             <Input
               className=""
@@ -64,7 +64,7 @@ exports[`<CreateTask /> template Should be render 1`] = `
               type="text"
             />
             <label>
-               Статус: 
+               Статус:
             </label>
             <Select
               choiceTransitionName="zoom"
@@ -76,7 +76,7 @@ exports[`<CreateTask /> template Should be render 1`] = `
               type="text"
             />
             <label>
-              Приоритет: 
+              Приоритет:
             </label>
             <Select
               choiceTransitionName="zoom"
@@ -124,7 +124,7 @@ exports[`<CreateTask /> template Should be render 1`] = `
               transitionName="slide-up"
             />
             <label>
-              Описание задачи: 
+              Описание задачи:
             </label>
             <Textarea
               className=""
@@ -141,7 +141,7 @@ exports[`<CreateTask /> template Should be render 1`] = `
               value={null}
             />
             <label>
-              Срок сдачи: 
+              Срок сдачи:
             </label>
             <PickerWrapper
               className=""
@@ -196,7 +196,7 @@ exports[`<CreateTask /> template Should be render 2`] = `
   autoHide={false}
   autoHideDuration={200}
   autoHideTimeout={1000}
-  hideTracksWhenNotNeeded={true}
+  hideTracksWhenNotNeeded
   renderThumbHorizontal={[Function]}
   renderThumbVertical={[Function]}
   renderTrackHorizontal={[Function]}
@@ -228,7 +228,7 @@ exports[`<CreateTask /> template Should be render 2`] = `
           autoHide={true}
           autoHideDuration={200}
           autoHideTimeout={1000}
-          hideTracksWhenNotNeeded={true}
+          hideTracksWhenNotNeeded
           renderThumbHorizontal={[Function]}
           renderThumbVertical={[Function]}
           renderTrackHorizontal={[Function]}
@@ -243,7 +243,7 @@ exports[`<CreateTask /> template Should be render 2`] = `
             name="taskForm"
           >
             <label>
-              Название: 
+              Название:
             </label>
             <Input
               className=""
@@ -252,7 +252,7 @@ exports[`<CreateTask /> template Should be render 2`] = `
               type="text"
             />
             <label>
-               Статус: 
+               Статус:
             </label>
             <Select
               choiceTransitionName="zoom"
@@ -264,7 +264,7 @@ exports[`<CreateTask /> template Should be render 2`] = `
               type="text"
             />
             <label>
-              Приоритет: 
+              Приоритет:
             </label>
             <Select
               choiceTransitionName="zoom"
@@ -312,7 +312,7 @@ exports[`<CreateTask /> template Should be render 2`] = `
               transitionName="slide-up"
             />
             <label>
-              Описание задачи: 
+              Описание задачи:
             </label>
             <Textarea
               className=""
@@ -329,7 +329,7 @@ exports[`<CreateTask /> template Should be render 2`] = `
               value={null}
             />
             <label>
-              Срок сдачи: 
+              Срок сдачи:
             </label>
             <PickerWrapper
               className=""

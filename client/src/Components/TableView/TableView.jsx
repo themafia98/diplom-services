@@ -90,7 +90,7 @@ class TableView extends React.Component {
       const isLoad = currentData && currentData.load;
       const scrollStyle = { height: `${tableViewHeight}px` };
       return (
-        <Scrollbars hideTracksWhenNotNeeded={true} style={scrollStyle}>
+        <Scrollbars autoHide hideTracksWhenNotNeeded style={scrollStyle}>
           <table key="mainModule__table">
             <thead className="header-table">
               <tr>

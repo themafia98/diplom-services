@@ -26,7 +26,7 @@ const ObserverTime = ({ title, settingsLogs, isLoading }) => {
   return (
     <>
       <TitleModule classNameTitle="observerTitle" title={title ? title : 'История изменений'} />
-      <Scrollbars hideTracksWhenNotNeeded={true}>
+      <Scrollbars autoHide hideTracksWhenNotNeeded>
         <div className="observerWrapper">
           {isInvalid ? (
             <span className="empty-logger">Истории пока нет</span>

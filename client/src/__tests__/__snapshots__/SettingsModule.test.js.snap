@@ -23,7 +23,7 @@ exports[`<SettingsModule /> template Should be render 1`] = `
         autoHide={false}
         autoHideDuration={200}
         autoHideTimeout={1000}
-        hideTracksWhenNotNeeded={false}
+        hideTracksWhenNotNeeded{false}
         renderThumbHorizontal={[Function]}
         renderThumbVertical={[Function]}
         renderTrackHorizontal={[Function]}
@@ -88,7 +88,7 @@ exports[`<SettingsModule /> template Should be render 2`] = `
         autoHide={false}
         autoHideDuration={200}
         autoHideTimeout={1000}
-        hideTracksWhenNotNeeded={false}
+        hideTracksWhenNotNeeded{false}
         renderThumbHorizontal={[Function]}
         renderThumbVertical={[Function]}
         renderTrackHorizontal={[Function]}

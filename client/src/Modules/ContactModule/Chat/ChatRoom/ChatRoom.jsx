@@ -134,7 +134,7 @@ const ChatRoom = ({
     <div key={token} className="chatRoom">
       <div className="chatWindow">
         <div id="containerChat">
-          <Scrollbars hideTracksWhenNotNeeded={true} ref={refScrollbar}>
+          <Scrollbars autoHide hideTracksWhenNotNeeded ref={refScrollbar}>
             <div className="flex-group">{renderChat(messages)}</div>
           </Scrollbars>
         </div>

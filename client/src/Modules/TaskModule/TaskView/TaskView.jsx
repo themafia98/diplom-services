@@ -760,12 +760,12 @@ class TaskView extends React.PureComponent {
     };
 
     return (
-      <Scrollbars hideTracksWhenNotNeeded={true}>
+      <Scrollbars hideTracksWhenNotNeeded>
         <TitleModule classNameTitle="taskModuleTitle" title="Карточка задачи" />
         {this.getModalWindow(accessStatus, rulesEdit, rulesStatus)}
         <div className="taskView">
           <div className="col-6 col-taskDescription">
-            <Scrollbars hideTracksWhenNotNeeded={true}>
+            <Scrollbars hideTracksWhenNotNeeded>
               <Descriptions bordered column={columnStyleConfig}>
                 {renderDescription()(renderProps)}
               </Descriptions>
@@ -776,7 +776,7 @@ class TaskView extends React.PureComponent {
           </div>
           <div className="col-6 col-taskDescription">
             <TitleModule classNameTitle="historyTaskTitle" title="Журнал работы" />
-            <Scrollbars hideTracksWhenNotNeeded={true}>
+            <Scrollbars hideTracksWhenNotNeeded>
               {!cachesJurnalList?.length ? (
                 <Empty description={<span>Нету данных в журнале</span>} />
               ) : (

@@ -14,7 +14,7 @@ exports[`<ContentView /> Should render component 1`] = `
       autoHide={false}
       autoHideDuration={200}
       autoHideTimeout={1000}
-      hideTracksWhenNotNeeded={true}
+      hideTracksWhenNotNeeded
       renderThumbHorizontal={[Function]}
       renderThumbVertical={[Function]}
       renderTrackHorizontal={[Function]}
@@ -89,7 +89,7 @@ exports[`<ContentView /> Should render component 2`] = `
       autoHide={false}
       autoHideDuration={200}
       autoHideTimeout={1000}
-      hideTracksWhenNotNeeded={true}
+      hideTracksWhenNotNeeded
       renderThumbHorizontal={[Function]}
       renderThumbVertical={[Function]}
       renderTrackHorizontal={[Function]}
@@ -164,7 +164,7 @@ exports[`<ContentView /> Should render component 3`] = `
       autoHide={false}
       autoHideDuration={200}
       autoHideTimeout={1000}
-      hideTracksWhenNotNeeded={true}
+      hideTracksWhenNotNeeded
       renderThumbHorizontal={[Function]}
       renderThumbVertical={[Function]}
       renderTrackHorizontal={[Function]}
@@ -239,7 +239,7 @@ exports[`<ContentView /> Should render component 4`] = `
       autoHide={false}
       autoHideDuration={200}
       autoHideTimeout={1000}
-      hideTracksWhenNotNeeded={true}
+      hideTracksWhenNotNeeded
       renderThumbHorizontal={[Function]}
       renderThumbVertical={[Function]}
       renderTrackHorizontal={[Function]}

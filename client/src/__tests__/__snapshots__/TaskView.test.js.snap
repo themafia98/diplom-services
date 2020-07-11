@@ -8,7 +8,7 @@ exports[`<TaskView /> template Should be render with data 1`] = `
   autoHide={false}
   autoHideDuration={200}
   autoHideTimeout={1000}
-  hideTracksWhenNotNeeded={true}
+  hideTracksWhenNotNeeded
   renderThumbHorizontal={[Function]}
   renderThumbVertical={[Function]}
   renderTrackHorizontal={[Function]}
@@ -85,7 +85,7 @@ exports[`<TaskView /> template Should be render with data 1`] = `
         autoHide={false}
         autoHideDuration={200}
         autoHideTimeout={1000}
-        hideTracksWhenNotNeeded={true}
+        hideTracksWhenNotNeeded
         renderThumbHorizontal={[Function]}
         renderThumbVertical={[Function]}
         renderTrackHorizontal={[Function]}
@@ -509,7 +509,7 @@ exports[`<TaskView /> template Should be render with data 1`] = `
         autoHide={false}
         autoHideDuration={200}
         autoHideTimeout={1000}
-        hideTracksWhenNotNeeded={true}
+        hideTracksWhenNotNeeded
         renderThumbHorizontal={[Function]}
         renderThumbVertical={[Function]}
         renderTrackHorizontal={[Function]}

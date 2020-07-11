@@ -6,14 +6,9 @@
   "auditLog": "logger.error-audit.json",
   "files": [
     {
-      "date": 1594158267793,
-      "name": "logs\\logs-error-2020-07-08-00.log",
-      "hash": "17604ad4a0f3e24ad9bfcc214a5b8f71"
-    },
-    {
-      "date": 1594160311242,
-      "name": "logs\\logs-error-2020-07-08-01.log",
-      "hash": "870f4116f79c845d5422b672a2fffd4a"
+      "date": 1594426296136,
+      "name": "logs\\logs-error-2020-07-11-03.log",
+      "hash": "b426274383cb5755e2559b8ad231f7a8"
     }
   ]
 }

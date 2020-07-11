@@ -154,7 +154,7 @@ class Contacts extends React.PureComponent {
       <div className="contactsModule">
         <TitleModule classNameTitle="contactsModuleTitle" title="Контакты" />
         <div className="contactsModule__main">
-          <Scrollbars hideTracksWhenNotNeeded={true}>
+          <Scrollbars autoHide hideTracksWhenNotNeeded>
             <List>
               {data?.length > 0 && <WindowScroller>{infiniteLoader}</WindowScroller>}
               {isLoadingModule && <Spin size="large" className="demo-loading" />}
