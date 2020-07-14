@@ -227,6 +227,61 @@ namespace Utils {
     };
   };
 
+  /**
+   *
+   * @param actionParam contains filteredInfo: object, arrayKeys: string[]
+   * @param filterId use filter with id
+   * @param filterFields require: filterId. default: filter by editor or uidCreater key
+   */
+  export const getFilterQuery = (
+    actionParam: ActionParams,
+    filterId: string = '',
+    filterFields: Array<object> = [{}],
+  ): Record<string, Array<object>> => {
+    const { saveData: { filteredInfo = {}, arrayKeys = [] } = {} } = actionParam as Record<string, any>;
+
+    const filteredKeys: Array<string> = Object.keys(filteredInfo);
+    if (!filteredKeys.length && !filterId) return {};
+
+    if (!filteredKeys.length && filterId) {
+      return {
+        $or: filterFields
+          ? filterFields
+          : [{ editor: { $elemMatch: { $eq: filterId } } }, { uidCreater: { $eq: filterId } }],
+      };
+    }
+
+    const filter: Record<string, Array<object>> = { $or: [] };
+
+    filteredKeys.forEach((key: string) => {
+      const parsedPatterns: string | Array<string> =
+        Array.isArray(filteredInfo[key]) && filteredInfo[key].every((it: string) => typeof it === 'string')
+          ? filteredInfo[key].map((val: string) => val.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&'))
+          : filteredInfo[key];
+
+      const condtion: Readonly<Array<RegExp>> = (parsedPatterns as Array<string>).map(
+        (pattern: string) => new RegExp(pattern, 'gi'),
+      );
+      const query = !arrayKeys.some((arrKey: string) => key === arrKey)
+        ? { [key]: { $in: condtion } }
+        : { [key]: { $elemMatch: { $in: condtion } } };
+
+      if (key && condtion) filter.$or.push(query);
+    });
+
+    if (filterId) {
+      filter.$and = [];
+
+      filter.$and.push({
+        $or: filterFields
+          ? filterFields
+          : [{ editor: { $elemMatch: { $eq: filterId } } }, { uidCreater: { $eq: filterId } }],
+      });
+    }
+
+    return !filter['$or'].length ? { $or: [{}] } : filter;
+  };
+
   /** @deprecated 01.06.2020 should use mongoose isValidObjectId */
   export const isValidObjectId = (id: string): boolean => {
     return !!id && typeof id === 'string' && id.length <= 24;
