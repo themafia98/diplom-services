@@ -192,7 +192,7 @@ class TaskView extends React.PureComponent {
       this.setState(
         {
           ...this.state,
-          statusListName: filteredStatusNames,
+          statusListName: Array.isArray(filteredStatusNames) ? filteredStatusNames : [filteredStatusNames],
           shouldRefresh: false,
           isLoadingFiles: true,
         },
@@ -228,7 +228,9 @@ class TaskView extends React.PureComponent {
 
             this.setState({
               ...this.state,
-              statusListName: filteredStatusNames,
+              statusListName: Array.isArray(filteredStatusNames)
+                ? filteredStatusNames
+                : [filteredStatusNames],
               filesArray: files,
             });
           }
@@ -383,8 +385,9 @@ class TaskView extends React.PureComponent {
         });
       }
     } else if (typeof event === 'string') {
-      const arrayStatus = this.state.statusListName;
-      if (arrayStatus.some((it) => it === event)) {
+      const { statusListName } = this.state;
+
+      if (statusListName?.some((it) => it === event)) {
         return this.setState({
           ...this.state,
           modeEditContent: false,

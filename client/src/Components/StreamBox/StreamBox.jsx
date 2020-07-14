@@ -22,7 +22,9 @@ class StreamBox extends React.Component {
     type: null,
     streamList: [],
     listLimit: null,
+    showLoader: false,
     visibleItemIndex: 0,
+    count: 0,
   };
 
   scrollRef = React.createRef();
@@ -144,9 +146,13 @@ class StreamBox extends React.Component {
     return !personalUid ? _id : personalUid;
   };
 
-  fetchNotification = async () => {
+  fetchNotification = async (showLoader) => {
     try {
-      const { Request } = this.context;
+      const { listLimit } = this.state;
+      const {
+        Request,
+        config: { streamLimit },
+      } = this.context;
       const {
         type = '',
         onMultipleLoadData,
@@ -170,6 +176,12 @@ class StreamBox extends React.Component {
         onLoadPopover();
       }
 
+      if (showLoader)
+        this.setState({ showLoader: true }, () => {
+          const { current: scrollbar } = this.scrollRef;
+          if (scrollbar) scrollbar.scrollToBottom();
+        });
+
       const rest = new Request();
       const res = await rest.sendRequest(
         `/system/${type}/notification`,
@@ -177,6 +189,7 @@ class StreamBox extends React.Component {
         {
           actionType: actionsTypes.$GET_NOTIFICATIONS,
           methodQuery,
+          limitList: listLimit ?? streamLimit,
         },
         true,
       );
@@ -186,8 +199,10 @@ class StreamBox extends React.Component {
       }
 
       const {
-        data: { response: { metadata = [] } = {} },
+        data: { response: { metadata: draftMetadata = [], metadata: { count: total = null } = {} } = {} },
       } = res;
+
+      const metadata = Array.isArray(draftMetadata) ? draftMetadata : draftMetadata?.result;
 
       await onMultipleLoadData({
         requestsParamsList: buildRequestList(metadata, '#notification'),
@@ -205,7 +220,7 @@ class StreamBox extends React.Component {
       }
 
       if (typeof onSaveComponentState !== 'function') {
-        return this.setState({ streamList: metadata, isLoading: true });
+        return this.setState({ streamList: metadata, isLoading: true, showLoader: false });
       }
 
       const path = this.getNotificationPath(uid);
@@ -224,9 +239,10 @@ class StreamBox extends React.Component {
         shoudParseToUniq: true,
       });
 
-      this.setState({ isLoading: true });
+      this.setState({ isLoading: true, count: total, showLoader: false });
     } catch (error) {
       console.error(error);
+      this.setState({ isLoading: true, showLoader: false });
     }
   };
 
@@ -375,9 +391,14 @@ class StreamBox extends React.Component {
           listLimit: streamLimit + state.listLimit,
         };
       },
-      () => {
+      async () => {
         const { current: scrollbar } = this.scrollRef;
-        if (currentScrollTop) scrollbar.scrollTop(currentScrollTop);
+        try {
+          await this.fetchNotification(true);
+          if (currentScrollTop) scrollbar.scrollTop(currentScrollTop);
+        } catch (error) {
+          console.error(error);
+        }
       },
     );
   };
@@ -397,7 +418,14 @@ class StreamBox extends React.Component {
       listHeight,
     } = this.props;
 
-    const { streamList: streamListState = [], isLoading = false, visibleItemIndex, listLimit } = this.state;
+    const {
+      streamList: streamListState = [],
+      isLoading = false,
+      visibleItemIndex,
+      listLimit,
+      count,
+      showLoader,
+    } = this.state;
 
     const uid = this.getNormalizeUidNotification();
     const nameModuleStream = this.getNotificationPath(uid);
@@ -411,7 +439,7 @@ class StreamBox extends React.Component {
     });
 
     const totalVisible = typeof listLimit === 'number' ? visibleItemIndex + listLimit : 0;
-    const shouldShowLoadingButton = streamList?.length && totalVisible < _streamList?.length;
+    const shouldShowLoadingButton = streamList?.length && totalVisible < count;
 
     if (!type) return null;
     const { [parentPath]: { [parentDataName]: parentDataList = [] } = {} } = routeData || {};
@@ -514,6 +542,7 @@ class StreamBox extends React.Component {
             </div>
           )}
           {shouldShowLoadingButton ? <Button onClick={this.onLoadItemsList}>Загрузить еще...</Button> : null}
+          {showLoader ? <Spin className="popover-spiner-preloader" /> : null}
         </div>
       </Scrollbars>
     );

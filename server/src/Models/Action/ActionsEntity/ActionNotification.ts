@@ -23,21 +23,27 @@ class ActionNotification implements Action {
   }
 
   public async getByType(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
-    const { methodQuery = {}, type = 'global' } = actionParam as Record<string, object>;
+    const {
+      methodQuery = {},
+      type = 'global',
+      limitList = Number.MAX_SAFE_INTEGER,
+      skip = 0,
+    } = actionParam as Record<string, object | number>;
 
     const concactType = (type as string) === 'private' ? ['private', 'global'] : type;
+    const isObject = methodQuery && typeof methodQuery === 'object';
 
-    if (_.isEmpty(methodQuery) && (type as string) === 'private') {
+    if (!isObject || (_.isEmpty(methodQuery) && (type as string) === 'private')) {
       return null;
     }
 
-    if (Array.isArray(concactType)) {
+    if (Array.isArray(concactType) && isObject) {
       const privateMethodQuery = {
         where: 'type',
         in: concactType,
         and: [
           {
-            ...methodQuery,
+            ...(methodQuery as object),
           },
         ],
       };
@@ -45,21 +51,26 @@ class ActionNotification implements Action {
       const result = await this.getEntity().getAll(
         model,
         { type: concactType, ...privateMethodQuery },
-        null,
-        0,
+        limitList as number | null,
+        skip as number,
         'asc',
       );
       return result;
     }
 
+    const query = isObject ? { type: concactType, ...(methodQuery as object) } : { type: concactType };
+
     const result = await this.getEntity().getAll(
       model,
-      { type: concactType, ...methodQuery },
-      null,
-      0,
+      query,
+      limitList as number | null,
+      skip as number,
       'asc',
     );
-    return result;
+
+    const count = await this.getEntity().getCounter(model, query);
+
+    return { result, count };
   }
 
   private async updateMany(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
@@ -73,17 +84,15 @@ class ActionNotification implements Action {
     const model: Model<Document> | null = getModelByName('notification', 'notification');
     if (!model) return null;
 
-    const actionType: string = this.getEntity().getActionType();
+    const typeAction: string = this.getEntity().getActionType();
 
-    if (actionType === 'update_many') {
-      const result = await this.updateMany(actionParam, model);
-      return result;
+    switch (typeAction) {
+      case 'update_many':
+        return await this.updateMany(actionParam, model);
+      default:
+        if (typeAction.includes('set')) return this.create(model, actionParam);
+        return await this.getByType(actionParam, model);
     }
-
-    if (actionType.includes('set')) return this.create(model, actionParam);
-
-    const result = await this.getByType(actionParam, model);
-    return result;
   }
 }
 

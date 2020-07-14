@@ -1,10 +1,10 @@
-import { Model, Document, Types, FilterQuery, isValidObjectId } from 'mongoose';
+import { Model, Document, Types, isValidObjectId } from 'mongoose';
 import { ActionParams, Actions, Action, TicketRemote } from '../../../Utils/Interfaces';
-import { ParserData } from '../../../Utils/Types';
+import { ParserData, Pagination } from '../../../Utils/Types';
 import Utils from '../../../Utils';
 import _ from 'lodash';
 import { ObjectID } from 'mongodb';
-const { getModelByName, generateRemoteTask } = Utils;
+const { getModelByName, generateRemoteTask, getFilterQuery, parseFilterFields } = Utils;
 
 class ActionTasks implements Action {
   constructor(private entity: Actions) {}
@@ -56,9 +56,15 @@ class ActionTasks implements Action {
 
   private async getTasks(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const { queryParams, limitList = 20, saveData = {}, filterCounter = '' } = actionParam || {};
-    const _id: ObjectID = Types.ObjectId(filterCounter as string);
+    const _id: ObjectID | string =
+      filterCounter && isValidObjectId(filterCounter) ? Types.ObjectId(filterCounter as string) : '';
 
-    const { pagination = null } = saveData as Record<string, any>;
+    const {
+      paginationState: initialPagination = null,
+      pagination: nextPagination = null,
+    } = saveData as Record<string, any>;
+    const pagination: Pagination = initialPagination ? initialPagination : nextPagination;
+
     const params: ActionParams =
       _.isEmpty(queryParams) || !(queryParams as Record<string, string[]>).keys
         ? {}
@@ -66,14 +72,16 @@ class ActionTasks implements Action {
     const { keys = [] } = (queryParams as Record<string, string[]>) || {};
     const parsedKeys: Array<Types.ObjectId> = Array.isArray(keys)
       ? keys.reduce((keysList: Array<Types.ObjectId>, key: string) => {
-          if (isValidObjectId(key)) return [...keysList, Types.ObjectId(key)];
+          if (key && isValidObjectId(key)) return [...keysList, Types.ObjectId(key)];
 
           return keysList;
         }, [])
       : keys;
-    const filter: Record<string, Array<object>> = await this.getDataByFilter(
+
+    const filter: Record<string, Array<object>> = getFilterQuery(
       actionParam,
-      _id ? (filterCounter as string) : null,
+      _id,
+      parseFilterFields([{ editor: 'regexp' }, { uidCreater: 'equal' }], _id),
     );
 
     const query = {
@@ -90,73 +98,18 @@ class ActionTasks implements Action {
   }
 
   private async getTaskCount(model: Model<Document>, actionParam: ActionParams): Promise<ParserData> {
-    const { filterCounter = null } = actionParam as Record<string, null | string>;
+    const { filterCounter = '' } = actionParam as Record<string, null | string>;
+    const _id: ObjectID | string = isValidObjectId(filterCounter)
+      ? Types.ObjectId(filterCounter as string)
+      : '';
 
-    const filter: any = await this.getDataByFilter(actionParam);
-    const filterList = filter['$or'] || [{}];
+    const filter: Record<string, Array<object>> = getFilterQuery(
+      actionParam,
+      _id,
+      parseFilterFields([{ editor: 'regexp' }, { uidCreater: 'equal' }], filterCounter as string),
+    );
 
-    const filterListValid: Array<object> = filterList.every((obj: object) => _.isEmpty(obj))
-      ? !filterCounter
-        ? [{}]
-        : []
-      : filterList;
-
-    const query: Readonly<FilterQuery<object>> = !filterCounter
-      ? { $or: filterListValid }
-      : {
-          $or: [
-            { editor: { $elemMatch: { $eq: filterCounter } } },
-            { uidCreater: { $eq: filterCounter } },
-            ...filterListValid,
-          ],
-        };
-
-    const result = await this.getEntity().getCounter(model, query);
-    return result;
-  }
-
-  private async getDataByFilter(
-    actionParam: ActionParams,
-    id: string | null = null,
-  ): Promise<Record<string, Array<object>>> {
-    const { saveData: { filteredInfo = {}, arrayKeys = [] } = {} } = actionParam as Record<string, any>;
-
-    const filteredKeys: Array<string> = Object.keys(filteredInfo);
-    if (!filteredKeys.length && !id) return {};
-
-    if (!filteredKeys.length && id) {
-      return {
-        $or: [{ editor: { $elemMatch: { $eq: id } } }, { uidCreater: { $eq: id } }],
-      };
-    }
-
-    const filter: Record<string, Array<object>> = { $or: [] };
-
-    filteredKeys.forEach((key: string) => {
-      const parsedPatterns: string | Array<string> =
-        Array.isArray(filteredInfo[key]) && filteredInfo[key].every((it: string) => typeof it === 'string')
-          ? filteredInfo[key].map((val: string) => val.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&'))
-          : filteredInfo[key];
-
-      const condtion: Readonly<Array<RegExp>> = (parsedPatterns as Array<string>).map(
-        (pattern: string) => new RegExp(pattern, 'gi'),
-      );
-      const query = !arrayKeys.some((arrKey: string) => key === arrKey)
-        ? { [key]: { $in: condtion } }
-        : { [key]: { $elemMatch: { $in: condtion } } };
-
-      if (key && condtion) filter.$or.push(query);
-    });
-
-    if (id) {
-      filter.$and = [];
-
-      filter.$and.push({
-        $or: [{ editor: { $elemMatch: { $eq: id } } }, { uidCreater: { $eq: id } }],
-      });
-    }
-
-    return !filter['$or'].length ? { $or: [{}] } : filter;
+    return await this.getEntity().getCounter(model, filter);
   }
 
   private async getStats(model: Model<Document>, actionParam: ActionParams): Promise<ParserData> {

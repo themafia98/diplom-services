@@ -431,7 +431,7 @@ class CreateTask extends React.PureComponent {
           ) : null}
           <div className="createTask__main">
             <div className={clsx(visibleMode !== 'default' ? 'col-fullscreen' : 'col-6', 'col-task')}>
-              <Scrollbars autoHide hideTracksWhenNotNeeded autoHide>
+              <Scrollbars autoHide hideTracksWhenNotNeeded>
                 <form className="taskForm" name="taskForm">
                   <label>Название: </label>
                   <Input

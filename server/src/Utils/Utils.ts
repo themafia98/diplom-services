@@ -16,6 +16,7 @@ import {
 } from './Interfaces';
 import { v4 as uuid } from 'uuid';
 import { docResponse, ParserResult, Meta } from './Types';
+import { ObjectID } from 'mongodb';
 
 namespace Utils {
   const upload = multer();
@@ -45,10 +46,7 @@ namespace Utils {
 
       query = { type, [checkKey]: field };
 
-      console.log(query);
-
       const result = await model.find(query);
-      console.log('query checker:', query);
 
       if (Array.isArray(result) && result.length) {
         return false;
@@ -152,14 +150,25 @@ namespace Utils {
     };
   };
 
-  export const parsePublicData = (data: ParserResult, mode: string = 'default', rules = ''): Array<Meta> => {
-    if (!Array.isArray(data)) return [data];
+  export const parsePublicData = (
+    data: ParserResult,
+    mode: string = 'default',
+    rules = '',
+  ): Array<Meta> | Meta => {
+    if ((!Array.isArray(data) && typeof data !== 'object') || !data) return [data];
+
+    const { result } = (data as Record<string, any>) || {};
+
+    if (!result && data && !Array.isArray(data)) {
+      return [data];
+    }
+
     switch (mode) {
       case 'access':
       case 'accessGroups':
-        const dataArray: Array<object> = data as Array<object>;
+        const dataArray: Array<object> = result && Array.isArray(result) ? result : (data as Array<object>);
         const isGroupMode: boolean = mode.includes('Groups');
-        return dataArray
+        const newDataArray = dataArray
           .map((it: object | null) => {
             if (!it) return null;
             const { _doc: item = {} } = it as Record<string, object>;
@@ -177,9 +186,11 @@ namespace Utils {
             return null;
           })
           .filter(Boolean);
-
+        return result ? { ...data, result: newDataArray } : newDataArray;
       default:
-        return (data as Array<docResponse>)
+        const defaultDataArray: Array<object> =
+          result && Array.isArray(result) ? result : (data as Array<object>);
+        const newDefaultDataArray = (defaultDataArray as Array<docResponse>)
           .map((it: docResponse) => {
             const { _doc: item = {} } = it as Record<string, object>;
 
@@ -194,6 +205,7 @@ namespace Utils {
             return itemValid;
           })
           .filter(Boolean);
+        return result ? { ...data, result: newDefaultDataArray } : newDefaultDataArray;
     }
   };
 
@@ -225,6 +237,108 @@ namespace Utils {
         phone,
       },
     };
+  };
+
+  export const getFilterType = (type: string) => {
+    switch (type) {
+      case 'regexp':
+        return '$elemMatch';
+      case 'equal':
+        return '$eq';
+      default:
+        return null;
+    }
+  };
+
+  /**
+   *  TODO: parseFilterFields example.
+   *
+    const queryFIlter = parseFilterFields([
+     { user: 'regexp' },
+     { _id: 'equal' }
+    ], '123'(optional));
+   */
+  export const parseFilterFields = (
+    filterFields: Array<object> = [],
+    id: string | ObjectID = '',
+  ): Array<object> => {
+    if (!filterFields || (Array.isArray(filterFields) && !filterFields.length)) return [{}];
+
+    return filterFields.reduce((acc: Array<object>, filter: any) => {
+      if (!(filter && typeof filter === 'object')) return acc;
+
+      const parsedFilterItem = Object.keys(filter).reduce((accFilter: object, key: string) => {
+        const typeFilter: any = getFilterType(filter[key]);
+
+        if (!typeFilter) return accFilter;
+
+        switch (typeFilter) {
+          case '$elemMatch':
+            return {
+              ...accFilter,
+              [key]: { [typeFilter]: id ? { $eq: id } : {} },
+            };
+          default:
+            return {
+              ...accFilter,
+              [key]: { [typeFilter]: id },
+            };
+        }
+      }, {});
+
+      return [...acc, parsedFilterItem];
+    }, []);
+  };
+
+  /**
+   *
+   * @param actionParam contains filteredInfo: object, arrayKeys: string[]
+   * @param filterId use filter with id
+   * @param filterFields require: filterId. default: filter by editor or uidCreater key
+   */
+  export const getFilterQuery = (
+    actionParam: ActionParams,
+    filterId: string | ObjectID = '',
+    filterFields: Array<object> = [{}],
+  ): Record<string, Array<object>> => {
+    const { saveData: { filteredInfo = {}, arrayKeys = [] } = {} } = actionParam as Record<string, any>;
+
+    const filteredKeys: Array<string> = Object.keys(filteredInfo);
+    if ((!filteredKeys.length && !filterId) || !filterFields) return {};
+
+    if (!filteredKeys.length && filterId) {
+      return {
+        $or: filterFields,
+      };
+    }
+
+    const filter: Record<string, Array<object>> = { $or: [] };
+
+    filteredKeys.forEach((key: string) => {
+      const parsedPatterns: string | Array<string> =
+        Array.isArray(filteredInfo[key]) && filteredInfo[key].every((it: string) => typeof it === 'string')
+          ? filteredInfo[key].map((val: string) => val.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&'))
+          : filteredInfo[key];
+
+      const condtion: Readonly<Array<RegExp>> = (parsedPatterns as Array<string>).map(
+        (pattern: string) => new RegExp(pattern, 'gi'),
+      );
+      const query = !arrayKeys.some((arrKey: string) => key === arrKey)
+        ? { [key]: { $in: condtion } }
+        : { [key]: { $elemMatch: { $in: condtion } } };
+
+      if (key && condtion) filter.$or.push(query);
+    });
+
+    if (filterId && filterFields) {
+      filter.$and = [];
+
+      filter.$and.push({
+        $or: filterFields,
+      });
+    }
+
+    return !filter['$or'].length ? { $or: [{}] } : filter;
   };
 
   /** @deprecated 01.06.2020 should use mongoose isValidObjectId */

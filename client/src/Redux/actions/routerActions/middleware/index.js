@@ -85,6 +85,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
 
         await coreUpdaterDataHook(dispatch, dep);
       } catch (error) {
+        const { status: errorStatus = '', response: { status: responseStatus = 503 } = {} } = error || {};
         const dep = {
           Request,
           setStatus,
@@ -110,7 +111,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
           primaryKey,
         };
 
-        if (error?.status === 404) {
+        if (responseStatus === 404 || errorStatus === 404) {
           await coreUpdaterDataHook(dispatch, { ...dep });
           return;
         }
@@ -221,7 +222,9 @@ const multipleLoadData = (params) => async (dispatch, getState, { schema, Reques
           };
 
           responseList.push({ parsedItems: items, dep });
-        } catch (error) {}
+        } catch (error) {
+          console.error('Error in mass loading,', error);
+        }
       }
       let hookData = [];
 
