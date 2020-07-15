@@ -238,6 +238,50 @@ namespace Utils {
     };
   };
 
+  export const parseFilterFields = (filterFields: Array<object> = [], id: string = ''): Array<object> => {
+    if (!filterFields || (Array.isArray(filterFields) && !filterFields.length)) return [{}];
+
+    /*
+      TODO: parseFilterFields example.
+       const queryFIlter = parseFilterFields([
+        { user: 'regexp' },
+        { _id: 'equal' }
+      ], '123');
+
+    */
+
+    const getFilterType = (type: string) => {
+      switch (type) {
+        case 'regexp':
+          return '$elemMatch';
+        default:
+          return null;
+      }
+    };
+
+    return filterFields.reduce((acc: Array<object>, filter: any) => {
+      if (!(filter && typeof filter === 'object')) return acc;
+
+      const parsedFilterItem = Object.keys(filter).reduce((accFilter: object, key: string) => {
+        const typeFilter: any = getFilterType(filter[key]);
+
+        if (!typeFilter) {
+          return {
+            ...accFilter,
+            [key]: { $eq: id },
+          };
+        }
+
+        return {
+          ...accFilter,
+          [key]: { [typeFilter]: { $eq: id } },
+        };
+      }, {});
+
+      return [...acc, parsedFilterItem];
+    }, []);
+  };
+
   /**
    *
    * @param actionParam contains filteredInfo: object, arrayKeys: string[]
