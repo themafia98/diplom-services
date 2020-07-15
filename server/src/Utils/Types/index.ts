@@ -34,7 +34,7 @@ export type ActionData = Promise<Array<Document>> | null | Document | Promise<Do
 export type DocCompared = Document | Document[];
 export type FileEdit = FileMetadata | DeleteFile | ListFolderResult | BinaryLike;
 export type ParserData = DocCompared | FileEdit | number | null | object | Blob | string | User;
-export type ParserResult = DocCompared | FileEdit | null | object | number | string;
+export type ParserResult = DocCompared | FileEdit | null | object | number | string | { result: Document[] };
 export type OptionsUpdate = Record<string, boolean | null>;
 export type Meta = object | Array<any> | number | string | null;
 

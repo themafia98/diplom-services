@@ -58,14 +58,19 @@ class ActionNotification implements Action {
       return result;
     }
 
+    const query = isObject ? { type: concactType, ...(methodQuery as object) } : { type: concactType };
+
     const result = await this.getEntity().getAll(
       model,
-      isObject ? { type: concactType, ...(methodQuery as object) } : { type: concactType },
+      query,
       limitList as number | null,
       skip as number,
       'asc',
     );
-    return result;
+
+    const count = await this.getEntity().getCounter(model, query);
+
+    return { result, count };
   }
 
   private async updateMany(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {

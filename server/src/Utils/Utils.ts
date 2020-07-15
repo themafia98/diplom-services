@@ -45,10 +45,7 @@ namespace Utils {
 
       query = { type, [checkKey]: field };
 
-      console.log(query);
-
       const result = await model.find(query);
-      console.log('query checker:', query);
 
       if (Array.isArray(result) && result.length) {
         return false;
@@ -152,14 +149,25 @@ namespace Utils {
     };
   };
 
-  export const parsePublicData = (data: ParserResult, mode: string = 'default', rules = ''): Array<Meta> => {
-    if (!Array.isArray(data)) return [data];
+  export const parsePublicData = (
+    data: ParserResult,
+    mode: string = 'default',
+    rules = '',
+  ): Array<Meta> | Meta => {
+    if ((!Array.isArray(data) && typeof data !== 'object') || !data) return [data];
+
+    const { result } = (data as Record<string, any>) || {};
+
+    if (!result && data && !Array.isArray(data)) {
+      return [data];
+    }
+
     switch (mode) {
       case 'access':
       case 'accessGroups':
-        const dataArray: Array<object> = data as Array<object>;
+        const dataArray: Array<object> = result && Array.isArray(result) ? result : (data as Array<object>);
         const isGroupMode: boolean = mode.includes('Groups');
-        return dataArray
+        const newDataArray = dataArray
           .map((it: object | null) => {
             if (!it) return null;
             const { _doc: item = {} } = it as Record<string, object>;
@@ -177,9 +185,11 @@ namespace Utils {
             return null;
           })
           .filter(Boolean);
-
+        return result ? { ...data, result: newDataArray } : newDataArray;
       default:
-        return (data as Array<docResponse>)
+        const defaultDataArray: Array<object> =
+          result && Array.isArray(result) ? result : (data as Array<object>);
+        const newDefaultDataArray = (defaultDataArray as Array<docResponse>)
           .map((it: docResponse) => {
             const { _doc: item = {} } = it as Record<string, object>;
 
@@ -194,6 +204,7 @@ namespace Utils {
             return itemValid;
           })
           .filter(Boolean);
+        return result ? { ...data, result: newDefaultDataArray } : newDefaultDataArray;
     }
   };
 

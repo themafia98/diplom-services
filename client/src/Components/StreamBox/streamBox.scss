@@ -90,6 +90,10 @@ $cardCount: 6;
   left: calc(50% - 6px);
 }
 
+.popover-spiner-preloader {
+  margin-top: 0;
+}
+
 @media screen and (max-width: 700px) {
   .streamBox {
     display: flex;
