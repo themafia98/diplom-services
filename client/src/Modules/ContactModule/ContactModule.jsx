@@ -126,7 +126,7 @@ class ContactModule extends React.PureComponent {
   };
   render() {
     const { path } = this.props;
-    if (!path?.includes('contactModule')) return null;
+
     const component = this.getContactContentByPath(path);
 
     return (
