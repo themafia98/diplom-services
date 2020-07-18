@@ -7,7 +7,9 @@ import { saveComponentStateAction } from 'Redux/actions/routerActions';
 import UserCard from 'Components/UserCard';
 import TitleModule from 'Components/TitleModule';
 import StreamBox from 'Components/StreamBox';
-import modelContext from 'Models/context';
+import ModelContext from 'Models/context';
+import { compose } from 'redux';
+import { moduleContextToProps } from 'Components/Helpers/moduleState';
 const { Dragger } = Upload;
 
 class CabinetModule extends React.PureComponent {
@@ -19,7 +21,7 @@ class CabinetModule extends React.PureComponent {
     disabled: false,
   };
 
-  static contextType = modelContext;
+  static contextType = ModelContext;
   static propTypes = cabinetType;
   static defaultProps = {
     modePage: '',
@@ -129,8 +131,9 @@ class CabinetModule extends React.PureComponent {
 
   render() {
     const { visible, imageUrl, modePage = '' } = this.state;
-    const { rest } = this.context;
-    const { udata = {}, routeDataActive = {} } = this.props;
+    const { udata = {}, routeDataActive = {}, modelsContext } = this.props;
+    const { rest } = modelsContext;
+
     const isPersonal = modePage === 'personal';
 
     const { _id: uidUser = '', avatar = '', isHidePhone = false, isHideEmail = false } = isPersonal
@@ -238,4 +241,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CabinetModule);
+export default compose(moduleContextToProps, connect(mapStateToProps, mapDispatchToProps))(CabinetModule);

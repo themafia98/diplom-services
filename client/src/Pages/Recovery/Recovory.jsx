@@ -2,11 +2,11 @@ import React, { useState, useContext } from 'react';
 import { recovoryType } from './types';
 import { Button, Input } from 'antd';
 
-import modelContext from 'Models/context';
+import ModelContext from 'Models/context';
 import actionsTypes from 'actions.types';
 
 const Recovory = (props) => {
-  const { Request } = useContext(modelContext);
+  const { Request } = useContext(ModelContext);
   const [status, setStatus] = useState(null);
   const [mode] = useState('emailMode');
   const [recovoryField, setField] = useState('');

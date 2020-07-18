@@ -18,7 +18,7 @@ import Recovery from './Pages/Recovery';
 import LoginPage from './Pages/LoginPage';
 import Dashboard from './Pages/Dashboard';
 import 'moment/locale/ru';
-import modelContext from './Models/context';
+import ModelContext from './Models/context';
 import Demo from './Pages/Demo';
 import worker from 'workerize-loader!worker'; // eslint-disable-line import/no-webpack-loader-syntax
 import actionsTypes from 'actions.types';
@@ -30,7 +30,7 @@ class App extends React.Component {
     isUser: false,
   };
 
-  static contextType = modelContext;
+  static contextType = ModelContext;
   static propTypes = appType;
   loadingSettingsLoop = null;
 

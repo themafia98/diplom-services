@@ -6,7 +6,7 @@ import { updateUdata } from 'Redux/actions/publicActions';
 import { Avatar, Button, Icon, Dropdown, Menu, Tooltip, message, Popover } from 'antd';
 import ModalWindow from 'Components/ModalWindow';
 
-import modelContext from 'Models/context';
+import ModelContext from 'Models/context';
 import imageCard from './wallpaper_user.jpg';
 import actionsTypes from 'actions.types';
 
@@ -17,7 +17,7 @@ class UserCard extends React.Component {
     visibilityModal: false,
   };
   static propTypes = userCardType;
-  static contextType = modelContext;
+  static contextType = ModelContext;
   static defaultProps = {
     modePage: '',
     udata: {},

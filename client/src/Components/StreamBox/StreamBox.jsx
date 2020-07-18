@@ -14,7 +14,7 @@ import { Avatar, message, Tooltip, Spin, Button } from 'antd';
 import { Scrollbars } from 'react-custom-scrollbars';
 import clsx from 'clsx';
 import { routeParser, routePathNormalise, buildRequestList, parseArrayByLimit } from 'Utils';
-import modelContext from 'Models/context';
+import ModelContext from 'Models/context';
 import actionsTypes from 'actions.types';
 
 class StreamBox extends React.Component {
@@ -31,7 +31,7 @@ class StreamBox extends React.Component {
   streamListRef = React.createRef();
 
   static propTypes = streamBoxType;
-  static contextType = modelContext;
+  static contextType = ModelContext;
   static defaultProps = {
     mode: '',
     visiblePopover: false,

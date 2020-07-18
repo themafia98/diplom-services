@@ -15,7 +15,7 @@ import Loader from 'Components/Loader';
 import HeaderView from 'Components/HeaderView';
 import ContentView from 'Components/ContentView';
 import MenuView from 'Components/MenuView';
-import modelContext from 'Models/context';
+import ModelContext from 'Models/context';
 
 let deferredPrompt = null;
 
@@ -33,7 +33,7 @@ class Dashboard extends React.PureComponent {
     showLoader: false,
   };
 
-  static contextType = modelContext;
+  static contextType = ModelContext;
   static propTypes = dashboardType;
 
   dashboardRef = React.createRef();

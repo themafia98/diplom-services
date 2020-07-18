@@ -9,15 +9,15 @@ import { Tree, Button, Input, Select, Dropdown, Menu, message, Spin } from 'antd
 import WikiPage from './WikiPage';
 import ModalWindow from 'Components/ModalWindow';
 import TitleModule from 'Components/TitleModule';
-import modalContext from 'Models/context';
 import actionsTypes from 'actions.types';
+import { compose } from 'redux';
+import { moduleContextToProps } from 'Components/Helpers/moduleState';
 
 const { Option } = Select;
 const { Search } = Input;
 
 class WikiModule extends React.PureComponent {
   static propTypes = wikiModuleType;
-  static contextType = modalContext;
 
   state = {
     isLoading: false,
@@ -115,8 +115,8 @@ class WikiModule extends React.PureComponent {
 
   onCreateNode = async (item = null) => {
     const { node: nodeState = {} } = this.state;
-    const { metadata = [] } = this.props;
-    const { Request } = this.context;
+    const { metadata = [], modelsContext } = this.props;
+    const { Request } = modelsContext;
     if (!Request) return;
     try {
       const node = !nodeState?.parentId ? { ...nodeState, parentId: 'root' } : { ...nodeState };
@@ -161,7 +161,8 @@ class WikiModule extends React.PureComponent {
 
   onDeleteNode = async (body, event) => {
     try {
-      const { Request } = this.context;
+      const { modelsContext } = this.props;
+      const { Request } = modelsContext;
       const rest = new Request();
 
       const res = await rest.sendRequest(
@@ -215,7 +216,8 @@ class WikiModule extends React.PureComponent {
    * @param {Array<object>} nodeListChildren
    */
   buildTree = (rootNodeList, nodeListChildren) => {
-    const { TreeBuilder } = this.context;
+    const { modelsContext } = this.props;
+    const { TreeBuilder } = modelsContext;
     return new TreeBuilder(nodeListChildren).buildTree(rootNodeList);
   };
 
@@ -371,7 +373,8 @@ class WikiModule extends React.PureComponent {
    */
   onChangeWikiPage = async (paramsState, callback = null) => {
     try {
-      const { Request } = this.context;
+      const { modelsContext } = this.props;
+      const { Request } = modelsContext;
       const rest = new Request();
       const res = await rest.sendRequest(
         '/system/wiki/update/single',
@@ -503,4 +506,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(WikiModule);
+export default compose(moduleContextToProps, connect(mapStateToProps, mapDispatchToProps))(WikiModule);

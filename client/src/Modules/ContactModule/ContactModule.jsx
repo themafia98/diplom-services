@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
 import entityRender from 'Utils/Tools/entityRender';
-import withRouter from 'Components/withRouter';
+import withRouter from 'Components/Helpers/withRouter';
 import types from 'types.modules';
 import { oneOfType } from 'Utils';
 import { setStatus } from 'Redux/actions/publicActions';

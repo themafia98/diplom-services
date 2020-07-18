@@ -4,7 +4,7 @@ import moment from 'moment';
 import Output from 'Components/Output';
 import { Table, message, Input, Button, Icon, Empty } from 'antd';
 import { getDataSource, findData } from 'Utils';
-import modelContext from 'Models/context';
+import ModelContext from 'Models/context';
 
 class DynamicTable extends React.PureComponent {
   state = {
@@ -15,7 +15,7 @@ class DynamicTable extends React.PureComponent {
     counter: null,
   };
 
-  static contextType = modelContext;
+  static contextType = ModelContext;
   static propTypes = dynamicTableType;
   static defaultProps = {
     counter: null,

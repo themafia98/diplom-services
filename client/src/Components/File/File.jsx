@@ -2,7 +2,7 @@ import React from 'react';
 import { fileType } from './types';
 import { v4 as uuid } from 'uuid';
 import { Upload, Icon, message, Checkbox } from 'antd';
-import modelContext from 'Models/context';
+import ModelContext from 'Models/context';
 const { Dragger } = Upload;
 
 class File extends React.Component {
@@ -10,7 +10,7 @@ class File extends React.Component {
     filesArray: null,
   };
 
-  static contextType = modelContext;
+  static contextType = ModelContext;
   static propTypes = fileType;
   static defaultProps = {
     filesArray: [],

@@ -1,11 +1,9 @@
 import React from 'react';
+import { compose } from 'redux';
 import { taskModuleType } from './types';
 import _ from 'lodash';
-
 import { connect } from 'react-redux';
-//import Scrollbars from 'react-custom-scrollbars';
 import { Button, message } from 'antd';
-
 import { routeParser, oneOfType } from 'Utils';
 import { settingsStatusSelector } from 'Utils/selectors';
 import {
@@ -16,11 +14,11 @@ import {
 } from 'Redux/actions/routerActions';
 import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
 import { loadCacheData } from 'Redux/actions/publicActions/middleware';
-import modelContext from 'Models/context';
 import entityRender from 'Utils/Tools/entityRender';
-import withRouter from 'Components/withRouter';
+import withRouter from 'Components/Helpers/withRouter';
 import types from 'types.modules';
 import actionsTypes from 'actions.types';
+import { moduleContextToProps } from 'Components/Helpers/moduleState';
 
 class TaskModule extends React.PureComponent {
   state = {
@@ -30,7 +28,6 @@ class TaskModule extends React.PureComponent {
     counter: null,
   };
 
-  static contextType = modelContext;
   static propTypes = taskModuleType;
 
   static getDerivedStateFromProps = (props, state) => {
@@ -50,8 +47,9 @@ class TaskModule extends React.PureComponent {
       visible,
       loaderMethods = {},
       router: { routeData },
+      modelsContext,
     } = this.props;
-    const { config: { task: { limitList = 20 } = {} } = {} } = this.context;
+    const { config: { task: { limitList = 20 } = {} } = {} } = modelsContext;
     const { height } = this.state;
     const { onShowLoader } = loaderMethods;
 
@@ -99,9 +97,10 @@ class TaskModule extends React.PureComponent {
       visible,
       router: { shouldUpdate = false, routeData = {} },
       path = '',
+      modelsContext,
     } = this.props;
     const { isListCounterLoading = false } = this.state;
-    const { config: { task: { limitList = 20 } = {} } = {} } = this.context;
+    const { config: { task: { limitList = 20 } = {} } = {} } = modelsContext;
     if ([this.moduleTask, this.controller].every((type) => type !== null) && visible) {
       this.recalcHeight();
     }
@@ -126,9 +125,9 @@ class TaskModule extends React.PureComponent {
   };
 
   fetchTaskModule = async (customOptions = null, saveData = {}, saveDataState) => {
-    const { onLoadCurrentData, path, udata: { _id: uid = '' } = {} } = this.props;
+    const { onLoadCurrentData, path, udata: { _id: uid = '' } = {}, modelsContext } = this.props;
     const { counter = null, isListCounterLoading } = this.state;
-    const { config, Request } = this.context || {};
+    const { config, Request } = modelsContext;
     const { task: { limitList = 20 } = {} } = config || {};
 
     const options = customOptions
@@ -229,8 +228,9 @@ class TaskModule extends React.PureComponent {
       addTab,
       setCurrentTab,
       router: { currentActionTab, activeTabs },
+      modelsContext,
     } = this.props;
-    const { config: { tabsLimit = 50 } = {} } = this.context;
+    const { config: { tabsLimit = 50 } = {} } = modelsContext;
 
     if (currentActionTab !== 'taskModule_createTask') {
       if (tabsLimit <= activeTabs.length)
@@ -377,5 +377,10 @@ const mapDispatchToProps = (dispatch) => {
     onLoadCurrentData: (props) => dispatch(loadCurrentData(props)),
   };
 };
+
 export { TaskModule };
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(TaskModule));
+export default compose(
+  withRouter,
+  moduleContextToProps,
+  connect(mapStateToProps, mapDispatchToProps),
+)(TaskModule);

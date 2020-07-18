@@ -7,9 +7,10 @@ import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
 import Bar from './Charts/Bar';
 import TitleModule from 'Components/TitleModule';
 import { settingsStatusSelector } from 'Utils/selectors';
-import modelContext from 'Models/context';
 import FixedToolbar from 'Components/FixedToolbar';
 import { Button } from 'antd';
+import { compose } from 'redux';
+import { moduleContextToProps } from 'Components/Helpers/moduleState';
 
 class StatisticsModule extends React.PureComponent {
   state = {
@@ -17,7 +18,6 @@ class StatisticsModule extends React.PureComponent {
     textContent: '',
   };
   static propTypes = statisticsModuleType;
-  static contextType = modelContext;
 
   componentDidMount = () => {
     const { visible } = this.props;
@@ -43,13 +43,13 @@ class StatisticsModule extends React.PureComponent {
   };
 
   fetchStatistics = (shouldSetLoading = false) => {
-    const { onLoadCurrentData, path, statusList: { settings = [] } = {} } = this.props;
+    const { onLoadCurrentData, path, statusList: { settings = [] } = {}, modelsContext } = this.props;
     const statsListFields = settings.reduce((list, { value = '' }) => {
       if (value) return [...list, value];
       return list;
     }, []);
     const { dateConfig = [] } = this.state;
-    const { config: { statistics: { limitListTasks = 5000 } = {} } = {} } = this.context;
+    const { config: { statistics: { limitListTasks = 5000 } = {} } = {} } = modelsContext;
 
     let limits = {};
     if (dateConfig[0] === 'full') {
@@ -195,4 +195,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(StatisticsModule);
+export default compose(moduleContextToProps, connect(mapStateToProps, mapDispatchToProps))(StatisticsModule);

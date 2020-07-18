@@ -9,14 +9,14 @@ import _ from 'lodash';
 
 import '../../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { Button } from 'antd';
-import modelContext from 'Models/context';
+import ModelContext from 'Models/context';
 
 class EditorTextarea extends React.Component {
   state = {
     contentState: null,
   };
 
-  static contextType = modelContext;
+  static contextType = ModelContext;
   static propTypes = editorTextareaType;
   static defaultProps = {
     disabled: false,

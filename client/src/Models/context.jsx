@@ -15,6 +15,6 @@ export const modelMethods = {
   schema: new Schema('no-strict'),
 };
 
-const modelsContext = createContext(modelMethods);
+const ModelContext = createContext(modelMethods);
 
-export default modelsContext;
+export default ModelContext;

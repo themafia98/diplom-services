@@ -6,10 +6,11 @@ import moment from 'moment';
 import TitleModule from 'Components/TitleModule';
 import { Calendar, Popover, Button, message, Dropdown, Menu } from 'antd';
 import DrawerViewer from 'Components/DrawerViewer';
-import modelContext from 'Models/context';
+
 import { routePathNormalise } from 'Utils';
 import Output from 'Components/Output';
 import types from 'types.modules';
+import { moduleContextToProps } from 'Components/Helpers/moduleState';
 
 class TaskModuleCalendar extends React.PureComponent {
   state = {
@@ -20,7 +21,7 @@ class TaskModuleCalendar extends React.PureComponent {
   };
 
   static propTypes = taskModuleCalendarType;
-  static contextType = modelContext;
+
   static defaultProps = {
     data: {},
     loaderMethods: {},
@@ -36,8 +37,9 @@ class TaskModuleCalendar extends React.PureComponent {
       onOpenPageWithData,
       router: { routeData, currentActionTab, activeTabs } = {},
       setCurrentTab,
+      modelsContext,
     } = this.props;
-    const { config = {} } = this.context;
+    const { config = {} } = modelsContext;
     const { tasks = [] } = routeData[currentActionTab] || routeData['taskModule'] || {};
 
     const routeNormalize =
@@ -228,4 +230,4 @@ class TaskModuleCalendar extends React.PureComponent {
   }
 }
 
-export default TaskModuleCalendar;
+export default moduleContextToProps(TaskModuleCalendar);

@@ -12,7 +12,7 @@ import TrackerModal from './TrackerModal';
 import MailResponserModal from './MailResponserModal';
 
 import Textarea from 'Components/Textarea';
-import modelContext from 'Models/context';
+import ModelContext from 'Models/context';
 import actionsTypes from 'actions.types';
 
 const { Option } = Select;
@@ -41,7 +41,7 @@ class ModalWindow extends React.PureComponent {
     type: null,
   };
 
-  static contextType = modelContext;
+  static contextType = ModelContext;
   static propTypes = modalWindowType;
   static defaultProps = {
     onEdit: null,

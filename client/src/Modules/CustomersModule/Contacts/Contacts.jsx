@@ -1,13 +1,14 @@
 import React from 'react';
 import { contactsType } from '../types';
 import TitleModule from 'Components/TitleModule';
-import modelContext from 'Models/context';
+
 import WindowScroller from 'react-virtualized/dist/commonjs/WindowScroller';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 import VList from 'react-virtualized/dist/commonjs/List';
 import InfiniteLoader from 'react-virtualized/dist/commonjs/InfiniteLoader';
 import { List, message, Avatar, Spin } from 'antd';
 import Scrollbars from 'react-custom-scrollbars';
+import { moduleContextToProps } from 'Components/Helpers/moduleState';
 
 class Contacts extends React.PureComponent {
   state = {
@@ -16,7 +17,6 @@ class Contacts extends React.PureComponent {
     isLoadingModule: false,
   };
 
-  static contextType = modelContext;
   static propTypes = contactsType;
 
   loadedRowsMap = {};
@@ -38,7 +38,8 @@ class Contacts extends React.PureComponent {
   };
 
   fetchData = async (callback) => {
-    const { Request } = this.context;
+    const { modelsContext } = this.props;
+    const { Request } = modelsContext;
     try {
       const rest = new Request();
       const res = await rest.sendRequest('/system/userList', 'GET', null, true);
@@ -165,4 +166,4 @@ class Contacts extends React.PureComponent {
     );
   }
 }
-export default Contacts;
+export default moduleContextToProps(Contacts);

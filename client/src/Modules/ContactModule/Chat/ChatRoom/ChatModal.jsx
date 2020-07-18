@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import { Modal, Select, message, Input } from 'antd';
-import modelContext from 'Models/context';
+import ModelContext from 'Models/context';
 import actionsTypes from 'actions.types';
 
 const { Option } = Select;
@@ -14,7 +14,7 @@ class ChatModal extends React.PureComponent {
   };
   groupNameRef = React.createRef();
 
-  static contextType = modelContext;
+  static contextType = ModelContext;
   static defaultProps = {
     visible: false,
     usersList: [],

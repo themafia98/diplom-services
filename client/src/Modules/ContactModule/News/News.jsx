@@ -12,8 +12,8 @@ import NewsCard from './NewsCard';
 import TitleModule from 'Components/TitleModule';
 
 import { routePathNormalise, routeParser } from 'Utils';
-
-import modelContext from 'Models/context';
+import { compose } from 'redux';
+import { moduleContextToProps } from 'Components/Helpers/moduleState';
 
 class News extends React.PureComponent {
   state = {
@@ -25,7 +25,6 @@ class News extends React.PureComponent {
     load: false,
   };
 
-  static contextType = modelContext;
   static propTypes = newsType;
 
   componentDidUpdate = () => {
@@ -40,10 +39,10 @@ class News extends React.PureComponent {
   };
 
   onOpenCreateNews = () => {
-    const { addTab, router: { activeTabs = [] } = {}, setCurrentTab } = this.props;
+    const { addTab, router: { activeTabs = [] } = {}, setCurrentTab, modelsContext } = this.props;
     const moduleId = 'createNews';
     const page = 'contactModule';
-    const { config = {}, config: { tabsLimit = 0 } = {} } = this.context;
+    const { config = {}, config: { tabsLimit = 0 } = {} } = modelsContext;
 
     const { path: pathNormalize = '' } = routePathNormalise({
       pathData: { page, moduleId },
@@ -193,4 +192,4 @@ const mapDispathToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispathToProps)(News);
+export default compose(moduleContextToProps, connect(mapStateToProps, mapDispathToProps))(News);

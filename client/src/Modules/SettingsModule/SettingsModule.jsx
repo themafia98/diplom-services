@@ -7,7 +7,7 @@ import { updateUdata, setStatus, onLoadSettings } from 'Redux/actions/publicActi
 import { message } from 'antd';
 import Scrollbars from 'react-custom-scrollbars';
 import { middlewareCaching } from 'Redux/actions/publicActions/middleware';
-import modelContext from 'Models/context';
+
 import ObserverTime from 'Components/ObserverTime';
 import TitleModule from 'Components/TitleModule';
 
@@ -34,7 +34,6 @@ class SettingsModule extends React.PureComponent {
   refColumn = React.createRef();
 
   static propTypes = settingsModuleType;
-  static contextType = modelContext;
   static defaultProps = {
     udata: {
       email: null,
@@ -120,8 +119,8 @@ class SettingsModule extends React.PureComponent {
 
   onChangeStatusList = async (state, callback = null) => {
     try {
-      const { Request } = this.context;
-      const { onSaveStatusList } = this.props;
+      const { onSaveStatusList, modelsContext } = this.props;
+      const { Request } = modelsContext;
 
       const queryParams = {
         idSettings: 'statusSettings',
@@ -177,10 +176,9 @@ class SettingsModule extends React.PureComponent {
 
   onChangeProfile = async (state, callback) => {
     try {
-      const { udata: { _id: uid = '' } = {}, onUpdateUdata = null } = this.props;
+      const { udata: { _id: uid = '' } = {}, onUpdateUdata = null, modelsContext } = this.props;
       const { isHideEmail = false, isHidePhone = false } = state;
-      const { config: { settings: { includeChangeProfile = false } = {} } = {} } = this.context;
-      const { Request } = this.context;
+      const { config: { settings: { includeChangeProfile = false } = {} } = {}, Request } = modelsContext;
 
       if (!includeChangeProfile) return;
 
@@ -221,10 +219,14 @@ class SettingsModule extends React.PureComponent {
 
   onChangeCommon = async (state, callback) => {
     try {
-      const { Request = {} } = this.context;
-      const { udata: { _id: uid = '' } = {}, onUpdateUdata = null, onCaching = null } = this.props;
+      const {
+        udata: { _id: uid = '' } = {},
+        onUpdateUdata = null,
+        onCaching = null,
+        modelsContext,
+      } = this.props;
       const { emailValue: newEmail = '', telValue: newPhone = '', haveChanges = [] } = state;
-      const { config: { settings: { includeChangeEmail = false } = {} } = {} } = this.context;
+      const { config: { settings: { includeChangeEmail = false } = {} } = {}, Request } = modelsContext;
       if (includeChangeEmail && (!newEmail || !/\w+@\w+\.\D+/i.test(newEmail))) {
         message.error('Формат почты не соблюден');
         return;
@@ -296,8 +298,9 @@ class SettingsModule extends React.PureComponent {
 
   onChangePassword = async (state, callback) => {
     try {
-      const { Request = {} } = this.context;
-      const { udata: { _id: uid = '' } = {}, onCaching } = this.props;
+      const { udata: { _id: uid = '' } = {}, onCaching, modelsContext } = this.props;
+      const { Request = {} } = modelsContext;
+
       const { oldPassword = '', newPassword = '' } = state;
       if (!oldPassword || !newPassword) {
         message.warning('Формат пароля не верен');
@@ -365,8 +368,13 @@ class SettingsModule extends React.PureComponent {
       isHidePhone,
       isLoadingLogs = false,
     } = this.state;
-    const { settingsLogs = null, udata: { departament = '', rules = '' } = {}, settings = [] } = this.props;
-    const { config: { settings: { includeRulesSettings = false } = {} } = {} } = this.context;
+    const {
+      settingsLogs = null,
+      udata: { departament = '', rules = '' } = {},
+      settings = [],
+      modelsContext,
+    } = this.props;
+    const { config: { settings: { includeRulesSettings = false } = {} } = {} } = modelsContext;
 
     const isLoading = !isLoadingLogs && (!settingsLogs || (settingsLogs && !settingsLogs?.length));
     const isAdmin = departament === 'Admin' && rules === 'full';

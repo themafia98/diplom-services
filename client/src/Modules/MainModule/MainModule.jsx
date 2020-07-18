@@ -2,17 +2,17 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { mainModuleType } from './types';
 import { Calendar } from 'antd';
-import modelContext from 'Models/context';
 import ClockWidjet from 'Components/ClockWidjet/index';
 import TableView from 'Components/TableView';
 import StreamBox from 'Components/StreamBox';
 import TitleModule from 'Components/TitleModule';
 import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
 import { routeParser } from 'Utils';
+import { compose } from 'redux';
+import { moduleContextToProps } from 'Components/Helpers/moduleState';
 
 class MainModule extends React.PureComponent {
   static propTypes = mainModuleType;
-  static contextType = modelContext;
 
   state = {
     path: 'mainModule',
@@ -90,13 +90,13 @@ class MainModule extends React.PureComponent {
   };
 
   render() {
-    const { visible } = this.props;
+    const { visible, modelsContext } = this.props;
     const { tableViewHeight } = this.state;
     const {
       config: {
         visibilityWidgets: { mainModule: { clockVisibility = true, calendarVisibility = true } = {} } = {},
       } = {},
-    } = this.context;
+    } = modelsContext;
     return (
       <div className="mainModule">
         <TitleModule
@@ -144,4 +144,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(MainModule);
+export default compose(moduleContextToProps, connect(null, mapDispatchToProps))(MainModule);
