@@ -16,6 +16,7 @@ import {
 } from './Interfaces';
 import { v4 as uuid } from 'uuid';
 import { docResponse, ParserResult, Meta } from './Types';
+import { ObjectID } from 'mongodb';
 
 namespace Utils {
   const upload = multer();
@@ -238,26 +239,30 @@ namespace Utils {
     };
   };
 
-  export const parseFilterFields = (filterFields: Array<object> = [], id: string = ''): Array<object> => {
+  export const getFilterType = (type: string) => {
+    switch (type) {
+      case 'regexp':
+        return '$elemMatch';
+      case 'equal':
+        return '$eq';
+      default:
+        return null;
+    }
+  };
+
+  /**
+   *  TODO: parseFilterFields example.
+   *
+    const queryFIlter = parseFilterFields([
+     { user: 'regexp' },
+     { _id: 'equal' }
+    ], '123'(optional));
+   */
+  export const parseFilterFields = (
+    filterFields: Array<object> = [],
+    id: string | ObjectID = '',
+  ): Array<object> => {
     if (!filterFields || (Array.isArray(filterFields) && !filterFields.length)) return [{}];
-
-    /*
-      TODO: parseFilterFields example.
-       const queryFIlter = parseFilterFields([
-        { user: 'regexp' },
-        { _id: 'equal' }
-      ], '123');
-
-    */
-
-    const getFilterType = (type: string) => {
-      switch (type) {
-        case 'regexp':
-          return '$elemMatch';
-        default:
-          return null;
-      }
-    };
 
     return filterFields.reduce((acc: Array<object>, filter: any) => {
       if (!(filter && typeof filter === 'object')) return acc;
@@ -265,17 +270,20 @@ namespace Utils {
       const parsedFilterItem = Object.keys(filter).reduce((accFilter: object, key: string) => {
         const typeFilter: any = getFilterType(filter[key]);
 
-        if (!typeFilter) {
-          return {
-            ...accFilter,
-            [key]: { $eq: id },
-          };
-        }
+        if (!typeFilter) return accFilter;
 
-        return {
-          ...accFilter,
-          [key]: { [typeFilter]: { $eq: id } },
-        };
+        switch (typeFilter) {
+          case '$elemMatch':
+            return {
+              ...accFilter,
+              [key]: { [typeFilter]: id ? { $eq: id } : {} },
+            };
+          default:
+            return {
+              ...accFilter,
+              [key]: { [typeFilter]: id },
+            };
+        }
       }, {});
 
       return [...acc, parsedFilterItem];
@@ -290,19 +298,17 @@ namespace Utils {
    */
   export const getFilterQuery = (
     actionParam: ActionParams,
-    filterId: string = '',
+    filterId: string | ObjectID = '',
     filterFields: Array<object> = [{}],
   ): Record<string, Array<object>> => {
     const { saveData: { filteredInfo = {}, arrayKeys = [] } = {} } = actionParam as Record<string, any>;
 
     const filteredKeys: Array<string> = Object.keys(filteredInfo);
-    if (!filteredKeys.length && !filterId) return {};
+    if ((!filteredKeys.length && !filterId) || !filterFields) return {};
 
     if (!filteredKeys.length && filterId) {
       return {
-        $or: filterFields
-          ? filterFields
-          : [{ editor: { $elemMatch: { $eq: filterId } } }, { uidCreater: { $eq: filterId } }],
+        $or: filterFields,
       };
     }
 
@@ -324,13 +330,11 @@ namespace Utils {
       if (key && condtion) filter.$or.push(query);
     });
 
-    if (filterId) {
+    if (filterId && filterFields) {
       filter.$and = [];
 
       filter.$and.push({
-        $or: filterFields
-          ? filterFields
-          : [{ editor: { $elemMatch: { $eq: filterId } } }, { uidCreater: { $eq: filterId } }],
+        $or: filterFields,
       });
     }
 

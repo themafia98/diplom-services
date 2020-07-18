@@ -42,6 +42,11 @@ export type FileBody = {
   buffer: Buffer;
 };
 
+export type Pagination = {
+  current: number;
+  pageSize: number;
+};
+
 export type MessageOptions = {
   tokenRoom: string;
   moduleName: string;

@@ -1,10 +1,10 @@
-import { Model, Document, Types, FilterQuery, isValidObjectId } from 'mongoose';
+import { Model, Document, Types, isValidObjectId } from 'mongoose';
 import { ActionParams, Actions, Action, TicketRemote } from '../../../Utils/Interfaces';
-import { ParserData } from '../../../Utils/Types';
+import { ParserData, Pagination } from '../../../Utils/Types';
 import Utils from '../../../Utils';
 import _ from 'lodash';
 import { ObjectID } from 'mongodb';
-const { getModelByName, generateRemoteTask, getFilterQuery } = Utils;
+const { getModelByName, generateRemoteTask, getFilterQuery, parseFilterFields } = Utils;
 
 class ActionTasks implements Action {
   constructor(private entity: Actions) {}
@@ -56,9 +56,15 @@ class ActionTasks implements Action {
 
   private async getTasks(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const { queryParams, limitList = 20, saveData = {}, filterCounter = '' } = actionParam || {};
-    const _id: ObjectID = Types.ObjectId(filterCounter as string);
+    const _id: ObjectID | string =
+      filterCounter && isValidObjectId(filterCounter) ? Types.ObjectId(filterCounter as string) : '';
 
-    const { pagination = null } = saveData as Record<string, any>;
+    const {
+      paginationState: initialPagination = null,
+      pagination: nextPagination = null,
+    } = saveData as Record<string, any>;
+    const pagination: Pagination = initialPagination ? initialPagination : nextPagination;
+
     const params: ActionParams =
       _.isEmpty(queryParams) || !(queryParams as Record<string, string[]>).keys
         ? {}
@@ -66,7 +72,7 @@ class ActionTasks implements Action {
     const { keys = [] } = (queryParams as Record<string, string[]>) || {};
     const parsedKeys: Array<Types.ObjectId> = Array.isArray(keys)
       ? keys.reduce((keysList: Array<Types.ObjectId>, key: string) => {
-          if (isValidObjectId(key)) return [...keysList, Types.ObjectId(key)];
+          if (key && isValidObjectId(key)) return [...keysList, Types.ObjectId(key)];
 
           return keysList;
         }, [])
@@ -74,7 +80,8 @@ class ActionTasks implements Action {
 
     const filter: Record<string, Array<object>> = getFilterQuery(
       actionParam,
-      _id ? (filterCounter as string) : '',
+      _id,
+      parseFilterFields([{ editor: 'regexp' }, { uidCreater: 'equal' }], _id),
     );
 
     const query = {
@@ -91,29 +98,18 @@ class ActionTasks implements Action {
   }
 
   private async getTaskCount(model: Model<Document>, actionParam: ActionParams): Promise<ParserData> {
-    const { filterCounter = null } = actionParam as Record<string, null | string>;
+    const { filterCounter = '' } = actionParam as Record<string, null | string>;
+    const _id: ObjectID | string = isValidObjectId(filterCounter)
+      ? Types.ObjectId(filterCounter as string)
+      : '';
 
-    const filter: Record<string, Array<object>> = getFilterQuery(actionParam);
-    const filterList = filter.$or || [{}];
+    const filter: Record<string, Array<object>> = getFilterQuery(
+      actionParam,
+      _id,
+      parseFilterFields([{ editor: 'regexp' }, { uidCreater: 'equal' }], filterCounter as string),
+    );
 
-    const filterListValid: Array<object> = filterList.every((obj: object) => _.isEmpty(obj))
-      ? !filterCounter
-        ? [{}]
-        : []
-      : filterList;
-
-    const query: Readonly<FilterQuery<object>> = !filterCounter
-      ? { $or: filterListValid }
-      : {
-          $or: [
-            { editor: { $elemMatch: { $eq: filterCounter } } },
-            { uidCreater: { $eq: filterCounter } },
-            ...filterListValid,
-          ],
-        };
-
-    const result = await this.getEntity().getCounter(model, query);
-    return result;
+    return await this.getEntity().getCounter(model, filter);
   }
 
   private async getStats(model: Model<Document>, actionParam: ActionParams): Promise<ParserData> {
