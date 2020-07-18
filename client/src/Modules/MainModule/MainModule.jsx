@@ -23,14 +23,14 @@ class MainModule extends React.PureComponent {
   widgetsContainerRef = React.createRef();
 
   componentDidMount = () => {
-    const { onLoadCurrentData, visible } = this.props;
-
+    const { onLoadCurrentData, moduleContext } = this.props;
+    const { visibility = false } = moduleContext;
     const { page = '', itemId = '', path: validPath = '' } = routeParser({
       pageType: 'moduleItem',
       path: 'mainModule__global',
     });
 
-    if (visible && page === 'mainModule' && itemId === 'global') {
+    if (visibility && page === 'mainModule' && itemId === 'global') {
       onLoadCurrentData({
         path: validPath,
         startPath: 'system',
@@ -44,15 +44,18 @@ class MainModule extends React.PureComponent {
   };
 
   componentDidUpdate = (prevProps) => {
-    const { onLoadCurrentData, visible = false } = this.props;
-
+    const { onLoadCurrentData, moduleContext } = this.props;
+    const { visibility = false } = moduleContext;
+    const {
+      moduleContext: { visibility: visibilityPrev = false },
+    } = prevProps;
     const { path: validPath = '', page = '', itemId = '' } = routeParser({
       pageType: 'moduleItem',
       path: 'mainModule__global',
     });
 
-    if (prevProps.visible !== visible && page === 'mainModule' && itemId === 'global') {
-      if (visible & onLoadCurrentData)
+    if (visibilityPrev !== visibility && page === 'mainModule' && itemId === 'global') {
+      if (visibility & onLoadCurrentData)
         onLoadCurrentData({
           path: validPath,
           xhrPath: 'userList',
@@ -69,10 +72,11 @@ class MainModule extends React.PureComponent {
 
   onResizeWindow = () => {
     const { tableViewHeight = null } = this.state;
-    const { visible = false } = this.props;
+    const { moduleContext } = this.props;
+    const { visibility = false } = moduleContext;
     const { current: rightColumnNode } = this.rightColumnRef || {};
     const { current: widgetContainerNode } = this.widgetsContainerRef || {};
-    if (!visible || !rightColumnNode) return;
+    if (!visibility || !rightColumnNode) return;
 
     const { height: heightColumn = 0 } = rightColumnNode.getBoundingClientRect() || {};
     const { height: heightWidgets = 0 } = widgetContainerNode.getBoundingClientRect() || {};
@@ -90,7 +94,8 @@ class MainModule extends React.PureComponent {
   };
 
   render() {
-    const { visible, modelsContext } = this.props;
+    const { modelsContext, moduleContext } = this.props;
+    const { visibility = false } = moduleContext;
     const { tableViewHeight } = this.state;
     const {
       config: {
@@ -107,7 +112,7 @@ class MainModule extends React.PureComponent {
         <div className="mainModule_main">
           <div className="col-4 columnModuleLeft">
             <StreamBox
-              visible={visible}
+              visible={visibility}
               prefix="#notification"
               streamModule="mainModule"
               withStore={true}
@@ -126,7 +131,7 @@ class MainModule extends React.PureComponent {
             <div className="tableView__wrapper">
               <TableView
                 tableViewHeight={tableViewHeight}
-                visible={visible}
+                visible={visibility}
                 key="mainModule_table"
                 path="mainModule__global"
               />

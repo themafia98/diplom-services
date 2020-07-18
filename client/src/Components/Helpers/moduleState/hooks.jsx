@@ -1,8 +1,8 @@
 import { useContext } from 'react';
-import { moduleContextState } from './context';
-import { moduleContextActions } from './context';
+import { ModuleContextState } from './context';
+import { ModuleContextActions } from './context';
 
-const useModuleState = useContext(moduleContextState);
-const useModuleActions = useContext(moduleContextActions);
+const useModuleState = () => useContext(ModuleContextState);
+const useModuleActions = () => useContext(ModuleContextActions);
 
 export { useModuleActions, useModuleState };

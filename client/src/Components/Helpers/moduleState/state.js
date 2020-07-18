@@ -8,7 +8,7 @@ const contextState = {
 const contextReducer = (state = contextState, { payload, type }) => {
   switch (type) {
     case SET_VISIBILITY: {
-      const { visibility, availableBackground = false } = payload;
+      const { visibility = false, availableBackground = false } = payload;
       return {
         ...state,
         visibility,

@@ -74,7 +74,7 @@ const entityRender = (entitysList = [], routeData = {}, subTabProps = {}, config
           tabKey: entityKey,
           type,
           component: (
-            <TabContainer key={`${entityKey}-container`} {...tabParams}>
+            <TabContainer key={`${entityKey}-container`} actualParams={tabParams}>
               <Component
                 key={`${entityKey}_${Symbol.keyFor(type)}`}
                 {...subTabProps}

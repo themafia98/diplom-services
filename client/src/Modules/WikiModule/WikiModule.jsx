@@ -82,9 +82,14 @@ class WikiModule extends React.PureComponent {
   };
 
   fetchTree = async (mode = '', forceUpdate = false) => {
-    const { onLoadCurrentData, visible, router: { shouldUpdate = false, routeData = {} } = {} } = this.props;
+    const {
+      onLoadCurrentData,
+      router: { shouldUpdate = false, routeData = {} } = {},
+      moduleContext,
+    } = this.props;
+    const { visibility = false } = moduleContext;
     const { isLoading = false } = this.state;
-    const isModuleUpdate = shouldUpdate && visible && !routeData['wikiModule']?.load;
+    const isModuleUpdate = shouldUpdate && visibility && !routeData['wikiModule']?.load;
 
     if (mode === 'didMount') {
       this.setState({

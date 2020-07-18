@@ -34,6 +34,21 @@
       "date": 1595086368827,
       "name": "logs\\logs-error-2020-07-18-18.log",
       "hash": "b8699d3200aee83625497ec711658423"
+    },
+    {
+      "date": 1595097953141,
+      "name": "logs\\logs-error-2020-07-18-21.log",
+      "hash": "1b8c7185722084f079a19b494e5c7bf5"
+    },
+    {
+      "date": 1595100594058,
+      "name": "logs\\logs-error-2020-07-18-22.log",
+      "hash": "6d5b0dbfc4f209005b49ded8b047bc9b"
+    },
+    {
+      "date": 1595103040473,
+      "name": "logs\\logs-error-2020-07-18-23.log",
+      "hash": "e20d4cb109df93c72f1db5cf0956acd5"
     }
   ]
 }

@@ -87,10 +87,13 @@ class SettingsModule extends React.PureComponent {
       router: { currentActionTab = '' } = {},
       onCaching,
       onSetStatus,
-      visible,
+      moduleContext,
     } = this.props;
-
-    if (prevProps?.visible !== visible && currentActionTab?.includes('settingsModule')) {
+    const { visibility = false } = moduleContext;
+    const {
+      modelsContext: { visibility: visibilityPrev = false },
+    } = prevProps;
+    if (visibilityPrev !== visibility && currentActionTab?.includes('settingsModule')) {
       onSetStatus(false);
       onCaching({
         uid,
