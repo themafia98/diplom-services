@@ -9,7 +9,6 @@ import Chat from 'Modules/ContactModule/Chat';
 import TabContainer from 'Components/TabContainer';
 import { v4 as uuid } from 'uuid';
 import types from 'types.modules';
-import { withModuleState } from 'Components/Helpers';
 
 const { Content } = Layout;
 
@@ -177,7 +176,6 @@ class ContentView extends React.Component {
       if (tabsComponents.length && ((isExsistModule && !isLink) || (isLink && entrypointChildrenExist))) {
         return tabsComponents;
       }
-
       const validModuleName = entityDataId ? moduleName : tabKey;
       return [
         ...tabsComponents,
@@ -185,21 +183,14 @@ class ContentView extends React.Component {
           tabKey,
           type,
           component: (
-            <Fragment key={`wrapper${validModuleName}`}>
-              <TabContainer
-                key={`${validModuleName}-container`}
-                {...tabParams}
-                isBackground={path !== validModuleName && currentActionTab.includes(moduleName)}
-              >
-                <Component
-                  key={`${validModuleName}_${Symbol.keyFor(type)}`}
-                  type={type}
-                  isBackground={tabParams.isBackground}
-                  visible={entrypointChildrenExist ? true : path?.includes(validModuleName)}
-                  {...tabProps}
-                />
-              </TabContainer>
-            </Fragment>
+            <TabContainer actualParams={tabParams}>
+              <Component
+                key={`${validModuleName}_${Symbol.keyFor(type)}`}
+                type={type}
+                tabParams={tabParams}
+                {...tabProps}
+              />
+            </TabContainer>
           ),
         },
       ];
@@ -235,4 +226,4 @@ class ContentView extends React.Component {
 }
 
 export { ContentView };
-export default withModuleState(ContentView);
+export default ContentView;

@@ -13,8 +13,6 @@ class TaskModuleList extends React.PureComponent {
     height: 0,
     setCurrentTab: null,
     loaderMethods: {},
-    isBackground: false,
-    visible: false,
   };
 
   render() {

@@ -1,44 +1,46 @@
 import React, { useCallback, useMemo, useEffect } from 'react';
 import { tabContainerType } from './types';
 import clsx from 'clsx';
+import { useModuleState, useModuleActions } from 'Components/Helpers/moduleState/hooks';
+import { withModuleState } from 'Components/Helpers';
 
-const TabContainer = ({
-  isBackground,
-  visible,
-  children,
-  className,
-  isPortal,
-  isTab,
-  onChangeVisibleAction,
-}) => {
-  const changeActionVisible = useCallback(onChangeVisibleAction, []);
-  const isVisibility = useMemo(() => (isBackground || visible) && !!children, [
-    isBackground,
-    visible,
-    children,
-  ]);
-  const isValidTabType = useMemo(() => !isPortal || (isPortal && isTab), [isPortal, isTab]);
-  const shouldRender = isVisibility && isValidTabType;
+const TabContainer = ({ classNameTab, children, ...props }) => {
+  const moduleContext = useModuleState();
+  const moduleActionsContext = useModuleActions();
+
+  const { setVisibility = null } = moduleActionsContext;
+  const { visibility = false, availableBackground = false } = moduleContext;
+
+  /**
+   * actual visibile state
+   */
+  const { actualParams = {} } = props;
+  const { isBackground = availableBackground, visible = visibility } = actualParams;
+
+  const setVisibilityMemo = useCallback(setVisibility, [setVisibility, visibility, availableBackground]);
 
   const visibilityClass = useMemo(
     () =>
       clsx(
         'tabContainer',
-        visible && shouldRender ? 'visible' : 'hidden',
-        className ? className : null,
-        !visible && isBackground && shouldRender ? 'isBackground' : null,
+        visibility ? 'visible' : 'hidden',
+        classNameTab && classNameTab,
+        !visibility && availableBackground ? 'isBackground' : null,
       ),
-    [visible, className, isBackground, shouldRender],
+    [visibility, availableBackground, classNameTab],
   );
 
   useEffect(() => {
-    const shouldChange = isPortal && isTab;
-    if (changeActionVisible && shouldChange) changeActionVisible(null, shouldChange);
-  }, [isPortal, isTab, changeActionVisible]);
+    if (setVisibilityMemo)
+      setVisibilityMemo({
+        visibility: visible,
+        availableBackground: isBackground,
+      });
+  }, [isBackground, visible, setVisibilityMemo]);
 
   return (
     <>
-      {shouldRender ? (
+      {(visibility || isBackground) && children ? (
         <div key={children.key + 'tab'} className={visibilityClass}>
           {children}
         </div>
@@ -47,12 +49,9 @@ const TabContainer = ({
   );
 };
 TabContainer.defaultProps = {
-  className: 'module',
-  onChangeVisibleAction: null,
-  isBackground: false,
-  visible: false,
-  isPortal: false,
-  isTab: false,
+  actualParams: {},
+  classNameTab: 'module',
+  children: null,
 };
 TabContainer.propTypes = tabContainerType;
-export default TabContainer;
+export default withModuleState(TabContainer);

@@ -44,22 +44,23 @@ class TaskModule extends React.PureComponent {
   componentDidMount = () => {
     const {
       path = '',
-      visible,
       loaderMethods = {},
       router: { routeData },
       modelsContext,
+      moduleContext,
     } = this.props;
+    const { visibility = false } = moduleContext;
     const { config: { task: { limitList = 20 } = {} } = {} } = modelsContext;
     const { height } = this.state;
     const { onShowLoader } = loaderMethods;
 
     const isEmptyTasks = _.isEmpty(routeData[path]);
     const isTaskModule = path && path.includes('task') && !path.split('__')[1];
-    if (height === null && this.moduleTask !== null && visible) {
+    if (height === null && this.moduleTask !== null && visibility) {
       this.recalcHeight();
     }
 
-    if (visible && isTaskModule) {
+    if (visibility && isTaskModule) {
       const saveData = {
         current: 1,
         pageSize: limitList,
@@ -94,19 +95,21 @@ class TaskModule extends React.PureComponent {
 
   componentDidUpdate = () => {
     const {
-      visible,
       router: { shouldUpdate = false, routeData = {} },
       path = '',
       modelsContext,
+      moduleContext,
     } = this.props;
+
+    const { visibility = false } = moduleContext;
     const { isListCounterLoading = false } = this.state;
     const { config: { task: { limitList = 20 } = {} } = {} } = modelsContext;
-    if ([this.moduleTask, this.controller].every((type) => type !== null) && visible) {
+    if ([this.moduleTask, this.controller].every((type) => type !== null) && visibility) {
       this.recalcHeight();
     }
 
-    const shouldUpdateList = visible && routeData[path] && routeData[path]?.shouldUpdate;
-    const isUnloadModule = shouldUpdate && visible && !routeData[path]?.load;
+    const shouldUpdateList = visibility && routeData[path] && routeData[path]?.shouldUpdate;
+    const isUnloadModule = shouldUpdate && visibility && !routeData[path]?.load;
     const { loading = false } = routeData[path] || {};
 
     const isCloseTabAction = !isUnloadModule && !shouldUpdateList && shouldUpdate && !loading;
@@ -337,11 +340,6 @@ class TaskModule extends React.PureComponent {
 
   render() {
     const { path = '', type = '' } = this.props;
-    const moduleViewKey = path?.split('__')[1];
-
-    if (!path.includes('taskModule') || (moduleViewKey && !path.includes(moduleViewKey))) {
-      return null;
-    }
 
     const component = this.getTaskByPath(path);
     return (

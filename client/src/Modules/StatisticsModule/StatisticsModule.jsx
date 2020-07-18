@@ -20,24 +20,27 @@ class StatisticsModule extends React.PureComponent {
   static propTypes = statisticsModuleType;
 
   componentDidMount = () => {
-    const { visible } = this.props;
+    const { moduleContext } = this.props;
+    const { visibility = false } = moduleContext;
     const { dateConfig = [] } = this.state;
 
-    if (visible && Array.isArray(dateConfig)) {
+    if (visibility && Array.isArray(dateConfig)) {
       this.fetchStatistics();
     }
   };
 
   componentDidUpdate = () => {
     const {
-      visible,
       path,
       router: { routeData = {} },
+      moduleContext,
     } = this.props;
+    const { visibility = false } = moduleContext;
+
     if (!path || (path && !path.includes('statistic'))) return;
     const { dateConfig = [] } = this.state;
     const { [path]: currentModule = null } = routeData || {};
-    const shouldReload = currentModule && !currentModule?.loading && visible && !currentModule?.load;
+    const shouldReload = currentModule && !currentModule?.loading && visibility && !currentModule?.load;
 
     if (Array.isArray(dateConfig) && shouldReload) this.fetchStatistics();
   };
