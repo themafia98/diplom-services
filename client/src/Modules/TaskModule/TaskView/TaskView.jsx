@@ -15,10 +15,11 @@ import { сachingAction } from 'Redux/actions/publicActions';
 import ModalWindow from 'Components/ModalWindow';
 import TitleModule from 'Components/TitleModule';
 
-import modelContext from 'Models/context';
 import DescriptionTask from './DescriptionTask';
 import renderDescription from './renderDescription';
 import actionsTypes from 'actions.types';
+import { compose } from 'redux';
+import { moduleContextToProps } from 'Components/Helpers/moduleState';
 
 class TaskView extends React.PureComponent {
   state = {
@@ -49,7 +50,6 @@ class TaskView extends React.PureComponent {
     modeEditContent: false,
   };
 
-  static contextType = modelContext;
   static propTypes = taskViewType;
   static defaultProps = {
     columnStyleConfig: { xxl: 1, xl: 1, lg: 1, d: 1, sm: 1, xs: 1 },
@@ -125,10 +125,11 @@ class TaskView extends React.PureComponent {
     const {
       onSaveCache = null,
       router: { routeDataActive: { editor = '' } = {} },
+      modelsContext,
     } = this.props;
 
     const { key: taskId } = this.state;
-    const { Request = {} } = this.context;
+    const { Request = {} } = modelsContext;
 
     try {
       const rest = new Request();
@@ -184,9 +185,10 @@ class TaskView extends React.PureComponent {
   fetchFiles = async (filteredStatusNames) => {
     const {
       router: { routeDataActive = {} },
+      modelsContext,
     } = this.props;
 
-    const { rest } = this.context;
+    const { rest } = modelsContext;
 
     try {
       this.setState(
@@ -415,10 +417,11 @@ class TaskView extends React.PureComponent {
       router: { routeDataActive = {} } = {},
       router: { path = '' },
       route = null,
+      modelsContext,
     } = this.props;
     const { modeControllEdit = {} } = this.state;
     const validHashCopy = [{ ...modeControllEdit }];
-    const { schema = {} } = this.context;
+    const { schema = {} } = modelsContext;
 
     const validHash = validHashCopy.map((it) => schema?.getSchema(TASK_SCHEMA, it)).filter(Boolean)[0];
 
@@ -663,6 +666,7 @@ class TaskView extends React.PureComponent {
       router = {},
       columnStyleConfig = {},
       currentActionTab: path = '',
+      modelsContext,
     } = this.props;
 
     const {
@@ -695,7 +699,7 @@ class TaskView extends React.PureComponent {
       onRemoveFile,
       onChangeTagList,
     } = this;
-    const { rest = {} } = this.context;
+    const { rest = {} } = modelsContext;
 
     if (!key) return <div>This task not found</div>;
 
@@ -813,4 +817,4 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export { TaskView };
-export default connect(mapStateTopProps, mapDispatchToProps)(TaskView);
+export default compose(moduleContextToProps, connect(mapStateTopProps, mapDispatchToProps))(TaskView);

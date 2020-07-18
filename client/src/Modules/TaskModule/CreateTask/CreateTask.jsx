@@ -11,9 +11,9 @@ import Textarea from 'Components/Textarea';
 import { v4 as uuid } from 'uuid';
 
 import { routePathNormalise, routeParser, createEntity, createNotification } from 'Utils';
-import modelContext from 'Models/context';
 
 import { CREATE_TASK_SCHEMA } from 'Models/Schema/const';
+import { moduleContextToProps } from 'Components/Helpers/moduleState';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -38,7 +38,6 @@ class CreateTask extends React.PureComponent {
     errorBundle: {},
   };
 
-  static contextType = modelContext;
   static propTypes = createTaskType;
   static defaultProps = {
     visibleMode: 'default',
@@ -103,9 +102,8 @@ class CreateTask extends React.PureComponent {
   };
 
   componentDidMount = async () => {
-    const { router: { routeData = {} } = {} } = this.props;
-
-    const { Request = null } = this.context;
+    const { router: { routeData = {} } = {}, modelsContext } = this.props;
+    const { Request = null } = modelsContext;
     if (!Request) return;
 
     try {
@@ -273,6 +271,7 @@ class CreateTask extends React.PureComponent {
       removeTab,
       udata: { _id: uid = '', displayName = '' } = {},
       onSetStatus,
+      modelsContext,
     } = this.props;
 
     const {
@@ -280,7 +279,7 @@ class CreateTask extends React.PureComponent {
       card = {},
       card: { name = '' },
     } = this.state;
-    const { config = {}, schema = {}, clientDB } = this.context;
+    const { config = {}, schema = {}, clientDB } = modelsContext;
 
     if (!this.validation()) {
       if (trySubmitState) return;
@@ -413,9 +412,8 @@ class CreateTask extends React.PureComponent {
     const {
       errorBundle = {},
       filteredUsers = [],
-      card: { description: descriptionValue = '' /* key: keyCard = '' */ },
+      card: { description: descriptionValue = '' },
     } = this.state;
-    //const { rest } = this.context;
 
     const defaultDate = this.getDefaultDate(dateFormat);
 
@@ -528,4 +526,4 @@ class CreateTask extends React.PureComponent {
   }
 }
 
-export default CreateTask;
+export default moduleContextToProps(CreateTask);

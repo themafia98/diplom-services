@@ -2,6 +2,7 @@ import React from 'react';
 import { taskModuleMyListType } from '../types';
 import TableView from 'Components/TableView';
 import TitleModule from 'Components/TitleModule';
+import { moduleContextToProps } from 'Components/Helpers/moduleState';
 
 class TaskModuleMyList extends React.PureComponent {
   refModuleTask = React.createRef();
@@ -40,4 +41,4 @@ class TaskModuleMyList extends React.PureComponent {
     );
   }
 }
-export default TaskModuleMyList;
+export default moduleContextToProps(TaskModuleMyList);

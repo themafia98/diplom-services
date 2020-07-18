@@ -3,7 +3,7 @@ import { notificationPopupType } from './types';
 import { Icon, Badge, Popover } from 'antd';
 import NotificationItem from './NotificationItem';
 import StreamBox from 'Components/StreamBox';
-import modelContext from 'Models/context';
+import ModelContext from 'Models/context';
 import actionsTypes from 'actions.types';
 class NotificationPopup extends React.PureComponent {
   state = {
@@ -20,7 +20,7 @@ class NotificationPopup extends React.PureComponent {
     udata: {},
   };
 
-  static contextType = modelContext;
+  static contextType = ModelContext;
   static propTypes = notificationPopupType;
 
   intervalNotif = null;

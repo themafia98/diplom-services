@@ -9,6 +9,7 @@ import Chat from 'Modules/ContactModule/Chat';
 import TabContainer from 'Components/TabContainer';
 import { v4 as uuid } from 'uuid';
 import types from 'types.modules';
+import { withModuleState } from 'Components/Helpers';
 
 const { Content } = Layout;
 
@@ -234,4 +235,4 @@ class ContentView extends React.Component {
 }
 
 export { ContentView };
-export default ContentView;
+export default withModuleState(ContentView);

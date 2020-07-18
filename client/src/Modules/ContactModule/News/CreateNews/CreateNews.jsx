@@ -5,9 +5,9 @@ import moment from 'moment';
 import TitleModule from 'Components/TitleModule';
 import EditorTextarea from 'Components/Textarea/EditorTextarea';
 import { message, notification, Input } from 'antd';
-import modelContext from 'Models/context';
 
 import { createNotification, createEntity } from 'Utils';
+import { moduleContextToProps } from 'Components/Helpers/moduleState';
 
 class CreateNews extends React.PureComponent {
   state = {
@@ -15,7 +15,6 @@ class CreateNews extends React.PureComponent {
     clear: false,
   };
 
-  static contextType = modelContext;
   static propTypes = createNewsType;
 
   clearStatus = () => {
@@ -37,9 +36,14 @@ class CreateNews extends React.PureComponent {
   };
 
   onPublish = async (contentState) => {
-    const { statusApp = '', udata: { displayName = '', _id: uid = '' } = {}, onSetStatus } = this.props;
+    const {
+      statusApp = '',
+      udata: { displayName = '', _id: uid = '' } = {},
+      onSetStatus,
+      modelsContext,
+    } = this.props;
     const { titleNews = '' } = this.state;
-    const { clientDB = null } = this.context;
+    const { clientDB = null } = modelsContext;
 
     if (!titleNews || !contentState) {
       return message.error('Название не найдено');
@@ -131,4 +135,4 @@ class CreateNews extends React.PureComponent {
   }
 }
 
-export default CreateNews;
+export default moduleContextToProps(CreateNews);

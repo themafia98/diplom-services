@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { routePathNormalise, findData } from 'Utils';
 import { Tooltip, Button, message, Spin } from 'antd';
 import _ from 'lodash';
-import modelContext from 'Models/context';
+import ModelContext from 'Models/context';
 
 class Output extends React.PureComponent {
   state = {
@@ -13,7 +13,7 @@ class Output extends React.PureComponent {
     widthParent: null,
   };
 
-  static contextType = modelContext;
+  static contextType = ModelContext;
   static propTypes = outputType;
   static defaultProps = {
     children: '',

@@ -8,7 +8,7 @@ import { addTabAction, setActiveTabAction } from 'Redux/actions/routerActions';
 
 import Logo from 'Components/Logo';
 import ModalWindow from 'Components/ModalWindow';
-import modelContext from 'Models/context';
+import ModelContext from 'Models/context';
 
 class LoginPage extends React.Component {
   state = {
@@ -18,7 +18,7 @@ class LoginPage extends React.Component {
     errorMessage: null,
   };
 
-  static contextType = modelContext;
+  static contextType = ModelContext;
   static propTypes = loginType;
   static defaultProps = {
     authLoad: false,

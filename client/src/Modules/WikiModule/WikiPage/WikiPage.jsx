@@ -3,13 +3,13 @@ import { v4 as uuid } from 'uuid';
 import { getValidContent } from 'Utils';
 import Textarea from 'Components/Textarea';
 import { wikiPageTypes } from '../types';
-import modelContext from 'Models/context';
+import ModelContext from 'Models/context';
 import { Spin, Button, message } from 'antd';
 import moment from 'moment';
 import actionsTypes from 'actions.types';
 
 const WikiPage = ({ selectedNode, metadata, onChangeWikiPage, udata: { displayName } }) => {
-  const models = useContext(modelContext);
+  const models = useContext(ModelContext);
 
   const [pageId, setPageId] = useState(`${uuid()}_virtual`);
   const [lastEditName, setLastEdit] = useState(null);

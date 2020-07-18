@@ -14,7 +14,7 @@ import {
   addToRouteDataAction,
   setActiveTabAction,
 } from 'Redux/actions/routerActions';
-import modelContext from 'Models/context';
+import ModelContext from 'Models/context';
 
 class TableView extends React.Component {
   state = {
@@ -23,7 +23,7 @@ class TableView extends React.Component {
     isScroll: null,
   };
 
-  static contextType = modelContext;
+  static contextType = ModelContext;
   static propTypes = tableViewType;
   static defaultProps = {
     tasks: [],
