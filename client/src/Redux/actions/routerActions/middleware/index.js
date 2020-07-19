@@ -2,6 +2,7 @@ import { getNormalizedPath, sucessEvent, errorHook, coreUpdaterDataHook } from '
 import { saveComponentStateAction, loadFlagAction } from '../';
 import { errorRequestAction, setStatus } from '../../publicActions';
 import actionsTypes from 'actions.types';
+import regExpRegister from 'Utils/Tools/regexpStorage';
 //import workerInstanse from 'workerInstanse';
 
 const loadCurrentData = (params) => async (dispatch, getState, { schema, Request, clientDB }) => {
@@ -23,7 +24,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
 
   let isLocalUpdate = true;
   const primaryKey = 'uuid';
-  const pathValid = path.includes('_') ? path : path.split('__')[0];
+  const pathValid = path.includes(regExpRegister.MODULE_SUB) ? path : path.split(regExpRegister.MODULE_ID)[0];
   const router = getState().router;
 
   const { requestError, status = 'online' } = getState().publicReducer;
@@ -175,7 +176,7 @@ const multipleLoadData = (params) => async (dispatch, getState, { schema, Reques
         } = requestParam;
         const path = saveModuleName ? saveModuleName : pathName;
         let isLocalUpdate = true;
-        const pathValid = path.includes('_') ? path : path.split('__')[0];
+        const pathValid = path.includes('_') ? path : path.split(regExpRegister.MODULE_ID)[0];
 
         const normalizeReqPath = getNormalizedPath(useStore, {
           xhrPath,

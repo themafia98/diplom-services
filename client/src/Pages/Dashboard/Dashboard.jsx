@@ -153,7 +153,7 @@ class Dashboard extends React.PureComponent {
     } = this.props;
     const { routeData = {} } = router;
     const copyRouteData = { ...routeData };
-    let currentArray = currentActionTab.split('_' || '__');
+    let currentArray = currentActionTab.split(regExpRegister.MODULE_KEY);
     let regExp = new RegExp(currentArray[0], 'gi');
     let keys = Object.keys(copyRouteData).filter(
       (key) => regExpRegister.INCLUDE_MODULE.test(key) && regExp.test(key),
@@ -245,7 +245,7 @@ class Dashboard extends React.PureComponent {
         setCurrentTab({ tab: path, config });
       }
     } else if (mode === 'close') {
-      const entityId = path.split('__')[1];
+      const entityId = path.split(regExpRegister.MODULE_ID)[1];
       let type = 'deafult';
       if (entityId) type = 'itemTab';
 

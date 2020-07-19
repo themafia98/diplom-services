@@ -3,6 +3,7 @@ import _ from 'lodash';
 import TabContainer from 'Components/TabContainer';
 import { getComponentByKey } from 'Utils';
 import types from 'types.modules';
+import regExpRegister from './regexpStorage';
 
 const entityRender = (entitysList = [], routeData = {}, subTabProps = {}, config = {}) => {
   const {
@@ -24,14 +25,14 @@ const entityRender = (entitysList = [], routeData = {}, subTabProps = {}, config
     if (
       components.some(({ type = Symbol(''), tabKey = '' }) => {
         return (
-          tabKey?.includes(entityKey.split(/__/i)[1]) &&
+          tabKey?.includes(entityKey.split(regExpRegister.MODULE_ID)[1]) &&
           type === (isCheckerType ? typeEntity(type) : typeEntity)
         );
       })
     )
       return components;
 
-    const [, moduleViewKey] = entityKey?.split('__');
+    const [, moduleViewKey] = entityKey?.split(regExpRegister.MODULE_ID);
     const isView = entityKey?.includes(moduleName) && !!moduleViewKey;
 
     const type = isView

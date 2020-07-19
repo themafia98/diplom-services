@@ -19,6 +19,7 @@ import withRouter from 'Components/Helpers/withRouter';
 import types from 'types.modules';
 import actionsTypes from 'actions.types';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
+import regExpRegister from 'Utils/Tools/regexpStorage';
 
 class TaskModule extends React.PureComponent {
   state = {
@@ -55,7 +56,7 @@ class TaskModule extends React.PureComponent {
     const { onShowLoader } = loaderMethods;
 
     const isEmptyTasks = _.isEmpty(routeData[path]);
-    const isTaskModule = path && path.includes('task') && !path.split('__')[1];
+    const isTaskModule = path && path.includes('task') && !path.split(regExpRegister.MODULE_ID)[1];
     if (height === null && this.moduleTask !== null && visibility) {
       this.recalcHeight();
     }
@@ -89,7 +90,7 @@ class TaskModule extends React.PureComponent {
 
   shouldUpdateTasks = () => {
     const { path = '' } = this.props;
-    const viewId = path.split('__')[1];
+    const viewId = path.split(regExpRegister.MODULE_ID)[1];
     return !!path && path.includes('task') && !viewId && !path.includes('createTask');
   };
 
@@ -299,7 +300,7 @@ class TaskModule extends React.PureComponent {
       } = this.props;
 
       const route = routeParser({ pageType: 'moduleItem', path });
-      const [namePath = '', uuid = ''] = path.split('__');
+      const [namePath = '', uuid = ''] = path.split(regExpRegister.MODULE_ID);
       const type = uuid ? types.$entity_entrypoint : typeDefault;
 
       const subTabProps = {

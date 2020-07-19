@@ -13,6 +13,7 @@ import {
 } from 'Redux/actions/routerActions/const';
 import { ON_END_DRAG_TAB } from 'Redux/actions/tabActions/const';
 import { SET_STATUS } from 'Redux/actions/publicActions/const';
+import regExpRegister from 'Utils/Tools/regexpStorage';
 
 const initialState = {
   path: null,
@@ -65,7 +66,9 @@ export default handleActions(
         ? draftPayload
         : draftPayload?.tab;
       const content =
-        typeof payload === 'string' ? payload?.split('__')[1] : draftPayload?.tab?.split('__')[1];
+        typeof payload === 'string'
+          ? payload?.split(regExpRegister.MODULE_ID)[1]
+          : draftPayload?.tab?.split(regExpRegister.MODULE_ID)[1];
 
       const selectModule = payload;
       let currentActive = null;
@@ -118,7 +121,7 @@ export default handleActions(
         routeDataActive: { _id: id = '' } = {},
       } = state;
 
-      const entityId = path.split('__')[1];
+      const entityId = path.split(regExpRegister.MODULE_ID)[1];
       let deleteKey = type === 'itemTab' ? entityId : path;
       let deleteKeyOnce = !deleteKey ? path : null;
 
@@ -126,7 +129,7 @@ export default handleActions(
         if (
           deleteKey &&
           ((type === 'itemTab' && tab.includes(entityId) && entityId === deleteKey) ||
-            (!tab.split('__')[1] && tab.includes(path)))
+            (!tab.split(regExpRegister.MODULE_ID)[1] && tab.includes(path)))
         )
           return false;
         return tab !== payload;
@@ -149,7 +152,7 @@ export default handleActions(
       else if (indexFind === 0) nextTab = filterArray[indexFind];
       else nextTab = filterArray[indexFind - 1];
 
-      const parsedTabEntity = nextTab.split('__')[1];
+      const parsedTabEntity = nextTab.split(regExpRegister.MODULE_ID)[1];
       const uuidEntityItem = typeof nextTab === 'string' && type === 'itemTab' ? parsedTabEntity : nextTab;
 
       const copyData = routeDataNew;
@@ -215,7 +218,7 @@ export default handleActions(
 
       const { path: pathPage = '' } = activePage || {};
 
-      const linkEntity = pathPage.includes('___link') && pathPage.split('__')[1];
+      const linkEntity = pathPage.includes('___link') && pathPage.split(regExpRegister.MODULE_ID)[1];
       let currentActionTab = pathPage;
 
       if (linkEntity) {
@@ -284,15 +287,15 @@ export default handleActions(
         load = false,
       } = payload;
 
-      const isLink = pathAction.includes('__link') && pathAction.split('__')[1];
-      const pathLink = isLink ? pathAction.split('__')[1] : pathAction;
+      const isLink = pathAction.includes('__link') && pathAction.split(regExpRegister.MODULE_ID)[1];
+      const pathLink = isLink ? pathAction.split(regExpRegister.MODULE_ID)[1] : pathAction;
       const path = pathLink.split('__link')[0];
 
       if (stateList && Array.isArray(stateList) && multiple) {
         const modulesState = stateList.reduce((newState, actionItem) => {
           const { path = '' } = actionItem;
 
-          let storeName = path ? path.split('Module')[0] : '';
+          let storeName = path ? path.split(regExpRegister.INCLUDE_MODULE)[0] : '';
           storeName = storeName[storeName.length] !== 's' ? `${storeName}s` : storeName;
           if (!storeName) return newState;
           let items = actionItem[storeName];
@@ -340,7 +343,7 @@ export default handleActions(
 
       copyRouteData[path] = { ...payload };
 
-      let storeName = path.split('Module')[0];
+      let storeName = path.split(regExpRegister.INCLUDE_MODULE)[0];
       storeName = storeName[storeName.length] !== 's' ? `${storeName}s` : storeName;
 
       if (copyRouteData[path][storeName] && routeData[path] && routeData[path][storeName]) {
@@ -382,13 +385,13 @@ export default handleActions(
         id,
         updateBy = '_id',
         updaterItem = {},
-        store = currentPath.split('__')[0],
+        store = currentPath.split(regExpRegister.MODULE_ID)[0],
         parsedRoutePath = {},
       } = payload;
       const { itemId = '', path = '' } = parsedRoutePath || {};
 
       const isExist = routeDataActive && routeDataActive[updateBy];
-      const currentModule = path.split('__');
+      const currentModule = path.split(regExpRegister.MODULE_ID);
 
       if (!path || !currentModule) return state;
 

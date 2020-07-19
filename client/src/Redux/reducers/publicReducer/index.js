@@ -10,6 +10,7 @@ import {
   LOAD_SETTINGS,
   LOAD_ARTIFACT,
 } from '../../actions/publicActions/const';
+import regExpRegister from 'Utils/Tools/regexpStorage';
 
 const initialState = {
   status: 'online',
@@ -145,7 +146,7 @@ export default handleActions(
     [CLEAR_CACHE]: (state, { payload }) => {
       const { type = '', path } = payload;
       const { caches = {} } = state || {};
-      const deleteKey = type === 'itemTab' ? path.split('__')[1] : path;
+      const deleteKey = type === 'itemTab' ? path.split(regExpRegister.MODULE_ID)[1] : path;
       const copyCahes = { ...caches };
 
       const filterCaches = Object.keys(copyCahes).reduce((filterObj, key) => {

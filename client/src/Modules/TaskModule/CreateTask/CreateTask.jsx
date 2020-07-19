@@ -14,6 +14,7 @@ import { routePathNormalise, routeParser, createEntity, createNotification } fro
 
 import { CREATE_TASK_SCHEMA } from 'Models/Schema/const';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
+import regExpRegister from 'Utils/Tools/regexpStorage';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -364,7 +365,7 @@ class CreateTask extends React.PureComponent {
           const isFind = index !== -1;
 
           let type = 'deafult';
-          if (path.split('__')[1]) type = 'itemTab';
+          if (path.split(regExpRegister.MODULE_ID)[1]) type = 'itemTab';
 
           if (removeTab) removeTab({ path, type: type });
 

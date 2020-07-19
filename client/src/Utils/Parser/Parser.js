@@ -117,13 +117,13 @@ const routeParser = ({ pageType = 'module', path: route = null }) => {
   if (typeof route !== 'string') return '';
 
   if (pageType === 'link') {
-    const [page = '', moduleId = '', entityKey = ''] = route.split(/__|_/gi);
+    const [page = '', moduleId = '', entityKey = ''] = route.split(regExpRegister.MODULE_KEY);
     return { page, itemId: entityKey, moduleId, path: route };
   } else if (pageType === 'page') {
-    const [page = '', pageChild = ''] = route.split(/__/gi);
+    const [page = '', pageChild = ''] = route.split(regExpRegister.MODULE_ID);
     return { page, pageChild, path: route };
   } else if (pageType === 'moduleItem') {
-    const arrayDataRoute = route.split(/__/gi);
+    const arrayDataRoute = route.split(regExpRegister.MODULE_ID);
 
     if (arrayDataRoute.length < 2 || arrayDataRoute.length > 3) return route;
 
@@ -132,7 +132,7 @@ const routeParser = ({ pageType = 'module', path: route = null }) => {
 
     return { page, itemId, path: `${page}__${itemId}` };
   } else if (pageType === 'module') {
-    const arrayDataRoute = route.split(/_/gi);
+    const arrayDataRoute = route.split(regExpRegister.MODULE_SUB);
 
     if (arrayDataRoute.length < 2 || arrayDataRoute.length > 3) return route;
 
@@ -280,7 +280,7 @@ const isTimeLostValue = (value) => {
  * @returns {string[]} [moduleName, subModuleName, entityKey]
  */
 const parseModuleKey = (tabKey) => {
-  const parsedModuleKeys = tabKey.split(/__|_/gi);
+  const parsedModuleKeys = tabKey.split(regExpRegister.MODULE_KEY);
   const [moduleName = '', subModuleName = '', entityKey = ''] = parsedModuleKeys;
   if (subModuleName === '$link$') return [moduleName, '', entityKey];
   return parsedModuleKeys;
