@@ -38,6 +38,11 @@ class ContactModule extends React.PureComponent {
     }
   };
 
+  checkBackground = (path, visible, mode = 'default') => {
+    const { router: { activeTabs = [] } = {} } = this.props;
+    if (mode === 'default') return !visible && activeTabs.some((actionTab) => actionTab === path);
+  };
+
   /** TODO: should rework re-load data */
   // componentDidUpdate = () => {
   //   const {
@@ -74,7 +79,6 @@ class ContactModule extends React.PureComponent {
 
   getContactContentByPath = (path) => {
     const {
-      getBackground,
       statusApp,
       router: { routeData = {}, activeTabs = [] } = {},
       router = {},
@@ -110,7 +114,7 @@ class ContactModule extends React.PureComponent {
     const config = {
       viewModuleName: 'newsViewPageModule',
       moduleName: 'contactModule',
-      validation: getBackground,
+      validation: this.checkBackground,
       path,
       parentType: type,
       type: oneOfType(types.$sub_entrypoint_module, types.$entity_entrypoint),

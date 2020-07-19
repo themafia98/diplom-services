@@ -1,13 +1,19 @@
 import PropTypes from 'prop-types';
 import { udataType } from 'types';
-const { bool, object, func, string } = PropTypes;
+const { bool, object, func, string, oneOfType, number } = PropTypes;
 
 export const commentType = {
   rules: bool.isRequired,
   it: object.isRequired,
-  onDelete: func.isRequired,
   userId: string.isRequired,
-  uId: string.isRequired,
+  router: object.isRequired,
+  udata: udataType.isRequired,
+  uId: oneOfType([number, string]).isRequired,
+  onDelete: func.isRequired,
+  onEdit: func,
+  removeTab: func,
+  onOpenPageWithData: func,
+  setCurrentTab: func,
 };
 
 export const commentsContainerType = {

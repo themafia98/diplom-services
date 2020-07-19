@@ -53,14 +53,14 @@ class TaskModule extends React.PureComponent {
     const { config: { task: { limitList = 20 } = {} } = {} } = modelsContext;
     const { height } = this.state;
     const { onShowLoader } = loaderMethods;
-
+    debugger;
     const isEmptyTasks = _.isEmpty(routeData[path]);
     const isTaskModule = path && path.includes('task') && !path.split('__')[1];
     if (height === null && this.moduleTask !== null && visibility) {
       this.recalcHeight();
     }
 
-    if (visibility && isTaskModule) {
+    if (isTaskModule) {
       const saveData = {
         current: 1,
         pageSize: limitList,
@@ -71,7 +71,7 @@ class TaskModule extends React.PureComponent {
       });
     }
 
-    if (typeof onShowLoader === 'function' && isEmptyTasks) {
+    if (typeof onShowLoader === 'function' && isEmptyTasks && visibility) {
       onShowLoader();
     }
 
@@ -104,12 +104,15 @@ class TaskModule extends React.PureComponent {
     const { visibility = false } = moduleContext;
     const { isListCounterLoading = false } = this.state;
     const { config: { task: { limitList = 20 } = {} } = {} } = modelsContext;
-    if ([this.moduleTask, this.controller].every((type) => type !== null) && visibility) {
+
+    if (!visibility) return;
+
+    if ([this.moduleTask, this.controller].every((type) => type !== null)) {
       this.recalcHeight();
     }
 
-    const shouldUpdateList = visibility && routeData[path] && routeData[path]?.shouldUpdate;
-    const isUnloadModule = shouldUpdate && visibility && !routeData[path]?.load;
+    const shouldUpdateList = routeData[path] && routeData[path]?.shouldUpdate;
+    const isUnloadModule = shouldUpdate && !routeData[path]?.load;
     const { loading = false } = routeData[path] || {};
 
     const isCloseTabAction = !isUnloadModule && !shouldUpdateList && shouldUpdate && !loading;

@@ -15,6 +15,7 @@ export const tabType = {
   itemKey: oneOfType([string, number, () => null]),
   value: oneOfType([string, number, () => null]),
   sizeTab: oneOfType([string, number]),
+  index: number.isRequired,
 };
 
 export const rightPanelType = {

@@ -1,12 +1,12 @@
 //@ts-nocheck
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { Dropdown, Icon, Menu, Spin, Tooltip } from 'antd';
 import { ActionListType } from './types';
 
 const ActionList = ({
   viewType,
   entityName: entityNameProps,
-  showModal,
+  showModal: onShowModal,
   onMessage,
   modeControll,
   onUpdateEditable,
@@ -16,9 +16,14 @@ const ActionList = ({
   rulesEdit,
   onEdit,
 }) => {
-  const onAction = (event, key) => {
-    showModal(event, key);
-  };
+  const showModal = useCallback(onShowModal, []);
+
+  const onAction = useCallback(
+    (event, key) => {
+      showModal(event, key);
+    },
+    [showModal],
+  );
 
   const [entityName] = useState(entityNameProps);
   const isEdit = modeControll === 'edit';
@@ -31,7 +36,7 @@ const ActionList = ({
     );
   };
 
-  const getBodyByEntityName = () => {
+  const overlay = useMemo(() => {
     switch (entityName) {
       case 'taskView':
         return (
@@ -73,11 +78,11 @@ const ActionList = ({
       default:
         return <div className="empty" />;
     }
-  };
+  }, [entityName, isEdit, onAction, onEdit, onMessage, rulesEdit, rulesStatus, viewType]);
 
   return (
     <>
-      <Dropdown overlay={getBodyByEntityName()}>
+      <Dropdown overlay={overlay}>
         <p className="action-dropdown-link">
           Управление задачей
           <Icon type="down" />
@@ -105,6 +110,11 @@ ActionList.defaultProps = {
   isLoadList: true,
   rulesStatus: true,
   rulesEdit: true,
+  showModal: null,
+  onMessage: null,
+  onUpdateEditable: null,
+  onRejectEdit: null,
+  onEdit: null,
 };
 
 ActionList.propTypes = ActionListType;

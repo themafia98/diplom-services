@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { commentType } from './types';
 import Output from 'Components/Output';
 import { Icon, Tooltip, Input, Button } from 'antd';
@@ -20,26 +20,32 @@ const Comment = ({
   const [value, setValue] = useState(it?.message);
   const [editable, setEditable] = useState(false);
   const [loading, setLoading] = useState(false);
-  const onAction = (action, event) => {
-    switch (action) {
-      case 'delete':
-        return onDelete(event, key);
-      case 'edit': {
-        if (!loading) setLoading(true);
-        return onEdit(key, value, onReset);
-      }
-      default:
-        return null;
-    }
-  };
 
-  const onReset = () => {
+  const onEditMode = useCallback(() => setEditable(!editable), [editable]);
+
+  const onReset = useCallback(() => {
     setLoading(false);
     onEditMode();
-  };
+  }, [onEditMode]);
 
-  const onEditMode = () => setEditable(!editable);
+  const onAction = useCallback(
+    (action, event) => {
+      switch (action) {
+        case 'delete':
+          return onDelete(event, key);
+        case 'edit': {
+          if (!loading) setLoading(true);
+          return onEdit(key, value, onReset);
+        }
+        default:
+          return null;
+      }
+    },
+    [key, loading, onDelete, onEdit, onReset, value],
+  );
+
   const onChange = ({ target: { value = '' } }) => setValue(value);
+
   return (
     <div className="block-comment">
       {rules ? (
@@ -97,11 +103,17 @@ const Comment = ({
   );
 };
 Comment.defaultProps = {
-  onDelete: null,
   rules: false,
+  router: {},
+  udata: {},
   it: {},
   userId: '',
   uId: '',
+  onDelete: null,
+  onEdit: null,
+  removeTab: null,
+  onOpenPageWithData: null,
+  setCurrentTab: null,
 };
 Comment.propTypes = commentType;
 export default Comment;

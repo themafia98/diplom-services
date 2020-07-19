@@ -2,14 +2,12 @@ import React from 'react';
 import { titleType } from './types';
 import clsx from 'clsx';
 
-const TitleModule = ({ title, className, classNameTitle, additional }) => {
-  return (
-    <div className={clsx('titleModule', className ? className : null)}>
-      <p className={clsx('titleModule_title', classNameTitle ? classNameTitle : null)}>{title}</p>
-      {additional ? <span>{additional}</span> : null}
-    </div>
-  );
-};
+const TitleModule = ({ title, className, classNameTitle, additional }) => (
+  <div className={clsx('titleModule', className)}>
+    <p className={clsx('titleModule_title', classNameTitle)}>{title}</p>
+    {additional ? <span>{additional}</span> : null}
+  </div>
+);
 
 TitleModule.defaultProps = {
   title: '',

@@ -4,20 +4,13 @@ import updater from './updater.png';
 import { Tooltip } from 'antd';
 import clsx from 'clsx';
 
-const Updater = ({ className, additionalClassName, onClick }) => {
-  return (
-    <div className={clsx('updater', className ? className : null)}>
-      <Tooltip title="Обновить" placement="bottom">
-        <img
-          onClick={onClick ? onClick : null}
-          className={clsx(additionalClassName ? additionalClassName : null)}
-          alt="updater"
-          src={updater}
-        ></img>
-      </Tooltip>
-    </div>
-  );
-};
+const Updater = ({ className, additionalClassName, onClick }) => (
+  <div className={clsx('updater', className)}>
+    <Tooltip title="Обновить" placement="bottom">
+      <img onClick={onClick} className={additionalClassName} alt="updater" src={updater}></img>
+    </Tooltip>
+  </div>
+);
 
 Updater.defaultProps = {
   className: '',

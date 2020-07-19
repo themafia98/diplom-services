@@ -1,53 +1,47 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import userPopupType from './types';
 import _ from 'lodash';
 import { Avatar } from 'antd';
 
-class UserPopup extends React.PureComponent {
-  state = {
-    udata: {},
-  };
+const UserPopup = ({ udata, goCabinet }) => {
+  const [userData, setData] = useState(udata);
 
-  static propTypes = userPopupType;
-  static defaultProps = {
-    goCabinet: null,
-    udata: {},
-  };
+  useEffect(() => {
+    if (_.isEqual(udata, userData)) return;
 
-  static getDerivedStateFromProps = (props, state) => {
-    if (!_.isEqual(props.udata, state.udata)) {
-      return {
-        ...state,
-        udata: {
-          ...state.udata,
-          ...props.udata,
-        },
-      };
-    }
+    setData((state) => {
+      if (state && typeof state === 'object') {
+        return {
+          ...state,
+          ...userData,
+        };
+      }
 
-    return state;
-  };
+      return userData;
+    });
+  }, [userData, udata]);
 
-  render() {
-    const { goCabinet } = this.props;
-    const {
-      udata = {},
-      udata: { avatar = '' },
-    } = this.state;
-    return (
-      <div className="userPopup">
-        <div onClick={goCabinet} className="userPopupMain">
-          <Avatar
-            src={avatar ? `data:image/png;base64,${avatar}` : null}
-            shape="square"
-            type="small"
-            icon="user"
-          />
-          <p className="userName_link">{udata && udata.displayName ? udata.displayName : 'Unknown'}</p>
-        </div>
+  const { avatar = '', displayName = '' } = userData || {};
+
+  return (
+    <div className="userPopup">
+      <div onClick={goCabinet} className="userPopupMain">
+        <Avatar
+          src={avatar ? `data:image/png;base64,${avatar}` : null}
+          shape="square"
+          type="small"
+          icon="user"
+        />
+        <p className="userName_link">{displayName}</p>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
+
+UserPopup.propTypes = userPopupType;
+UserPopup.defaultProps = {
+  goCabinet: null,
+  udata: {},
+};
 
 export default UserPopup;

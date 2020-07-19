@@ -285,6 +285,10 @@ const parseModuleKey = (tabKey) => {
   return parsedModuleKeys;
 };
 
+const moduleIdGenerator = (moduleName, entityId = '') => {
+  return entityId ? `${moduleName}__$$${entityId}$$` : moduleName;
+};
+
 /**
  *
  * @param {string} moduleName
@@ -367,6 +371,7 @@ const namespaceParser = {
   getModuleTypeByParsedKey,
   sortedByKey,
   parseArrayByLimit,
+  moduleIdGenerator,
 };
 
 export default namespaceParser;

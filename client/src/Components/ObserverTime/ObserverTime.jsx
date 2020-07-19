@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { observerTimeType } from './types';
 import Scrollbars from 'react-custom-scrollbars';
 import _ from 'lodash';
@@ -7,7 +7,7 @@ import TitleModule from 'Components/TitleModule';
 import { Timeline, Spin } from 'antd';
 
 const ObserverTime = ({ title, settingsLogs, isLoading }) => {
-  const renderLogs = (settingsLogs = []) => {
+  const renderLogs = useCallback((settingsLogs = []) => {
     if (!settingsLogs?.length) return null;
 
     return settingsLogs.map((log, index) => {
@@ -19,9 +19,12 @@ const ObserverTime = ({ title, settingsLogs, isLoading }) => {
         </Timeline.Item>
       );
     });
-  };
+  }, []);
 
-  const isInvalid = !isLoading && (!settingsLogs.length || _.isEmpty(settingsLogs));
+  const isInvalid = useMemo(() => !isLoading && (!settingsLogs.length || _.isEmpty(settingsLogs)), [
+    isLoading,
+    settingsLogs,
+  ]);
 
   return (
     <>

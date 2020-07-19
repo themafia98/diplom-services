@@ -91,7 +91,7 @@ class UserCard extends React.Component {
     }
   };
 
-  onRejectEditSummary = (event) => {
+  onRejectEditSummary = () => {
     this.setState({
       visibilityModal: false,
     });

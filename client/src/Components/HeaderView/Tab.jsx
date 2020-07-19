@@ -1,32 +1,27 @@
-import React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import { tabType } from './types';
 import clsx from 'clsx';
 import { Icon, Tooltip } from 'antd';
 
-class Tab extends React.PureComponent {
-  static propTypes = tabType;
-  static defaultProps = {
-    hendlerTab: null,
-    itemKey: null,
-  };
+const Tab = ({ value, active, hendlerTab, itemKey, index, sizeTab }) => {
+  const callbackHendlerTab = useCallback(hendlerTab, []);
 
-  eventHandler = (event) => {
-    const { hendlerTab: callbackHendlerTab, itemKey } = this.props;
+  const eventHandler = (event) => {
     event.stopPropagation();
+
     callbackHendlerTab(event, itemKey, 'open');
   };
 
-  eventCloseHandler = (event) => {
-    const { hendlerTab: callbackHendlerTab, itemKey } = this.props;
+  const eventCloseHandler = (event) => {
     event.stopPropagation();
+
     if (itemKey === 'mainModule') return;
-    // cbCallbackResize(resize);
+
     callbackHendlerTab(event, itemKey, 'close');
   };
 
-  getTabStyle = () => {
-    const { sizeTab = 10 } = this.props;
+  const getTabStyle = useCallback(() => {
     const recalcSize =
       sizeTab > 55
         ? sizeTab - sizeTab * 0.15
@@ -38,55 +33,59 @@ class Tab extends React.PureComponent {
       maxWidth: `${recalcSize}px`,
       minWidth: `${recalcSize}px`,
     };
-  };
+  }, [sizeTab]);
 
-  getIconStyle = () => {
-    const { sizeTab = 10 } = this.props;
+  const getIconStyle = useCallback(() => {
     return {
       left: sizeTab < 60 ? `85%` : sizeTab < 90 ? `90%` : sizeTab < 102 ? `93%` : null,
     };
-  };
+  }, [sizeTab]);
 
-  tab = null;
-  tabRef = (node) => (this.tab = node);
+  const tabStyle = useMemo(() => getTabStyle(), [getTabStyle]);
+  const closeIconStyle = useMemo(() => getIconStyle(), [getIconStyle]);
 
-  render() {
-    const { value, active, hendlerTab: callbackHendlerTab, itemKey, index = 0 } = this.props;
-    const tabStyle = this.getTabStyle();
-    const closeIconStyle = this.getIconStyle();
-    return (
-      <Draggable key={`${itemKey}-wrapper`} draggableId={itemKey} index={index}>
-        {(provided, snapshot) => (
-          <div
-            className="draggable-wrapper"
-            ref={provided.innerRef}
-            {...provided.draggableProps}
-            {...provided.dragHandleProps}
+  return (
+    <Draggable key={`${itemKey}-wrapper`} draggableId={itemKey} index={index}>
+      {(provided, snapshot) => (
+        <div
+          className="draggable-wrapper"
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+        >
+          <li
+            style={tabStyle}
+            onClick={callbackHendlerTab ? eventHandler : null}
+            className={clsx(active ? 'active' : null)}
+            key={itemKey}
           >
-            <li
-              style={tabStyle}
-              onClick={callbackHendlerTab ? this.eventHandler : null}
-              className={clsx(active ? 'active' : null)}
-              key={itemKey}
-              ref={this.tabRef}
-            >
-              <span className={clsx(active ? 'tabWrapper-content selected' : 'tabWrapper-content')}>
-                <Tooltip title={value} placement="bottom">
-                  <span className="tab-content">{value}</span>
-                </Tooltip>
-              </span>
-              <Icon
-                style={closeIconStyle}
-                className={clsx('closeTab')}
-                onClick={callbackHendlerTab ? this.eventCloseHandler : null}
-                type="close"
-              />
-            </li>
-          </div>
-        )}
-      </Draggable>
-    );
-  }
-}
+            <span className={clsx(active ? 'tabWrapper-content selected' : 'tabWrapper-content')}>
+              <Tooltip title={value} placement="bottom">
+                <span className="tab-content">{value}</span>
+              </Tooltip>
+            </span>
+            <Icon
+              style={closeIconStyle}
+              className={clsx('closeTab')}
+              onClick={callbackHendlerTab ? eventCloseHandler : null}
+              type="close"
+            />
+          </li>
+        </div>
+      )}
+    </Draggable>
+  );
+};
+
+Tab.defaultProps = {
+  hendlerTab: null,
+  itemKey: null,
+  value: '',
+  active: false,
+  index: 0,
+  sizeTab: 0,
+};
+
+Tab.propTypes = tabType;
 
 export default Tab;

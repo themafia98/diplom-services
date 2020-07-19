@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { getComponentByKey, parseModuleKey, getModuleTypeByParsedKey } from 'Utils';
 import { contentViewType } from './types';
 import _ from 'lodash';
@@ -123,7 +123,6 @@ class ContentView extends React.Component {
       onHideLoader,
       webSocket,
       onChangeVisibleAction,
-      router: { currentActionTab = '' } = {},
     } = this.props;
     const { visibilityPortal = false } = this.state;
 

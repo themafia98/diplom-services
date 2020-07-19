@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import clsx from 'clsx';
 import { Input } from 'antd';
 import EditorTextarea from './EditorTextarea';
@@ -7,8 +7,8 @@ const { TextArea } = Input;
 
 const Textarea = (props) => {
   const { row, value, className, name, onKeyDown, onClick, onChange, editor, editorKey } = props;
-  const valueProps = value || value === '' ? { value } : {};
-  const propsKey = editorKey ? { key: editorKey } : {};
+  const valueProps = useMemo(() => (value || value === '' ? { value } : {}), [value]);
+  const propsKey = useMemo(() => (editorKey ? { key: editorKey } : {}), [editorKey]);
 
   return (
     <>

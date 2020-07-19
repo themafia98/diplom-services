@@ -2,8 +2,7 @@ import React, { forwardRef, useState, useMemo } from 'react';
 import fixedToolbarType from './types';
 import { Button } from 'antd';
 
-const FixedToolbar = forwardRef((props, ref) => {
-  const { customRender, name, onChangeVisibleAction } = props;
+const FixedToolbar = forwardRef(({ customRender, name, onChangeVisibleAction }, ref) => {
   const [visible, setVisible] = useState(false);
   const [useCustomRender] = useState(customRender === null);
 
