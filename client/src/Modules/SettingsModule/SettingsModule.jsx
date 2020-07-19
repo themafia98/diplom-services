@@ -16,6 +16,7 @@ import PanelCommon from './Panels/PanelCommon';
 import PanelAdmin from './Panels/PanelAdmin';
 import PanelProfile from './Panels/PanelProfile';
 import actionsTypes from 'actions.types';
+import regExpRegister from 'Utils/Tools/regexpStorage';
 
 class SettingsModule extends React.PureComponent {
   state = {
@@ -230,7 +231,7 @@ class SettingsModule extends React.PureComponent {
       } = this.props;
       const { emailValue: newEmail = '', telValue: newPhone = '', haveChanges = [] } = state;
       const { config: { settings: { includeChangeEmail = false } = {} } = {}, Request } = modelsContext;
-      if (includeChangeEmail && (!newEmail || !/\w+@\w+\.\D+/i.test(newEmail))) {
+      if (includeChangeEmail && (!newEmail || !regExpRegister.VALID_EMAIL.test(newEmail))) {
         message.error('Формат почты не соблюден');
         return;
       }

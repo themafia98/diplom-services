@@ -4,6 +4,7 @@ import { Button, Input } from 'antd';
 
 import ModelContext from 'Models/context';
 import actionsTypes from 'actions.types';
+import regExpRegister from 'Utils/Tools/regexpStorage';
 
 const Recovory = (props) => {
   const { Request } = useContext(ModelContext);
@@ -17,9 +18,7 @@ const Recovory = (props) => {
 
   const onSubmit = async () => {
     try {
-      const regexp = mode === 'emailMode' ? /\w+@\w+\.\D+/i : /\w+/i;
-
-      if (!regexp.test(recovoryField)) {
+      if (!(mode === 'emailMode' ? regExpRegister.VALID_EMAIL : /\w+/g).test(recovoryField)) {
         setStatus(mode === 'emailMode' ? 'Неверный формат почты' : 'Неверный формат поля');
         return;
       }

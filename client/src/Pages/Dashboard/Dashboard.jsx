@@ -16,6 +16,7 @@ import HeaderView from 'Components/HeaderView';
 import ContentView from 'Components/ContentView';
 import MenuView from 'Components/MenuView';
 import ModelContext from 'Models/context';
+import regExpRegister from 'Utils/Tools/regexpStorage';
 
 let deferredPrompt = null;
 
@@ -45,11 +46,13 @@ class Dashboard extends React.PureComponent {
       transports: ['websocket'],
       secure: window.location.protocol === 'https',
     });
-    if (deferredPrompt) {
-      this.setState({
-        visibleInstallApp: true,
-      });
-    }
+
+    if (!deferredPrompt) return;
+
+    this.setState({
+      ...this.state,
+      visibleInstallApp: true,
+    });
   };
 
   componentWillUnmount = () => {
@@ -58,10 +61,10 @@ class Dashboard extends React.PureComponent {
 
   componentDidUpdate = () => {
     const {
-      publicReducer: { requestError = null, status } = {},
-      router,
-      router: { currentActionTab = '' },
+      publicReducer: { requestError = null, status = '' },
+      router: { currentActionTab = '', routeData = {} },
     } = this.props;
+
     const { showLoader, status: statusState, counterError } = this.state;
 
     if (!showLoader && statusState !== status && status === 'online')
@@ -71,34 +74,40 @@ class Dashboard extends React.PureComponent {
       });
 
     if (showLoader && requestError === null && status === 'online') {
-      const { routeData = {} } = router;
-      const copyRouteData = { ...routeData };
-      let currentArray = currentActionTab.split('_' || '__');
-      let regExp = new RegExp(currentArray[0], 'gi');
-      let keys = Object.keys(copyRouteData).filter((key) => /Module/gi.test(key) && regExp.test(key));
+      const [moduleName, entityKey] = currentActionTab.split(regExpRegister.MODULE_AND_ENTITYID);
+      const existsModuleData = Object.keys(routeData).find((mdn) =>
+        entityKey ? mdn.includes(entityKey) : mdn.includes(moduleName),
+      );
 
-      if (keys.every((key) => copyRouteData[key].load === true) || requestError === 'Network error') {
-        return setTimeout(() => {
+      if (
+        (existsModuleData && Object.keys(routeData).every((key) => routeData[key].load === true)) ||
+        requestError === 'Network error'
+      ) {
+        setTimeout(() => {
           this.setState({
+            ...this.state,
             status: status,
             showLoader: false,
           });
         }, 500);
+        return;
       } else if (requestError === null && status === 'online') {
-        return setTimeout(() => {
+        setTimeout(() => {
           this.setState({
             counter: 0,
             status: status,
             showLoader: false,
           });
         }, 500);
+        return;
       }
     } else if (showLoader && status === 'offline') {
-      return setTimeout(() => {
+      setTimeout(() => {
         this.setState({
           status: status,
           showLoader: false,
         });
+        return;
       }, 500);
     }
 
@@ -146,7 +155,9 @@ class Dashboard extends React.PureComponent {
     const copyRouteData = { ...routeData };
     let currentArray = currentActionTab.split('_' || '__');
     let regExp = new RegExp(currentArray[0], 'gi');
-    let keys = Object.keys(copyRouteData).filter((key) => /Module/gi.test(key) && regExp.test(key));
+    let keys = Object.keys(copyRouteData).filter(
+      (key) => regExpRegister.INCLUDE_MODULE.test(key) && regExp.test(key),
+    );
 
     if (keys.length && !shouldUpdate) this.setState({ showLoader: true });
   };

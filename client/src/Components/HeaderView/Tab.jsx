@@ -37,7 +37,7 @@ const Tab = ({ value, active, hendlerTab, itemKey, index, sizeTab }) => {
 
   const getIconStyle = useCallback(() => {
     return {
-      left: sizeTab < 60 ? `85%` : sizeTab < 90 ? `90%` : sizeTab < 102 ? `93%` : null,
+      left: sizeTab < 60 ? '85%' : sizeTab < 90 ? '90%' : sizeTab < 102 ? '93%' : null,
     };
   }, [sizeTab]);
 
@@ -46,7 +46,7 @@ const Tab = ({ value, active, hendlerTab, itemKey, index, sizeTab }) => {
 
   return (
     <Draggable key={`${itemKey}-wrapper`} draggableId={itemKey} index={index}>
-      {(provided, snapshot) => (
+      {(provided) => (
         <div
           className="draggable-wrapper"
           ref={provided.innerRef}

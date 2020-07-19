@@ -3,6 +3,7 @@ import _ from 'lodash';
 import { clientDB } from 'Models/ClientSideDatabase';
 import { runNoCorsParser, toSymbol } from './utils';
 import { getStoreSchema } from '../utilsHook';
+import regExpRegister from 'Utils/Tools/regexpStorage';
 
 const dataParser = (flag = false, isLocalUpdate = true, dep = {}, offlineStore = []) => {
   const {
@@ -271,7 +272,7 @@ const validationItems = (currentItems, prevItems, id = '_id') => {
 };
 
 const isTimeLostValue = (value) => {
-  return /\w+[m|м|h|ч]$/gi.test(value);
+  return regExpRegister.TIME_JURNAL_STRING.test(value);
 };
 
 /**
@@ -303,7 +304,7 @@ const moduleIdGenerator = (moduleName, entityId = '') => {
 const getModuleTypeByParsedKey = (moduleName, subModuleName, entityKey) => {
   if (!moduleName) return null;
 
-  const isVirtualEntrypoint = entityKey && /\${2}(\w)+\${2}/.test(subModuleName);
+  const isVirtualEntrypoint = entityKey && regExpRegister.VIRTUAL_MODULE.test(subModuleName);
 
   if ((!subModuleName && !entityKey) || isVirtualEntrypoint) return toSymbol('$entrypoint_module');
   else if (subModuleName && !entityKey) return toSymbol('$sub_entrypoint_module');
