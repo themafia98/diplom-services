@@ -53,7 +53,7 @@ class TaskModule extends React.PureComponent {
     const { config: { task: { limitList = 20 } = {} } = {} } = modelsContext;
     const { height } = this.state;
     const { onShowLoader } = loaderMethods;
-    debugger;
+
     const isEmptyTasks = _.isEmpty(routeData[path]);
     const isTaskModule = path && path.includes('task') && !path.split('__')[1];
     if (height === null && this.moduleTask !== null && visibility) {
