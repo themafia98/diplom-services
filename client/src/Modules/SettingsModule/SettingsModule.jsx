@@ -378,7 +378,6 @@ class SettingsModule extends React.PureComponent {
     } = this.props;
     const { config: { settings: { includeRulesSettings = false } = {} } = {} } = modelsContext;
 
-    const isLoading = isLoad === null;
     const isAdmin = departament === 'Admin' && rules === 'full';
     return (
       <div className="settingsModule">
@@ -409,7 +408,7 @@ class SettingsModule extends React.PureComponent {
             </Scrollbars>
           </div>
           <div className="col-6">
-            <ObserverTime isLoading={isLoading} settingsLogs={settingsLogs} />
+            <ObserverTime isLoading={!isLoad} settingsLogs={settingsLogs} />
           </div>
         </div>
       </div>
@@ -419,10 +418,12 @@ class SettingsModule extends React.PureComponent {
 
 const mapStateToProps = (state, props) => {
   const {
-    publicReducer: { udata = {}, caches: { get_user_settings_log: isLoad = null } } = {},
+    publicReducer: { udata = {}, caches } = {},
     router: { shouldUpdate = false, currentActionTab = '' } = {},
     router = {},
   } = state;
+
+  const isLoad = Object.keys(caches).some((key) => key.includes('get_user_settings_log'));
 
   return {
     router,
