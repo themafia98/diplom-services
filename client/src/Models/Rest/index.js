@@ -26,6 +26,13 @@ class Request {
     this.observerOnline = null;
   }
 
+  /** @static
+   * @param {string} prop string
+   */
+  static factory(prop) {
+    return new Request(prop);
+  }
+
   /** @public
    *  @param {boolean} flag
    */
@@ -109,13 +116,6 @@ class Request {
       this.followObserver = null;
     }
     return true;
-  }
-
-  /** @public
-   * @param {string} prop string
-   */
-  factory(prop) {
-    return new Request(prop);
   }
 
   /** @public
