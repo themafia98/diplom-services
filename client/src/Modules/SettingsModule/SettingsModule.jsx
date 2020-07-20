@@ -17,12 +17,13 @@ import PanelAdmin from './Panels/PanelAdmin';
 import PanelProfile from './Panels/PanelProfile';
 import actionsTypes from 'actions.types';
 import regExpRegister from 'Utils/Tools/regexpStorage';
+import { compose } from 'redux';
+import { moduleContextToProps } from 'Components/Helpers/moduleState';
 
 class SettingsModule extends React.PureComponent {
   state = {
     showScrollbar: false,
     emailValue: null,
-    isLoadingLogs: false,
     telValue: null,
     newPassword: '',
     oldPassword: '',
@@ -65,44 +66,48 @@ class SettingsModule extends React.PureComponent {
   };
 
   componentDidMount = async () => {
-    const { router, path, settingsLogs = [], udata: { _id: uid = '' } = {}, onCaching } = this.props;
+    const { router, path, udata: { _id: uid = '' } = {}, onCaching, onSetStatus } = this.props;
 
     if (router?.routeData[path] && router?.routeData[path]?.haveChanges) {
       this.setState({ ...this.state, ...router.routeData[path] });
     }
 
-    if (!Object.keys(settingsLogs)?.length) {
-      onCaching({
-        uid,
-        actionType: 'get_user_settings_log',
-        depStore: 'settings',
-        type: 'logger',
-      });
-    }
+    await onSetStatus(false);
+
+    onCaching({
+      uid,
+      actionType: 'get_user_settings_log',
+      depStore: 'settings',
+      type: 'logger',
+    });
   };
 
-  componentDidUpdate = async (prevProps, state) => {
+  componentDidUpdate = async () => {
     const { showScrollbar, emailValue = '', telValue = '' } = this.state;
     const {
       udata: { _id: uid = '' } = {},
-      router: { currentActionTab = '' } = {},
+      router: { shouldUpdate = false, routeData = {} } = {},
+      path,
       onCaching,
       onSetStatus,
       moduleContext,
     } = this.props;
     const { visibility = false } = moduleContext;
-    const {
-      modelsContext: { visibility: visibilityPrev = false },
-    } = prevProps;
-    if (visibilityPrev !== visibility && currentActionTab?.includes('settingsModule')) {
-      onSetStatus(false);
-      onCaching({
-        uid,
-        actionType: 'get_user_settings_log',
-        depStore: 'settings',
-        type: 'logger',
-      });
-    }
+
+    if (!visibility) return;
+
+    const { shouldUpdate: shouldUpdateCurrentData = false } = routeData[path] || {};
+    const isUnloadModule = shouldUpdate && !routeData[path]?.load;
+
+    if (!isUnloadModule && !shouldUpdateCurrentData) return;
+
+    await onSetStatus(false);
+    onCaching({
+      uid,
+      actionType: 'get_user_settings_log',
+      depStore: 'settings',
+      type: 'logger',
+    });
 
     if (this.refWrapper?.current && this.refColumn?.current) {
       const { current: wrapperNode } = this.refWrapper;
@@ -363,24 +368,17 @@ class SettingsModule extends React.PureComponent {
   };
 
   render() {
-    const {
-      emailValue,
-      telValue,
-      oldPassword,
-      newPassword,
-      isHideEmail,
-      isHidePhone,
-      isLoadingLogs = false,
-    } = this.state;
+    const { emailValue, telValue, oldPassword, newPassword, isHideEmail, isHidePhone } = this.state;
     const {
       settingsLogs = null,
       udata: { departament = '', rules = '' } = {},
       settings = [],
       modelsContext,
+      isLoad,
     } = this.props;
     const { config: { settings: { includeRulesSettings = false } = {} } = {} } = modelsContext;
 
-    const isLoading = !isLoadingLogs && (!settingsLogs || (settingsLogs && !settingsLogs?.length));
+    const isLoading = isLoad === null;
     const isAdmin = departament === 'Admin' && rules === 'full';
     return (
       <div className="settingsModule">
@@ -421,7 +419,7 @@ class SettingsModule extends React.PureComponent {
 
 const mapStateToProps = (state, props) => {
   const {
-    publicReducer: { udata = {} } = {},
+    publicReducer: { udata = {}, caches: { get_user_settings_log: isLoad = null } } = {},
     router: { shouldUpdate = false, currentActionTab = '' } = {},
     router = {},
   } = state;
@@ -433,6 +431,7 @@ const mapStateToProps = (state, props) => {
     artifacts: settingsArtifactsSelector(state, props),
     settingsLogs: settingsLogsSelector(state, props),
     shouldUpdate: shouldUpdate && currentActionTab.includes('settings'),
+    isLoad,
   };
 };
 
@@ -447,4 +446,4 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export { SettingsModule };
-export default connect(mapStateToProps, mapDispatchToProps)(SettingsModule);
+export default compose(moduleContextToProps, connect(mapStateToProps, mapDispatchToProps))(SettingsModule);

@@ -24,7 +24,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
 
   let isLocalUpdate = true;
   const primaryKey = 'uuid';
-  const pathValid = path.includes(regExpRegister.MODULE_SUB) ? path : path.split(regExpRegister.MODULE_ID)[0];
+  const pathValid = path.includes('_') ? path : path.split(regExpRegister.MODULE_ID)[0];
   const router = getState().router;
 
   const { requestError, status = 'online' } = getState().publicReducer;
