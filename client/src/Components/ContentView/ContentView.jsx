@@ -182,13 +182,8 @@ class ContentView extends React.Component {
           tabKey,
           type,
           component: (
-            <TabContainer actualParams={tabParams}>
-              <Component
-                key={`${validModuleName}_${Symbol.keyFor(type)}`}
-                type={type}
-                tabParams={tabParams}
-                {...tabProps}
-              />
+            <TabContainer key={`${validModuleName}-tab`} actualParams={tabParams}>
+              <Component key={validModuleName} type={type} tabParams={tabParams} {...tabProps} />
             </TabContainer>
           ),
         },
@@ -199,6 +194,10 @@ class ContentView extends React.Component {
   render() {
     const { key, visibilityPortal } = this.state;
     const { webSocket, path } = this.props;
+
+    if (process.env.NODE_ENV === 'development' && path) {
+      console.log('Current path:', path);
+    }
 
     if (!key) return <div>Not available</div>;
 

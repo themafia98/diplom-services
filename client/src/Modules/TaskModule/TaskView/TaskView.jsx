@@ -733,7 +733,7 @@ class TaskView extends React.PureComponent {
       router,
       udata,
     };
-    console.log(path);
+
     const descriptionTaskProps = {
       ...commonProps,
       routeDataActive,

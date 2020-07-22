@@ -37,7 +37,7 @@ const DescriptionTask = forwardRef(
           <span className="icon-wrapper">
             <i className="icon-pencil" />
           </span>
-          <Scrollbars autoHide hidetrackswhennotneeded style={scrollStyle}>
+          <Scrollbars autoHide hideTracksWhenNotNeeded style={scrollStyle}>
             <span className="descriptionContent">{description ? description : 'Описания задачи нету.'}</span>
           </Scrollbars>
         </div>
