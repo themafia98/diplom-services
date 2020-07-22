@@ -19,10 +19,10 @@ import actionsTypes from 'actions.types';
 
 class StreamBox extends React.Component {
   state = {
+    showLoader: false,
     type: null,
     streamList: [],
     listLimit: null,
-    showLoader: false,
     visibleItemIndex: 0,
     count: 0,
   };
@@ -33,29 +33,28 @@ class StreamBox extends React.Component {
   static propTypes = streamBoxType;
   static contextType = ModelContext;
   static defaultProps = {
-    mode: '',
-    visiblePopover: false,
-    isLoadPopover: false,
     type: null,
-    isSingleLoading: false,
     setCounter: null,
-    udata: {},
-    filterStream: '',
     onMultipleLoadData: null,
     onSaveComponentState: null,
-    streamStore: '',
-    streamModule: '',
     onLoadPopover: null,
     personalUid: null,
     setCurrentTab: null,
     onOpenPageWithData: null,
-    router: {},
-    store: false,
+    buildItems: null,
+    listHeight: null,
+    isSingleLoading: false,
+    visiblePopover: false,
+    isLoadPopover: false,
+    mode: '',
+    filterStream: '',
+    streamStore: '',
+    streamModule: '',
     prefix: '',
     boxClassName: '',
     parentPath: '',
-    buildItems: null,
-    listHeight: null,
+    router: {},
+    udata: {},
   };
 
   static getDerivedStateFromProps = (props, state) => {
@@ -148,7 +147,7 @@ class StreamBox extends React.Component {
 
   fetchNotification = async (showLoader) => {
     try {
-      const { listLimit } = this.state;
+      const { listLimit, showLoader: showLoaderState = false } = this.state;
       const {
         Request,
         config: { streamLimit },
@@ -175,6 +174,8 @@ class StreamBox extends React.Component {
       if (shouldUpdatePrivate && onLoadPopover) {
         onLoadPopover();
       }
+
+      if (showLoaderState) return;
 
       if (showLoader)
         this.setState({ showLoader: true }, () => {

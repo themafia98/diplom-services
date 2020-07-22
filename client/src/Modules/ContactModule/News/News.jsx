@@ -7,7 +7,6 @@ import Scrollbars from 'react-custom-scrollbars';
 import { setActiveTabAction, openPageWithDataAction, addTabAction } from 'Redux/actions/routerActions';
 import { middlewareCaching } from 'Redux/actions/publicActions/middleware';
 
-import TabContainer from 'Components/TabContainer';
 import NewsCard from './NewsCard';
 import TitleModule from 'Components/TitleModule';
 
@@ -17,26 +16,13 @@ import { moduleContextToProps } from 'Components/Helpers/moduleState';
 
 class News extends React.PureComponent {
   state = {
-    isLoading: false,
     isOpen: false,
     prewPage: 1,
     currentPage: 1,
     start: 0,
-    load: false,
   };
 
   static propTypes = newsType;
-
-  componentDidUpdate = () => {
-    const { load, isLoading } = this.state;
-
-    if (!load && !isLoading) return;
-
-    this.setState({
-      ...this.state,
-      load: true,
-    });
-  };
 
   onOpenCreateNews = () => {
     const { addTab, router: { activeTabs = [] } = {}, setCurrentTab, modelsContext } = this.props;
@@ -105,15 +91,10 @@ class News extends React.PureComponent {
     });
   };
 
-  renderNewsBlock = (currentPage) => {
-    const { path = '' } = this.props;
-    const {
-      router: { routeData: { [path]: { news = [] } = {} } = {} },
-    } = this.props;
-
+  renderNewsBlock = (currentPage, listdata = []) => {
     const start = currentPage > 1 ? currentPage * 4 - 4 : 0;
-    let listdata = news;
-    if (!listdata.length) return <Empty description={<span>Данных нету</span>} />;
+
+    if (!listdata?.length) return <Empty description={<span>Данных нету</span>} />;
 
     return listdata
       .slice(start, start + 4 > listdata.length ? listdata.length : start + 4)
@@ -133,13 +114,12 @@ class News extends React.PureComponent {
   };
 
   render() {
-    const { currentPage, isOpen } = this.state;
+    const { currentPage } = this.state;
     const {
-      data = {},
-      router: { routeData: { contactModule: { news = [] } = {} } = {} },
-      isLoading = false,
+      data: { news: newsData = [], loading = false, load = false },
+      router: { routeData: { contactModule: { news: newsStore = [] } = {} } = {} },
     } = this.props;
-    let listdata = data?.news && Array.isArray(data.news) ? [...data.news] : news.length ? news : data;
+    const listdata = newsData && Array.isArray(newsData) ? newsData : newsStore?.length ? newsStore : [];
     const rules = true;
 
     const pageSize = 4;
@@ -154,21 +134,23 @@ class News extends React.PureComponent {
           </Button>
         ) : null}
         <Scrollbars autoHide hideTracksWhenNotNeeded>
-          <TabContainer visible={!isOpen}>
-            <div className="news__main">
-              <div className="col-fullscreen">
-                {isLoading ? <Spin size="large" /> : this.renderNewsBlock(currentPage)}
-              </div>
+          <div className="news__main">
+            <div className="col-fullscreen">
+              {(loading && !listdata?.length) || !load ? (
+                <Spin size="large" />
+              ) : (
+                this.renderNewsBlock(currentPage, listdata)
+              )}
             </div>
-            <Pagination
-              className="pagination-news"
-              onChange={this.onChange}
-              current={currentPage}
-              pageSize={pageSize}
-              defaultCurrent={currentPage}
-              total={total ? total : undefined}
-            />
-          </TabContainer>
+          </div>
+          <Pagination
+            className="pagination-news"
+            onChange={this.onChange}
+            current={currentPage}
+            pageSize={pageSize}
+            defaultCurrent={currentPage}
+            total={total ? total : undefined}
+          />
         </Scrollbars>
       </div>
     );

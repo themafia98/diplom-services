@@ -43,39 +43,45 @@ class ContactModule extends React.PureComponent {
     if (mode === 'default') return !visible && activeTabs.some((actionTab) => actionTab === path);
   };
 
-  /** TODO: should rework re-load data */
-  // componentDidUpdate = () => {
-  //   const {
-  //     router: { shouldUpdate = false, routeData = {} } = {},
-  //     path,
-  //     onLoadCurrentData,
-  //     type = Symbol(''),
-  //   } = this.props;
+  componentDidUpdate = () => {
+    const {
+      router: { shouldUpdate = false, routeData = {} } = {},
+      path,
+      onLoadCurrentData,
+      type = Symbol(''),
+    } = this.props;
 
-  //   const { initModule = false } = this.state;
-  //   const isUpdate = shouldUpdate && routeData[path]?.load;
-  //   const shoudInit = path && !routeData[path] && !initModule;
+    const { isLoading: isLoadingState = false } = this.state;
 
-  //   const isAvailable = path === 'contactModule_feedback' && type === types.$sub_entrypoint_module;
+    const shouldUpdateList = routeData[path] && routeData[path]?.shouldUpdate;
+    const isUnloadModule = shouldUpdate && !routeData[path]?.load;
+    const { loading = false } = routeData[path] || {};
 
-  //   if (!isAvailable && (!isUpdate || !shoudInit)) return;
+    const isCloseTabAction = !isUnloadModule && !shouldUpdateList && shouldUpdate && !loading;
+    const isAvailable = path === 'contactModule_feedback' && type === types.$sub_entrypoint_module;
 
-  //   if (!routeData[path] && !initModule) {
-  //     this.setState({
-  //       ...this.state,
-  //       initModule: true,
-  //     });
-  //   }
+    if (!(isAvailable && !isLoadingState && (isUnloadModule || shouldUpdateList || isCloseTabAction))) {
+      return;
+    }
 
-  //   onLoadCurrentData({
-  //     path,
-  //     storeLoad: 'news',
-  //     methodRequst: 'GET',
-  //     noCorsClient: false,
-  //     useStore: true,
-  //   });
-  // };
-  /***/
+    this.setState(
+      (state) => ({ ...state, isLoading: !state?.isLoading }),
+      async () => {
+        await onLoadCurrentData({
+          path,
+          storeLoad: 'news',
+          methodRequst: 'GET',
+          noCorsClient: false,
+          useStore: true,
+        });
+
+        this.setState({
+          ...this.state,
+          isLoading: false,
+        });
+      },
+    );
+  };
 
   getContactContentByPath = (path) => {
     const {
@@ -89,8 +95,6 @@ class ContactModule extends React.PureComponent {
       entitysList = [],
       type,
     } = this.props;
-
-    if (!path?.includes('contactModule')) return <div className="invalid-contactModule"></div>;
 
     const data = routeData[path] || {};
     const { load = false, news = [] } = routeData[path] || {};
@@ -131,11 +135,9 @@ class ContactModule extends React.PureComponent {
   render() {
     const { path } = this.props;
 
-    const component = this.getContactContentByPath(path);
-
     return (
       <div key="contactModule" className="contactModule">
-        {component ? component : null}
+        {this.getContactContentByPath(path)}
       </div>
     );
   }

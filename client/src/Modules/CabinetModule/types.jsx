@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { udataType } from '../../types';
-const { func, object, bool, string, oneOfType, oneOf, objectOf } = PropTypes;
+const { func, object, string, oneOfType, oneOf, objectOf } = PropTypes;
 
 export const cabinetType = {
   rest: object.isRequired,
