@@ -9,6 +9,7 @@ import {
   UPDATE_UDATA,
   LOAD_ARTIFACT,
   LOAD_SETTINGS,
+  LOAD_CORE_CONFIG,
 } from './const';
 
 export const errorRequestAction = createAction(SET_ERROR);
@@ -20,3 +21,4 @@ export const loadUdata = createAction(UDATA_LOAD);
 export const сachingAction = createAction(SET_CACHE);
 export const clearCache = createAction(CLEAR_CACHE);
 export const setStatus = createAction(SET_STATUS);
+export const loadCoreConfigAction = createAction(LOAD_CORE_CONFIG);

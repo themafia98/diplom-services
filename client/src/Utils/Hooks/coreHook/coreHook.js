@@ -1,7 +1,6 @@
-import { clientDB } from 'Models/ClientSideDatabase';
 import utilsHooks from '../utils';
 import { getStoreSchema } from '../../utilsHook';
-//import workerInstanse from 'workerInstanse';
+
 const { runLocalUpdateAction, runRefreshIndexedDb, runNoCorsAction, runBadNetworkAction } = utilsHooks;
 
 const coreUpdaterDataHook = async (dispatch, dep = {}, multiple = false, badNetwork = false) => {
@@ -31,7 +30,8 @@ const coreUpdaterDataHook = async (dispatch, dep = {}, multiple = false, badNetw
 
   if (requestError === null && !badNetwork) dispatch(errorRequestAction(null));
   const currentStore = indStoreName ? indStoreName : storeLoad;
-  const [cursor, eventResult, shouldUpdate] = await runRefreshIndexedDb(
+
+  const [cursor = null, eventResult = null, shouldUpdate = null] = await runRefreshIndexedDb(
     dispatch,
     currentStore,
     dep,
@@ -66,7 +66,16 @@ const coreUpdaterDataHook = async (dispatch, dep = {}, multiple = false, badNetw
 };
 
 const updateEntityHook = async (dispatch, dep = {}) => {
-  const { parsedRoutePath = null, store, schema, dataItems, id, updateItemStateAction, updateBy = '' } = dep;
+  const {
+    parsedRoutePath = null,
+    store,
+    schema,
+    dataItems,
+    id,
+    updateItemStateAction,
+    updateBy = '',
+    clientDB = null,
+  } = dep;
 
   const schemaTemplate = getStoreSchema(store);
 
@@ -85,6 +94,11 @@ const updateEntityHook = async (dispatch, dep = {}) => {
       id,
     }),
   );
+
+  if (!clientDB) {
+    console.warn('No client db connect');
+    return;
+  }
 
   if (schema?.isPublicKey(dataItems)) await clientDB.updateItem(store, dataItems);
 };

@@ -11,7 +11,8 @@ const cachingHook = async (dispatch, dep = {}, depActions = {}) => {
     const validHash = dataList.map((it) => schema?.getSchema(schemaTemplate, it)).filter(Boolean);
 
     if (validHash || (!schemaTemplate && dataItems)) {
-      clientDB.addItem(store, validHash);
+      if (clientDB) clientDB.addItem(store, validHash);
+      else console.warn('No client db connect');
       dispatch(
         сachingAction({
           data: schemaTemplate ? validHash : dataItems,
@@ -81,7 +82,9 @@ const getterCacheHook = async (dispatch, dep = {}, depActions = {}) => {
     const validHash = dataList.map((it) => schema?.getSchema(schemaTemplate, it)).filter(Boolean);
 
     if (validHash || (!schemaTemplate && dataItems)) {
-      await clientDB.addItem(store, !schemaTemplate ? dataItems : validHash);
+      if (clientDB) await clientDB.addItem(store, !schemaTemplate ? dataItems : validHash);
+      else console.warn('No client db connect');
+
       dispatch(сachingAction({ data: validHash, load: true, primaryKey: actionType, updateBy }));
     } else throw new Error('Invalid data props');
   } catch (error) {

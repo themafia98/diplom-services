@@ -15,6 +15,8 @@ import { routePathNormalise, routeParser, createEntity, createNotification } fro
 import { CREATE_TASK_SCHEMA } from 'Models/Schema/const';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import regExpRegister from 'Utils/Tools/regexpStorage';
+import { compose } from 'redux';
+import { withClientDb } from 'Models/ClientSideDatabase';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -273,6 +275,7 @@ class CreateTask extends React.PureComponent {
       udata: { _id: uid = '', displayName = '' } = {},
       onSetStatus,
       modelsContext,
+      clientDB,
     } = this.props;
 
     const {
@@ -280,7 +283,7 @@ class CreateTask extends React.PureComponent {
       card = {},
       card: { name = '' },
     } = this.state;
-    const { config = {}, schema = {}, clientDB } = modelsContext;
+    const { config = {}, schema = {} } = modelsContext;
 
     if (!this.validation()) {
       if (trySubmitState) return;
@@ -527,4 +530,4 @@ class CreateTask extends React.PureComponent {
   }
 }
 
-export default moduleContextToProps(CreateTask);
+export default compose(withClientDb)(moduleContextToProps(CreateTask));

@@ -5,6 +5,7 @@ import Output from 'Components/Output';
 import { Table, message, Input, Button, Icon, Empty } from 'antd';
 import { getDataSource, findData } from 'Utils';
 import ModelContext from 'Models/context';
+import { connect } from 'react-redux';
 
 class DynamicTable extends React.PureComponent {
   state = {
@@ -298,8 +299,8 @@ class DynamicTable extends React.PureComponent {
           setCurrentTab,
           routeParser,
           routePathNormalise,
+          appConfig: config,
         } = this.props;
-        const { config = {} } = this.context;
 
         const { key: recordKey = '', _id: id = '' } = record || {};
         if (!id && !recordKey) return;
@@ -358,7 +359,6 @@ class DynamicTable extends React.PureComponent {
 
   render() {
     /** sizes: "small" | "default" | "middle"  */
-    const { config: { task: { tableSize = 'default', frontFilter = true } = {} } = {} } = this.context;
     const { pagination: paginationDefault = {}, counter = null } = this.state;
 
     const {
@@ -368,7 +368,10 @@ class DynamicTable extends React.PureComponent {
       height,
       loading,
       router: { path, routeData: { [path]: currentModuleData = {} } = {} } = {},
+      appConfig = {},
     } = this.props;
+    const { task: { tableSize = 'default', frontFilter = true } = {} } = appConfig;
+
     const { saveData: { pagination = null } = {} } = currentModuleData || {};
     const pager = pagination ? pagination : paginationDefault;
     pager.paginationState = { ...pager };
@@ -400,4 +403,15 @@ class DynamicTable extends React.PureComponent {
   }
 }
 
-export default DynamicTable;
+const mapStateTopProps = (state) => {
+  const { appConfig } = state.publicReducer;
+  return {
+    appConfig,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {};
+};
+
+export default connect(mapStateTopProps, mapDispatchToProps)(DynamicTable);

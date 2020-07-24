@@ -108,6 +108,7 @@ class HeaderView extends React.PureComponent {
       logout,
       udata,
       onSaveComponentState,
+      appConfig,
     } = this.props;
 
     const notificationDep = {
@@ -122,6 +123,7 @@ class HeaderView extends React.PureComponent {
       <Header>
         {activeTabs ? this.renderTabs(activeTabs) : null}
         <RightPanel
+          appConfig={appConfig}
           udata={udata}
           shouldUpdate={shouldUpdate}
           status={status}
@@ -136,7 +138,7 @@ class HeaderView extends React.PureComponent {
 }
 
 const mapStateTopProps = (state) => {
-  const { status = 'online', udata = {} } = state.publicReducer;
+  const { status = 'online', udata = {}, appConfig } = state.publicReducer;
   const { shouldUpdate = false, routeData = {} } = state.router;
   return {
     tabArray: state.router.activeTabs,
@@ -144,6 +146,7 @@ const mapStateTopProps = (state) => {
     status,
     udata,
     routeData,
+    appConfig,
   };
 };
 

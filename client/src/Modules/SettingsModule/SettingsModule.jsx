@@ -19,6 +19,7 @@ import actionsTypes from 'actions.types';
 import regExpRegister from 'Utils/Tools/regexpStorage';
 import { compose } from 'redux';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
+import { withClientDb } from 'Models/ClientSideDatabase';
 
 class SettingsModule extends React.PureComponent {
   state = {
@@ -66,7 +67,7 @@ class SettingsModule extends React.PureComponent {
   };
 
   componentDidMount = async () => {
-    const { router, path, udata: { _id: uid = '' } = {}, onCaching, onSetStatus } = this.props;
+    const { router, path, udata: { _id: uid = '' } = {}, onCaching, onSetStatus, clientDB } = this.props;
 
     if (router?.routeData[path] && router?.routeData[path]?.haveChanges) {
       this.setState({ ...this.state, ...router.routeData[path] });
@@ -79,6 +80,7 @@ class SettingsModule extends React.PureComponent {
       actionType: 'get_user_settings_log',
       depStore: 'settings',
       type: 'logger',
+      clientDB,
     });
   };
 
@@ -91,6 +93,7 @@ class SettingsModule extends React.PureComponent {
       onCaching,
       onSetStatus,
       moduleContext,
+      clientDB,
     } = this.props;
     const { visibility = false } = moduleContext;
 
@@ -107,6 +110,7 @@ class SettingsModule extends React.PureComponent {
       actionType: 'get_user_settings_log',
       depStore: 'settings',
       type: 'logger',
+      clientDB,
     });
 
     if (this.refWrapper?.current && this.refColumn?.current) {
@@ -185,9 +189,12 @@ class SettingsModule extends React.PureComponent {
 
   onChangeProfile = async (state, callback) => {
     try {
-      const { udata: { _id: uid = '' } = {}, onUpdateUdata = null, modelsContext } = this.props;
+      const { udata: { _id: uid = '' } = {}, onUpdateUdata = null, modelsContext, appConfig } = this.props;
       const { isHideEmail = false, isHidePhone = false } = state;
-      const { config: { settings: { includeChangeProfile = false } = {} } = {}, Request } = modelsContext;
+      const {
+        settings: { includeChangeProfile = false },
+      } = appConfig;
+      const { Request } = modelsContext;
 
       if (!includeChangeProfile) return;
 
@@ -233,9 +240,12 @@ class SettingsModule extends React.PureComponent {
         onUpdateUdata = null,
         onCaching = null,
         modelsContext,
+        clientDB,
+        appConfig,
       } = this.props;
       const { emailValue: newEmail = '', telValue: newPhone = '', haveChanges = [] } = state;
-      const { config: { settings: { includeChangeEmail = false } = {} } = {}, Request } = modelsContext;
+      const { settings: { includeChangeEmail = false } = {} } = appConfig;
+      const { Request } = modelsContext;
       if (includeChangeEmail && (!newEmail || !regExpRegister.VALID_EMAIL.test(newEmail))) {
         message.error('Формат почты не соблюден');
         return;
@@ -296,6 +306,7 @@ class SettingsModule extends React.PureComponent {
         actionType: 'save_user_settings_log',
         depStore: 'settings',
         type: 'logger',
+        clientDB,
       });
 
       message.success('Настройки успешно обновлены.');
@@ -307,7 +318,7 @@ class SettingsModule extends React.PureComponent {
 
   onChangePassword = async (state, callback) => {
     try {
-      const { udata: { _id: uid = '' } = {}, onCaching, modelsContext } = this.props;
+      const { udata: { _id: uid = '' } = {}, onCaching, modelsContext, clientDB } = this.props;
       const { Request = {} } = modelsContext;
 
       const { oldPassword = '', newPassword = '' } = state;
@@ -358,6 +369,7 @@ class SettingsModule extends React.PureComponent {
         actionType: 'save_user_settings_log',
         depStore: 'settings',
         type: 'logger',
+        clientDB,
       });
 
       message.success('Пароль изменен.');
@@ -373,10 +385,12 @@ class SettingsModule extends React.PureComponent {
       settingsLogs = null,
       udata: { departament = '', rules = '' } = {},
       settings = [],
-      modelsContext,
+      appConfig,
       isLoad,
     } = this.props;
-    const { config: { settings: { includeRulesSettings = false } = {} } = {} } = modelsContext;
+    const {
+      settings: { includeRulesSettings = false },
+    } = appConfig;
 
     const isAdmin = departament === 'Admin' && rules === 'full';
     return (
@@ -389,16 +403,19 @@ class SettingsModule extends React.PureComponent {
                 <PanelPassword
                   oldPassword={oldPassword}
                   newPassword={newPassword}
+                  appConfig={appConfig}
                   onSaveSettings={this.onSaveSettings}
                 />
                 <PanelCommon
                   onSaveSettings={this.onSaveSettings}
                   emailValue={emailValue}
+                  appConfig={appConfig}
                   telValue={telValue}
                 />
                 <PanelProfile
                   onSaveSettings={this.onSaveSettings}
                   isHideEmail={isHideEmail}
+                  appConfig={appConfig}
                   isHidePhone={isHidePhone}
                 />
                 {isAdmin && includeRulesSettings ? (
@@ -418,7 +435,7 @@ class SettingsModule extends React.PureComponent {
 
 const mapStateToProps = (state, props) => {
   const {
-    publicReducer: { udata = {}, caches } = {},
+    publicReducer: { udata = {}, caches, appConfig } = {},
     router: { shouldUpdate = false, currentActionTab = '' } = {},
     router = {},
   } = state;
@@ -433,6 +450,7 @@ const mapStateToProps = (state, props) => {
     settingsLogs: settingsLogsSelector(state, props),
     shouldUpdate: shouldUpdate && currentActionTab.includes('settings'),
     isLoad,
+    appConfig,
   };
 };
 
@@ -447,4 +465,8 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export { SettingsModule };
-export default compose(moduleContextToProps, connect(mapStateToProps, mapDispatchToProps))(SettingsModule);
+export default compose(
+  moduleContextToProps,
+  withClientDb,
+  connect(mapStateToProps, mapDispatchToProps),
+)(SettingsModule);

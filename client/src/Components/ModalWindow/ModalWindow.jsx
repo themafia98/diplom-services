@@ -14,6 +14,7 @@ import MailResponserModal from './MailResponserModal';
 import Textarea from 'Components/Textarea';
 import ModelContext from 'Models/context';
 import actionsTypes from 'actions.types';
+import { withClientDb } from 'Models/ClientSideDatabase';
 
 const { Option } = Select;
 
@@ -164,6 +165,7 @@ class ModalWindow extends React.PureComponent {
       onCancelEditModeContent,
       route,
       path,
+      clientDB,
     } = this.props;
 
     const parsedRoutePath =
@@ -184,6 +186,7 @@ class ModalWindow extends React.PureComponent {
         updateField: 'description',
         item: { ...routeDataActive },
         store: 'tasks',
+        clientDB,
       });
       if (onCancelEditModeContent) onCancelEditModeContent(event);
       this.setState({
@@ -217,12 +220,13 @@ class ModalWindow extends React.PureComponent {
       actionType,
       keyTask,
       udata: { displayName = '', _id: uid = '' },
+      clientDB,
     } = this.props;
     const item = { ...jurnal, depKey: keyTask, editor: displayName, uid };
     const { timeLost = '', description = '', date = '' } = jurnal || {};
 
     if (onCaching) {
-      await onCaching({ item, actionType, depStore: 'tasks', store: 'jurnalworks' });
+      await onCaching({ item, actionType, depStore: 'tasks', store: 'jurnalworks', clientDB });
       this.handleCancel();
     }
     const itemNotification = {
@@ -257,7 +261,14 @@ class ModalWindow extends React.PureComponent {
   onChangeStatusTask = async (customStatus = null) => {
     const { taskStatus = null, type = '' } = this.state;
 
-    const { onUpdate, routeDataActive = {}, routeDataActive: { key = null } = {}, path, route } = this.props;
+    const {
+      onUpdate,
+      routeDataActive = {},
+      routeDataActive: { key = null } = {},
+      path,
+      route,
+      clientDB,
+    } = this.props;
 
     if (taskStatus === null && typeof customStatus !== 'string')
       return this.setState({
@@ -287,6 +298,7 @@ class ModalWindow extends React.PureComponent {
         updateField: 'status',
         item: { ...routeDataActive },
         store: 'tasks',
+        clientDB,
       });
 
       this.setState({
@@ -578,4 +590,4 @@ class ModalWindow extends React.PureComponent {
   }
 }
 
-export default ModalWindow;
+export default withClientDb(ModalWindow);

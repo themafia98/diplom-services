@@ -5,7 +5,7 @@ import actionsTypes from 'actions.types';
 import regExpRegister from 'Utils/Tools/regexpStorage';
 //import workerInstanse from 'workerInstanse';
 
-const loadCurrentData = (params) => async (dispatch, getState, { schema, Request, clientDB }) => {
+const loadCurrentData = (params) => async (dispatch, getState, { schema, Request }) => {
   const {
     path = '',
     startPath = '',
@@ -20,13 +20,14 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
     shouldSetLoading = false,
     indStoreName = '',
     sync = false,
+    clientDB = null,
   } = params;
 
   let isLocalUpdate = true;
   const primaryKey = 'uuid';
   const pathValid = path.includes('_') ? path : path.split(regExpRegister.MODULE_ID)[0];
   const router = getState().router;
-
+  debugger;
   const { requestError, status = 'online' } = getState().publicReducer;
   const isExist = router.routeData && router.routeData[pathValid];
 
@@ -144,8 +145,8 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
   }
 };
 
-const multipleLoadData = (params) => async (dispatch, getState, { schema, Request, clientDB }) => {
-  const { requestsParamsList = [], pipe = true, saveModuleName = '' } = params;
+const multipleLoadData = (params) => async (dispatch, getState, { schema, Request }) => {
+  const { requestsParamsList = [], pipe = true, saveModuleName = '', clientDB = null } = params;
 
   const primaryKey = 'uuid';
   const { requestError, status = 'online' } = getState().publicReducer;

@@ -1,8 +1,6 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
-
 import Request from 'Models/Rest';
-import { clientDB } from 'Models/ClientSideDatabase';
 import Schema from 'Models/Schema';
 import combineReducers from './reducers';
 
@@ -17,7 +15,7 @@ const composeEnhancers =
 
 const middleware = composeEnhancers(
   /** Include middleware */
-  applyMiddleware(thunk.withExtraArgument({ schema, Request, clientDB })),
+  applyMiddleware(thunk.withExtraArgument({ schema, Request })),
 );
 
 const store = createStore(combineReducers, middleware);

@@ -193,7 +193,7 @@ class ContentView extends React.Component {
 
   render() {
     const { key, visibilityPortal } = this.state;
-    const { webSocket, path } = this.props;
+    const { webSocket, path, appConfig } = this.props;
 
     if (process.env.NODE_ENV === 'development' && path) {
       console.log('Current path:', path);
@@ -208,7 +208,7 @@ class ContentView extends React.Component {
       <>
         <Content key={key}>
           {tabs.map(({ component = null }) => component)}
-          <ActionPortal visible={visibilityPortal}>
+          <ActionPortal appConfig={appConfig} visible={visibilityPortal}>
             <Chat
               key="chatModule"
               isBackground={isBackgroundChat}

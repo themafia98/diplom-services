@@ -8,6 +8,8 @@ import withRouter from 'Components/Helpers/withRouter';
 import types from 'types.modules';
 import { oneOfType } from 'Utils';
 import { setStatus } from 'Redux/actions/publicActions';
+import { compose } from 'redux';
+import { withClientDb } from 'Models/ClientSideDatabase';
 
 class ContactModule extends React.PureComponent {
   state = {
@@ -25,7 +27,7 @@ class ContactModule extends React.PureComponent {
   };
 
   componentDidMount = () => {
-    const { onLoadCurrentData, path, type = Symbol('') } = this.props;
+    const { onLoadCurrentData, path, type = Symbol(''), clientDB } = this.props;
 
     if (path === 'contactModule_feedback' && type === types.$sub_entrypoint_module) {
       onLoadCurrentData({
@@ -34,6 +36,7 @@ class ContactModule extends React.PureComponent {
         methodRequst: 'GET',
         noCorsClient: false,
         useStore: true,
+        clientDB,
       });
     }
   };
@@ -49,6 +52,7 @@ class ContactModule extends React.PureComponent {
       path,
       onLoadCurrentData,
       type = Symbol(''),
+      clientDB,
     } = this.props;
 
     const { isLoading: isLoadingState = false } = this.state;
@@ -73,6 +77,7 @@ class ContactModule extends React.PureComponent {
           methodRequst: 'GET',
           noCorsClient: false,
           useStore: true,
+          clientDB,
         });
 
         this.setState({
@@ -158,4 +163,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ContactModule));
+export default compose(connect(mapStateToProps, mapDispatchToProps), withClientDb, withRouter)(ContactModule);

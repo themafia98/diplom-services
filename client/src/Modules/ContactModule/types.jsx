@@ -4,7 +4,6 @@ const { func, string, bool, object, oneOf, arrayOf, objectOf, oneOfType, number,
 
 export const contactModuleType = {
   path: string.isRequired,
-  visible: bool.isRequired,
   activeTabs: arrayOf(string.isRequired).isRequired,
   statusApp: string.isRequired,
   router: object.isRequired,

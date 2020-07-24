@@ -1,4 +1,6 @@
 import { NextFunction, Response, Request } from 'express';
+import path from 'path';
+import fs from 'fs';
 import _ from 'lodash';
 import {
   App,
@@ -23,6 +25,20 @@ namespace System {
 
   @Controller('/system')
   export class SystemData implements ControllerApi<FunctionConstructor> {
+    @Get({ path: '/core/config', private: false })
+    protected async loadSystemConfig(req: Request, res: Response): ResRequest {
+      try {
+        fs.readFile(path.join(__dirname, '../../', '/core/config.json'), (err, data: any) => {
+          if (err) throw err;
+
+          const parsedJsonConfig: object = JSON.parse(data);
+          res.json(parsedJsonConfig);
+        });
+      } catch (error) {
+        if (!res.headersSent) return res.sendStatus(503);
+      }
+    }
+
     @Get({ path: '/userList', private: true })
     protected async getUsersList(req: Request, res: Response): ResRequest {
       const params: Params = { methodQuery: 'get_all', status: 'done', done: true, from: 'users' };

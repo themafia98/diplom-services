@@ -33,11 +33,9 @@ class ActionPortal extends React.Component {
   };
 
   render() {
-    const { action: actionProps = null, children } = this.props;
+    const { action: actionProps = null, children, appConfig = {} } = this.props;
     const { visible = false } = this.state;
-    const {
-      config: { actionRoot: { visibilityActionRoot = false } = {} },
-    } = this.context;
+    const { actionRoot: { visibilityActionRoot = false } = {} } = appConfig;
 
     if (!children || !visibilityActionRoot || !visible) return null;
     const action = actionProps ? (

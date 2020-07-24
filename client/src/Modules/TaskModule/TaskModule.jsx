@@ -20,6 +20,7 @@ import types from 'types.modules';
 import actionsTypes from 'actions.types';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import regExpRegister from 'Utils/Tools/regexpStorage';
+import { withClientDb } from 'Models/ClientSideDatabase';
 
 class TaskModule extends React.PureComponent {
   state = {
@@ -47,11 +48,11 @@ class TaskModule extends React.PureComponent {
       path = '',
       loaderMethods = {},
       router: { routeData },
-      modelsContext,
+      appConfig,
       moduleContext,
     } = this.props;
     const { visibility = false } = moduleContext;
-    const { config: { task: { limitList = 20 } = {} } = {} } = modelsContext;
+    const { task: { limitList = 20 } = {} } = appConfig;
     const { height } = this.state;
     const { onShowLoader } = loaderMethods;
 
@@ -98,13 +99,13 @@ class TaskModule extends React.PureComponent {
     const {
       router: { shouldUpdate = false, routeData = {} },
       path = '',
-      modelsContext,
       moduleContext,
+      appConfig,
     } = this.props;
 
     const { visibility = false } = moduleContext;
     const { isListCounterLoading = false } = this.state;
-    const { config: { task: { limitList = 20 } = {} } = {} } = modelsContext;
+    const { task: { limitList = 20 } = {} } = appConfig;
 
     if (!visibility) return;
 
@@ -132,10 +133,17 @@ class TaskModule extends React.PureComponent {
   };
 
   fetchTaskModule = async (customOptions = null, saveData = {}, saveDataState) => {
-    const { onLoadCurrentData, path, udata: { _id: uid = '' } = {}, modelsContext } = this.props;
+    const {
+      onLoadCurrentData,
+      path,
+      udata: { _id: uid = '' } = {},
+      modelsContext,
+      clientDB,
+      appConfig,
+    } = this.props;
     const { counter = null, isListCounterLoading } = this.state;
-    const { config, Request } = modelsContext;
-    const { task: { limitList = 20 } = {} } = config || {};
+    const { Request } = modelsContext;
+    const { task: { limitList = 20 } = {} } = appConfig || {};
 
     const options = customOptions
       ? customOptions
@@ -194,6 +202,7 @@ class TaskModule extends React.PureComponent {
           methodRequst: 'POST',
           shoudParseToUniq: true,
           options: { ...options, filterCounter: path.includes('taskModule_all') ? null : uid },
+          clientDB,
         });
 
         this.setState({
@@ -235,9 +244,9 @@ class TaskModule extends React.PureComponent {
       addTab,
       setCurrentTab,
       router: { currentActionTab, activeTabs },
-      modelsContext,
+      appConfig,
     } = this.props;
-    const { config: { tabsLimit = 50 } = {} } = modelsContext;
+    const { tabsLimit = 50 } = appConfig;
 
     if (currentActionTab !== 'taskModule_createTask') {
       if (tabsLimit <= activeTabs.length)
@@ -359,13 +368,14 @@ class TaskModule extends React.PureComponent {
 }
 
 const mapStateToProps = (state, props) => {
-  const { udata = {} } = state.publicReducer;
+  const { udata = {}, appConfig } = state.publicReducer;
 
   return {
     publicReducer: state.publicReducer,
     router: state.router,
     statusList: settingsStatusSelector(state, props),
     udata,
+    appConfig,
   };
 };
 
@@ -384,5 +394,6 @@ export { TaskModule };
 export default compose(
   withRouter,
   moduleContextToProps,
+  withClientDb,
   connect(mapStateToProps, mapDispatchToProps),
 )(TaskModule);

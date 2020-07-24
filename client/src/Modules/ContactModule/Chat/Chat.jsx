@@ -17,6 +17,8 @@ import TitleModule from 'Components/TitleModule';
 import ChatRoom from './ChatRoom';
 
 import modelsContext from 'Models/context';
+import { compose } from 'redux';
+import { withClientDb } from 'Models/ClientSideDatabase';
 
 class Chat extends React.PureComponent {
   state = {
@@ -67,6 +69,7 @@ class Chat extends React.PureComponent {
       chat: { chatToken = null, listdata = [], shouldLoadingMessage = false } = {},
       onLoadingDataByToken = null,
       webSocket = null,
+      clientDB,
     } = this.props;
     if (!webSocket) return;
     const { shouldUpdate = false } = this.state;
@@ -95,6 +98,7 @@ class Chat extends React.PureComponent {
             uid,
           },
           shouldRefresh: true,
+          clientDB,
         });
       }, 5000);
     }
@@ -136,6 +140,7 @@ class Chat extends React.PureComponent {
       chat: { chatToken: tokenRoom = null } = {},
       udata: { _id: uid } = {},
       onLoadActiveChats,
+      clientDB,
     } = this.props;
 
     if (socketConnection) {
@@ -153,13 +158,14 @@ class Chat extends React.PureComponent {
             tokenRoom,
             uid,
           },
+          clientDB,
         });
     } else {
       message.error('Соединение не установлено, попытка восстановить соединение.');
     }
   };
   loadChat = () => {
-    const { socketConnection, onLoadActiveChats, udata: { _id: uid } = {} } = this.props;
+    const { socketConnection, onLoadActiveChats, udata: { _id: uid } = {}, clientDB } = this.props;
 
     onLoadActiveChats({
       path: 'loadChats',
@@ -174,6 +180,7 @@ class Chat extends React.PureComponent {
         tokenRoom: null,
         uid,
       },
+      clientDB,
     });
   };
 
@@ -466,4 +473,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Chat);
+export default compose(withClientDb, connect(mapStateToProps, mapDispatchToProps))(Chat);

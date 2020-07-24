@@ -16,6 +16,8 @@ import clsx from 'clsx';
 import { routeParser, routePathNormalise, buildRequestList, parseArrayByLimit } from 'Utils';
 import ModelContext from 'Models/context';
 import actionsTypes from 'actions.types';
+import { compose } from 'redux';
+import { withClientDb } from 'Models/ClientSideDatabase';
 
 class StreamBox extends React.Component {
   state = {
@@ -73,9 +75,9 @@ class StreamBox extends React.Component {
 
   componentDidMount = async () => {
     const { listLimit } = this.state;
-    const { type, isSingleLoading, setCounter, visiblePopover, isLoadPopover } = this.props;
+    const { type, isSingleLoading, setCounter, visiblePopover, isLoadPopover, appConfig = {} } = this.props;
     const shouldUpdatePrivate = setCounter && visiblePopover && !isLoadPopover;
-    const { config: { intervalNotification = 30000, streamLimit } = {} } = this.context;
+    const { intervalNotification = 30000, streamLimit } = appConfig;
 
     if (!type) return;
 
@@ -148,10 +150,7 @@ class StreamBox extends React.Component {
   fetchNotification = async (showLoader) => {
     try {
       const { listLimit, showLoader: showLoaderState = false } = this.state;
-      const {
-        Request,
-        config: { streamLimit },
-      } = this.context;
+      const { Request } = this.context;
       const {
         type = '',
         onMultipleLoadData,
@@ -162,6 +161,8 @@ class StreamBox extends React.Component {
         visiblePopover,
         isLoadPopover,
         onLoadPopover,
+        appConfig: { streamLimit } = {},
+        clientDB,
       } = this.props;
 
       const uid = this.getNormalizeUidNotification();
@@ -208,6 +209,7 @@ class StreamBox extends React.Component {
       await onMultipleLoadData({
         requestsParamsList: buildRequestList(metadata, '#notification'),
         pipe: true,
+        clientDB,
       });
 
       if (visiblePopover && (shouldUpdatePrivate || (type === 'private' && metadata?.length))) {
@@ -256,6 +258,7 @@ class StreamBox extends React.Component {
       withStore,
       prefix,
       streamStore,
+      appConfig: { tabsLimit } = {},
     } = this.props;
 
     const nameModuleStream = this.getNotificationPath(this.getNormalizeUidNotification());
@@ -269,7 +272,6 @@ class StreamBox extends React.Component {
     const { action: { type: typeAction = '', link: key = '', moduleName: name = '' } = {}, type = '' } =
       streamList[index] || {};
     const moduleName = `${name}${prefix}`;
-    const { config: { tabsLimit } = {} } = this.context;
 
     const [storeName = '', typeCurrentAction = ''] = typeAction.split('_');
 
@@ -381,9 +383,7 @@ class StreamBox extends React.Component {
   };
 
   onLoadItemsList = () => {
-    const {
-      config: { streamLimit },
-    } = this.context;
+    const { appConfig: { streamLimit } = {} } = this.props;
     const currentScrollTop = this.scrollRef?.current?.getScrollTop();
 
     this.setState(
@@ -551,8 +551,8 @@ class StreamBox extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { router = {}, publicReducer: { udata = {} } = {} } = state;
-  return { router, udata };
+  const { router = {}, publicReducer: { udata = {}, appConfig } = {} } = state;
+  return { router, udata, appConfig };
 };
 
 const mapDispatchToProps = (dispatch) => {
@@ -566,4 +566,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(StreamBox);
+export default compose(withClientDb, connect(mapStateToProps, mapDispatchToProps))(StreamBox);

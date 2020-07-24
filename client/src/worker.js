@@ -1,4 +1,3 @@
-import { clientDB } from 'Models/ClientSideDatabase';
 import Request from 'Models/Rest';
 import actionsTypes from 'actions.types';
 
@@ -13,7 +12,7 @@ let initial = null;
  * @param {string} token jwt token
  */
 
-export function runSync(token) {
+export function runSync(token, clientDB = null) {
   /**
    * sync client data with server data
    */
@@ -21,7 +20,7 @@ export function runSync(token) {
     if (initial) clearTimeout(initial);
     const rest = new Request(token);
     const range = IDBKeyRange.lowerBound(0);
-    const valuesDb = clientDB.availableList;
+    const valuesDb = clientDB?.availableList;
 
     if (!valuesDb || !valuesDb?.length) return null;
 
@@ -49,6 +48,9 @@ export function runSync(token) {
     else initial = setTimeout(loop, 10000);
   }
 
+  if (!clientDB) {
+    console.error('Critical error (sync worker). Not found clientDB');
+  }
   initial = setTimeout(loop, 10000);
 }
 

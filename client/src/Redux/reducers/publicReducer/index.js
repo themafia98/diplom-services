@@ -9,10 +9,12 @@ import {
   UPDATE_UDATA,
   LOAD_SETTINGS,
   LOAD_ARTIFACT,
+  LOAD_CORE_CONFIG,
 } from '../../actions/publicActions/const';
 import regExpRegister from 'Utils/Tools/regexpStorage';
 
 const initialState = {
+  appConfig: {},
   status: 'online',
   prewStatus: 'online',
   firstConnect: true,
@@ -26,6 +28,12 @@ const initialState = {
 
 export default handleActions(
   {
+    [LOAD_CORE_CONFIG]: (state, { payload }) => {
+      return {
+        ...state,
+        appConfig: payload,
+      };
+    },
     [SET_ERROR]: (state, { payload }) => {
       return {
         ...state,

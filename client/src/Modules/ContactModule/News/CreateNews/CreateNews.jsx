@@ -8,6 +8,8 @@ import { message, notification, Input } from 'antd';
 
 import { createNotification, createEntity } from 'Utils';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
+import { compose } from 'redux';
+import { withClientDb } from 'Models/ClientSideDatabase';
 
 class CreateNews extends React.PureComponent {
   state = {
@@ -40,10 +42,9 @@ class CreateNews extends React.PureComponent {
       statusApp = '',
       udata: { displayName = '', _id: uid = '' } = {},
       onSetStatus,
-      modelsContext,
+      clientDB,
     } = this.props;
     const { titleNews = '' } = this.state;
-    const { clientDB = null } = modelsContext;
 
     if (!titleNews || !contentState) {
       return message.error('Название не найдено');
@@ -135,4 +136,4 @@ class CreateNews extends React.PureComponent {
   }
 }
 
-export default moduleContextToProps(CreateNews);
+export default compose(withClientDb)(moduleContextToProps(CreateNews));

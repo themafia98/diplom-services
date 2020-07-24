@@ -8,7 +8,7 @@ import { message } from 'antd';
 import { PrivateRoute } from './Components/Helpers';
 import { forceUpdateDetectedInit } from './Utils';
 import { settingsLoader } from './Redux/actions/publicActions/middleware';
-import { setStatus, loadUdata } from './Redux/actions/publicActions';
+import { setStatus, loadUdata, loadCoreConfigAction } from './Redux/actions/publicActions';
 import { addTabAction, setActiveTabAction, logoutAction } from './Redux/actions/routerActions';
 
 import { routeParser } from './Utils';
@@ -22,6 +22,10 @@ import ModelContext from './Models/context';
 import Demo from './Pages/Demo';
 import worker from 'workerize-loader!worker'; // eslint-disable-line import/no-webpack-loader-syntax
 import actionsTypes from 'actions.types';
+import { compose } from 'redux';
+import { withSystemConfig } from 'Models/context';
+import ClientSideDatabase, { ClientDbContext } from 'Models/ClientSideDatabase';
+
 const workerInstanse = worker();
 
 class App extends React.Component {
@@ -33,6 +37,43 @@ class App extends React.Component {
   static contextType = ModelContext;
   static propTypes = appType;
   loadingSettingsLoop = null;
+  client = null;
+
+  componentDidMount = async () => {
+    const {
+      coreConfig: { appActive = true, forceUpdate = false, clientDB: { name = '', version = '' } } = {},
+      coreConfig = {},
+      onLoadCoreConfig,
+    } = this.props;
+    const { Request } = this.context;
+    if (!appActive) return;
+
+    if (onLoadCoreConfig && coreConfig && typeof coreConfig === 'object') {
+      onLoadCoreConfig({ ...coreConfig });
+    }
+
+    this.client = new ClientSideDatabase(name, version);
+    await this.client.init();
+
+    if (window.location.pathname === '/demoPage') {
+      return this.loadApp();
+    }
+
+    const rest = new Request();
+    rest
+      .authCheck()
+      .then((res) => {
+        if (res.status === 200) {
+          this.loadAppSession();
+        } else {
+          throw new Error(res.message);
+        }
+      })
+      .catch((err) => {
+        this.loadApp();
+      });
+    if (forceUpdate === true || forceUpdate === 'true') forceUpdateDetectedInit();
+  };
 
   loadAppSession = async () => {
     const {
@@ -40,8 +81,10 @@ class App extends React.Component {
       setCurrentTab,
       router: { currentActionTab = '', activeTabs = [] } = {},
       onLoadUdata,
+      coreConfig = {},
     } = this.props;
-    const { config = {}, Request, config: { appActive = true } = {} } = this.context;
+    const { appActive = true, menu = [], tabsLimit = 20 } = coreConfig;
+    const { Request } = this.context;
     if (!appActive) return;
     const rest = new Request();
 
@@ -55,12 +98,12 @@ class App extends React.Component {
         true,
       );
 
-      if (res.status !== 200) {
+      if (res?.status !== 200) {
         throw new Error('Bad user data');
       }
 
       let path = 'mainModule';
-      const defaultModule = config.menu.find((item) => item?.SIGN === 'default');
+      const defaultModule = menu.find((item) => item?.SIGN === 'default');
       if (defaultModule) path = defaultModule?.EUID;
 
       const activeTabsCopy = [...activeTabs];
@@ -68,17 +111,17 @@ class App extends React.Component {
 
       const { data: { user = {} } = {} } = res || {};
 
-      const udata = Object.keys(user).reduce((accumulator, key) => {
+      const udata = Object.keys(user).reduce((acc, key) => {
         return key !== 'token'
           ? {
-              ...accumulator,
+              ...acc,
               [key]: res.data?.user[key],
             }
-          : accumulator || {};
+          : acc || {};
       }, {});
 
-      if (!isFind && config.tabsLimit <= activeTabsCopy.length)
-        return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
+      if (!isFind && tabsLimit <= activeTabsCopy.length)
+        return message.error(`Максимальное количество вкладок: ${tabsLimit}`);
       const isUserData = udata && !_.isEmpty(udata);
 
       if (!isFind) {
@@ -88,7 +131,7 @@ class App extends React.Component {
             this.loadSettings();
             addTab(routeParser({ path }));
 
-            workerInstanse.runSync(localStorage.getItem('token'));
+            workerInstanse.runSync(localStorage.getItem('token'), this.client);
           } catch (error) {
             console.log(error);
           }
@@ -98,7 +141,8 @@ class App extends React.Component {
           try {
             await onLoadUdata(udata);
             this.loadSettings();
-            workerInstanse.runSync(localStorage.getItem('token'));
+
+            workerInstanse.runSync(localStorage.getItem('token'), this.client);
             setCurrentTab(path);
           } catch (error) {
             console.log(error);
@@ -128,29 +172,6 @@ class App extends React.Component {
     return this.setState({ loadState: true });
   };
 
-  componentDidMount = () => {
-    const { config = {}, Request, config: { appActive = true } = {} } = this.context;
-    if (!appActive) return;
-    if (window.location.pathname === '/demoPage') {
-      return this.loadApp();
-    }
-
-    const rest = new Request();
-    rest
-      .authCheck()
-      .then((res) => {
-        if (res.status === 200) {
-          this.loadAppSession();
-        } else {
-          throw new Error(res.message);
-        }
-      })
-      .catch((err) => {
-        this.loadApp();
-      });
-    if (config.forceUpdate === true || config.forceUpdate === 'true') forceUpdateDetectedInit();
-  };
-
   withoutIE = (children) => {
     return (
       <>
@@ -166,31 +187,53 @@ class App extends React.Component {
     );
   };
 
+  getCoreConfig = () => {
+    const { coreConfig = null } = this.props;
+    return coreConfig;
+  };
+
   render() {
     const { loadState, authLoad } = this.state;
-    const { config: { supportIE = true, appActive = true, unactiveAppMsg = '' } = {} } = this.context;
-    const { onLogoutAction, onSetStatus } = this.props;
+    const {
+      onLogoutAction,
+      onSetStatus,
+      coreConfig: { supportIE = true, appActive = true, unactiveAppMsg = '' } = {},
+    } = this.props;
 
     if (!appActive) {
       return <div className="app-unactive">{unactiveAppMsg}</div>;
     }
 
+    const publicActions = {
+      getCoreConfig: this.getCoreConfig,
+    };
+
     const privateActions = {
       onSetStatus,
       onLogoutAction,
+      getCoreConfig: this.getCoreConfig,
     };
 
     const route = (
       <Switch>
-        <Route exact path="/recovory" render={(props) => <Recovery {...props} />} />
+        <Route exact path="/recovory" render={(props) => <Recovery {...props} {...publicActions} />} />
         <PrivateRoute exact path="/dashboard" {...privateActions} component={Dashboard} />
-        <Route exact path="/demoPage" render={(props) => <Demo {...props} />} />
-        <Route exact path="*" render={(props) => <LoginPage {...props} authLoad={authLoad} />} />
+        <Route exact path="/demoPage" render={(props) => <Demo {...props} {...publicActions} />} />
+        <Route
+          exact
+          path="*"
+          render={(props) => <LoginPage {...props} {...publicActions} authLoad={authLoad} />}
+        />
       </Switch>
     );
 
-    if (loadState) return !supportIE ? this.withoutIE(route) : route;
-    else return <Loader />;
+    if (loadState)
+      return (
+        <ClientDbContext.Provider value={this.client}>
+          {!supportIE ? this.withoutIE(route) : route}
+        </ClientDbContext.Provider>
+      );
+    else return <Loader title="Загрузка состояния приложения" />;
   }
 }
 
@@ -211,7 +254,8 @@ const mapDispatchToProps = (dispatch) => {
     onLogoutAction: async () => await dispatch(logoutAction()),
     onLoadUdata: async (udata) => await dispatch(loadUdata(udata)),
     onLoadSettings: async (payload) => await dispatch(settingsLoader(payload)),
+    onLoadCoreConfig: (payload) => dispatch(loadCoreConfigAction(payload)),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default compose(withSystemConfig, connect(mapStateToProps, mapDispatchToProps))(App);

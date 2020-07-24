@@ -12,7 +12,7 @@ import actionsTypes from 'actions.types';
  * @param {clientDB} clientDB - IndexedDB methods
  */
 
-const loadActiveChats = (payload) => async (dispatch, getState, { schema, Request, clientDB }) => {
+const loadActiveChats = (payload) => async (dispatch, getState, { schema, Request }) => {
   const {
     path = '',
     actionPath = '',
@@ -20,6 +20,7 @@ const loadActiveChats = (payload) => async (dispatch, getState, { schema, Reques
     options: { socket: { socketConnection = false, module: activeModule = 'chat' } = {} } = {},
     options = {},
     shouldRefresh = false,
+    clientDB = null,
   } = payload || {};
 
   const { chat: { isFake = '' } = {} } = getState().socketReducer || {};
@@ -87,6 +88,7 @@ const loadActiveChats = (payload) => async (dispatch, getState, { schema, Reques
         shouldLoadingMessage: activeChatRoom && shouldRefresh,
         listdata,
         options,
+        clientDB,
       }),
     );
   } catch (error) {
@@ -104,7 +106,7 @@ const loadActiveChats = (payload) => async (dispatch, getState, { schema, Reques
 const loadingDataByToken = (token, listdata, activeModule, isFake = null) => async (
   dispatch,
   getState,
-  { schema, Request, clientDB },
+  { Request },
 ) => {
   try {
     if (isFake) {
@@ -172,10 +174,14 @@ const loadingDataByToken = (token, listdata, activeModule, isFake = null) => asy
   }
 };
 
-const updateRooms = (payload) => async (dispatch, getState, { schema, Request, clientDB }) => {
+const updateRooms = (payload, clientDB = null) => async (dispatch, getState, { schema, Request }) => {
   try {
-    const { room: { tokenRoom: token = '', membersIds = [] } = {}, fullUpdate = false, activeModule } =
-      payload || {};
+    const {
+      room: { tokenRoom: token = '', membersIds = [] } = {},
+      fullUpdate = false,
+      activeModule,
+      clientDB,
+    } = payload || {};
 
     const { chat: { usersList = [], listdata: listdataState = [] } = {} } = getState().socketReducer || {};
 
@@ -233,6 +239,7 @@ const updateRooms = (payload) => async (dispatch, getState, { schema, Request, c
             module: activeModule,
           },
         },
+        clientDB,
       }),
     );
   } catch (error) {

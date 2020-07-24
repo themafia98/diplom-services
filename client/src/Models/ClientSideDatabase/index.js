@@ -1,5 +1,4 @@
 import { openDB, deleteDB } from 'idb';
-import config from 'config.json';
 import {
   TASK_SCHEMA,
   USER_SCHEMA,
@@ -8,6 +7,9 @@ import {
   NEWS_SCHEMA,
 } from 'Models/Schema/const';
 import Schema from 'Models/Schema';
+import React, { createContext } from 'react';
+
+const ClientDbContext = createContext(null);
 
 class ClientSideDatabase {
   /**
@@ -352,7 +354,13 @@ class ClientSideDatabase {
   }
 }
 
-const clientDB = new ClientSideDatabase(config.clientDB['name'], config.clientDB['version']);
-if (process.env.NODE_ENV !== 'test') clientDB.init();
-export { clientDB };
+const withClientDb = (Component) => (props) => {
+  return (
+    <ClientDbContext.Consumer>
+      {(clientDB) => <Component {...props} clientDB={clientDB} />}
+    </ClientDbContext.Consumer>
+  );
+};
+
+export { ClientDbContext, withClientDb };
 export default ClientSideDatabase;

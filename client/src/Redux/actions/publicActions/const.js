@@ -7,3 +7,4 @@ export const CLEAR_CACHE = 'CLEAR_CACHE';
 export const UPDATE_UDATA = 'UPDATE_UDATA';
 export const LOAD_ARTIFACT = 'LOAD_ARTIFACT';
 export const LOAD_SETTINGS = 'LOAD_SETTINGS';
+export const LOAD_CORE_CONFIG = 'LOAD_CORE_CONFIG';

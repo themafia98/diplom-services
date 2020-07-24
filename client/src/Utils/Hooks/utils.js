@@ -69,7 +69,10 @@ const runNoCorsAction = (dispatch, dep, multiple) => {
 
 const runRefreshIndexedDb = async (dispatch, storeName, dep, multiple) => {
   const { clientDB, isLocalUpdate } = dep;
-
+  if (!clientDB) {
+    console.error('error runRefresh client db');
+    return [];
+  }
   let shouldUpdate = isLocalUpdate;
   const cursor = await clientDB.getCursor(storeName, 'readwrite');
 
