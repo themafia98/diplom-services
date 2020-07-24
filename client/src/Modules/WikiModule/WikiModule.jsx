@@ -12,6 +12,7 @@ import TitleModule from 'Components/TitleModule';
 import actionsTypes from 'actions.types';
 import { compose } from 'redux';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
+import { withClientDb } from 'Models/ClientSideDatabase';
 
 const { Option } = Select;
 const { Search } = Input;
@@ -86,6 +87,7 @@ class WikiModule extends React.PureComponent {
       onLoadCurrentData,
       router: { shouldUpdate = false, routeData = {} } = {},
       moduleContext,
+      clientDB,
     } = this.props;
     const { visibility = false } = moduleContext;
     const { isLoading = false } = this.state;
@@ -114,6 +116,7 @@ class WikiModule extends React.PureComponent {
         methodRequst: 'GET',
         sortBy: 'index',
         indStoreName: 'wikiTree',
+        clientDB,
       });
     }
   };
@@ -511,4 +514,8 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default compose(moduleContextToProps, connect(mapStateToProps, mapDispatchToProps))(WikiModule);
+export default compose(
+  moduleContextToProps,
+  withClientDb,
+  connect(mapStateToProps, mapDispatchToProps),
+)(WikiModule);

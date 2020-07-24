@@ -25,9 +25,9 @@ class LoginPage extends React.Component {
   };
 
   enterLoading = (event) => {
-    const { addTab, onLoadUdata } = this.props;
-
-    const { Request, config = {} } = this.context;
+    const { addTab, onLoadUdata, getCoreConfig } = this.props;
+    const { Request } = this.context;
+    const config = getCoreConfig();
 
     const { state: { value: login = '' } = {} } = this.login || {};
     const { state: { value: password = '' } = {} } = this.password || {};
@@ -105,9 +105,10 @@ class LoginPage extends React.Component {
 
   render() {
     const { refLogin, refPassword, enterLoading } = this;
-    const { authLoad = false, location: { pathname = '' } = {} } = this.props;
+    const { authLoad = false, location: { pathname = '' } = {}, getCoreConfig } = this.props;
     const { loading, errorMessage, loginAuth } = this.state;
-    const { config = {}, config: { regInclude = true, recovoryInclude = true } = {} } = this.context;
+    const config = getCoreConfig();
+    const { regInclude = true, recovoryInclude = true } = config;
 
     if (authLoad || loginAuth) return <Redirect to="/dashboard" />;
     if ((!authLoad || !loginAuth) && pathname !== '/') {

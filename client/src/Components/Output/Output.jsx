@@ -5,6 +5,7 @@ import { routePathNormalise, findData } from 'Utils';
 import { Tooltip, Button, message, Spin } from 'antd';
 import _ from 'lodash';
 import ModelContext from 'Models/context';
+import { connect } from 'react-redux';
 
 class Output extends React.PureComponent {
   state = {
@@ -116,10 +117,10 @@ class Output extends React.PureComponent {
       currentData: currentDataState = null,
       setCurrentTab,
       depDataKey = '',
+      appConfig: config = {},
     } = this.props;
 
     const isCurrentKey = uid === key;
-    const { config = {} } = this.context;
 
     if (config.tabsLimit <= activeTabs.length)
       return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
@@ -336,4 +337,15 @@ class Output extends React.PureComponent {
   }
 }
 
-export default Output;
+const mapStateTopProps = (state) => {
+  const { appConfig } = state.publicReducer;
+  return {
+    appConfig,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {};
+};
+
+export default connect(mapStateTopProps, mapDispatchToProps)(Output);

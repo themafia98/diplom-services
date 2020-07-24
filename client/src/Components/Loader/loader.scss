@@ -3,4 +3,16 @@
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+
+  &.withTitle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .title_loader {
+    text-align: center;
+    padding: 10px 0;
+    font-weight: bold;
+  }
 }

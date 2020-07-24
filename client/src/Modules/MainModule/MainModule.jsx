@@ -10,6 +10,7 @@ import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
 import { routeParser } from 'Utils';
 import { compose } from 'redux';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
+import { withClientDb } from 'Models/ClientSideDatabase';
 
 class MainModule extends React.PureComponent {
   static propTypes = mainModuleType;
@@ -23,7 +24,7 @@ class MainModule extends React.PureComponent {
   widgetsContainerRef = React.createRef();
 
   componentDidMount = () => {
-    const { onLoadCurrentData, moduleContext } = this.props;
+    const { onLoadCurrentData, moduleContext, clientDB } = this.props;
     const { visibility = false } = moduleContext;
     const { page = '', itemId = '', path: validPath = '' } = routeParser({
       pageType: 'moduleItem',
@@ -37,6 +38,7 @@ class MainModule extends React.PureComponent {
         xhrPath: 'userList',
         storeLoad: 'users',
         methodRequst: 'GET',
+        clientDB,
       });
     }
     this.onResizeWindow();
@@ -44,7 +46,7 @@ class MainModule extends React.PureComponent {
   };
 
   componentDidUpdate = (prevProps) => {
-    const { onLoadCurrentData, moduleContext } = this.props;
+    const { onLoadCurrentData, moduleContext, clientDB } = this.props;
     const { visibility = false } = moduleContext;
     const {
       moduleContext: { visibility: visibilityPrev = false },
@@ -62,6 +64,7 @@ class MainModule extends React.PureComponent {
           startPath: 'system',
           storeLoad: 'users',
           methodRequst: 'GET',
+          clientDB,
         });
     }
   };
@@ -94,14 +97,13 @@ class MainModule extends React.PureComponent {
   };
 
   render() {
-    const { modelsContext, moduleContext } = this.props;
+    const { moduleContext, appConfig } = this.props;
     const { visibility = false } = moduleContext;
     const { tableViewHeight } = this.state;
     const {
-      config: {
-        visibilityWidgets: { mainModule: { clockVisibility = true, calendarVisibility = true } = {} } = {},
-      } = {},
-    } = modelsContext;
+      visibilityWidgets: { mainModule: { clockVisibility = true, calendarVisibility = true } = {} } = {},
+    } = appConfig;
+
     return (
       <div className="mainModule">
         <TitleModule
@@ -143,10 +145,23 @@ class MainModule extends React.PureComponent {
   }
 }
 
+const mapStateToProps = (state) => {
+  const {
+    publicReducer: { appConfig },
+  } = state;
+  return {
+    appConfig,
+  };
+};
+
 const mapDispatchToProps = (dispatch) => {
   return {
     onLoadCurrentData: (props) => dispatch(loadCurrentData(props)),
   };
 };
 
-export default compose(moduleContextToProps, connect(null, mapDispatchToProps))(MainModule);
+export default compose(
+  moduleContextToProps,
+  withClientDb,
+  connect(mapStateToProps, mapDispatchToProps),
+)(MainModule);

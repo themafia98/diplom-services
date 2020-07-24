@@ -5,6 +5,7 @@ import _ from 'lodash';
 import Scrollbars from 'react-custom-scrollbars';
 import { Skeleton, List, Avatar, Button } from 'antd';
 import { v4 as uuid } from 'uuid';
+import { withClientDb } from 'Models/ClientSideDatabase';
 
 const { Item: { Meta } = {}, Item = {} } = List || {};
 
@@ -19,6 +20,7 @@ const ChatMenu = ({
   uid,
   setActiveChatRoom,
   type,
+  clientDB,
   isWs,
 }) => {
   const [iDs, setIDs] = useState([]);
@@ -77,8 +79,9 @@ const ChatMenu = ({
         tmpRoomCounter += 1;
         return [...roomsList, tmp];
       }, []),
+      clientDB,
     );
-  }, [usersList, listdata, iDs, uid, isWs]);
+  }, [usersList, listdata, iDs, uid, isWs, clientDB]);
 
   return (
     <>
@@ -165,4 +168,4 @@ ChatMenu.defaultProps = {
 
 ChatMenu.propTypes = chatMenuType;
 
-export default ChatMenu;
+export default withClientDb(ChatMenu);

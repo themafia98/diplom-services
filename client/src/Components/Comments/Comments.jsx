@@ -10,6 +10,7 @@ import Textarea from 'Components/Textarea';
 import Comment from './Comment';
 import actionsTypes from 'actions.types';
 import { routeParser } from 'Utils';
+import { withClientDb } from 'Models/ClientSideDatabase';
 
 class Comments extends React.PureComponent {
   state = {
@@ -33,6 +34,7 @@ class Comments extends React.PureComponent {
         data = {},
         path,
         udata: { displayName = '', _id: uId = '' } = {},
+        clientDB,
       } = this.props;
 
       if (!msg) return message.error('Вы ничего не ввели.');
@@ -67,6 +69,7 @@ class Comments extends React.PureComponent {
           updateItem: [...comments, comment],
           updateField: 'comments',
           store: 'tasks',
+          clientDB,
         });
 
         message.success('Коментарий добавлен.');
@@ -94,7 +97,13 @@ class Comments extends React.PureComponent {
   };
 
   onDelete = async (event, idComment) => {
-    const { path, onUpdate, data: { _id: id = '', key = '', comments = [] } = {}, data = {} } = this.props;
+    const {
+      path,
+      onUpdate,
+      data: { _id: id = '', key = '', comments = [] } = {},
+      data = {},
+      clientDB,
+    } = this.props;
     const filterComments = comments.filter((it) => it.id !== idComment);
     try {
       const parsedRoutePath = routeParser({
@@ -112,6 +121,7 @@ class Comments extends React.PureComponent {
         updateBy: '_id',
         updateItem: filterComments,
         updateField: 'comments',
+        clientDB,
       });
       message.success('Коментарий удален.');
     } catch (error) {
@@ -120,7 +130,13 @@ class Comments extends React.PureComponent {
   };
 
   onEdit = async (idComment, msg = null, callback = null) => {
-    const { onUpdate, data: { _id: id = '', key = '', comments = [] } = {}, data = {}, path } = this.props;
+    const {
+      onUpdate,
+      data: { _id: id = '', key = '', comments = [] } = {},
+      data = {},
+      path,
+      clientDB,
+    } = this.props;
 
     if (typeof msg !== 'string') {
       message.error('Сообщение не валидно.');
@@ -153,6 +169,7 @@ class Comments extends React.PureComponent {
         updateBy: '_id',
         updateItem: newCommentsArray,
         updateField: 'comments',
+        clientDB,
       });
       message.success('Коментарий обновлен.');
       if (callback) callback();
@@ -221,4 +238,4 @@ class Comments extends React.PureComponent {
     );
   }
 }
-export default Comments;
+export default withClientDb(Comments);

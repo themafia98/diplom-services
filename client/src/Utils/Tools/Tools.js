@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import Request from 'Models/Rest';
-import config from 'config.json';
 import NotFound from 'Modules/NotFound';
 import subModulesComponents from './subComponents';
 import componentsModules from './components';
@@ -63,7 +62,9 @@ const createEntity = async (storeName = '', body = {}, dep = {}, sliceCreaterNum
 
     const offlineBody =
       metadata && !_.isEmpty(metadata) ? { ...metadata, offline: true } : { ...body, offline: true };
-    const putAction = await clientDB.addItem(storeName, offlineBody);
+    const putAction = clientDB ? await clientDB.addItem(storeName, offlineBody) : null;
+
+    if (!clientDB) console.warn('client db connect');
 
     return { result: putAction ? { ...offlineBody } : null, offline: true };
   } catch (error) {
@@ -158,7 +159,7 @@ const getComponentByKey = (key, type = types.$entrypoint_module) => {
   }
 };
 
-const getDependencyModules = (moduleName, configuration = config, exclude = []) => {
+const getDependencyModules = (moduleName, configuration = null, exclude = []) => {
   const { menu = [] } = configuration || {};
 
   return menu.reduce((depList, item) => {

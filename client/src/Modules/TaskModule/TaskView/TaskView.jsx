@@ -20,6 +20,7 @@ import renderDescription from './renderDescription';
 import actionsTypes from 'actions.types';
 import { compose } from 'redux';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
+import { withClientDb } from 'Models/ClientSideDatabase';
 
 class TaskView extends React.PureComponent {
   state = {
@@ -79,6 +80,7 @@ class TaskView extends React.PureComponent {
       onLoadCacheData,
       data: { id: idProps = '' } = {},
       onSaveCache = null,
+      clientDB,
     } = this.props;
 
     const { actionType, key: taskId } = this.state;
@@ -93,7 +95,7 @@ class TaskView extends React.PureComponent {
         primaryKey: '__author',
       });
 
-      onLoadCacheData({ actionType, depKey: idTask, depStore: 'tasks', store: 'jurnalworks' });
+      onLoadCacheData({ actionType, depKey: idTask, depStore: 'tasks', store: 'jurnalworks', clientDB });
       this.fetchDepUsersList();
       this.fetchFiles();
     }
@@ -418,6 +420,7 @@ class TaskView extends React.PureComponent {
       router: { path = '' },
       route = null,
       modelsContext,
+      clientDB,
     } = this.props;
     const { modeControllEdit = {} } = this.state;
     const validHashCopy = [{ ...modeControllEdit }];
@@ -446,6 +449,7 @@ class TaskView extends React.PureComponent {
         updateItem: { ...validHash },
         item: { ...routeDataActive },
         store: 'tasks',
+        clientDB,
       });
       this.onRejectEdit(event);
       message.success('Задача обновлена.');
@@ -817,4 +821,8 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export { TaskView };
-export default compose(moduleContextToProps, connect(mapStateTopProps, mapDispatchToProps))(TaskView);
+export default compose(
+  moduleContextToProps,
+  withClientDb,
+  connect(mapStateTopProps, mapDispatchToProps),
+)(TaskView);

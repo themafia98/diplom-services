@@ -22,7 +22,8 @@ const middlewareCaching = ({
   uid = '',
   type = '',
   updateBy = '_id',
-}) => async (dispatch, getState, { schema, Request, clientDB }) => {
+  clientDB = null,
+}) => async (dispatch, getState, { schema, Request }) => {
   const rest = new Request();
 
   const depActions = {
@@ -99,7 +100,8 @@ const loadCacheData = ({
   depStore = '',
   store = '',
   updateBy = '_id',
-}) => async (dispatch, getState, { schema, Request, clientDB }) => {
+  clientDB = null,
+}) => async (dispatch, getState, { schema, Request }) => {
   const rest = new Request();
   const depActions = {
     errorRequestAction,
@@ -159,7 +161,8 @@ const middlewareUpdate = ({
   actionType = 'default',
   updateBy = '_id',
   parsedRoutePath,
-}) => async (dispatch, getState, { schema, Request, clientDB }) => {
+  clientDB = null,
+}) => async (dispatch, getState, { schema, Request }) => {
   /**
    * Props
    * @param {string} id

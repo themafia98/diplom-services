@@ -10,7 +10,7 @@ const PrivateRoute = ({ component: Component, onLogoutAction, onSetStatus, ...ro
   const history = useHistory();
   const { rest } = useContext(modelsContext);
 
-  const [route, setRoute] = useState(<Loader />);
+  const [route, setRoute] = useState(<Loader title="Загрузка данных" />);
   /** @type {[number|null, Function|null]} */
   const [status, setStatus] = useState(null);
   const [init, setInit] = useState(null);

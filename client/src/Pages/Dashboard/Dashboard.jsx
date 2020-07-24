@@ -29,7 +29,7 @@ class Dashboard extends React.PureComponent {
     isToolbarActive: false,
     redirect: false,
     status: 'online',
-    menuItems: this.context?.config?.menu,
+    menuItems: this.props?.appConfig?.menu,
     counterError: 0,
     showLoader: false,
   };
@@ -198,8 +198,14 @@ class Dashboard extends React.PureComponent {
   };
 
   goHome = (event) => {
-    const { addTab, setCurrentTab, router: { currentActionTab = '', activeTabs = [] } = {} } = this.props;
-    const { config: { tabsLimit = 50 } = {} } = this.context;
+    const {
+      addTab,
+      setCurrentTab,
+      router: { currentActionTab = '', activeTabs = [] } = {},
+      appConfig = {},
+    } = this.props;
+    const { tabsLimit = 50 } = appConfig;
+
     if (currentActionTab === 'mainModule') return;
 
     if (tabsLimit <= activeTabs.length) return message.error(`Максимальное количество вкладок: ${tabsLimit}`);
@@ -210,8 +216,13 @@ class Dashboard extends React.PureComponent {
   };
 
   goCabinet = (event) => {
-    const { addTab, setCurrentTab, router: { currentActionTab = '', activeTabs = [] } = {} } = this.props;
-    const { config: { tabsLimit = 50 } = {} } = this.context;
+    const {
+      addTab,
+      setCurrentTab,
+      router: { currentActionTab = '', activeTabs = [] } = {},
+      appConfig = {},
+    } = this.props;
+    const { tabsLimit = 50 } = appConfig;
     if (currentActionTab === 'cabinetModule') return;
 
     if (tabsLimit <= activeTabs.length) return message.error(`Максимальное количество вкладок: ${tabsLimit}`);
@@ -223,14 +234,16 @@ class Dashboard extends React.PureComponent {
 
   menuHandler = (event, key, mode = 'open') => {
     const path = event['key'] ? event['key'] : key;
-    const { config: { tabsLimit = 50 } = {} } = this.context;
     const {
       router: { currentActionTab, activeTabs = [], routeData } = {},
       addTab,
       setCurrentTab,
       removeTab,
       onClearCache,
+      appConfig = {},
     } = this.props;
+
+    const { tabsLimit = 50 } = appConfig;
 
     const activeTabsCopy = [...activeTabs];
     const isFind = activeTabsCopy.findIndex((tab) => tab === path) !== -1;
@@ -327,8 +340,8 @@ class Dashboard extends React.PureComponent {
       publicReducer = {},
       firstConnect = false,
       udata = {},
+      appConfig: config = {},
     } = this.props;
-    const { config = {} } = this.context;
 
     if (redirect) return <Redirect to={{ pathname: '/' }} />;
 
@@ -359,6 +372,7 @@ class Dashboard extends React.PureComponent {
             />
             <ContentView
               dashboardStrem={this.dashboardStrem}
+              appConfig={config}
               activeTabs={activeTabs}
               udata={udata}
               isToolbarActive={isToolbarActive}
@@ -404,12 +418,13 @@ class Dashboard extends React.PureComponent {
 
 const mapStateToProps = (state) => {
   const { router, publicReducer } = state;
-  const { firstConnect = false, udata = {} } = publicReducer;
+  const { firstConnect = false, udata = {}, appConfig } = publicReducer;
   return {
     router,
     publicReducer,
     firstConnect,
     udata,
+    appConfig,
   };
 };
 

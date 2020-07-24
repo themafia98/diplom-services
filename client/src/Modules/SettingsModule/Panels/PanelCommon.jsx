@@ -1,12 +1,12 @@
-import React, { useState, useContext, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { panelCommonType } from './types';
 import { Button, Collapse, Input } from 'antd';
-import ModelContext from 'Models/context';
 const { Panel } = Collapse;
 
-const PanelCommon = ({ emailValue: emailValueProps, telValue: telValueProps, onSaveSettings }) => {
-  const context = useContext(ModelContext);
-  const { config: { settings: { includeChangeEmail = false } = {} } = {} } = context;
+const PanelCommon = ({ emailValue: emailValueProps, telValue: telValueProps, onSaveSettings, appConfig }) => {
+  const {
+    settings: { includeChangeEmail = false },
+  } = appConfig;
 
   const [readOnly, setReadOnly] = useState(true);
   const [haveChanges, setChanges] = useState([]);

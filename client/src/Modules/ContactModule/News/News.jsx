@@ -25,10 +25,10 @@ class News extends React.PureComponent {
   static propTypes = newsType;
 
   onOpenCreateNews = () => {
-    const { addTab, router: { activeTabs = [] } = {}, setCurrentTab, modelsContext } = this.props;
+    const { addTab, router: { activeTabs = [] } = {}, setCurrentTab, appConfig } = this.props;
     const moduleId = 'createNews';
     const page = 'contactModule';
-    const { config = {}, config: { tabsLimit = 0 } = {} } = modelsContext;
+    const { tabsLimit = 0 } = appConfig;
 
     const { path: pathNormalize = '' } = routePathNormalise({
       pathData: { page, moduleId },
@@ -40,7 +40,7 @@ class News extends React.PureComponent {
     if (isFind) setCurrentTab(activeTabs[index], { hardCodeUpdate: false });
 
     if (tabsLimit <= activeTabs.length) {
-      message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
+      message.error(`Максимальное количество вкладок: ${tabsLimit}`);
       return;
     }
 
@@ -53,8 +53,8 @@ class News extends React.PureComponent {
       router: { activeTabs = [], routeData: { contactModule: { news = [] } = {} } = {} } = {},
       setCurrentTab,
       data = {},
+      appConfig: { tabsLimit = 0 },
     } = this.props;
-    const { config = {} } = this.context;
 
     const key = typeof openKey === 'string' ? openKey.replace('_informationPage', '') : '';
 
@@ -77,8 +77,8 @@ class News extends React.PureComponent {
       return;
     }
 
-    if (config.tabsLimit <= activeTabs.length) {
-      message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
+    if (tabsLimit <= activeTabs.length) {
+      message.error(`Максимальное количество вкладок: ${tabsLimit}`);
       return;
     }
 
@@ -158,10 +158,11 @@ class News extends React.PureComponent {
 }
 
 const mapStateToProps = (state) => {
-  const { publicReducer: { status: statusApp = '' } = {}, router = {} } = state;
+  const { publicReducer: { status: statusApp = '', appConfig } = {}, router = {} } = state;
   return {
     router,
     statusApp,
+    appConfig,
   };
 };
 

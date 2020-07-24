@@ -11,6 +11,7 @@ import FixedToolbar from 'Components/FixedToolbar';
 import { Button } from 'antd';
 import { compose } from 'redux';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
+import { withClientDb } from 'Models/ClientSideDatabase';
 
 class StatisticsModule extends React.PureComponent {
   state = {
@@ -46,13 +47,13 @@ class StatisticsModule extends React.PureComponent {
   };
 
   fetchStatistics = (shouldSetLoading = false) => {
-    const { onLoadCurrentData, path, statusList: { settings = [] } = {}, modelsContext } = this.props;
+    const { onLoadCurrentData, path, statusList: { settings = [] } = {}, appConfig, clientDB } = this.props;
     const statsListFields = settings.reduce((list, { value = '' }) => {
       if (value) return [...list, value];
       return list;
     }, []);
     const { dateConfig = [] } = this.state;
-    const { config: { statistics: { limitListTasks = 5000 } = {} } = {} } = modelsContext;
+    const { statistics: { limitListTasks = 5000 } = {} } = appConfig;
 
     let limits = {};
     if (dateConfig[0] === 'full') {
@@ -82,6 +83,7 @@ class StatisticsModule extends React.PureComponent {
                 .subtract(...dateConfig)
                 .toISOString(),
       },
+      clientDB,
     });
   };
 
@@ -188,8 +190,11 @@ class StatisticsModule extends React.PureComponent {
 }
 
 const mapStateToProps = (state, props) => {
-  const { router } = state;
-  return { router, statusList: settingsStatusSelector(state, props) };
+  const {
+    router,
+    publicReducer: { appConfig },
+  } = state;
+  return { router, statusList: settingsStatusSelector(state, props), appConfig };
 };
 
 const mapDispatchToProps = (dispatch) => {
@@ -198,4 +203,8 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default compose(moduleContextToProps, connect(mapStateToProps, mapDispatchToProps))(StatisticsModule);
+export default compose(
+  moduleContextToProps,
+  withClientDb,
+  connect(mapStateToProps, mapDispatchToProps),
+)(StatisticsModule);

@@ -1,6 +1,5 @@
 import moment from 'moment';
 import _ from 'lodash';
-import { clientDB } from 'Models/ClientSideDatabase';
 import { runNoCorsParser, toSymbol } from './utils';
 import { getStoreSchema } from '../utilsHook';
 import regExpRegister from 'Utils/Tools/regexpStorage';
@@ -46,7 +45,10 @@ const dataParser = (flag = false, isLocalUpdate = true, dep = {}, offlineStore =
   const templateSchema = getStoreSchema(storeLoad, methodQuery);
 
   let storeCopyValid = store.map((it) => schema?.getSchema(templateSchema, it)).filter(Boolean);
-  storeCopyValid.forEach((it) => schema.isPublicKey(it) && clientDB.updateItem(storeLoad, it));
+
+  if (clientDB) {
+    storeCopyValid.forEach((it) => schema.isPublicKey(it) && clientDB.updateItem(storeLoad, it));
+  } else console.warn('No client db connect');
 
   if (requestError !== null) shouldClearError = true;
 
@@ -244,7 +246,11 @@ const getValidContent = (contentStateProp) => {
  * @param {string} store
  * @param {Array<object>} syncData
  */
-const syncData = async (store = '', syncData = []) => {
+const syncData = async (store = '', syncData = [], clientDB = null) => {
+  if (!clientDB) {
+    console.error('Error sync data, client db connect');
+    return [];
+  }
   const localDataList = await clientDB.getAllItems(store);
   return _.uniqBy([...syncData, ...localDataList], '_id');
 };
