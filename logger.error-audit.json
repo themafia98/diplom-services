@@ -39,6 +39,11 @@
       "date": 1595610240763,
       "name": "logs\\logs-error-2020-07-24-20.log",
       "hash": "34f463e183e25c7eecec75d090b319a3"
+    },
+    {
+      "date": 1595614380260,
+      "name": "logs\\logs-error-2020-07-24-21.log",
+      "hash": "b7534bdeb7f165115aa26cc52dc43665"
     }
   ]
 }
