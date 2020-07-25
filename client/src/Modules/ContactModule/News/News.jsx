@@ -116,7 +116,7 @@ class News extends React.PureComponent {
   render() {
     const { currentPage } = this.state;
     const {
-      data: { news: newsData = [], loading = false, load = false },
+      data: { news: newsData = [], loading = false, load = false } = {},
       router: { routeData: { contactModule: { news: newsStore = [] } = {} } = {} },
     } = this.props;
     const listdata = newsData && Array.isArray(newsData) ? newsData : newsStore?.length ? newsStore : [];
