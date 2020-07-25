@@ -28,7 +28,7 @@ const coreUpdaterDataHook = async (dispatch, dep = {}, multiple = false, badNetw
     if (isDone) return data;
   }
 
-  if (requestError === null && !badNetwork) dispatch(errorRequestAction(null));
+  if (requestError !== null && !badNetwork) dispatch(errorRequestAction(null));
   const currentStore = indStoreName ? indStoreName : storeLoad;
 
   const [cursor = null, eventResult = null, shouldUpdate = null] = await runRefreshIndexedDb(

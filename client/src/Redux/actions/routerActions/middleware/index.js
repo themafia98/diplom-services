@@ -26,9 +26,11 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
   let isLocalUpdate = true;
   const primaryKey = 'uuid';
   const pathValid = path.includes('_') ? path : path.split(regExpRegister.MODULE_ID)[0];
-  const router = getState().router;
+  const {
+    router,
+    publicReducer: { requestError, status = 'online' },
+  } = getState();
 
-  const { requestError, status = 'online' } = getState().publicReducer;
   const isExist = router.routeData && router.routeData[pathValid];
 
   if (isExist && !router.routeData[pathValid].load) {
@@ -65,8 +67,8 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
         if (error) throw new Error(error);
 
         const dep = {
-          noCorsClient,
           requestError,
+          noCorsClient,
           copyStore,
           sortBy,
           pathValid,
@@ -89,6 +91,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
       } catch (error) {
         const { status: errorStatus = '', response: { status: responseStatus = 503 } = {} } = error || {};
         const dep = {
+          requestError,
           Request,
           setStatus,
           params,
@@ -149,7 +152,9 @@ const multipleLoadData = (params) => async (dispatch, getState, { schema, Reques
   const { requestsParamsList = [], pipe = true, saveModuleName = '', clientDB = null } = params;
 
   const primaryKey = 'uuid';
-  const { requestError, status = 'online' } = getState().publicReducer;
+  const {
+    publicReducer: { requestError, status = 'online' },
+  } = getState();
 
   if (status !== 'online') return;
 
