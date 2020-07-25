@@ -88,8 +88,9 @@ class ContactModule extends React.PureComponent {
     );
   };
 
-  getContactContentByPath = (path) => {
+  renderContactsModules = () => {
     const {
+      path,
       statusApp,
       router: { routeData = {}, activeTabs = [] } = {},
       router = {},
@@ -138,11 +139,9 @@ class ContactModule extends React.PureComponent {
     return entityList.map(({ component = null }) => component);
   };
   render() {
-    const { path } = this.props;
-
     return (
       <div key="contactModule" className="contactModule">
-        {this.getContactContentByPath(path)}
+        {this.renderContactsModules()}
       </div>
     );
   }
@@ -151,9 +150,9 @@ class ContactModule extends React.PureComponent {
 const mapStateToProps = (state) => {
   const {
     router = {},
-    publicReducer: { udata = {} },
+    publicReducer: { udata = {}, appConfig },
   } = state;
-  return { router, udata };
+  return { router, udata, appConfig };
 };
 
 const mapDispatchToProps = (dispatch) => {

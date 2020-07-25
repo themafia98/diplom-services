@@ -7,9 +7,9 @@ import { getDependencyModules } from 'Utils';
  * @requires {string} property 'path' in props
  */
 const withRouter = (Component, exclude = []) => (props) => {
-  const { path = '' } = props;
+  const { path = '', appConfig = null } = props;
   return (
-    <Component {...props} entitysList={getDependencyModules(path.split(/_|#/)[0], undefined, exclude)} />
+    <Component {...props} entitysList={getDependencyModules(path.split(/_|#/)[0], appConfig, exclude)} />
   );
 };
 

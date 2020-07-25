@@ -35,6 +35,7 @@ export default handleActions(
       };
     },
     [SET_ERROR]: (state, { payload }) => {
+      console.error(payload);
       return {
         ...state,
         requestError:

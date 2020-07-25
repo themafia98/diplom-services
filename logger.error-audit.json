@@ -26,9 +26,14 @@
       "hash": "b626675a15512b7806e21293876bfb36"
     },
     {
-      "date": 1595686918071,
+      "date": 1595686916670,
       "name": "logs\\logs-error-2020-07-25-17.log",
-      "hash": "6af3247a289d39d6c2004035322b15ad"
+      "hash": "6ee83f56fe67cd8b0e251c2572e3bded"
+    },
+    {
+      "date": 1595690951118,
+      "name": "logs\\logs-error-2020-07-25-18.log",
+      "hash": "a486f5d74624fcbc778d5404984a1d11"
     }
   ]
 }
