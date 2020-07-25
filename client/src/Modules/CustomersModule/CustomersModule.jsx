@@ -5,6 +5,10 @@ import TabContainer from 'Components/TabContainer';
 import Contacts from './Contacts';
 import { connect } from 'react-redux';
 import { setStatus } from 'Redux/actions/publicActions';
+import { compose } from 'redux';
+import withRouter from 'Components/Helpers/withRouter/withRouter';
+import entityRender from 'Utils/Tools/entityRender';
+import types from 'types.modules';
 
 class CustomersModule extends React.PureComponent {
   static propTypes = customersModuleType;
@@ -14,37 +18,51 @@ class CustomersModule extends React.PureComponent {
     return activeTabs.some((actionTab) => actionTab.startsWith(path) || actionTab === path);
   };
 
-  getComponentByPath = (path) => {
-    const { router = {}, onSetStatus } = this.props;
-    if (path) {
-      const isBackgroundContacts = this.checkBackground('customersModule_contacts');
-      return (
-        <>
-          <TabContainer isBackground={isBackgroundContacts} visible={path === 'customersModule_contacts'}>
-            <Contacts
-              key="contacts_module"
-              isBackground={isBackgroundContacts}
-              router={router}
-              onSetStatus={onSetStatus}
-              path={path}
-              visible={path === 'customersModule_contacts'}
-            />
-          </TabContainer>
-        </>
-      );
-    }
+  renderCustomers = () => {
+    const {
+      path,
+      statusApp,
+      router: { routeData = {} } = {},
+      router = {},
+      udata,
+      webSocket,
+      visibilityPortal,
+      entitysList = [],
+      type,
+    } = this.props;
+
+    const subTabProps = {
+      isPortal: visibilityPortal,
+      webSocket: webSocket,
+      type,
+      path,
+      udata,
+      statusApp,
+      router,
+    };
+
+    const config = {
+      moduleName: 'customersModule',
+      validation: this.checkBackground,
+      path,
+      parentType: type,
+      type: types.$sub_entrypoint_module,
+    };
+
+    const entityList = entityRender(entitysList, routeData, subTabProps, config);
+    return entityList.map(({ component = null }) => component);
   };
+
   render() {
-    const { path } = this.props;
-    const component = this.getComponentByPath(path);
-    return <div className="contactModule">{component ? component : null}</div>;
+    return <div className="customersModule">{this.renderCustomers()}</div>;
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onSetStatus: (status) => dispatch(setStatus({ statusRequst: status })),
-  };
+const mapStateToProps = (state) => {
+  const {
+    publicReducer: { appConfig, udata },
+  } = state;
+  return { appConfig, udata };
 };
 
-export default connect(null, mapDispatchToProps)(CustomersModule);
+export default compose(connect(mapStateToProps), withRouter)(CustomersModule);

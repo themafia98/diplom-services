@@ -107,7 +107,6 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
           path,
           rest,
           noCorsClient,
-          requestError,
           sortBy,
           pathValid,
           schema,

@@ -9,6 +9,9 @@ import InfiniteLoader from 'react-virtualized/dist/commonjs/InfiniteLoader';
 import { List, message, Avatar, Spin } from 'antd';
 import Scrollbars from 'react-custom-scrollbars';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
+import { setStatus } from 'Redux/actions/publicActions';
 
 class Contacts extends React.PureComponent {
   state = {
@@ -166,4 +169,11 @@ class Contacts extends React.PureComponent {
     );
   }
 }
-export default moduleContextToProps(Contacts);
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onSetStatus: (status) => dispatch(setStatus({ statusRequst: status })),
+  };
+};
+
+export default compose(connect(null, mapDispatchToProps), moduleContextToProps)(Contacts);
