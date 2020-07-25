@@ -7,7 +7,7 @@ import { Switch, Route } from 'react-router-dom';
 import { message } from 'antd';
 import { PrivateRoute } from './Components/Helpers';
 import { forceUpdateDetectedInit } from './Utils';
-import { settingsLoader } from './Redux/actions/publicActions/middleware';
+import { settingsLoadAction } from './Redux/actions/publicActions/middleware';
 import { setStatus, loadUdata, loadCoreConfigAction } from './Redux/actions/publicActions';
 import { addTabAction, setActiveTabAction, logoutAction } from './Redux/actions/routerActions';
 
@@ -253,7 +253,7 @@ const mapDispatchToProps = (dispatch) => {
     setCurrentTab: (tab) => dispatch(setActiveTabAction(tab)),
     onLogoutAction: async () => await dispatch(logoutAction()),
     onLoadUdata: async (udata) => await dispatch(loadUdata(udata)),
-    onLoadSettings: async (payload) => await dispatch(settingsLoader(payload)),
+    onLoadSettings: async (payload) => await dispatch(settingsLoadAction(payload)),
     onLoadCoreConfig: (payload) => dispatch(loadCoreConfigAction(payload)),
   };
 };

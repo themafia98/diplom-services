@@ -305,13 +305,26 @@ class Dashboard extends React.PureComponent {
     });
   };
 
-  onChangeVisibleAction = (event, shouldChange = false) => {
+  onChangeVisibleAction = (event, shouldChange = false, forceChangeState = true) => {
     const { isToolbarActive = false } = this.state;
     const isShoudChange = !event && shouldChange;
+
+    if (!forceChangeState && isToolbarActive === shouldChange) {
+      return;
+    }
+
+    if (!forceChangeState && isToolbarActive !== shouldChange) {
+      this.setState({
+        ...this.state,
+        isToolbarActive: shouldChange,
+      });
+      return;
+    }
 
     if (isShoudChange) {
       isToolbarActive !== !shouldChange &&
         this.setState({
+          ...this.state,
           isToolbarActive: !shouldChange,
         });
       return;
@@ -319,6 +332,7 @@ class Dashboard extends React.PureComponent {
 
     this.setState((state) => {
       return {
+        ...state,
         isToolbarActive: !state.isToolbarActive,
       };
     });
@@ -410,7 +424,7 @@ class Dashboard extends React.PureComponent {
             ) : null}
           </Layout>
         </Layout>
-        <FixedToolbar key="toolbar" onChangeVisibleAction={this.onChangeVisibleAction} name="Чат" />
+        <FixedToolbar key="toolbar-chat" onChangeVisibleAction={this.onChangeVisibleAction} name="Чат" />
       </div>
     );
   }

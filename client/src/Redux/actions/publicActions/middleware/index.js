@@ -226,7 +226,7 @@ const middlewareUpdate = ({
   }
 };
 
-const settingsLoader = ({ wishList = [] }) => async (dispatch, getState, { Request }) => {
+const settingsLoadAction = ({ wishList = [] }) => async (dispatch, getState, { Request }) => {
   const rest = new Request();
 
   const artifacts = [];
@@ -263,4 +263,4 @@ const settingsLoader = ({ wishList = [] }) => async (dispatch, getState, { Reque
   dispatch(onLoadSettings(settings));
 };
 
-export { middlewareCaching, middlewareUpdate, loadCacheData, settingsLoader };
+export { middlewareCaching, middlewareUpdate, loadCacheData, settingsLoadAction };

@@ -40,7 +40,12 @@ class Chat extends React.PureComponent {
   updaterChats = null;
 
   componentDidMount = () => {
-    const { onUpdateRoom, webSocket = null } = this.props;
+    const { onUpdateRoom, webSocket = null, isTab = false, onChangeVisibleAction } = this.props;
+
+    if (isTab && onChangeVisibleAction) {
+      onChangeVisibleAction(null, false, false);
+    }
+
     if (!webSocket) return;
     if (!webSocket?.connected) webSocket.connect();
     else this.connection(true);

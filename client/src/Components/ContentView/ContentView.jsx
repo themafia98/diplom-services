@@ -205,20 +205,18 @@ class ContentView extends React.Component {
     const tabs = this.tabsCreate();
 
     return (
-      <>
-        <Content key={key}>
-          {tabs.map(({ component = null }) => component)}
-          <ActionPortal appConfig={appConfig} visible={visibilityPortal}>
-            <Chat
-              key="chatModule"
-              isBackground={isBackgroundChat}
-              webSocket={webSocket}
-              type="modal"
-              visible={visibilityPortal || path === 'contactModule_chat'}
-            />
-          </ActionPortal>
-        </Content>
-      </>
+      <Content key={key}>
+        {tabs.map(({ component = null }) => component)}
+        <ActionPortal appConfig={appConfig} visible={visibilityPortal}>
+          <Chat
+            key="chatModule"
+            isBackground={isBackgroundChat}
+            webSocket={webSocket}
+            type="modal"
+            visible={visibilityPortal || path === 'contactModule_chat'}
+          />
+        </ActionPortal>
+      </Content>
     );
   }
 }
