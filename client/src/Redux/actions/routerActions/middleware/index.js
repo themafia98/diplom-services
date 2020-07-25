@@ -27,7 +27,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
   const primaryKey = 'uuid';
   const pathValid = path.includes('_') ? path : path.split(regExpRegister.MODULE_ID)[0];
   const router = getState().router;
-  debugger;
+
   const { requestError, status = 'online' } = getState().publicReducer;
   const isExist = router.routeData && router.routeData[pathValid];
 
