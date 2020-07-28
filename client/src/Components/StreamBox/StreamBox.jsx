@@ -2,18 +2,13 @@ import React from 'react';
 import { streamBoxType } from './types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { loadCurrentData, multipleLoadData } from 'Redux/actions/routerActions/middleware';
-import {
-  addTabAction,
-  openPageWithDataAction,
-  setActiveTabAction,
-  saveComponentStateAction,
-} from 'Redux/actions/routerActions';
+import { multipleLoadData, openTab } from 'Redux/actions/routerActions/middleware';
+import { saveComponentStateAction } from 'Redux/actions/routerActions';
 import _ from 'lodash';
 import { Avatar, message, Tooltip, Spin, Button } from 'antd';
 import { Scrollbars } from 'react-custom-scrollbars';
 import clsx from 'clsx';
-import { routeParser, routePathNormalise, buildRequestList, parseArrayByLimit } from 'Utils';
+import { routeParser, buildRequestList, parseArrayByLimit } from 'Utils';
 import ModelContext from 'Models/context';
 import actionsTypes from 'actions.types';
 import { compose } from 'redux';
@@ -41,8 +36,6 @@ class StreamBox extends React.Component {
     onSaveComponentState: null,
     onLoadPopover: null,
     personalUid: null,
-    setCurrentTab: null,
-    onOpenPageWithData: null,
     buildItems: null,
     listHeight: null,
     isSingleLoading: false,
@@ -249,17 +242,9 @@ class StreamBox extends React.Component {
     }
   };
 
-  onRunAction = (index) => {
+  onRunAction = (actionIndex) => {
     const { streamList: streamListState = [] } = this.state;
-    const {
-      setCurrentTab,
-      onOpenPageWithData,
-      router: { routeData = {}, activeTabs = [] } = {},
-      withStore,
-      prefix,
-      streamStore,
-      appConfig: { tabsLimit } = {},
-    } = this.props;
+    const { router: { routeData = {} } = {}, withStore, prefix, streamStore, onOpenTab } = this.props;
 
     const nameModuleStream = this.getNotificationPath(this.getNormalizeUidNotification());
 
@@ -269,63 +254,20 @@ class StreamBox extends React.Component {
         : []
       : streamListState;
 
-    const { action: { type: typeAction = '', link: key = '', moduleName: name = '' } = {}, type = '' } =
-      streamList[index] || {};
+    const {
+      action: { type: typeAction = '', link: actionLink = '', moduleName: name = '' } = {},
+      type = '',
+    } = streamList[actionIndex] || {};
+
     const moduleName = `${name}${prefix}`;
+    const [storeName, typeCurrentAction = ''] = typeAction.split('_');
+    const pathLink = this.getPathLink(moduleName, type);
 
-    const [storeName = '', typeCurrentAction = ''] = typeAction.split('_');
+    const { page = '' } = routeParser({ path: pathLink, pageType: 'link' });
+    const { [storeName]: dataList = [] } = routeData[page] || {};
+    const data = dataList?.find((it) => it?.key === actionLink || it?._id === actionLink) || {};
 
-    switch (typeCurrentAction) {
-      case 'link': {
-        if (tabsLimit <= activeTabs?.length) {
-          this.showMessageError();
-          return;
-        }
-
-        const path = this.getPathLink(moduleName, type);
-
-        const { moduleId = '', page = '' } = routeParser({ path, pageType: 'link' });
-        if (!moduleId || !page) return;
-
-        const { [storeName]: data = [] } = routeData[page] || {};
-        const tabPage = page.split('#')[0];
-        const index = activeTabs.findIndex((tab) => tab.includes(tabPage) && tab.includes(key));
-        const isFind = index !== -1;
-
-        if (isFind) return setCurrentTab(activeTabs[index]);
-
-        const item = data.find((it) => it?.key === key || it?._id === key);
-        if (!item) {
-          message.warning('Страница не найдена.');
-          return;
-        }
-
-        const activePageParsed = routePathNormalise({
-          pathType: 'link',
-          pathData: { page, moduleId, key },
-        });
-
-        const { path: normalizePath = '' } = activePageParsed || {};
-
-        const pathParsed =
-          moduleName === 'news'
-            ? normalizePath.replace(`_${type}Notification`, '_informationPage')
-            : normalizePath;
-
-        onOpenPageWithData({
-          activePage: {
-            ...activePageParsed,
-            path: pathParsed,
-            from: 'link',
-          },
-          routeDataActive: { ...item },
-        });
-        break;
-      }
-      default:
-        break;
-    }
-    return;
+    onOpenTab({ uuid: actionLink, action: pathLink, data, openType: typeCurrentAction });
   };
 
   showMessageError = ({ tabsLimit }) => {
@@ -557,12 +499,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addTab: (tab) => dispatch(addTabAction(tab)),
-    setCurrentTab: (tab) => dispatch(setActiveTabAction(tab)),
-    onLoadCurrentData: (props) => dispatch(loadCurrentData(props)),
+    onOpenTab: (params) => dispatch(openTab(params)),
     onSaveComponentState: (data) => dispatch(saveComponentStateAction(data)),
     onMultipleLoadData: (props) => dispatch(multipleLoadData(props)),
-    onOpenPageWithData: (data) => dispatch(openPageWithDataAction(data)),
   };
 };
 

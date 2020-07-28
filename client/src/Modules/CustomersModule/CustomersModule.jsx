@@ -1,10 +1,6 @@
 import React from 'react';
 import { customersModuleType } from './types';
-
-import TabContainer from 'Components/TabContainer';
-import Contacts from './Contacts';
 import { connect } from 'react-redux';
-import { setStatus } from 'Redux/actions/publicActions';
 import { compose } from 'redux';
 import withRouter from 'Components/Helpers/withRouter/withRouter';
 import entityRender from 'Utils/Tools/entityRender';

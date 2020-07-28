@@ -1,9 +1,18 @@
-import { getNormalizedPath, sucessEvent, errorHook, coreUpdaterDataHook } from 'Utils';
-import { saveComponentStateAction, loadFlagAction } from '../';
+import {
+  getNormalizedPath,
+  sucessEvent,
+  errorHook,
+  coreUpdaterDataHook,
+  routePathNormalise,
+  findData,
+  routeParser,
+} from 'Utils';
+import { saveComponentStateAction, loadFlagAction, openPageWithDataAction, setActiveTabAction } from '../';
 import { errorRequestAction, setStatus } from '../../publicActions';
 import actionsTypes from 'actions.types';
 import regExpRegister from 'Utils/Tools/regexpStorage';
-//import workerInstanse from 'workerInstanse';
+import _ from 'lodash';
+import { message } from 'antd';
 
 const loadCurrentData = (params) => async (dispatch, getState, { schema, Request }) => {
   const {
@@ -247,4 +256,103 @@ const multipleLoadData = (params) => async (dispatch, getState, { schema, Reques
   }
 };
 
-export { loadCurrentData, multipleLoadData };
+const openTab = ({ uuid, action, depKey = '', data = {}, openType = '' }) => async (dispatch, getState) => {
+  const {
+    publicReducer: {
+      appConfig = {},
+      udata: { _id: uid = '' },
+    },
+    router: { activeTabs = [], routeData = {} },
+  } = getState();
+
+  if (appConfig?.tabsLimit <= activeTabs.length) {
+    message.error('Максимальное количество вкладок:' + appConfig?.tabsLimit);
+    return;
+  }
+
+  if (openType) {
+    const { moduleId = '', page = '' } = routeParser({ path: action, pageType: openType });
+    if (!moduleId || !page) {
+      message.warn('Страницу открыть по ссылке не удалось');
+      return;
+    }
+
+    const tabPage = page.split('#')[0];
+    const indexTab = activeTabs.findIndex((tab) => tab.includes(tabPage) && tab.includes(uuid));
+
+    if (indexTab !== -1) {
+      dispatch(setActiveTabAction(activeTabs[indexTab]));
+      return;
+    }
+
+    if (!data || (data && _.isEmpty(data))) {
+      message.warning('Данные при переходе по ссылке не найдены.');
+      return;
+    }
+
+    const activePageParsed = routePathNormalise({
+      pathType: openType,
+      pathData: { page, moduleId, key: uuid },
+    });
+
+    const { path } = activePageParsed || {};
+
+    dispatch(
+      openPageWithDataAction({
+        activePage: {
+          ...activePageParsed,
+          path,
+          from: openType,
+        },
+        routeDataActive: { ...data },
+      }),
+    );
+    return;
+  }
+
+  const isCabinetRedirect = action?.includes('cabinet');
+  let newData = data;
+
+  if (data && typeof data === 'object' && depKey) {
+    const store = isCabinetRedirect ? 'users' : action;
+    const { [store]: storeList = [] } = findData(_.isEmpty(data) ? routeData : data, depKey) || {};
+    newData = storeList.find((it) => it?._id === uuid) || {};
+  }
+  const isDefaultAction = regExpRegister.INCLUDE_MODULE.test(action);
+  const page = !isDefaultAction ? `${action}Module` : action;
+  const moduleId = !(uid === uuid) && isCabinetRedirect ? '$$personalPage$$' : '';
+
+  if (!uuid || !page || !newData || (newData && _.isEmpty(newData))) {
+    message.warn('Страницу открыть не удалось');
+    const trace = {
+      uuid,
+      page,
+      newData,
+    };
+    console.error('Bad open page', trace);
+    return;
+  }
+
+  const activePage = routePathNormalise({
+    pathType: uid === uuid ? 'module' : 'moduleItem',
+    pathData: { page, moduleId, key: uuid },
+  });
+
+  const indexTab = activeTabs.findIndex(
+    (tab) => (uid === uuid && tab === page) || (tab.includes(page) && tab.includes(uuid)),
+  );
+
+  if (indexTab === -1) {
+    dispatch(
+      openPageWithDataAction({
+        activePage,
+        routeDataActive: { ...data, key: uuid },
+      }),
+    );
+    return;
+  }
+
+  dispatch(setActiveTabAction(activeTabs[indexTab]));
+};
+
+export { loadCurrentData, multipleLoadData, openTab };

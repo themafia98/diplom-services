@@ -1,11 +1,10 @@
 import React from 'react';
 import { outputType } from './types';
 import clsx from 'clsx';
-import { routePathNormalise, findData } from 'Utils';
-import { Tooltip, Button, message, Spin } from 'antd';
-import _ from 'lodash';
+import { Tooltip, Button, Spin } from 'antd';
 import ModelContext from 'Models/context';
 import { connect } from 'react-redux';
+import { openTab } from 'Redux/actions/routerActions/middleware';
 
 class Output extends React.PureComponent {
   state = {
@@ -107,56 +106,11 @@ class Output extends React.PureComponent {
     }
   };
 
-  onOpenLink = ({ id: key = null, action = null }, event) => {
+  onOpenLink = ({ id: uuid = null, action = null }, event) => {
     if (event) event.stopPropagation();
+    const { currentData: data = {}, depDataKey: depKey = '', onOpenTab } = this.props;
 
-    const {
-      udata: { _id: uid = '' } = {},
-      router: { activeTabs = [], routeData = {} } = {},
-      onOpenPageWithData,
-      currentData: currentDataState = null,
-      setCurrentTab,
-      depDataKey = '',
-      appConfig: config = {},
-    } = this.props;
-
-    const isCurrentKey = uid === key;
-
-    if (config.tabsLimit <= activeTabs.length)
-      return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
-
-    let currentData = currentDataState;
-    const page = `${action}Module`;
-    const moduleId = !isCurrentKey && action?.includes('cabinet') ? '$$personalPage$$' : '';
-
-    if (!currentDataState && depDataKey) {
-      const store = action?.includes('cabinet') ? 'users' : action;
-      const { [store]: storeList = [] } = findData(routeData, depDataKey) || {};
-      currentData = storeList.find((it) => it?._id === key) || {};
-    }
-
-    if (!key || !page || !currentData || (currentData && _.isEmpty(currentData))) {
-      return;
-    }
-
-    const activePage = routePathNormalise({
-      pathType: isCurrentKey ? 'module' : 'moduleItem',
-      pathData: { page, moduleId, key },
-    });
-
-    const index = activeTabs.findIndex(
-      (tab) => (isCurrentKey && tab === page) || (tab.includes(page) && tab.includes(key)),
-    );
-    const isFind = index !== -1;
-
-    if (!isFind && onOpenPageWithData) {
-      onOpenPageWithData({
-        activePage,
-        routeDataActive: { ...currentData, key },
-      });
-    } else if (setCurrentTab) {
-      setCurrentTab(activeTabs[index]);
-    }
+    onOpenTab({ uuid, action, data, depKey });
   };
 
   renderLinks = (item = '', mode = 'default') => {
@@ -345,7 +299,9 @@ const mapStateTopProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return {};
+  return {
+    onOpenTab: (param) => dispatch(openTab(param)),
+  };
 };
 
 export default connect(mapStateTopProps, mapDispatchToProps)(Output);

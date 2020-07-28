@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Pagination, Button, message, Empty, Spin } from 'antd';
 
 import Scrollbars from 'react-custom-scrollbars';
-import { setActiveTabAction, openPageWithDataAction, addTabAction } from 'Redux/actions/routerActions';
+import { addTabAction } from 'Redux/actions/routerActions';
 import { middlewareCaching } from 'Redux/actions/publicActions/middleware';
 
 import NewsCard from './NewsCard';
@@ -13,6 +13,7 @@ import TitleModule from 'Components/TitleModule';
 import { routePathNormalise, routeParser } from 'Utils';
 import { compose } from 'redux';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
+import { openTab } from 'Redux/actions/routerActions/middleware';
 
 class News extends React.PureComponent {
   state = {
@@ -47,48 +48,16 @@ class News extends React.PureComponent {
     if (!isFind) addTab(routeParser({ path: pathNormalize }), { hardCodeUpdate: false });
   };
 
-  onOpen = (openKey = '') => {
+  onOpen = (uuid) => {
     const {
-      onOpenPageWithData,
-      router: { activeTabs = [], routeData: { contactModule: { news = [] } = {} } = {} } = {},
-      setCurrentTab,
-      data = {},
-      appConfig: { tabsLimit = 0 },
+      router: { routeData: { contactModule: { news = [] } = {} } = {} } = {},
+      data: { news: dataNews = null } = {},
+      onOpenTab,
     } = this.props;
+    const dataList = Array.isArray(dataNews) ? dataNews : news;
+    const data = dataList?.find(({ _id = '' }) => _id === uuid) || dataList || {};
 
-    const key = typeof openKey === 'string' ? openKey.replace('_informationPage', '') : '';
-
-    let listdata = data && data.news && Array.isArray(data.news) ? [...data.news] : news;
-    const moduleId = 'informationPage';
-    const page = 'contactModule';
-
-    const routeNormalize = routePathNormalise({
-      pathType: 'moduleItem',
-      pathData: { page, key },
-    });
-
-    const index = activeTabs.findIndex((tab) => tab.replace('_informationPage', '') === routeNormalize.path);
-    const findItem = listdata.find((it) => it._id === key);
-    const dataFind = findItem ? { ...findItem } : {};
-    const isFind = index !== -1;
-
-    if (isFind) {
-      setCurrentTab(activeTabs[index]);
-      return;
-    }
-
-    if (tabsLimit <= activeTabs.length) {
-      message.error(`Максимальное количество вкладок: ${tabsLimit}`);
-      return;
-    }
-
-    onOpenPageWithData({
-      activePage: routePathNormalise({
-        pathType: 'moduleItem',
-        pathData: { page, key, moduleId },
-      }),
-      routeDataActive: { key, listdata: dataFind ? { ...dataFind } : {} },
-    });
+    onOpenTab({ uuid, data, action: 'contactModule' });
   };
 
   renderNewsBlock = (currentPage, listdata = []) => {
@@ -168,10 +137,9 @@ const mapStateToProps = (state) => {
 
 const mapDispathToProps = (dispatch) => {
   return {
-    onOpenPageWithData: (data) => dispatch(openPageWithDataAction(data)),
     addTab: (tab, config = {}) => dispatch(addTabAction({ tab, config })),
-    setCurrentTab: (tab, config = {}) => dispatch(setActiveTabAction({ tab, config })),
-    onCaching: async (props) => await dispatch(middlewareCaching(props)),
+    onOpenTab: (params) => dispatch(openTab(params)),
+    onCaching: async (params) => await dispatch(middlewareCaching(params)),
   };
 };
 
