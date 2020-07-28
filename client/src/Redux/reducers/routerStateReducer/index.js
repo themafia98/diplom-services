@@ -152,7 +152,7 @@ export default handleActions(
       else if (indexFind === 0) nextTab = filterArray[indexFind];
       else nextTab = filterArray[indexFind - 1];
 
-      const parsedTabEntity = nextTab.split(regExpRegister.MODULE_ID)[1];
+      const parsedTabEntity = nextTab?.split(regExpRegister.MODULE_ID)?.[1];
       const uuidEntityItem = typeof nextTab === 'string' && type === 'itemTab' ? parsedTabEntity : nextTab;
 
       const copyData = routeDataNew;

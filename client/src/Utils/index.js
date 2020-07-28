@@ -45,6 +45,7 @@ const {
   getComponentByKey,
   getDependencyModules,
   oneOfType,
+  getValidRouteData,
 } = namespaceTools;
 
 export {
@@ -79,4 +80,5 @@ export {
   oneOfType,
   sortedByKey,
   parseArrayByLimit,
+  getValidRouteData,
 };

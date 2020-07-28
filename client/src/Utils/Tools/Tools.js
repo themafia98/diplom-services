@@ -181,6 +181,14 @@ const getDependencyModules = (moduleName, configuration = null, exclude = []) =>
  */
 const oneOfType = (...types) => (type) => types.find((typeName) => typeName === type);
 
+const getValidRouteData = ({ currentRouteData }, { uuid, depRouteDataKey }, store = '') => {
+  if (!currentRouteData && depRouteDataKey) {
+    const { [store]: storeList = [] } = findData(currentRouteData, depRouteDataKey) || {};
+    return storeList.find((it) => it?._id === uuid) || {};
+  }
+  return null;
+};
+
 export default {
   createNotification,
   createEntity,
@@ -190,4 +198,5 @@ export default {
   getComponentByKey,
   getDependencyModules,
   oneOfType,
+  getValidRouteData,
 };
