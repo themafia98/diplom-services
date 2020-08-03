@@ -3,12 +3,13 @@ import _ from 'lodash';
 import { runNoCorsParser, toSymbol } from './utils';
 import { getStoreSchema } from '../utilsHook';
 import regExpRegister from 'Utils/Tools/regexpStorage';
+import { getActionPathByKey } from 'actions.path';
 
 const dataParser = (flag = false, isLocalUpdate = true, dep = {}, offlineStore = []) => {
   const {
     copyStore = [],
     storeLoad = '',
-    methodQuery,
+    methodQuery = 'get_all',
     schema,
     clientDB,
     sortBy,
@@ -203,13 +204,14 @@ const buildRequestList = (metadata = [], prefix = '') => {
     const { type = '', moduleName: path = '', link = '', method = '' } = action;
     const storeLoad = typeof type === 'string' ? type.split('_')[0] : '';
     const methodRequest = method ? method : link ? 'POST' : 'GET';
+
+    const actionPath = getActionPathByKey([methodRequest, storeLoad, type?.includes('link') ? 'list' : type]);
+
     return [
       ...actionsList,
       {
+        action: actionPath,
         path: `${path}${prefix}`,
-        storeLoad,
-        methodRequest,
-        useStore: Boolean(storeLoad),
         options: {
           keys: _.uniq(actionsArray.map((notification) => notification?.action?.link)),
         },

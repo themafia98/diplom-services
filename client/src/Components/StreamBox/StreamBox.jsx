@@ -13,6 +13,7 @@ import ModelContext from 'Models/context';
 import actionsTypes from 'actions.types';
 import { compose } from 'redux';
 import { withClientDb } from 'Models/ClientSideDatabase';
+import { paramsTemplate, requestTemplate } from 'Utils/Api/api.utils';
 
 class StreamBox extends React.Component {
   state = {
@@ -118,8 +119,12 @@ class StreamBox extends React.Component {
         '/system/notification/update/many',
         'POST',
         {
+          ...requestTemplate,
+          moduleName: 'system',
           actionType: actionsTypes.$GET_NOTIFICATIONS,
-          query: { ids, updateProps: { isRead: true } },
+          params: {
+            options: { ids, updateProps: { isRead: true } },
+          },
         },
         true,
       );
@@ -162,8 +167,8 @@ class StreamBox extends React.Component {
 
       const shouldUpdatePrivate = setCounter && visiblePopover && !isLoadPopover;
 
-      let methodQuery = filterStream && uid ? { [filterStream]: uid } : {};
-      if (type.includes('private') && _.isEmpty(methodQuery)) return;
+      const ids = filterStream && uid ? { [filterStream]: uid } : {};
+      if (type.includes('private') && _.isEmpty(ids)) return;
 
       if (shouldUpdatePrivate && onLoadPopover) {
         onLoadPopover();
@@ -182,9 +187,16 @@ class StreamBox extends React.Component {
         `/system/${type}/notification`,
         'POST',
         {
+          ...requestTemplate,
+          moduleName: 'system',
           actionType: actionsTypes.$GET_NOTIFICATIONS,
-          methodQuery,
-          limitList: listLimit ?? streamLimit,
+          params: {
+            ...paramsTemplate,
+            options: {
+              ids,
+              limitList: listLimit ?? streamLimit,
+            },
+          },
         },
         true,
       );
@@ -201,7 +213,6 @@ class StreamBox extends React.Component {
 
       await onMultipleLoadData({
         requestsParamsList: buildRequestList(metadata, '#notification'),
-        pipe: true,
         clientDB,
       });
 
@@ -219,7 +230,7 @@ class StreamBox extends React.Component {
         return this.setState({ streamList: metadata, isLoading: true, showLoader: false });
       }
 
-      const path = this.getNotificationPath(uid);
+      const pathNotification = this.getNotificationPath(uid);
 
       await onSaveComponentState({
         [streamStore]:
@@ -231,7 +242,7 @@ class StreamBox extends React.Component {
               })
             : metadata,
         load: true,
-        path,
+        path: pathNotification,
         shoudParseToUniq: true,
       });
 

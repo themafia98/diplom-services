@@ -29,8 +29,7 @@ class ActionChatRoom implements Action {
   }
 
   private getUpdateRooms(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
-    const { queryParams: { tokenRoom = '', moduleName = '' } = {} } =
-      (actionParam as Record<string, any>) || {};
+    const { tokenRoom = '', moduleName = '' } = (actionParam as Record<string, any>) || {};
 
     const query: ActionParams = { tokenRoom, moduleName };
 
@@ -39,8 +38,9 @@ class ActionChatRoom implements Action {
 
   private async createRoom(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     if (!actionParam) return null;
+    const { type = 'single' } = actionParam;
 
-    const mode: string = actionParam.type && actionParam.type === 'single' ? 'equalSingle' : 'equal';
+    const mode: string = type === 'single' ? 'equalSingle' : 'equal';
 
     const isValid: boolean = await checkEntity(mode, 'membersIds', actionParam, model);
 

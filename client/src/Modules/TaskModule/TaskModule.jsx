@@ -21,6 +21,8 @@ import actionsTypes from 'actions.types';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import regExpRegister from 'Utils/Tools/regexpStorage';
 import { withClientDb } from 'Models/ClientSideDatabase';
+import actionPath from 'actions.path';
+import { requestTemplate } from 'Utils/Api/api.utils';
 
 class TaskModule extends React.PureComponent {
   state = {
@@ -173,9 +175,14 @@ class TaskModule extends React.PureComponent {
             '/tasks/listCounter',
             'POST',
             {
+              ...requestTemplate,
               actionType: actionsTypes.$CURRENT_LIST_COUNTER,
-              filterCounter: path.includes('all') ? null : uid,
-              saveData: { ...saveDataState, arrayKeys },
+              moduleName: 'tasks',
+              params: {
+                path,
+                filterCounter: path.includes('all') ? null : uid,
+                saveData: { ...saveDataState, arrayKeys },
+              },
             },
             true,
           );
@@ -196,12 +203,12 @@ class TaskModule extends React.PureComponent {
         }
 
         await onLoadCurrentData({
+          action: actionPath.$LOAD_TASKS_LIST,
           path,
-          storeLoad: 'tasks',
-          useStore: true,
-          methodRequst: 'POST',
-          shoudParseToUniq: true,
-          options: { ...options, filterCounter: path.includes('taskModule_all') ? null : uid },
+          options: {
+            ...options,
+            filterCounter: path.includes('taskModule_all') ? null : uid,
+          },
           clientDB,
         });
 

@@ -13,8 +13,7 @@ class ActionChatMessage implements Action {
   }
 
   private getMsgByToken(actionParam: ActionParams, model: Model<Document>) {
-    const { options = {} } = actionParam;
-    const { tokenRoom = '', moduleName = '', membersIds = [] } = options as MessageOptions;
+    const { tokenRoom = '', moduleName = '', membersIds = [] } = actionParam as MessageOptions;
 
     const ids: Array<Types.ObjectId | string> = membersIds.map((id) => {
       if (isValidObjectId(id)) return Types.ObjectId(id);

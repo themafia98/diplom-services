@@ -3,6 +3,7 @@ import _ from 'lodash';
 import { Modal, Select, message, Input } from 'antd';
 import ModelContext from 'Models/context';
 import actionsTypes from 'actions.types';
+import { requestTemplate, paramsTemplate } from 'Utils/Api/api.utils';
 
 const { Option } = Select;
 
@@ -26,7 +27,10 @@ class ChatModal extends React.PureComponent {
     const { Request } = this.context;
     const { visible, onVisibleChange, uid } = this.props;
     const { type = '', membersIds = [] } = this.state;
-    const { current: { state: { value: groupName = '' } = {} } = {} } = this.groupNameRef || {};
+    const { current = {} } = this.groupNameRef || {};
+
+    const { state: { value: groupName = '' } = {} } = current || {};
+
     try {
       const groupProps =
         type !== 'single'
@@ -40,13 +44,17 @@ class ChatModal extends React.PureComponent {
         '/chat/createRoom',
         'PUT',
         {
+          ...requestTemplate,
+          moduleName: 'chat',
           actionType: actionsTypes.$CREATE_CHAT_ROOM,
           actionPath: 'chatRoom',
-          queryParams: {
-            type,
-            moduleName: 'chat',
-            membersIds: _.uniq([uid, ...membersIds]),
-            ...groupProps,
+          params: {
+            ...paramsTemplate,
+            options: {
+              type,
+              membersIds: _.uniq([uid, ...membersIds]),
+              ...groupProps,
+            },
           },
         },
         true,
@@ -120,7 +128,7 @@ class ChatModal extends React.PureComponent {
           </Select>
           {type !== 'single' ? (
             <Input
-              ref={this.groupNameRefFunc}
+              ref={this.groupNameRef}
               className="groupName__Input"
               name="groupName"
               placeholder="Название группы"

@@ -15,7 +15,7 @@ namespace Statistic {
     protected async getTaskBarStats(req: Request, res: Response): ResRequest {
       const params: Params = { methodQuery: 'get_stats', status: 'done', done: true, from: 'tasks' };
 
-      const { options = {} } = req.body || {};
+      const { params: { options = {} } = {} } = req.body || {};
 
       const actionStats = new Action.ActionParser({
         actionPath: 'tasks',

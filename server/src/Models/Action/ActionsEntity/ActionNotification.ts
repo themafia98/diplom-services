@@ -24,16 +24,16 @@ class ActionNotification implements Action {
 
   public async getByType(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const {
-      methodQuery = {},
+      ids = {},
       type = 'global',
       limitList = Number.MAX_SAFE_INTEGER,
       skip = 0,
     } = actionParam as Record<string, object | number>;
 
     const concactType = (type as string) === 'private' ? ['private', 'global'] : type;
-    const isObject = methodQuery && typeof methodQuery === 'object';
+    const isObject = ids && typeof ids === 'object';
 
-    if (!isObject || (_.isEmpty(methodQuery) && (type as string) === 'private')) {
+    if (!isObject || (_.isEmpty(ids) && (type as string) === 'private')) {
       return null;
     }
 
@@ -43,7 +43,7 @@ class ActionNotification implements Action {
         in: concactType,
         and: [
           {
-            ...(methodQuery as object),
+            ...(ids as object),
           },
         ],
       };
@@ -58,7 +58,7 @@ class ActionNotification implements Action {
       return result;
     }
 
-    const query = isObject ? { type: concactType, ...(methodQuery as object) } : { type: concactType };
+    const query = isObject ? { type: concactType, ...(ids as object) } : { type: concactType };
 
     const result = await this.getEntity().getAll(
       model,
@@ -74,9 +74,11 @@ class ActionNotification implements Action {
   }
 
   private async updateMany(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
-    const methodQuery = { queryType: 'many', actionParam };
+    const { params = {} } = actionParam;
+    const { options = {} } = params as Record<string, object>;
+    const queryParams = { queryType: 'many', actionParam: options };
 
-    const result = await this.getEntity().updateEntity(model, methodQuery);
+    const result = await this.getEntity().updateEntity(model, queryParams);
     return result;
   }
 

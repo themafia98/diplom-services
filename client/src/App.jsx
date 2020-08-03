@@ -23,8 +23,8 @@ import Demo from './Pages/Demo';
 import worker from 'workerize-loader!worker'; // eslint-disable-line import/no-webpack-loader-syntax
 import actionsTypes from 'actions.types';
 import { compose } from 'redux';
-import { withSystemConfig } from 'Models/context';
 import ClientSideDatabase, { ClientDbContext } from 'Models/ClientSideDatabase';
+import withSystemConfig from 'Components/Helpers/withSystemConfig';
 
 const workerInstanse = worker();
 
@@ -32,6 +32,7 @@ class App extends React.Component {
   state = {
     loadState: false,
     isUser: false,
+    sync: false,
   };
 
   static contextType = ModelContext;
@@ -41,7 +42,7 @@ class App extends React.Component {
 
   componentDidMount = async () => {
     const {
-      coreConfig: { appActive = true, forceUpdate = false, clientDB: { name = '', version = '' } } = {},
+      coreConfig: { appActive = true, forceUpdate = false, clientDB: { name = '', version = '' } = {} } = {},
       coreConfig = {},
       onLoadCoreConfig,
     } = this.props;
@@ -52,8 +53,8 @@ class App extends React.Component {
       onLoadCoreConfig({ ...coreConfig });
     }
 
-    this.client = new ClientSideDatabase(name, version);
-    await this.client.init();
+    this.client = name && version ? new ClientSideDatabase(name, version) : null;
+    if (this.client) await this.client.init();
 
     if (window.location.pathname === '/demoPage') {
       return this.loadApp();
@@ -75,6 +76,46 @@ class App extends React.Component {
     if (forceUpdate === true || forceUpdate === 'true') forceUpdateDetectedInit();
   };
 
+  componentDidUpdate = async (prevProps) => {
+    const { typeConfig: prevTypeConfig = '', coreConfig: prevCoreConfig = {} } = prevProps;
+    const {
+      onLoadCoreConfig,
+      coreConfig,
+      typeConfig = '',
+      coreConfig: { clientDB: { name = '', version = '' } = {} } = {},
+      appConfig = {},
+      udata = {},
+    } = this.props;
+    const { sync } = this.state;
+
+    if (!sync && localStorage.getItem('token') && udata && !_.isEmpty(udata) && this.client) {
+      this.setState(
+        {
+          sync: true,
+        },
+        () => {
+          workerInstanse.runSync(localStorage.getItem('token'), this.client);
+        },
+      );
+    }
+
+    if (!this.client && name && version) {
+      this.client = new ClientSideDatabase(name, version);
+      await this.client.init();
+    }
+
+    if (prevTypeConfig === typeConfig && _.isEqual(appConfig, coreConfig)) return;
+
+    if (
+      typeof coreConfig === 'object' &&
+      coreConfig &&
+      !_.isEqual(coreConfig, prevCoreConfig) &&
+      onLoadCoreConfig
+    ) {
+      onLoadCoreConfig({ ...coreConfig });
+    }
+  };
+
   loadAppSession = async () => {
     const {
       addTab,
@@ -82,6 +123,7 @@ class App extends React.Component {
       router: { currentActionTab = '', activeTabs = [] } = {},
       onLoadUdata,
       coreConfig = {},
+      fetchConfig,
     } = this.props;
     const { appActive = true, menu = [], tabsLimit = 20 } = coreConfig;
     const { Request } = this.context;
@@ -127,11 +169,10 @@ class App extends React.Component {
       if (!isFind) {
         if (isUserData) {
           try {
+            await fetchConfig('private');
             await onLoadUdata(udata);
             this.loadSettings();
             addTab(routeParser({ path }));
-
-            workerInstanse.runSync(localStorage.getItem('token'), this.client);
           } catch (error) {
             console.log(error);
           }
@@ -139,10 +180,9 @@ class App extends React.Component {
       } else if (currentActionTab !== path) {
         if (isUserData) {
           try {
+            await fetchConfig('private');
             await onLoadUdata(udata);
             this.loadSettings();
-
-            workerInstanse.runSync(localStorage.getItem('token'), this.client);
             setCurrentTab(path);
           } catch (error) {
             console.log(error);
@@ -227,7 +267,7 @@ class App extends React.Component {
       </Switch>
     );
 
-    if (loadState)
+    if (loadState && this.client)
       return (
         <ClientDbContext.Provider value={this.client}>
           {!supportIE ? this.withoutIE(route) : route}

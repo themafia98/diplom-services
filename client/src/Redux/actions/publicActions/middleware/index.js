@@ -4,6 +4,7 @@ import { onLoadArtifacts, onLoadSettings } from '../';
 import { multipleLoadData } from '../../routerActions/middleware';
 import { updateItemStateAction } from '../../routerActions';
 import actionsTypes from 'actions.types';
+import { requestTemplate, paramsTemplate } from 'Utils/Api/api.utils';
 
 /**
  * Middleware
@@ -37,9 +38,13 @@ const middlewareCaching = ({
 
       const path = `/${depStore}/caching/jurnal`;
       const body = {
+        ...requestTemplate,
         actionType: actionsTypes.$CACHING_JURNAL,
-        queryParams: { depKey, depStore },
-        item,
+        params: {
+          ...paramsTemplate,
+          options: { depKey, depStore },
+          item,
+        },
       };
 
       const res = await rest.sendRequest(path, 'PUT', body, true);
@@ -112,7 +117,14 @@ const loadCacheData = ({
     const path = `/${depStore}/caching/list`;
 
     /** with dynamic actionType */
-    const body = { queryParams: { depKey, store }, actionType };
+    const body = {
+      ...requestTemplate,
+      actionType,
+      params: {
+        ...paramsTemplate,
+        options: { depKey, store },
+      },
+    };
 
     const res = await rest.sendRequest(path, 'PUT', body, true);
     const [items, error] = rest.parseResponse(res);
@@ -189,7 +201,16 @@ const middlewareUpdate = ({
 
     if (!path) throw new TypeError('Bad action type');
 
-    const body = { actionType, queryParams: { id, key }, updateItem, updateField };
+    const body = {
+      ...requestTemplate,
+      actionType,
+      params: {
+        ...paramsTemplate,
+        options: { id, key },
+        updateItem,
+        updateField,
+      },
+    };
 
     const res = await rest.sendRequest(path, 'POST', body, true);
     const [items, error] = rest.parseResponse(res);

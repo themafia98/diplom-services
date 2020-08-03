@@ -9,6 +9,7 @@ import ModalWindow from 'Components/ModalWindow';
 import ModelContext from 'Models/context';
 import imageCard from './wallpaper_user.jpg';
 import actionsTypes from 'actions.types';
+import { requestTemplate, paramsTemplate } from 'Utils/Api/api.utils';
 
 const { Item: MenuItem } = Menu;
 
@@ -67,10 +68,15 @@ class UserCard extends React.Component {
         '/system/users/update/single',
         'POST',
         {
+          ...requestTemplate,
+          moduleName: 'system',
           actionType: actionsTypes.$UPDATE_SINGLE,
-          queryParams: { uid },
-          updateItem: {
-            summary: value,
+          params: {
+            ...paramsTemplate,
+            options: { uid },
+            updateItem: {
+              summary: value,
+            },
           },
         },
         true,

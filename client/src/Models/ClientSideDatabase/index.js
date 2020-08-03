@@ -8,6 +8,7 @@ import {
 } from 'Models/Schema/const';
 import Schema from 'Models/Schema';
 import React, { createContext } from 'react';
+import NotFound from 'Modules/NotFound/NotFound';
 
 const ClientDbContext = createContext(null);
 
@@ -357,7 +358,9 @@ class ClientSideDatabase {
 const withClientDb = (Component) => (props) => {
   return (
     <ClientDbContext.Consumer>
-      {(clientDB) => <Component {...props} clientDB={clientDB} />}
+      {(clientDB) =>
+        clientDB ? <Component {...props} clientDB={clientDB} /> : <NotFound a={console.log(Component)} />
+      }
     </ClientDbContext.Consumer>
   );
 };

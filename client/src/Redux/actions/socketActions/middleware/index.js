@@ -3,6 +3,7 @@ import _ from 'lodash';
 import { setSocketConnection, onLoadActiveChats, setSocketError, setActiveChatToken, updateRoom } from '../';
 import { errorRequestAction } from '../../publicActions';
 import actionsTypes from 'actions.types';
+import { requestTemplate, paramsTemplate } from 'Utils/Api/api.utils';
 
 /**
  * Middleware
@@ -48,10 +49,13 @@ const loadActiveChats = (payload) => async (dispatch, getState, { schema, Reques
       `/${activeModule}/${path}`,
       'POST',
       {
+        ...requestTemplate,
         actionPath,
         actionType,
-        queryParams: {
-          ...options,
+        moduleName: 'ws',
+        params: {
+          ...paramsTemplate,
+          options,
         },
       },
       true,
@@ -140,9 +144,12 @@ const loadingDataByToken = (token, listdata, activeModule, isFake = null) => asy
       `/${activeModule}/load/tokenData`,
       'POST',
       {
+        ...requestTemplate,
         actionType: actionsTypes.$LOAD_TOKEN_DATA,
-        queryParams: {
-          tokenRoom: token,
+        actionPath: 'chatMsg',
+        moduleName: activeModule,
+        params: {
+          ...paramsTemplate,
           options,
         },
       },
@@ -203,12 +210,12 @@ const updateRooms = (payload, clientDB = null) => async (dispatch, getState, { s
       `/${activeModule}/load/tokenData`,
       'POST',
       {
-        queryParams: {
-          queryParams: { tokenRoom: token, moduleName: activeModule },
-        },
-        options: {
-          actionPath: 'chatRoom',
-          actionType: actionsTypes.$GET_UPDATE_ROOMS,
+        ...requestTemplate,
+        actionPath: 'chatRoom',
+        actionType: actionsTypes.$GET_UPDATE_ROOMS,
+        moduleName: activeModule,
+        params: {
+          options: { tokenRoom: token },
         },
       },
       true,

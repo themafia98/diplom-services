@@ -16,8 +16,8 @@ export interface Controller<T> {
 }
 
 export interface ServerRun {
-  isPrivateRoute(req: Request, res: Response, next: NextFunction): Response | void;
-  startResponse(req: Request, res: Response, next: NextFunction): void;
+  session: object;
+  smtp: object;
   start(callback?: Function): void;
 }
 
