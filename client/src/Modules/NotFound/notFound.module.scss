@@ -1,8 +1,13 @@
 .empty {
+  display: flex;
+  flex-direction: column;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, 0);
-  font-size: 16px;
-  font-weight: bold;
+
+  p {
+    font-size: 16px;
+    font-weight: bold;
+  }
 }

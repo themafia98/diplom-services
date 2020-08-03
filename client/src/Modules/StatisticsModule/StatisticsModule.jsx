@@ -12,6 +12,7 @@ import { Button } from 'antd';
 import { compose } from 'redux';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { withClientDb } from 'Models/ClientSideDatabase';
+import actionPath from 'actions.path';
 
 class StatisticsModule extends React.PureComponent {
   state = {
@@ -63,13 +64,8 @@ class StatisticsModule extends React.PureComponent {
     }
 
     onLoadCurrentData({
+      action: actionPath.$LOAD_STATISTICS_TASKS,
       path,
-      storeLoad: 'statistic',
-      xhrPath: 'taskBar',
-      methodQuery: 'get_stats',
-      noCorsClient: true,
-      useStore: true,
-      shouldSetLoading,
       options: {
         queryParams: {
           statsListFields,
@@ -82,6 +78,10 @@ class StatisticsModule extends React.PureComponent {
             : moment()
                 .subtract(...dateConfig)
                 .toISOString(),
+      },
+      optionsForParse: {
+        noCorsClient: true,
+        shouldSetLoading,
       },
       clientDB,
     });

@@ -1,15 +1,4 @@
 {
-  "title": "Controll system",
-  "icon": "/img/logo.svg",
-  "supportIE": true,
-  "clientDB": {
-    "name": "controllSystemDB",
-    "version": 5
-  },
-  "appActive": true,
-  "regInclude": true,
-  "recovoryInclude": true,
-  "forceUpdate": false,
   "visibilityWidgets": {
     "mainModule": {
       "clockVisibility": true,
@@ -135,6 +124,5 @@
       "ICON": "build",
       "PARENT_CODE": null
     }
-  ],
-  "unactiveAppMsg": "Приложение времено отключено, возможно ведутся тех.работы. Попробуйте позже."
+  ]
 }

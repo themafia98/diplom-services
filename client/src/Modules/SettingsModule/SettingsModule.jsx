@@ -20,6 +20,7 @@ import regExpRegister from 'Utils/Tools/regexpStorage';
 import { compose } from 'redux';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { withClientDb } from 'Models/ClientSideDatabase';
+import { requestTemplate, paramsTemplate } from 'Utils/Api/api.utils';
 
 class SettingsModule extends React.PureComponent {
   state = {
@@ -130,23 +131,24 @@ class SettingsModule extends React.PureComponent {
     }
   };
 
-  onChangeStatusList = async (state, callback = null) => {
+  onChangeStatusList = async (items, callback = null) => {
     try {
       const { onSaveStatusList, modelsContext } = this.props;
       const { Request } = modelsContext;
-
-      const queryParams = {
-        idSettings: 'statusSettings',
-        items: state,
-      };
-
+      const query = 'statusSettings';
       const rest = new Request();
       const res = await rest.sendRequest(
         '/settings/statusList',
         'PUT',
         {
+          ...requestTemplate,
+          moduleName: 'settings',
           actionType: actionsTypes.$SETTINGS_PUT,
-          queryParams,
+          params: {
+            ...paramsTemplate,
+            query,
+            items,
+          },
         },
         true,
       );
@@ -157,14 +159,14 @@ class SettingsModule extends React.PureComponent {
 
       const {
         data: {
-          response: { metadata: { idSettings: saveSettingsId = '', settings = [] } = {}, metadata = {} } = {},
+          response: { metadata: { query: saveQuery = '', settings = [] } = {}, metadata = {} } = {},
         } = {},
       } = res;
 
-      if (saveSettingsId !== queryParams.idSettings) {
+      if (saveQuery !== query) {
         throw new Error('Invalid saved settings id');
       }
-      onSaveStatusList({ metadata, type: 'update', depKey: saveSettingsId });
+      onSaveStatusList({ metadata, type: 'update', depKey: saveQuery });
       if (callback) callback(settings);
     } catch (error) {
       if (error?.status !== 404) console.error(error);
@@ -203,18 +205,22 @@ class SettingsModule extends React.PureComponent {
         return;
       }
 
-      const queryParams = {
-        isHideEmail,
-        isHidePhone,
-        uid,
-      };
       const rest = new Request();
       const res = await rest.sendRequest(
         '/settings/profile',
         'POST',
         {
+          ...requestTemplate,
+          moduleName: 'settings',
           actionType: actionsTypes.$SETTINGS_PUT,
-          queryParams,
+          params: {
+            ...paramsTemplate,
+            options: {
+              isHideEmail,
+              isHidePhone,
+              uid,
+            },
+          },
         },
         true,
       );
@@ -256,20 +262,25 @@ class SettingsModule extends React.PureComponent {
         return;
       }
 
-      const queryParams = includeChangeEmail
-        ? {
-            newEmail,
-            newPhone,
-            uid,
-          }
-        : { newPhone, uid };
+      const params = {
+        ...paramsTemplate,
+        options: includeChangeEmail
+          ? {
+              newEmail,
+              newPhone,
+              uid,
+            }
+          : { newPhone, uid },
+      };
+
       const rest = new Request();
       const res = await rest.sendRequest(
         '/settings/common',
         'POST',
         {
+          ...requestTemplate,
           actionType: actionsTypes.$SETTINGS_PUT,
-          queryParams,
+          params,
         },
         true,
       );
@@ -332,18 +343,21 @@ class SettingsModule extends React.PureComponent {
         return;
       }
 
-      const queryParams = {
-        oldPassword,
-        newPassword,
-        uid,
-      };
       const rest = new Request();
       const res = await rest.sendRequest(
         '/settings/password',
         'POST',
         {
+          ...requestTemplate,
           actionType: actionsTypes.$SETTINGS_PUT,
-          queryParams,
+          params: {
+            ...paramsTemplate,
+            options: {
+              oldPassword,
+              newPassword,
+              uid,
+            },
+          },
         },
         true,
       );

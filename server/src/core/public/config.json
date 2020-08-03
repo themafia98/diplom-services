@@ -1,0 +1,14 @@
+{
+  "clientDB": {
+    "name": "controllSystemDB",
+    "version": 6
+  },
+  "title": "Controll system",
+  "icon": "/img/logo.svg",
+  "supportIE": true,
+  "appActive": true,
+  "regInclude": true,
+  "recovoryInclude": true,
+  "forceUpdate": false,
+  "unactiveAppMsg": "Приложение времено отключено, возможно ведутся тех.работы. Попробуйте позже."
+}

@@ -38,7 +38,9 @@ namespace News {
     protected async getNewsList(req: Request, res: Response, next: NextFunction): ResRequest {
       const params: Params = { methodQuery: 'get_all', status: 'done', done: true, from: 'news' };
 
-      const { options: { limitList = null, keys = null } = {} } = req.body || {};
+      const { params: paramsRequest = {} } = req.body;
+      const { options: { limitList = null, keys = null } = {} } = paramsRequest || {};
+
       const actionParams: ActionParams = { queryParams: keys ? { keys } : {}, limitList };
 
       const actionListNews = new Action.ActionParser({ actionPath: 'news', actionType: 'get_all' });

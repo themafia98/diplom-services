@@ -1,5 +1,6 @@
 import cluster, { Worker } from 'cluster';
-import { WsWorker } from '../../Utils/Interfaces';
+import { Server as HttpServer } from 'http';
+import { WsWorker, Dbms } from '../../Utils/Interfaces';
 import chalk from 'chalk';
 
 class ProcessRouter {
@@ -9,6 +10,32 @@ class ProcessRouter {
   constructor(workers: Array<Worker>, wsWorker: WsWorker) {
     this.workers = workers;
     this.wsWorker = wsWorker;
+  }
+
+  static errorEventsRegister(server: HttpServer, dbm: Dbms): void {
+    server.on('clientError', (err, socket) => {
+      console.log('clientError');
+      console.error(err);
+      socket.destroy();
+    });
+
+    process.on('SIGTERM', (): void => {
+      console.log('SIGTERM, uptime:', process.uptime());
+      server.close();
+    });
+
+    process.on('uncaughtException', (err: Error) => {
+      // handle the error safely
+      if (err.name === 'MongoNetworkError') {
+        dbm.disconnect().catch((err: Error) => console.error(err));
+        console.log('uncaughtException. uptime:', process.uptime());
+        console.error(err);
+      } else {
+        console.error(err);
+        console.log('exit error, uptime:', process.uptime());
+        process.exit(1);
+      }
+    });
   }
 
   public getWsWorker(): WsWorker {

@@ -9,7 +9,7 @@ import {
 
 const getStoreSchema = (store, methodQuery = null) => {
   switch (store) {
-    case 'wiki':
+    case 'wikiTree':
       if (methodQuery === 'get_all') return WIKI_NODE_TREE;
       else return null;
     case 'jurnalworks':

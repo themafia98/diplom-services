@@ -11,6 +11,7 @@ import { routeParser } from 'Utils';
 import { compose } from 'redux';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { withClientDb } from 'Models/ClientSideDatabase';
+import actionPath from 'actions.path';
 
 class MainModule extends React.PureComponent {
   static propTypes = mainModuleType;
@@ -33,11 +34,8 @@ class MainModule extends React.PureComponent {
 
     if (visibility && page === 'mainModule' && itemId === 'global') {
       onLoadCurrentData({
+        action: actionPath.$GLOBAL_LOAD_USERS,
         path: validPath,
-        startPath: 'system',
-        xhrPath: 'userList',
-        storeLoad: 'users',
-        methodRequst: 'GET',
         clientDB,
       });
     }

@@ -1,5 +1,4 @@
 import {
-  getNormalizedPath,
   sucessEvent,
   errorHook,
   coreUpdaterDataHook,
@@ -13,28 +12,23 @@ import actionsTypes from 'actions.types';
 import regExpRegister from 'Utils/Tools/regexpStorage';
 import _ from 'lodash';
 import { message } from 'antd';
+import { makeApiAction, getActionStore } from 'Utils/Api';
 
 const loadCurrentData = (params) => async (dispatch, getState, { schema, Request }) => {
   const {
-    path = '',
-    startPath = '',
-    storeLoad = '',
-    useStore = false,
-    methodRequst = 'POST',
-    methodQuery = 'get_all',
-    xhrPath = 'list',
-    noCorsClient = false,
+    action = '',
+    path: pagePath = '',
     sortBy = '',
     options = {},
-    shouldSetLoading = false,
-    indStoreName = '',
-    sync = false,
+    optionsForParse = {},
     clientDB = null,
   } = params;
 
+  const { noCorsClient = false, shouldSetLoading = false, sync = false } = optionsForParse || {};
+
   let isLocalUpdate = true;
   const primaryKey = 'uuid';
-  const pathValid = path.includes('_') ? path : path.split(regExpRegister.MODULE_ID)[0];
+  const pathValid = pagePath.includes('_') ? pagePath : pagePath.split(regExpRegister.MODULE_ID)[0];
   const {
     router,
     publicReducer: { requestError, status = 'online' },
@@ -48,27 +42,20 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
     dispatch(loadFlagAction({ path: pathValid, loading: true }));
   }
 
+  const store = getActionStore(action);
   const rest = new Request();
 
   switch (status) {
     case 'online': {
-      const normalizeReqPath = getNormalizedPath(useStore, {
-        xhrPath,
-        startPath,
-        storeLoad,
-      });
+      const [url, body, method = 'GET'] = makeApiAction(
+        action,
+        pathValid,
+        options,
+        actionsTypes.$LOAD_CURRENT_DATA,
+      );
 
       try {
-        const res = await rest.sendRequest(
-          normalizeReqPath,
-          methodRequst,
-          {
-            actionType: actionsTypes.$LOAD_CURRENT_DATA,
-            methodQuery,
-            options,
-          },
-          true,
-        );
+        const res = await rest.sendRequest(url, method, body, true);
 
         const [items, error] = rest.parseResponse(res);
         const { dataItems: copyStore = [] } = items;
@@ -82,16 +69,14 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
           sortBy,
           pathValid,
           schema,
-          storeLoad,
+          storeLoad: store,
           clientDB,
-          methodQuery,
           primaryKey,
           params,
           saveComponentStateAction,
           multipleLoadData,
           errorRequestAction,
           isLocalUpdate,
-          indStoreName,
           rest,
           sync,
         };
@@ -109,18 +94,16 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
           multipleLoadData,
           copyStore: [],
           getState,
-          storeLoad,
+          storeLoad: store,
           saveComponentStateAction,
           isLocalUpdate,
-          indStoreName,
-          path,
+          path: pagePath,
           rest,
           noCorsClient,
           sortBy,
           pathValid,
           schema,
           clientDB,
-          methodQuery,
           primaryKey,
         };
 
@@ -136,8 +119,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
 
     default: {
       const dep = {
-        storeLoad,
-        methodQuery,
+        storeLoad: store,
         schema,
         clientDB,
         sortBy,
@@ -149,15 +131,15 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
         errorRequestAction,
       };
 
-      dispatch(setStatus({ params, path }));
-      const cursor = await clientDB.getAllItems(indStoreName ? indStoreName : storeLoad);
+      dispatch(setStatus({ params, path: pagePath }));
+      const cursor = await clientDB.getAllItems('');
       return await sucessEvent(dispatch, dep, 'offline', false, cursor);
     }
   }
 };
 
 const multipleLoadData = (params) => async (dispatch, getState, { schema, Request }) => {
-  const { requestsParamsList = [], pipe = true, saveModuleName = '', clientDB = null } = params;
+  const { requestsParamsList = [], saveModuleName = '', clientDB = null } = params;
 
   const primaryKey = 'uuid';
   const {
@@ -166,95 +148,175 @@ const multipleLoadData = (params) => async (dispatch, getState, { schema, Reques
 
   if (status !== 'online') return;
 
-  switch (pipe) {
-    case false: {
-      /** TODO: for future release */
-      return;
-    }
-    default: {
-      const responseList = [];
-      const rest = new Request();
+  const responseList = [];
+  const rest = new Request();
 
-      for await (let requestParam of requestsParamsList) {
-        const {
-          useStore = false,
-          storeLoad = '',
-          startPath = '',
-          methodRequst = 'POST',
-          methodQuery = 'get_all',
-          xhrPath = 'list',
-          options = {},
-          noCorsClient = false,
-          sortBy = '',
-          path: pathName = '',
-        } = requestParam;
-        const path = saveModuleName ? saveModuleName : pathName;
-        let isLocalUpdate = true;
-        const pathValid = path.includes('_') ? path : path.split(regExpRegister.MODULE_ID)[0];
+  for await (let requestParam of requestsParamsList) {
+    const {
+      action = '',
+      options = {},
+      noCorsClient = false,
+      sortBy = '',
+      path: pathName = '',
+    } = requestParam;
+    const path = saveModuleName ? saveModuleName : pathName;
+    let isLocalUpdate = true;
+    const pathValid = path.includes('_') ? path : path.split(regExpRegister.MODULE_ID)[0];
 
-        const normalizeReqPath = getNormalizedPath(useStore, {
-          xhrPath,
-          startPath,
-          storeLoad,
-        });
+    const [url, body, method = 'GET'] = makeApiAction(
+      action,
+      pathValid,
+      options,
+      actionsTypes.$LOAD_CURRENT_DATA,
+    );
 
-        try {
-          const res = await rest.sendRequest(
-            normalizeReqPath,
-            methodRequst,
-            {
-              actionType: actionsTypes.$LOAD_NOTIFICATION_DATA,
-              methodQuery,
-              options,
-            },
-            true,
-          );
-          const [items, error] = rest.parseResponse(res);
+    try {
+      const res = await rest.sendRequest(url, method, body, true);
+      const [items, error] = rest.parseResponse(res);
 
-          if (error) {
-            console.error(error);
-            break;
-          }
-
-          const { dataItems: copyStore = [] } = items;
-
-          if (error) throw new Error(error);
-
-          const dep = {
-            noCorsClient,
-            requestError,
-            copyStore,
-            sortBy,
-            pathValid,
-            schema,
-            storeLoad,
-            clientDB,
-            methodQuery,
-            primaryKey,
-            saveComponentStateAction,
-            errorRequestAction,
-            isLocalUpdate,
-          };
-
-          responseList.push({ parsedItems: items, dep });
-        } catch (error) {
-          console.error('Error in mass loading,', error);
-        }
-      }
-      let hookData = [];
-
-      for await (let res of responseList) {
-        const { dep } = res;
-        const resultHook = await coreUpdaterDataHook(dispatch, dep, true);
-        if (resultHook) hookData.push(resultHook);
+      if (error) {
+        console.error(error);
+        continue;
       }
 
-      if (hookData.length) {
-        dispatch(saveComponentStateAction({ stateList: [...hookData], multiple: true, loading: false }));
-      }
+      const store = getActionStore(action);
+      const { dataItems: copyStore = [] } = items;
+
+      if (error) throw new Error(error);
+
+      const dep = {
+        noCorsClient,
+        requestError,
+        copyStore,
+        sortBy,
+        pathValid,
+        schema,
+        storeLoad: store,
+        clientDB,
+        methodQuery: body?.params?.query,
+        primaryKey,
+        saveComponentStateAction,
+        errorRequestAction,
+        isLocalUpdate,
+      };
+
+      responseList.push({ parsedItems: items, dep });
+    } catch (error) {
+      console.error('Error in mass loading,', error);
     }
   }
+  let hookData = [];
+
+  for await (let res of responseList) {
+    const { dep } = res;
+    const resultHook = await coreUpdaterDataHook(dispatch, dep, true);
+    if (resultHook) hookData.push(resultHook);
+  }
+
+  if (hookData.length) {
+    dispatch(saveComponentStateAction({ stateList: [...hookData], multiple: true, loading: false }));
+  }
 };
+
+const openTab = ({ uuid, action, depKey = '', data = {}, openType = '' }) => async (dispatch, getState) => {
+  const {
+    publicReducer: {
+      appConfig = {},
+      udata: { _id: uid = '' },
+    },
+    router: { activeTabs = [], routeData = {} },
+  } = getState();
+
+  if (appConfig?.tabsLimit <= activeTabs.length) {
+    message.error('Максимальное количество вкладок:' + appConfig?.tabsLimit);
+    return;
+  }
+
+  if (openType) {
+    const { moduleId = '', page = '' } = routeParser({ path: action, pageType: openType });
+    if (!moduleId || !page) {
+      message.warn('Страницу открыть по ссылке не удалось');
+      return;
+    }
+
+    const tabPage = page.split('#')[0];
+    const indexTab = activeTabs.findIndex((tab) => tab.includes(tabPage) && tab.includes(uuid));
+
+    if (indexTab !== -1) {
+      dispatch(setActiveTabAction(activeTabs[indexTab]));
+      return;
+    }
+
+    if (!data || (data && _.isEmpty(data))) {
+      message.warning('Данные при переходе по ссылке не найдены.');
+      return;
+    }
+
+    const activePageParsed = routePathNormalise({
+      pathType: openType,
+      pathData: { page, moduleId, key: uuid },
+    });
+
+    const { path } = activePageParsed || {};
+
+    dispatch(
+      openPageWithDataAction({
+        activePage: {
+          ...activePageParsed,
+          path,
+          from: openType,
+        },
+        routeDataActive: { ...data },
+      }),
+    );
+    return;
+  }
+
+  const isCabinetRedirect = action?.includes('cabinet');
+  let newData = data;
+
+  if (data && typeof data === 'object' && depKey) {
+    const store = isCabinetRedirect ? 'users' : action;
+    const { [store]: storeList = [] } = findData(_.isEmpty(data) ? routeData : data, depKey) || {};
+    newData = storeList.find((it) => it?._id === uuid) || {};
+  }
+  const isDefaultAction = regExpRegister.INCLUDE_MODULE.test(action);
+  const page = !isDefaultAction ? `${action}Module` : action;
+  const moduleId = !(uid === uuid) && isCabinetRedirect ? '$$personalPage$$' : '';
+
+  if (!uuid || !page || !newData || (newData && _.isEmpty(newData))) {
+    message.warn('Страницу открыть не удалось');
+    const trace = {
+      uuid,
+      page,
+      newData,
+    };
+    console.error('Bad open page', trace);
+    return;
+  }
+
+  const activePage = routePathNormalise({
+    pathType: uid === uuid ? 'module' : 'moduleItem',
+    pathData: { page, moduleId, key: uuid },
+  });
+
+  const indexTab = activeTabs.findIndex(
+    (tab) => (uid === uuid && tab === page) || (tab.includes(page) && tab.includes(uuid)),
+  );
+
+  if (indexTab === -1) {
+    dispatch(
+      openPageWithDataAction({
+        activePage,
+        routeDataActive: { ...data, key: uuid },
+      }),
+    );
+    return;
+  }
+
+  dispatch(setActiveTabAction(activeTabs[indexTab]));
+};
+
 
 const openTab = ({ uuid, action, depKey = '', data = {}, openType = '' }) => async (dispatch, getState) => {
   const {
