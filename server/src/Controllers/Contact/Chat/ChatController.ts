@@ -27,53 +27,18 @@ namespace Chat {
 
   @Controller('/chat')
   export class ChatController implements ControllerApi<FunctionConstructor> {
-    @Post({ path: '/loadChats', private: true })
-    protected async loadChats(req: Request, res: Response): ResRequest {
-      const { body: { actionPath = '', actionType = '', queryParams: params = {} } = {} } = req;
-
-      const actionLoadChats = new Action.ActionParser({ actionPath, actionType });
-
-      const responseExec: Function = await actionLoadChats.actionsRunner(params);
-      return responseExec(req, res, params, true);
-    }
-
-    @Put({ path: '/createRoom', private: true })
-    protected async createRoom(req: Request, res: Response): ResRequest {
-      const { body: { actionPath = '', actionType = '', queryParams: params = {} } = {} } = req;
-
-      const actionCreateRoom = new Action.ActionParser({ actionPath, actionType });
-
-      const responseExec: Function = await actionCreateRoom.actionsRunner(params);
-      return responseExec(req, res, params);
-    }
-
-    @Delete({ path: '/leaveRoom', private: true })
-    protected async leaveRoom(req: Request, res: Response): ResRequest {
-      const { body: { queryParams: params = {} } = {} } = req;
-      const actionType: string = 'chatRoom';
-      const actionPath: string = 'leave_room';
-
-      const leaveRoomAction = new Action.ActionParser({ actionPath, actionType });
-
-      const responseExec: Function = await leaveRoomAction.actionsRunner(params);
-      return responseExec(req, res, params);
-    }
-
     @Post({ path: '/load/tokenData', private: true })
-    protected async loadTokenData(req: Request, res: Response): ResRequest {
-      const {
-        body: {
-          queryParams: params = {},
-          options: { actionPath: aPath = '', actionType: aType = '' } = {},
-        } = {},
-      } = req;
-      const actionType: string = aType || 'get_msg_by_token';
-      const actionPath: string = aPath || 'chatMsg';
-      if (!actionPath || !actionType) throw new Error('Invalid action chat');
+    @Delete({ path: '/leaveRoom', private: true })
+    @Post({ path: '/loadChats', private: true })
+    @Put({ path: '/createRoom', private: true })
+    protected async getRooms(req: Request, res: Response): ResRequest {
+      const { actionPath = '', actionType = '', params = {}, moduleName = '' } = req.body;
+      const { options = {} } = params;
 
       const actionCreateRoom = new Action.ActionParser({ actionPath, actionType });
-      const responseExec: Function = await actionCreateRoom.actionsRunner(params);
-      return responseExec(req, res, params);
+
+      const responseExec: Function = await actionCreateRoom.actionsRunner({ ...options, moduleName });
+      return responseExec(req, res, { moduleName });
     }
   }
 }

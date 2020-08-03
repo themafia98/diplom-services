@@ -13,6 +13,8 @@ import actionsTypes from 'actions.types';
 import { compose } from 'redux';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { withClientDb } from 'Models/ClientSideDatabase';
+import actionPath from 'actions.path';
+import { requestTemplate, paramsTemplate } from 'Utils/Api/api.utils';
 
 const { Option } = Select;
 const { Search } = Input;
@@ -85,20 +87,13 @@ class WikiModule extends React.PureComponent {
   fetchTree = async (mode = '', forceUpdate = false) => {
     const {
       onLoadCurrentData,
-      router: { shouldUpdate = false, routeData = {} } = {},
+      router: { shouldUpdate = false, routeData = {}, path } = {},
       moduleContext,
       clientDB,
     } = this.props;
     const { visibility = false } = moduleContext;
     const { isLoading = false } = this.state;
     const isModuleUpdate = shouldUpdate && visibility && !routeData['wikiModule']?.load;
-
-    if (mode === 'didMount') {
-      this.setState({
-        ...this.state,
-        isLoading: true,
-      });
-    }
 
     if (mode !== 'didMount' && isLoading && routeData['wikiModule']?.load) {
       this.setState({
@@ -107,16 +102,16 @@ class WikiModule extends React.PureComponent {
       });
     }
 
-    if (forceUpdate || mode === 'didMount' || isModuleUpdate) {
-      onLoadCurrentData({
+    if (!isLoading && (forceUpdate || mode === 'didMount' || isModuleUpdate)) {
+      await onLoadCurrentData({
+        action: actionPath.$LOAD_WIKI_TREE,
         path: 'wikiModule',
-        storeLoad: 'wiki',
-        useStore: true,
-        methodQuery: 'get_all',
-        methodRequst: 'GET',
         sortBy: 'index',
-        indStoreName: 'wikiTree',
         clientDB,
+      });
+
+      this.setState({
+        isLoading: false,
       });
     }
   };
@@ -140,17 +135,21 @@ class WikiModule extends React.PureComponent {
         '/wiki/createLeaf',
         'PUT',
         {
+          ...requestTemplate,
           actionType: actionsTypes.$CREATE_LEAF,
-          type: 'wikiTree',
-          item: !item
-            ? {
-                ...node,
-                level: 1,
-                path: `0-${index}`,
-                index,
-                accessGroups: node?.accessGroups?.length ? [...node.accessGroups] : ['full'],
-              }
-            : { ...item },
+          params: {
+            ...paramsTemplate,
+            query: 'wikiTree',
+            item: !item
+              ? {
+                  ...node,
+                  level: 1,
+                  path: `0-${index}`,
+                  index,
+                  accessGroups: node?.accessGroups?.length ? [...node.accessGroups] : ['full'],
+                }
+              : { ...item },
+          },
         },
         true,
       );
@@ -167,7 +166,7 @@ class WikiModule extends React.PureComponent {
     }
   };
 
-  onDeleteNode = async (body, event) => {
+  onDeleteNode = async (params) => {
     try {
       const { modelsContext } = this.props;
       const { Request } = modelsContext;
@@ -177,8 +176,9 @@ class WikiModule extends React.PureComponent {
         '/wiki/deleteLeafs',
         'DELETE',
         {
+          ...requestTemplate,
           actionType: actionsTypes.$DELETE_LEAF,
-          ...body,
+          params,
         },
         true,
       );
@@ -388,8 +388,12 @@ class WikiModule extends React.PureComponent {
         '/system/wiki/update/single',
         'POST',
         {
+          ...requestTemplate,
           actionType: actionsTypes.$UPDATE_WIKI_PAGE,
-          ...paramsState,
+          params: {
+            ...paramsTemplate,
+            ...paramsState,
+          },
         },
         true,
       );
@@ -499,7 +503,7 @@ const mapStateToProps = (state) => {
     publicReducer: { udata = {} },
   } = state;
 
-  const { wiki: metadata = [] } = routeData['wikiModule'] || {};
+  const { wikiTree: metadata = [] } = routeData['wikiModule'] || {};
 
   return {
     router,

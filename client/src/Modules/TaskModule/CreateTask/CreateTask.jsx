@@ -311,7 +311,7 @@ class CreateTask extends React.PureComponent {
       const { result: res, offline } = await createEntity(
         'tasks',
         validHash,
-        { clientDB, statusApp, onSetStatus },
+        { clientDB, statusApp, onSetStatus, moduleName: path?.split('_')?.[0] },
         4,
       );
 

@@ -10,6 +10,7 @@ import { oneOfType } from 'Utils';
 import { setStatus } from 'Redux/actions/publicActions';
 import { compose } from 'redux';
 import { withClientDb } from 'Models/ClientSideDatabase';
+import actionPath from 'actions.path';
 
 class ContactModule extends React.PureComponent {
   state = {
@@ -31,11 +32,9 @@ class ContactModule extends React.PureComponent {
 
     if (path === 'contactModule_feedback' && type === types.$sub_entrypoint_module) {
       onLoadCurrentData({
+        action: actionPath.$LOAD_NEWS,
         path,
-        storeLoad: 'news',
-        methodRequst: 'GET',
-        noCorsClient: false,
-        useStore: true,
+        optionsForParse: { noCorsClient: false },
         clientDB,
       });
     }
@@ -72,11 +71,9 @@ class ContactModule extends React.PureComponent {
       (state) => ({ ...state, isLoading: !state?.isLoading }),
       async () => {
         await onLoadCurrentData({
+          action: actionPath.$LOAD_NEWS,
           path,
-          storeLoad: 'news',
-          methodRequst: 'GET',
-          noCorsClient: false,
-          useStore: true,
+          optionsForParse: { noCorsClient: false },
           clientDB,
         });
 

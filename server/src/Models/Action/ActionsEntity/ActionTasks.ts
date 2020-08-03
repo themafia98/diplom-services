@@ -30,26 +30,33 @@ class ActionTasks implements Action {
   ): Promise<ParserData> {
     try {
       /** Params for query */
-      const { queryParams = {}, updateItem = '' } = actionParam;
-      const id: string = (queryParams as Record<string, string>).id;
+      const { options = {}, updateItem = '', updateField = '' } = actionParam as Record<
+        string,
+        object | string
+      >;
+      const { id = '' } = (options as Record<string, string>) || {};
 
       let updateProps = {};
       let actionData: Document | null = null;
 
-      if (typeAction.includes('single')) {
-        const updateField: string = (actionParam as Record<string, string>).updateField;
-        (updateProps as Record<string, string>)[updateField] = updateItem as string;
+      if (typeAction.includes('single') && updateField && updateItem) {
+        (updateProps as Record<string, string>)[updateField as string] = updateItem as string;
       } else if (typeAction.includes('many')) {
-        const { updateItem = '' } = actionParam;
         updateProps = updateItem;
       }
 
-      await model.updateOne({ _id: id }, updateProps);
-      actionData = await model.findById(id);
+      const parsedId = Types.ObjectId(id);
+
+      if (!parsedId) throw new Error('bad object id in update task');
+
+      if (!_.isEmpty(updateProps)) await model.updateOne({ _id: parsedId }, updateProps);
+      else throw new Error('Bad update props');
+
+      actionData = await model.findById(parsedId);
 
       return actionData;
     } catch (err) {
-      console.log(err);
+      console.error(err);
       return null;
     }
   }

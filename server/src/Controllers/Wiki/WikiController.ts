@@ -31,14 +31,14 @@ namespace Wiki {
     @Put({ path: '/createLeaf', private: true })
     protected async createLeaf(req: Request, res: Response): ResRequest {
       const params: Params = { methodQuery: 'create_leaf', status: 'done', done: true, from: 'wiki' };
+      const { params: leafEntity = {} } = req.body;
 
-      const body: ActionParams = req.body;
       const actionCreateLeaf = new Action.ActionParser({
         actionPath: 'wiki',
         actionType: 'create_leaf',
       });
 
-      const responseExec: Function = await actionCreateLeaf.actionsRunner(body);
+      const responseExec: Function = await actionCreateLeaf.actionsRunner(leafEntity);
       return responseExec(req, res, params);
     }
 
@@ -46,14 +46,14 @@ namespace Wiki {
     protected async deleteLeafs(req: Request, res: Response): ResRequest {
       const params: Params = { methodQuery: 'delete_leafs', status: 'done', done: true, from: 'wiki' };
 
-      const body: ActionParams = req.body;
+      const { params: leafParam = {} } = req.body;
 
       const actionDeleteLeafs = new Action.ActionParser({
         actionPath: 'wiki',
         actionType: 'delete_leafs',
       });
 
-      const responseExec: Function = await actionDeleteLeafs.actionsRunner(body);
+      const responseExec: Function = await actionDeleteLeafs.actionsRunner(leafParam);
       return responseExec(req, res, params);
     }
 

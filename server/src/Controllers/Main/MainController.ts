@@ -1,4 +1,5 @@
 import { NextFunction, Response, Request } from 'express';
+import { promisify } from 'util';
 import path from 'path';
 import fs from 'fs';
 import _ from 'lodash';
@@ -17,6 +18,7 @@ import Decorators from '../../Decorators';
 import Action from '../../Models/Action';
 
 namespace System {
+  const readFile = promisify(fs.readFile);
   const Controller = Decorators.Controller;
   const Delete = Decorators.Delete;
   const Post = Decorators.Post;
@@ -25,15 +27,31 @@ namespace System {
 
   @Controller('/system')
   export class SystemData implements ControllerApi<FunctionConstructor> {
-    @Get({ path: '/core/config', private: false })
+    @Get({ path: '/core/:type/config', private: false })
     protected async loadSystemConfig(req: Request, res: Response): ResRequest {
+      const { type = 'public' } = req.params;
       try {
-        fs.readFile(path.join(__dirname, '../../', '/core/config.json'), (err, data: any) => {
-          if (err) throw err;
+        const config: Buffer = await readFile(path.join(__dirname, '../../', 'core', type, 'config.json'));
+        const configPublic: Buffer | null =
+          type === 'private'
+            ? await readFile(path.join(__dirname, '../../', 'core', 'public', 'config.json'))
+            : null;
 
-          const parsedJsonConfig: object = JSON.parse(data);
-          res.json(parsedJsonConfig);
-        });
+        if (!config || (type === 'private' && !configPublic)) throw new Error('Bad config.json');
+
+        const parsedJsonPublicConfig: object = JSON.parse(config as any);
+        let parseConfig = parsedJsonPublicConfig;
+
+        if (type === 'private') {
+          const parsedJsonPrivateConfig: object = JSON.parse(configPublic as any);
+
+          parseConfig = {
+            ...parsedJsonPublicConfig,
+            ...parsedJsonPrivateConfig,
+          };
+        }
+
+        res.json(parseConfig);
       } catch (error) {
         if (!res.headersSent) return res.sendStatus(503);
       }
@@ -150,7 +168,8 @@ namespace System {
     @Post({ path: '/:module/update/single', private: true })
     protected async updateSingle(req: Request, res: Response): ResRequest {
       const { module: moduleName = '' } = req.params;
-      const body: BodyLogin = req.body;
+      const { params: paramsRequest = {} } = req.body || {};
+
       const params: Params = {
         methodQuery: 'update_single',
         status: 'done',
@@ -160,16 +179,26 @@ namespace System {
       const updateSingleAction: Actions = new Action.ActionParser({
         actionPath: moduleName,
         actionType: 'update_single',
-        body,
+        body: paramsRequest,
       });
 
-      const responseExec: Function = await updateSingleAction.actionsRunner(body);
+      const responseExec: Function = await updateSingleAction.actionsRunner(paramsRequest);
       return responseExec(req, res, params);
     }
 
     @Post({ path: '/:module/update/many', private: true })
     protected async updateMany(req: Request, res: Response): ResRequest {
       const { module: moduleName = '' } = req.params;
+      const { params: paramsRequest = {} } = req.body;
+
+      const actionParams =
+        typeof paramsRequest == 'object' && paramsRequest
+          ? {
+              moduleName,
+              ...paramsRequest,
+            }
+          : {};
+
       const params: Params = {
         methodQuery: 'update_many',
         status: 'done',
@@ -177,15 +206,13 @@ namespace System {
         from: moduleName,
       };
 
-      const body: BodyLogin = req.body;
-
       const updateManyAction: Actions = new Action.ActionParser({
         actionPath: moduleName,
         actionType: 'update_many',
-        body,
+        body: actionParams,
       });
 
-      const responseExec: Function = await updateManyAction.actionsRunner(body);
+      const responseExec: Function = await updateManyAction.actionsRunner(actionParams);
       return responseExec(req, res, params, true);
     }
 
@@ -203,15 +230,19 @@ namespace System {
         return res.sendStatus(500);
       }
 
-      const body: BodyLogin = req.body;
-      const { actionType = '' } = body;
+      const { actionType = '', params: paramsRequest = {} } = req.body;
+
+      /**
+       * item is new notification
+       */
+      const { options = {}, item = {} } = paramsRequest || {};
 
       const createNotificationAction: Actions = new Action.ActionParser({
         actionPath: 'notification',
         actionType: actionType as string,
       });
 
-      const responseExec: Function = await createNotificationAction.actionsRunner({ ...req.body, type });
+      const responseExec: Function = await createNotificationAction.actionsRunner({ ...options, item, type });
       return responseExec(req, res, params, true);
     }
 

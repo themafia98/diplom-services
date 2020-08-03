@@ -5,6 +5,7 @@ import NotificationItem from './NotificationItem';
 import StreamBox from 'Components/StreamBox';
 import ModelContext from 'Models/context';
 import actionsTypes from 'actions.types';
+import { requestTemplate, paramsTemplate } from 'Utils/Api/api.utils';
 class NotificationPopup extends React.PureComponent {
   state = {
     counter: 0,
@@ -54,8 +55,15 @@ class NotificationPopup extends React.PureComponent {
         `/system/${type}/notification`,
         'POST',
         {
+          ...requestTemplate,
+          moduleName: 'system',
           actionType: actionsTypes.$GET_NOTIFICATIONS,
-          methodQuery: typeof filterStream === 'string' ? { [filterStream]: uid } : {},
+          params: {
+            ...paramsTemplate,
+            options: {
+              ids: typeof filterStream === 'string' ? { [filterStream]: uid } : {},
+            },
+          },
         },
         true,
       );

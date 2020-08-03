@@ -5,6 +5,7 @@ import subModulesComponents from './subComponents';
 import componentsModules from './components';
 import types from 'types.modules';
 import actionsTypes from 'actions.types';
+import { requestTemplate, paramsTemplate } from 'Utils/Api/api.utils';
 
 /**
  *
@@ -19,8 +20,12 @@ const createNotification = async (type = '', item = {}, actionType = actionsType
     `/system/${type}/notification`,
     'POST',
     {
-      item,
+      ...requestTemplate,
       actionType,
+      params: {
+        ...paramsTemplate,
+        item,
+      },
     },
     true,
   );
@@ -33,11 +38,11 @@ const createNotification = async (type = '', item = {}, actionType = actionsType
  * @param {object} dep entity dependences
  * @param {number} sliceCreaterNumber slice start name of entity, default: 0
  */
-const createEntity = async (storeName = '', body = {}, dep = {}, sliceCreaterNumber = 0) => {
-  const { metadata = {} } = body || {};
+const createEntity = async (storeName = '', params = {}, dep = {}, sliceCreaterNumber = 0) => {
+  const { metadata = {} } = params || {};
   const { statusApp = 'online', clientDB = null, onSetStatus } = dep;
 
-  if (!storeName || _.isEmpty(body)) return;
+  if (!storeName || _.isEmpty(params)) return;
   try {
     const rest = new Request();
     if (statusApp === 'online') {
@@ -48,7 +53,12 @@ const createEntity = async (storeName = '', body = {}, dep = {}, sliceCreaterNum
           sliceCreaterNumber ? sliceCreaterNumber : createPath.length,
         )}`,
         'POST',
-        body,
+        {
+          ...requestTemplate,
+          actionType: 'create_task',
+          moduleName: storeName,
+          params,
+        },
         true,
       );
 
@@ -61,7 +71,7 @@ const createEntity = async (storeName = '', body = {}, dep = {}, sliceCreaterNum
     }
 
     const offlineBody =
-      metadata && !_.isEmpty(metadata) ? { ...metadata, offline: true } : { ...body, offline: true };
+      metadata && !_.isEmpty(metadata) ? { ...metadata, offline: true } : { ...params, offline: true };
     const putAction = clientDB ? await clientDB.addItem(storeName, offlineBody) : null;
 
     if (!clientDB) console.warn('client db connect');
@@ -75,7 +85,7 @@ const createEntity = async (storeName = '', body = {}, dep = {}, sliceCreaterNum
         statusRequst: 'offline',
       });
 
-      return await createEntity(storeName, body, { ...dep, statusApp: 'offline' }, sliceCreaterNumber);
+      return await createEntity(storeName, params, { ...dep, statusApp: 'offline' }, sliceCreaterNumber);
     }
     return { result: null, offline: null };
   }
@@ -93,6 +103,7 @@ const deleteFile = async (store = '', body = {}) => {
     `/system/${store}/delete/file`,
     'DELETE',
     {
+      ...requestTemplate,
       actionType: actionsTypes.$DELETE_FILE,
       ...body,
     },
@@ -112,6 +123,7 @@ const loadFile = async (store = '', body = {}) => {
     `/system/${store}/load/file`,
     'PUT',
     {
+      ...requestTemplate,
       actionType: actionsTypes.$PUT_FILE,
       ...body,
     },

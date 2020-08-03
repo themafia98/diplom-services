@@ -17,7 +17,6 @@ const coreUpdaterDataHook = async (dispatch, dep = {}, multiple = false, badNetw
     saveComponentStateAction,
     errorRequestAction,
     isLocalUpdate: localUpdateStat,
-    indStoreName,
     params,
   } = dep;
 
@@ -29,11 +28,10 @@ const coreUpdaterDataHook = async (dispatch, dep = {}, multiple = false, badNetw
   }
 
   if (requestError !== null && !badNetwork) dispatch(errorRequestAction(null));
-  const currentStore = indStoreName ? indStoreName : storeLoad;
 
   const [cursor = null, eventResult = null, shouldUpdate = null] = await runRefreshIndexedDb(
     dispatch,
-    currentStore,
+    storeLoad,
     dep,
     multiple,
   );

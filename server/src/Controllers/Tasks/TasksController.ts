@@ -23,7 +23,7 @@ namespace Tasks {
         from: 'tasks',
       };
 
-      const { options: { limitList = null, keys = null, saveData = {}, filterCounter = null } = {} } =
+      const { params: { limitList = null, keys = null, saveData = {}, filterCounter = null } = {} } =
         req.body || {};
       const actionParams: ActionParams = {
         queryParams: keys ? { keys } : {},
@@ -40,7 +40,7 @@ namespace Tasks {
     @Post({ path: '/listCounter', private: true })
     @Get({ path: '/listCounter', private: true })
     protected async getListCounter(req: Request, res: Response): ResRequest {
-      const { filterCounter = null, saveData = {} } = req.body || {}; // uid
+      const { params: { filterCounter = null, saveData = {} } = {} } = req.body || {};
       const params: Params = {
         methodQuery: 'list_counter',
         status: 'done',
@@ -60,7 +60,7 @@ namespace Tasks {
 
     @Post({ path: '/createTask', private: true })
     protected async create(req: Request, res: Response): ResRequest {
-      const body: BodyLogin = req.body;
+      const { params: task = {} } = req.body;
       const params: Params = {
         methodQuery: 'set_single',
         status: 'done',
@@ -73,7 +73,7 @@ namespace Tasks {
         actionType: 'set_single',
       });
 
-      const responseExec: Function = await createTaskAction.actionsRunner(body);
+      const responseExec: Function = await createTaskAction.actionsRunner(task);
       return responseExec(req, res, params);
     }
 
@@ -86,7 +86,8 @@ namespace Tasks {
         from: 'jurnalworks',
       };
 
-      const body: BodyLogin = req.body;
+      const { params: jurnalEntity = {} } = req.body;
+      const body: BodyLogin = jurnalEntity;
 
       const createJurnalAction = new Action.ActionParser({
         actionPath: 'jurnalworks',
@@ -100,21 +101,22 @@ namespace Tasks {
 
     @Put({ path: '/caching/list', private: true })
     protected async getCachingList(req: Request, res: Response): ResRequest {
-      const { queryParams = {}, actionType = '' } = req.body;
+      const { params: { options = {} } = {}, actionType = '' } = req.body;
       const params: Params = {
         methodQuery: actionType,
         status: 'done',
         done: true,
         from: 'tasks',
       };
-      const { store = '' } = queryParams || {};
+      const { store = '' } = options || {};
 
       const actionTasks = new Action.ActionParser({ actionPath: store, actionType: actionType });
 
-      const responseExec: Function = await actionTasks.actionsRunner(queryParams);
+      const responseExec: Function = await actionTasks.actionsRunner(options);
       return responseExec(req, res, params);
     }
 
+    /** Hard-code for tests */
     @Put({ path: '/regTicket', private: false, file: true })
     protected async regTicket(req: Request, res: Response): ResRequest {
       const body = { ticket: req.body, actionType: 'reg_crossOrigin_ticket' };
