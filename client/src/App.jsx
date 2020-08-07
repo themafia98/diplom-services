@@ -117,6 +117,7 @@ class App extends React.Component {
     }
   };
 
+
   loadAppSession = async () => {
     const { router: { currentActionTab = '', activeTabs = [] } = {}, coreConfig = {} } = this.props;
     const { appActive = true, menu = [], tabsLimit = 20 } = coreConfig;
@@ -125,14 +126,16 @@ class App extends React.Component {
     const rest = new Request();
 
     try {
-      const res = await rest.sendRequest(
-        '/userload',
-        'POST',
-        {
-          actionType: actionsTypes.$LOAD_SESSION_USER,
-        },
-        true,
-      );
+      const res = isLogin
+        ? await rest.sendRequest(
+            '/userload',
+            'POST',
+            {
+              actionType: actionsTypes.$LOAD_SESSION_USER,
+            },
+            true,
+          )
+        : { status: 200 };
 
       if (res?.status !== 200) {
         throw new Error('Bad user data');
