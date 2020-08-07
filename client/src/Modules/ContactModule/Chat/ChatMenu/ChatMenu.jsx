@@ -115,10 +115,10 @@ const ChatMenu = ({
                     <Item
                       className={clsx(tokenRoom?.includes(it?.tokenRoom) ? 'activeChat' : null)}
                       onClick={(e) => setActiveChatRoom(e, it?._id, membersIds, it?.tokenRoom)}
-                      key={it?._id + i}
+                      key={i}
                     >
                       <Meta
-                        key={`${it?._id}${i}`}
+                        key={`${i}-meta`}
                         avatar={
                           <Avatar
                             src={`data:image/png;base64,${avatar}`}
