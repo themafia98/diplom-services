@@ -117,7 +117,6 @@ class App extends React.Component {
     }
   };
 
-
   loadAppSession = async () => {
     const { router: { currentActionTab = '', activeTabs = [] } = {}, coreConfig = {} } = this.props;
     const { appActive = true, menu = [], tabsLimit = 20 } = coreConfig;
@@ -126,16 +125,14 @@ class App extends React.Component {
     const rest = new Request();
 
     try {
-      const res = isLogin
-        ? await rest.sendRequest(
-            '/userload',
-            'POST',
-            {
-              actionType: actionsTypes.$LOAD_SESSION_USER,
-            },
-            true,
-          )
-        : { status: 200 };
+      const res = await rest.sendRequest(
+        '/userload',
+        'POST',
+        {
+          actionType: actionsTypes.$LOAD_SESSION_USER,
+        },
+        true,
+      );
 
       if (res?.status !== 200) {
         throw new Error('Bad user data');
@@ -197,8 +194,9 @@ class App extends React.Component {
       }
       await fetchConfig('private');
       await onLoadUdata(udata);
-      this.loadSettings();
-      addTab(routeParser({ path }));
+      await this.loadSettings();
+
+      await addTab(routeParser({ path }));
     } catch (error) {
       const { response: { data = '' } = {}, message = '' } = error || {};
       this.showErrorMessage(data || message || error);

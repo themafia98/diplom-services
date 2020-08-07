@@ -7,12 +7,13 @@ const UserPopup = ({ udata, goCabinet }) => {
   const [userData, setData] = useState(udata);
 
   useEffect(() => {
-    if (_.isEqual(udata, userData)) return;
+    if (_.isEqual(udata, userData) || !udata || !userData) return;
 
     setData((state) => {
       if (state && typeof state === 'object') {
         return {
           ...state,
+          ...udata,
           ...userData,
         };
       }
