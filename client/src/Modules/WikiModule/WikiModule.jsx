@@ -87,7 +87,7 @@ class WikiModule extends React.PureComponent {
   fetchTree = async (mode = '', forceUpdate = false) => {
     const {
       onLoadCurrentData,
-      router: { shouldUpdate = false, routeData = {}, path } = {},
+      router: { shouldUpdate = false, routeData = {} } = {},
       moduleContext,
       clientDB,
     } = this.props;
