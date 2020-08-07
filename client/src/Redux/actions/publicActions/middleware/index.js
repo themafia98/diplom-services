@@ -5,6 +5,7 @@ import { multipleLoadData } from '../../routerActions/middleware';
 import { updateItemStateAction } from '../../routerActions';
 import actionsTypes from 'actions.types';
 import { requestTemplate, paramsTemplate } from 'Utils/Api/api.utils';
+import { message } from 'antd';
 
 /**
  * Middleware
@@ -174,6 +175,7 @@ const middlewareUpdate = ({
   updateBy = '_id',
   parsedRoutePath,
   clientDB = null,
+  systemMessage = {},
 }) => async (dispatch, getState, { schema, Request }) => {
   /**
    * Props
@@ -229,6 +231,8 @@ const middlewareUpdate = ({
     };
 
     await updateEntityHook(dispatch, dep);
+
+    if (systemMessage?.done) message.success(systemMessage.done);
   } catch (error) {
     const depError = {
       parsedRoutePath,
@@ -244,6 +248,7 @@ const middlewareUpdate = ({
     };
     console.error(error);
     errorHook(error, dispatch, depError);
+    if (systemMessage?.error) message.error(systemMessage.error);
   }
 };
 

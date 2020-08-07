@@ -1,8 +1,9 @@
 import React, { useMemo, useCallback } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
-import { tabType } from './types';
+import { tabType } from '../types';
 import clsx from 'clsx';
 import { Icon, Tooltip } from 'antd';
+import { BREAKPOINTS, SCALE_FACTORS } from './Tab.constant';
 
 const Tab = ({ value, active, hendlerTab, itemKey, index, sizeTab }) => {
   const callbackHendlerTab = useCallback(hendlerTab, []);
@@ -23,11 +24,12 @@ const Tab = ({ value, active, hendlerTab, itemKey, index, sizeTab }) => {
 
   const getTabStyle = useCallback(() => {
     const recalcSize =
-      sizeTab > 55
-        ? sizeTab - sizeTab * 0.15
-        : sizeTab > 43
-        ? sizeTab - sizeTab * 0.2
-        : sizeTab - sizeTab * 0.3;
+      sizeTab > BREAKPOINTS.M
+        ? sizeTab - sizeTab * SCALE_FACTORS.M_FACTOR
+        : sizeTab > BREAKPOINTS.S
+        ? sizeTab - sizeTab * SCALE_FACTORS.SM_FACTOR
+        : sizeTab - sizeTab * SCALE_FACTORS.S_FACTOR;
+
     return {
       width: `${recalcSize}px`,
       maxWidth: `${recalcSize}px`,

@@ -18,7 +18,7 @@ const cachingHook = async (dispatch, dep = {}, depActions = {}) => {
         сachingAction({
           data: schemaTemplate ? validHash : dataItems,
           load: true,
-          primaryKey: actionType,
+          uuid: actionType,
           updateBy,
         }),
       );
@@ -72,7 +72,7 @@ const putterCacheHook = async (dispatch, dep = {}, depActions = {}) => {
 
       if (error) throw new Error(error);
 
-      dispatch(сachingAction({ data: updaterItem, load: true, primaryKey: actionType, updateBy }));
+      dispatch(сachingAction({ data: updaterItem, load: true, uuid: actionType, updateBy }));
     }
   } catch (error) {
     console.error(error);
@@ -94,7 +94,7 @@ const getterCacheHook = async (dispatch, dep = {}, depActions = {}) => {
       if (clientDB) await clientDB.addItem(store, !schemaTemplate ? dataItems : validHash);
       else console.warn('No client db connect');
 
-      dispatch(сachingAction({ data: validHash, load: true, primaryKey: actionType, updateBy }));
+      dispatch(сachingAction({ data: validHash, load: true, uuid: actionType, updateBy }));
     } else throw new Error('Invalid data props');
   } catch (error) {
     console.error(error);

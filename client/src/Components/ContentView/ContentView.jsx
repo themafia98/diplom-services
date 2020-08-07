@@ -53,21 +53,15 @@ class ContentView extends React.Component {
     const { key = null } = this.state;
     document.addEventListener('keydown', this.disableF5);
     dashboardStrem.on('EventUpdate', this.updateFunction);
-    if (key === null && shouldRenderMenu) {
-      this.setState({
-        key: uuid(),
-      });
-    }
+    if (key !== null && !shouldRenderMenu) return;
+
+    this.setState({ key: uuid() });
   };
 
-  shouldComponentUpdate = (nextProps, nextState) => {
+  shouldComponentUpdate = ({ path: nextPath }, { key: nextKey, visibilityPortal: nextVisibilityPortal }) => {
     const { path: currentPath } = this.props;
     const { key: currentKey, visibilityPortal } = this.state;
-    if (
-      nextProps.path !== currentPath ||
-      nextState.key !== currentKey ||
-      nextState.visibilityPortal !== visibilityPortal
-    ) {
+    if (nextPath !== currentPath || nextKey !== currentKey || nextVisibilityPortal !== visibilityPortal) {
       return true;
     } else return false;
   };
@@ -99,9 +93,8 @@ class ContentView extends React.Component {
   updateFunction = _.debounce((forceUpdate) => {
     const { updateLoader } = this.props;
     this.setState({ ...this.state, key: uuid() }, () => {
-      if (forceUpdate) {
-        updateLoader();
-      }
+      if (!forceUpdate) return;
+      updateLoader();
     });
   }, 300);
 
@@ -195,11 +188,7 @@ class ContentView extends React.Component {
     const { key, visibilityPortal } = this.state;
     const { webSocket, path, appConfig } = this.props;
 
-    if (process.env.NODE_ENV === 'development' && path) {
-      console.log('Current path:', path);
-    }
-
-    if (!key) return <div>Not available</div>;
+    if (!key) return <div>Not available application, not found content key</div>;
 
     const isBackgroundChat = this.getBackground('contactModule_chat');
     const tabs = this.tabsCreate();

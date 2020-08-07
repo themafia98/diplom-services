@@ -92,7 +92,7 @@ class TaskView extends React.PureComponent {
         load: true,
         union: true,
         customDepKey: `taskView#${taskId}`,
-        primaryKey: '__author',
+        uuid: '__author',
       });
 
       onLoadCacheData({ actionType, depKey: idTask, depStore: 'tasks', store: 'jurnalworks', clientDB });
@@ -164,7 +164,7 @@ class TaskView extends React.PureComponent {
             load: true,
             union: true,
             customDepKey: `taskView#${taskId}`,
-            primaryKey: '__editor',
+            uuid: '__editor',
           });
         }
 

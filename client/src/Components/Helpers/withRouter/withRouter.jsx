@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { getDependencyModules } from 'Utils';
 
 /**
@@ -8,9 +8,13 @@ import { getDependencyModules } from 'Utils';
  */
 const withRouter = (Component, exclude = []) => (props) => {
   const { path = '', appConfig = null } = props;
-  return (
-    <Component {...props} entitysList={getDependencyModules(path.split(/_|#/)[0], appConfig, exclude)} />
-  );
+
+  const dependencyList = useMemo(() => getDependencyModules(path.split(/_|#/)[0], appConfig, exclude), [
+    path,
+    appConfig,
+  ]);
+
+  return <Component {...props} entitysList={dependencyList} />;
 };
 
 export default withRouter;

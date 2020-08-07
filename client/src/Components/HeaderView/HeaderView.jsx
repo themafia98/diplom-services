@@ -1,32 +1,34 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { headerViewType } from './types';
 import { connect } from 'react-redux';
 import { Layout } from 'antd';
 import { dragEndTabAction } from 'Redux/actions/tabActions';
 import { saveComponentStateAction } from 'Redux/actions/routerActions';
-import Tab from './Tab';
 import RightPanel from './RightPanel';
+import Tab from './Tab/index';
+import { MARGIN_TAB } from './HeaderView.constant';
 
 const { Header } = Layout;
 
-class HeaderView extends React.PureComponent {
+class HeaderView extends PureComponent {
   state = {
     length: 1,
     size: 160,
     sizeParent: null,
   };
 
+  tabsMenuRef = React.createRef();
+
   static propTypes = headerViewType;
   static defaultProps = {
-    tabArray: [],
+    activeTabs: [],
     dashboardStrem: null,
   };
 
   componentDidUpdate = () => {
     const { sizeParent, size, length } = this.state;
     const { tabArray = [] } = this.props;
-    const MARGIN_TAB = 5;
 
     const sizes = sizeParent / tabArray.length - MARGIN_TAB;
     const counter = ~~(sizeParent / size);
@@ -52,16 +54,15 @@ class HeaderView extends React.PureComponent {
     return list;
   };
 
-  onDragEnd = (event, tabsList) => {
+  onDragEnd = ({ destination, source }, tabsList) => {
+    const { index: indexDest } = destination || {};
+    const { index } = source || {};
     const { onDragEndTabAction } = this.props;
-    if (!event.destination) {
-      return;
-    }
-    onDragEndTabAction(this.reorder([...tabsList], event.source.index, event.destination.index));
-  };
 
-  wrapper = null;
-  refWrapper = (node) => (this.wrapper = node);
+    if (!destination) return;
+
+    onDragEndTabAction(this.reorder([...tabsList], index, indexDest));
+  };
 
   renderTabs = (items) => {
     const { size = 160 } = this.state;
@@ -72,15 +73,15 @@ class HeaderView extends React.PureComponent {
         <Droppable direction="horizontal" droppableId="droppable">
           {(provided, snapshot) => (
             <div className="droppable-wrapper" ref={provided.innerRef}>
-              <ul ref={this.refWrapper} {...provided.droppableProps} className="tabsMenu">
-                {items.map((item, index) => {
+              <ul ref={this.tabsMenuRef} {...provided.droppableProps} className="tabsMenu">
+                {items.map(({ EUID = '', VALUE = '' }, index) => {
                   return (
                     <Tab
                       hendlerTab={cbMenuTabHandler}
-                      active={activeTabEUID === item.EUID}
-                      key={item.EUID}
-                      itemKey={item.EUID}
-                      value={item.VALUE}
+                      active={activeTabEUID === EUID}
+                      key={EUID}
+                      itemKey={EUID}
+                      value={VALUE}
                       sizeTab={size}
                       index={index}
                     />
@@ -101,7 +102,7 @@ class HeaderView extends React.PureComponent {
 
   render() {
     const {
-      activeTabs = ['mainModule'],
+      tabs,
       goCabinet,
       status,
       shouldUpdate,
@@ -121,7 +122,7 @@ class HeaderView extends React.PureComponent {
 
     return (
       <Header>
-        {activeTabs ? this.renderTabs(activeTabs) : null}
+        {tabs ? this.renderTabs(tabs) : null}
         <RightPanel
           appConfig={appConfig}
           udata={udata}
@@ -139,9 +140,9 @@ class HeaderView extends React.PureComponent {
 
 const mapStateTopProps = (state) => {
   const { status = 'online', udata = {}, appConfig } = state.publicReducer;
-  const { shouldUpdate = false, routeData = {} } = state.router;
+  const { shouldUpdate = false, routeData = {}, activeTabs } = state.router;
   return {
-    tabArray: state.router.activeTabs,
+    activeTabs,
     shouldUpdate,
     status,
     udata,

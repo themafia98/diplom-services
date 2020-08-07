@@ -9,15 +9,15 @@ const Comment = ({
   rules,
   it,
   userId,
-  uId,
   router,
   removeTab,
   udata,
   onOpenPageWithData,
   setCurrentTab,
 }) => {
-  const [key] = useState(it?.id ? it.id : it?._id);
-  const [value, setValue] = useState(it?.message);
+  const { id = '', message = '', time = '', uId = '', username = '' } = it;
+
+  const [value, setValue] = useState(message);
   const [editable, setEditable] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -32,16 +32,16 @@ const Comment = ({
     (action, event) => {
       switch (action) {
         case 'delete':
-          return onDelete(event, key);
+          return onDelete(event, id);
         case 'edit': {
           if (!loading) setLoading(true);
-          return onEdit(key, value, onReset);
+          return onEdit(id, value, onReset);
         }
         default:
           return null;
       }
     },
-    [key, loading, onDelete, onEdit, onReset, value],
+    [id, loading, onDelete, onEdit, onReset, value],
   );
 
   const onChange = ({ target: { value = '' } }) => setValue(value);
@@ -63,7 +63,7 @@ const Comment = ({
         </span>
       ) : null}
       <span className="aboutCommentSender">
-        <span className="timeComment">&nbsp;{it?.time}.</span>
+        <span className="timeComment">&nbsp;{time}.</span>
         &nbsp;
         <Output
           action={'cabinet'}
@@ -72,22 +72,22 @@ const Comment = ({
           removeTab={removeTab}
           currentData={it}
           udata={udata}
-          id={it?.uId}
+          id={uId}
           isStaticList={true}
           onOpenPageWithData={onOpenPageWithData}
           setCurrentTab={setCurrentTab}
           className="sender_name"
           outputClassName="output--inline"
         >
-          {it?.username}
+          {username}
         </Output>
         написал:
       </span>
       {!editable ? (
-        <span className="commentContet">{it?.message}</span>
+        <span className="commentContet">{message}</span>
       ) : (
         <div className="editable-container">
-          <Input onChange={onChange} type="text" defaultValue={it?.message} value={value} />
+          <Input onChange={onChange} type="text" defaultValue={message} value={value} />
           <Button
             disabled={loading}
             loading={loading}

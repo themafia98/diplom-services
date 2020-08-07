@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { Component } from 'react';
 import Node from 'Models/Node';
 import modalContext from 'Models/context';
 import actionPortalType from './types';
 
-class ActionPortal extends React.Component {
+class ActionPortal extends Component {
   state = {
     visible: false,
   };

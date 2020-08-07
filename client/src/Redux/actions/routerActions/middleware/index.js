@@ -27,7 +27,6 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
   const { noCorsClient = false, shouldSetLoading = false, sync = false } = optionsForParse || {};
 
   let isLocalUpdate = true;
-  const primaryKey = 'uuid';
   const pathValid = pagePath.includes('_') ? pagePath : pagePath.split(regExpRegister.MODULE_ID)[0];
   const {
     router,
@@ -71,7 +70,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
           schema,
           storeLoad: store,
           clientDB,
-          primaryKey,
+          uuid: 'uuid',
           params,
           saveComponentStateAction,
           multipleLoadData,
@@ -104,7 +103,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
           pathValid,
           schema,
           clientDB,
-          primaryKey,
+          uuid: 'uuid',
         };
 
         if (responseStatus === 404 || errorStatus === 404) {
@@ -126,7 +125,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
         params,
         pathValid,
         requestError,
-        primaryKey,
+        uuid: 'uuid',
         saveComponentStateAction,
         errorRequestAction,
       };
@@ -141,7 +140,6 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
 const multipleLoadData = (params) => async (dispatch, getState, { schema, Request }) => {
   const { requestsParamsList = [], saveModuleName = '', clientDB = null } = params;
 
-  const primaryKey = 'uuid';
   const {
     publicReducer: { requestError, status = 'online' },
   } = getState();
@@ -194,7 +192,7 @@ const multipleLoadData = (params) => async (dispatch, getState, { schema, Reques
         storeLoad: store,
         clientDB,
         methodQuery: body?.params?.query,
-        primaryKey,
+        uuid: 'uuid',
         saveComponentStateAction,
         errorRequestAction,
         isLocalUpdate,
@@ -318,4 +316,3 @@ const openTab = ({ uuid, action, depKey = '', data = {}, openType = '' }) => asy
 };
 
 export { loadCurrentData, multipleLoadData, openTab };
-

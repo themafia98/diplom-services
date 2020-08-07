@@ -105,7 +105,7 @@ export default handleActions(
       };
     },
     [SET_CACHE]: (state, { payload }) => {
-      const { primaryKey, pk = null, data, customDepKey = '', union = true } = payload;
+      const { uuid = 'uuid', pk = null, data, customDepKey = '', union = true } = payload;
       const { caches = {} } = state;
       let keys = null;
 
@@ -121,8 +121,8 @@ export default handleActions(
       if (validData.length > 1) {
         keys = new Set(
           validData.map((item) => {
-            if (pk) return `${customDepKey ? customDepKey : item.depKey}${item._id}${primaryKey}${pk}`;
-            return `${customDepKey ? customDepKey : item.depKey}${item._id}${primaryKey}`;
+            if (pk) return `${customDepKey ? customDepKey : item.depKey}${item._id}${uuid}${pk}`;
+            return `${customDepKey ? customDepKey : item.depKey}${item._id}${uuid}`;
           }),
         );
 
@@ -143,8 +143,8 @@ export default handleActions(
         const depKey = validData.depKey;
 
         keys = !isValidKeys
-          ? `${customDepKey ? customDepKey : depKey ? depKey : ''}${primaryKey}`
-          : `${customDepKey ? customDepKey : validData[key].depKey}${primaryKey}`;
+          ? `${customDepKey ? customDepKey : depKey ? depKey : ''}${uuid}`
+          : `${customDepKey ? customDepKey : validData[key].depKey}${uuid}`;
 
         return {
           ...state,

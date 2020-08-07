@@ -8,43 +8,38 @@ const { Sider } = Layout;
 const { SubMenu } = Menu;
 
 const MenuView = ({ collapsed, cbOnCollapse, items, cbMenuHandler, activeTabEUID, cbGoMain }) => {
-  const renderMenu = (items) => {
-    const parent = items.filter((parentItem) => {
-      return parentItem.PARENT_CODE === null;
-    });
-
-    return parent.map((item) => {
-      const children = items.filter((childParentItem) => {
-        return item.EUID === childParentItem.PARENT_CODE;
+  const renderMenu = (items) =>
+    items
+      .filter(({ PARENT_CODE = '' }) => PARENT_CODE === null)
+      .map(({ EUID = '', ICON = '', VALUE = '' }) => {
+        const children = items.filter(({ PARENT_CODE }) => EUID === PARENT_CODE);
+        if (children.length > 0) {
+          return (
+            <SubMenu
+              key={EUID}
+              className="menuItem"
+              title={
+                <span>
+                  {ICON ? <Icon type={ICON} /> : null}
+                  <span>{VALUE}</span>
+                </span>
+              }
+            >
+              {children.map((child) => (
+                <Menu.Item onClick={cbMenuHandler} key={child.EUID}>
+                  {child.VALUE}
+                </Menu.Item>
+              ))}
+            </SubMenu>
+          );
+        } else
+          return (
+            <Menu.Item className="menuItem" onClick={cbMenuHandler} key={EUID}>
+              {ICON ? <Icon type={ICON} /> : null}
+              <span>{VALUE}</span>
+            </Menu.Item>
+          );
       });
-      if (children.length > 0) {
-        return (
-          <SubMenu
-            key={item.EUID}
-            className="menuItem"
-            title={
-              <span>
-                {item.ICON ? <Icon type={item.ICON} /> : null}
-                <span>{item.VALUE}</span>
-              </span>
-            }
-          >
-            {children.map((child) => (
-              <Menu.Item onClick={cbMenuHandler} key={child.EUID}>
-                {child.VALUE}
-              </Menu.Item>
-            ))}
-          </SubMenu>
-        );
-      } else
-        return (
-          <Menu.Item className="menuItem" onClick={cbMenuHandler} key={item.EUID}>
-            {item.ICON ? <Icon type={item.ICON} /> : null}
-            <span>{item.VALUE}</span>
-          </Menu.Item>
-        );
-    });
-  };
 
   return (
     <Sider collapsible collapsed={collapsed} onCollapse={cbOnCollapse}>

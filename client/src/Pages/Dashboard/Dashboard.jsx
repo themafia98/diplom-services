@@ -380,7 +380,7 @@ class Dashboard extends React.PureComponent {
               dashboardStrem={this.dashboardStrem}
               cbMenuTabHandler={this.menuHandler}
               activeTabEUID={currentActionTab}
-              activeTabs={activeTabsData ? activeTabsData : false}
+              tabs={activeTabsData ? activeTabsData : false}
               logout={this.logout}
               goCabinet={this.goCabinet}
             />

@@ -6,7 +6,7 @@ const sucessEvent = async (dispatch, dep, mode = '', multiple = false, cursor = 
   const copyStoreOffline = [...offlineStore];
   const {
     copyStore,
-    primaryKey,
+    uuid,
     storeLoad,
     schema,
     pathValid,
@@ -44,9 +44,9 @@ const sucessEvent = async (dispatch, dep, mode = '', multiple = false, cursor = 
   }
 
   const index = copyStore.findIndex((it) => {
-    const isKey = it[primaryKey] || it['key'];
+    const isKey = it[uuid] || it['key'];
     const { key } = cursor || {};
-    const isValid = it[primaryKey] === key || it['key'] === key;
+    const isValid = it[uuid] === key || it['key'] === key;
 
     return isKey && isValid;
   });

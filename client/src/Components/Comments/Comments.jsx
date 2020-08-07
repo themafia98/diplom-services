@@ -70,9 +70,8 @@ class Comments extends React.PureComponent {
           updateField: 'comments',
           store: 'tasks',
           clientDB,
+          systemMessage: { done: 'Коментарий добавлен.', error: 'Комментарий добавить не удалось' },
         });
-
-        message.success('Коментарий добавлен.');
 
         return this.setState({
           ...this.state,
@@ -104,8 +103,9 @@ class Comments extends React.PureComponent {
       data = {},
       clientDB,
     } = this.props;
-    const filterComments = comments.filter((it) => it.id !== idComment);
     try {
+      const filterComments = comments.filter(({ id = '' }) => id !== idComment);
+
       const parsedRoutePath = routeParser({
         pageType: 'moduleItem',
         path,
@@ -122,10 +122,11 @@ class Comments extends React.PureComponent {
         updateItem: filterComments,
         updateField: 'comments',
         clientDB,
+        systemMessage: { done: 'Коментарий успешно удален.', error: 'Комментарий удалить не удалось' },
       });
-      message.success('Коментарий удален.');
     } catch (error) {
-      message.error('Не удалось удалить коментарий.');
+      console.error(error);
+      notification.error({ message: 'Ошибка', description: 'Некорректная операция.' });
     }
   };
 
@@ -170,12 +171,14 @@ class Comments extends React.PureComponent {
         updateItem: newCommentsArray,
         updateField: 'comments',
         clientDB,
+        systemMessage: { done: 'Коментарий успешно обновлен.', error: 'Комментарий обновить не удалось' },
       });
-      message.success('Коментарий обновлен.');
+
       if (callback) callback();
     } catch (error) {
       if (callback) callback();
-      message.error('Не удалось обновить коментарий.');
+      console.error(error);
+      notification.error({ message: 'Ошибка', description: 'Некорректная операция.' });
     }
   };
 
@@ -189,20 +192,22 @@ class Comments extends React.PureComponent {
 
   renderComments = (commentsArray) => {
     const { rules, udata: { _id: userId = '' } = {}, commentProps = {} } = this.props;
-    if (commentsArray.length && Array.isArray(commentsArray))
-      return commentsArray.map((it) => (
+
+    return commentsArray?.length ? (
+      commentsArray.map((it) => (
         <Comment
           key={it.id}
           rules={rules}
           it={it}
-          uId={it.uId ? it.uId : ''}
           userId={userId}
           onDelete={this.onDelete}
           onEdit={this.onEdit}
           {...commentProps}
         />
-      ));
-    else return <Empty description={<span>Данных нету</span>} />;
+      ))
+    ) : (
+      <Empty description={<span>Данных нету</span>} />
+    );
   };
   render() {
     const { data: { comments = [] } = {} } = this.props;
