@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import RenderInBrowser from 'react-render-in-browser';
 import { Switch, Route } from 'react-router-dom';
-import { message } from 'antd';
+import { message, notification } from 'antd';
 import { PrivateRoute } from './Components/Helpers';
 import { forceUpdateDetectedInit } from './Utils';
 import { settingsLoadAction } from './Redux/actions/publicActions/middleware';
@@ -70,7 +70,8 @@ class App extends React.Component {
           throw new Error(res.message);
         }
       })
-      .catch((err) => {
+      .catch((error) => {
+        console.warn(error);
         this.loadApp();
       });
     if (forceUpdate === true || forceUpdate === 'true') forceUpdateDetectedInit();
@@ -116,29 +117,24 @@ class App extends React.Component {
     }
   };
 
-  loadAppSession = async () => {
-    const {
-      addTab,
-      setCurrentTab,
-      router: { currentActionTab = '', activeTabs = [] } = {},
-      onLoadUdata,
-      coreConfig = {},
-      fetchConfig,
-    } = this.props;
+  loadAppSession = async (isLogin = false) => {
+    const { router: { currentActionTab = '', activeTabs = [] } = {}, coreConfig = {} } = this.props;
     const { appActive = true, menu = [], tabsLimit = 20 } = coreConfig;
     const { Request } = this.context;
     if (!appActive) return;
     const rest = new Request();
 
     try {
-      const res = await rest.sendRequest(
-        '/userload',
-        'POST',
-        {
-          actionType: actionsTypes.$LOAD_SESSION_USER,
-        },
-        true,
-      );
+      const res = isLogin
+        ? await rest.sendRequest(
+            '/userload',
+            'POST',
+            {
+              actionType: actionsTypes.$LOAD_SESSION_USER,
+            },
+            true,
+          )
+        : { status: 200 };
 
       if (res?.status !== 200) {
         throw new Error('Bad user data');
@@ -167,34 +163,46 @@ class App extends React.Component {
       const isUserData = udata && !_.isEmpty(udata);
 
       if (!isFind) {
-        if (isUserData) {
-          try {
-            await fetchConfig('private');
-            await onLoadUdata(udata);
-            this.loadSettings();
-            addTab(routeParser({ path }));
-          } catch (error) {
-            console.log(error);
-          }
-        } else rest.signOut();
+        if (isUserData) this.initialSession(udata, path);
+        else rest.signOut();
       } else if (currentActionTab !== path) {
-        if (isUserData) {
-          try {
-            await fetchConfig('private');
-            await onLoadUdata(udata);
-            this.loadSettings();
-            setCurrentTab(path);
-          } catch (error) {
-            console.log(error);
-          }
-        } else return rest.signOut();
+        if (isUserData) this.initialSession(udata, path);
+        else return rest.signOut();
       }
     } catch (error) {
+      const { response: { data = '' } = {}, message = '' } = error || {};
+      this.showErrorMessage(data || message || error);
       console.error(error);
       return rest.signOut();
     }
 
     return this.setState({ authLoad: true, loadState: true });
+  };
+
+  showErrorMessage = (error = '') => {
+    notification.error({
+      message: 'Ошибка',
+      description: error,
+    });
+  };
+
+  initialSession = async (udata = null, path = '') => {
+    const { addTab, onLoadUdata, fetchConfig } = this.props;
+
+    try {
+      if (!udata || !path) {
+        this.showErrorMessage('Ошибка загрузки рабочего стола.');
+        return;
+      }
+      await fetchConfig('private');
+      await onLoadUdata(udata);
+      this.loadSettings();
+      addTab(routeParser({ path }));
+    } catch (error) {
+      const { response: { data = '' } = {}, message = '' } = error || {};
+      this.showErrorMessage(data || message || error);
+      console.log(error);
+    }
   };
 
   loadSettings = async () => {
@@ -246,6 +254,7 @@ class App extends React.Component {
 
     const publicActions = {
       getCoreConfig: this.getCoreConfig,
+      initialSession: this.initialSession,
     };
 
     const privateActions = {
