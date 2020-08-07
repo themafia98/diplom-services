@@ -3,8 +3,6 @@ import { loginType } from './types';
 import { Redirect, NavLink } from 'react-router-dom';
 import { Button, Input } from 'antd';
 import { connect } from 'react-redux';
-import { loadUdata } from 'Redux/actions/publicActions';
-import { addTabAction, setActiveTabAction } from 'Redux/actions/routerActions';
 
 import Logo from 'Components/Logo';
 import ModalWindow from 'Components/ModalWindow';
@@ -25,10 +23,10 @@ class LoginPage extends React.Component {
   };
 
   enterLoading = (event) => {
-    const { addTab, onLoadUdata, getCoreConfig } = this.props;
+    const { appConfig, initialSession = null } = this.props;
     const { Request } = this.context;
-    const config = getCoreConfig();
 
+    const { menu = [] } = appConfig || {};
     const { state: { value: login = '' } = {} } = this.login || {};
     const { state: { value: password = '' } = {} } = this.password || {};
 
@@ -48,23 +46,19 @@ class LoginPage extends React.Component {
         .then((res) => {
           if (res.status === 200 && res.data && res.data['user'].token) {
             localStorage.setItem('token', JSON.stringify(res.data['user'].token));
-            this.setState({
-              loginAuth: true,
-            });
-            const udataObj = Object.keys(res.data['user']).reduce((accumulator, key) => {
+            const udata = Object.keys(res.data['user']).reduce((accumulator, key) => {
               if (key !== 'token') {
                 accumulator[key] = res.data['user'][key];
               }
               return accumulator || {};
             }, {});
 
-            let path = 'mainModule';
-            const defaultModule = config.menu.find((item) => item['SIGN'] === 'default');
-            if (defaultModule) path = defaultModule.EUID;
+            const defaultModule = menu?.find((item) => item?.['SIGN'] === 'default');
 
-            onLoadUdata(udataObj);
+            if (!initialSession) throw new Error(`initialSession not found`);
 
-            addTab(path);
+            initialSession(udata, defaultModule?.EUID || 'mainModule');
+            this.setState({ loginAuth: true });
           } else throw new Error(`${res.status}`);
         })
         .catch((error) => {
@@ -163,20 +157,14 @@ class LoginPage extends React.Component {
 
 const mapStateToProps = (state) => {
   const { router, publicReducer } = state;
-  const { udata = {} } = publicReducer;
+  const { udata = {}, appConfig = {} } = publicReducer;
+
   return {
     router,
     udata,
+    appConfig,
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    addTab: (tab) => dispatch(addTabAction(tab)),
-    setCurrentTab: (tab) => dispatch(setActiveTabAction(tab)),
-    onLoadUdata: async (udata) => await dispatch(loadUdata(udata)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);
+export default connect(mapStateToProps, null)(LoginPage);
 export { LoginPage };
