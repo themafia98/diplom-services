@@ -117,7 +117,8 @@ class App extends React.Component {
     }
   };
 
-  loadAppSession = async (isLogin = false) => {
+
+  loadAppSession = async () => {
     const { router: { currentActionTab = '', activeTabs = [] } = {}, coreConfig = {} } = this.props;
     const { appActive = true, menu = [], tabsLimit = 20 } = coreConfig;
     const { Request } = this.context;
