@@ -200,6 +200,7 @@ export default handleActions(
     },
     [OPEN_PAGE_WITH_DATA]: (state, { payload }) => {
       const { routeData = {}, activeTabs = [] } = state;
+
       const copyRouteData = { ...routeData };
       const {
         activePage = {},
@@ -218,6 +219,11 @@ export default handleActions(
 
       const { path: pathPage = '' } = activePage || {};
 
+      /**
+       * 07.08.2020
+       * @deprecated "___link" is legacy key
+       * Here to support the old version
+       */
       const linkEntity = pathPage.includes('___link') && pathPage.split(regExpRegister.MODULE_ID)[1];
       let currentActionTab = pathPage;
 

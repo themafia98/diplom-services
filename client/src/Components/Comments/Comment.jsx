@@ -66,11 +66,11 @@ const Comment = ({
         <span className="timeComment">&nbsp;{time}.</span>
         &nbsp;
         <Output
-          action={'cabinet'}
+          action="cabinet"
           typeOutput="link"
+          depDataKey="global"
           router={router}
           removeTab={removeTab}
-          currentData={it}
           udata={udata}
           id={uId}
           isStaticList={true}

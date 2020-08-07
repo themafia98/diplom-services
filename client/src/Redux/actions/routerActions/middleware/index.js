@@ -306,7 +306,7 @@ const openTab = ({ uuid, action, depKey = '', data = {}, openType = '' }) => asy
     dispatch(
       openPageWithDataAction({
         activePage,
-        routeDataActive: { ...data, key: uuid },
+        routeDataActive: { ...newData, key: uuid },
       }),
     );
     return;

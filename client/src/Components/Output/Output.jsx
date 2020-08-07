@@ -16,6 +16,8 @@ class Output extends React.PureComponent {
   static contextType = ModelContext;
   static propTypes = outputType;
   static defaultProps = {
+    data: {},
+    depDataKey: '',
     children: '',
     id: '',
     action: '',
@@ -108,7 +110,7 @@ class Output extends React.PureComponent {
 
   onOpenLink = ({ id: uuid = null, action = null }, event) => {
     if (event) event.stopPropagation();
-    const { currentData: data = {}, depDataKey: depKey = '', onOpenTab } = this.props;
+    const { currentData: data, depDataKey: depKey, onOpenTab } = this.props;
 
     onOpenTab({ uuid, action, data, depKey });
   };
