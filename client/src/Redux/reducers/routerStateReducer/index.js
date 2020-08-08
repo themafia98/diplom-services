@@ -10,6 +10,7 @@ import {
   UPDATE_ITEM,
   SET_UPDATE,
   ADD_TO_ROUTE_DATA,
+  LOAD_SAVE_ROUTER,
 } from 'Redux/actions/routerActions/const';
 import { ON_END_DRAG_TAB } from 'Redux/actions/tabActions/const';
 import { SET_STATUS } from 'Redux/actions/publicActions/const';
@@ -28,6 +29,30 @@ const initialState = {
 
 export default handleActions(
   {
+    [LOAD_SAVE_ROUTER]: (state, { payload }) => {
+      const { activeTabs = [], path = '' } = payload || {};
+
+      let normalizeRoute = {
+        ...state,
+        ...payload,
+      };
+
+      if (!activeTabs.includes('mainModule')) {
+        normalizeRoute = {
+          ...normalizeRoute,
+          activeTabs: [...normalizeRoute.activeTabs, 'mainModule'],
+        };
+      }
+
+      if (!path) {
+        normalizeRoute = {
+          ...normalizeRoute,
+          path: 'mainModule',
+        };
+      }
+
+      return normalizeRoute;
+    },
     [ADD_TAB]: (state, { payload }) => {
       const { activeTabs = [], routeData = {} } = state;
       const { tab: { path: configPath = '' } = {}, path: pathDefault = '', config = {} } = payload || {};

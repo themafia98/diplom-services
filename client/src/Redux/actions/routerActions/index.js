@@ -10,6 +10,7 @@ import {
   SET_UPDATE,
   UPDATE_ITEM,
   ADD_TO_ROUTE_DATA,
+  LOAD_SAVE_ROUTER,
 } from './const';
 
 export const addTabAction = createAction(ADD_TAB);
@@ -22,3 +23,4 @@ export const saveComponentStateAction = createAction(SAVE_STATE);
 export const addToRouteDataAction = createAction(ADD_TO_ROUTE_DATA);
 export const updateItemStateAction = createAction(UPDATE_ITEM);
 export const loadFlagAction = createAction(SET_FLAG_LOAD_DATA);
+export const loadSaveRouter = createAction(LOAD_SAVE_ROUTER);

@@ -9,3 +9,4 @@ export const UPDATE_ITEM = 'UPDATE_ITEM';
 export const SET_UPDATE = 'SET_UPDATE';
 export const FLAG_UPDATE = 'FLAG_UPDATE';
 export const ADD_TO_ROUTE_DATA = 'ADD_TO_ROUTE_DATA';
+export const LOAD_SAVE_ROUTER = 'LOAD_SAVE_ROUTER';

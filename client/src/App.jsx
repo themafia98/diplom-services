@@ -190,7 +190,7 @@ class App extends Component {
       await onLoadUdata(udata);
       await this.loadSettings();
 
-      await addTab(routeParser({ path }));
+      if (!localStorage.getItem('router')) await addTab(routeParser({ path }));
     } catch (error) {
       const { response: { data = '' } = {}, message = '' } = error || {};
       this.showErrorMessage(data || message || error);

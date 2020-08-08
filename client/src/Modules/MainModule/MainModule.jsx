@@ -64,9 +64,8 @@ const MainModule = memo(({ onLoadCurrentData, moduleContext, clientDB, visibilit
   }, [onResizeWindow]);
 
   const { visibility = false } = moduleContext;
-  const {
-    mainModule: { clockVisibility = true, calendarVisibility = true },
-  } = visibilityWidgets;
+  const { mainModule = null } = visibilityWidgets || {};
+  const { clockVisibility = true, calendarVisibility = true } = mainModule || {};
 
   return (
     <div className="mainModule">

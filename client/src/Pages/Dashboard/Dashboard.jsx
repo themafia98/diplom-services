@@ -5,7 +5,13 @@ import { EventEmitter } from 'events';
 import io from 'socket.io-client';
 import { Layout, message, notification, Modal, Button } from 'antd';
 import { connect } from 'react-redux';
-import { addTabAction, setActiveTabAction, removeTabAction, logoutAction } from 'Redux/actions/routerActions';
+import {
+  addTabAction,
+  setActiveTabAction,
+  removeTabAction,
+  logoutAction,
+  loadSaveRouter,
+} from 'Redux/actions/routerActions';
 
 import { clearCache, showGuile } from 'Redux/actions/publicActions';
 import { routeParser } from 'Utils';
@@ -41,11 +47,38 @@ class Dashboard extends PureComponent {
   webSocket = null;
 
   componentDidMount = () => {
+    const { onLoadSaveRouter } = this.props;
+
     this.webSocket = io('/', {
       path: '/socket.io',
       transports: ['websocket'],
       secure: window.location.protocol === 'https',
     });
+
+    setInterval(this.autoSaveRoute, 10000);
+
+    const saveRoute = localStorage.getItem('router');
+    if (saveRoute) {
+      const parsedRoute = JSON.parse(saveRoute);
+
+      const isValid =
+        typeof parsedRoute === 'object' &&
+        parsedRoute &&
+        Object.keys(parsedRoute).every((key) => {
+          return [
+            'path',
+            'currentActionTab',
+            'activeTabs',
+            'routeDataActive',
+            'routeData',
+            'load',
+            'partDataPath',
+            'shouldUpdate',
+          ].some((routeKey) => routeKey === key);
+        });
+
+      if (isValid) onLoadSaveRouter(parsedRoute);
+    }
 
     if (!deferredPrompt) return;
 
@@ -127,6 +160,15 @@ class Dashboard extends PureComponent {
         status,
       });
     }
+  };
+
+  autoSaveRoute = () => {
+    const { router = {} } = this.props;
+
+    const currentRouter = JSON.stringify(router);
+    const saveRouter = localStorage.getItem('router');
+
+    if (currentRouter !== saveRouter) localStorage.setItem('router', currentRouter);
   };
 
   onCollapse = (collapsed) => {
@@ -450,6 +492,7 @@ const mapDispatchToProps = (dispatch) => {
     onClearCache: (props) => dispatch(clearCache(props)),
     setCurrentTab: (tab) => dispatch(setActiveTabAction(tab)),
     onLogoutAction: async () => await dispatch(logoutAction()),
+    onLoadSaveRouter: (payload) => dispatch(loadSaveRouter(payload)),
   };
 };
 
