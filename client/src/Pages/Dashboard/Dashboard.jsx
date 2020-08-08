@@ -23,6 +23,7 @@ import ContentView from 'Components/ContentView';
 import MenuView from 'Components/MenuView';
 import ModelContext from 'Models/context';
 import regExpRegister from 'Utils/Tools/regexpStorage';
+import { description } from 'core-js/fn/symbol/match';
 
 let deferredPrompt = null;
 
@@ -46,7 +47,7 @@ class Dashboard extends PureComponent {
   webSocket = null;
 
   componentDidMount = () => {
-    const { onLoadSaveRouter } = this.props;
+    const { onLoadSaveRouter, addTab } = this.props;
 
     this.webSocket = io('/', {
       path: '/socket.io',
@@ -59,24 +60,37 @@ class Dashboard extends PureComponent {
     const saveRoute = localStorage.getItem('router');
     if (saveRoute) {
       const parsedRoute = JSON.parse(saveRoute);
+      const keysRoute = Object.keys(parsedRoute);
+
+      const validKeysRoute = [
+        'path',
+        'currentActionTab',
+        'activeTabs',
+        'routeDataActive',
+        'routeData',
+        'load',
+        'partDataPath',
+        'shouldUpdate',
+      ];
 
       const isValid =
         typeof parsedRoute === 'object' &&
         parsedRoute &&
-        Object.keys(parsedRoute).every((key) => {
-          return [
-            'path',
-            'currentActionTab',
-            'activeTabs',
-            'routeDataActive',
-            'routeData',
-            'load',
-            'partDataPath',
-            'shouldUpdate',
-          ].some((routeKey) => routeKey === key);
+        keysRoute.every((key) => validKeysRoute.some((routeKey) => routeKey === key)) &&
+        validKeysRoute?.length === keysRoute?.length;
+      if (isValid) {
+        notification.success({
+          message: 'Успешо',
+          description: 'Загрузка сохраненной сессии',
+        });
+        onLoadSaveRouter(parsedRoute);
+      } else
+        notification.warn({
+          message: 'Конфликт',
+          description: 'Найдена поврежденная сессия, загрузить не удалось.',
         });
 
-      if (isValid) onLoadSaveRouter(parsedRoute);
+      addTab(routeParser({ path: 'mainModule' }));
     }
 
     if (!deferredPrompt) return;
