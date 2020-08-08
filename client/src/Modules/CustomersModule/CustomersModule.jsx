@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { memo, useCallback } from 'react';
 import { customersModuleType } from './types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
@@ -6,53 +6,56 @@ import withRouter from 'Components/Helpers/withRouter/withRouter';
 import entityRender from 'Utils/Tools/entityRender';
 import types from 'types.modules';
 
-class CustomersModule extends PureComponent {
-  static propTypes = customersModuleType;
+const CustomersModule = memo(
+  ({ activeTabs, path, statusApp, router, udata, webSocket, visibilityPortal, entitysList, type }) => {
+    const { routeData = {} } = router || {};
 
-  checkBackground = (path) => {
-    const { activeTabs = [] } = this.props;
-    return activeTabs.some((actionTab) => actionTab.startsWith(path) || actionTab === path);
-  };
+    const checkBackground = useCallback(
+      (path) => {
+        return activeTabs.some((actionTab) => actionTab.startsWith(path) || actionTab === path);
+      },
+      [activeTabs],
+    );
 
-  renderCustomers = () => {
-    const {
+    const renderCustomers = useCallback(() => {
+      const subTabProps = {
+        isPortal: visibilityPortal,
+        webSocket: webSocket,
+        type,
+        path,
+        udata,
+        statusApp,
+        router,
+      };
+
+      const config = {
+        moduleName: 'customersModule',
+        validation: checkBackground,
+        path,
+        parentType: type,
+        type: types.$sub_entrypoint_module,
+      };
+
+      const entityList = entityRender(entitysList, routeData, subTabProps, config);
+      return entityList.map(({ component = null }) => component);
+    }, [
+      checkBackground,
+      entitysList,
       path,
-      statusApp,
-      router: { routeData = {} } = {},
-      router = {},
-      udata,
-      webSocket,
-      visibilityPortal,
-      entitysList = [],
-      type,
-    } = this.props;
-
-    const subTabProps = {
-      isPortal: visibilityPortal,
-      webSocket: webSocket,
-      type,
-      path,
-      udata,
-      statusApp,
+      routeData,
       router,
-    };
+      statusApp,
+      type,
+      udata,
+      visibilityPortal,
+      webSocket,
+    ]);
 
-    const config = {
-      moduleName: 'customersModule',
-      validation: this.checkBackground,
-      path,
-      parentType: type,
-      type: types.$sub_entrypoint_module,
-    };
+    return <div className="customersModule">{renderCustomers()}</div>;
+  },
+);
 
-    const entityList = entityRender(entitysList, routeData, subTabProps, config);
-    return entityList.map(({ component = null }) => component);
-  };
-
-  render() {
-    return <div className="customersModule">{this.renderCustomers()}</div>;
-  }
-}
+CustomersModule.propTypes = customersModuleType;
 
 const mapStateToProps = (state) => {
   const {

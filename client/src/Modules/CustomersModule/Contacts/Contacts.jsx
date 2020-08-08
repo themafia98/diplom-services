@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { memo, useEffect, useState, useCallback } from 'react';
 import { contactsType } from '../types';
 import TitleModule from 'Components/TitleModule';
 
@@ -13,92 +13,81 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { setStatus } from 'Redux/actions/publicActions';
 
-class Contacts extends PureComponent {
-  state = {
-    data: [],
-    loading: false,
-    isLoadingModule: false,
-  };
+const Contacts = memo(({ modelsContext }) => {
+  const [data, setData] = useState([]);
+  const [isLoadingModule, setLoadingModule] = useState(false);
 
-  static propTypes = contactsType;
+  const loadedRowsMap = {};
 
-  loadedRowsMap = {};
+  const fetchData = useCallback(
+    async (callback) => {
+      const { Request } = modelsContext;
+      try {
+        const rest = new Request();
+        const res = await rest.sendRequest('/system/userList', 'GET', null, true);
 
-  componentDidMount = async () => {
-    this.setState(
-      {
-        isLoadingModule: true,
-      },
-      () => {
-        this.fetchData((res) => {
-          this.setState({
-            data: res?.metadata,
-            isLoadingModule: false,
-          });
-        });
-      },
-    );
-  };
+        if (res.status !== 200) {
+          throw new Error('Bad load list');
+        }
+        const { data: { response = {} } = {} } = res || {};
+        callback(response);
+      } catch (error) {
+        if (error?.response?.status !== 404) console.error(error);
+        message.error('Не удалось загрузить список');
 
-  fetchData = async (callback) => {
-    const { modelsContext } = this.props;
-    const { Request } = modelsContext;
-    try {
-      const rest = new Request();
-      const res = await rest.sendRequest('/system/userList', 'GET', null, true);
-
-      if (res.status !== 200) {
-        throw new Error('Bad load list');
+        setLoadingModule(false);
       }
-      const { data: { response = {} } = {} } = res || {};
-      callback(response);
-    } catch (error) {
-      if (error?.response?.status !== 404) console.error(error);
-      message.error('Не удалось загрузить список');
+    },
+    [modelsContext],
+  );
 
-      this.setState({ isLoadingModule: false });
-    }
-  };
+  useEffect(() => {
+    setLoadingModule(true);
 
-  handleInfiniteOnLoad = ({ startIndex, stopIndex }) => {
-    this.setState({
-      loading: true,
+    fetchData((res) => {
+      setData(res?.metadata);
+      setLoadingModule(false);
     });
-    for (let i = startIndex; i <= stopIndex; i++) {
-      // 1 means loading
-      this.loadedRowsMap[i] = 1;
-    }
+  }, [fetchData]);
 
-    message.success('Список контактов успешно загружен');
-    this.setState({
-      loading: false,
-      isLoadingModule: false,
-    });
-  };
+  const handleInfiniteOnLoad = useCallback(
+    ({ startIndex, stopIndex }) => {
+      for (let i = startIndex; i <= stopIndex; i++) {
+        // 1 means loading
+        loadedRowsMap[i] = 1;
+      }
 
-  isRowLoaded = ({ index }) => !!this.loadedRowsMap[index];
+      message.success('Список контактов успешно загружен');
 
-  renderItem = ({ index, key, style }) => {
-    const { data } = this.state;
-    const item = data[index];
-    return (
-      <List.Item key={key} style={style}>
-        <List.Item.Meta
-          avatar={<Avatar src={`data:image/png;base64,${item?.avatar}`} />}
-          title={<p>{item?.displayName}</p>}
-          description={
-            <div className="item-desccription">
-              {item?.email ? <p>{item.email}</p> : null}
-              {item?.phone ? <p>{item.phone}</p> : null}
-            </div>
-          }
-        />
-      </List.Item>
-    );
-  };
+      setLoadingModule(false);
+    },
+    [loadedRowsMap],
+  );
 
-  getAdditionalComponents = () => {
-    const { data } = this.state;
+  const isRowLoaded = ({ index }) => !!loadedRowsMap[index];
+
+  const renderItem = useCallback(
+    ({ index, key, style }) => {
+      const { email = '', phone = '', avatar = '', displayName = '' } = data[index] || {};
+      return (
+        <List.Item key={key} style={style}>
+          <List.Item.Meta
+            avatar={<Avatar src={`data:image/png;base64,${avatar}`} />}
+            title={<p>{displayName}</p>}
+            description={
+              <div className="item-desccription">
+                {email ? <p>{email}</p> : null}
+                {phone ? <p>{phone}</p> : null}
+              </div>
+            }
+          />
+        </List.Item>
+      );
+    },
+    [data],
+  );
+
+  const getAdditionalComponents = () => {
     const vlist = ({ isScrolling, onChildScroll, scrollTop, onRowsRendered, width }) => (
       <VList
         autoHeight
@@ -108,7 +97,7 @@ class Contacts extends PureComponent {
         overscanRowCount={2}
         rowCount={data.length}
         rowHeight={73}
-        rowRenderer={this.renderItem}
+        rowRenderer={renderItem}
         onRowsRendered={onRowsRendered}
         scrollTop={scrollTop}
         width={width}
@@ -129,11 +118,7 @@ class Contacts extends PureComponent {
       </AutoSizer>
     );
     const infiniteLoader = ({ height, isScrolling, onChildScroll, scrollTop }) => (
-      <InfiniteLoader
-        isRowLoaded={this.isRowLoaded}
-        loadMoreRows={this.handleInfiniteOnLoad}
-        rowCount={data.length}
-      >
+      <InfiniteLoader isRowLoaded={isRowLoaded} loadMoreRows={handleInfiniteOnLoad} rowCount={data.length}>
         {({ onRowsRendered }) =>
           autoSize({
             height,
@@ -149,26 +134,28 @@ class Contacts extends PureComponent {
     return infiniteLoader;
   };
 
-  render() {
-    const { data, isLoadingModule = false } = this.state;
+  const infiniteLoader = getAdditionalComponents();
 
-    const infiniteLoader = this.getAdditionalComponents();
-
-    return (
-      <div className="contactsModule">
-        <TitleModule classNameTitle="contactsModuleTitle" title="Контакты" />
-        <div className="contactsModule__main">
-          <Scrollbars autoHide hideTracksWhenNotNeeded>
-            <List>
-              {data?.length > 0 && <WindowScroller>{infiniteLoader}</WindowScroller>}
-              {isLoadingModule && <Spin size="large" className="demo-loading" />}
-            </List>
-          </Scrollbars>
-        </div>
+  return (
+    <div className="contactsModule">
+      <TitleModule classNameTitle="contactsModuleTitle" title="Контакты" />
+      <div className="contactsModule__main">
+        <Scrollbars autoHide hideTracksWhenNotNeeded>
+          <List>
+            {data?.length > 0 && <WindowScroller>{infiniteLoader}</WindowScroller>}
+            {isLoadingModule && <Spin size="large" className="demo-loading" />}
+          </List>
+        </Scrollbars>
       </div>
-    );
-  }
-}
+    </div>
+  );
+});
+
+Contacts.defaultProps = {
+  modelsContext: null,
+};
+
+Contacts.propTypes = contactsType;
 
 const mapDispatchToProps = (dispatch) => {
   return {

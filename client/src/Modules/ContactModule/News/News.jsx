@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { memo, useState, useCallback, useMemo } from 'react';
 import { newsType } from '../types';
 import { connect } from 'react-redux';
 import { Pagination, Button, message, Empty, Spin } from 'antd';
@@ -15,18 +15,14 @@ import { compose } from 'redux';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { openTab } from 'Redux/actions/routerActions/middleware';
 
-class News extends PureComponent {
-  state = {
-    isOpen: false,
-    prewPage: 1,
-    currentPage: 1,
-    start: 0,
-  };
+const News = memo(({ addTab, router, setCurrentTab, appConfig, data, onOpenTab }) => {
+  const { activeTabs = [], routeData = {} } = router || {};
+  const { news: newsData = [], loading = false, load = false } = data || {};
+  const { contactModule: { news: newsStore = [] } = {} } = routeData;
 
-  static propTypes = newsType;
+  const [currentPage, setCurrentPage] = useState(1);
 
-  onOpenCreateNews = () => {
-    const { addTab, router: { activeTabs = [] } = {}, setCurrentTab, appConfig } = this.props;
+  const onOpenCreateNews = useCallback(() => {
     const moduleId = 'createNews';
     const page = 'contactModule';
     const { tabsLimit = 0 } = appConfig;
@@ -46,85 +42,86 @@ class News extends PureComponent {
     }
 
     if (!isFind) addTab(routeParser({ path: pathNormalize }), { hardCodeUpdate: false });
-  };
+  }, [activeTabs, addTab, appConfig, setCurrentTab]);
 
-  onOpen = (uuid) => {
-    const {
-      router: { routeData: { contactModule: { news = [] } = {} } = {} } = {},
-      data: { news: dataNews = null } = {},
-      onOpenTab,
-    } = this.props;
-    const dataList = Array.isArray(dataNews) ? dataNews : news;
-    const data = dataList?.find(({ _id = '' }) => _id === uuid) || dataList || {};
+  const onOpen = useCallback(
+    (uuid) => {
+      const dataList = Array.isArray(newsData) ? newsData : newsStore;
+      const data = dataList?.find(({ _id = '' }) => _id === uuid) || dataList || {};
 
-    onOpenTab({ uuid, data, action: 'contactModule' });
-  };
+      onOpenTab({ uuid, data, action: 'contactModule' });
+    },
+    [newsData, newsStore, onOpenTab],
+  );
 
-  renderNewsBlock = (currentPage, listdata = []) => {
-    const start = currentPage > 1 ? currentPage * 4 - 4 : 0;
+  const renderNewsBlock = useCallback(
+    (currentPage, listdata = []) => {
+      const start = currentPage > 1 ? currentPage * 4 - 4 : 0;
 
-    if (!listdata?.length) return <Empty description={<span>Данных нету</span>} />;
+      if (!listdata?.length) return <Empty description={<span>Данных нету</span>} />;
 
-    return listdata
-      .slice(start, start + 4 > listdata.length ? listdata.length : start + 4)
-      ?.map((it, index) => (
-        <NewsCard key={it._id || index} onClick={this.onOpen.bind(this, it._id)} className="card" data={it} />
-      ));
-  };
+      return listdata
+        .slice(start, start + 4 > listdata.length ? listdata.length : start + 4)
+        ?.map((it, index) => (
+          <NewsCard key={it._id || index} onClick={onOpen.bind(this, it._id)} className="card" data={it} />
+        ));
+    },
+    [onOpen],
+  );
 
-  onChange = (pageNumber) => {
-    const { currentPage } = this.state;
+  const onChange = (pageNumber) => {
     if (currentPage === pageNumber) return;
 
-    this.setState({
-      ...this.state,
-      currentPage: pageNumber,
-    });
+    setCurrentPage(pageNumber);
   };
 
-  render() {
-    const { currentPage } = this.state;
-    const {
-      data: { news: newsData = [], loading = false, load = false } = {},
-      router: { routeData: { contactModule: { news: newsStore = [] } = {} } = {} },
-    } = this.props;
-    const listdata = newsData && Array.isArray(newsData) ? newsData : newsStore?.length ? newsStore : [];
-    const rules = true;
+  const listdata = useMemo(
+    () => (newsData && Array.isArray(newsData) ? newsData : newsStore?.length ? newsStore : []),
+    [newsData, newsStore],
+  );
 
-    const pageSize = 4;
-    const total = Math.ceil(listdata.length - 1 / pageSize);
+  const pageSize = 4;
+  const total = Math.ceil(listdata.length - 1 / pageSize);
 
-    return (
-      <div className="news">
-        <TitleModule classNameTitle="mainModuleTitle" title="Информация" />
-        {rules ? (
-          <Button onClick={this.onOpenCreateNews} type="primary">
-            Создать новость
-          </Button>
-        ) : null}
-        <Scrollbars autoHide hideTracksWhenNotNeeded>
-          <div className="news__main">
-            <div className="col-fullscreen">
-              {(loading && !listdata?.length) || !load ? (
-                <Spin size="large" />
-              ) : (
-                this.renderNewsBlock(currentPage, listdata)
-              )}
-            </div>
+  return (
+    <div className="news">
+      <TitleModule classNameTitle="mainModuleTitle" title="Информация" />
+      <Button onClick={onOpenCreateNews} type="primary">
+        Создать новость
+      </Button>
+      <Scrollbars autoHide hideTracksWhenNotNeeded>
+        <div className="news__main">
+          <div className="col-fullscreen">
+            {(loading && !listdata?.length) || !load ? (
+              <Spin size="large" />
+            ) : (
+              renderNewsBlock(currentPage, listdata)
+            )}
           </div>
-          <Pagination
-            className="pagination-news"
-            onChange={this.onChange}
-            current={currentPage}
-            pageSize={pageSize}
-            defaultCurrent={currentPage}
-            total={total ? total : undefined}
-          />
-        </Scrollbars>
-      </div>
-    );
-  }
-}
+        </div>
+        <Pagination
+          className="pagination-news"
+          onChange={onChange}
+          current={currentPage}
+          pageSize={pageSize}
+          defaultCurrent={currentPage}
+          total={total ? total : undefined}
+        />
+      </Scrollbars>
+    </div>
+  );
+});
+
+News.defaultProps = {
+  addTab: null,
+  router: {},
+  setCurrentTab: null,
+  appConfig: {},
+  data: {},
+  onOpenTab: null,
+};
+
+News.propTypes = newsType;
 
 const mapStateToProps = (state) => {
   const { publicReducer: { status: statusApp = '', appConfig } = {}, router = {} } = state;

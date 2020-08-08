@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { memo, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 import { createNewsType } from '../../types';
 import moment from 'moment';
@@ -11,41 +11,22 @@ import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { compose } from 'redux';
 import { withClientDb } from 'Models/ClientSideDatabase';
 
-class CreateNews extends PureComponent {
-  state = {
-    titleNews: '',
-    clear: false,
-  };
+const CreateNews = memo(({ statusApp, udata, onSetStatus, clientDB, readOnly }) => {
+  const { displayName = '', _id: uid = '' } = udata;
 
-  static propTypes = createNewsType;
+  const [titleNews, setTitleNews] = useState('');
+  const [clear, setClear] = useState(false);
 
-  clearStatus = () => {
-    const { clear } = this.state;
-
+  const clearStatus = () => {
     if (!clear) return;
-
-    this.setState({
-      ...this.state,
-      clear: false,
-    });
+    setClear(false);
   };
 
-  onChange = ({ currentTarget: { value = '' } = {} }) => {
-    this.setState({
-      ...this.state,
-      titleNews: value,
-    });
+  const onChange = ({ currentTarget: { value = '' } = {} }) => {
+    setTitleNews(value);
   };
 
-  onPublish = async (contentState) => {
-    const {
-      statusApp = '',
-      udata: { displayName = '', _id: uid = '' } = {},
-      onSetStatus,
-      clientDB,
-    } = this.props;
-    const { titleNews = '' } = this.state;
-
+  const onPublish = async (contentState) => {
     if (!titleNews || !contentState) {
       return message.error('Название не найдено');
     }
@@ -94,13 +75,8 @@ class CreateNews extends PureComponent {
         });
       }
 
-      this.setState(
-        {
-          ...this.state,
-          clear: true,
-        },
-        () => message.success('Новость создана.'),
-      );
+      setClear(true);
+      message.success('Новость создана.');
     } catch (error) {
       if (error?.response?.status !== 404) console.error(error);
       notification.error({
@@ -109,31 +85,32 @@ class CreateNews extends PureComponent {
       });
     }
   };
-  render() {
-    const { clear = false, titleNews = '' } = this.state;
-    const { readOnly = '' } = this.props;
-    return (
-      <div className="createNews">
-        <TitleModule classNameTitle="createNewsTitle" title="Создание новой новости" />
-        <div className="createNews__main">
-          <Input
-            autoFocus={true}
-            value={titleNews}
-            onChange={this.onChange}
-            placeholder="Заголовок новости"
-          />
 
-          <EditorTextarea
-            disabled={readOnly}
-            clearStatus={this.clearStatus}
-            clear={clear}
-            onPublish={this.onPublish}
-            mode="createNewsEdit"
-          />
-        </div>
+  return (
+    <div className="createNews">
+      <TitleModule classNameTitle="createNewsTitle" title="Создание новой новости" />
+      <div className="createNews__main">
+        <Input autoFocus={true} value={titleNews} onChange={onChange} placeholder="Заголовок новости" />
+
+        <EditorTextarea
+          disabled={readOnly}
+          clearStatus={clearStatus}
+          clear={clear}
+          onPublish={onPublish}
+          mode="createNewsEdit"
+        />
       </div>
-    );
-  }
-}
+    </div>
+  );
+});
+
+CreateNews.propTypes = createNewsType;
+CreateNews.defaultProps = {
+  statusApp: 'online',
+  readOnly: '',
+  udata: {},
+  onSetStatus: null,
+  clientDB: null,
+};
 
 export default compose(withClientDb)(moduleContextToProps(CreateNews));
