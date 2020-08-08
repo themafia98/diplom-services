@@ -1,4 +1,4 @@
-import React, { PureComponent, createRef } from 'react';
+import React, { memo, useContext, useState, useRef } from 'react';
 import _ from 'lodash';
 import { Modal, Select, message, Input } from 'antd';
 import ModelContext from 'Models/context';
@@ -7,28 +7,16 @@ import { requestTemplate, paramsTemplate } from 'Utils/Api/api.utils';
 
 const { Option } = Select;
 
-class ChatModal extends PureComponent {
-  state = {
-    confirmLoading: false,
-    type: 'single',
-    membersIds: [],
-  };
-  groupNameRef = createRef();
+const ChatModal = memo(({ visible, usersList, onVisibleChange, uid }) => {
+  const [type, setType] = useState('single');
+  const [membersIds, setMembers] = useState([]);
 
-  static contextType = ModelContext;
-  static defaultProps = {
-    visible: false,
-    usersList: [],
-    onVisibleChange: null,
-    uid: '',
-  };
+  const context = useContext(ModelContext);
+  const groupNameRef = useRef(null);
 
-  handleOk = async () => {
-    const { Request } = this.context;
-    const { visible, onVisibleChange, uid } = this.props;
-    const { type = '', membersIds = [] } = this.state;
-    const { current = {} } = this.groupNameRef || {};
-
+  const handleOk = async () => {
+    const { Request } = context;
+    const { current = {} } = groupNameRef || {};
     const { state: { value: groupName = '' } = {} } = current || {};
 
     try {
@@ -71,90 +59,85 @@ class ChatModal extends PureComponent {
     }
   };
 
-  handleCancel = () => {
-    const { visible, onVisibleChange } = this.props;
+  const handleCancel = () => {
     if (onVisibleChange) onVisibleChange(visible);
   };
 
-  onChangeSelect = (eventData) => {
-    this.setState({
-      ...this.state,
-      membersIds: typeof eventData === 'string' ? [eventData] : eventData,
-    });
+  const onChangeSelect = (eventData) => {
+    setMembers(typeof eventData === 'string' ? [eventData] : eventData);
   };
 
-  onChangeType = (eventType) => {
-    const { membersIds = [] } = this.state;
+  const onChangeType = (eventType) => {
     const isMore = eventType === 'single' && membersIds.length > 1;
 
-    this.setState({
-      ...this.state,
-      type: eventType,
-      membersIds: isMore ? [membersIds[0]] : [...membersIds],
-    });
+    setType(eventType);
+    setMembers(isMore ? [membersIds[0]] : [...membersIds]);
   };
 
-  render() {
-    const { confirmLoading, type = 'single', membersIds = [] } = this.state;
-    const { visible, usersList } = this.props;
+  const isPrivateRoom = type === 'single' && Array.isArray(membersIds);
+  const valueUser = isPrivateRoom ? membersIds[0] : membersIds;
 
-    const isPrivateRoom = type === 'single' && Array.isArray(membersIds);
-    const valueUser = isPrivateRoom ? membersIds[0] : membersIds;
+  return (
+    <Modal
+      title="Создание чат комнаты."
+      visible={visible}
+      onOk={handleOk}
+      disabled={!membersIds || (Array.isArray(membersIds) && !membersIds.length)}
+      confirmLoading={false}
+      onCancel={handleCancel}
+    >
+      <form className="chatForm" name="createChatRoom">
+        <Select
+          onChange={onChangeType}
+          dropdownMatchSelectWidth={true}
+          placeholder="выберете тип комнаты"
+          defaultValue={'single'}
+          defaultActiveFirstOption={true}
+          value={type}
+        >
+          <Option value="single" label="single">
+            <span>Приватный</span>
+          </Option>
+          <Option value="group" label="group">
+            <span>Групповой</span>
+          </Option>
+        </Select>
+        {type !== 'single' ? (
+          <Input
+            ref={groupNameRef}
+            className="groupName__Input"
+            name="groupName"
+            placeholder="Название группы"
+            required
+          />
+        ) : null}
+        <Select
+          onChange={onChangeSelect}
+          name="users"
+          mode={type !== 'single' ? 'multiple' : 'default'}
+          placeholder="выберете собеседника/собеседников"
+          optionLabelProp="label"
+          value={valueUser}
+        >
+          {usersList && usersList.length
+            ? usersList.map((it) => (
+                <Option key={it._id} value={it._id} label={it.displayName}>
+                  <span>{it.displayName}</span>
+                </Option>
+              ))
+            : null}
+        </Select>
+      </form>
+    </Modal>
+  );
+});
 
-    return (
-      <Modal
-        title="Создание чат комнаты."
-        visible={visible}
-        onOk={this.handleOk}
-        disabled={!membersIds || (Array.isArray(membersIds) && !membersIds.length)}
-        confirmLoading={confirmLoading}
-        onCancel={this.handleCancel}
-      >
-        <form className="chatForm" name="createChatRoom">
-          <Select
-            onChange={this.onChangeType}
-            dropdownMatchSelectWidth={true}
-            placeholder="выберете тип комнаты"
-            defaultValue={'single'}
-            defaultActiveFirstOption={true}
-            value={type}
-          >
-            <Option value="single" label="single">
-              <span>Приватный</span>
-            </Option>
-            <Option value="group" label="group">
-              <span>Групповой</span>
-            </Option>
-          </Select>
-          {type !== 'single' ? (
-            <Input
-              ref={this.groupNameRef}
-              className="groupName__Input"
-              name="groupName"
-              placeholder="Название группы"
-              required
-            />
-          ) : null}
-          <Select
-            onChange={this.onChangeSelect}
-            name="users"
-            mode={type !== 'single' ? 'multiple' : 'default'}
-            placeholder="выберете собеседника/собеседников"
-            optionLabelProp="label"
-            value={valueUser}
-          >
-            {usersList && usersList.length
-              ? usersList.map((it) => (
-                  <Option key={it._id} value={it._id} label={it.displayName}>
-                    <span>{it.displayName}</span>
-                  </Option>
-                ))
-              : null}
-          </Select>
-        </form>
-      </Modal>
-    );
-  }
-}
+ChatModal.contextType = ModelContext;
+ChatModal.defaultProps = {
+  visible: false,
+  usersList: [],
+  onVisibleChange: null,
+  uid: '',
+};
 
 export default ChatModal;

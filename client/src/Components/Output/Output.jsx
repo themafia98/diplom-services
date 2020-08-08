@@ -220,7 +220,6 @@ const Output = memo(
 
     if (type === 'table') return renderTableOutput(children);
     const shouldRenderList = links || isStaticList;
-    if (children === 'ab7fa107-d2c8-4a09-bf08-746d437a81c5') debugger;
 
     if (shouldRenderList && isChildrenList && links && typeof children === 'string') {
       return renderLinks(links.find((link) => link?._id === children));

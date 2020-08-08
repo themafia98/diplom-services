@@ -6,7 +6,7 @@ import ModelContext from 'Models/context';
 import actionsTypes from 'actions.types';
 import regExpRegister from 'Utils/Tools/regexpStorage';
 
-const Recovory = (props) => {
+const Recovory = () => {
   const { Request } = useContext(ModelContext);
   const [status, setStatus] = useState(null);
   const [mode] = useState('emailMode');

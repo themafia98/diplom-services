@@ -1,4 +1,4 @@
-import React, { PureComponent, createRef } from 'react';
+import React, { memo, useRef, useState, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { mainModuleType } from './types';
 import { Calendar } from 'antd';
@@ -13,70 +13,16 @@ import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { withClientDb } from 'Models/ClientSideDatabase';
 import actionPath from 'actions.path';
 
-class MainModule extends PureComponent {
-  static propTypes = mainModuleType;
+const MainModule = memo(({ onLoadCurrentData, moduleContext, clientDB, visibilityWidgets }) => {
+  const [tableViewHeight, setTableViewHeight] = useState(300);
 
-  state = {
-    path: 'mainModule',
-    tableViewHeight: 300,
-  };
+  const rightColumnRef = useRef(null);
+  const widgetsContainerRef = useRef(null);
 
-  rightColumnRef = createRef();
-  widgetsContainerRef = createRef();
-
-  componentDidMount = () => {
-    const { onLoadCurrentData, moduleContext, clientDB } = this.props;
+  const onResizeWindow = useCallback(() => {
     const { visibility = false } = moduleContext;
-    const { page = '', itemId = '', path: validPath = '' } = routeParser({
-      pageType: 'moduleItem',
-      path: 'mainModule__global',
-    });
-
-    if (visibility && page === 'mainModule' && itemId === 'global') {
-      onLoadCurrentData({
-        action: actionPath.$GLOBAL_LOAD_USERS,
-        path: validPath,
-        clientDB,
-      });
-    }
-    this.onResizeWindow();
-    window.addEventListener('resize', this.onResizeWindow, false);
-  };
-
-  componentDidUpdate = (prevProps) => {
-    const { onLoadCurrentData, moduleContext, clientDB } = this.props;
-    const { visibility = false } = moduleContext;
-    const {
-      moduleContext: { visibility: visibilityPrev = false },
-    } = prevProps;
-    const { path: validPath = '', page = '', itemId = '' } = routeParser({
-      pageType: 'moduleItem',
-      path: 'mainModule__global',
-    });
-
-    if (visibilityPrev !== visibility && page === 'mainModule' && itemId === 'global') {
-      if (visibility & onLoadCurrentData)
-        onLoadCurrentData({
-          path: validPath,
-          xhrPath: 'userList',
-          startPath: 'system',
-          storeLoad: 'users',
-          methodRequst: 'GET',
-          clientDB,
-        });
-    }
-  };
-
-  componentWillUnmount = () => {
-    window.removeEventListener('resize', this.onResizeWindow, false);
-  };
-
-  onResizeWindow = () => {
-    const { tableViewHeight = null } = this.state;
-    const { moduleContext } = this.props;
-    const { visibility = false } = moduleContext;
-    const { current: rightColumnNode } = this.rightColumnRef || {};
-    const { current: widgetContainerNode } = this.widgetsContainerRef || {};
+    const { current: rightColumnNode } = rightColumnRef || {};
+    const { current: widgetContainerNode } = widgetsContainerRef || {};
     if (!visibility || !rightColumnNode) return;
 
     const { height: heightColumn = 0 } = rightColumnNode.getBoundingClientRect() || {};
@@ -87,68 +33,85 @@ class MainModule extends PureComponent {
     const differense = +tableViewHeight !== newTableViewHeight;
 
     if (tableViewHeight && differense) {
-      this.setState({
-        ...this.state,
-        tableViewHeight: newTableViewHeight,
+      setTableViewHeight(newTableViewHeight);
+    }
+  }, [moduleContext, tableViewHeight]);
+
+  useEffect(() => {
+    const { visibility = false } = moduleContext;
+    const isMounted = !!rightColumnRef?.current?.offsetWidth;
+
+    const { page = '', itemId = '', path: validPath = '' } = routeParser({
+      pageType: 'moduleItem',
+      path: 'mainModule__global',
+    });
+
+    if (isMounted && visibility && page === 'mainModule' && itemId === 'global') {
+      onLoadCurrentData({
+        action: actionPath.$GLOBAL_LOAD_USERS,
+        path: validPath,
+        clientDB,
       });
     }
-  };
+  }, [clientDB, moduleContext, onLoadCurrentData]);
 
-  render() {
-    const { moduleContext, appConfig } = this.props;
-    const { visibility = false } = moduleContext;
-    const { tableViewHeight } = this.state;
-    const {
-      visibilityWidgets: { mainModule: { clockVisibility = true, calendarVisibility = true } = {} } = {},
-    } = appConfig;
+  useEffect(() => {
+    window.addEventListener('resize', onResizeWindow, false);
 
-    return (
-      <div className="mainModule">
-        <TitleModule
-          additional="Общая информация"
-          classNameTitle="mainModuleTitle"
-          title="Главная страница"
-        />
-        <div className="mainModule_main">
-          <div className="col-4 columnModuleLeft">
-            <StreamBox
-              visible={visibility}
-              prefix="#notification"
-              streamModule="mainModule"
-              withStore={true}
-              streamStore="streamList"
-              parentDataName="users"
-              parentPath="mainModule__global"
-              key="streamMain"
-              type="global"
-            />
+    return () => {
+      window.removeEventListener('resize', onResizeWindow, false);
+    };
+  }, [onResizeWindow]);
+
+  const { visibility = false } = moduleContext;
+  const {
+    mainModule: { clockVisibility = true, calendarVisibility = true },
+  } = visibilityWidgets;
+
+  return (
+    <div className="mainModule">
+      <TitleModule additional="Общая информация" classNameTitle="mainModuleTitle" title="Главная страница" />
+      <div className="mainModule_main">
+        <div className="col-4 columnModuleLeft">
+          <StreamBox
+            visible={visibility}
+            prefix="#notification"
+            streamModule="mainModule"
+            withStore={true}
+            streamStore="streamList"
+            parentDataName="users"
+            parentPath="mainModule__global"
+            key="streamMain"
+            type="global"
+          />
+        </div>
+        <div ref={rightColumnRef} className="col-8 columnModuleRight">
+          <div ref={widgetsContainerRef} className="widgets">
+            {clockVisibility ? <ClockWidjet /> : null}
+            {calendarVisibility ? <Calendar className="mainModule_calendar" fullscreen={false} /> : null}
           </div>
-          <div ref={this.rightColumnRef} className="col-8 columnModuleRight">
-            <div ref={this.widgetsContainerRef} className="widgets">
-              {clockVisibility ? <ClockWidjet /> : null}
-              {calendarVisibility ? <Calendar className="mainModule_calendar" fullscreen={false} /> : null}
-            </div>
-            <div className="tableView__wrapper">
-              <TableView
-                tableViewHeight={tableViewHeight}
-                visible={visibility}
-                key="mainModule_table"
-                path="mainModule__global"
-              />
-            </div>
+          <div className="tableView__wrapper">
+            <TableView
+              tableViewHeight={tableViewHeight}
+              visible={visibility}
+              key="mainModule_table"
+              path="mainModule__global"
+            />
           </div>
         </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+});
+
+MainModule.propTypes = mainModuleType;
 
 const mapStateToProps = (state) => {
   const {
     publicReducer: { appConfig },
   } = state;
   return {
-    appConfig,
+    visibilityWidgets: appConfig?.visibilityWidgets,
   };
 };
 

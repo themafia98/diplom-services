@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { memo, useEffect, useCallback, useMemo, useReducer, useContext } from 'react';
 import { modalWindowType } from './types';
 import _ from 'lodash';
 import moment from 'moment';
@@ -15,110 +15,107 @@ import Textarea from 'Components/Textarea';
 import ModelContext from 'Models/context';
 import actionsTypes from 'actions.types';
 import { withClientDb } from 'Models/ClientSideDatabase';
+import { reducer, modalState } from './Modal.utils';
+import { ACTIONS } from './Modal.constant';
 
 const { Option } = Select;
 
-class ModalWindow extends PureComponent {
-  state = {
-    visible: false,
-    reg: {
-      name: null,
-      password: null,
-      departament: null,
-      email: null,
-      surname: null,
-    },
-    jurnal: {
-      timeLost: null,
-      date: moment().format('DD.MM.YYYY HH:mm:ss'),
-      description: null,
-    },
-    description: {
-      value: this.props.editableContent || null,
-    },
-    error: new Set(),
-    loading: false,
-    taskStatus: null,
-    type: null,
-  };
+const ModalWindow = memo((props) => {
+  const {
+    onEdit,
+    modeControll,
+    onRejectEdit,
+    modeEditContent,
+    defaultView,
+    onCancelEditModeContent,
+    onUpdateEditable,
+    rulesEdit,
+    rulesStatus,
+    isLoadList,
+    routeDataActive,
+    actionTypeList: viewType,
+    onUpdate,
+    route,
+    path,
+    mode,
+    customTypeModal,
+    clientDB,
+    keyTask,
+    accessStatus,
+    statusTaskValue,
+    editableContent,
+  } = props;
 
-  static contextType = ModelContext;
-  static propTypes = modalWindowType;
-  static defaultProps = {
-    onEdit: null,
-    modeControll: null,
-    onRejectEdit: null,
-    modeEditContent: null,
-    defaultView: false,
-    onCancelEditModeContent: null,
-    onUpdateEditable: null,
-    rulesEdit: true,
-    rulesStatus: true,
-    isLoadList: true,
-    routeDataActive: {},
-    route: null,
-    actionTypeList: 'default',
-    mode: '',
-    actionType: '',
-    keyTask: '',
-    udata: {},
-    path: '',
-    statusTaskValue: '',
-    accessStatus: [],
-  };
+  const { key: keyActiveRoute = null, _id: id = '', name: nameActive = '' } = routeDataActive || {};
+  const [state, dispatch] = useReducer(reducer, modalState);
 
-  static getDerivedStateFromProps = (props, state) => {
-    const { mode, customTypeModal } = props;
-    const { type = '' } = state;
+  const context = useContext(ModelContext);
 
-    if (customTypeModal && customTypeModal !== type) {
-      return {
-        ...state,
-        type: customTypeModal,
-      };
+  const { type: typeView = '' } = state;
+  const {
+    [typeView]: visible = false,
+    description: { value: valueDesc = '' } = {},
+    error,
+    jurnal: { description, timeLost },
+  } = state;
+
+  const runAction = useMemo(
+    () => ({
+      onChangeTypeAction: (payload) => dispatch({ type: ACTIONS.CHANGE_TYPE, payload }),
+      onChangeDescriptionAction: (payload) => dispatch({ type: ACTIONS.CHANGE_DESCRIPTION, payload }),
+      onChangeRootState: (payload) => dispatch({ type: ACTIONS.CHANGE_ROOT, payload }),
+    }),
+    [],
+  );
+
+  useEffect(() => {
+    const { type } = state;
+
+    if (customTypeModal && customTypeModal !== type && type === null) {
+      debugger;
+      runAction.onChangeTypeAction(customTypeModal);
     }
 
     if (mode === 'reg' && type === null) {
-      return {
-        ...state,
-        type: 'regType',
-      };
+      debugger;
+      runAction.onChangeTypeAction('regType');
     }
-    return state;
-  };
 
-  onMessage = (event) => {
+    if (editableContent && state?.description?.value === null) {
+      debugger;
+      runAction.onChangeDescriptionAction(editableContent);
+    }
+  }, [customTypeModal, editableContent, mode, runAction, state]);
+
+  const onMessage = (event) => {
     message.warning('Вы в режиме редактирования карточки.');
   };
 
-  onChangeDescription = (event) => {
-    const { currentTarget: { value: valueTarget = '' } = {} } = event;
-    const { description = {} } = this.state;
+  const onChangeDescription = (event) => {
+    const { currentTarget: { value } = {} } = event;
+    const { description } = state;
 
-    if (valueTarget || valueTarget === '')
-      this.setState({
-        ...this.state,
-        description: {
-          ...description,
-          value: valueTarget,
-        },
+    if (value || value === '') {
+      runAction.onChangeDescriptionAction({ ...description, value });
+    }
+  };
+
+  const showModal = useCallback(
+    (event, type = '') => {
+      const { [type]: visibleType = false } = state;
+
+      runAction.onChangeRootState({
+        [type]: !visibleType,
+        visible: true,
+        type,
       });
-  };
+    },
+    [runAction, state],
+  );
 
-  showModal = (event, type = '') => {
-    const { [type]: visibleType = false } = this.state;
-
-    this.setState({
-      ...this.state,
-      [type]: !visibleType,
-      visible: true,
-      type,
-    });
-  };
-
-  onRegUser = async () => {
-    const { reg: { name, password, departament, email, surname } = {}, type = '', loading } = this.state;
-    const { Request } = this.context;
+  const onRegUser = useCallback(async () => {
+    const { reg: { name, password, departament, email, surname } = {}, type = '', loading } = state;
+    const { Request } = context;
 
     if (!name || !password || !departament || !email || loading) {
       message.warning('Не все поля заполнены');
@@ -149,95 +146,115 @@ class ModalWindow extends PureComponent {
         throw new Error('Bad registration data');
       }
 
-      this.setState({ ...this.state, [type]: false });
+      runAction.onChangeRootState({ ...state, [type]: false });
     } catch (error) {
       if (error?.response?.status !== 404) console.error(error);
     }
-  };
+  }, [context, runAction, state]);
 
-  onSaveEdit = async (event) => {
-    const { description: { value: valueDescription = '' } = {}, type: typeState = '' } = this.state;
+  const onSaveEdit = useCallback(
+    async (event) => {
+      const { description: { value: valueDescription } = {}, type: typeState } = state;
 
-    const {
-      onUpdate,
-      routeDataActive,
-      routeDataActive: { key = null },
-      onCancelEditModeContent,
-      route,
-      path,
+      const parsedRoutePath =
+        !route || (route && _.isEmpty(route))
+          ? routeParser({
+              pageType: 'moduleItem',
+              path,
+            })
+          : route;
+      try {
+        await onUpdate({
+          actionType: actionsTypes.$UPDATE_SINGLE,
+          parsedRoutePath,
+          key: keyActiveRoute,
+          updateBy: '_id',
+          id: routeDataActive?._id,
+          updateItem: valueDescription,
+          updateField: 'description',
+          item: { ...routeDataActive },
+          store: 'tasks',
+          clientDB,
+        });
+        if (onCancelEditModeContent) onCancelEditModeContent(event);
+
+        runAction.onChangeRootState({
+          ...state,
+          [typeState]: false,
+          type: null,
+          loading: false,
+        });
+
+        message.success('Описание изменено.');
+      } catch (error) {
+        console.error(error);
+        message.error('Ошибка редактирования.');
+      }
+    },
+    [
       clientDB,
-    } = this.props;
+      keyActiveRoute,
+      onCancelEditModeContent,
+      onUpdate,
+      path,
+      route,
+      routeDataActive,
+      runAction,
+      state,
+    ],
+  );
 
-    const parsedRoutePath =
-      !route || (route && _.isEmpty(route))
-        ? routeParser({
-            pageType: 'moduleItem',
-            path,
-          })
-        : route;
-    try {
-      await onUpdate({
-        actionType: actionsTypes.$UPDATE_SINGLE,
-        parsedRoutePath,
-        key,
-        updateBy: '_id',
-        id: routeDataActive?._id,
-        updateItem: valueDescription,
-        updateField: 'description',
-        item: { ...routeDataActive },
-        store: 'tasks',
-        clientDB,
-      });
-      if (onCancelEditModeContent) onCancelEditModeContent(event);
-      this.setState({
-        ...this.state,
-        [typeState]: false,
-        type: null,
-        loading: false,
-      });
-      message.success('Описание изменено.');
-    } catch (error) {
-      console.error(error);
-      message.error('Ошибка редактирования.');
-    }
-  };
-
-  getTemplate = (nameTask, timeLost, description, date) => {
-    return `
+  const getTemplate = useCallback(
+    (nameTask, timeLost, description, date) => `
     Работа над задачей ${nameTask}.\n
     Время затрачено: ${timeLost}.\n
     Дата: ${date}. \n
     Описание: ${description}. \n
-    `;
-  };
+    `,
+    [],
+  );
 
-  onTrackTask = async () => {
-    const { jurnal, type = '' } = this.state;
+  const handleCancel = useCallback(
+    (event) => {
+      const { type = '' } = state;
+      runAction.onChangeRootState({
+        ...state,
+        [type]: false,
+        loading: false,
+        jurnal: { timeLost: null, date: moment().format('DD.MM.YYYY HH:mm:ss'), description: null },
+        error: new Set(),
+      });
+    },
+    [runAction, state],
+  );
+
+  const onTrackTask = useCallback(async () => {
+    const { jurnal, type } = state;
 
     const {
       onCaching,
-      routeDataActive: { key = '', _id: id = '', name: nameTask = '' },
       actionType,
       keyTask,
       udata: { displayName = '', _id: uid = '' },
       clientDB,
-    } = this.props;
+    } = props;
+
     const item = { ...jurnal, depKey: keyTask, editor: displayName, uid };
-    const { timeLost = '', description = '', date = '' } = jurnal || {};
+    const { timeLost = '', description = '', date = '' } = jurnal;
 
     if (onCaching) {
       await onCaching({ item, actionType, depStore: 'tasks', store: 'jurnalworks', clientDB });
-      this.handleCancel();
+      handleCancel();
     }
     const itemNotification = {
       type: 'global',
       title: 'Списание времени в журнал',
       isRead: false,
-      message: this.getTemplate(nameTask, timeLost, description, date),
+      message: getTemplate(nameActive, timeLost, description, date),
       action: {
         type: 'tasks_link',
         moduleName: 'taskModule',
-        link: id ? id : key,
+        link: id ? id : keyActiveRoute,
       },
       uidCreater: uid,
       authorName: displayName,
@@ -248,139 +265,28 @@ class ModalWindow extends PureComponent {
       message.error('Ошибка глобального уведомления');
     });
 
-    return this.setState({
-      ...this.state,
+    runAction.onChangeRootState({
+      ...state,
       [type]: false,
       type: null,
       loading: false,
       jurnal: { timeLost: null, date: moment().format('DD.MM.YYYY HH:mm:ss'), description: null },
       error: new Set(),
     });
-  };
+  }, [getTemplate, handleCancel, id, keyActiveRoute, nameActive, props, runAction, state]);
 
-  onChangeStatusTask = async (customStatus = null) => {
-    const { taskStatus = null, type = '' } = this.state;
-
-    const {
-      onUpdate,
-      routeDataActive = {},
-      routeDataActive: { key = null } = {},
-      path,
-      route,
-      clientDB,
-    } = this.props;
-
-    if (taskStatus === null && typeof customStatus !== 'string')
-      return this.setState({
-        ...this.state,
-        [type]: false,
-        type: null,
-        loading: false,
-      });
-
-    try {
-      const parsedRoutePath =
-        !route || (route && _.isEmpty(route))
-          ? routeParser({
-              pageType: 'moduleItem',
-              path,
-            })
-          : route;
-
-      await onUpdate({
-        actionType: actionsTypes.$UPDATE_SINGLE,
-        parsedRoutePath,
-        path,
-        id: routeDataActive?._id,
-        key,
-        updateBy: '_id',
-        updateItem: typeof customStatus === 'string' ? customStatus : taskStatus,
-        updateField: 'status',
-        item: { ...routeDataActive },
-        store: 'tasks',
-        clientDB,
-      });
-
-      this.setState({
-        ...this.state,
-        [type]: false,
-        type: null,
-        loading: false,
-      });
-      message.success('Статус изменен.');
-    } catch (error) {
-      message.error('Ошибка редактирования.');
-    }
-  };
-
-  handleOk = async (event, action = '', response = '') => {
-    const { type } = this.state;
-
-    if (action === 'close') {
-      this.showModal(event, type, response, action);
-      this.onChangeStatusTask('Закрыт');
-    }
-
-    if (type === 'regType') return this.onRegUser(event);
-    else if (type === 'jur' && this.validation()) return this.onTrackTask();
-    else if (type === 'statusTask') return this.onChangeStatusTask();
-    else if (type === 'editDescription') return this.onSaveEdit(event);
-
-    message.warning('Not found event handler for save modalWindow action');
-  };
-
-  handleCancel = (event) => {
-    const { type = '' } = this.state;
-    this.setState({
-      ...this.state,
-      [type]: false,
-      loading: false,
-      jurnal: { timeLost: null, date: moment().format('DD.MM.YYYY HH:mm:ss'), description: null },
-      error: new Set(),
-    });
-  };
-
-  onChangeSelect = (event) => {
-    const { type, reg = {} } = this.state;
-    if (type === 'statusTask') {
-      this.setState({ ...this.state, taskStatus: event });
-    } else this.setState({ ...this.state, reg: { ...reg, departament: event } });
-  };
-
-  onChange = (event) => {
-    const { type = '' } = this.state;
-    const { target: { value = '', className = '' } = {} } = event;
-    const param = className?.split(' ')[1];
-    if (!param) return;
-
-    const newState =
-      type === 'regType'
-        ? {
-            ...this.state,
-            reg: {
-              ...this.state.reg,
-              [param]: value,
-            },
-          }
-        : {
-            ...this.state,
-            [param]: value,
-          };
-
-    this.setState(newState);
-  };
-
-  validation = () => {
+  const validation = useCallback(() => {
     const {
       jurnal: { timeLost = null, date = moment(), description = null },
-      error = [],
-      udata: { displayName = '' } = {},
-      type = '',
-    } = this.state;
+      error,
+      type,
+    } = state;
 
-    const { keyTask, modeEditContent } = this.props;
-    const { schema = {} } = this.context;
+    const { udata: { displayName = '' } = {} } = props;
+    const { schema = {} } = context;
+
     let _valid = true;
+
     let invalidDate = !date || !_.isDate(new Date(date));
     let invalidTimeLost = !timeLost || typeof timeLost !== 'string' || !isTimeLostValue(timeLost);
     let invalidDescription = !description || typeof description !== 'string';
@@ -396,8 +302,9 @@ class ModalWindow extends PureComponent {
       else if (errorBundle.has('timeLost')) errorBundle.delete('timeLost');
       if (invalidDescription) errorBundle.add('description');
       else if (errorBundle.has('description')) errorBundle.delete('description');
-      this.setState({ ...this.state, error: errorBundle });
+      runAction.onChangeRootState({ ...state, error: errorBundle });
     }
+
     if (!_valid) return _valid;
 
     const validData = schema?.getSchema(TASK_CONTROLL_JURNAL_SCHEMA, {
@@ -410,184 +317,295 @@ class ModalWindow extends PureComponent {
 
     if (validData) return _valid;
     else return false;
-  };
+  }, [context, keyTask, modeEditContent, props, runAction, state]);
 
-  onChangeTask = (event) => {
+  const onChangeStatusTask = useCallback(
+    async (customStatus = null) => {
+      const { taskStatus = null, type } = state;
+
+      if (taskStatus === null && typeof customStatus !== 'string') {
+        return runAction.onChangeRootState({
+          ...state,
+          [type]: false,
+          type: null,
+          loading: false,
+        });
+      }
+
+      try {
+        const parsedRoutePath =
+          !route || (route && _.isEmpty(route))
+            ? routeParser({
+                pageType: 'moduleItem',
+                path,
+              })
+            : route;
+
+        await onUpdate({
+          actionType: actionsTypes.$UPDATE_SINGLE,
+          parsedRoutePath,
+          path,
+          id: routeDataActive?._id,
+          key: keyActiveRoute,
+          updateBy: '_id',
+          updateItem: typeof customStatus === 'string' ? customStatus : taskStatus,
+          updateField: 'status',
+          item: { ...routeDataActive },
+          store: 'tasks',
+          clientDB,
+        });
+
+        runAction.onChangeRootState({
+          ...state,
+          [type]: false,
+          type: null,
+          loading: false,
+        });
+        message.success('Статус изменен.');
+      } catch (error) {
+        message.error('Ошибка редактирования.');
+      }
+    },
+    [clientDB, keyActiveRoute, onUpdate, path, route, routeDataActive, runAction, state],
+  );
+
+  const handleOk = useCallback(
+    async (event, action = '', response = '') => {
+      const { type } = state;
+
+      if (action === 'close') {
+        showModal(event, type, response, action);
+        onChangeStatusTask('Закрыт');
+      }
+
+      if (type === 'regType') return onRegUser(event);
+      else if (type === 'jur' && validation()) return onTrackTask();
+      else if (type === 'statusTask') return onChangeStatusTask();
+      else if (type === 'editDescription') return onSaveEdit(event);
+
+      message.warning('Not found event handler for save modalWindow action');
+    },
+    [onChangeStatusTask, onRegUser, onSaveEdit, onTrackTask, showModal, state, validation],
+  );
+
+  const onChangeSelect = useCallback(
+    (event) => {
+      const { type, reg = {} } = state;
+      if (type === 'statusTask') {
+        runAction.onChangeRootState({ ...state, taskStatus: event });
+      } else runAction.onChangeRootState({ ...state, reg: { ...reg, departament: event } });
+    },
+    [runAction, state],
+  );
+
+  const onChange = useCallback(
+    (event) => {
+      const { type = '' } = state;
+      const { target: { value = '', className = '' } = {} } = event;
+      const param = className?.split(' ')[1];
+      if (!param) return;
+
+      const newState =
+        type === 'regType'
+          ? {
+              ...state,
+              reg: {
+                ...state.reg,
+                [param]: value,
+              },
+            }
+          : {
+              ...state,
+              [param]: value,
+            };
+
+      runAction.onChangeRootState(newState);
+    },
+    [runAction, state],
+  );
+
+  const onChangeTask = (event) => {
     if (!event) return;
-    const { jurnal = {} } = this.state;
+    const { jurnal = {} } = state;
+
     const { target: { value = '', className = '' } = {}, _isValid = null } = event;
+
     const typeChanges = className?.split(' ')[1];
 
     if (value && typeChanges === 'timeLost') {
-      this.setState({
-        ...this.state,
+      runAction.onChangeRootState({
+        ...state,
         jurnal: { ...jurnal, timeLost: value },
       });
     } else if (_isValid && event && _isValid) {
-      this.setState({
-        ...this.state,
+      runAction.onChangeRootState({
+        ...state,
         jurnal: { ...jurnal, date: event.toString() },
       });
     } else if ((value || value === '') && typeChanges === 'description') {
-      this.setState({
-        ...this.state,
+      runAction.onChangeRootState({
+        ...state,
         jurnal: { ...jurnal, description: value },
       });
     }
   };
 
-  renderRegistrationModal = () => {
-    const { type = '' } = this.state;
-    const { [type]: visible = false } = this.state;
+  const renderRegistrationModal = useCallback(() => {
+    const { type = '' } = state;
+    const { [type]: visible = false } = state;
     return (
       <>
-        <Button aria-label="reg-button" type="primary" onClick={(event) => this.showModal(event, 'regType')}>
+        <Button aria-label="reg-button" type="primary" onClick={(event) => showModal(event, 'regType')}>
           Регистрация
         </Button>
         <Modal
           className="modalWindow"
           visible={visible}
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}
-          title={'Регистрация'}
+          onOk={handleOk}
+          onCancel={handleCancel}
+          title="Регистрация"
         >
-          <RegistrationModal cbOnChange={this.onChange} cbOnChangeSelect={this.onChangeSelect} />
+          <RegistrationModal cbOnChange={onChange} cbOnChangeSelect={onChangeSelect} />
         </Modal>
       </>
     );
-  };
+  }, [handleCancel, handleOk, onChange, onChangeSelect, showModal, state]);
 
-  renderChangerStatusModal = (actionProps = {}) => {
-    const { statusTaskValue, accessStatus } = this.props;
-    const { type = '' } = this.state;
-    const { [type]: visible = false } = this.state;
+  const renderChangerStatusModal = useCallback(
+    (actionProps = {}) => {
+      const { type = '' } = state;
+      const { [type]: visible = false } = state;
 
-    return (
-      <div className="dropDownWrapper">
-        <ActionList {...actionProps} />
-        <Modal
-          className="modalWindow changeStatus"
-          visible={visible}
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}
-          title="Смена статуса"
-        >
-          <Select onChange={this.onChangeSelect} defaultValue={statusTaskValue}>
-            {accessStatus.map((status, index) => {
-              return (
-                <Option key={`${index}${status}`} label={status} value={status}>
-                  {status}
-                </Option>
-              );
-            })}
-          </Select>
-        </Modal>
-      </div>
-    );
-  };
-
-  render() {
-    const {
-      onEdit,
-      modeControll,
-      onRejectEdit,
-      modeEditContent,
-      defaultView,
-      onCancelEditModeContent,
-      onUpdateEditable,
-      rulesEdit,
-      rulesStatus,
-      isLoadList,
-      routeDataActive,
-      actionTypeList: viewType = 'default',
-    } = this.props;
-    const { type: typeView = '' } = this.state;
-    const {
-      [typeView]: visible = false,
-      description: { value: valueDesc = '' } = {},
-      error,
-      jurnal: { description, timeLost },
-    } = this.state;
-
-    if (defaultView) {
-      return <SimpleEditableModal {...this.props} />;
-    }
-
-    if (typeView === 'regType') {
-      return this.renderRegistrationModal();
-    }
-
-    const actionProps = {
-      viewType,
-      entityName: 'taskView',
-      onMessage: this.onMessage,
-      showModal: this.showModal,
-      modeControll,
-      onUpdateEditable: onUpdateEditable,
-      onRejectEdit: onRejectEdit,
-      isLoadList,
-      rulesStatus,
-      rulesEdit,
-      onEdit,
-    };
-
-    if (typeView === 'statusTask') {
-      return this.renderChangerStatusModal({
-        ...actionProps,
-      });
-    }
-
-    const trackProps = {
-      typeView,
-      visible,
-      handleOk: this.handleOk,
-      handleCancel: this.handleCancel,
-      onChangeTask: this.onChangeTask,
-      error,
-      timeLost,
-      description,
-    };
-    const isVisibleMailResponser = visible && typeView === 'mailResponse';
-
-    return (
-      <>
+      return (
         <div className="dropDownWrapper">
-          <ActionList {...actionProps} showModal={this.showModal} />
-        </div>
-        {isVisibleMailResponser ? (
-          <MailResponserModal
-            handleCancel={this.handleCancel}
-            handleOk={this.handleOk}
-            routeDataActive={routeDataActive}
-            typeView={typeView}
-            visibleModal={isVisibleMailResponser}
-          />
-        ) : (
+          <ActionList {...actionProps} />
           <Modal
-            className="modalWindow"
-            visible={visible || modeEditContent}
-            onOk={this.handleOk}
-            destroyOnClose={true}
-            onCancel={modeEditContent ? onCancelEditModeContent : this.handleCancel}
-            title={modeEditContent ? 'Редактирование' : 'Отчет времени'}
+            className="modalWindow changeStatus"
+            visible={visible}
+            onOk={handleOk}
+            onCancel={handleCancel}
+            title="Смена статуса"
           >
-            {modeEditContent ? (
-              <Textarea
-                key="textAreaEdit"
-                className="editContentDescription"
-                row={10}
-                onChange={this.onChangeDescription}
-                value={valueDesc ? valueDesc : ''}
-                defaultValue={valueDesc ? valueDesc : ''}
-              />
-            ) : visible && typeView === 'jur' ? (
-              <TrackerModal {...trackProps} />
-            ) : null}
+            <Select onChange={onChangeSelect} defaultValue={statusTaskValue}>
+              {accessStatus.map((status, index) => {
+                return (
+                  <Option key={`${index}${status}`} label={status} value={status}>
+                    {status}
+                  </Option>
+                );
+              })}
+            </Select>
           </Modal>
-        )}
-      </>
-    );
+        </div>
+      );
+    },
+    [accessStatus, handleCancel, handleOk, onChangeSelect, state, statusTaskValue],
+  );
+
+  if (defaultView) {
+    return <SimpleEditableModal {...props} />;
   }
-}
+
+  if (typeView === 'regType') {
+    return renderRegistrationModal();
+  }
+
+  const actionProps = {
+    viewType,
+    entityName: 'taskView',
+    onMessage: onMessage,
+    showModal: showModal,
+    modeControll,
+    onUpdateEditable: onUpdateEditable,
+    onRejectEdit: onRejectEdit,
+    isLoadList,
+    rulesStatus,
+    rulesEdit,
+    onEdit,
+  };
+
+  if (typeView === 'statusTask') {
+    return renderChangerStatusModal({
+      ...actionProps,
+    });
+  }
+
+  const trackProps = {
+    typeView,
+    visible,
+    handleOk: handleOk,
+    handleCancel: handleCancel,
+    onChangeTask: onChangeTask,
+    error,
+    timeLost,
+    description,
+  };
+  const isVisibleMailResponser = visible && typeView === 'mailResponse';
+
+  return (
+    <>
+      <div className="dropDownWrapper">
+        <ActionList {...actionProps} showModal={showModal} />
+      </div>
+      {isVisibleMailResponser ? (
+        <MailResponserModal
+          handleCancel={handleCancel}
+          handleOk={handleOk}
+          routeDataActive={routeDataActive}
+          typeView={typeView}
+          visibleModal={isVisibleMailResponser}
+        />
+      ) : (
+        <Modal
+          className="modalWindow"
+          visible={visible || modeEditContent}
+          onOk={handleOk}
+          destroyOnClose={true}
+          onCancel={modeEditContent ? onCancelEditModeContent : handleCancel}
+          title={modeEditContent ? 'Редактирование' : 'Отчет времени'}
+        >
+          {modeEditContent ? (
+            <Textarea
+              key="textAreaEdit"
+              className="editContentDescription"
+              row={10}
+              onChange={onChangeDescription}
+              value={valueDesc ? valueDesc : ''}
+              defaultValue={valueDesc ? valueDesc : ''}
+            />
+          ) : visible && typeView === 'jur' ? (
+            <TrackerModal {...trackProps} />
+          ) : null}
+        </Modal>
+      )}
+    </>
+  );
+});
+
+ModalWindow.propTypes = modalWindowType;
+ModalWindow.defaultProps = {
+  onEdit: null,
+  modeControll: null,
+  onRejectEdit: null,
+  modeEditContent: null,
+  defaultView: false,
+  onCancelEditModeContent: null,
+  onUpdateEditable: null,
+  rulesEdit: true,
+  rulesStatus: true,
+  isLoadList: true,
+  routeDataActive: {},
+  route: null,
+  actionTypeList: 'default',
+  mode: '',
+  actionType: '',
+  keyTask: '',
+  udata: {},
+  path: '',
+  statusTaskValue: '',
+  accessStatus: [],
+  customTypeModal: '',
+  clientDB: null,
+};
 
 export default withClientDb(ModalWindow);

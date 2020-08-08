@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { memo, useCallback, useEffect, useState, useMemo } from 'react';
 import clsx from 'clsx';
 import { statisticsModuleType } from './types';
 import moment from 'moment';
@@ -14,159 +14,139 @@ import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { withClientDb } from 'Models/ClientSideDatabase';
 import actionPath from 'actions.path';
 
-class StatisticsModule extends PureComponent {
-  state = {
-    dateConfig: [2, 'weeks'],
-    textContent: '',
-  };
-  static propTypes = statisticsModuleType;
+const StatisticsModule = memo(
+  ({ moduleContext, router, path, onLoadCurrentData, statusList, appConfig, clientDB }) => {
+    const { settings = [] } = statusList || {};
+    const { routeData = {}, shouldUpdate = false } = router || {};
+    const { [path]: currentModule = {} } = routeData;
 
-  componentDidMount = () => {
-    const { moduleContext } = this.props;
-    const { visibility = false } = moduleContext;
-    const { dateConfig = [] } = this.state;
-
-    if (visibility && Array.isArray(dateConfig)) {
-      this.fetchStatistics();
-    }
-  };
-
-  componentDidUpdate = () => {
-    const {
-      path,
-      router: { routeData = {} },
-      moduleContext,
-    } = this.props;
-    const { visibility = false } = moduleContext;
-
-    if (!path || (path && !path.includes('statistic'))) return;
-    const { dateConfig = [] } = this.state;
-    const { [path]: currentModule = null } = routeData || {};
-    const shouldReload = currentModule && !currentModule?.loading && visibility && !currentModule?.load;
-
-    if (Array.isArray(dateConfig) && shouldReload) this.fetchStatistics();
-  };
-
-  fetchStatistics = (shouldSetLoading = false) => {
-    const { onLoadCurrentData, path, statusList: { settings = [] } = {}, appConfig, clientDB } = this.props;
-    const statsListFields = settings.reduce((list, { value = '' }) => {
-      if (value) return [...list, value];
-      return list;
-    }, []);
-    const { dateConfig = [] } = this.state;
-    const { statistics: { limitListTasks = 5000 } = {} } = appConfig;
-
-    let limits = {};
-    if (dateConfig[0] === 'full') {
-      limits = {
-        limitList: limitListTasks,
-      };
-    }
-
-    onLoadCurrentData({
-      action: actionPath.$LOAD_STATISTICS_TASKS,
-      path,
-      options: {
-        queryParams: {
-          statsListFields,
-          ...limits,
-        },
-        queryType: dateConfig[0],
-        todayISO:
-          dateConfig[0] === 'full'
-            ? moment().toISOString()
-            : moment()
-                .subtract(...dateConfig)
-                .toISOString(),
-      },
-      optionsForParse: {
-        noCorsClient: true,
-        shouldSetLoading,
-      },
-      clientDB,
-    });
-  };
-
-  onChangeBar = ({ currentTarget: { textContent = '' } }, dateConfig = []) => {
-    this.setState(
-      {
-        dateConfig,
-        textContent,
-      },
-      () => {
-        this.fetchStatistics(true);
-      },
-    );
-  };
-
-  getToolbarBody = (loading = false) => {
-    const { dateConfig = [] } = this.state;
-
-    return (
-      <div className="toolbarBody">
-        <div className="controllers">
-          <p>Смена периода</p>
-          <ul className="toolbar-actions-list">
-            <li className="toolbar-action-item">
-              <Button
-                loading={loading && dateConfig[1] === 'day'}
-                className={clsx(dateConfig[1] === 'day' ? 'active' : null)}
-                onClick={(evt) => this.onChangeBar(evt, [1, 'day'])}
-              >
-                Статистика за день
-              </Button>
-            </li>
-            <li className="toolbar-action-item">
-              <Button
-                loading={loading && dateConfig[1] === 'weeks'}
-                className={clsx(dateConfig[1] === 'weeks' ? 'active' : null)}
-                onClick={(evt) => this.onChangeBar(evt, [2, 'weeks'])}
-              >
-                Статистика за 2 недели
-              </Button>
-            </li>
-            <li className="toolbar-action-item">
-              <Button
-                loading={loading && dateConfig[1] === 'month'}
-                className={clsx(dateConfig[1] === 'month' ? 'active' : null)}
-                onClick={(evt) => this.onChangeBar(evt, [1, 'month'])}
-              >
-                Статистика за 1 месяц
-              </Button>
-            </li>
-            <li className="toolbar-action-item">
-              <Button
-                loading={loading && dateConfig[1] === 'year'}
-                className={clsx(dateConfig[1] === 'year' ? 'active' : null)}
-                onClick={(evt) => this.onChangeBar(evt, [1, 'year'])}
-              >
-                Статистика за 1 год
-              </Button>
-            </li>
-            <li className="toolbar-action-item">
-              <Button
-                loading={loading && dateConfig[0] === 'full'}
-                className={clsx(dateConfig[0] === 'full' ? 'active' : null)}
-                onClick={(evt) => this.onChangeBar(evt, ['full'])}
-              >
-                Статистика за все время
-              </Button>
-            </li>
-          </ul>
-        </div>
-      </div>
-    );
-  };
-
-  render() {
-    const { textContent = '' } = this.state;
-    const {
-      path = '',
-      router: { routeData: { [path]: currentModule = {} } = {}, shouldUpdate = false } = {},
-    } = this.props;
     const { statistic = [], loading = false } = currentModule || {};
     const { bar: barData = {} } = statistic[0] || {};
-    const toolbarBody = this.getToolbarBody(loading);
+
+    const [dateConfig, setDateConfig] = useState([2, 'weeks']);
+    const [textContent, setTextContent] = useState('');
+
+    const fetchStatistics = useCallback(
+      (shouldSetLoading = false) => {
+        const statsListFields = settings.reduce((list, { value = '' }) => {
+          if (value) return [...list, value];
+          return list;
+        }, []);
+
+        const { statistics: { limitListTasks = 5000 } = {} } = appConfig;
+
+        let limits = {};
+
+        if (dateConfig[0] === 'full') {
+          limits = {
+            limitList: limitListTasks,
+          };
+        }
+
+        onLoadCurrentData({
+          action: actionPath.$LOAD_STATISTICS_TASKS,
+          path,
+          options: {
+            queryParams: {
+              statsListFields,
+              ...limits,
+            },
+            queryType: dateConfig[0],
+            todayISO:
+              dateConfig[0] === 'full'
+                ? moment().toISOString()
+                : moment()
+                    .subtract(...dateConfig)
+                    .toISOString(),
+          },
+          optionsForParse: {
+            noCorsClient: true,
+            shouldSetLoading,
+          },
+          clientDB,
+        });
+      },
+      [appConfig, clientDB, dateConfig, onLoadCurrentData, path, settings],
+    );
+
+    useEffect(() => {
+      const { visibility = false } = moduleContext;
+
+      if (!path || (path && !path.includes('statistic'))) return;
+      const shouldReload = currentModule && !currentModule?.loading && visibility && !currentModule?.load;
+
+      if (!Array.isArray(dateConfig) || !shouldReload) return;
+
+      fetchStatistics();
+    }, [currentModule, dateConfig, fetchStatistics, moduleContext, path]);
+
+    const onChangeBar = useCallback(
+      ({ currentTarget: { textContent = '' } }, dateConfig = []) => {
+        setDateConfig(dateConfig);
+        setTextContent(textContent);
+
+        fetchStatistics(true);
+      },
+      [fetchStatistics],
+    );
+
+    const toolbarBody = useMemo(
+      () => (
+        <div className="toolbarBody">
+          <div className="controllers">
+            <p>Смена периода</p>
+            <ul className="toolbar-actions-list">
+              <li className="toolbar-action-item">
+                <Button
+                  loading={loading && dateConfig[1] === 'day'}
+                  className={clsx(dateConfig[1] === 'day' ? 'active' : null)}
+                  onClick={(evt) => onChangeBar(evt, [1, 'day'])}
+                >
+                  Статистика за день
+                </Button>
+              </li>
+              <li className="toolbar-action-item">
+                <Button
+                  loading={loading && dateConfig[1] === 'weeks'}
+                  className={clsx(dateConfig[1] === 'weeks' ? 'active' : null)}
+                  onClick={(evt) => onChangeBar(evt, [2, 'weeks'])}
+                >
+                  Статистика за 2 недели
+                </Button>
+              </li>
+              <li className="toolbar-action-item">
+                <Button
+                  loading={loading && dateConfig[1] === 'month'}
+                  className={clsx(dateConfig[1] === 'month' ? 'active' : null)}
+                  onClick={(evt) => onChangeBar(evt, [1, 'month'])}
+                >
+                  Статистика за 1 месяц
+                </Button>
+              </li>
+              <li className="toolbar-action-item">
+                <Button
+                  loading={loading && dateConfig[1] === 'year'}
+                  className={clsx(dateConfig[1] === 'year' ? 'active' : null)}
+                  onClick={(evt) => onChangeBar(evt, [1, 'year'])}
+                >
+                  Статистика за 1 год
+                </Button>
+              </li>
+              <li className="toolbar-action-item">
+                <Button
+                  loading={loading && dateConfig[0] === 'full'}
+                  className={clsx(dateConfig[0] === 'full' ? 'active' : null)}
+                  onClick={(evt) => onChangeBar(evt, ['full'])}
+                >
+                  Статистика за все время
+                </Button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      ),
+      [dateConfig, loading, onChangeBar],
+    );
 
     return (
       <div className="statisticsModule">
@@ -186,8 +166,20 @@ class StatisticsModule extends PureComponent {
         <FixedToolbar name="Настройки" customRender={toolbarBody} />
       </div>
     );
-  }
-}
+  },
+);
+
+StatisticsModule.defaultProps = {
+  moduleContext: {},
+  router: {},
+  path: '',
+  onLoadCurrentData: null,
+  statusList: [],
+  appConfig: [],
+  clientDB: null,
+};
+
+StatisticsModule.propTypes = statisticsModuleType;
 
 const mapStateToProps = (state, props) => {
   const {

@@ -124,7 +124,7 @@ const ContactModule = memo(
       visibilityPortal,
       webSocket,
     ]);
-    debugger;
+
     return (
       <div key="contactModule" className="contactModule">
         {renderContactsModules()}
