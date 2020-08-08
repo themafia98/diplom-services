@@ -77,7 +77,7 @@ const Output = memo(
     const onOpenLink = useCallback(
       ({ id: uuid = null, action = null }, event) => {
         if (event) event.stopPropagation();
-        onOpenTab({ uuid, action, data: currentData, depDataKey });
+        onOpenTab({ uuid, action, data: currentData, depKey: depDataKey });
       },
       [currentData, depDataKey, onOpenTab],
     );
