@@ -84,13 +84,14 @@ class Dashboard extends PureComponent {
           description: 'Загрузка сохраненной сессии',
         });
         onLoadSaveRouter(parsedRoute);
-      } else
+      } else {
         notification.warn({
           message: 'Конфликт',
           description: 'Найдена поврежденная сессия, загрузить не удалось.',
         });
 
-      addTab(routeParser({ path: 'mainModule' }));
+        addTab(routeParser({ path: 'mainModule' }));
+      }
     }
 
     if (!deferredPrompt) return;
