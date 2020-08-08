@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { editorTextareaType } from '../types';
 import clsx from 'clsx';
 import { stateFromHTML } from 'draft-js-import-html';
@@ -11,7 +11,7 @@ import '../../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.cs
 import { Button } from 'antd';
 import ModelContext from 'Models/context';
 
-class EditorTextarea extends React.Component {
+class EditorTextarea extends Component {
   state = {
     contentState: null,
   };

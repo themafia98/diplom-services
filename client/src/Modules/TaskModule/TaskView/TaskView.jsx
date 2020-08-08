@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { taskViewType } from '../types';
 import { v4 as uuid } from 'uuid';
 import _ from 'lodash';
@@ -22,7 +22,7 @@ import { compose } from 'redux';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { withClientDb } from 'Models/ClientSideDatabase';
 
-class TaskView extends React.PureComponent {
+class TaskView extends PureComponent {
   state = {
     type: 'default',
     key: this.props.uuid ? this.props.uuid : null,

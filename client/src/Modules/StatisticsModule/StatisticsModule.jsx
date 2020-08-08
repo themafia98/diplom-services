@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import clsx from 'clsx';
 import { statisticsModuleType } from './types';
 import moment from 'moment';
@@ -14,7 +14,7 @@ import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { withClientDb } from 'Models/ClientSideDatabase';
 import actionPath from 'actions.path';
 
-class StatisticsModule extends React.PureComponent {
+class StatisticsModule extends PureComponent {
   state = {
     dateConfig: [2, 'weeks'],
     textContent: '',

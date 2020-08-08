@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { v4 as uuid } from 'uuid';
 import { createNewsType } from '../../types';
 import moment from 'moment';
@@ -11,7 +11,7 @@ import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { compose } from 'redux';
 import { withClientDb } from 'Models/ClientSideDatabase';
 
-class CreateNews extends React.PureComponent {
+class CreateNews extends PureComponent {
   state = {
     titleNews: '',
     clear: false,

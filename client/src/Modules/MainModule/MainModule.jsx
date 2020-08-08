@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PureComponent, createRef } from 'react';
 import { connect } from 'react-redux';
 import { mainModuleType } from './types';
 import { Calendar } from 'antd';
@@ -13,7 +13,7 @@ import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { withClientDb } from 'Models/ClientSideDatabase';
 import actionPath from 'actions.path';
 
-class MainModule extends React.PureComponent {
+class MainModule extends PureComponent {
   static propTypes = mainModuleType;
 
   state = {
@@ -21,8 +21,8 @@ class MainModule extends React.PureComponent {
     tableViewHeight: 300,
   };
 
-  rightColumnRef = React.createRef();
-  widgetsContainerRef = React.createRef();
+  rightColumnRef = createRef();
+  widgetsContainerRef = createRef();
 
   componentDidMount = () => {
     const { onLoadCurrentData, moduleContext, clientDB } = this.props;

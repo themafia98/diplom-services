@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PureComponent, createRef } from 'react';
 import { dashboardType } from './types';
 import { Redirect } from 'react-router-dom';
 import { EventEmitter } from 'events';
@@ -20,7 +20,7 @@ import regExpRegister from 'Utils/Tools/regexpStorage';
 
 let deferredPrompt = null;
 
-class Dashboard extends React.PureComponent {
+class Dashboard extends PureComponent {
   dashboardStrem = new EventEmitter();
   state = {
     collapsed: true,
@@ -37,7 +37,7 @@ class Dashboard extends React.PureComponent {
   static contextType = ModelContext;
   static propTypes = dashboardType;
 
-  dashboardRef = React.createRef();
+  dashboardRef = createRef();
   webSocket = null;
 
   componentDidMount = () => {

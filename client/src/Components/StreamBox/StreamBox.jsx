@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component, createRef } from 'react';
 import { streamBoxType } from './types';
 import { connect } from 'react-redux';
 import moment from 'moment';
@@ -15,7 +15,7 @@ import { compose } from 'redux';
 import { withClientDb } from 'Models/ClientSideDatabase';
 import { paramsTemplate, requestTemplate } from 'Utils/Api/api.utils';
 
-class StreamBox extends React.Component {
+class StreamBox extends Component {
   state = {
     showLoader: false,
     type: null,
@@ -25,8 +25,8 @@ class StreamBox extends React.Component {
     count: 0,
   };
 
-  scrollRef = React.createRef();
-  streamListRef = React.createRef();
+  scrollRef = createRef();
+  streamListRef = createRef();
 
   static propTypes = streamBoxType;
   static contextType = ModelContext;

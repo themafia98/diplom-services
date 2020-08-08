@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PureComponent, createRef } from 'react';
 import { wikiModuleType } from './types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
@@ -19,7 +19,7 @@ import { requestTemplate, paramsTemplate } from 'Utils/Api/api.utils';
 const { Option } = Select;
 const { Search } = Input;
 
-class WikiModule extends React.PureComponent {
+class WikiModule extends PureComponent {
   static propTypes = wikiModuleType;
 
   state = {
@@ -39,7 +39,7 @@ class WikiModule extends React.PureComponent {
     selectedNodeMetadta: null,
   };
 
-  titleRef = React.createRef();
+  titleRef = createRef();
 
   componentDidMount = () => {
     this.fetchTree('didMount');

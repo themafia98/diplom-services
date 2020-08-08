@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { contactsType } from '../types';
 import TitleModule from 'Components/TitleModule';
 
@@ -13,7 +13,7 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { setStatus } from 'Redux/actions/publicActions';
 
-class Contacts extends React.PureComponent {
+class Contacts extends PureComponent {
   state = {
     data: [],
     loading: false,

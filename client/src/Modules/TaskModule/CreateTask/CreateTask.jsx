@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { createTaskType } from '../types';
 import clsx from 'clsx';
 import _ from 'lodash';
@@ -21,7 +21,7 @@ import { withClientDb } from 'Models/ClientSideDatabase';
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
-class CreateTask extends React.PureComponent {
+class CreateTask extends PureComponent {
   state = {
     load: false,
     trySubmit: false,

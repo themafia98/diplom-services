@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import clsx from 'clsx';
 import moment from 'moment';
@@ -20,7 +20,7 @@ import modelsContext from 'Models/context';
 import { compose } from 'redux';
 import { withClientDb } from 'Models/ClientSideDatabase';
 
-class Chat extends React.PureComponent {
+class Chat extends PureComponent {
   state = {
     visible: null,
   };

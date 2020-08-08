@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { modalWindowType } from './types';
 import _ from 'lodash';
 import moment from 'moment';
@@ -18,7 +18,7 @@ import { withClientDb } from 'Models/ClientSideDatabase';
 
 const { Option } = Select;
 
-class ModalWindow extends React.PureComponent {
+class ModalWindow extends PureComponent {
   state = {
     visible: false,
     reg: {

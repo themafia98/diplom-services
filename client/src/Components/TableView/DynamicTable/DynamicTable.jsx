@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { dynamicTableType } from '../types';
 import moment from 'moment';
 import Output from 'Components/Output';
@@ -7,7 +7,7 @@ import { getDataSource, findData } from 'Utils';
 import ModelContext from 'Models/context';
 import { connect } from 'react-redux';
 
-class DynamicTable extends React.PureComponent {
+class DynamicTable extends PureComponent {
   state = {
     pagination: {
       current: 1,

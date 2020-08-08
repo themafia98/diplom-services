@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { loginType } from './types';
 import { Redirect, NavLink } from 'react-router-dom';
 import { Button, Input } from 'antd';
@@ -8,7 +8,7 @@ import Logo from 'Components/Logo';
 import ModalWindow from 'Components/ModalWindow';
 import ModelContext from 'Models/context';
 
-class LoginPage extends React.Component {
+class LoginPage extends Component {
   state = {
     loading: false,
     loginAuth: null,

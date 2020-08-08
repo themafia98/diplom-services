@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { appType } from './types';
 import _ from 'lodash';
 import { connect } from 'react-redux';
@@ -28,7 +28,7 @@ import withSystemConfig from 'Components/Helpers/withSystemConfig';
 
 const workerInstanse = worker();
 
-class App extends React.Component {
+class App extends Component {
   state = {
     loadState: false,
     isUser: false,

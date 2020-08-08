@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { tableViewType } from './types';
 import { connect } from 'react-redux';
 import { Empty, Spin, Tooltip, Icon } from 'antd';
@@ -16,7 +16,7 @@ import {
 } from 'Redux/actions/routerActions';
 import ModelContext from 'Models/context';
 
-class TableView extends React.Component {
+class TableView extends Component {
   state = {
     sortedInfo: null,
     searchText: null,

@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { useState, useRef, memo, useEffect } from 'react';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { headerViewType } from './types';
 import { connect } from 'react-redux';
@@ -11,106 +11,89 @@ import { MARGIN_TAB } from './HeaderView.constant';
 
 const { Header } = Layout;
 
-class HeaderView extends PureComponent {
-  state = {
-    length: 1,
-    size: 160,
-    sizeParent: null,
-  };
+const HeaderView = memo(
+  ({
+    tabs,
+    goCabinet,
+    status,
+    shouldUpdate,
+    logout,
+    udata,
+    onSaveComponentState,
+    appConfig,
+    onDragEndTabAction,
+    activeTabEUID,
+    cbMenuTabHandler,
+    dashboardStrem,
+  }) => {
+    const [length, setLength] = useState(1);
+    const [size, setSize] = useState(160);
+    const [sizeParent, setSizeParent] = useState(null);
 
-  tabsMenuRef = React.createRef();
+    const tabsMenuRef = useRef(null);
+    const { current: tabsMenuNode = null } = tabsMenuRef || {};
 
-  static propTypes = headerViewType;
-  static defaultProps = {
-    activeTabs: [],
-    dashboardStrem: null,
-  };
+    useEffect(() => {
+      const sizes = sizeParent / tabs.length - MARGIN_TAB;
+      const counter = ~~(sizeParent / size);
 
-  componentDidUpdate = () => {
-    const { sizeParent, size, length } = this.state;
-    const { tabArray = [] } = this.props;
+      if (sizeParent === null && tabsMenuNode) {
+        setLength(tabs.length);
+        setSizeParent(tabsMenuNode.getBoundingClientRect().width);
+      }
 
-    const sizes = sizeParent / tabArray.length - MARGIN_TAB;
-    const counter = ~~(sizeParent / size);
+      if ((tabs.length >= counter && sizeParent !== null) || (tabs.length < length && size < 160)) {
+        setLength(tabs.length);
+        setSize(sizes);
+      }
+    }, [sizeParent, size, tabsMenuNode, length, tabs]);
 
-    if (sizeParent === null && this.wrapper) {
-      this.setState({
-        length: tabArray.length,
-        sizeParent: this.wrapper.getBoundingClientRect().width,
-      });
-    }
+    const reorder = (list, dragIndex, dropIndex) => {
+      const [removed] = list.splice(dragIndex, 1);
+      list.splice(dropIndex, 0, removed);
+      return list;
+    };
 
-    if ((tabArray.length >= counter && sizeParent !== null) || (tabArray.length < length && size < 160)) {
-      this.setState({
-        length: tabArray.length,
-        size: sizes,
-      });
-    }
-  };
+    const onDragEnd = ({ destination, source }, tabsList) => {
+      const { index: indexDest } = destination || {};
+      const { index } = source || {};
 
-  reorder = (list, dragIndex, dropIndex) => {
-    const [removed] = list.splice(dragIndex, 1);
-    list.splice(dropIndex, 0, removed);
-    return list;
-  };
+      if (!destination) return;
 
-  onDragEnd = ({ destination, source }, tabsList) => {
-    const { index: indexDest } = destination || {};
-    const { index } = source || {};
-    const { onDragEndTabAction } = this.props;
+      onDragEndTabAction(reorder([...tabsList], index, indexDest));
+    };
 
-    if (!destination) return;
+    const renderTabs = (items) => {
+      return (
+        <DragDropContext onDragEnd={(event) => onDragEnd(event, items)}>
+          <Droppable direction="horizontal" droppableId="droppable">
+            {(provided, snapshot) => (
+              <div className="droppable-wrapper" ref={provided.innerRef}>
+                <ul ref={tabsMenuRef} {...provided.droppableProps} className="tabsMenu">
+                  {items.map(({ EUID = '', VALUE = '' }, index) => {
+                    return (
+                      <Tab
+                        hendlerTab={cbMenuTabHandler}
+                        active={activeTabEUID === EUID}
+                        key={EUID}
+                        itemKey={EUID}
+                        value={VALUE}
+                        sizeTab={size}
+                        index={index}
+                      />
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
+      );
+    };
 
-    onDragEndTabAction(this.reorder([...tabsList], index, indexDest));
-  };
-
-  renderTabs = (items) => {
-    const { size = 160 } = this.state;
-    const { activeTabEUID = 'mainModule', cbMenuTabHandler } = this.props;
-
-    return (
-      <DragDropContext onDragEnd={(event) => this.onDragEnd(event, items)}>
-        <Droppable direction="horizontal" droppableId="droppable">
-          {(provided, snapshot) => (
-            <div className="droppable-wrapper" ref={provided.innerRef}>
-              <ul ref={this.tabsMenuRef} {...provided.droppableProps} className="tabsMenu">
-                {items.map(({ EUID = '', VALUE = '' }, index) => {
-                  return (
-                    <Tab
-                      hendlerTab={cbMenuTabHandler}
-                      active={activeTabEUID === EUID}
-                      key={EUID}
-                      itemKey={EUID}
-                      value={VALUE}
-                      sizeTab={size}
-                      index={index}
-                    />
-                  );
-                })}
-              </ul>
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
-    );
-  };
-
-  update = () => {
-    const { dashboardStrem } = this.props;
-    if (dashboardStrem) dashboardStrem.emit('EventUpdate', true);
-  };
-
-  render() {
-    const {
-      tabs,
-      goCabinet,
-      status,
-      shouldUpdate,
-      logout,
-      udata,
-      onSaveComponentState,
-      appConfig,
-    } = this.props;
+    const update = () => {
+      if (dashboardStrem) dashboardStrem.emit('EventUpdate', true);
+    };
 
     const notificationDep = {
       streamStore: 'streamList',
@@ -122,7 +105,7 @@ class HeaderView extends PureComponent {
 
     return (
       <Header>
-        {tabs ? this.renderTabs(tabs) : null}
+        {tabs ? renderTabs(tabs) : null}
         <RightPanel
           appConfig={appConfig}
           udata={udata}
@@ -130,13 +113,32 @@ class HeaderView extends PureComponent {
           status={status}
           goCabinet={goCabinet}
           onLogout={logout}
-          onUpdate={this.update}
+          onUpdate={update}
           notificationDep={notificationDep}
         />
       </Header>
     );
-  }
-}
+  },
+);
+
+HeaderView.defaultProps = {
+  tabArray: [],
+  activeTabEUID: 'mainModule',
+  activeTabs: [],
+  dashboardStrem: null,
+  tabs: [],
+  goCabinet: null,
+  status: '',
+  shouldUpdate: false,
+  logout: null,
+  udata: {},
+  onSaveComponentState: null,
+  appConfig: {},
+  onDragEndTabAction: null,
+  cbMenuTabHandler: null,
+};
+
+HeaderView.propTypes = headerViewType;
 
 const mapStateTopProps = (state) => {
   const { status = 'online', udata = {}, appConfig } = state.publicReducer;

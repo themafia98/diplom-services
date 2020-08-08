@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { cabinetType } from './types';
 import { Modal, Upload, message, Icon, Button } from 'antd';
@@ -12,7 +12,7 @@ import { compose } from 'redux';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
 const { Dragger } = Upload;
 
-class CabinetModule extends React.PureComponent {
+class CabinetModule extends PureComponent {
   state = {
     modePage: '',
     imageUrl: null,

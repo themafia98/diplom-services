@@ -1,288 +1,286 @@
-import React from 'react';
+import React, { memo, Fragment, createRef, useEffect, useCallback, useState, useMemo } from 'react';
+import _ from 'lodash';
 import { outputType } from './types';
 import clsx from 'clsx';
 import { Tooltip, Button, Spin } from 'antd';
-import ModelContext from 'Models/context';
 import { connect } from 'react-redux';
 import { openTab } from 'Redux/actions/routerActions/middleware';
 
-class Output extends React.PureComponent {
-  state = {
-    showTooltip: false,
-    widthChild: null,
-    widthParent: null,
-  };
+const Output = memo(
+  ({
+    typeOutput,
+    children,
+    links,
+    className,
+    type,
+    id,
+    action,
+    list,
+    isLink,
+    isStaticList,
+    outputClassName,
+    currentData,
+    depDataKey,
+    onOpenTab,
+    isLoad,
+  }) => {
+    const isChildrenList = Array.isArray(children);
 
-  static contextType = ModelContext;
-  static propTypes = outputType;
-  static defaultProps = {
-    data: {},
-    depDataKey: '',
-    children: '',
-    id: '',
-    action: '',
-    typeOutput: '',
-    isLoad: false,
-    links: null,
-    className: '',
-    type: '',
-    list: false,
-    isLink: false,
-    isStaticList: false,
-    outputClassName: '',
-  };
+    const [showTooltip, setShowTooltip] = useState(false);
+    const [widthChild, setWidthChild] = useState(null);
+    const [widthParent, setWidthParent] = useState(null);
 
-  child = null;
-  parent = null;
-  childRef = (node) => (this.child = node);
-  parentRef = (node) => (this.parent = node);
+    const parentRef = createRef(null);
+    const childRef = createRef(null);
 
-  componentDidMount = () => {
-    const { showTooltip, widthChild, widthParent } = this.state;
-    const { typeOutput, children: child } = this.props;
-    const isDefaultList = Array.isArray(child) && typeOutput === 'default';
-    if (
-      [widthChild, widthParent].every((type) => type === null) &&
-      !showTooltip &&
-      this.child &&
-      this.parent
-    ) {
-      let children =
-        typeOutput === 'link'
-          ? this.child?.buttonNode?.firstChild
-          : this.child?.buttonNode
-          ? this.child?.buttonNode
-          : this.child;
+    const update = useCallback(() => {
+      const isDefaultList = Array.isArray(children) && typeOutput === 'default';
+      const { current: childNode = null } = childRef;
+      const { current: parentNode = null } = parentRef;
+      if (
+        [widthChild, widthParent].every((type) => type === null) &&
+        !showTooltip &&
+        childNode &&
+        parentNode
+      ) {
+        const { buttonNode = {} } = childNode;
+        const isLink = typeOutput === 'link';
+        const childrenNode = isLink ? buttonNode?.firstChild : buttonNode ? buttonNode : childRef?.current;
 
-      const childW =
-        children && !isDefaultList
-          ? children.getBoundingClientRect().width
-          : isDefaultList && children
-          ? Array.from(children?.children).reduce((total, elem) => total + elem?.offsetWidth, 0)
-          : null;
-      const parentW = this.parent ? this.parent.getBoundingClientRect().width : null;
+        const isEmptyNode = childrenNode && typeof childrenNode === 'object' && _.isEmpty(childrenNode);
 
-      if ([childW, parentW].every((type) => type !== null))
-        this.setState({
-          ...this.state,
-          showTooltip: childW > parentW,
-          widthChild: childW,
-          widthParent: parentW,
-        });
-    }
-  };
+        const childWidth =
+          !isEmptyNode && !isDefaultList && childrenNode?.hasOwnProperty('getBoundingClientRect')
+            ? childrenNode?.getBoundingClientRect()?.width
+            : isDefaultList && childrenNode?.children
+            ? Array.from(childrenNode?.children).reduce((total, elem) => total + elem?.offsetWidth, 0)
+            : null;
 
-  componentDidUpdate = () => {
-    const { showTooltip, widthChild, widthParent } = this.state;
-    const { typeOutput, children: child } = this.props;
+        const { width: parentWidth = null } = parentNode?.getBoundingClientRect() || {};
+        const shouldShowTooltip = childWidth > parentWidth;
 
-    const isDefaultList = Array.isArray(child) && typeOutput === 'default';
-    if ([widthChild, widthParent].every((type) => type !== null) && this.child && this.parent) {
-      const children =
-        typeOutput === 'link'
-          ? this.child?.buttonNode?.firstChild
-          : this.child?.buttonNode
-          ? this.child?.buttonNode
-          : this.child;
-
-      const childW =
-        children && !isDefaultList
-          ? children.getBoundingClientRect().width
-          : isDefaultList && children
-          ? Array.from(children?.children).reduce((total, elem) => total + elem?.offsetWidth, 0)
-          : null;
-      const parentW = this.parent ? this.parent.getBoundingClientRect().width : null;
-
-      if ([childW, parentW].some((type) => type === null)) return;
-
-      const showTooltipUpdate = childW > parentW;
-
-      if (showTooltipUpdate !== showTooltip) {
-        return this.setState({
-          ...this.state,
-          showTooltip: showTooltipUpdate,
-          widthChild: childW,
-          widthParent: parentW,
-        });
+        if (
+          [childWidth, parentWidth].every((type) => type !== null) &&
+          (widthChild !== childWidth || widthParent !== parentWidth || shouldShowTooltip !== showTooltip)
+        ) {
+          setShowTooltip(childWidth > parentWidth);
+          setWidthChild(childWidth);
+          setWidthParent(parentWidth);
+        }
       }
-    }
-  };
+    }, [childRef, children, parentRef, showTooltip, typeOutput, widthChild, widthParent]);
 
-  onOpenLink = ({ id: uuid = null, action = null }, event) => {
-    if (event) event.stopPropagation();
-    const { currentData: data, depDataKey: depKey, onOpenTab } = this.props;
+    useEffect(() => {
+      update();
+    }, [update]);
 
-    onOpenTab({ uuid, action, data, depKey });
-  };
-
-  renderLinks = (item = '', mode = 'default') => {
-    const { isLoad = false, typeOutput = '' } = this.props;
-    if ((!isLoad && Array.isArray(item) && !item.length) || !item) return <Spin size="small" />;
-
-    if (!Array.isArray(item) || mode === 'single') {
-      const { displayName = '', _id: id = '' } = item || {};
-
-      return (
-        <>
-          {typeOutput && typeOutput !== 'default' ? (
-            <Button
-              onKeyDown={id ? this.onOpenLink.bind(this, { id, action: 'cabinet' }) : null}
-              type="link"
-              key={`${id}-editor`}
-              className="editor"
-            >
-              {displayName}
-            </Button>
-          ) : (
-            <span className="list-item"> {displayName}</span>
-          )}
-        </>
-      );
-    }
-
-    return item.map((it, index) => {
-      const { displayValue = '', displayName = '', _id = '', id = '' } = it || {};
-      return (
-        <React.Fragment key={`${index}${_id}${id}`}>
-          {typeOutput && typeOutput !== 'default' ? (
-            <Button
-              onClick={
-                id || _id ? this.onOpenLink.bind(this, { id: id ? id : _id, action: 'cabinet' }) : null
-              }
-              type="link"
-              key={`${index}${_id}`}
-              className="editor"
-            >
-              {displayValue || displayName}
-            </Button>
-          ) : (
-            <span key={`${index}${_id}`} className="list-item">
-              {displayValue || displayName}
-            </span>
-          )}
-        </React.Fragment>
-      );
-    });
-  };
-
-  renderDefault = (list, className, isLink, value) => {
-    return (
-      <>
-        {list ? (
-          <div
-            ref={this.childRef}
-            className={clsx(
-              'output-list-wrapper',
-              className ? className : null,
-              'list-mode',
-              isLink ? 'link' : null,
-            )}
-          >
-            {value}
-          </div>
-        ) : (
-          <span ref={this.childRef} className={clsx(className ? className : null, isLink ? 'link' : null)}>
-            {value}
-          </span>
-        )}
-      </>
+    const onOpenLink = useCallback(
+      ({ id: uuid = null, action = null }, event) => {
+        if (event) event.stopPropagation();
+        onOpenTab({ uuid, action, data: currentData, depDataKey });
+      },
+      [currentData, depDataKey, onOpenTab],
     );
-  };
 
-  renderTableOutput = (value) => {
-    const { className, typeOutput, id, action, list, isLink, outputClassName } = this.props;
-    const { showTooltip } = this.state;
-    const output = (
-      <td>
-        <div
-          className={clsx('output', outputClassName ? outputClassName : null, typeOutput ? 'withType' : null)}
-          ref={this.parentRef}
-        >
-          {typeOutput && typeOutput !== 'default' ? (
+    const renderLinks = useCallback(
+      (item = '', mode = 'default') => {
+        if ((!isLoad && Array.isArray(item) && !item.length) || !item) return <Spin size="small" />;
+        if (!Array.isArray(item) || mode === 'single') {
+          const { displayName = '', _id: id = '' } = item || {};
+          const displayValue = typeof item === 'string' ? item : displayName;
+
+          return (
             <>
-              {value && typeof value === 'object' ? (
-                this.renderLinks(value, 'single')
-              ) : (
+              {typeOutput && typeOutput !== 'default' ? (
                 <Button
-                  key={`${id}`}
-                  onClick={this.onOpenLink.bind(this, { action, id })}
-                  type={typeOutput}
-                  ref={this.childRef}
-                  className={className ? className : null}
+                  onKeyDown={id ? onOpenLink.bind(this, { id, action: 'cabinet' }) : null}
+                  type="link"
+                  key={`${id}-editor`}
+                  className="editor"
                 >
-                  {value}
+                  {displayValue}
                 </Button>
+              ) : (
+                <span className="list-item">{displayValue}</span>
               )}
             </>
-          ) : (
-            this.renderDefault(list, className, isLink, value)
-          )}
-        </div>
-      </td>
+          );
+        }
+
+        return item.map((it, index) => {
+          const { displayValue = '', displayName = '', _id = '', id = '' } = it || {};
+          return (
+            <Fragment key={`${index}${_id}${id}`}>
+              {typeOutput && typeOutput !== 'default' ? (
+                <Button
+                  onClick={id || _id ? onOpenLink.bind(this, { id: id ? id : _id, action: 'cabinet' }) : null}
+                  type="link"
+                  key={`${index}${_id}`}
+                  className="editor"
+                >
+                  {displayValue || displayName}
+                </Button>
+              ) : (
+                <span key={`${index}${_id}`} className="list-item">
+                  {displayValue || displayName}
+                </span>
+              )}
+            </Fragment>
+          );
+        });
+      },
+      [isLoad, onOpenLink, typeOutput],
     );
-    if (!showTooltip) return output;
-    else
-      return (
-        <Tooltip className="pointerTooltip" placement="topLeft" title={value}>
-          {output}
-        </Tooltip>
-      );
-  };
 
-  render() {
-    const {
-      links,
-      className,
-      children,
-      type,
-      typeOutput,
-      id,
-      action,
-      list,
-      isLink,
-      isStaticList,
-      outputClassName,
-    } = this.props;
-    const { showTooltip } = this.state;
-    let value = children;
+    const renderDefault = useCallback(
+      (list, className, isLink, value) => {
+        return (
+          <>
+            {list ? (
+              <div
+                ref={childRef}
+                className={clsx(
+                  'output-list-wrapper',
+                  className ? className : null,
+                  'list-mode',
+                  isLink ? 'link' : null,
+                )}
+              >
+                {value}
+              </div>
+            ) : (
+              <span ref={childRef} className={clsx(className ? className : null, isLink ? 'link' : null)}>
+                {value}
+              </span>
+            )}
+          </>
+        );
+      },
+      [childRef],
+    );
 
-    if (type === 'table') return this.renderTableOutput(value);
+    const renderTableOutput = useCallback(
+      (value) => {
+        const output = (
+          <td>
+            <div
+              className={clsx(
+                'output',
+                outputClassName ? outputClassName : null,
+                typeOutput ? 'withType' : null,
+              )}
+              ref={parentRef}
+            >
+              {typeOutput && typeOutput !== 'default' ? (
+                <>
+                  {value && typeof value === 'object' ? (
+                    renderLinks(value, 'single')
+                  ) : (
+                    <Button
+                      key={`${id}`}
+                      onClick={onOpenLink.bind(this, { action, id })}
+                      type={typeOutput}
+                      ref={childRef}
+                      className={className ? className : null}
+                    >
+                      {value}
+                    </Button>
+                  )}
+                </>
+              ) : (
+                renderDefault(list, className, isLink, value)
+              )}
+            </div>
+          </td>
+        );
+        if (!showTooltip) return output;
+        else
+          return (
+            <Tooltip className="pointerTooltip" placement="topLeft" title={value}>
+              {output}
+            </Tooltip>
+          );
+      },
+      [
+        action,
+        childRef,
+        className,
+        id,
+        isLink,
+        list,
+        onOpenLink,
+        outputClassName,
+        parentRef,
+        renderDefault,
+        renderLinks,
+        showTooltip,
+        typeOutput,
+      ],
+    );
 
-    if (links || isStaticList) {
-      if (Array.isArray(children)) {
-        const linksList = !isStaticList
-          ? links
-              .reduce((links, link) => {
-                if (children.some((child) => child === link?._id)) {
-                  return [...links, { displayValue: link?.displayName, id: link?._id }];
-                }
-                return links;
-              }, [])
-              .sort((a, b) => a?.displayName - b?.displayName)
-          : children.map((link) => {
-              return { displayValue: link?.displayName, id: link?._id };
-            });
+    if (type === 'table') return renderTableOutput(children);
+    const shouldRenderList = links || isStaticList;
+    if (children === 'ab7fa107-d2c8-4a09-bf08-746d437a81c5') debugger;
 
-        value = this.renderLinks(linksList);
-      } else if (links) return this.renderLinks(links.find((link) => link?._id === children));
+    if (shouldRenderList && isChildrenList && links && typeof children === 'string') {
+      return renderLinks(links.find((link) => link?._id === children));
     }
 
-    const output = (
-      <div className={clsx('output', outputClassName ? outputClassName : null)} ref={this.parentRef}>
-        {typeOutput && typeOutput !== 'default' && !Array.isArray(children) ? (
-          <Button
-            onClick={this.onOpenLink.bind(this, { action, id })}
-            type={typeOutput}
-            ref={this.childRef}
-            className={className ? className : null}
-          >
-            {value}
-          </Button>
-        ) : (
-          this.renderDefault(list, className, isLink, value)
-        )}
-      </div>
+    const value = useMemo(
+      () =>
+        renderLinks(
+          !isStaticList && Array.isArray(links)
+            ? links
+                .reduce((links, link) => {
+                  if (children.some((child) => child === link?._id)) {
+                    return [...links, { displayValue: link?.displayName, id: link?._id }];
+                  }
+                  return links;
+                }, [])
+                .sort((a, b) => a?.displayName - b?.displayName)
+            : isChildrenList
+            ? children.map((link) => {
+                return { displayValue: link?.displayName, id: link?._id };
+              })
+            : children,
+        ),
+      [children, isChildrenList, isStaticList, links, renderLinks],
     );
+
+    const output = useMemo(
+      () => (
+        <div className={clsx('output', outputClassName ? outputClassName : null)} ref={parentRef}>
+          {typeOutput && typeOutput !== 'default' && !Array.isArray(children) ? (
+            <Button
+              onClick={onOpenLink.bind(this, { action, id })}
+              type={typeOutput}
+              ref={childRef}
+              className={className ? className : null}
+            >
+              {value}
+            </Button>
+          ) : (
+            renderDefault(list, className, isLink, value)
+          )}
+        </div>
+      ),
+      [
+        action,
+        childRef,
+        children,
+        className,
+        id,
+        isLink,
+        list,
+        onOpenLink,
+        outputClassName,
+        parentRef,
+        renderDefault,
+        typeOutput,
+        value,
+      ],
+    );
+
     if (!showTooltip) return output;
     else
       return (
@@ -290,8 +288,8 @@ class Output extends React.PureComponent {
           {output}
         </Tooltip>
       );
-  }
-}
+  },
+);
 
 const mapStateTopProps = (state) => {
   const { appConfig } = state.publicReducer;
@@ -304,6 +302,24 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onOpenTab: (param) => dispatch(openTab(param)),
   };
+};
+
+Output.propTypes = outputType;
+Output.defaultProps = {
+  data: {},
+  depDataKey: '',
+  children: '',
+  id: '',
+  action: '',
+  typeOutput: '',
+  isLoad: false,
+  links: null,
+  className: '',
+  type: '',
+  list: false,
+  isLink: false,
+  isStaticList: false,
+  outputClassName: '',
 };
 
 export default connect(mapStateTopProps, mapDispatchToProps)(Output);

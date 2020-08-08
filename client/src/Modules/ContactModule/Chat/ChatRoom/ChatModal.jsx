@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PureComponent, createRef } from 'react';
 import _ from 'lodash';
 import { Modal, Select, message, Input } from 'antd';
 import ModelContext from 'Models/context';
@@ -7,13 +7,13 @@ import { requestTemplate, paramsTemplate } from 'Utils/Api/api.utils';
 
 const { Option } = Select;
 
-class ChatModal extends React.PureComponent {
+class ChatModal extends PureComponent {
   state = {
     confirmLoading: false,
     type: 'single',
     membersIds: [],
   };
-  groupNameRef = React.createRef();
+  groupNameRef = createRef();
 
   static contextType = ModelContext;
   static defaultProps = {

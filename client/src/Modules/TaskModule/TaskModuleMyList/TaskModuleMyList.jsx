@@ -1,44 +1,45 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { taskModuleMyListType } from '../types';
 import TableView from 'Components/TableView';
 import TitleModule from 'Components/TitleModule';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
 
-class TaskModuleMyList extends React.PureComponent {
-  refModuleTask = React.createRef();
-  static propTypes = taskModuleMyListType;
-  static defaultProps = {
-    router: {},
-    udata: {},
-    data: {},
-    height: 0,
-    loaderMethods: {},
-    isBackground: false,
-    visible: false,
-  };
+const TaskModuleMyList = ({ udata, data, height, loading, counter, currentActionTab, statusApp }) => {
+  const refModuleTask = useRef(null);
 
-  render() {
-    const { udata, data, height, loading, counter, currentActionTab, statusApp } = this.props;
-    const { tasks = [] } = data || {};
-    return (
-      <div ref={this.refModuleTask} className="taskModule_all">
-        <TitleModule additional="Мои задачи" classNameTitle="taskModuleTitle" title="Список моих задач" />
-        <div className="taskModuleAll_main">
-          <TableView
-            key={currentActionTab}
-            counter={counter}
-            height={height}
-            dataSource={tasks}
-            statusApp={statusApp}
-            data={data}
-            loading={loading}
-            filterBy={['editor', 'uidCreater']}
-            udata={udata}
-            path="searchTable"
-          />
-        </div>
+  const { tasks = [] } = data || {};
+
+  return (
+    <div ref={refModuleTask} className="taskModule_all">
+      <TitleModule additional="Мои задачи" classNameTitle="taskModuleTitle" title="Список моих задач" />
+      <div className="taskModuleAll_main">
+        <TableView
+          key={currentActionTab}
+          counter={counter}
+          height={height}
+          dataSource={tasks}
+          statusApp={statusApp}
+          data={data}
+          loading={loading}
+          filterBy={['editor', 'uidCreater']}
+          udata={udata}
+          path="searchTable"
+        />
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
+
+TaskModuleMyList.defaultProps = {
+  router: {},
+  udata: {},
+  data: {},
+  height: 0,
+  loaderMethods: {},
+  isBackground: false,
+  visible: false,
+};
+
+TaskModuleMyList.propTypes = taskModuleMyListType;
+
 export default moduleContextToProps(TaskModuleMyList);

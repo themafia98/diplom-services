@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { commentsContainerType } from './types';
 import Scrollbars from 'react-custom-scrollbars';
 import _ from 'lodash';
@@ -12,7 +12,7 @@ import actionsTypes from 'actions.types';
 import { routeParser } from 'Utils';
 import { withClientDb } from 'Models/ClientSideDatabase';
 
-class Comments extends React.PureComponent {
+class Comments extends PureComponent {
   state = {
     onUpdateDisabled: false,
     value: null,

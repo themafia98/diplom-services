@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo, useState, useEffect, useCallback } from 'react';
 import { contactModuleType } from './types';
 import { connect } from 'react-redux';
 
@@ -12,137 +12,137 @@ import { compose } from 'redux';
 import { withClientDb } from 'Models/ClientSideDatabase';
 import actionPath from 'actions.path';
 
-class ContactModule extends React.PureComponent {
-  state = {
-    isLoading: false,
-  };
+const ContactModule = memo(
+  ({
+    onLoadCurrentData,
+    path,
+    type,
+    clientDB,
+    router,
+    statusApp,
+    udata,
+    webSocket,
+    visibilityPortal,
+    onChangeVisibleAction,
+    entitysList,
+  }) => {
+    const { shouldUpdate = false, routeData = {}, activeTabs = [] } = router;
 
-  static propTypes = contactModuleType;
-  static defaultProps = {
-    statusApp: '',
-    udata: {},
-    router: {},
-    webSocket: null,
-    visibilityPorta: false,
-    onChangeVisibleAction: null,
-  };
+    const [isLoading, setLoading] = useState(false);
 
-  componentDidMount = () => {
-    const { onLoadCurrentData, path, type = Symbol(''), clientDB } = this.props;
-
-    if (path === 'contactModule_feedback' && type === types.$sub_entrypoint_module) {
-      onLoadCurrentData({
-        action: actionPath.$LOAD_NEWS,
-        path,
-        optionsForParse: { noCorsClient: false },
-        clientDB,
-      });
-    }
-  };
-
-  checkBackground = (path, visible, mode = 'default') => {
-    const { router: { activeTabs = [] } = {} } = this.props;
-    if (mode === 'default') return !visible && activeTabs.some((actionTab) => actionTab === path);
-  };
-
-  componentDidUpdate = () => {
-    const {
-      router: { shouldUpdate = false, routeData = {} } = {},
-      path,
-      onLoadCurrentData,
-      type = Symbol(''),
-      clientDB,
-    } = this.props;
-
-    const { isLoading: isLoadingState = false } = this.state;
-
-    const shouldUpdateList = routeData[path] && routeData[path]?.shouldUpdate;
-    const isUnloadModule = shouldUpdate && !routeData[path]?.load;
-    const { loading = false } = routeData[path] || {};
-
-    const isCloseTabAction = !isUnloadModule && !shouldUpdateList && shouldUpdate && !loading;
-    const isAvailable = path === 'contactModule_feedback' && type === types.$sub_entrypoint_module;
-
-    if (!(isAvailable && !isLoadingState && (isUnloadModule || shouldUpdateList || isCloseTabAction))) {
-      return;
-    }
-
-    this.setState(
-      (state) => ({ ...state, isLoading: !state?.isLoading }),
-      async () => {
-        await onLoadCurrentData({
+    useEffect(() => {
+      if (path === 'contactModule_feedback' && type === types.$sub_entrypoint_module) {
+        onLoadCurrentData({
           action: actionPath.$LOAD_NEWS,
           path,
           optionsForParse: { noCorsClient: false },
           clientDB,
         });
+      }
+    }, [clientDB, onLoadCurrentData, path, type]);
 
-        this.setState({
-          ...this.state,
-          isLoading: false,
-        });
+    const onLoadingData = useCallback(async () => {
+      await onLoadCurrentData({
+        action: actionPath.$LOAD_NEWS,
+        path,
+        optionsForParse: { noCorsClient: false },
+        clientDB,
+      });
+    }, [clientDB, onLoadCurrentData, path]);
+
+    useEffect(() => {
+      const shouldUpdateList = routeData[path] && routeData[path]?.shouldUpdate;
+      const isUnloadModule = shouldUpdate && !routeData[path]?.load;
+      const { loading = false } = routeData[path] || {};
+
+      const isCloseTabAction = !isUnloadModule && !shouldUpdateList && shouldUpdate && !loading;
+      const isAvailable = path === 'contactModule_feedback' && type === types.$sub_entrypoint_module;
+
+      if (!(isAvailable && !isLoading && (isUnloadModule || shouldUpdateList || isCloseTabAction))) {
+        return;
+      }
+
+      setLoading(true);
+      onLoadingData();
+      setLoading(false);
+    }, [clientDB, isLoading, onLoadCurrentData, onLoadingData, path, routeData, shouldUpdate, type]);
+
+    const checkBackground = useCallback(
+      (path, visible, mode = 'default') => {
+        if (mode === 'default') return !visible && activeTabs.some((actionTab) => actionTab === path);
       },
+      [activeTabs],
     );
-  };
 
-  renderContactsModules = () => {
-    const {
-      path,
-      statusApp,
-      router: { routeData = {}, activeTabs = [] } = {},
-      router = {},
-      udata,
-      webSocket,
-      visibilityPortal,
+    const renderContactsModules = useCallback(() => {
+      const data = routeData[path] || {};
+      const { load = false, news = [] } = routeData[path] || {};
+
+      const isVisibleChatModal = visibilityPortal && path !== 'contactModule_chat';
+
+      const subTabProps = {
+        isPortal: visibilityPortal,
+        onChangeVisibleAction,
+        isTab: path === 'contactModule_chat',
+        webSocket: webSocket,
+        type: isVisibleChatModal ? 'modal' : type,
+        data,
+        isLoading: !load && !news.length,
+        path,
+        udata,
+        statusApp,
+        router,
+      };
+
+      const config = {
+        viewModuleName: 'newsViewPageModule',
+        moduleName: 'contactModule',
+        validation: checkBackground,
+        path,
+        parentType: type,
+        type: oneOfType(types.$sub_entrypoint_module, types.$entity_entrypoint),
+      };
+
+      const entityList = entityRender(
+        activeTabs.filter((tab) => tab === entitysList),
+        routeData,
+        subTabProps,
+        config,
+      );
+      return entityList.map(({ component = null }) => component);
+    }, [
+      activeTabs,
+      checkBackground,
+      entitysList,
       onChangeVisibleAction,
-      entitysList = [],
-      type,
-    } = this.props;
-
-    const data = routeData[path] || {};
-    const { load = false, news = [] } = routeData[path] || {};
-
-    const isVisibleChatModal = visibilityPortal && path !== 'contactModule_chat';
-
-    const subTabProps = {
-      isPortal: visibilityPortal,
-      onChangeVisibleAction,
-      isTab: path === 'contactModule_chat',
-      webSocket: webSocket,
-      type: isVisibleChatModal ? 'modal' : type,
-      data,
-      isLoading: !load && !news.length,
       path,
-      udata,
-      statusApp,
-      router,
-    };
-
-    const config = {
-      viewModuleName: 'newsViewPageModule',
-      moduleName: 'contactModule',
-      validation: this.checkBackground,
-      path,
-      parentType: type,
-      type: oneOfType(types.$sub_entrypoint_module, types.$entity_entrypoint),
-    };
-
-    const entityList = entityRender(
-      activeTabs.filter((tab) => tab === entitysList),
       routeData,
-      subTabProps,
-      config,
-    );
-    return entityList.map(({ component = null }) => component);
-  };
-  render() {
+      router,
+      statusApp,
+      type,
+      udata,
+      visibilityPortal,
+      webSocket,
+    ]);
+    debugger;
     return (
       <div key="contactModule" className="contactModule">
-        {this.renderContactsModules()}
+        {renderContactsModules()}
       </div>
     );
-  }
-}
+  },
+);
+
+ContactModule.propTypes = contactModuleType;
+ContactModule.defaultProps = {
+  type: Symbol(''),
+  statusApp: '',
+  udata: {},
+  router: {},
+  webSocket: null,
+  visibilityPorta: false,
+  onChangeVisibleAction: null,
+};
 
 const mapStateToProps = (state) => {
   const {

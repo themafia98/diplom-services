@@ -1,48 +1,39 @@
-import React from 'react';
+import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react';
 import { fileType } from './types';
 import { v4 as uuid } from 'uuid';
 import { Upload, Icon, message, Checkbox } from 'antd';
 import ModelContext from 'Models/context';
 const { Dragger } = Upload;
 
-class File extends React.Component {
-  state = {
-    filesArray: null,
-  };
+const File = ({
+  filesArray: filesListProps,
+  onAddFileList,
+  onRemoveFile,
+  moduleData,
+  module,
+  isLocal,
+  customUrl,
+}) => {
+  const { _id = '' } = moduleData;
 
-  static contextType = ModelContext;
-  static propTypes = fileType;
-  static defaultProps = {
-    filesArray: [],
-    onAddFileList: null,
-    onRemoveFile: null,
-    moduleData: {},
-    rest: null,
-    module: '',
-    isLocal: false,
-    customUrl: '',
-  };
+  const [directory, setDirectory] = useState(null);
+  const [filesList, setFiles] = useState([]);
 
-  static getDerivedStateFromProps = (props, state) => {
-    const isArray = Array.isArray(props.filesArray) && Array.isArray(state.filesArray);
+  const context = useContext(ModelContext);
 
-    if (
-      props.filesArray !== state.filesArray ||
-      (isArray && state.filesArray.length !== props.filesArray.length)
-    ) {
-      if (Array.isArray(props.filesArray))
-        return {
-          ...state,
-          filesArray: [...props.filesArray],
-        };
+  useEffect(() => {
+    const isList = Array.isArray(filesListProps);
+    const isArrayLikeFilesList = isList && Array.isArray(filesList);
+
+    const isDiffFilesListCount = isArrayLikeFilesList && filesList.length !== filesListProps.length;
+
+    if (isList && (filesListProps !== filesList || isDiffFilesListCount)) {
+      setFiles(filesListProps);
     }
+  }, [filesList, filesListProps]);
 
-    return state;
-  };
-
-  onChange = ({ file = {}, fileList = [] } = {}) => {
+  const onChange = ({ file = {}, fileList = [] } = {}) => {
     const { status = '', name = '' } = file;
-    const { onAddFileList } = this.props;
 
     if (status === 'uploading') {
       if (onAddFileList) onAddFileList(fileList, status);
@@ -57,12 +48,11 @@ class File extends React.Component {
     }
   };
 
-  onRemove = (file) => {
-    const { onRemoveFile } = this.props;
+  const onRemove = (file) => {
     if (onRemoveFile) onRemoveFile(file);
   };
 
-  handlePreview = ({ url = '', name = '' }) => {
+  const handlePreview = ({ url = '', name = '' }) => {
     const linkDownload = document.createElement('a');
     linkDownload.href = url;
     linkDownload.download = name;
@@ -71,54 +61,55 @@ class File extends React.Component {
     linkDownload.remove();
   };
 
-  getFileProps = () => {
-    const { moduleData: { _id = '' } = {}, module, isLocal, customUrl } = this.props;
-    const { Request } = this.context;
+  const onChangeMode = ({ target: { checked = false } }) => {
+    setDirectory(checked);
+  };
+
+  const getFileProps = useCallback(() => {
+    const { Request } = context;
     const rest = new Request();
-    const { filesArray = [], directory = false } = this.state;
 
     return {
       name: `${uuid()}_$FT$P$_${_id}`,
       multiple: !isLocal,
       withCredentials: true,
       headers: rest && isLocal ? rest.getHeaders() : null,
-      fileList: filesArray,
+      fileList: filesList,
       action: customUrl ? customUrl : rest && isLocal ? `${rest.getApi()}/system/${module}/file` : null,
-      onPreview: this.handlePreview,
+      onPreview: handlePreview,
       directory,
     };
-  };
+  }, [_id, context, customUrl, directory, filesList, isLocal, module]);
 
-  onChangeMode = ({ target: { checked: directory = false } }) => {
-    this.setState({
-      ...this.state,
-      directory,
-    });
-  };
+  const draggerProps = useMemo(() => getFileProps(), [getFileProps]);
 
-  render() {
-    const props = this.getFileProps();
-    const { directory = false } = this.state;
-    return (
-      <div className="file">
-        <Checkbox defaultChecked={false} onChange={this.onChangeMode} checked={directory}>
-          Загрузка дирректории
-        </Checkbox>
-        <Dragger
-          beforeUpload={this.beforeUpload}
-          onChange={this.onChange}
-          onRemove={this.onRemove}
-          {...props}
-        >
-          <p className="ant-upload-drag-icon">
-            <Icon type="inbox" />
-          </p>
-          <p className="ant-upload-text">Нажмите или перетащите файл в эту область, чтобы загрузить</p>
-          <p className="ant-upload-hint">Поддержка разовой или массовой загрузки.</p>
-        </Dragger>
-      </div>
-    );
-  }
-}
+  return (
+    <div className="file">
+      <Checkbox defaultChecked={false} onChange={onChangeMode} checked={directory}>
+        Загрузка дирректории
+      </Checkbox>
+      <Dragger onChange={onChange} onRemove={onRemove} {...draggerProps}>
+        <p className="ant-upload-drag-icon">
+          <Icon type="inbox" />
+        </p>
+        <p className="ant-upload-text">Нажмите или перетащите файл в эту область, чтобы загрузить</p>
+        <p className="ant-upload-hint">Поддержка разовой или массовой загрузки.</p>
+      </Dragger>
+    </div>
+  );
+};
+
+File.defaultProps = {
+  filesArray: [],
+  onAddFileList: null,
+  onRemoveFile: null,
+  moduleData: {},
+  rest: null,
+  module: '',
+  isLocal: false,
+  customUrl: '',
+};
+
+File.propTypes = fileType;
 
 export default File;

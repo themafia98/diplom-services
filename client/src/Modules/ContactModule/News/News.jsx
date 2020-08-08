@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { newsType } from '../types';
 import { connect } from 'react-redux';
 import { Pagination, Button, message, Empty, Spin } from 'antd';
@@ -15,7 +15,7 @@ import { compose } from 'redux';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { openTab } from 'Redux/actions/routerActions/middleware';
 
-class News extends React.PureComponent {
+class News extends PureComponent {
   state = {
     isOpen: false,
     prewPage: 1,

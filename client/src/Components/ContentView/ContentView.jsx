@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { getComponentByKey, parseModuleKey, getModuleTypeByParsedKey } from 'Utils';
 import { contentViewType } from './types';
 import _ from 'lodash';
@@ -12,7 +12,7 @@ import types from 'types.modules';
 
 const { Content } = Layout;
 
-class ContentView extends React.Component {
+class ContentView extends Component {
   state = {
     visibilityPortal: false,
     key: null,

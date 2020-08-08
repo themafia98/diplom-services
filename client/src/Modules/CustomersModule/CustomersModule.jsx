@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { customersModuleType } from './types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
@@ -6,7 +6,7 @@ import withRouter from 'Components/Helpers/withRouter/withRouter';
 import entityRender from 'Utils/Tools/entityRender';
 import types from 'types.modules';
 
-class CustomersModule extends React.PureComponent {
+class CustomersModule extends PureComponent {
   static propTypes = customersModuleType;
 
   checkBackground = (path) => {

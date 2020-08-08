@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { taskModuleCalendarType } from '../types';
 import _ from 'lodash';
 import Scrollbars from 'react-custom-scrollbars';
@@ -12,7 +12,7 @@ import Output from 'Components/Output';
 import types from 'types.modules';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
 
-class TaskModuleCalendar extends React.PureComponent {
+class TaskModuleCalendar extends PureComponent {
   state = {
     selectedEntity: null,
     drawerVisible: false,

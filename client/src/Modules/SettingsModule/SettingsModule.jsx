@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PureComponent, createRef } from 'react';
 import { settingsModuleType } from './types';
 import { connect } from 'react-redux';
 import { settingsLogsSelector, settingsStatusSelector, settingsArtifactsSelector } from 'Utils/selectors';
@@ -22,7 +22,7 @@ import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { withClientDb } from 'Models/ClientSideDatabase';
 import { requestTemplate, paramsTemplate } from 'Utils/Api/api.utils';
 
-class SettingsModule extends React.PureComponent {
+class SettingsModule extends PureComponent {
   state = {
     showScrollbar: false,
     emailValue: null,
@@ -34,8 +34,8 @@ class SettingsModule extends React.PureComponent {
     statusList: [],
   };
 
-  refWrapper = React.createRef();
-  refColumn = React.createRef();
+  refWrapper = createRef();
+  refColumn = createRef();
 
   static propTypes = settingsModuleType;
   static defaultProps = {

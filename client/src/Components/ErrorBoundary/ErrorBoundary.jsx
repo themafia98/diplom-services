@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { Component } from 'react';
 import * as Sentry from '@sentry/browser';
 
 import ErrorPage from './ErrorPage';
 
-class ErrorBoundary extends React.Component {
+class ErrorBoundary extends Component {
   state = {
     hasError: false,
     eventId: null,

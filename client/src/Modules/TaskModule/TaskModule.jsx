@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { compose } from 'redux';
 import { taskModuleType } from './types';
 import _ from 'lodash';
@@ -24,7 +24,7 @@ import { withClientDb } from 'Models/ClientSideDatabase';
 import actionPath from 'actions.path';
 import { requestTemplate } from 'Utils/Api/api.utils';
 
-class TaskModule extends React.PureComponent {
+class TaskModule extends PureComponent {
   state = {
     height: null,
     heightController: null,
