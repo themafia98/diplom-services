@@ -11,8 +11,8 @@ const MenuView = ({ collapsed, cbOnCollapse, items, cbMenuHandler, activeTabEUID
   const renderMenu = (items) =>
     items
       .filter(({ PARENT_CODE = '' }) => PARENT_CODE === null)
-      .map(({ EUID = '', ICON = '', VALUE = '' }) => {
-        const children = items.filter(({ PARENT_CODE }) => EUID === PARENT_CODE);
+      .map(({ EUID = '', ICON = '', VALUE = '' } = {}) => {
+        const children = items.filter(({ PARENT_CODE = '' } = {}) => EUID === PARENT_CODE);
         if (children.length > 0) {
           return (
             <SubMenu

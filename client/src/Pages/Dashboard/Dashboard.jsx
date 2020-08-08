@@ -35,7 +35,6 @@ class Dashboard extends PureComponent {
     isToolbarActive: false,
     redirect: false,
     status: 'online',
-    menuItems: this.props?.appConfig?.menu,
     counterError: 0,
     showLoader: false,
   };
@@ -383,7 +382,6 @@ class Dashboard extends PureComponent {
 
   render() {
     const {
-      menuItems = null,
       showLoader,
       redirect,
       guideVisible,
@@ -399,7 +397,7 @@ class Dashboard extends PureComponent {
       udata = {},
       appConfig: config = {},
     } = this.props;
-
+    const { menu: menuItems = [] } = config || {};
     if (redirect) return <Redirect to={{ pathname: '/' }} />;
 
     const activeTabsData = this.getactiveTabs(activeTabs, menuItems);
