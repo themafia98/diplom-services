@@ -134,9 +134,7 @@ class App extends Component {
         true,
       );
 
-      if (res?.status !== 200) {
-        throw new Error('Bad user data');
-      }
+      if (res?.status !== 200) throw new Error('Bad user data');
 
       let path = 'mainModule';
       const defaultModule = menu.find((item) => item?.SIGN === 'default');
@@ -145,7 +143,8 @@ class App extends Component {
       const activeTabsCopy = [...activeTabs];
       const isFind = activeTabsCopy.findIndex((tab) => tab === path) !== -1;
 
-      const { data: { user = {} } = {} } = res || {};
+      const { data = {} } = res || {};
+      const { user = {} } = data;
 
       const udata = Object.keys(user).reduce((acc, key) => {
         return key !== 'token'
@@ -160,13 +159,8 @@ class App extends Component {
         return message.error(`Максимальное количество вкладок: ${tabsLimit}`);
       const isUserData = udata && !_.isEmpty(udata);
 
-      if (!isFind) {
-        if (isUserData) this.initialSession(udata, path);
-        else rest.signOut();
-      } else if (currentActionTab !== path) {
-        if (isUserData) this.initialSession(udata, path);
-        else return rest.signOut();
-      }
+      if ((currentActionTab !== path || !isFind) && isUserData) this.initialSession(udata, path, true);
+      else if (!isUserData) return rest.signOut();
     } catch (error) {
       const { response: { data = '' } = {}, message = '' } = error || {};
       this.showErrorMessage(data || message || error);

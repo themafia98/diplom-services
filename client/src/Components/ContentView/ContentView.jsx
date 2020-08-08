@@ -58,10 +58,22 @@ class ContentView extends Component {
     this.setState({ key: uuid() });
   };
 
-  shouldComponentUpdate = ({ path: nextPath }, { key: nextKey, visibilityPortal: nextVisibilityPortal }) => {
-    const { path: currentPath } = this.props;
+  shouldComponentUpdate = (
+    { path: nextPath, appConfig: prevAppConfig, activeTabs: prevActiveTabs = [] },
+    { key: nextKey, visibilityPortal: nextVisibilityPortal },
+  ) => {
+    const { menu: prevMenu = [] } = prevAppConfig || {};
+    const { path: currentPath, appConfig, activeTabs } = this.props;
+    const { menu = [] } = appConfig || {};
     const { key: currentKey, visibilityPortal } = this.state;
-    if (nextPath !== currentPath || nextKey !== currentKey || nextVisibilityPortal !== visibilityPortal) {
+    if (
+      nextPath !== currentPath ||
+      nextKey !== currentKey ||
+      nextVisibilityPortal !== visibilityPortal ||
+      !_.isEqual(prevAppConfig, appConfig) ||
+      activeTabs?.length !== prevActiveTabs?.length ||
+      prevMenu?.length !== menu?.length
+    ) {
       return true;
     } else return false;
   };

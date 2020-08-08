@@ -47,6 +47,7 @@ export default handleActions(
 
       return {
         ...state,
+        path: tab && !path ? tab : path,
         activeTabs: [...activeTabs, tab],
         shouldUpdate: true,
         currentActionTab: tab,
