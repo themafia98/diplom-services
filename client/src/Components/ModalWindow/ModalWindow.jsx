@@ -72,17 +72,14 @@ const ModalWindow = memo((props) => {
     const { type } = state;
 
     if (customTypeModal && customTypeModal !== type && type === null) {
-      debugger;
       runAction.onChangeTypeAction(customTypeModal);
     }
 
     if (mode === 'reg' && type === null) {
-      debugger;
       runAction.onChangeTypeAction('regType');
     }
 
     if (editableContent && state?.description?.value === null) {
-      debugger;
       runAction.onChangeDescriptionAction(editableContent);
     }
   }, [customTypeModal, editableContent, mode, runAction, state]);
