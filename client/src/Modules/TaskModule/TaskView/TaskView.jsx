@@ -641,7 +641,6 @@ class TaskView extends PureComponent {
         keyTask={id ? id : null}
         accessStatus={accessStatus}
         onUpdate={onUpdate}
-        onEdit={this.onEdit}
         description={description}
         onRejectEdit={this.onRejectEdit}
         modeControll={modeControll}

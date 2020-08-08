@@ -22,7 +22,6 @@ const { Option } = Select;
 
 const ModalWindow = memo((props) => {
   const {
-    onEdit,
     modeControll,
     onRejectEdit,
     modeEditContent,
@@ -71,18 +70,19 @@ const ModalWindow = memo((props) => {
   useEffect(() => {
     const { type } = state;
 
-    if (customTypeModal && customTypeModal !== type && type === null) {
-      runAction.onChangeTypeAction(customTypeModal);
+    if (customTypeModal === 'editDescription' && editableContent && state?.description?.value === null) {
+      runAction.onChangeDescriptionAction({ ...state.description, value: editableContent });
     }
 
+    if (modeEditContent && customTypeModal && customTypeModal !== type) {
+      runAction.onChangeTypeAction(customTypeModal);
+      return;
+    }
     if (mode === 'reg' && type === null) {
       runAction.onChangeTypeAction('regType');
+      return;
     }
-
-    if (editableContent && state?.description?.value === null) {
-      runAction.onChangeDescriptionAction(editableContent);
-    }
-  }, [customTypeModal, editableContent, mode, runAction, state]);
+  }, [customTypeModal, editableContent, mode, modeEditContent, runAction, state]);
 
   const onMessage = (event) => {
     message.warning('Вы в режиме редактирования карточки.');
@@ -518,7 +518,6 @@ const ModalWindow = memo((props) => {
     isLoadList,
     rulesStatus,
     rulesEdit,
-    onEdit,
   };
 
   if (typeView === 'statusTask') {
@@ -581,7 +580,6 @@ const ModalWindow = memo((props) => {
 
 ModalWindow.propTypes = modalWindowType;
 ModalWindow.defaultProps = {
-  onEdit: null,
   modeControll: null,
   onRejectEdit: null,
   modeEditContent: null,
