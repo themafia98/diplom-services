@@ -40,7 +40,7 @@ const MenuView = ({ collapsed, cbOnCollapse, items, cbMenuHandler, activeTabEUID
             </Menu.Item>
           );
       });
-
+  if (!items[0]?.VALUE) return null;
   return (
     <Sider collapsible collapsed={collapsed} onCollapse={cbOnCollapse}>
       <div className="logo" onClick={cbGoMain}>
