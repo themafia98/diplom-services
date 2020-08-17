@@ -64,7 +64,7 @@
     "generate-password": "^1.5.1",
     "helmet": "^3.21.2",
     "isomorphic-fetch": "^2.2.1",
-    "lodash": "^4.17.16",
+    "lodash": "^4.17.20",
     "mime": "^2.4.5",
     "mongodb": "^3.3.4",
     "mongoose": "^5.9.11",
