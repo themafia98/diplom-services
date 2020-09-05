@@ -1,23 +1,40 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { string, bool, oneOf } from 'prop-types';
 import clsx from 'clsx';
-import styleNotFound from './notFound.module.scss';
-import { Button } from 'antd';
+import {
+  notFoundModule,
+  empty,
+  traceBox,
+  traceBoxVisible,
+  notFoundTraceHeader,
+  traceBox__traceMessage,
+  iconRow,
+} from './notFound.module.scss';
+import { Button, Icon } from 'antd';
 
-const NotFound = ({ message, showRedirectIndexButton, redirectType }) => {
+const NotFound = ({ message, showRedirectIndexButton, redirectType, trace }) => {
+  const [visible, setVisibility] = useState(false);
+
+  const onChangeTraceMessageVisibility = () => setVisibility((value) => !value);
+
   const onRedirect = () => {
     if (redirectType === 'hard') window.location.reload(true);
     else window.location.reload(false);
   };
 
   return (
-    <div className={clsx('notFound-module', styleNotFound.empty)}>
-      <p>{message}</p>
-      {showRedirectIndexButton ? (
-        <Button onClick={onRedirect} type="default">
-          Попробовать снова
-        </Button>
-      ) : null}
+    <div className={notFoundModule}>
+      <section className={empty}>
+        <p>{message}</p>
+        {showRedirectIndexButton ? <Button onClick={onRedirect}>Попробовать снова</Button> : null}
+      </section>
+      <section className={traceBox}>
+        <header className={notFoundTraceHeader} onClick={onChangeTraceMessageVisibility}>
+          Trace
+          <Icon className={iconRow} type={visible ? 'up' : 'down'} />
+        </header>
+        <article className={clsx(traceBox__traceMessage, visible && traceBoxVisible)}>{trace}</article>
+      </section>
     </div>
   );
 };
@@ -26,10 +43,12 @@ NotFound.propsTypes = {
   message: string.isRequired,
   redirectType: oneOf(['hard', 'soft']).isRequired,
   showRedirectIndexButton: bool.isRequired,
+  trace: string,
 };
 
 NotFound.defaultProps = {
   message: 'Страница удалена либо ещё не создана',
+  trace: '',
   redirectType: 'soft',
   showRedirectIndexButton: false,
 };

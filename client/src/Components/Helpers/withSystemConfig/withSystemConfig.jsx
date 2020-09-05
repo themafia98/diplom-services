@@ -1,12 +1,12 @@
 import React, { useEffect, useContext, useCallback } from 'react';
 import { useState } from 'react';
-import { message } from 'antd';
 import Loader from 'Components/Loader/Loader';
-import NotFound from 'Modules/NotFound/NotFound';
+import NotFound from 'Modules/NotFound';
 import ModelContext from 'Models/context';
 
 const withSystemConfig = (Component) => (props) => {
   const [isSideEffect, setUseSideEffect] = useState(false);
+  const [trace, setTrace] = useState('');
   const [typeConfig, setTypeConfig] = useState({ prev: '', current: 'public' });
   const [isBlock, setBlock] = useState(false);
   const [coreConfig, setCoreConfig] = useState(null);
@@ -47,8 +47,7 @@ const withSystemConfig = (Component) => (props) => {
         onChangeType(loadType);
         onSetCoreConfig(configJson);
       } catch (error) {
-        console.error(error);
-        message.error(error?.message || 'Invalid');
+        setTrace(error.stack);
         setBlock(true);
       }
     },
@@ -64,7 +63,8 @@ const withSystemConfig = (Component) => (props) => {
   else if (isBlock)
     return (
       <NotFound
-        message="Ошибка загрузки настроек либо недостаточно прав для просмотра данной страницы"
+        message="Недостаточно прав для просмотра данной страницы"
+        trace={trace}
         redirectType="hard"
         showRedirectIndexButton
       />
