@@ -1,4 +1,4 @@
-const types = Object.freeze({
+const types = {
   /**
    * @readonly
    * @requires $path var with entity key
@@ -40,6 +40,6 @@ const types = Object.freeze({
    * path example: 'mainModule'
    */
   $entrypoint_module: Symbol.for('$entrypoint_module'),
-});
+};
 
 export default types;

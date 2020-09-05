@@ -1,4 +1,4 @@
-const actionsTypes = Object.freeze({
+const actionsTypes = {
   /**
    * @private
    * param key: actionType
@@ -223,6 +223,6 @@ const actionsTypes = Object.freeze({
    * (/recovory {POST})
    */
   $RECOVORY: 'recovory_checker',
-});
+};
 
 export default actionsTypes;

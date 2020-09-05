@@ -1,7 +1,7 @@
-const ACTIONS = Object.freeze({
+const ACTIONS = {
   CHANGE_TYPE: 'CHANGE_TYPE',
   CHANGE_DESCRIPTION: 'CHANGE_DESCRIPTION',
   CHANGE_ROOT: 'CHANGE_ROOT',
-});
+};
 
 export { ACTIONS };
