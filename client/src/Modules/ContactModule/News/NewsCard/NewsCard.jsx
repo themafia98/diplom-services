@@ -1,16 +1,18 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { newsCardType } from '../../types';
 import _ from 'lodash';
 import { Card, Button } from 'antd';
 import clsx from 'clsx';
 
 const NewsCard = ({ onClick, className, data }) => {
+  const cardTitle = useMemo(() => (data?.title ? data?.title : data?._id ? data?._id : null), [data]);
+
   if (!data || _.isEmpty(data)) return null;
 
   return (
     <Card
       className={clsx('news-card', className ? className : null)}
-      title={data?.title ? data?.title : data?._id ? data?._id : null}
+      title={cardTitle}
       extra={
         <Button onClick={onClick} type="primary">
           Читать
