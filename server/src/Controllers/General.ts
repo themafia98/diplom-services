@@ -88,7 +88,20 @@ namespace General {
                 if (err) {
                   res.status(404).send(err.message);
                 }
-                return res.json({ user: user.toAuthJSON() });
+
+                const jsonUser = user.toAuthJSON();
+                const userKeys = Object.keys(jsonUser);
+
+                const parsedUser: object = userKeys.reduce((acc: object, key: string) => {
+                  if (key === 'token') return acc;
+
+                  return {
+                    ...acc,
+                    [key]: jsonUser[key],
+                  };
+                }, {});
+
+                return res.json({ user: parsedUser, token: user && user.token ? user.token : null });
               },
             );
           } catch (err) {

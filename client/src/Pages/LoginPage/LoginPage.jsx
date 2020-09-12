@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import Logo from 'Components/Logo';
 import ModalWindow from 'Components/ModalWindow';
 import ModelContext from 'Models/context';
+import { SIGNS } from 'App.constant';
 
 const LoginPage = ({ appConfig, initialSession, authLoad, location }) => {
   const { pathname = '' } = location || {};
@@ -21,7 +22,7 @@ const LoginPage = ({ appConfig, initialSession, authLoad, location }) => {
 
   const context = useContext(ModelContext);
 
-  const enterLoading = useCallback(() => {
+  const enterLoading = useCallback(async () => {
     const { Request } = context;
 
     const { menu = [] } = appConfig || {};
@@ -38,8 +39,8 @@ const LoginPage = ({ appConfig, initialSession, authLoad, location }) => {
     setErrorMessage(null);
     setLoading(true);
 
-    rest
-      .sendRequest(
+    try {
+      const response = await rest.sendRequest(
         '/login',
         'POST',
         {
@@ -47,42 +48,39 @@ const LoginPage = ({ appConfig, initialSession, authLoad, location }) => {
           password: passwordValue,
         },
         false,
-      )
-      .then((res) => {
-        if (res.status === 200 && res.data && res?.data?.user?.token) {
-          localStorage.setItem('token', JSON.stringify(res.data.user.token));
-          const udata = Object.keys(res.data.user).reduce((accumulator, key) => {
-            if (key !== 'token') {
-              accumulator[key] = res.data.user.token?.[key];
-            }
-            return accumulator || {};
-          }, {});
+      );
 
-          const defaultModule = menu?.find((item) => item?.['SIGN'] === 'default');
+      if (response.status !== 200) {
+        throw new Error(`${response.status}`);
+      }
 
-          if (!initialSession) throw new Error(`initialSession not found`);
+      const { user: udata = {}, token = '' } = response.data;
 
-          initialSession(udata, defaultModule?.EUID || 'mainModule');
-          setAuth(true);
-        } else throw new Error(`${res.status}`);
-      })
-      .catch((error) => {
-        const { response: { data = '' } = {} } = error || {};
+      if (!token) throw new Error('Bad user auth token');
 
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(data, 'text/html');
-        const isHtml = Array.from(doc.body.childNodes).some((node) => node.nodeType === 1);
-        const isValid = data && typeof data === 'string' && !isHtml;
+      localStorage.setItem('token', JSON.stringify(token));
 
-        const errorMessage = isValid
-          ? data
-          : isHtml
-          ? 'Ошибка сервера, попробуйте позже.'
-          : 'Ошибка авторизации';
+      const defaultModule = menu?.find((item) => item?.SIGN === SIGNS.DEFAULT_SIGN);
 
-        setErrorMessage(errorMessage);
-        setLoading(false);
-      });
+      initialSession(udata, defaultModule?.EUID || 'mainModule');
+      setAuth(true);
+    } catch (error) {
+      const { data = '' } = error?.response || {};
+
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(data, 'text/html');
+      const isHtml = Array.from(doc.body.childNodes).some((node) => node.nodeType === 1);
+      const isValid = data && typeof data === 'string' && !isHtml;
+
+      const errorMessage = isValid
+        ? data
+        : isHtml
+        ? 'Ошибка сервера, попробуйте позже.'
+        : 'Ошибка авторизации';
+
+      setErrorMessage(errorMessage);
+      setLoading(false);
+    }
   }, [appConfig, context, initialSession]);
 
   const onKeyDown = ({ key = '' }) => {
