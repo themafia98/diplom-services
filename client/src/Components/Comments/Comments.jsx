@@ -16,7 +16,7 @@ const Comments = memo(({ data, onUpdate, path, udata, clientDB, rules, commentPr
   const [updateDisabled, setDisable] = useState(false);
   const [msg, setValue] = useState(null);
 
-  const { comments, key, id } = data;
+  const { comments, key, _id: id } = data;
   const { displayName = '', _id: uId = '' } = udata;
 
   const addCommentsDelay = useMemo(
