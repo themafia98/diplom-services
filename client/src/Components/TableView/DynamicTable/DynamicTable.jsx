@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { dynamicTableType } from '../types';
+import { dynamicTableType } from '../TableView.types';
 import moment from 'moment';
 import Output from 'Components/Output';
 import { Table, message, Input, Button, Icon, Empty } from 'antd';

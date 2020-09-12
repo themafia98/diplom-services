@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { udataType } from 'types';
+import { udataType } from 'App.types';
 const { func, bool, object, symbol, any, string } = PropTypes;
 
 export const drawerViewerType = {

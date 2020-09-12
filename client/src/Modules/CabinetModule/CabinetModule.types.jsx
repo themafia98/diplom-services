@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { udataType } from '../../types';
+import { udataType } from '../../App.types';
 const { func, object, string, oneOfType, oneOf, objectOf } = PropTypes;
 
 export const cabinetType = {

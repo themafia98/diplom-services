@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { editableModalType } from '../types';
+import { editableModalType } from '../Modal.types';
 import { Modal, Tooltip, message } from 'antd';
 
 import Textarea from 'Components/Textarea';

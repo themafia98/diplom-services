@@ -1,5 +1,5 @@
 import React from 'react';
-import { loaderType } from './types';
+import { loaderType } from './Loader.types';
 import loader from './loader.gif';
 import clsx from 'clsx';
 

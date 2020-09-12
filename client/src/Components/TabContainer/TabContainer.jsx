@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useEffect } from 'react';
-import { tabContainerType } from './types';
+import { tabContainerType } from './TabContainer.types';
 import clsx from 'clsx';
 import { useModuleState, useModuleActions } from 'Components/Helpers/moduleState/hooks';
 import { withModuleState } from 'Components/Helpers';

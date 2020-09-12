@@ -1,5 +1,5 @@
 import React, { memo, useContext, useRef, useEffect, useState, useCallback, useMemo } from 'react';
-import { notificationPopupType } from './types';
+import { notificationPopupType } from './NotificationPopup.types';
 import { Icon, Badge, Popover } from 'antd';
 import NotificationItem from './NotificationItem';
 import StreamBox from 'Components/StreamBox';

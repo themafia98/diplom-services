@@ -1,5 +1,5 @@
 import React, { Component, createRef } from 'react';
-import { streamBoxType } from './types';
+import { streamBoxType } from './StreamBox.types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { multipleLoadData, openTab } from 'Redux/actions/routerActions/middleware';

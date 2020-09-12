@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { udataType } from '../../types';
+import { udataType } from '../../App.types';
 const { func, string, number, object, bool, array, oneOfType, arrayOf } = PropTypes;
 
 export const tableViewType = {

@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { recovoryType } from './types';
+import { recovoryType } from './Recovory.types';
 import { Button, Input } from 'antd';
 
 import ModelContext from 'Models/context';

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { barType } from '../types';
+import { barType } from '../StatisticsModule.types';
 import { Spin } from 'antd';
 import { ResponsiveBar } from '@nivo/bar';
 

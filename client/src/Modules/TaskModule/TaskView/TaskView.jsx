@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { taskViewType } from '../types';
+import { taskViewType } from '../TaskModule.types';
 import { v4 as uuid } from 'uuid';
 import _ from 'lodash';
 import moment from 'moment';

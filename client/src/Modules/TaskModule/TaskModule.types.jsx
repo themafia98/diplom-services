@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { udataType, taskEntityType } from '../../types';
+import { udataType, taskEntityType } from '../../App.types';
 const { func, string, object, bool, objectOf, number, oneOfType, oneOf } = PropTypes;
 
 export const taskModuleType = {

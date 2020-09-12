@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { v4 as uuid } from 'uuid';
 import clsx from 'clsx';
 import { ChromePicker } from 'react-color';
-import { tagsContainerType } from './types';
+import { tagsContainerType } from './TagsContainer.types';
 import { Input, Tag, Button, Tooltip } from 'antd';
 
 const TagsContainer = ({

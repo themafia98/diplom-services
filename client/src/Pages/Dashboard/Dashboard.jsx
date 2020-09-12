@@ -1,5 +1,5 @@
 import React, { PureComponent, createRef } from 'react';
-import { dashboardType } from './types';
+import { dashboardType } from './Dashboard.types';
 import { Redirect } from 'react-router-dom';
 import { EventEmitter } from 'events';
 import io from 'socket.io-client';

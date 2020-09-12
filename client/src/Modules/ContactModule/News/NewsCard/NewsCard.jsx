@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { newsCardType } from '../../types';
+import { newsCardType } from '../../ContactModule.types';
 import _ from 'lodash';
 import { Card, Button } from 'antd';
 import clsx from 'clsx';

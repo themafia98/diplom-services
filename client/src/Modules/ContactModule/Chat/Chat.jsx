@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import clsx from 'clsx';
 import moment from 'moment';
 import _ from 'lodash';
-import { chatType } from '../types';
+import { chatType } from '../ContactModule.types';
 import ChatMenu from './ChatMenu';
 
 import { notification, message, Popover, Spin } from 'antd';

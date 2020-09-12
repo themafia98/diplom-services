@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect, useCallback, useMemo } from 'react';
 import clsx from 'clsx';
-import { userCardType } from './types';
+import { userCardType } from './UserCard.types';
 import { connect } from 'react-redux';
 import { updateUdata } from 'Redux/actions/publicActions';
 import { Avatar, Button, Icon, Dropdown, Menu, Tooltip, message, Popover } from 'antd';

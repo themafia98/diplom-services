@@ -1,5 +1,5 @@
 import React from 'react';
-import { messageType } from '../../types';
+import { messageType } from '../../ContactModule.types';
 import { Tooltip } from 'antd';
 
 const Message = ({ it, children, showTooltip, className }) => {

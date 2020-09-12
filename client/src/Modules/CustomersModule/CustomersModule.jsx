@@ -1,5 +1,5 @@
 import React, { memo, useCallback } from 'react';
-import { customersModuleType } from './types';
+import { customersModuleType } from './CustomersModule.types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import withRouter from 'Components/Helpers/withRouter/withRouter';

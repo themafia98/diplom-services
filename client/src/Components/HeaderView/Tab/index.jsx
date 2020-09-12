@@ -1,9 +1,9 @@
 import React, { useMemo, useCallback } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
-import { tabType } from '../types';
 import clsx from 'clsx';
 import { Icon, Tooltip } from 'antd';
 import { BREAKPOINTS, SCALE_FACTORS } from './Tab.constant';
+import { tabType } from '../HeaderView.types';
 
 const Tab = ({ value, active, hendlerTab, itemKey, index, sizeTab }) => {
   const callbackHendlerTab = useCallback(hendlerTab, []);

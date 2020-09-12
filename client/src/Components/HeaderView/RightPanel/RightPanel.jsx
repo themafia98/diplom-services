@@ -1,10 +1,10 @@
 import React from 'react';
-import { rightPanelType } from '../types';
 import Updater from 'Components/Updater';
 import UserPopup from 'Components/UserPopup';
 
 import NotificationPopup from 'Components/NotificationPopup';
 import Status from './Status';
+import { rightPanelType } from '../HeaderView.types';
 
 const RightPanel = ({
   onUpdate,

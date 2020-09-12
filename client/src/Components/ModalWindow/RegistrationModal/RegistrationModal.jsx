@@ -1,5 +1,5 @@
 import React from 'react';
-import { formRegType } from '../types';
+import { formRegType } from '../Modal.types';
 import { Input, Select } from 'antd';
 const { Option } = Select;
 const RegistrationModal = ({ cbOnChangeSelect, cbOnChange }) => (

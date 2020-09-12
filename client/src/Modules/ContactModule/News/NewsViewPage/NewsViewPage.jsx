@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { newsViewType } from '../../types';
+import { newsViewType } from '../../ContactModule.types';
 import { v4 as uuid } from 'uuid';
 
 import TitleModule from 'Components/TitleModule';

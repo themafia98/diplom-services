@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { getComponentByKey, parseModuleKey, getModuleTypeByParsedKey } from 'Utils';
-import { contentViewType } from './types';
+import { contentViewType } from './ContentView.types';
 import _ from 'lodash';
 import { Layout } from 'antd';
 

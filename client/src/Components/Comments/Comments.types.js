@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import { udataType } from 'types';
-const { bool, object, func, string, oneOfType, number } = PropTypes;
+import { udataType } from 'App.types';
+const { bool, object, func, string, oneOfType, number, shape, array } = PropTypes;
 
 export const commentType = {
   rules: bool.isRequired,
@@ -17,8 +17,12 @@ export const commentType = {
 };
 
 export const commentsContainerType = {
-  rules: bool.isRequired,
-  onUpdate: func.isRequired,
-  data: object.isRequired,
+  rules: bool,
+  onUpdate: func,
+  data: shape({
+    comments: array,
+    _id: string,
+    key: string,
+  }).isRequired,
   udata: udataType.isRequired,
 };

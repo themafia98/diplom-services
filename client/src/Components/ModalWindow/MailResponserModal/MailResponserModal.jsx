@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { mailResponserType } from '../types';
+import { mailResponserType } from '../Modal.types';
 import { Input, message, Modal } from 'antd';
 import modalContext from 'Models/context';
 

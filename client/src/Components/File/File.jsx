@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react';
-import { fileType } from './types';
+import { fileType } from './File.types';
 import { v4 as uuid } from 'uuid';
 import { Upload, Icon, message, Checkbox } from 'antd';
 import ModelContext from 'Models/context';

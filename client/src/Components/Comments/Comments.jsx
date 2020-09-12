@@ -1,5 +1,5 @@
-import React, { PureComponent } from 'react';
-import { commentsContainerType } from './types';
+import React, { memo, useMemo, useState } from 'react';
+import { commentsContainerType } from './Comments.types';
 import Scrollbars from 'react-custom-scrollbars';
 import _ from 'lodash';
 import { v4 as uuid } from 'uuid';
@@ -12,97 +12,80 @@ import actionsTypes from 'actions.types';
 import { routeParser } from 'Utils';
 import { withClientDb } from 'Models/ClientSideDatabase';
 
-class Comments extends PureComponent {
-  state = {
-    onUpdateDisabled: false,
-    value: null,
-  };
+const Comments = memo(({ data, onUpdate, path, udata, clientDB, rules, commentProps }) => {
+  const [updateDisabled, setDisable] = useState(false);
+  const [msg, setValue] = useState(null);
 
-  static propTypes = commentsContainerType;
-  static defaultProps = {
-    data: {},
-    udata: {},
-    rules: true,
-  };
+  const { comments, key, id } = data;
+  const { displayName = '', _id: uId = '' } = udata;
 
-  addCommentsDelay = _.debounce(async (event) => {
-    try {
-      const { value: msg = '' } = this.state;
-      const {
-        onUpdate,
-        data: { key = '', comments = [], _id: id = '' } = {},
-        data = {},
-        path,
-        udata: { displayName = '', _id: uId = '' } = {},
-        clientDB,
-      } = this.props;
+  const addCommentsDelay = useMemo(
+    () =>
+      _.debounce(async () => {
+        try {
+          if (!msg) return message.error('Вы ничего не ввели.');
+          else if (!(key && Array.isArray(comments) && !_.isEmpty(data))) return;
 
-      if (!msg) return message.error('Вы ничего не ввели.');
-      else if (key && Array.isArray(comments) && !_.isEmpty(data)) {
-        const time = moment().format('DD.MM.YYYY HH:mm');
+          const time = moment().format('DD.MM.YYYY HH:mm');
 
-        if (!uId || !time || !displayName) {
-          throw new Error('Invalid data');
+          if (!uId || !time || !displayName) {
+            throw new Error('Invalid data');
+          }
+
+          const comment = {
+            id: uuid(),
+            uId,
+            time,
+            username: displayName,
+            message: msg,
+          };
+
+          setDisable(true);
+          setValue('');
+
+          const parsedRoutePath = routeParser({
+            pageType: 'moduleItem',
+            path,
+          });
+
+          await onUpdate({
+            actionType: actionsTypes.$UPDATE_SINGLE,
+            parsedRoutePath,
+            key,
+            id,
+            updateBy: '_id',
+            updateItem: [...comments, comment],
+            updateField: 'comments',
+            store: 'tasks',
+            clientDB,
+            systemMessage: { done: 'Коментарий добавлен.', error: 'Комментарий добавить не удалось' },
+          });
+
+          setDisable(false);
+          return;
+        } catch (error) {
+          console.error(error);
+          notification.error({ message: 'Ошибка', description: 'Некоректные данные.' });
+          setDisable(false);
         }
+      }, 500),
+    [clientDB, comments, data, id, key, msg, onUpdate, path, displayName, uId],
+  );
 
-        const comment = {
-          id: uuid(),
-          uId,
-          time,
-          username: displayName,
-          message: msg,
-        };
+  const addComments = (event) => {
+    const { which, keyCode } = event;
+    const isDefiend = which && keyCode;
+    debugger;
+    if (isDefiend && (which || keyCode) !== 13) return;
 
-        this.setState({ ...this.state, onUpdateDisabled: true, value: '' });
-
-        const parsedRoutePath = routeParser({
-          pageType: 'moduleItem',
-          path,
-        });
-
-        await onUpdate({
-          actionType: actionsTypes.$UPDATE_SINGLE,
-          parsedRoutePath,
-          key,
-          id,
-          updateBy: '_id',
-          updateItem: [...comments, comment],
-          updateField: 'comments',
-          store: 'tasks',
-          clientDB,
-          systemMessage: { done: 'Коментарий добавлен.', error: 'Комментарий добавить не удалось' },
-        });
-
-        return this.setState({
-          ...this.state,
-          onUpdateDisabled: false,
-        });
-      } else return notification.error({ message: 'Ошибка', description: 'Некоректные данные.' });
-    } catch (error) {
-      console.error(error);
-      notification.error({ message: 'Ошибка', description: 'Некоректные данные.' });
-      this.setState({
-        onUpdateDisabled: false,
-      });
-    }
-  }, 500);
-
-  addComments = (event) => {
-    if ((event.which || event.keyCode) && (event.which || event.keyCode) !== 13) return;
-    if ((event.which || event.keyCode) && (event.which || event.keyCode) === 13) {
+    if (isDefiend && (which || keyCode) === 13) {
       event.preventDefault();
     }
-    this.addCommentsDelay(event);
+
+    addCommentsDelay(event);
   };
 
-  onDelete = async (event, idComment) => {
-    const {
-      path,
-      onUpdate,
-      data: { _id: id = '', key = '', comments = [] } = {},
-      data = {},
-      clientDB,
-    } = this.props;
+  const onDelete = async (event, idComment) => {
     try {
       const filterComments = comments.filter(({ id = '' }) => id !== idComment);
 
@@ -130,15 +113,7 @@ class Comments extends PureComponent {
     }
   };
 
-  onEdit = async (idComment, msg = null, callback = null) => {
-    const {
-      onUpdate,
-      data: { _id: id = '', key = '', comments = [] } = {},
-      data = {},
-      path,
-      clientDB,
-    } = this.props;
-
+  const onEdit = async (idComment, msg = null, callback = null) => {
     if (typeof msg !== 'string') {
       message.error('Сообщение не валидно.');
       if (callback) callback();
@@ -182,26 +157,21 @@ class Comments extends PureComponent {
     }
   };
 
-  onChange = (event) => {
-    const { target: { value = '' } = {} } = event;
-    this.setState({
-      ...this.state,
-      value: value,
-    });
+  const onChange = ({ target }) => {
+    const { value } = target;
+    setValue(value);
   };
 
-  renderComments = (commentsArray) => {
-    const { rules, udata: { _id: userId = '' } = {}, commentProps = {} } = this.props;
-
+  const renderComments = (commentsArray) => {
     return commentsArray?.length ? (
       commentsArray.map((it) => (
         <Comment
           key={it.id}
           rules={rules}
           it={it}
-          userId={userId}
-          onDelete={this.onDelete}
-          onEdit={this.onEdit}
+          userId={uId}
+          onDelete={onDelete}
+          onEdit={onEdit}
           {...commentProps}
         />
       ))
@@ -209,38 +179,43 @@ class Comments extends PureComponent {
       <Empty description={<span>Данных нету</span>} />
     );
   };
-  render() {
-    const { data: { comments = [] } = {} } = this.props;
-    const { onUpdateDisabled, value } = this.state;
 
-    return (
-      <div className="comments">
-        <div className="commnetsListBox">
-          <Scrollbars autoHide hideTracksWhenNotNeeded>
-            {this.renderComments(comments)}
-          </Scrollbars>
-        </div>
-        <div className="comments__controllers">
-          <Textarea
-            className="comments_textarea_fild"
-            onKeyDown={this.addComments}
-            key="comments_textarea_fild"
-            value={value}
-            onChange={this.onChange}
-            rows={4}
-          />
-          <Button
-            onClick={this.addComments}
-            disabled={onUpdateDisabled}
-            loading={onUpdateDisabled}
-            className="sendCommentsButton"
-            type="primary"
-          >
-            Опубликовать
-          </Button>
-        </div>
+  return (
+    <div className="comments">
+      <div className="commnetsListBox">
+        <Scrollbars autoHide hideTracksWhenNotNeeded>
+          {renderComments(comments)}
+        </Scrollbars>
       </div>
-    );
-  }
-}
+      <div className="comments__controllers">
+        <Textarea
+          className="comments_textarea_fild"
+          onKeyDown={addComments}
+          key="comments_textarea_fild"
+          value={msg}
+          onChange={onChange}
+          rows={4}
+        />
+        <Button
+          onClick={addComments}
+          disabled={updateDisabled}
+          loading={updateDisabled}
+          className="sendCommentsButton"
+          type="primary"
+        >
+          Опубликовать
+        </Button>
+      </div>
+    </div>
+  );
+});
+
+Comments.propTypes = commentsContainerType;
+
+Comments.defaultProps = {
+  data: null,
+  onUpdate: null,
+  rules: false,
+};
+
 export default withClientDb(Comments);

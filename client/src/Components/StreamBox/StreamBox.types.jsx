@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { udataType } from '../../types';
+import { udataType } from '../../App.types';
 
 const { string, func, bool, oneOfType, object } = PropTypes;
 

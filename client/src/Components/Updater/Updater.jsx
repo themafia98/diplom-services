@@ -1,5 +1,5 @@
 import React from 'react';
-import { updaterType } from './types';
+import { updaterType } from './Updater.types';
 import updater from './updater.png';
 import { Tooltip } from 'antd';
 import clsx from 'clsx';

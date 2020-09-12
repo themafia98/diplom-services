@@ -1,5 +1,5 @@
 import React from 'react';
-import { menuViewType } from './types';
+import { menuViewType } from './MenuView.types';
 import { Menu, Layout, Icon } from 'antd';
 
 import Logo from 'Components/Logo';

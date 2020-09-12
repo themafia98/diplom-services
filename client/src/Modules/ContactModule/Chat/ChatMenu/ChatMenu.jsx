@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { chatMenuType } from '../../types';
+import { chatMenuType } from '../../ContactModule.types';
 import clsx from 'clsx';
 import _ from 'lodash';
 import Scrollbars from 'react-custom-scrollbars';

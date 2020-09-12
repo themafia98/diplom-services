@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { editorTextareaType } from '../types';
+import { editorTextareaType } from '../Textarea.types';
 import clsx from 'clsx';
 import { stateFromHTML } from 'draft-js-import-html';
 import { convertFromRaw } from 'draft-js';

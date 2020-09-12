@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import { observerTimeType } from './types';
+import { observerTimeType } from './ObserverTime.types';
 import Scrollbars from 'react-custom-scrollbars';
 import _ from 'lodash';
 import moment from 'moment';

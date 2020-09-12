@@ -1,6 +1,6 @@
 import React, { memo, useState } from 'react';
 import { v4 as uuid } from 'uuid';
-import { createNewsType } from '../../types';
+import { createNewsType } from '../../ContactModule.types';
 import moment from 'moment';
 import TitleModule from 'Components/TitleModule';
 import EditorTextarea from 'Components/Textarea/EditorTextarea';

@@ -1,7 +1,7 @@
 //@ts-nocheck
 import React, { useState, useCallback, useMemo } from 'react';
 import { Dropdown, Icon, Menu, Spin, Tooltip } from 'antd';
-import { ActionListType } from './types';
+import { ActionListType } from './ActionList.types';
 
 const ActionList = ({
   viewType,

@@ -1,6 +1,5 @@
 import React, { useState, useRef, memo, useEffect } from 'react';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
-import { headerViewType } from './types';
 import { connect } from 'react-redux';
 import { Layout } from 'antd';
 import { dragEndTabAction } from 'Redux/actions/tabActions';
@@ -8,6 +7,7 @@ import { saveComponentStateAction } from 'Redux/actions/routerActions';
 import RightPanel from './RightPanel';
 import Tab from './Tab/index';
 import { MARGIN_TAB } from './HeaderView.constant';
+import { headerViewType } from './HeaderView.types';
 
 const { Header } = Layout;
 

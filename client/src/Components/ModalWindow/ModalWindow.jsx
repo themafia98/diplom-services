@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useCallback, useMemo, useReducer, useContext } from 'react';
-import { modalWindowType } from './types';
+import { modalWindowType } from './Modal.types';
 import _ from 'lodash';
 import moment from 'moment';
 import { Modal, Button, message, Select } from 'antd';

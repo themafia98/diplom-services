@@ -1,6 +1,6 @@
 //@ts-nocheck
 import React from 'react';
-import { trackerModalType } from '../types';
+import { trackerModalType } from '../Modal.types';
 import moment from 'moment';
 import clsx from 'clsx';
 import { Input, DatePicker } from 'antd';

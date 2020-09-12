@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useContext, useRef } from 'react';
-import { loginType } from './types';
+import { loginType } from './LoginPage.types';
 import { Redirect, NavLink } from 'react-router-dom';
 import { Button, Input } from 'antd';
 import { connect } from 'react-redux';

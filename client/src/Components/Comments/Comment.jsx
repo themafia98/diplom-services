@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { commentType } from './types';
+import { commentType } from './Comments.types';
 import Output from 'Components/Output';
 import { Icon, Tooltip, Input, Button } from 'antd';
 

@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { createTaskType } from '../types';
+import { createTaskType } from '../TaskModule.types';
 import clsx from 'clsx';
 import _ from 'lodash';
 import Scrollbars from 'react-custom-scrollbars';

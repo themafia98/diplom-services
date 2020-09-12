@@ -1,5 +1,5 @@
 import React from 'react';
-import { titleType } from './types';
+import { titleType } from './Title.types';
 import clsx from 'clsx';
 
 const TitleModule = ({ title, className, classNameTitle, additional }) => (

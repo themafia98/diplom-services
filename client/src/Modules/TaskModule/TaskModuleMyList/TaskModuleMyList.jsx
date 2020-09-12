@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { taskModuleMyListType } from '../types';
+import { taskModuleMyListType } from '../TaskModule.types';
 import TableView from 'Components/TableView';
 import TitleModule from 'Components/TitleModule';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';

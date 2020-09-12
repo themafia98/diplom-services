@@ -1,5 +1,5 @@
 import React, { PureComponent, createRef } from 'react';
-import { settingsModuleType } from './types';
+import { settingsModuleType } from './SettingsModule.types';
 import { connect } from 'react-redux';
 import { settingsLogsSelector, settingsStatusSelector, settingsArtifactsSelector } from 'Utils/selectors';
 import { saveComponentStateAction } from 'Redux/actions/routerActions';

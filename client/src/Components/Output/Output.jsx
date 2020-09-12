@@ -1,6 +1,6 @@
 import React, { memo, Fragment, createRef, useEffect, useCallback, useState, useMemo } from 'react';
 import _ from 'lodash';
-import { outputType } from './types';
+import { outputType } from './Output.types';
 import clsx from 'clsx';
 import { Tooltip, Button, Spin } from 'antd';
 import { connect } from 'react-redux';

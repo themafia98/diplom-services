@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useState } from 'react';
-import { tableViewType } from './types';
+import { tableViewType } from './TableView.types';
 import { connect } from 'react-redux';
 import { Empty, Spin, Tooltip, Icon } from 'antd';
 import Scrollbars from 'react-custom-scrollbars';

@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { taskModuleCalendarType } from '../types';
+import { taskModuleCalendarType } from '../TaskModule.types';
 import _ from 'lodash';
 import Scrollbars from 'react-custom-scrollbars';
 import moment from 'moment';

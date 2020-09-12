@@ -1,5 +1,5 @@
 import React, { memo, useState, useCallback, useMemo } from 'react';
-import { newsType } from '../types';
+import { newsType } from '../ContactModule.types';
 import { connect } from 'react-redux';
 import { Pagination, Button, message, Empty, Spin } from 'antd';
 

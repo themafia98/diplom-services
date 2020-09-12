@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
-import { privateType } from './types';
 import { Route } from 'react-router-dom';
 import Loader from 'Components/Loader';
 import modelsContext from 'Models/context';
+import PropTypes from 'prop-types';
+
+const { object, func, array } = PropTypes;
 
 const PrivateRoute = ({ component: Component, onLogoutAction, onSetStatus, ...routeProps }) => {
   const timerRef = useRef(); // instance timer
@@ -63,6 +65,10 @@ const PrivateRoute = ({ component: Component, onLogoutAction, onSetStatus, ...ro
   return <Route exact {...routeProps} render={(props) => route} />;
 };
 
-PrivateRoute.propTypes = privateType;
+PrivateRoute.propTypes = {
+  component: object.isRequired,
+  onLogoutAction: func.isRequired,
+  routeProps: array,
+};
 
 export default PrivateRoute;

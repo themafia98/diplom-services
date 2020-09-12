@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { compose } from 'redux';
-import { taskModuleType } from './types';
+import { taskModuleType } from './TaskModule.types';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { Button, message } from 'antd';

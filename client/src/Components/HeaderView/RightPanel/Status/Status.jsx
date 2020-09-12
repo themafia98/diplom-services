@@ -1,5 +1,5 @@
 import React from 'react';
-import { statusType } from '../../types';
+import { statusType } from '../../HeaderView.types';
 import clsx from 'clsx';
 import { Icon } from 'antd';
 

@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useEffect, useState, useMemo } from 'react';
 import clsx from 'clsx';
-import { statisticsModuleType } from './types';
+import { statisticsModuleType } from './StatisticsModule.types';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { loadCurrentData } from 'Redux/actions/routerActions/middleware';

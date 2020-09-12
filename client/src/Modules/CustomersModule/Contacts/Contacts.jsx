@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useState, useCallback } from 'react';
-import { contactsType } from '../types';
+import { contactsType } from '../CustomersModule.types';
 import TitleModule from 'Components/TitleModule';
 
 import WindowScroller from 'react-virtualized/dist/commonjs/WindowScroller';

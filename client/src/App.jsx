@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { appType } from './types';
+import { appType } from './App.types';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import RenderInBrowser from 'react-render-in-browser';

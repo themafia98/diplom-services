@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import Node from 'Models/Node';
-import actionPortalType from './types';
+import actionPortalType from './ActionPortal.types';
 
 const ActionPortal = ({ visible: visibleProps, action: actionProps, children, appConfig }) => {
   const { actionRoot: { visibilityActionRoot = false } = {} } = appConfig;

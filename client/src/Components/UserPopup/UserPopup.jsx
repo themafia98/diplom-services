@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import userPopupType from './types';
+import userPopupType from './UserPopup.types';
 import _ from 'lodash';
 import { Avatar } from 'antd';
 

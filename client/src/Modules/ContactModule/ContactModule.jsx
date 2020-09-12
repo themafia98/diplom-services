@@ -1,5 +1,5 @@
 import React, { memo, useState, useEffect, useCallback } from 'react';
-import { contactModuleType } from './types';
+import { contactModuleType } from './ContactModule.types';
 import { connect } from 'react-redux';
 
 import { loadCurrentData } from 'Redux/actions/routerActions/middleware';

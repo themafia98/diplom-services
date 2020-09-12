@@ -1,5 +1,5 @@
 import React, { forwardRef, useState, useMemo } from 'react';
-import fixedToolbarType from './types';
+import fixedToolbarType from './FixedToolbar.types';
 import { Button } from 'antd';
 
 const FixedToolbar = forwardRef(({ customRender, name, onChangeVisibleAction }, ref) => {

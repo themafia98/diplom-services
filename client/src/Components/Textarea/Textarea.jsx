@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import clsx from 'clsx';
 import { Input } from 'antd';
 import EditorTextarea from './EditorTextarea';
-import { textAreaType } from './types';
+import { textAreaType } from './Textarea.types';
 const { TextArea } = Input;
 
 const Textarea = (props) => {

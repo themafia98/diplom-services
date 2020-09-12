@@ -1,5 +1,5 @@
 import React from 'react';
-import { notificationItemType } from './types';
+import { notificationItemType } from './NotificationPopup.types';
 import clsx from 'clsx';
 import { Avatar } from 'antd';
 

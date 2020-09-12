@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { chatRoomType } from '../../types';
+import { chatRoomType } from '../../ContactModule.types';
 import clsx from 'clsx';
 import Scrollbars from 'react-custom-scrollbars';
 import { Button, Avatar } from 'antd';

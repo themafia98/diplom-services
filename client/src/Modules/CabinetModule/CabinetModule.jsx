@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useState, useMemo } from 'react';
 import { connect } from 'react-redux';
-import { cabinetType } from './types';
+import { cabinetType } from './CabinetModule.types';
 import { Modal, Upload, message, Icon, Button } from 'antd';
 import { updateUdata } from 'Redux/actions/publicActions';
 import UserCard from 'Components/UserCard';

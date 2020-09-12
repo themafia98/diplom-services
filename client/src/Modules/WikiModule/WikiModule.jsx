@@ -1,5 +1,5 @@
 import React, { PureComponent, createRef } from 'react';
-import { wikiModuleType } from './types';
+import { wikiModuleType } from './WikiModule.types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import Scrollbars from 'react-custom-scrollbars';

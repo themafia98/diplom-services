@@ -1,6 +1,6 @@
 import React, { memo, useRef, useState, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
-import { mainModuleType } from './types';
+import { mainModuleType } from './MainModule.types';
 import { Calendar } from 'antd';
 import ClockWidjet from 'Components/ClockWidjet/index';
 import TableView from 'Components/TableView';
