@@ -75,7 +75,7 @@ const Comments = memo(({ data, onUpdate, path, udata, clientDB, rules, commentPr
   const addComments = (event) => {
     const { which, keyCode } = event;
     const isDefiend = which && keyCode;
-    debugger;
+
     if (isDefiend && (which || keyCode) !== 13) return;
 
     if (isDefiend && (which || keyCode) === 13) {

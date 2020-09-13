@@ -12,6 +12,7 @@ import {
   WikiTree,
   WikiPage,
   Settings,
+  Access,
 } from '../Interfaces';
 import { DocumentQuery, Document } from 'mongoose';
 import { Response } from 'express';
@@ -19,6 +20,8 @@ import { Socket } from 'socket.io';
 import { BinaryLike } from 'crypto';
 import { WriteStream } from 'fs';
 
+export type MenuConfig = { EUID: string; PARENT_CODE: string | null };
+export type Role = 'GUEST' | 'SUPER_ADMIN' | 'ADMIN' | 'MEMBER';
 export type Payload = string | object | string | null | Socket;
 export type limiter = number | null | undefined;
 export type ListFolderResult = files.ListFolderResult | null;
@@ -86,7 +89,8 @@ export type SchemaEntity =
   | WikiTree
   | string
   | Settings
-  | WikiPage;
+  | WikiPage
+  | Access;
 
 export type actionGet = {
   collection: string;

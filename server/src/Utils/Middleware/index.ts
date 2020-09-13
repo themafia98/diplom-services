@@ -5,11 +5,29 @@ import { Dbms, User, Request } from '../Interfaces';
 import { UserModel } from '../../Models/Database/Schema';
 import { ObjectId } from 'mongodb';
 
+import url from 'url';
+import querystring from 'querystring';
+import { Types } from 'mongoose';
+
 namespace Middleware {
   const LocalStrategy = passportLocal.Strategy;
 
-  export const timer = <RequestHandler>(req: Request, res: Response, next: NextFunction): void => {
+  export const timer = (req: Request, res: Response, next: NextFunction): void => {
     req.start = new Date();
+    next();
+  };
+
+  export const securityChecker = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const { query } = url.parse(req.url);
+    const { uid = '' } = querystring.parse(query as string);
+
+    if (!uid) {
+      next();
+      return;
+    }
+
+    (<Record<string, any>>req).uid = Types.ObjectId(uid as string);
+
     next();
   };
 

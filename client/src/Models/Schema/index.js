@@ -112,6 +112,7 @@ class Schema {
             position: { type: 'string' },
             rules: { type: 'string' },
             accept: { type: 'boolean' },
+            role: { type: 'string', default: 'GUEST' },
             avatar: { type: 'string', default: '' },
             isHideEmail: { type: 'boolean' },
             isHidePhone: { type: 'boolean' },
@@ -237,7 +238,7 @@ class Schema {
 
   getSchema(type, data) {
     if (!(data && typeof data === 'object') || typeof type !== 'string' || data === null) return null;
-
+    debugger;
     const schema = this.getValidateSchema(type);
     const validate = this.validator.compile(schema);
 

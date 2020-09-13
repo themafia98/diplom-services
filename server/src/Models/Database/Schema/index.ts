@@ -15,6 +15,7 @@ import {
 } from '../../../Utils/Interfaces';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import { ROLES } from '../../AccessRole/AcessRole.constant';
 
 const userSchema: Schema<User> = new Schema(
   {
@@ -30,6 +31,7 @@ const userSchema: Schema<User> = new Schema(
     departament: { type: String, required: true },
     displayName: { type: String, required: true },
     position: { type: String, required: true },
+    role: { type: String, default: ROLES.GUEST, required: true },
     rules: { type: String, default: 'guest', required: true },
     accept: { type: Boolean, default: false, required: true },
     avatar: { type: String, default: '', required: false },

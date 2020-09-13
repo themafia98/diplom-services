@@ -2,6 +2,7 @@ import cluster, { Worker } from 'cluster';
 import { Server as HttpServer } from 'http';
 import { WsWorker, Dbms } from '../../Utils/Interfaces';
 import chalk from 'chalk';
+import { Socket } from 'net';
 
 class ProcessRouter {
   private readonly workers: Array<Worker> = [];
@@ -13,9 +14,9 @@ class ProcessRouter {
   }
 
   static errorEventsRegister(server: HttpServer, dbm: Dbms): void {
-    server.on('clientError', (err, socket) => {
-      console.log('clientError');
+    server.on('clientError', (err: Error, socket: Socket) => {
       console.error(err);
+      console.log(err.stack);
       socket.destroy();
     });
 
@@ -71,7 +72,7 @@ class ProcessRouter {
     console.log(`New ${chalk.yellow('worker')} ${chalk.red(pidChild || '')} born.`);
   }
 
-  public router(workerData: any): void {
+  public router(workerData: object): void {
     for (let worker of this.getWorkers().values()) {
       worker.send(workerData);
     }

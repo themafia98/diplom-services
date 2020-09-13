@@ -17,6 +17,7 @@ import {
 import { v4 as uuid } from 'uuid';
 import { docResponse, ParserResult, Meta } from './Types';
 import { ObjectID } from 'mongodb';
+import { ROLES } from '../Models/AccessRole/AcessRole.constant';
 
 namespace Utils {
   const upload = multer();
@@ -346,5 +347,7 @@ namespace Utils {
     return !!id && typeof id === 'string' && id.length <= 24;
   };
 }
+
+export const isAccessModule = (role: string = ROLES.GUEST) => {};
 
 export default Utils;

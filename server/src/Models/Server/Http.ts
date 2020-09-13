@@ -76,7 +76,7 @@ namespace Http {
       const CabinetAlias: Readonly<Function> = Cabinet.CabinetController;
       const StatisticAlias: Readonly<Function> = Statistic.StatisticController;
 
-      const { catchError, jsonWebTokenRegister, checkPrivateRoute, timer } = Middleware;
+      const { catchError, jsonWebTokenRegister, checkPrivateRoute, timer, securityChecker } = Middleware;
 
       this.setApp(express());
       this.getApp().disabled('x-powerd-by');
@@ -123,6 +123,7 @@ namespace Http {
       /** initial entrypoint route */
       this.setRest(instanceRouter.initInstance('/rest'));
       this.getRest().use(timer);
+      this.getRest().use(securityChecker);
       this.getRest().use(limiter);
       this.getRest().use('/tasks/regTicket', regTicketLimitter);
 

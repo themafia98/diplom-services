@@ -10,6 +10,7 @@ const withSystemConfig = (Component) => (props) => {
   const [typeConfig, setTypeConfig] = useState({ prev: '', current: 'public' });
   const [isBlock, setBlock] = useState(false);
   const [coreConfig, setCoreConfig] = useState(null);
+  const [queryId, setQueryId] = useState(null);
   const models = useContext(ModelContext);
 
   const onSetCoreConfig = useCallback((config = {}) => {
@@ -27,10 +28,12 @@ const withSystemConfig = (Component) => (props) => {
   );
 
   const fetchConfig = useCallback(
-    async (newType = '') => {
+    async (newType = '', query = '') => {
       try {
         const { current: type = 'public' } = typeConfig;
         const loadType = newType ? newType : type;
+
+        if (!queryId && query) setQueryId(query);
 
         const { Request } = models;
 
@@ -38,8 +41,11 @@ const withSystemConfig = (Component) => (props) => {
           setUseSideEffect(true);
         } else if (!newType && isSideEffect) return;
 
+        const queryString = query && !queryId ? `?uid=${query}` : queryId ? `?uid=${queryId}` : '';
+
         const rest = new Request();
-        const { data: configJson = null } = await rest.sendRequest(`/system/core/${loadType}/config`, 'GET');
+        const response = await rest.sendRequest(`/system/core/${loadType}/config${queryString}`, 'GET');
+        const { data: configJson = null } = response;
 
         if (!configJson) throw new Error('Invalid system config');
         if (isSideEffect && newType) setUseSideEffect(false);
@@ -51,7 +57,7 @@ const withSystemConfig = (Component) => (props) => {
         setBlock(true);
       }
     },
-    [models, onSetCoreConfig, typeConfig, onChangeType, isSideEffect],
+    [typeConfig, queryId, models, isSideEffect, onChangeType, onSetCoreConfig],
   );
 
   useEffect(() => {

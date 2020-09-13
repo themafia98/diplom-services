@@ -402,9 +402,8 @@ class SettingsModule extends PureComponent {
       appConfig,
       isLoad,
     } = this.props;
-    const {
-      settings: { includeRulesSettings = false },
-    } = appConfig;
+    const { settings: settingsConfig = {} } = appConfig;
+    const { includeRulesSettings = false } = settingsConfig;
 
     const isAdmin = departament === 'Admin' && rules === 'full';
     return (

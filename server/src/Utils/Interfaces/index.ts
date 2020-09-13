@@ -2,11 +2,29 @@ import { Application, Router as RouteExpress, Request as RequestExpress, Respons
 
 import nodemailer, { SendMailOptions, Transporter, SentMessageInfo } from 'nodemailer';
 import { files } from 'dropbox';
-import { transOptions, ParserData, ParserResult, Meta, limiter, OptionsUpdate } from '../Types';
+import {
+  transOptions,
+  ParserData,
+  ParserResult,
+  Meta,
+  limiter,
+  OptionsUpdate,
+  MenuConfig,
+  Roles,
+} from '../Types';
 import socketio from 'socket.io';
 import mongoose, { Mongoose, Connection, Model, Document, FilterQuery } from 'mongoose';
+import { ObjectId } from 'mongodb';
 export interface Controller<T> {
   [key: string]: any;
+}
+
+export interface JsonConfig {
+  menu: MenuConfig[];
+}
+
+export interface UserRole {
+  menu: Readonly<Array<MenuConfig>>;
 }
 
 export interface ServerRun {
@@ -143,7 +161,7 @@ export interface ServiceManager<T> {
 }
 
 export interface User extends Document {
-  _id: string;
+  _id: ObjectId;
   email: string;
   summary: string;
   phone: string;
@@ -158,6 +176,7 @@ export interface User extends Document {
   rules: string;
   accept: boolean;
   token?: string;
+  role: Roles;
   _plainPassword?: string;
   checkPassword: Function;
   changePassword: Function;
@@ -370,4 +389,10 @@ export interface ResponseBuilder {
   status: number;
   metadata: ParserResult;
   emit(): Promise<Response>;
+}
+
+export interface Access {
+  userId: string;
+
+  access: Array<object>;
 }

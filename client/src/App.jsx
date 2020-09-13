@@ -186,7 +186,8 @@ class App extends Component {
         this.showErrorMessage('Ошибка загрузки рабочего стола.');
         return;
       }
-      await fetchConfig('private');
+
+      await fetchConfig(udata?._id);
       await onLoadUdata(udata);
       await this.loadSettings();
 

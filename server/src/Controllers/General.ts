@@ -84,7 +84,7 @@ namespace General {
             user.token = user.generateJWT();
             req.login(
               user,
-              (err: Error): Response => {
+              async (err: Error): Promise<Response> => {
                 if (err) {
                   res.status(404).send(err.message);
                 }
@@ -101,7 +101,10 @@ namespace General {
                   };
                 }, {});
 
-                return res.json({ user: parsedUser, token: user && user.token ? user.token : null });
+                return res.json({
+                  user: parsedUser,
+                  token: user && user.token ? user.token : null,
+                });
               },
             );
           } catch (err) {

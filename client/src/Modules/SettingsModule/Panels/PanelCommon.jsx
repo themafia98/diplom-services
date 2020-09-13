@@ -4,9 +4,8 @@ import { Button, Collapse, Input } from 'antd';
 const { Panel } = Collapse;
 
 const PanelCommon = ({ emailValue: emailValueProps, telValue: telValueProps, onSaveSettings, appConfig }) => {
-  const {
-    settings: { includeChangeEmail = false },
-  } = appConfig;
+  const { settings = {} } = appConfig;
+  const { includeChangeEmail = false } = settings;
 
   const [readOnly, setReadOnly] = useState(true);
   const [haveChanges, setChanges] = useState([]);

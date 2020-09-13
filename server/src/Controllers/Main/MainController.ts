@@ -11,11 +11,15 @@ import {
   BodyLogin,
   Actions,
   ActionParams,
+  User,
+  JsonConfig,
 } from '../../Utils/Interfaces';
 import { ResRequest } from '../../Utils/Types';
 
 import Decorators from '../../Decorators';
 import Action from '../../Models/Action';
+import AccessRole from '../../Models/AccessRole';
+import { UserModel } from '../../Models/Database/Schema';
 
 namespace System {
   const readFile = promisify(fs.readFile);
@@ -29,6 +33,8 @@ namespace System {
   export class SystemData implements ControllerApi<FunctionConstructor> {
     @Get({ path: '/core/:type/config', private: false })
     protected async loadSystemConfig(req: Request, res: Response): ResRequest {
+      const { uid = '' } = req as Record<string, any>;
+
       const { type = 'public' } = req.params;
       try {
         const config: Buffer = await readFile(path.join(__dirname, '../../', 'core', type, 'config.json'));
@@ -39,11 +45,20 @@ namespace System {
 
         if (!config || (type === 'private' && !configPublic)) throw new Error('Bad config.json');
 
-        const parsedJsonPublicConfig: object = JSON.parse(config as any);
+        const parsedJsonPublicConfig: JsonConfig = JSON.parse(config as any);
         let parseConfig = parsedJsonPublicConfig;
 
         if (type === 'private') {
-          const parsedJsonPrivateConfig: object = JSON.parse(configPublic as any);
+          const user = await UserModel.findOne({ _id: uid });
+
+          const accessUser = new AccessRole(user as User, parsedJsonPublicConfig);
+
+          const jsonPrivateConfig: Record<string, object[]> = JSON.parse(configPublic as any);
+
+          const parsedJsonPrivateConfig = {
+            ...jsonPrivateConfig,
+            menu: accessUser.menu,
+          };
 
           parseConfig = {
             ...parsedJsonPublicConfig,
