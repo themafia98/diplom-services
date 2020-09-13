@@ -10,7 +10,7 @@ import {
   limiter,
   OptionsUpdate,
   MenuConfig,
-  Roles,
+  Role,
 } from '../Types';
 import socketio from 'socket.io';
 import mongoose, { Mongoose, Connection, Model, Document, FilterQuery } from 'mongoose';
@@ -176,7 +176,7 @@ export interface User extends Document {
   rules: string;
   accept: boolean;
   token?: string;
-  role: Roles;
+  role: Role;
   _plainPassword?: string;
   checkPassword: Function;
   changePassword: Function;
