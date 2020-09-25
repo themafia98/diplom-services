@@ -142,7 +142,7 @@ class SettingsModule extends PureComponent {
         'PUT',
         {
           ...requestTemplate,
-          moduleName: 'settings',
+          moduleName: 'settingsModule',
           actionType: actionsTypes.$SETTINGS_PUT,
           params: {
             ...paramsTemplate,
@@ -211,7 +211,7 @@ class SettingsModule extends PureComponent {
         'POST',
         {
           ...requestTemplate,
-          moduleName: 'settings',
+          moduleName: 'settingsModule',
           actionType: actionsTypes.$SETTINGS_PUT,
           params: {
             ...paramsTemplate,

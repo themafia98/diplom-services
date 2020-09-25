@@ -13,6 +13,7 @@ import {
   ActionParams,
   User,
   JsonConfig,
+  AccessConfig,
 } from '../../Utils/Interfaces';
 import { ResRequest } from '../../Utils/Types';
 
@@ -65,7 +66,7 @@ namespace System {
             ...parsedJsonPrivateConfig,
           };
 
-          (<any>req).session.availableActions = accessUser.getAvailableActions();
+          if (req.session) (<Record<string, AccessConfig[]>>req.session).access = accessUser.config;
         }
 
         res.json(parseConfig);

@@ -67,7 +67,7 @@ const UserCard = ({
           'POST',
           {
             ...requestTemplate,
-            moduleName: 'system',
+            moduleName: 'cabinetModule',
             actionType: actionsTypes.$UPDATE_SINGLE,
             params: {
               ...paramsTemplate,
