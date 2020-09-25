@@ -67,6 +67,7 @@ class Responser implements ResponseBuilder {
         this.params.methodQuery,
         { params: this.params, metadata: this.metadata, done: true, status: 'OK' },
         (this.req as any).start,
+        (this.req as any).session.availableActions,
       ),
     );
   }
