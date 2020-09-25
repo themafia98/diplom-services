@@ -19,8 +19,23 @@ export interface Controller<T> {
   [key: string]: any;
 }
 
+export interface ActionsAccess {
+  EDIT: Readonly<string>;
+  VIEW: Readonly<string>;
+  LIMITED_VIEW: Readonly<string>;
+  READ_VIEW: Readonly<string>;
+  CREATE: Readonly<string>;
+  DELETE: Readonly<string>;
+}
+
 export interface JsonConfig {
   menu: MenuConfig[];
+}
+
+export interface AccessConfig {
+  name: string;
+  access: boolean;
+  actions: Array<void | string>;
 }
 
 export interface UserRole {

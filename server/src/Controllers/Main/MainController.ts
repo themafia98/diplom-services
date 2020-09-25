@@ -13,6 +13,7 @@ import {
   ActionParams,
   User,
   JsonConfig,
+  AccessConfig,
 } from '../../Utils/Interfaces';
 import { ResRequest } from '../../Utils/Types';
 
@@ -51,7 +52,7 @@ namespace System {
         if (type === 'private') {
           const user = await UserModel.findOne({ _id: uid });
 
-          const accessUser = new AccessRole(user as User, parsedJsonPublicConfig);
+          const accessUser: AccessRole = new AccessRole(user as User, parsedJsonPublicConfig);
 
           const jsonPrivateConfig: Record<string, object[]> = JSON.parse(configPublic as any);
 
@@ -64,6 +65,8 @@ namespace System {
             ...parsedJsonPublicConfig,
             ...parsedJsonPrivateConfig,
           };
+
+          if (req.session) (<Record<string, AccessConfig[]>>req.session).access = accessUser.config;
         }
 
         res.json(parseConfig);
@@ -209,9 +212,9 @@ namespace System {
       const actionParams =
         typeof paramsRequest == 'object' && paramsRequest
           ? {
-              moduleName,
-              ...paramsRequest,
-            }
+            moduleName,
+            ...paramsRequest,
+          }
           : {};
 
       const params: Params = {

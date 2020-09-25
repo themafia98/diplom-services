@@ -4,6 +4,7 @@ import { Params, ActionParams, BodyLogin } from '../../Utils/Interfaces';
 import { ResRequest } from '../../Utils/Types';
 import Action from '../../Models/Action';
 import Decorators from '../../Decorators';
+import { ACTIONS_ACCESS } from '../../app.constant';
 
 namespace Tasks {
   const Controller = Decorators.Controller;
@@ -68,12 +69,16 @@ namespace Tasks {
         from: 'users',
       };
 
+      const shouldBeCreate = (req as any).session.availableActions.some(
+        (it: string) => it === ACTIONS_ACCESS.CREATE,
+      );
+
       const createTaskAction = new Action.ActionParser({
         actionPath: 'tasks',
         actionType: 'set_single',
       });
 
-      const responseExec: Function = await createTaskAction.actionsRunner(task);
+      const responseExec: Function = await createTaskAction.actionsRunner(shouldBeCreate ? task : null);
       return responseExec(req, res, params);
     }
 

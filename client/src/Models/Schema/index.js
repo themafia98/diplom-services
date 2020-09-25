@@ -238,7 +238,7 @@ class Schema {
 
   getSchema(type, data) {
     if (!(data && typeof data === 'object') || typeof type !== 'string' || data === null) return null;
-    debugger;
+
     const schema = this.getValidateSchema(type);
     const validate = this.validator.compile(schema);
 

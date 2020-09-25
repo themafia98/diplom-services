@@ -23,6 +23,7 @@ import regExpRegister from 'Utils/Tools/regexpStorage';
 import { withClientDb } from 'Models/ClientSideDatabase';
 import actionPath from 'actions.path';
 import { requestTemplate } from 'Utils/Api/api.utils';
+import { ACTIONS } from 'App.constant';
 
 class TaskModule extends PureComponent {
   state = {
@@ -30,6 +31,7 @@ class TaskModule extends PureComponent {
     heightController: null,
     path: null,
     counter: null,
+    createTaskAvailable: false,
   };
 
   static propTypes = taskModuleType;
@@ -177,7 +179,7 @@ class TaskModule extends PureComponent {
             {
               ...requestTemplate,
               actionType: actionsTypes.$CURRENT_LIST_COUNTER,
-              moduleName: 'tasks',
+              moduleName: 'taskModule',
               params: {
                 path,
                 filterCounter: path.includes('all') ? null : uid,
@@ -187,11 +189,14 @@ class TaskModule extends PureComponent {
             true,
           );
           if (res.status !== 200) throw new Error('Bad list');
-          const { data: { response: { metadata = 0 } = {} } = {} } = res || {};
+          const { data: { response: { metadata = 0 } = {}, actions = [] } = {} } = res || {};
+          const createTaskAvailable = actions.some((it) => it === ACTIONS.CREATE);
+
           if (counter !== metadata)
             this.setState({
               ...this.state,
               counter: metadata,
+              createTaskAvailable,
             });
         } catch (error) {
           if (error?.response?.status === 404) {
@@ -297,7 +302,7 @@ class TaskModule extends PureComponent {
 
   getTaskByPath = (path) => {
     if (path) {
-      const { height, heightController, counter } = this.state;
+      const { height, heightController, counter, createTaskAvailable } = this.state;
       const {
         router,
         router: { currentActionTab = '' } = {},
@@ -347,7 +352,12 @@ class TaskModule extends PureComponent {
           {oneOfType(types.$sub_entrypoint_module, types.$entrypoint_module)(type) &&
           (path?.includes('all') || path?.includes('myTasks')) ? (
             <div key="controllers" ref={this.refControllers} className="controllersWrapper">
-              <Button className="newTaskButton" onClick={this.handlerNewTask} type="primary">
+              <Button
+                disabled={!createTaskAvailable}
+                className="newTaskButton"
+                onClick={this.handlerNewTask}
+                type="primary"
+              >
                 Создать новую задачу
               </Button>
             </div>
