@@ -72,18 +72,32 @@ class TaskView extends PureComponent {
     } else return state;
   };
 
-  componentDidMount = async () => {
+  componentDidMount = () => {
+    const { router = {} } = this.props;
+    const { routeDataActive = {} } = router;
+    const { key = null } = routeDataActive;
+
+    if (!key) {
+      this.findTask();
+      return;
+    }
+
+    this.onLoadTaskAdditionalData();
+  };
+
+  onLoadTaskAdditionalData = async () => {
     const {
-      publicReducer: { caches = {} } = {},
-      router: {
-        routeDataActive: { _id: id = '', key = '', uidCreater = '', authorName = '' } = {},
-        routeDataActive = {},
-      },
+      publicReducer = {},
+      router = {},
       onLoadCacheData,
-      data: { id: idProps = '' } = {},
+      data = {},
       onSaveCache = null,
       clientDB,
     } = this.props;
+    const { caches } = publicReducer;
+    const { routeDataActive = {} } = router;
+    const { _id: id = '', key = '', uidCreater = '', authorName = '' } = routeDataActive;
+    const { id: idProps = '' } = data;
 
     const { actionType, key: taskId } = this.state;
     const idTask = !_.isEmpty(routeDataActive) && id ? id : idProps ? idProps : '';
@@ -91,7 +105,7 @@ class TaskView extends PureComponent {
     if (!key) this.findTask();
 
     if (_.isEmpty(caches) || (key && !caches[key]) || (!key && onLoadCacheData)) {
-      onSaveCache({
+      await onSaveCache({
         data: [{ _id: uidCreater, displayName: authorName, key: uuid() }],
         load: true,
         union: true,
@@ -99,9 +113,15 @@ class TaskView extends PureComponent {
         uuid: '__author',
       });
 
-      onLoadCacheData({ actionType, depKey: idTask, depStore: 'tasks', store: 'jurnalworks', clientDB });
-      this.fetchDepUsersList();
-      this.fetchFiles();
+      await onLoadCacheData({
+        actionType,
+        depKey: idTask,
+        depStore: 'tasks',
+        store: 'jurnalworks',
+        clientDB,
+      });
+      await this.fetchDepUsersList();
+      await this.fetchFiles();
     }
   };
 
@@ -112,7 +132,9 @@ class TaskView extends PureComponent {
     } = this.props;
 
     const { statusListName = [] } = this.state;
-    const { statusList: { settings = [] } = {} } = this.props;
+    const { statusList = {} } = this.props;
+    const { settings = [] } = statusList;
+
     const filteredStatusNames = settings.map(({ value = '' }) => value).filter(Boolean);
 
     if (!isLoadingFiles && routeDataActive?._id && (shouldUpdate || shouldRefresh)) {
@@ -145,7 +167,7 @@ class TaskView extends PureComponent {
         },
         clientDB,
       });
-
+      await this.onLoadTaskAdditionalData();
       this.setState({ findTaskLoading: false });
     });
   };
