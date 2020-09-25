@@ -156,6 +156,7 @@ const multipleLoadData = (params) => async (dispatch, getState, { schema, Reques
       noCorsClient = false,
       sortBy = '',
       path: pathName = '',
+      prefix = '',
     } = requestParam;
     const path = saveModuleName ? saveModuleName : pathName;
     let isLocalUpdate = true;
@@ -163,7 +164,7 @@ const multipleLoadData = (params) => async (dispatch, getState, { schema, Reques
 
     const [url, body, method = 'GET'] = makeApiAction(
       action,
-      pathValid,
+      pathValid.replace(prefix, ''),
       options,
       actionsTypes.$LOAD_CURRENT_DATA,
     );
