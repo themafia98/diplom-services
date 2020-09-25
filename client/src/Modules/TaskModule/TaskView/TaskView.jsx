@@ -102,6 +102,8 @@ class TaskView extends PureComponent {
     const { actionType, key: taskId } = this.state;
     const idTask = !_.isEmpty(routeDataActive) && id ? id : idProps ? idProps : '';
 
+    if (!key) this.findTask();
+
     if (_.isEmpty(caches) || (key && !caches[key]) || (!key && onLoadCacheData)) {
       await onSaveCache({
         data: [{ _id: uidCreater, displayName: authorName, key: uuid() }],
