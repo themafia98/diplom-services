@@ -212,6 +212,7 @@ const buildRequestList = (metadata = [], prefix = '') => {
       {
         action: actionPath,
         path: `${path}${prefix}`,
+        prefix,
         options: {
           keys: _.uniq(actionsArray.map((notification) => notification?.action?.link)),
         },

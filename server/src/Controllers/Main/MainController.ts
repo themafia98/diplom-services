@@ -212,9 +212,9 @@ namespace System {
       const actionParams =
         typeof paramsRequest == 'object' && paramsRequest
           ? {
-              moduleName,
-              ...paramsRequest,
-            }
+            moduleName,
+            ...paramsRequest,
+          }
           : {};
 
       const params: Params = {

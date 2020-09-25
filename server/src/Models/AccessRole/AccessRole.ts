@@ -2,6 +2,7 @@ import getAccessConfig from '../../core/Access/Access.config';
 import { JsonConfig, UserRole, User, AccessConfig } from '../../Utils/Interfaces';
 import { MenuConfig, Role } from '../../Utils/Types';
 import { ObjectId } from 'mongodb';
+import { ACTIONS_ACCESS } from '../../app.constant';
 
 class AccessRole implements UserRole {
   private readonly uid: Readonly<ObjectId>;
@@ -42,9 +43,7 @@ class AccessRole implements UserRole {
       ? accessConfig.find((it) => it.name.includes(moduleName)) || null
       : null;
 
-    return moduleConfig === null
-      ? accessConfig.map((it: AccessConfig) => ({ name: it.name, actions: it.actions }))
-      : moduleConfig.actions;
+    return moduleConfig === null ? [ACTIONS_ACCESS.LIMITED_VIEW] : moduleConfig.actions;
   }
 }
 
