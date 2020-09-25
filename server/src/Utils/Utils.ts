@@ -142,12 +142,14 @@ namespace Utils {
     actionString: string,
     response: ResponseJson<object | null | number>,
     start: Date,
+    actions: Array<string | void | object> | null = null,
   ): object => {
     return {
       action: actionString,
       response,
       uptime: process.uptime(),
       responseTime: responseTime(start),
+      actions,
     };
   };
 

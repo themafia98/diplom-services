@@ -23,8 +23,15 @@ export interface JsonConfig {
   menu: MenuConfig[];
 }
 
+export interface AccessConfig {
+  name: string;
+  access: boolean;
+  actions: Array<void | string>;
+}
+
 export interface UserRole {
   menu: Readonly<Array<MenuConfig>>;
+  getAvailableActions(moduleName: string): Array<string | void | object> | null;
 }
 
 export interface ServerRun {

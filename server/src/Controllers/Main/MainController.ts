@@ -51,7 +51,7 @@ namespace System {
         if (type === 'private') {
           const user = await UserModel.findOne({ _id: uid });
 
-          const accessUser = new AccessRole(user as User, parsedJsonPublicConfig);
+          const accessUser: AccessRole = new AccessRole(user as User, parsedJsonPublicConfig);
 
           const jsonPrivateConfig: Record<string, object[]> = JSON.parse(configPublic as any);
 
@@ -64,6 +64,8 @@ namespace System {
             ...parsedJsonPublicConfig,
             ...parsedJsonPrivateConfig,
           };
+
+          (<any>req).session.availableActions = accessUser.getAvailableActions();
         }
 
         res.json(parseConfig);
