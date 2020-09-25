@@ -14,7 +14,7 @@ import {
 } from 'Redux/actions/routerActions';
 
 import { clearCache, showGuile } from 'Redux/actions/publicActions';
-import { routeParser } from 'Utils';
+import { routeParser, saveAndNormalizeRoute } from 'Utils';
 
 import FixedToolbar from 'Components/FixedToolbar';
 import Loader from 'Components/Loader';
@@ -23,7 +23,6 @@ import ContentView from 'Components/ContentView';
 import MenuView from 'Components/MenuView';
 import ModelContext from 'Models/context';
 import regExpRegister from 'Utils/Tools/regexpStorage';
-import { description } from 'core-js/fn/symbol/match';
 
 let deferredPrompt = null;
 
@@ -178,12 +177,12 @@ class Dashboard extends PureComponent {
   };
 
   autoSaveRoute = () => {
-    const { router = {} } = this.props;
+    const { router, appConfig } = this.props;
 
     const currentRouter = JSON.stringify(router);
     const saveRouter = localStorage.getItem('router');
 
-    if (currentRouter !== saveRouter) localStorage.setItem('router', currentRouter);
+    if (currentRouter !== saveRouter) saveAndNormalizeRoute(router, appConfig);
   };
 
   onCollapse = (collapsed) => {
@@ -240,6 +239,7 @@ class Dashboard extends PureComponent {
     const { router: { routeData = {} } = {} } = this.props;
     const tabsCopy = [...tabs];
     const tabsArray = [];
+
     for (let i = 0; i < tabsCopy.length; i++) {
       let tabItem = Array.isArray(menu) ? menu.find((tab) => tab.EUID === tabsCopy[i]) : null;
       if (!tabItem) {

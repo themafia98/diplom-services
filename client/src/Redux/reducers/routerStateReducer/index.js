@@ -317,6 +317,7 @@ export default handleActions(
         path: pathAction = '',
         shouldUpdate = false,
         load = false,
+        add = false,
       } = payload;
 
       const isLink = pathAction.includes('__link') && pathAction.split(regExpRegister.MODULE_ID)[1];
@@ -394,13 +395,36 @@ export default handleActions(
           },
         };
       }
-      const currentStateData = routeData[path] ? { ...routeData[path], shouldUpdate: false } : {};
+
+      const addItem = add && payload[storeName] ? { ...payload[storeName] } : null;
+      let currentStateData = {};
+      let normalizeRouteData = null;
+      if (routeData[path]) currentStateData = { ...routeData[path], shouldUpdate: false };
+
+      if (add && addItem && addItem?._id) normalizeRouteData = { [addItem._id]: addItem };
+
+      const additionalList =
+        add && addItem
+          ? {
+              [storeName]: [addItem],
+            }
+          : {};
+      const routeDataActive = addItem ? { ...addItem } : state.routeDataActive;
+
       copyRouteData[path] = {
         ...currentStateData,
         ...payload,
+        ...additionalList,
         shouldUpdate: false,
         loading,
       };
+
+      if (normalizeRouteData && addItem && addItem?._id) {
+        copyRouteData[addItem._id] = {
+          ...addItem,
+        };
+      }
+
       if (path) {
         return {
           ...state,
@@ -408,6 +432,7 @@ export default handleActions(
           routeData: copyRouteData,
           load,
           shouldUpdate,
+          routeDataActive,
         };
       } else return state;
     },

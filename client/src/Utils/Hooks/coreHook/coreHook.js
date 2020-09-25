@@ -18,6 +18,7 @@ const coreUpdaterDataHook = async (dispatch, dep = {}, multiple = false, badNetw
     errorRequestAction,
     isLocalUpdate: localUpdateStat,
     params,
+    add,
   } = dep;
 
   let isLocalUpdate = localUpdateStat;
@@ -50,10 +51,12 @@ const coreUpdaterDataHook = async (dispatch, dep = {}, multiple = false, badNetw
       pathValid,
       params,
       requestError,
+      add,
     };
     const depAction = {
       saveComponentStateAction,
       errorRequestAction,
+      add,
     };
     try {
       return await runLocalUpdateAction(dispatch, depAction, depParser, multiple);

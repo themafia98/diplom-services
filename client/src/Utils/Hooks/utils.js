@@ -85,12 +85,12 @@ const runRefreshIndexedDb = async (dispatch, storeName, dep, multiple) => {
 };
 
 const runLocalUpdateAction = async (dispatch, depAction, depParser, multiple) => {
-  const { errorRequestAction, saveComponentStateAction, params = {} } = depAction;
+  const { errorRequestAction, saveComponentStateAction, params = {}, add = false } = depAction;
 
   const { data, shoudClearError = false, shouldUpdateState = true } = dataParser(true, false, depParser);
   if (shoudClearError) await dispatch(errorRequestAction(null));
   if (shouldUpdateState && !multiple)
-    await dispatch(saveComponentStateAction({ ...data, loading: false, params }));
+    await dispatch(saveComponentStateAction({ ...data, loading: false, add, params }));
   else if (multiple) return data;
 };
 

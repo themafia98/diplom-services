@@ -1,6 +1,12 @@
 .taskView {
   display: flex;
 
+  &.taskView--taskLoader {
+    height: calc(100vh - 64px); // 64px - top panel
+    align-items: center;
+    justify-content: center;
+  }
+
   .tags {
     .ant-input {
       margin-top: 5px;

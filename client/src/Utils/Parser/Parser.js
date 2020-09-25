@@ -1,4 +1,5 @@
 import moment from 'moment';
+import produce from 'immer';
 import _ from 'lodash';
 import { runNoCorsParser, toSymbol } from './utils';
 import { getStoreSchema } from '../utilsHook';
@@ -16,6 +17,7 @@ const dataParser = (flag = false, isLocalUpdate = true, dep = {}, offlineStore =
     pathValid,
     requestError,
     noCorsClient = false,
+    add = false,
   } = dep;
 
   const store = [...copyStore];
@@ -64,7 +66,7 @@ const dataParser = (flag = false, isLocalUpdate = true, dep = {}, offlineStore =
       ? storeCopyValid.sort((a, b) => a[sortBy] - b[sortBy])
       : storeCopyValid;
 
-  const data = { [storeLoad]: sortedCopyStore, load: true, path: pathValid };
+  const data = { [storeLoad]: add ? sortedCopyStore?.[0] : sortedCopyStore, load: true, path: pathValid };
   return { data, shouldClearError, shouldUpdateState: Boolean(storeLoad) };
 };
 
@@ -364,6 +366,30 @@ const parseArrayByLimit = (array = [], configuration = {}) => {
   return array.slice(visibleItemIndex, visibleItemIndex + listLimit);
 };
 
+const saveAndNormalizeRoute = (router, config) => {
+  const normalizeRouter = produce(router, (draftRoute) => {
+    draftRoute.activeTabs = router.activeTabs.filter((tab) =>
+      config.menu.find(({ EUID }) => tab.includes(EUID)),
+    );
+    draftRoute.routeData = {};
+    draftRoute.routeDataActive = {};
+
+    if (!draftRoute.activeTabs.includes(draftRoute.currentActionTab)) {
+      const prevTabIndex = draftRoute.activeTabs.findIndex((tab) => tab === draftRoute.currentActionTab);
+
+      draftRoute.currentActionTab =
+        prevTabIndex > 0 ? router.activeTabs[prevTabIndex - 1] : router.activeTabs[0];
+    }
+  });
+
+  const currentSaveRouter = localStorage.getItem('router');
+  const jsonRouterString = JSON.stringify(normalizeRouter);
+
+  if (currentSaveRouter === jsonRouterString) return;
+
+  localStorage.setItem('router', jsonRouterString);
+};
+
 const namespaceParser = {
   dataParser,
   getNormalizedPath,
@@ -382,6 +408,7 @@ const namespaceParser = {
   sortedByKey,
   parseArrayByLimit,
   moduleIdGenerator,
+  saveAndNormalizeRoute,
 };
 
 export default namespaceParser;
