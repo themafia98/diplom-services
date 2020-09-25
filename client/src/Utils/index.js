@@ -34,6 +34,7 @@ const {
   getModuleTypeByParsedKey,
   sortedByKey,
   parseArrayByLimit,
+  saveAndNormalizeRoute,
 } = namespaceParser;
 
 const {
@@ -81,4 +82,5 @@ export {
   sortedByKey,
   parseArrayByLimit,
   getValidRouteData,
+  saveAndNormalizeRoute,
 };

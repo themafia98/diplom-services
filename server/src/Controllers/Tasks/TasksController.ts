@@ -24,10 +24,18 @@ namespace Tasks {
         from: 'tasks',
       };
 
-      const { params: { limitList = null, keys = null, saveData = {}, filterCounter = null } = {} } =
-        req.body || {};
+      const {
+        params: { limitList = null, keys = null, saveData = {}, filterCounter = null, options = {} } = {},
+      } = req.body || {};
+      const { itemId = '' } = options;
+
+      const queryParams: Record<string, any> = {};
+
+      if (keys) queryParams.keys = keys;
+      else if (itemId) queryParams.keys = [itemId];
+
       const actionParams: ActionParams = {
-        queryParams: keys ? { keys } : {},
+        queryParams,
         limitList,
         saveData,
         filterCounter,

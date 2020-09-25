@@ -24,7 +24,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
     clientDB = null,
   } = params;
 
-  const { noCorsClient = false, shouldSetLoading = false, sync = false } = optionsForParse || {};
+  const { noCorsClient = false, shouldSetLoading = false, sync = false, add = false } = optionsForParse || {};
 
   let isLocalUpdate = true;
   const pathValid = pagePath.includes('_') ? pagePath : pagePath.split(regExpRegister.MODULE_ID)[0];
@@ -78,6 +78,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
           isLocalUpdate,
           rest,
           sync,
+          add,
         };
 
         await coreUpdaterDataHook(dispatch, dep);

@@ -3,7 +3,7 @@ import { taskViewType } from '../TaskModule.types';
 import { v4 as uuid } from 'uuid';
 import _ from 'lodash';
 import moment from 'moment';
-import { Descriptions, Empty, message } from 'antd';
+import { Descriptions, Empty, message, Spin } from 'antd';
 import { connect } from 'react-redux';
 import Scrollbars from 'react-custom-scrollbars';
 import { deleteFile, loadFile, routeParser, sortedByKey } from 'Utils';
@@ -21,6 +21,8 @@ import actionsTypes from 'actions.types';
 import { compose } from 'redux';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { withClientDb } from 'Models/ClientSideDatabase';
+import actionPath from 'actions.path';
+import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
 
 class TaskView extends PureComponent {
   state = {
@@ -86,6 +88,8 @@ class TaskView extends PureComponent {
     const { actionType, key: taskId } = this.state;
     const idTask = !_.isEmpty(routeDataActive) && id ? id : idProps ? idProps : '';
 
+    if (!key) this.findTask();
+
     if (_.isEmpty(caches) || (key && !caches[key]) || (!key && onLoadCacheData)) {
       onSaveCache({
         data: [{ _id: uidCreater, displayName: authorName, key: uuid() }],
@@ -121,6 +125,29 @@ class TaskView extends PureComponent {
         statusListName: filteredStatusNames,
       });
     }
+  };
+
+  findTask = () => {
+    const { router = {}, clientDB, onLoadCurrentData } = this.props;
+    const { currentActionTab = '' } = router;
+
+    const { page: path = '', itemId = '' } = routeParser({ pageType: 'moduleItem', path: currentActionTab });
+
+    this.setState({ findTaskLoading: true }, async () => {
+      await onLoadCurrentData({
+        action: actionPath.$LOAD_TASKS_LIST,
+        path,
+        options: {
+          itemId,
+        },
+        optionsForParse: {
+          add: true,
+        },
+        clientDB,
+      });
+
+      this.setState({ findTaskLoading: false });
+    });
   };
 
   fetchDepUsersList = async () => {
@@ -679,6 +706,7 @@ class TaskView extends PureComponent {
       filteredUsers = [],
       isLoad = false,
       modeControllEdit: { tags: tagsListState = [] } = {},
+      findTaskLoading = false,
     } = this.state;
 
     const {
@@ -704,7 +732,14 @@ class TaskView extends PureComponent {
     } = this;
     const { rest = {} } = modelsContext;
 
-    if (!key) return <div>This task not found</div>;
+    if (!key)
+      return findTaskLoading ? (
+        <div className="taskView taskView--taskLoader">
+          <Spin size="large" tip="Загрузка задачи" />
+        </div>
+      ) : (
+        <div>This task not found</div>
+      );
 
     const [cachesAuthorList, cachesEditorList, cachesJurnalList] = this.getCacheItemsList();
     const accessStatus = this.getAccessStatus();
@@ -814,6 +849,7 @@ const mapStateTopProps = (state, props) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     onCaching: async (props) => await dispatch(middlewareCaching(props)),
+    onLoadCurrentData: (props) => dispatch(loadCurrentData(props)),
     onSaveCache: (props) => dispatch(сachingAction(props)),
     onUpdate: (props) => dispatch(middlewareUpdate(props)),
   };
