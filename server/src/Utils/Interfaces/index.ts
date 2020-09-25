@@ -31,7 +31,6 @@ export interface AccessConfig {
 
 export interface UserRole {
   menu: Readonly<Array<MenuConfig>>;
-  getAvailableActions(moduleName: string): Array<string | void | object> | null;
 }
 
 export interface ServerRun {

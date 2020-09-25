@@ -8,6 +8,7 @@ import { ObjectId } from 'mongodb';
 import url from 'url';
 import querystring from 'querystring';
 import { Types } from 'mongoose';
+import AccessRole from '../../Models/AccessRole';
 
 namespace Middleware {
   const LocalStrategy = passportLocal.Strategy;
@@ -18,16 +19,26 @@ namespace Middleware {
   };
 
   export const securityChecker = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { query } = url.parse(req.url);
+    const request = req as Record<string, any>;
+
+    const { query } = url.parse(request.url);
     const { uid = '' } = querystring.parse(query as string);
+
+    const { session = null } = request as Record<string, null | object | AccessRole>;
+
+    if (session && request.session.access && request.body) {
+      request.session.availableActions = AccessRole.getAvailableActions(
+        request.body.moduleName || '',
+        request.session.access,
+      );
+    }
 
     if (!uid) {
       next();
       return;
     }
 
-    (<Record<string, any>>req).uid = Types.ObjectId(uid as string);
-
+    request.uid = Types.ObjectId(uid as string);
     next();
   };
 

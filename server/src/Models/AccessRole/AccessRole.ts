@@ -20,6 +20,10 @@ class AccessRole implements UserRole {
     return this.uid;
   }
 
+  get config() {
+    return this.accessConfig;
+  }
+
   get menu() {
     return this.menuList.filter((module: MenuConfig) => {
       return this.accessConfig.some((config) => {
@@ -30,13 +34,16 @@ class AccessRole implements UserRole {
     });
   }
 
-  public getAvailableActions(moduleName: string = ''): Array<string | void | object> | null {
+  static getAvailableActions(
+    moduleName: string = '',
+    accessConfig: Array<AccessConfig>,
+  ): Array<string | void | object> | null {
     const moduleConfig: AccessConfig | Array<AccessConfig> | null = moduleName
-      ? this.accessConfig.find((it) => it.name === moduleName) || null
+      ? accessConfig.find((it) => it.name.includes(moduleName)) || null
       : null;
 
     return moduleConfig === null
-      ? this.accessConfig.map((it: AccessConfig) => ({ name: it.name, actions: it.actions }))
+      ? accessConfig.map((it: AccessConfig) => ({ name: it.name, actions: it.actions }))
       : moduleConfig.actions;
   }
 }
