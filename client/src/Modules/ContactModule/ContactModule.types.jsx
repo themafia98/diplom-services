@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { udataType, contentState, emptyShape, newsItemType } from 'App.types';
-const { func, string, bool, object, oneOf, arrayOf, objectOf, oneOfType, number, array, symbol } = PropTypes;
+const { func, string, bool, object, oneOf, arrayOf, oneOfType, number, array, symbol } = PropTypes;
 
 export const contactModuleType = {
   path: string.isRequired,
@@ -9,7 +9,6 @@ export const contactModuleType = {
   router: object.isRequired,
   rest: object.isRequired,
   onSetStatus: func.isRequired,
-  loaderMethods: objectOf(func.isRequired).isRequired,
   udata: udataType.isRequired,
   onLoadCurrentData: func.isRequired,
 };

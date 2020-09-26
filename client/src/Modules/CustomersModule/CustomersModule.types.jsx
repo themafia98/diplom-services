@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-const { func, string, bool, object, arrayOf, objectOf } = PropTypes;
+const { func, string, bool, object, arrayOf } = PropTypes;
 
 export const customersModuleType = {
   path: string.isRequired,
@@ -8,7 +8,6 @@ export const customersModuleType = {
   rest: object.isRequired,
   onSetStatus: func.isRequired,
   router: object.isRequired,
-  loaderMethods: objectOf(func.isRequired).isRequired,
 };
 
 export const contactsType = {

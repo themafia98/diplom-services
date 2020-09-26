@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { udataType, taskEntityType } from '../../App.types';
-const { func, string, object, bool, objectOf, number, oneOfType, oneOf } = PropTypes;
+const { func, string, object, bool, number, oneOfType, oneOf } = PropTypes;
 
 export const taskModuleType = {
   onOpenPageWithData: func.isRequired,
@@ -12,7 +12,6 @@ export const taskModuleType = {
   path: string.isRequired,
   publicReducer: object.isRequired,
   router: object.isRequired,
-  loaderMethods: objectOf(func.isRequired).isRequired,
   udata: udataType,
   rest: object.isRequired,
 };
@@ -35,7 +34,6 @@ export const taskViewType = {
 
 export const taskModuleListType = {
   rest: object.isRequired,
-  loaderMethods: objectOf(func.isRequired).isRequired,
   setCurrentTab: func.isRequired,
   data: object.isRequired,
   height: oneOfType([oneOf([null]), number, string]),
@@ -47,7 +45,6 @@ export const taskModuleMyListType = {
   data: object.isRequired,
   router: object.isRequired,
   udata: udataType.isRequired,
-  loaderMethods: objectOf(func.isRequired).isRequired,
   height: oneOfType([oneOf([null]), number, string]),
 };
 
@@ -57,7 +54,6 @@ export const taskModuleCalendarType = {
   router: object.isRequired,
   setCurrentTab: func.isRequired,
   onOpenPageWithData: func.isRequired,
-  loaderMethods: objectOf(func.isRequired).isRequired,
   height: oneOfType([oneOf([null]), number, string]),
 };
 

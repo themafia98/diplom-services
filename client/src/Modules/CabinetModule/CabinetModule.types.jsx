@@ -1,10 +1,9 @@
 import PropTypes from 'prop-types';
 import { udataType } from '../../App.types';
-const { func, object, string, oneOfType, oneOf, objectOf } = PropTypes;
+const { func, object, string, oneOfType, oneOf } = PropTypes;
 
 export const cabinetType = {
   rest: object.isRequired,
-  loaderMethods: objectOf(func.isRequired).isRequired,
   path: string.isRequired,
   udata: udataType.isRequired,
   routeData: object.isRequired,

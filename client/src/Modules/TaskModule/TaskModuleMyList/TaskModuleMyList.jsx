@@ -35,7 +35,6 @@ TaskModuleMyList.defaultProps = {
   udata: {},
   data: {},
   height: 0,
-  loaderMethods: {},
   isBackground: false,
   visible: false,
 };

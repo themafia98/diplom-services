@@ -1,11 +1,10 @@
 import PropTypes from 'prop-types';
 import { udataType } from '../../App.types';
-const { func, string, oneOf, object, bool, objectOf, array } = PropTypes;
+const { func, string, oneOf, object, bool, array } = PropTypes;
 
 export const wikiModuleType = {
   path: string.isRequired,
   visible: bool,
-  loaderMethods: objectOf(func.isRequired).isRequired,
   rest: object.isRequired,
   statusApp: string.isRequired,
   router: object.isRequired,

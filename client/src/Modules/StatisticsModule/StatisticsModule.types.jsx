@@ -3,7 +3,6 @@ const { func, bool, object, string, arrayOf, objectOf, array, number, oneOfType 
 
 export const statisticsModuleType = {
   visible: bool,
-  loaderMethods: objectOf(func.isRequired).isRequired,
   rest: object.isRequired,
   path: string.isRequired,
   router: object.isRequired,

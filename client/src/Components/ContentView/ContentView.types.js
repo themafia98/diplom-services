@@ -7,8 +7,6 @@ export const contentViewType = {
   path: string.isRequired,
   statusApp: string.isRequired,
   rest: object.isRequired,
-  onShowLoader: func.isRequired,
-  onHideLoader: func.isRequired,
   webSocket: oneOfType([object.isRequired, () => null]),
   onChangeVisibleAction: func.isRequired,
   isToolbarActive: bool,

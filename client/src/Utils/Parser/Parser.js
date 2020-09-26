@@ -371,6 +371,7 @@ const saveAndNormalizeRoute = (router, config) => {
     draftRoute.activeTabs = router.activeTabs.filter((tab) =>
       config.menu.find(({ EUID }) => tab.includes(EUID)),
     );
+
     draftRoute.routeData = {};
     draftRoute.routeDataActive = {};
 
@@ -388,6 +389,14 @@ const saveAndNormalizeRoute = (router, config) => {
   if (currentSaveRouter === jsonRouterString) return;
 
   localStorage.setItem('router', jsonRouterString);
+};
+
+const getAvailableTabNameKey = (DATAKEY, metadata) => {
+  const { listdata = {}, title = '', name = '', displayName = '' } = metadata;
+  const { title: titleListdata = '' } = listdata;
+  const isName = DATAKEY && name;
+
+  return isName ? name : title ? title : titleListdata ? titleListdata : displayName ? displayName : DATAKEY;
 };
 
 const namespaceParser = {
@@ -409,6 +418,7 @@ const namespaceParser = {
   parseArrayByLimit,
   moduleIdGenerator,
   saveAndNormalizeRoute,
+  getAvailableTabNameKey,
 };
 
 export default namespaceParser;

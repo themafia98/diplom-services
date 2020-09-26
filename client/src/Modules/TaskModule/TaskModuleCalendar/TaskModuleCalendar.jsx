@@ -24,7 +24,6 @@ class TaskModuleCalendar extends PureComponent {
 
   static defaultProps = {
     data: {},
-    loaderMethods: {},
     router: {
       routeData: {},
       currentActionTab: '',

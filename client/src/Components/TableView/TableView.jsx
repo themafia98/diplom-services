@@ -25,7 +25,6 @@ const TableView = ({
   visible,
   onOpenPageWithData,
   setCurrentTab,
-  loaderMethods,
   loading,
   counter,
   tableViewHeight,
@@ -155,7 +154,6 @@ const TableView = ({
             user={user}
             visible={visible}
             loading={loading}
-            loaderMethods={loaderMethods}
             onAddRouteData={onAddRouteData}
             height={height}
           />
@@ -169,7 +167,6 @@ const TableView = ({
       filterBy,
       getRowsTable,
       heightProps,
-      loaderMethods,
       loading,
       onAddRouteData,
       onOpenPageWithData,
@@ -217,7 +214,6 @@ TableView.defaultProps = {
   height: 300,
   onOpenPageWithData: null,
   setCurrentTab: null,
-  loaderMethods: {},
   loading: false,
   counter: null,
   tableViewHeight: window?.innerHeight / 2 - 70,

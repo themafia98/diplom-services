@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { compose } from 'redux';
 import { taskModuleType } from './TaskModule.types';
-import _ from 'lodash';
 import { connect } from 'react-redux';
 import { Button, message } from 'antd';
 import { routeParser, oneOfType } from 'Utils';
@@ -48,19 +47,11 @@ class TaskModule extends PureComponent {
   };
 
   componentDidMount = () => {
-    const {
-      path = '',
-      loaderMethods = {},
-      router: { routeData },
-      appConfig,
-      moduleContext,
-    } = this.props;
+    const { path = '', appConfig, moduleContext } = this.props;
     const { visibility = false } = moduleContext;
     const { task: { limitList = 20 } = {} } = appConfig;
     const { height } = this.state;
-    const { onShowLoader } = loaderMethods;
 
-    const isEmptyTasks = _.isEmpty(routeData[path]);
     const isTaskModule = path && path.includes('task') && !path.split(regExpRegister.MODULE_ID)[1];
     if (height === null && this.moduleTask !== null && visibility) {
       this.recalcHeight();
@@ -75,10 +66,6 @@ class TaskModule extends PureComponent {
         ...saveData,
         paginationState: saveData,
       });
-    }
-
-    if (typeof onShowLoader === 'function' && isEmptyTasks && visibility) {
-      onShowLoader();
     }
 
     this.setState({
@@ -100,12 +87,8 @@ class TaskModule extends PureComponent {
   };
 
   componentDidUpdate = () => {
-    const {
-      router: { shouldUpdate = false, routeData = {} },
-      path = '',
-      moduleContext,
-      appConfig,
-    } = this.props;
+    const { router, path = '', moduleContext, appConfig } = this.props;
+    const { shouldUpdate = false, routeData = {} } = router;
 
     const { visibility = false } = moduleContext;
     const { isListCounterLoading = false } = this.state;
@@ -314,7 +297,6 @@ class TaskModule extends PureComponent {
         removeTab,
         setCurrentTab,
         udata = {},
-        loaderMethods = {},
         statusList = {},
         onSetStatus = null,
         type: typeDefault = Symbol(''),
@@ -329,7 +311,6 @@ class TaskModule extends PureComponent {
         rest,
         statusApp: status,
         counter,
-        loaderMethods,
         setCurrentTab,
         loading: router?.routeData[path] && router?.routeData[path]?.loading,
         height: heightController ? height - heightController : height,

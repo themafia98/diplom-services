@@ -14,7 +14,7 @@ import {
 } from 'Redux/actions/routerActions';
 
 import { clearCache, showGuile } from 'Redux/actions/publicActions';
-import { routeParser, saveAndNormalizeRoute } from 'Utils';
+import { getAvailableTabNameKey, routeParser, saveAndNormalizeRoute } from 'Utils';
 
 import FixedToolbar from 'Components/FixedToolbar';
 import Loader from 'Components/Loader';
@@ -108,11 +108,14 @@ class Dashboard extends PureComponent {
 
   componentDidUpdate = () => {
     const {
-      publicReducer: { requestError = null, status = '' },
+      requestError = null,
+      status = '',
       router: { currentActionTab = '', routeData = {} },
+      loader,
     } = this.props;
-
     const { showLoader, status: statusState, counterError } = this.state;
+
+    if (loader !== showLoader) this.onChangeLoaderVisibility(loader);
 
     if (!showLoader && statusState !== status && status === 'online')
       notification.success({
@@ -189,20 +192,26 @@ class Dashboard extends PureComponent {
     this.setState({ ...this.state, collapsed });
   };
 
-  logout = async (event) => {
+  logout = async () => {
     const { rest } = this.props;
     if (rest) {
       await rest.signOut();
     }
   };
 
-  closeGuild = (event) => {
+  closeGuild = () => {
     this.setState({
       guideVisible: false,
     });
   };
 
-  updateLoader = (event) => {
+  onChangeLoaderVisibility = (loader) => {
+    if (loader === this.state.showLoader) return;
+
+    this.setState({ ...this.state, showLoader: loader });
+  };
+
+  updateLoader = () => {
     const {
       router,
       router: { currentActionTab, shouldUpdate },
@@ -218,22 +227,7 @@ class Dashboard extends PureComponent {
     if (keys.length && !shouldUpdate) this.setState({ showLoader: true });
   };
 
-  getTabName = (metadata = {}, DATAKEY = '') => {
-    /** @type {Record<string, object | string>} */
-    const { listdata = {}, title = '', name = '', displayName = '' } = metadata || {};
-    const { title: titleListdata = '' } = listdata || {};
-    const isName = DATAKEY && name;
-
-    return isName
-      ? name
-      : title
-      ? title
-      : titleListdata
-      ? titleListdata
-      : displayName
-      ? displayName
-      : DATAKEY;
-  };
+  getTabName = (metadata = {}, DATAKEY = '') => getAvailableTabNameKey(DATAKEY, metadata);
 
   getactiveTabs = (tabs = [], menu) => {
     const { router: { routeData = {} } = {} } = this.props;
@@ -254,13 +248,9 @@ class Dashboard extends PureComponent {
     return tabsArray;
   };
 
-  goHome = (event) => {
-    const {
-      addTab,
-      setCurrentTab,
-      router: { currentActionTab = '', activeTabs = [] } = {},
-      appConfig = {},
-    } = this.props;
+  goHome = () => {
+    const { addTab, setCurrentTab, router = {}, appConfig = {} } = this.props;
+    const { currentActionTab = '', activeTabs = [] } = router;
     const { tabsLimit = 50 } = appConfig;
 
     if (currentActionTab === 'mainModule') return;
@@ -273,12 +263,8 @@ class Dashboard extends PureComponent {
   };
 
   goCabinet = (event) => {
-    const {
-      addTab,
-      setCurrentTab,
-      router: { currentActionTab = '', activeTabs = [] } = {},
-      appConfig = {},
-    } = this.props;
+    const { addTab, setCurrentTab, router = {}, appConfig = {} } = this.props;
+    const { currentActionTab = '', activeTabs = [] } = router;
     const { tabsLimit = 50 } = appConfig;
     if (currentActionTab === 'cabinetModule') return;
 
@@ -291,15 +277,8 @@ class Dashboard extends PureComponent {
 
   menuHandler = (event, key, mode = 'open') => {
     const path = event['key'] ? event['key'] : key;
-    const {
-      router: { currentActionTab, activeTabs = [], routeData } = {},
-      addTab,
-      setCurrentTab,
-      removeTab,
-      onClearCache,
-      appConfig = {},
-    } = this.props;
-
+    const { router = {}, addTab, setCurrentTab, removeTab, onClearCache, appConfig = {} } = this.props;
+    const { currentActionTab, activeTabs = [], routeData } = router;
     const { tabsLimit = 50 } = appConfig;
 
     const activeTabsCopy = [...activeTabs];
@@ -324,18 +303,6 @@ class Dashboard extends PureComponent {
       removeTab({ path: path, type: type });
       onClearCache({ path, type: type, currentActionTab });
     }
-  };
-
-  onShowLoader = () => {
-    this.setState({
-      showLoader: true,
-    });
-  };
-
-  onHideLoader = () => {
-    this.setState({
-      showLoader: false,
-    });
   };
 
   installApp = (event) => {
@@ -404,14 +371,14 @@ class Dashboard extends PureComponent {
       isToolbarActive = false,
     } = this.state;
     const {
-      router: { activeTabs = [], currentActionTab, shouldUpdate = false } = {},
       router = {},
       rest,
-      publicReducer = {},
       firstConnect = false,
       udata = {},
       appConfig: config = {},
+      status,
     } = this.props;
+    const { activeTabs = [], currentActionTab, shouldUpdate = false } = router;
     const { menu: menuItems = [] } = config || {};
     if (redirect) return <Redirect to={{ pathname: '/' }} />;
 
@@ -448,11 +415,9 @@ class Dashboard extends PureComponent {
               isToolbarActive={isToolbarActive}
               webSocket={this.webSocket}
               shouldUpdate={shouldUpdate}
-              onShowLoader={this.onShowLoader}
-              onHideLoader={this.onHideLoader}
               router={router}
               onChangeVisibleAction={this.onChangeVisibleAction}
-              statusApp={publicReducer.status}
+              statusApp={status}
               updateLoader={this.updateLoader}
               key="contentView"
               rest={rest}
@@ -487,14 +452,17 @@ class Dashboard extends PureComponent {
 }
 
 const mapStateToProps = (state) => {
-  const { router, publicReducer } = state;
-  const { firstConnect = false, udata = {}, appConfig } = publicReducer;
+  const { router, publicReducer, systemReducer } = state;
+  const { firstConnect = false, udata = {}, appConfig, requestError, status } = publicReducer;
+  const { loader } = systemReducer;
   return {
     router,
-    publicReducer,
     firstConnect,
     udata,
     appConfig,
+    requestError,
+    status,
+    loader,
   };
 };
 

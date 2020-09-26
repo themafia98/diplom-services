@@ -4,7 +4,7 @@ import TableView from 'Components/TableView';
 import TitleModule from 'Components/TitleModule';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
 
-const TaskModuleList = ({ router, data, height, loaderMethods, loading, counter, statusApp }) => {
+const TaskModuleList = ({ router, data, height, loading, counter, statusApp }) => {
   const refModuleTask = useRef(null);
 
   const { tasks = [] } = data || {};
@@ -15,7 +15,6 @@ const TaskModuleList = ({ router, data, height, loaderMethods, loading, counter,
       <div className="taskModuleAll_main">
         <TableView
           key="taskModule_tableTask"
-          loaderMethods={loaderMethods}
           counter={counter}
           statusApp={statusApp}
           height={height}
@@ -34,7 +33,6 @@ TaskModuleList.defaultProps = {
   data: {},
   height: 0,
   setCurrentTab: null,
-  loaderMethods: {},
 };
 
 TaskModuleList.propTypes = taskModuleListType;

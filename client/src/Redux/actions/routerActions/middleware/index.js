@@ -78,7 +78,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
       const [url, body, method = 'GET'] = makeApiAction(
         action,
         pathValid,
-        add ? {} : options,
+        options,
         actionsTypes.$LOAD_CURRENT_DATA,
       );
 

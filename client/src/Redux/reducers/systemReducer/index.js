@@ -1,7 +1,8 @@
 import { handleActions } from 'redux-actions';
-import { SET_SYSTEM_MESSAGE } from 'Redux/actions/systemActions/systemActions.const';
+import { SET_SYSTEM_MESSAGE, SHOW_SYSTEM_LOADER } from 'Redux/actions/systemActions/systemActions.const';
 
 const initialState = {
+  loader: false,
   systemMessage: '',
   type: 'info',
 };
@@ -19,6 +20,7 @@ export default handleActions(
         type,
       };
     },
+    [SHOW_SYSTEM_LOADER]: (state, { payload }) => ({ ...state, loader: payload }),
   },
   initialState,
 );

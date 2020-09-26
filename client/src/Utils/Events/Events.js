@@ -68,7 +68,7 @@ const forceUpdateDetectedInit = () => {
 const showSystemMessage = (type = '', msg = '') => {
   switch (type) {
     case 'loading':
-      return message.loading(msg);
+      return message.loading(msg, 1);
     case 'success':
       return message.success(msg);
     case 'error':

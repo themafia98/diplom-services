@@ -14,7 +14,6 @@ export const tableViewType = {
   router: object.isRequired,
   publicReducer: object.isRequired,
   onOpenPageWithData: oneOfType([func, () => null]),
-  loaderMethods: object.isRequired,
   loading: bool,
   counter: oneOfType([number, string, () => null]),
   onAddRouteData: oneOfType([func, () => null]),

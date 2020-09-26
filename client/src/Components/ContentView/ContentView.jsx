@@ -27,8 +27,6 @@ class ContentView extends Component {
     router: {},
     statusApp: 'online',
     rest: null,
-    onShowLoader: null,
-    onHideLoader: false,
     webSocket: null,
     onChangeVisibleAction: null,
     isToolbarActive: false,
@@ -118,26 +116,10 @@ class ContentView extends Component {
   };
 
   tabsCreate = () => {
-    const {
-      path,
-      activeTabs,
-      router,
-      statusApp,
-      rest,
-      onShowLoader,
-      onHideLoader,
-      webSocket,
-      onChangeVisibleAction,
-    } = this.props;
+    const { path, activeTabs, router, statusApp, rest, webSocket, onChangeVisibleAction } = this.props;
     const { visibilityPortal = false } = this.state;
 
-    const loaderMethods = {
-      onShowLoader,
-      onHideLoader,
-    };
-
     const tabProps = {
-      loaderMethods: loaderMethods,
       getBackground: this.getBackground,
       activeTabs,
       visibilityPortal,

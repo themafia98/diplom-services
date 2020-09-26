@@ -35,6 +35,7 @@ const {
   sortedByKey,
   parseArrayByLimit,
   saveAndNormalizeRoute,
+  getAvailableTabNameKey,
 } = namespaceParser;
 
 const {
@@ -86,4 +87,5 @@ export {
   saveAndNormalizeRoute,
   findUser,
   showSystemMessage,
+  getAvailableTabNameKey,
 };
