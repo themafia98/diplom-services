@@ -30,6 +30,7 @@ import ActionWiki from './ActionsEntity/ActionWiki';
 import ActionSettings from './ActionsEntity/ActionSettings';
 import Responser from '../Responser';
 import { Response, Request } from 'express';
+import { ParsedUrlQuery } from 'querystring';
 
 namespace ActionApi {
   const { getModelByName, parsePublicData } = Utils;
@@ -335,7 +336,7 @@ namespace ActionApi {
       }
     }
 
-    public async actionsRunner(actionParam: ActionParams = {}, mode?: string) {
+    public async actionsRunner(actionParam: ActionParams = {}, mode?: string, queryString?: ParsedUrlQuery) {
       const connect = await this.getDbm()
         .connection()
         .catch((err: Error) => console.error(err));
@@ -372,7 +373,8 @@ namespace ActionApi {
 
           let metadata: Meta = [];
 
-          if (isPublic) metadata = parsePublicData(actionResult, 'default', this.getActionPath());
+          if (isPublic)
+            metadata = parsePublicData(actionResult, 'default', this.getActionPath(), queryString);
           else metadata = actionResult;
 
           return await new Responser(res, req, params, null, 200, metadata).emit();

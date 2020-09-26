@@ -7,6 +7,22 @@ import types from 'types.modules';
 import actionsTypes from 'actions.types';
 import { requestTemplate, paramsTemplate } from 'Utils/Api/api.utils';
 
+const findUser = async (uid) => {
+  if (!uid) return null;
+
+  try {
+    const rest = new Request();
+    const res = await rest.sendRequest(`/cabinet/findUser?uid=${uid}`);
+    const { response = {} } = res.data;
+    const { metadata = [] } = response;
+
+    return metadata?.[0];
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
 /**
  *
  * @param {string} type notification type
@@ -211,4 +227,5 @@ export default {
   getDependencyModules,
   oneOfType,
   getValidRouteData,
+  findUser,
 };

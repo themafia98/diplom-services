@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { outputType } from './Output.types';
 import clsx from 'clsx';
 import { Tooltip, Button, Spin } from 'antd';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { openTab } from 'Redux/actions/routerActions/middleware';
 
 const Output = memo(
@@ -21,9 +21,9 @@ const Output = memo(
     outputClassName,
     currentData,
     depDataKey,
-    onOpenTab,
     isLoad,
   }) => {
+    const dispatch = useDispatch();
     const isChildrenList = Array.isArray(children);
 
     const [showTooltip, setShowTooltip] = useState(false);
@@ -77,9 +77,10 @@ const Output = memo(
     const onOpenLink = useCallback(
       ({ id: uuid = null, action = null }, event) => {
         if (event) event.stopPropagation();
-        onOpenTab({ uuid, action, data: currentData, depKey: depDataKey });
+
+        dispatch(openTab({ uuid, action, data: currentData, depKey: depDataKey }));
       },
-      [currentData, depDataKey, onOpenTab],
+      [currentData, depDataKey, dispatch],
     );
 
     const renderLinks = useCallback(
@@ -290,22 +291,9 @@ const Output = memo(
   },
 );
 
-const mapStateTopProps = (state) => {
-  const { appConfig } = state.publicReducer;
-  return {
-    appConfig,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onOpenTab: (param) => dispatch(openTab(param)),
-  };
-};
-
 Output.propTypes = outputType;
 Output.defaultProps = {
-  data: {},
+  data: null,
   depDataKey: '',
   children: '',
   id: '',
@@ -321,4 +309,4 @@ Output.defaultProps = {
   outputClassName: '',
 };
 
-export default connect(mapStateTopProps, mapDispatchToProps)(Output);
+export default Output;

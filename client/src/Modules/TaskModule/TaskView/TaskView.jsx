@@ -3,7 +3,7 @@ import { taskViewType } from '../TaskModule.types';
 import { v4 as uuid } from 'uuid';
 import _ from 'lodash';
 import moment from 'moment';
-import { Descriptions, Empty, message, Spin } from 'antd';
+import { Empty, message, Spin } from 'antd';
 import { connect } from 'react-redux';
 import Scrollbars from 'react-custom-scrollbars';
 import { deleteFile, loadFile, routeParser, sortedByKey } from 'Utils';
@@ -16,7 +16,7 @@ import ModalWindow from 'Components/ModalWindow';
 import TitleModule from 'Components/TitleModule';
 
 import DescriptionTask from './DescriptionTask';
-import renderDescription from './renderDescription';
+import TaskDescription from './TaskDescription';
 import actionsTypes from 'actions.types';
 import { compose } from 'redux';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
@@ -85,68 +85,61 @@ class TaskView extends PureComponent {
     this.onLoadTaskAdditionalData();
   };
 
-  onLoadTaskAdditionalData = async () => {
-    const {
-      publicReducer = {},
-      router = {},
-      onLoadCacheData,
-      data = {},
-      onSaveCache = null,
-      clientDB,
-    } = this.props;
-    const { caches } = publicReducer;
-    const { routeDataActive = {} } = router;
-    const { _id: id = '', key = '', uidCreater = '', authorName = '' } = routeDataActive;
-    const { id: idProps = '' } = data;
+  componentDidUpdate = () => {
+    const { isLoadingFiles = false, shouldRefresh } = this.state;
+    const { router = {} } = this.props;
+    const { shouldUpdate = false } = router;
 
-    const { actionType, key: taskId } = this.state;
-    const idTask = !_.isEmpty(routeDataActive) && id ? id : idProps ? idProps : '';
-
-    if (!key) this.findTask();
-
-    if (_.isEmpty(caches) || (key && !caches[key]) || (!key && onLoadCacheData)) {
-      await onSaveCache({
-        data: [{ _id: uidCreater, displayName: authorName, key: uuid() }],
-        load: true,
-        union: true,
-        customDepKey: `taskView#${taskId}`,
-        uuid: '__author',
-      });
-
-      await onLoadCacheData({
-        actionType,
-        depKey: idTask,
-        depStore: 'tasks',
-        store: 'jurnalworks',
-        clientDB,
-      });
-      await this.fetchDepUsersList();
-      await this.fetchFiles();
+    if (!isLoadingFiles && (shouldUpdate || shouldRefresh)) {
+      this.fetchFiles();
     }
+
+    this.onRefreshStatusList();
   };
 
-  componentDidUpdate = async (props, state) => {
-    const { isLoadingFiles = false, shouldRefresh } = this.state;
-    const {
-      router: { routeDataActive = {}, shouldUpdate = false },
-    } = this.props;
-
+  onRefreshStatusList = () => {
     const { statusListName = [] } = this.state;
     const { statusList = {} } = this.props;
     const { settings = [] } = statusList;
 
-    const filteredStatusNames = settings.map(({ value = '' }) => value).filter(Boolean);
+    const filteredStatusNames = settings.reduce((acc, { value = '' }) => {
+      if (value) return [...acc, value];
+      return acc;
+    }, []);
 
-    if (!isLoadingFiles && routeDataActive?._id && (shouldUpdate || shouldRefresh)) {
-      this.fetchFiles(filteredStatusNames);
-    }
+    if (filteredStatusNames.length === statusListName.length) return;
+    this.setState({
+      ...this.state,
+      statusListName: filteredStatusNames,
+    });
+  };
 
-    if (filteredStatusNames?.length !== statusListName?.length) {
-      this.setState({
-        ...this.state,
-        statusListName: filteredStatusNames,
-      });
-    }
+  onLoadTaskAdditionalData = async () => {
+    const { router = {}, onLoadCacheData, onSaveCache = null, clientDB } = this.props;
+    const { routeDataActive = {} } = router;
+    const { key = '', uidCreater = '', authorName = '' } = routeDataActive;
+    const { actionType, key: taskId } = this.state;
+
+    if (!taskId) return;
+
+    await onSaveCache({
+      data: [{ _id: uidCreater, displayName: authorName, key: key || uuid() }],
+      load: true,
+      union: true,
+      customDepKey: `taskView#${taskId}`,
+      uuid: '__author',
+    });
+
+    await onLoadCacheData({
+      actionType,
+      depKey: taskId,
+      depStore: 'tasks',
+      store: 'jurnalworks',
+      clientDB,
+    });
+
+    await this.fetchDepUsersList();
+    await this.fetchFiles();
   };
 
   findTask = () => {
@@ -173,59 +166,59 @@ class TaskView extends PureComponent {
   };
 
   fetchDepUsersList = async () => {
-    const {
-      onSaveCache = null,
-      router: { routeDataActive: { editor = '' } = {} },
-      modelsContext,
-    } = this.props;
-
+    const { onSaveCache = null, router = {}, modelsContext } = this.props;
+    const { routeDataActive = {} } = router;
+    const { editor = '' } = routeDataActive;
     const { key: taskId } = this.state;
     const { Request = {} } = modelsContext;
 
     try {
       const rest = new Request();
-      const response = await rest.sendRequest('/system/userList', 'GET', null, true);
+      const res = await rest.sendRequest('/system/userList', 'GET', null, true);
 
-      if (response && response.status === 200) {
-        const { data: { response: { metadata = [] } = {} } = {} } = response || {};
+      if (res?.status !== 200) throw new Error('fail load user list');
 
-        const filteredUsers = metadata.reduce((usersList, user) => {
-          const { _id = '', displayName = '' } = user;
+      const { response = {} } = res.data || {};
+      const { metadata = [] } = response;
 
-          if (!user || !_id || !displayName) return usersList;
+      const filteredUsers = metadata.reduce((usersList, user) => {
+        const { _id = '', displayName = '' } = user;
 
-          return [
-            ...usersList,
-            {
-              _id,
-              displayName,
-            },
-          ];
-        }, []);
-        if (onSaveCache) {
-          const dataEditor =
-            Array.isArray(editor) && editor?.length
-              ? filteredUsers.filter(({ _id: userId }) => editor.some((value) => value === userId))
-              : filteredUsers;
+        if (!user || !_id || !displayName) return usersList;
 
-          onSaveCache({
-            data: dataEditor,
-            load: true,
-            union: true,
-            customDepKey: `taskView#${taskId}`,
-            uuid: '__editor',
-          });
-        }
+        return [
+          ...usersList,
+          {
+            _id,
+            displayName,
+          },
+        ];
+      }, []);
 
-        this.setState({
-          ...this.state,
-          isLoad: true,
-          filteredUsers,
-        });
-      } else throw new Error('fail load user list');
+      const dataEditor = Array.isArray(editor)
+        ? filteredUsers.filter(({ _id: userId }) => editor.some((value) => value === userId))
+        : filteredUsers;
+
+      onSaveCache({
+        data: dataEditor,
+        load: true,
+        union: true,
+        customDepKey: `taskView#${taskId}`,
+        uuid: '__editor',
+      });
+
+      this.setState({
+        ...this.state,
+        isLoad: true,
+        filteredUsers,
+      });
     } catch (error) {
       message.error('Ошибка загрузки сотрудников.');
-      if (error?.response?.status !== 404) console.error(error);
+
+      if (error?.response?.status !== 404) {
+        console.error(error);
+      }
+
       this.setState({
         ...this.state,
         isLoad: true,
@@ -233,64 +226,65 @@ class TaskView extends PureComponent {
     }
   };
 
-  fetchFiles = async (filteredStatusNames) => {
-    const {
-      router: { routeDataActive = {} },
-      modelsContext,
-    } = this.props;
-
+  fetchFiles = async () => {
+    const { router = {}, modelsContext } = this.props;
+    const { routeDataActive = {} } = router;
     const { rest } = modelsContext;
 
     try {
       this.setState(
         {
           ...this.state,
-          statusListName: Array.isArray(filteredStatusNames) ? filteredStatusNames : [filteredStatusNames],
           shouldRefresh: false,
           isLoadingFiles: true,
         },
         async () => {
+          const { _id: entityId = '' } = routeDataActive;
           const fileLoaderBody = {
             queryParams: {
-              entityId: routeDataActive._id,
+              entityId,
             },
           };
 
-          const { data: { response = null } = {} } = await loadFile('tasks', fileLoaderBody);
-          if (response && response?.done) {
-            const { metadata } = response;
-            const filesArray = Array.isArray(metadata)
-              ? metadata
-              : metadata && typeof metadata === 'object'
-              ? metadata?.entries
-              : [];
+          const res = await loadFile('tasks', fileLoaderBody);
+          const { response = null } = res.data;
 
-            const files = filesArray
-              .map((it) => {
-                const { name = '', path_display: url = '', id: uid = '' } = it || {};
-                const [module, taskId, filename] = url?.slice(1)?.split(/\//gi);
+          if (!response.done) throw new Error('Bad fetch files');
 
-                return {
-                  name,
-                  url: `${rest.getApi()}/system/${module}/download/${taskId}/${filename}`,
-                  status: 'done',
-                  uid,
-                };
-              })
-              .filter(({ name = '', url = '', uid = '' } = {}) => name && url && uid);
+          const { metadata } = response;
+          const filesArray = Array.isArray(metadata)
+            ? metadata
+            : metadata && typeof metadata === 'object'
+            ? metadata?.entries
+            : [];
 
-            this.setState({
-              ...this.state,
-              statusListName: Array.isArray(filteredStatusNames)
-                ? filteredStatusNames
-                : [filteredStatusNames],
-              filesArray: files,
-            });
-          }
+          const files = filesArray.reduce((acc, file) => {
+            const { name = '', path_display: url = '', id: uid = '' } = file || {};
+            const [module, taskId, filename] = url?.slice(1)?.split(/\//gi);
+
+            if (!name || !url || !uid) return acc;
+
+            return [
+              ...acc,
+              {
+                name,
+                url: `${rest.getApi()}/system/${module}/download/${taskId}/${filename}`,
+                status: 'done',
+                uid,
+              },
+            ];
+          }, []);
+
+          this.setState({
+            ...this.state,
+            filesArray: files,
+          });
         },
       );
     } catch (error) {
-      if (error?.response?.status !== 404) console.error(error);
+      if (error?.response?.status !== 404) {
+        console.error(error);
+      }
     }
   };
 
@@ -304,7 +298,7 @@ class TaskView extends PureComponent {
     });
   };
 
-  onAddFileList = (fileList, status) => {
+  onAddFileList = (fileList) => {
     const shouldRefresh = fileList.every((it) => it.status === 'done');
     this.setState({
       ...this.state,
@@ -325,37 +319,38 @@ class TaskView extends PureComponent {
         },
       };
 
-      const { data: { response = null } = {} } = await deleteFile('tasks', deleteFileBody);
+      const res = await deleteFile('tasks', deleteFileBody);
+      const { response = null } = res.data;
 
-      if (response && response?.done) {
-        const { metadata: { metadata: fileParams = {} } = {} } = response;
-        const { uid: idClient = '' } = file;
-        const { id: idResponse = '' } = fileParams;
+      if (!response.done) throw new Error('Invalid delete file');
 
-        if (idClient !== idResponse) {
-          throw new Error('id files not equal');
-        }
+      const { metadata: { metadata: fileParams = {} } = {} } = response;
+      const { uid: idClient = '' } = file;
+      const { id: idResponse = '' } = fileParams;
 
-        this.setState(
-          {
-            ...this.state,
-            filesArray: filesArray.filter((it) => it.uid !== idResponse),
-          },
-          () => {
-            message.success('Файл успешно удален');
-          },
-        );
-      } else throw new Error('Invalid delete file');
+      if (idClient !== idResponse) {
+        throw new Error('id files not equal');
+      }
+
+      this.setState(
+        {
+          ...this.state,
+          filesArray: filesArray.filter((it) => it.uid !== idResponse),
+        },
+        () => {
+          message.success('Файл успешно удален');
+        },
+      );
     } catch (error) {
       if (error?.response?.status !== 404) console.error(error);
       message.error('Ошибка удаления файла.');
     }
   };
 
-  onEdit = (event) => {
-    const {
-      router: { routeDataActive = {} },
-    } = this.props;
+  onEdit = () => {
+    const { router = {} } = this.props;
+    const { routeDataActive = {} } = router;
+
     this.setState({
       ...this.state,
       modeEditContent: false,
@@ -364,7 +359,7 @@ class TaskView extends PureComponent {
     });
   };
 
-  onRejectEdit = (event) => {
+  onRejectEdit = () => {
     this.setState({
       ...this.state,
       modeControll: 'default',
@@ -417,6 +412,7 @@ class TaskView extends PureComponent {
 
   onChangeEditable = (event) => {
     const { currentTarget = {}, currentTarget: { value = '' } = {} } = event;
+
     if (event && typeof event === 'object' && currentTarget && !_.isEmpty(currentTarget)) {
       return this.setState({
         ...this.state,
@@ -471,6 +467,7 @@ class TaskView extends PureComponent {
       modelsContext,
       clientDB,
     } = this.props;
+
     const { modeControllEdit = {} } = this.state;
     const validHashCopy = [{ ...modeControllEdit }];
     const { schema = {} } = modelsContext;
@@ -521,39 +518,6 @@ class TaskView extends PureComponent {
       modeEditContent: true,
       customTypeModal,
     });
-  };
-
-  calcSumWorkTime = (cachesJournalList = []) => {
-    return cachesJournalList
-      .reduce((startValue, item) => {
-        const normalizeValue = item.timeLost.toString().toLowerCase();
-
-        let hour = null;
-        let min = null;
-
-        if (normalizeValue.includes('h') || normalizeValue.includes('ч')) {
-          const arrayStringHour = normalizeValue.match(/(\w+)[h|ч]/gi) || [];
-          hour = !arrayStringHour
-            ? 0
-            : arrayStringHour.reduce((total, current) => {
-                return total + parseFloat(current);
-              }, 0) || 0;
-        }
-
-        if (normalizeValue.includes('m') || normalizeValue.includes('м')) {
-          const arrayStringMin = normalizeValue.match(/(\w+)[m|м]/gi) || [];
-          min = !arrayStringMin
-            ? 0
-            : arrayStringMin.reduce((total, current) => {
-                return total + parseFloat(current);
-              }, 0);
-        }
-
-        const plusValue = !min && hour ? hour : hour && min > 0 ? hour + min / 60 : min > 0 ? min / 60 : 0;
-        if (typeof plusValue === 'number') return startValue + plusValue;
-        else return startValue;
-      }, 0)
-      .toFixed(1);
   };
 
   renderWorkJournal = (cachesJournalList = []) => {
@@ -746,7 +710,6 @@ class TaskView extends PureComponent {
       onChangeEditable,
       onChangeEditableStart,
       onChangeEditableEnd,
-      calcSumWorkTime,
       onEditContentMode,
       onAddFileList,
       onRemoveFile,
@@ -778,7 +741,6 @@ class TaskView extends PureComponent {
       onOpenPageWithData,
       onEditContentMode,
       onChangeEditableEnd,
-      calcSumWorkTime,
       onAddFileList,
       onRemoveFile,
     };
@@ -823,7 +785,7 @@ class TaskView extends PureComponent {
       editor,
       name,
       date,
-      key,
+      taskKey: key,
     };
 
     return (
@@ -833,9 +795,7 @@ class TaskView extends PureComponent {
         <div className="taskView">
           <div className="col-6 col-taskDescription">
             <Scrollbars hideTracksWhenNotNeeded>
-              <Descriptions bordered column={columnStyleConfig}>
-                {renderDescription()(renderProps)}
-              </Descriptions>
+              <TaskDescription {...renderProps} columnStyleConfig={columnStyleConfig} />
               <div className="descriptionTask">
                 <DescriptionTask commentProps={commonProps} {...descriptionTaskProps} />
               </div>

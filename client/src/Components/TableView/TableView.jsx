@@ -63,7 +63,6 @@ const TableView = ({
               typeOutput="link"
               router={router}
               removeTab={removeTab}
-              currentData={it}
               udata={udata}
               onOpenPageWithData={onOpenPageWithData}
               setCurrentTab={setCurrentTab}

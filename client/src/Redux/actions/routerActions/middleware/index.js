@@ -5,6 +5,7 @@ import {
   routePathNormalise,
   findData,
   routeParser,
+  findUser,
 } from 'Utils';
 import { saveComponentStateAction, loadFlagAction, openPageWithDataAction, setActiveTabAction } from '../';
 import { errorRequestAction, setStatus } from '../../publicActions';
@@ -13,6 +14,7 @@ import regExpRegister from 'Utils/Tools/regexpStorage';
 import _ from 'lodash';
 import { message } from 'antd';
 import { makeApiAction, getActionStore } from 'Utils/Api';
+import { setSystemMessageAction } from 'Redux/actions/systemActions';
 
 const loadCurrentData = (params) => async (dispatch, getState, { schema, Request }) => {
   const {
@@ -22,9 +24,11 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
     options = {},
     optionsForParse = {},
     clientDB = null,
+    result = null,
   } = params;
 
-  const { noCorsClient = false, shouldSetLoading = false, sync = false, add = false } = optionsForParse || {};
+  const { force = false, noCorsClient = false, shouldSetLoading = false, sync = false, add = false } =
+    optionsForParse || {};
 
   let isLocalUpdate = true;
   const pathValid = pagePath.includes('_') ? pagePath : pagePath.split(regExpRegister.MODULE_ID)[0];
@@ -46,10 +50,35 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
 
   switch (status) {
     case 'online': {
+      const dep = {
+        requestError,
+        noCorsClient,
+        sortBy,
+        pathValid,
+        schema,
+        storeLoad: store,
+        clientDB,
+        uuid: 'uuid',
+        params,
+        saveComponentStateAction,
+        multipleLoadData,
+        errorRequestAction,
+        isLocalUpdate,
+        rest,
+        sync,
+        add,
+      };
+
+      if (force) {
+        dep.copyStore = result;
+        await coreUpdaterDataHook(dispatch, dep);
+        return;
+      }
+
       const [url, body, method = 'GET'] = makeApiAction(
         action,
         pathValid,
-        options,
+        add ? {} : options,
         actionsTypes.$LOAD_CURRENT_DATA,
       );
 
@@ -61,25 +90,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
 
         if (error) throw new Error(error);
 
-        const dep = {
-          requestError,
-          noCorsClient,
-          copyStore,
-          sortBy,
-          pathValid,
-          schema,
-          storeLoad: store,
-          clientDB,
-          uuid: 'uuid',
-          params,
-          saveComponentStateAction,
-          multipleLoadData,
-          errorRequestAction,
-          isLocalUpdate,
-          rest,
-          sync,
-          add,
-        };
+        dep.copyStore = copyStore;
 
         await coreUpdaterDataHook(dispatch, dep);
       } catch (error) {
@@ -218,7 +229,7 @@ const multipleLoadData = (params) => async (dispatch, getState, { schema, Reques
   }
 };
 
-const openTab = ({ uuid, action, depKey = '', data = {}, openType = '' }) => async (dispatch, getState) => {
+const openTab = ({ uuid, action, depKey = '', data = null, openType = '' }) => async (dispatch, getState) => {
   const {
     publicReducer: {
       appConfig = {},
@@ -278,13 +289,22 @@ const openTab = ({ uuid, action, depKey = '', data = {}, openType = '' }) => asy
   if (data && typeof data === 'object' && depKey) {
     const store = isCabinetRedirect ? 'users' : action;
     const { [store]: storeList = [] } = findData(_.isEmpty(data) ? routeData : data, depKey) || {};
-    newData = storeList.find((it) => it?._id === uuid) || {};
+    newData = storeList.find((it) => it?._id === uuid) || null;
   }
   const isDefaultAction = regExpRegister.INCLUDE_MODULE.test(action);
   const page = !isDefaultAction ? `${action}Module` : action;
   const moduleId = !(uid === uuid) && isCabinetRedirect ? '$$personalPage$$' : '';
 
-  if (!uuid || !page || !newData || (newData && _.isEmpty(newData))) {
+  const shouldBeTryLoad = !uuid || !page || !newData || (newData && _.isEmpty(newData));
+
+  let normalizeData = null;
+
+  if (shouldBeTryLoad && uuid !== uid) {
+    dispatch(setSystemMessageAction({ msg: 'Открытие страницы', type: 'loading' }));
+    normalizeData = await findUser(uuid || uid);
+  }
+
+  if (!normalizeData && !newData && uuid !== uid) {
     message.warn('Страницу открыть не удалось');
     const trace = {
       uuid,
@@ -305,10 +325,11 @@ const openTab = ({ uuid, action, depKey = '', data = {}, openType = '' }) => asy
   );
 
   if (indexTab === -1) {
+    const pageData = normalizeData ? normalizeData : newData;
     dispatch(
       openPageWithDataAction({
         activePage,
-        routeDataActive: { ...newData, key: uuid },
+        routeDataActive: { ...pageData, key: uuid },
       }),
     );
     return;

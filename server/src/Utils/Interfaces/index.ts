@@ -15,6 +15,7 @@ import {
 import socketio from 'socket.io';
 import mongoose, { Mongoose, Connection, Model, Document, FilterQuery } from 'mongoose';
 import { ObjectId } from 'mongodb';
+import { ParsedUrlQuery } from 'querystring';
 export interface Controller<T> {
   [key: string]: any;
 }
@@ -367,7 +368,12 @@ export interface Actions extends EntityActionApi {
   deleteEntity(model: Model<Document>, query: ActionParams): Promise<ParserData>;
   updateEntity(model: Model<Document>, query: ActionParams, options?: OptionsUpdate): Promise<ParserData>;
   findOnce(model: Model<Document>, actionParam: ActionParams): Promise<ParserData>;
-  actionsRunner(this: Actions, actionParam: ActionParams): Promise<Function>;
+  actionsRunner(
+    this: Actions,
+    actionParam: ActionParams,
+    mode?: string,
+    queryString?: ParsedUrlQuery,
+  ): Promise<Function>;
   runSyncClient(actionParam: ActionParams): Promise<ParserData>;
 }
 

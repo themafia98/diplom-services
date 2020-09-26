@@ -330,6 +330,7 @@ export default handleActions(
 
           let storeName = path ? path.split(regExpRegister.INCLUDE_MODULE)[0] : '';
           storeName = storeName[storeName.length] !== 's' ? `${storeName}s` : storeName;
+
           if (!storeName) return newState;
           let items = actionItem[storeName];
 
@@ -394,6 +395,10 @@ export default handleActions(
             [storeName]: items,
           },
         };
+      }
+
+      if (storeName.includes('cabinet')) {
+        storeName = 'users';
       }
 
       const addItem = add && payload[storeName] ? { ...payload[storeName] } : null;

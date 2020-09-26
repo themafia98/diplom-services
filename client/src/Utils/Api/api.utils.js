@@ -10,12 +10,29 @@ const paramsTemplate = {
   query: null,
 };
 
-const getApiUrlByActionPath = (aPath = '') => {
+const getApiUrlByActionPath = (aPath = '', method = 'POST', options = null) => {
   if (typeof aPath !== 'string') return '';
 
   const urlMatchResult = /\?\?(.+)\?\?/.exec(aPath);
   const url = urlMatchResult?.[1]?.replace('.', '/');
-  const parsedApiUrl = url?.[0] !== '/' ? `/${url}` : url;
+  let parsedApiUrl = url?.[0] !== '/' ? `/${url}` : url;
+
+  if (method === 'GET' && options) {
+    Object.keys(options).forEach((optionKey) => {
+      const char = parsedApiUrl.charAt(parsedApiUrl.length - 1);
+
+      if (char !== '?' && char !== '&') {
+        parsedApiUrl += `?${optionKey}=${options[optionKey]}&`;
+        return;
+      }
+
+      parsedApiUrl += `${optionKey}=${options[optionKey]}&`;
+    });
+
+    if (parsedApiUrl.charAt(parsedApiUrl.length - 1) === '&') {
+      parsedApiUrl = parsedApiUrl.slice(0, -1);
+    }
+  }
 
   return parsedApiUrl || '';
 };

@@ -1,4 +1,6 @@
 import { NextFunction, Response, Request } from 'express';
+import url from 'url';
+import querystring from 'querystring';
 import { promisify } from 'util';
 import path from 'path';
 import fs from 'fs';
@@ -77,12 +79,16 @@ namespace System {
 
     @Get({ path: '/userList', private: true })
     protected async getUsersList(req: Request, res: Response): ResRequest {
+      const { query } = url.parse(req.url);
+      const queryString = querystring.parse(query as string);
+
       const params: Params = { methodQuery: 'get_all', status: 'done', done: true, from: 'users' };
       const actionUserList: Actions = new Action.ActionParser({
         actionPath: 'users',
         actionType: 'get_all',
       });
-      const responseExec: Function = await actionUserList.actionsRunner({});
+
+      const responseExec: Function = await actionUserList.actionsRunner({}, '', queryString);
       return responseExec(req, res, params, true);
     }
 
@@ -212,9 +218,9 @@ namespace System {
       const actionParams =
         typeof paramsRequest == 'object' && paramsRequest
           ? {
-            moduleName,
-            ...paramsRequest,
-          }
+              moduleName,
+              ...paramsRequest,
+            }
           : {};
 
       const params: Params = {

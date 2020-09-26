@@ -18,6 +18,7 @@ import { v4 as uuid } from 'uuid';
 import { docResponse, ParserResult, Meta } from './Types';
 import { ObjectID } from 'mongodb';
 import { ROLES } from '../Models/AccessRole/AcessRole.constant';
+import { ParsedUrlQuery } from 'querystring';
 
 namespace Utils {
   const upload = multer();
@@ -157,6 +158,7 @@ namespace Utils {
     data: ParserResult,
     mode: string = 'default',
     rules = '',
+    queryString?: ParsedUrlQuery,
   ): Array<Meta> | Meta => {
     if ((!Array.isArray(data) && typeof data !== 'object') || !data) return [data];
 
@@ -165,6 +167,9 @@ namespace Utils {
     if (!result && data && !Array.isArray(data)) {
       return [data];
     }
+
+    const queryStringKeys =
+      queryString && !_.isEmpty(queryString) ? Object.keys(queryString as ParsedUrlQuery) : null;
 
     switch (mode) {
       case 'access':
@@ -199,9 +204,14 @@ namespace Utils {
 
             const itemValid = Object.keys(item).reduce((obj: ResponseDocument, key: string): object => {
               const addditionalRule: boolean = rules === 'users' ? !key.includes('At') : true;
-              if (!key.includes('password') && !key.includes('__v') && addditionalRule) {
+              const isInclude =
+                key === '_id' || !queryStringKeys || queryStringKeys.some((queryKey) => queryKey === key);
+              const isPublicField = !key.includes('password') && !key.includes('__v');
+
+              if (isInclude && isPublicField && addditionalRule) {
                 obj[key] = (item as ResponseDocument)[key];
               }
+
               return obj;
             }, {});
 

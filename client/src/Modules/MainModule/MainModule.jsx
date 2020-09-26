@@ -49,6 +49,15 @@ const MainModule = memo(({ onLoadCurrentData, moduleContext, clientDB, visibilit
     if (isMounted && visibility && page === 'mainModule' && itemId === 'global') {
       onLoadCurrentData({
         action: actionPath.$GLOBAL_LOAD_USERS,
+        options: {
+          departament: 'department',
+          displayName: 'displayName',
+          email: 'email',
+          isHideEmail: 'isHideEmail',
+          isHidePhone: 'isHidePhone',
+          position: 'position',
+          isOnline: 'isOnline',
+        },
         path: validPath,
         clientDB,
       });

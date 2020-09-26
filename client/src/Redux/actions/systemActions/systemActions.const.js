@@ -1,0 +1,1 @@
+export const SET_SYSTEM_MESSAGE = 'SET_SYSTEM_MESSAGE';

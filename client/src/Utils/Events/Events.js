@@ -1,5 +1,6 @@
 import { getStoreSchema } from '../utilsHook';
 import { dataParser } from '../';
+import { message } from 'antd';
 
 /** Events */
 const sucessEvent = async (dispatch, dep, mode = '', multiple = false, cursor = null, offlineStore = []) => {
@@ -64,9 +65,25 @@ const forceUpdateDetectedInit = () => {
   });
 };
 
+const showSystemMessage = (type = '', msg = '') => {
+  switch (type) {
+    case 'loading':
+      return message.loading(msg);
+    case 'success':
+      return message.success(msg);
+    case 'error':
+      return message.error(msg);
+    case 'warn':
+      return message.warn(msg);
+    default:
+      return message.info(msg);
+  }
+};
+
 const namespaceEvents = {
   sucessEvent,
   forceUpdateDetectedInit,
+  showSystemMessage,
 };
 
 export default namespaceEvents;

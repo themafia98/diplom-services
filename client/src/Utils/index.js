@@ -8,7 +8,7 @@ import namespaceTools from './Tools';
  * export some utils from namespaces
  */
 
-const { sucessEvent, forceUpdateDetectedInit } = namespaceEvents;
+const { sucessEvent, forceUpdateDetectedInit, showSystemMessage } = namespaceEvents;
 const {
   errorHook,
   coreUpdaterDataHook,
@@ -47,6 +47,7 @@ const {
   getDependencyModules,
   oneOfType,
   getValidRouteData,
+  findUser,
 } = namespaceTools;
 
 export {
@@ -83,4 +84,6 @@ export {
   parseArrayByLimit,
   getValidRouteData,
   saveAndNormalizeRoute,
+  findUser,
+  showSystemMessage,
 };

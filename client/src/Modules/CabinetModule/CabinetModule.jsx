@@ -1,16 +1,19 @@
-import React, { memo, useEffect, useState, useMemo } from 'react';
-import { connect } from 'react-redux';
+import React, { memo, useEffect, useState, useMemo, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { cabinetType } from './CabinetModule.types';
-import { Modal, Upload, message, Icon, Button } from 'antd';
+import { Modal, Upload, message, Icon, Button, Spin } from 'antd';
 import { updateUdata } from 'Redux/actions/publicActions';
 import UserCard from 'Components/UserCard';
 import TitleModule from 'Components/TitleModule';
 import StreamBox from 'Components/StreamBox';
-import { compose } from 'redux';
-import { moduleContextToProps } from 'Components/Helpers/moduleState';
+import { findUser, routeParser } from 'Utils';
+import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
+import actionPath from 'actions.path';
+
 const { Dragger } = Upload;
 
-const CabinetModule = memo(({ path, onUpdateUdata, udata, routeDataActive, modelsContext }) => {
+const CabinetModule = memo(({ path, modelsContext }) => {
+  const dispatch = useDispatch();
   const [state, setState] = useState({
     modePage: '',
     imageUrl: null,
@@ -19,8 +22,48 @@ const CabinetModule = memo(({ path, onUpdateUdata, udata, routeDataActive, model
     disabled: false,
   });
 
-  const { rest } = modelsContext;
+  const { rest, clientDB } = modelsContext;
   const { modePage, imageUrl, visible } = state;
+
+  const { udata, currentActionTab, routeDataActive } = useSelector((state) => {
+    const { udata = {} } = state.publicReducer;
+    const { routeDataActive = {}, currentActionTab } = state.router;
+
+    return {
+      udata,
+      currentActionTab,
+      routeDataActive,
+    };
+  });
+
+  const isPersonal = modePage === 'personal';
+  const { _id: uidUser = '', avatar = '', isHidePhone = false, isHideEmail = false } = isPersonal
+    ? routeDataActive
+    : udata;
+
+  const getCurrentCabinetUser = useCallback(async () => {
+    const { page = '', itemId = '' } = routeParser({ pageType: 'moduleItem', path: currentActionTab });
+    const user = await findUser(itemId);
+
+    dispatch(
+      loadCurrentData({
+        action: actionPath.$GLOBAL_LOAD_USERS,
+        path: page,
+        result: [user],
+        optionsForParse: {
+          force: true,
+          add: true,
+        },
+        clientDB,
+      }),
+    );
+  }, [currentActionTab, dispatch, clientDB]);
+
+  useEffect(() => {
+    if (uidUser) return;
+
+    getCurrentCabinetUser();
+  }, [getCurrentCabinetUser, uidUser]);
 
   useEffect(() => {
     const isPersonalPage = path && path.includes('personalPage');
@@ -76,7 +119,7 @@ const CabinetModule = memo(({ path, onUpdateUdata, udata, routeDataActive, model
       disabled,
     });
 
-    if (onUpdateUdata) onUpdateUdata({ avatar: imageUrl });
+    dispatch(updateUdata({ avatar: imageUrl }));
   };
 
   const reset = (event) => {
@@ -108,12 +151,6 @@ const CabinetModule = memo(({ path, onUpdateUdata, udata, routeDataActive, model
     }
   };
 
-  const isPersonal = modePage === 'personal';
-
-  const { _id: uidUser = '', avatar = '', isHidePhone = false, isHideEmail = false } = isPersonal
-    ? routeDataActive
-    : udata;
-
   const props = useMemo(
     () => ({
       name: 'avatar',
@@ -131,6 +168,14 @@ const CabinetModule = memo(({ path, onUpdateUdata, udata, routeDataActive, model
       <div className="ant-upload-text">Upload</div>
     </div>
   );
+
+  if (!uidUser) {
+    return (
+      <div className="cabinetModule cabinetModule--cabinetLoader">
+        <Spin size="large" tip="Загрузка кабинета..." />
+      </div>
+    );
+  }
 
   return (
     <div className="cabinetModule">
@@ -202,27 +247,9 @@ const CabinetModule = memo(({ path, onUpdateUdata, udata, routeDataActive, model
 CabinetModule.propTypes = cabinetType;
 CabinetModule.defaultProps = {
   path: '',
-  onUpdateUdata: null,
   udata: {},
   routeDataActive: {},
   modelsContext: {},
 };
 
-const mapStateToProps = (state) => {
-  const { udata = {} } = state.publicReducer;
-  const { routeData = {}, routeDataActive = {} } = state?.router || {};
-
-  return {
-    udata,
-    routeData,
-    routeDataActive,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onUpdateUdata: (payload) => dispatch(updateUdata(payload)),
-  };
-};
-
-export default compose(moduleContextToProps, connect(mapStateToProps, mapDispatchToProps))(CabinetModule);
+export default CabinetModule;

@@ -6,7 +6,7 @@ import RenderInBrowser from 'react-render-in-browser';
 import { Switch, Route } from 'react-router-dom';
 import { message, notification } from 'antd';
 import { PrivateRoute } from './Components/Helpers';
-import { forceUpdateDetectedInit } from './Utils';
+import { forceUpdateDetectedInit, showSystemMessage } from './Utils';
 import { settingsLoadAction } from './Redux/actions/publicActions/middleware';
 import { setStatus, loadUdata, loadCoreConfigAction } from './Redux/actions/publicActions';
 import { addTabAction, setActiveTabAction, logoutAction } from './Redux/actions/routerActions';
@@ -25,6 +25,7 @@ import actionsTypes from 'actions.types';
 import { compose } from 'redux';
 import ClientSideDatabase, { ClientDbContext } from 'Models/ClientSideDatabase';
 import withSystemConfig from 'Components/Helpers/withSystemConfig';
+import { setSystemMessageAction } from 'Redux/actions/systemActions';
 
 const workerInstanse = worker();
 
@@ -86,8 +87,15 @@ class App extends Component {
       coreConfig: { clientDB: { name = '', version = '' } = {} } = {},
       appConfig = {},
       udata = {},
+      onSetSystemMessage,
+      systemMessage = {},
     } = this.props;
     const { sync } = this.state;
+
+    if (systemMessage?.msg) {
+      showSystemMessage(systemMessage?.type, systemMessage.msg);
+      onSetSystemMessage({ msg: '' });
+    }
 
     if (!sync && localStorage.getItem('token') && udata && !_.isEmpty(udata) && this.client) {
       this.setState(
@@ -281,11 +289,14 @@ class App extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { router, publicReducer, publicReducer: { udata = {} } = {} } = state;
+  const { router, publicReducer, systemReducer } = state;
+  const { udata } = publicReducer;
+  const { systemMessage } = systemReducer;
   return {
     router,
     publicReducer,
     udata,
+    systemMessage,
   };
 };
 
@@ -298,6 +309,7 @@ const mapDispatchToProps = (dispatch) => {
     onLoadUdata: async (udata) => await dispatch(loadUdata(udata)),
     onLoadSettings: async (payload) => await dispatch(settingsLoadAction(payload)),
     onLoadCoreConfig: (payload) => dispatch(loadCoreConfigAction(payload)),
+    onSetSystemMessage: (message) => dispatch(setSystemMessageAction(message)),
   };
 };
 
