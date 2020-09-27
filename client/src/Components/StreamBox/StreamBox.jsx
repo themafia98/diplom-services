@@ -205,9 +205,9 @@ class StreamBox extends Component {
         throw new Error('Bad get notification request');
       }
 
-      const {
-        data: { response: { metadata: draftMetadata = [], metadata: { count: total = null } = {} } = {} },
-      } = res;
+      const { response = {} } = res.data;
+      const { metadata: draftMetadata = [], metadata: meta = {} } = response;
+      const { count: total = null } = meta;
 
       const metadata = Array.isArray(draftMetadata) ? draftMetadata : draftMetadata?.result;
 

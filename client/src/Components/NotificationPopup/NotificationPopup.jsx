@@ -100,7 +100,7 @@ const NotificationPopup = memo(({ appConfig, notificationDep, udata, type }) => 
   const parseContent = useCallback((message) => (typeof message === 'string' ? message : null), []);
 
   const buildItems = useCallback(
-    (items, onRunAction) => {
+    (items, onRunAction) =>
       items.map((it, index) => {
         const { _id: id = '', authorName = '', message = null } = it || {};
 
@@ -110,8 +110,7 @@ const NotificationPopup = memo(({ appConfig, notificationDep, udata, type }) => 
             <hr />
           </div>
         );
-      });
-    },
+      }),
     [parseContent],
   );
 

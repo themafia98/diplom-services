@@ -319,7 +319,6 @@ export default handleActions(
         load = false,
         add = false,
       } = payload;
-
       const isLink = pathAction.includes('__link') && pathAction.split(regExpRegister.MODULE_ID)[1];
       const pathLink = isLink ? pathAction.split(regExpRegister.MODULE_ID)[1] : pathAction;
       const path = pathLink.split('__link')[0];
@@ -379,6 +378,10 @@ export default handleActions(
 
       let storeName = path.split(regExpRegister.INCLUDE_MODULE)[0];
       storeName = storeName[storeName.length] !== 's' ? `${storeName}s` : storeName;
+
+      if (path.includes('#private')) {
+        storeName = 'streamList';
+      }
 
       if (copyRouteData[path][storeName] && routeData[path] && routeData[path][storeName]) {
         const items = copyRouteData[path][storeName];
