@@ -2,21 +2,46 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { barType } from '../StatisticsModule.types';
 import { Spin } from 'antd';
 import { ResponsiveBar } from '@nivo/bar';
+import { useDispatch } from 'react-redux';
+import { loadFlagAction } from 'Redux/actions/routerActions';
 
 const Bar = ({
   data,
-  subDataList,
+  dataKeys,
   textContent,
   schemeBarProps,
   legendName,
   anchor,
   customLegendEffects,
-  loading,
+  dateConfig,
+  path,
+  isLoading,
 }) => {
+  const dispatch = useDispatch();
+  const [dateParams, setDateParams] = useState(dateConfig);
   const [source, setSource] = useState([]);
 
   useEffect(() => {
-    const keysSub = Object.values(subDataList);
+    if (source.length && isLoading) {
+      setSource([]);
+    }
+  }, [isLoading, source.length]);
+
+  useEffect(() => {
+    if (dateConfig !== dateParams) {
+      setDateParams(dateConfig);
+
+      !isLoading && dispatch(loadFlagAction({ path, loading: true }));
+      return;
+    }
+
+    if (isLoading && dateConfig && dateParams && dateConfig === dateParams) {
+      dispatch(loadFlagAction({ path, loading: false }));
+    }
+  }, [dateConfig, dateParams, path, dispatch, isLoading]);
+
+  useEffect(() => {
+    const keysSub = Object.values(dataKeys);
     const sourceDraft = [];
 
     keysSub.forEach((keySub, index) => {
@@ -31,7 +56,7 @@ const Bar = ({
     });
 
     setSource(sourceDraft);
-  }, [data, subDataList]);
+  }, [data, dataKeys]);
 
   const getDefs = () => {
     return [
@@ -147,16 +172,16 @@ const Bar = ({
     ];
   }, [anchor, customLegendEffects]);
 
-  if (loading && (!data || !subDataList?.length)) return <Spin size="large" />;
+  if (isLoading) return <Spin size="large" />;
 
-  if (!loading && !source?.length)
+  if (!source?.length)
     return <div className="empty-bar">Нету данных для построения графика выполненных задач</div>;
 
   return (
     <div className="barWrapper">
       <ResponsiveBar
         data={source}
-        keys={subDataList}
+        keys={dataKeys}
         indexBy="counter"
         margin={marginBar}
         padding={0.3}
@@ -183,12 +208,15 @@ const Bar = ({
 Bar.propTypes = barType;
 Bar.defaultProps = {
   data: [],
-  subDataList: [],
+  dataKeys: [],
   schemeBarProps: null,
   legendName: '',
   anchor: '',
   customLegendEffects: null,
   textContent: '',
   loading: false,
+  dateConfig: {},
+  path: '',
+  isLoading: false,
 };
 export default Bar;

@@ -20,7 +20,7 @@ const StatisticsModule = memo(({ path, clientDB }) => {
   const [textContent, setTextContent] = useState('');
 
   const {
-    statusValuesList,
+    settings,
     appConfig,
     data,
     shouldUpdate,
@@ -31,7 +31,7 @@ const StatisticsModule = memo(({ path, clientDB }) => {
   } = useSelector((state) => {
     const { router, publicReducer } = state;
     const { appConfig } = publicReducer;
-    const { path, routeData } = router;
+    const { routeData } = router;
     const data = routeData[path] || null;
     const { shouldUpdate = false } = router;
 
@@ -43,11 +43,11 @@ const StatisticsModule = memo(({ path, clientDB }) => {
     const { tasks = [] } = currentModule;
     const { bar: barData = {} } = tasks[0] || {};
 
-    const statusValuesList = settingsStatusSelector(state) || {};
+    const { settings = [] } = settingsStatusSelector(state) || {};
 
     return {
       routeData,
-      statusValuesList,
+      settings,
       appConfig,
       data,
       shouldUpdate,
@@ -58,15 +58,17 @@ const StatisticsModule = memo(({ path, clientDB }) => {
     };
   });
 
-  const { settings = [] } = statusValuesList;
+  const statsListFields = useMemo(
+    () =>
+      settings.reduce((list, { value = '' }) => {
+        if (value) return [...list, value];
+        return list;
+      }, []),
+    [settings],
+  );
 
   const fetchStatistics = useCallback(
     (shouldSetLoading = false) => {
-      const statsListFields = settings.reduce((list, { value = '' }) => {
-        if (value) return [...list, value];
-        return list;
-      }, []);
-
       const { statistics = {} } = appConfig;
       const { limitListTasks = 5000 } = statistics;
 
@@ -103,7 +105,7 @@ const StatisticsModule = memo(({ path, clientDB }) => {
         }),
       );
     },
-    [appConfig, clientDB, dateConfig, dispatch, path, settings],
+    [appConfig, clientDB, dateConfig, dispatch, path, statsListFields],
   );
 
   useEffect(() => {
@@ -112,12 +114,12 @@ const StatisticsModule = memo(({ path, clientDB }) => {
     const isInitialTab = !isLoad && isUnloadModule;
     const shouldFetch = isInitialTab || !isLoad || shouldUpdateList;
 
-    if (!Array.isArray(dateConfig) || !shouldFetch) return;
+    if (!Array.isArray(dateConfig) || !shouldFetch || !statsListFields?.length) return;
 
     if (!isLoad) setLoad(true);
 
     fetchStatistics(!isUnloadModule);
-  }, [data, dateConfig, fetchStatistics, isLoad, isUnloadModule, path, shouldUpdateList]);
+  }, [data, dateConfig, fetchStatistics, isLoad, isUnloadModule, path, shouldUpdateList, statsListFields]);
 
   const onChangeBar = useCallback(
     ({ currentTarget: { textContent = '' } }, dateConfig = []) => {
@@ -187,6 +189,8 @@ const StatisticsModule = memo(({ path, clientDB }) => {
     [dateConfig, loading, onChangeBar],
   );
 
+  const dataKeys = useMemo(() => Object.keys(barData), [barData]);
+
   return (
     <div className="statisticsModule">
       <TitleModule classNameTitle="statisticsModuleTitle" title="Статистика" />
@@ -195,9 +199,12 @@ const StatisticsModule = memo(({ path, clientDB }) => {
           {
             <Bar
               data={barData}
+              dateConfig={dateConfig}
               textContent={textContent}
+              isLoading={loading}
               loading={loading || shouldUpdate}
-              subDataList={Object.keys(barData)}
+              dataKeys={dataKeys}
+              path={path}
             />
           }
         </div>

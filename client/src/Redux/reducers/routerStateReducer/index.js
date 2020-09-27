@@ -514,20 +514,22 @@ export default handleActions(
     },
     [SET_FLAG_LOAD_DATA]: (state, { payload }) => {
       const { routeData = {} } = state;
-      const copyRouteData = { ...routeData };
       const { path, load, loading } = payload;
+
+      const newModuleData = {
+        [path]: {
+          ...routeData[path],
+          load,
+          loading,
+        },
+      };
 
       return {
         ...state,
         load,
         routeData: {
           ...routeData,
-          ...copyRouteData,
-          [path]: {
-            ...copyRouteData[path],
-            load,
-            loading,
-          },
+          ...newModuleData,
         },
       };
     },

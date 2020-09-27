@@ -8,7 +8,7 @@ export const statisticsModuleType = {
 };
 
 export const barType = {
-  subDataList: arrayOf(string.isRequired).isRequired,
+  dataKeys: arrayOf(string.isRequired).isRequired,
   customLegendEffects: arrayOf(object.isRequired),
   data: objectOf(oneOfType([array, string, number])).isRequired,
   schemeBarProps: object,
