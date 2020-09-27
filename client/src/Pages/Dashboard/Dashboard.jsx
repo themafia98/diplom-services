@@ -103,7 +103,7 @@ class Dashboard extends PureComponent {
 
   componentWillUnmount = () => {
     if (this.webSocket) this.webSocket.disconnect();
-    clearInterval(this.autoSaveRoute);
+    if (this.autoSaveRoute) clearInterval(this.autoSaveRoute);
   };
 
   componentDidUpdate = () => {

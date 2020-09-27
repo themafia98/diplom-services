@@ -125,6 +125,12 @@ class App extends Component {
     }
   };
 
+  componentWillUnmount = () => {
+    if (this.loadingSettingsLoop) {
+      clearInterval(this.loadingSettingsLoop);
+    }
+  };
+
   loadAppSession = async () => {
     const { router: { currentActionTab = '', activeTabs = [] } = {}, coreConfig = {} } = this.props;
     const { appActive = true, menu = [], tabsLimit = 20 } = coreConfig;
