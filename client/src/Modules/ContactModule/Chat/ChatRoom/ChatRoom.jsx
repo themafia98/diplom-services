@@ -6,6 +6,8 @@ import { Button, Avatar } from 'antd';
 
 import Textarea from 'Components/Textarea';
 import Message from './Message';
+import { useDispatch } from 'react-redux';
+import { openTab } from 'Redux/actions/routerActions/middleware';
 
 const ChatRoom = ({
   uid,
@@ -19,14 +21,16 @@ const ChatRoom = ({
   pushMessage,
   myAvatar,
 }) => {
+  const dispatch = useDispatch();
+
   const refScrollbar = useRef(null);
   const [isMount, setMount] = useState(false);
   const [token] = useState(tokenRoom);
   const [msg, setMsg] = useState('');
   const [messages, setMessages] = useState(msgProps);
 
-  const redirectUserProfile = (event, link) => {
-    console.log(link);
+  const redirectUserProfile = (event, uuid) => {
+    dispatch(openTab({ uuid, action: 'cabinet' }));
   };
 
   const scrollHandler = useCallback(
@@ -107,10 +111,7 @@ const ChatRoom = ({
             <>
               <div className="msg_header">
                 {it.displayName !== 'System' ? (
-                  <span
-                    onClick={(event) => redirectUserProfile(event, it.authorId ? it.authorId : null)}
-                    className="msg_author"
-                  >
+                  <span onClick={(event) => redirectUserProfile(event, it?.authorId)} className="msg_author">
                     <Avatar src={`data:image/png;base64,${avatar}`} size="default" />
                     <span className="displayName">{it.displayName}</span>
                   </span>

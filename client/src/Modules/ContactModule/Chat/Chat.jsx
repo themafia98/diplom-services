@@ -19,6 +19,7 @@ import ChatRoom from './ChatRoom';
 import modelsContext from 'Models/context';
 import { compose } from 'redux';
 import { withClientDb } from 'Models/ClientSideDatabase';
+import { openTab } from 'Redux/actions/routerActions/middleware';
 
 class Chat extends PureComponent {
   state = {
@@ -316,10 +317,15 @@ class Chat extends PureComponent {
     else return interlocutor;
   };
 
+  onOpenMemberPage = (uuid) => {
+    const { onOpenTab } = this.props;
+    onOpenTab({ uuid, action: 'cabinet' });
+  };
+
   getUsersList = () => {
     const {
       chat: { chatToken: tokenRoom = null, usersList = [], listdata = [] } = {},
-      udata: { displayName = '' } = {},
+      udata: { _id: uid = '' } = {},
     } = this.props;
 
     const room = listdata.find((room) => {
@@ -329,19 +335,21 @@ class Chat extends PureComponent {
     const { membersIds = [] } = room || {};
 
     const names = usersList.reduce((list, it) => {
-      if (membersIds.includes(it._id)) {
-        return [...list, it.displayName];
+      if (membersIds.includes(it._id) && it._id !== uid) {
+        return [...list, { id: it._id, name: it.displayName }];
       }
       return list;
     }, []);
 
-    names.unshift(displayName);
-
     return {
       usersListComponent: (
         <ol className="usersList-room">
-          {names.map((name, index) => (
-            <li className="simpleLink chat-member" key={`${index}${name}`}>
+          {names.map(({ name, id }, index) => (
+            <li
+              onClick={this.onOpenMemberPage.bind(this, id)}
+              className="simpleLink chat-member"
+              key={`${index}${name}`}
+            >
               {name}
             </li>
           ))}
@@ -475,6 +483,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(loadingDataByToken(token, listdata, moduleName, isFake));
     },
     onUpdateRoom: (payload) => dispatch(updateRooms(payload)),
+    onOpenTab: (params) => dispatch(openTab(params)),
   };
 };
 
