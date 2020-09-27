@@ -151,16 +151,14 @@ class SettingsModule extends PureComponent {
         throw new Error('Bad request profile settings');
       }
 
-      const {
-        data: {
-          response: { metadata: { query: saveQuery = '', settings = [] } = {}, metadata = {} } = {},
-        } = {},
-      } = res;
+      const { response = {} } = res.data;
+      const { metadata = {} } = response;
+      const { idSettings = '', settings = [] } = metadata;
 
-      if (saveQuery !== query) {
+      if (idSettings !== query) {
         throw new Error('Invalid saved settings id');
       }
-      onSaveStatusList({ metadata, type: 'update', depKey: saveQuery });
+      onSaveStatusList({ metadata, type: 'update', depKey: idSettings });
       if (callback) callback(settings);
     } catch (error) {
       if (error?.status !== 404) console.error(error);

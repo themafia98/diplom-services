@@ -101,7 +101,7 @@ const ModalWindow = memo((props) => {
   const showModal = useCallback(
     (event, type = '') => {
       const { [type]: visibleType = false } = state;
-      debugger;
+
       runAction.onChangeRootState({
         [type]: !visibleType,
         visible: true,

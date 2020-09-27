@@ -48,16 +48,15 @@ namespace Settings {
       };
 
       const body: Record<string, object> = req.body;
-      const { queryParams = {} } = body;
-      const { items = [] } = queryParams as Record<string, Array<object>>;
-      const { idSettings = '' } = queryParams as Record<string, string>;
+      const { params: queryParams = {} } = body as Record<string, object>;
+      const { items = [], query = '' } = queryParams as Record<string, Array<object>>;
 
       const changeStatusList = new Action.ActionParser({
         actionPath: 'settings',
         actionType: isGetter ? 'get_statusList' : 'change_statusList',
       });
 
-      const actionParams: ActionParams = !isGetter ? { items, idSettings } : {};
+      const actionParams: ActionParams = !isGetter ? { items, idSettings: query } : {};
 
       const responseExec: Function = await changeStatusList.actionsRunner(actionParams);
       return responseExec(req, res, params);

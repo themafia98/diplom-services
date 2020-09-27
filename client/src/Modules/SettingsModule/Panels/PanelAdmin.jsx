@@ -6,17 +6,24 @@ const { Panel } = Collapse;
 
 const { Option } = Select;
 
-const PanelAdmin = ({ onSaveSettings, statusList: { settings: statusListProps = [] } = {} }) => {
-  const memoStatusList = useMemo(() => statusListProps.filter(({ active }) => active).map(({ id }) => id), [
-    statusListProps,
+const PanelAdmin = ({ onSaveSettings, statusList: statusConfig }) => {
+  const { settings = [] } = statusConfig;
+  const memoStatusList = useMemo(() => settings.filter(({ active }) => active).map(({ id }) => id), [
+    settings,
   ]);
 
-  const [statusList, setStatusList] = useState(statusListProps);
+  const [statusList, setStatusList] = useState(settings);
   const [readOnly, setReadOnly] = useState(true);
   const [value, setValue] = useState(memoStatusList);
   const [haveChanges, setChanges] = useState([]);
 
-  const onCear = (response) => {
+  useEffect(() => {
+    if (settings !== statusList || settings?.length !== statusList?.length) {
+      setStatusList(settings);
+    }
+  }, [settings, statusList]);
+
+  const onClear = (response) => {
     if (Array.isArray(response)) {
       setStatusList(response);
       setValue(response.filter(({ active }) => active).map(({ id }) => id));
@@ -46,7 +53,7 @@ const PanelAdmin = ({ onSaveSettings, statusList: { settings: statusListProps = 
     });
 
     if (onSaveSettings) {
-      onSaveSettings('statusSettings', statusListForSave, onCear);
+      onSaveSettings('statusSettings', statusListForSave, onClear);
     }
   };
 
@@ -108,7 +115,7 @@ const PanelAdmin = ({ onSaveSettings, statusList: { settings: statusListProps = 
 
 PanelAdmin.defaultProps = {
   onSaveSettings: null,
-  statusList: [],
+  statusList: {},
 };
 
 export default PanelAdmin;

@@ -350,7 +350,7 @@ class TaskView extends PureComponent {
   onEdit = () => {
     const { router = {} } = this.props;
     const { routeDataActive = {} } = router;
-    debugger;
+
     this.setState({
       ...this.state,
       modeEditContent: false,
