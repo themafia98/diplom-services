@@ -504,7 +504,9 @@ class StreamBox extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { router = {}, publicReducer: { udata = {}, appConfig } = {} } = state;
+  const { router, publicReducer } = state;
+  const { udata, appConfig } = publicReducer;
+
   return { router, udata, appConfig };
 };
 

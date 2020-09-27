@@ -124,7 +124,8 @@ News.defaultProps = {
 News.propTypes = newsType;
 
 const mapStateToProps = (state) => {
-  const { publicReducer: { status: statusApp = '', appConfig } = {}, router = {} } = state;
+  const { publicReducer, router } = state;
+  const { status: statusApp = '', appConfig } = publicReducer;
   return {
     router,
     statusApp,

@@ -58,9 +58,8 @@ const CustomersModule = memo(
 CustomersModule.propTypes = customersModuleType;
 
 const mapStateToProps = (state) => {
-  const {
-    publicReducer: { appConfig, udata },
-  } = state;
+  const { publicReducer } = state;
+  const { appConfig, udata } = publicReducer;
   return { appConfig, udata };
 };
 

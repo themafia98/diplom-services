@@ -289,7 +289,7 @@ class TaskModule extends PureComponent {
       const {
         router,
         router: { currentActionTab = '' } = {},
-        publicReducer: { status = null } = {},
+        status,
         onOpenPageWithData,
         onLoadCurrentData,
         onLoadCacheData,
@@ -366,11 +366,12 @@ class TaskModule extends PureComponent {
 }
 
 const mapStateToProps = (state, props) => {
-  const { udata = {}, appConfig } = state.publicReducer;
+  const { router, publicReducer } = state;
+  const { udata = {}, appConfig, status } = publicReducer;
 
   return {
-    publicReducer: state.publicReducer,
-    router: state.router,
+    status,
+    router,
     statusList: settingsStatusSelector(state, props),
     udata,
     appConfig,

@@ -294,7 +294,6 @@ const mapStateToProps = (state) => {
   const { systemMessage } = systemReducer;
   return {
     router,
-    publicReducer,
     udata,
     systemMessage,
   };

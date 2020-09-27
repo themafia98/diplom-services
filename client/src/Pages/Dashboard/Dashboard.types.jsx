@@ -5,7 +5,6 @@ const { func, object, bool } = PropTypes;
 export const dashboardType = {
   rest: object.isRequired,
   router: object.isRequired,
-  publicReducer: object.isRequired,
   firstConnect: bool.isRequired,
   udata: udataType.isRequired,
   addTab: func.isRequired,

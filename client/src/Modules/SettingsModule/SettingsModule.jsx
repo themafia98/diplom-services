@@ -87,15 +87,9 @@ class SettingsModule extends PureComponent {
 
   componentDidUpdate = async () => {
     const { showScrollbar, emailValue = '', telValue = '' } = this.state;
-    const {
-      udata: { _id: uid = '' } = {},
-      router: { shouldUpdate = false, routeData = {} } = {},
-      path,
-      onCaching,
-      onSetStatus,
-      moduleContext,
-      clientDB,
-    } = this.props;
+    const { udata = {}, router, path, onCaching, onSetStatus, moduleContext, clientDB } = this.props;
+    const { shouldUpdate = false, routeData = {} } = router;
+    const { _id: uid = '' } = udata;
     const { visibility = false } = moduleContext;
 
     if (!visibility) return;
@@ -447,11 +441,9 @@ class SettingsModule extends PureComponent {
 }
 
 const mapStateToProps = (state, props) => {
-  const {
-    publicReducer: { udata = {}, caches, appConfig } = {},
-    router: { shouldUpdate = false, currentActionTab = '' } = {},
-    router = {},
-  } = state;
+  const { publicReducer, router } = state;
+  const { shouldUpdate = false, currentActionTab = '' } = router;
+  const { udata = {}, caches, appConfig } = publicReducer;
 
   const isLoad = Object.keys(caches).some((key) => key.includes('get_user_settings_log'));
 

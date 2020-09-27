@@ -115,9 +115,8 @@ const MainModule = memo(({ onLoadCurrentData, moduleContext, clientDB, visibilit
 MainModule.propTypes = mainModuleType;
 
 const mapStateToProps = (state) => {
-  const {
-    publicReducer: { appConfig },
-  } = state;
+  const { publicReducer } = state;
+  const { appConfig } = publicReducer;
   return {
     visibilityWidgets: appConfig?.visibilityWidgets,
   };

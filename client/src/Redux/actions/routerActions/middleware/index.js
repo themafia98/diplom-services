@@ -32,10 +32,8 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
 
   let isLocalUpdate = true;
   const pathValid = pagePath.includes('_') ? pagePath : pagePath.split(regExpRegister.MODULE_ID)[0];
-  const {
-    router,
-    publicReducer: { requestError, status = 'online' },
-  } = getState();
+  const { router, publicReducer } = getState();
+  const { requestError, status = 'online' } = publicReducer;
 
   const isExist = router.routeData && router.routeData[pathValid];
 
@@ -152,9 +150,8 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
 const multipleLoadData = (params) => async (dispatch, getState, { schema, Request }) => {
   const { requestsParamsList = [], saveModuleName = '', clientDB = null } = params;
 
-  const {
-    publicReducer: { requestError, status = 'online' },
-  } = getState();
+  const { publicReducer } = getState();
+  const { requestError, status = 'online' } = publicReducer;
 
   if (status !== 'online') return;
 
@@ -230,13 +227,10 @@ const multipleLoadData = (params) => async (dispatch, getState, { schema, Reques
 };
 
 const openTab = ({ uuid, action, depKey = '', data = null, openType = '' }) => async (dispatch, getState) => {
-  const {
-    publicReducer: {
-      appConfig = {},
-      udata: { _id: uid = '' },
-    },
-    router: { activeTabs = [], routeData = {} },
-  } = getState();
+  const { publicReducer, router } = getState();
+  const { activeTabs = [], routeData = {} } = router;
+  const { appConfig = {}, udata } = publicReducer;
+  const { _id: uid = '' } = udata;
 
   if (appConfig?.tabsLimit <= activeTabs.length) {
     message.error('Максимальное количество вкладок:' + appConfig?.tabsLimit);

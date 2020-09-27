@@ -45,5 +45,4 @@ export const appType = {
   addTab: PropTypes.func.isRequired,
   onSetStatus: PropTypes.func.isRequired,
   router: PropTypes.object.isRequired,
-  publicReducer: PropTypes.object.isRequired,
 };

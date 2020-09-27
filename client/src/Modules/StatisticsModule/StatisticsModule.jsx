@@ -182,10 +182,8 @@ StatisticsModule.defaultProps = {
 StatisticsModule.propTypes = statisticsModuleType;
 
 const mapStateToProps = (state, props) => {
-  const {
-    router,
-    publicReducer: { appConfig },
-  } = state;
+  const { router, publicReducer } = state;
+  const { appConfig } = publicReducer;
   return { router, statusList: settingsStatusSelector(state, props), appConfig };
 };
 

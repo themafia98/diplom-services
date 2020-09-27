@@ -43,6 +43,7 @@ const ModalWindow = memo((props) => {
     accessStatus,
     statusTaskValue,
     editableContent,
+    onEdit,
   } = props;
 
   const { key: keyActiveRoute = null, _id: id = '', name: nameActive = '' } = routeDataActive || {};
@@ -100,7 +101,7 @@ const ModalWindow = memo((props) => {
   const showModal = useCallback(
     (event, type = '') => {
       const { [type]: visibleType = false } = state;
-
+      debugger;
       runAction.onChangeRootState({
         [type]: !visibleType,
         visible: true,
@@ -512,6 +513,7 @@ const ModalWindow = memo((props) => {
     entityName: 'taskView',
     onMessage: onMessage,
     showModal: showModal,
+    onEdit: onEdit,
     modeControll,
     onUpdateEditable: onUpdateEditable,
     onRejectEdit: onRejectEdit,
@@ -580,6 +582,7 @@ const ModalWindow = memo((props) => {
 
 ModalWindow.propTypes = modalWindowType;
 ModalWindow.defaultProps = {
+  onEdit: null,
   modeControll: null,
   onRejectEdit: null,
   modeEditContent: null,

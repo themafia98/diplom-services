@@ -209,7 +209,6 @@ TableView.defaultProps = {
   visible: false,
   user: {},
   router: [],
-  publicReducer: {},
   udata: {},
   height: 300,
   onOpenPageWithData: null,

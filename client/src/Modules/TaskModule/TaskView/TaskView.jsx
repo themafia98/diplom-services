@@ -350,7 +350,7 @@ class TaskView extends PureComponent {
   onEdit = () => {
     const { router = {} } = this.props;
     const { routeDataActive = {} } = router;
-
+    debugger;
     this.setState({
       ...this.state,
       modeEditContent: false,
@@ -553,7 +553,7 @@ class TaskView extends PureComponent {
   };
 
   getCacheItemsList = () => {
-    const { publicReducer: { caches = null } = {}, uuid: UUID = '' } = this.props;
+    const { caches = null, uuid: UUID = '' } = this.props;
     const cachesAuthorList = [];
     const cachesEditorList = [];
     const cachesJurnalList = [];
@@ -664,6 +664,7 @@ class TaskView extends PureComponent {
         statusTaskValue={status ? status : null}
         udata={udata}
         rulesEdit={rulesEdit}
+        onEdit={this.onEdit}
         rulesStatus={rulesStatus}
         isLoadList={isLoad}
         customTypeModal={customTypeModal}
@@ -818,11 +819,11 @@ class TaskView extends PureComponent {
 }
 
 const mapStateTopProps = (state, props) => {
-  const { router = {}, publicReducer = {}, publicReducer: { udata = {} } = {} } = state || {};
-
+  const { router, publicReducer } = state || {};
+  const { caches, udata } = publicReducer;
   return {
     router,
-    publicReducer,
+    caches,
     udata,
     statusList: settingsStatusSelector(state, props),
   };

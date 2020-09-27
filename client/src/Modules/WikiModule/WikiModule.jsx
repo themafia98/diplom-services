@@ -497,12 +497,9 @@ class WikiModule extends PureComponent {
 }
 
 const mapStateToProps = (state) => {
-  const {
-    router,
-    router: { routeData = {} } = {},
-    publicReducer: { udata = {} },
-  } = state;
-
+  const { router, publicReducer } = state;
+  const { udata = {} } = publicReducer;
+  const { routeData } = router;
   const { wikiTree: metadata = [] } = routeData['wikiModule'] || {};
 
   return {
