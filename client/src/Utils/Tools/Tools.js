@@ -54,7 +54,13 @@ const createNotification = async (type = '', item = {}, actionType = actionsType
  * @param {object} dep entity dependences
  * @param {number} sliceCreaterNumber slice start name of entity, default: 0
  */
-const createEntity = async (storeName = '', params = {}, dep = {}, sliceCreaterNumber = 0) => {
+const createEntity = async (
+  storeName = '',
+  params = {},
+  dep = {},
+  sliceCreaterNumber = 0,
+  customTaskModule = '',
+) => {
   const { metadata = {} } = params || {};
   const { statusApp = 'online', clientDB = null, onSetStatus } = dep;
 
@@ -72,7 +78,7 @@ const createEntity = async (storeName = '', params = {}, dep = {}, sliceCreaterN
         {
           ...requestTemplate,
           actionType: 'create_task',
-          moduleName: storeName,
+          moduleName: customTaskModule || storeName,
           params,
         },
         true,

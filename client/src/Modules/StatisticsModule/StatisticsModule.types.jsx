@@ -1,12 +1,10 @@
 import PropTypes from 'prop-types';
-const { func, bool, object, string, arrayOf, objectOf, array, number, oneOfType } = PropTypes;
+const { bool, object, string, arrayOf, objectOf, array, number, oneOfType } = PropTypes;
 
 export const statisticsModuleType = {
   visible: bool,
   rest: object.isRequired,
   path: string.isRequired,
-  router: object.isRequired,
-  onLoadCurrentData: func.isRequired,
 };
 
 export const barType = {

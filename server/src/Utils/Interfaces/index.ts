@@ -106,6 +106,7 @@ export interface Params {
   from: string;
   done?: boolean;
   isPartData?: boolean;
+  customErrorMessage?: string;
 }
 
 export interface ResponseMetadata<T> {

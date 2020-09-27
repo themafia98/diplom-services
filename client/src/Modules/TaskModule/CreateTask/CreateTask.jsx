@@ -313,16 +313,21 @@ class CreateTask extends PureComponent {
         validHash,
         { clientDB, statusApp, onSetStatus, moduleName: path?.split('_')?.[0] },
         4,
+        'taskModule',
       );
 
       if ([res, offline].every((type) => type === null)) {
         throw new Error('Invalid create task');
       }
 
-      const { data: { response: { done = false, metadata = [] } = {} } = {} } = res || {};
+      const { response = {} } = res.data;
+      const { metadata = [], params = {} } = response;
+      const { customErrorMessage = '', done = false } = params;
+
+      const errorMessage = customErrorMessage || 'Error create task';
 
       if (!done && !offline) {
-        throw new Error(typeof metadata === 'string' ? metadata : 'Error create task');
+        throw new Error(typeof metadata === 'string' ? metadata : errorMessage);
       }
 
       this.setState(

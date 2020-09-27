@@ -81,6 +81,10 @@ namespace Tasks {
         (it: string) => it === ACTIONS_ACCESS.CREATE,
       );
 
+      if (!shouldBeCreate) {
+        params.customErrorMessage = 'Access error for create task';
+      }
+
       const createTaskAction = new Action.ActionParser({
         actionPath: 'tasks',
         actionType: 'set_single',

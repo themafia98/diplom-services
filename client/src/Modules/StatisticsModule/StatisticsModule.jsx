@@ -2,48 +2,84 @@ import React, { memo, useCallback, useEffect, useState, useMemo } from 'react';
 import clsx from 'clsx';
 import { statisticsModuleType } from './StatisticsModule.types';
 import moment from 'moment';
-import { connect } from 'react-redux';
-import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
+import { useDispatch, useSelector } from 'react-redux';
 import Bar from './Charts/Bar';
 import TitleModule from 'Components/TitleModule';
 import { settingsStatusSelector } from 'Utils/selectors';
 import FixedToolbar from 'Components/FixedToolbar';
 import { Button } from 'antd';
-import { compose } from 'redux';
-import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { withClientDb } from 'Models/ClientSideDatabase';
 import actionPath from 'actions.path';
+import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
 
-const StatisticsModule = memo(
-  ({ moduleContext, router, path, onLoadCurrentData, statusList, appConfig, clientDB }) => {
-    const { settings = [] } = statusList || {};
-    const { routeData = {}, shouldUpdate = false } = router || {};
+const StatisticsModule = memo(({ path, clientDB }) => {
+  const dispatch = useDispatch();
+
+  const [isLoad, setLoad] = useState(false);
+  const [dateConfig, setDateConfig] = useState([2, 'weeks']);
+  const [textContent, setTextContent] = useState('');
+
+  const {
+    statusValuesList,
+    appConfig,
+    data,
+    shouldUpdate,
+    loading,
+    isUnloadModule,
+    shouldUpdateList,
+    barData,
+  } = useSelector((state) => {
+    const { router, publicReducer } = state;
+    const { appConfig } = publicReducer;
+    const { path, routeData } = router;
+    const data = routeData[path] || null;
+    const { shouldUpdate = false } = router;
+
+    const shouldUpdateList = data && data?.shouldUpdate;
+    const isUnloadModule = shouldUpdate && !data?.load;
+    const loading = data?.loading;
     const { [path]: currentModule = {} } = routeData;
 
-    const { statistic = [], loading = false } = currentModule || {};
-    const { bar: barData = {} } = statistic[0] || {};
+    const { tasks = [] } = currentModule;
+    const { bar: barData = {} } = tasks[0] || {};
 
-    const [dateConfig, setDateConfig] = useState([2, 'weeks']);
-    const [textContent, setTextContent] = useState('');
+    const statusValuesList = settingsStatusSelector(state) || {};
 
-    const fetchStatistics = useCallback(
-      (shouldSetLoading = false) => {
-        const statsListFields = settings.reduce((list, { value = '' }) => {
-          if (value) return [...list, value];
-          return list;
-        }, []);
+    return {
+      routeData,
+      statusValuesList,
+      appConfig,
+      data,
+      shouldUpdate,
+      loading,
+      isUnloadModule,
+      shouldUpdateList,
+      barData,
+    };
+  });
 
-        const { statistics: { limitListTasks = 5000 } = {} } = appConfig;
+  const { settings = [] } = statusValuesList;
 
-        let limits = {};
+  const fetchStatistics = useCallback(
+    (shouldSetLoading = false) => {
+      const statsListFields = settings.reduce((list, { value = '' }) => {
+        if (value) return [...list, value];
+        return list;
+      }, []);
 
-        if (dateConfig[0] === 'full') {
-          limits = {
-            limitList: limitListTasks,
-          };
-        }
+      const { statistics = {} } = appConfig;
+      const { limitListTasks = 5000 } = statistics;
 
-        onLoadCurrentData({
+      let limits = {};
+
+      if (dateConfig[0] === 'full') {
+        limits = {
+          limitList: limitListTasks,
+        };
+      }
+
+      dispatch(
+        loadCurrentData({
           action: actionPath.$LOAD_STATISTICS_TASKS,
           path,
           options: {
@@ -64,137 +100,118 @@ const StatisticsModule = memo(
             shouldSetLoading,
           },
           clientDB,
-        });
-      },
-      [appConfig, clientDB, dateConfig, onLoadCurrentData, path, settings],
-    );
+        }),
+      );
+    },
+    [appConfig, clientDB, dateConfig, dispatch, path, settings],
+  );
 
-    useEffect(() => {
-      const { visibility = false } = moduleContext;
+  useEffect(() => {
+    if (!path || !path?.includes('statistic')) return;
 
-      if (!path || (path && !path.includes('statistic'))) return;
-      const shouldReload = currentModule && !currentModule?.loading && visibility && !currentModule?.load;
+    const isInitialTab = !isLoad && isUnloadModule;
+    const shouldFetch = isInitialTab || !isLoad || shouldUpdateList;
 
-      if (!Array.isArray(dateConfig) || !shouldReload) return;
+    if (!Array.isArray(dateConfig) || !shouldFetch) return;
 
-      fetchStatistics();
-    }, [currentModule, dateConfig, fetchStatistics, moduleContext, path]);
+    if (!isLoad) setLoad(true);
 
-    const onChangeBar = useCallback(
-      ({ currentTarget: { textContent = '' } }, dateConfig = []) => {
-        setDateConfig(dateConfig);
-        setTextContent(textContent);
+    fetchStatistics(!isUnloadModule);
+  }, [data, dateConfig, fetchStatistics, isLoad, isUnloadModule, path, shouldUpdateList]);
 
-        fetchStatistics(true);
-      },
-      [fetchStatistics],
-    );
+  const onChangeBar = useCallback(
+    ({ currentTarget: { textContent = '' } }, dateConfig = []) => {
+      setDateConfig(dateConfig);
+      setTextContent(textContent);
 
-    const toolbarBody = useMemo(
-      () => (
-        <div className="toolbarBody">
-          <div className="controllers">
-            <p>Смена периода</p>
-            <ul className="toolbar-actions-list">
-              <li className="toolbar-action-item">
-                <Button
-                  loading={loading && dateConfig[1] === 'day'}
-                  className={clsx(dateConfig[1] === 'day' ? 'active' : null)}
-                  onClick={(evt) => onChangeBar(evt, [1, 'day'])}
-                >
-                  Статистика за день
-                </Button>
-              </li>
-              <li className="toolbar-action-item">
-                <Button
-                  loading={loading && dateConfig[1] === 'weeks'}
-                  className={clsx(dateConfig[1] === 'weeks' ? 'active' : null)}
-                  onClick={(evt) => onChangeBar(evt, [2, 'weeks'])}
-                >
-                  Статистика за 2 недели
-                </Button>
-              </li>
-              <li className="toolbar-action-item">
-                <Button
-                  loading={loading && dateConfig[1] === 'month'}
-                  className={clsx(dateConfig[1] === 'month' ? 'active' : null)}
-                  onClick={(evt) => onChangeBar(evt, [1, 'month'])}
-                >
-                  Статистика за 1 месяц
-                </Button>
-              </li>
-              <li className="toolbar-action-item">
-                <Button
-                  loading={loading && dateConfig[1] === 'year'}
-                  className={clsx(dateConfig[1] === 'year' ? 'active' : null)}
-                  onClick={(evt) => onChangeBar(evt, [1, 'year'])}
-                >
-                  Статистика за 1 год
-                </Button>
-              </li>
-              <li className="toolbar-action-item">
-                <Button
-                  loading={loading && dateConfig[0] === 'full'}
-                  className={clsx(dateConfig[0] === 'full' ? 'active' : null)}
-                  onClick={(evt) => onChangeBar(evt, ['full'])}
-                >
-                  Статистика за все время
-                </Button>
-              </li>
-            </ul>
-          </div>
+      fetchStatistics(true);
+    },
+    [fetchStatistics],
+  );
+
+  const toolbarBody = useMemo(
+    () => (
+      <div className="toolbarBody">
+        <div className="controllers">
+          <p>Смена периода</p>
+          <ul className="toolbar-actions-list">
+            <li className="toolbar-action-item">
+              <Button
+                loading={loading && dateConfig[1] === 'day'}
+                className={clsx(dateConfig[1] === 'day' ? 'active' : null)}
+                onClick={(evt) => onChangeBar(evt, [1, 'day'])}
+              >
+                Статистика за день
+              </Button>
+            </li>
+            <li className="toolbar-action-item">
+              <Button
+                loading={loading && dateConfig[1] === 'weeks'}
+                className={clsx(dateConfig[1] === 'weeks' ? 'active' : null)}
+                onClick={(evt) => onChangeBar(evt, [2, 'weeks'])}
+              >
+                Статистика за 2 недели
+              </Button>
+            </li>
+            <li className="toolbar-action-item">
+              <Button
+                loading={loading && dateConfig[1] === 'month'}
+                className={clsx(dateConfig[1] === 'month' ? 'active' : null)}
+                onClick={(evt) => onChangeBar(evt, [1, 'month'])}
+              >
+                Статистика за 1 месяц
+              </Button>
+            </li>
+            <li className="toolbar-action-item">
+              <Button
+                loading={loading && dateConfig[1] === 'year'}
+                className={clsx(dateConfig[1] === 'year' ? 'active' : null)}
+                onClick={(evt) => onChangeBar(evt, [1, 'year'])}
+              >
+                Статистика за 1 год
+              </Button>
+            </li>
+            <li className="toolbar-action-item">
+              <Button
+                loading={loading && dateConfig[0] === 'full'}
+                className={clsx(dateConfig[0] === 'full' ? 'active' : null)}
+                onClick={(evt) => onChangeBar(evt, ['full'])}
+              >
+                Статистика за все время
+              </Button>
+            </li>
+          </ul>
         </div>
-      ),
-      [dateConfig, loading, onChangeBar],
-    );
-
-    return (
-      <div className="statisticsModule">
-        <TitleModule classNameTitle="statisticsModuleTitle" title="Статистика" />
-        <div className="statisticsModule__main">
-          <div className="col-6">
-            {
-              <Bar
-                data={barData}
-                textContent={textContent}
-                loading={loading || shouldUpdate}
-                subDataList={Object.keys(barData)}
-              />
-            }
-          </div>
-        </div>
-        <FixedToolbar name="Настройки" customRender={toolbarBody} />
       </div>
-    );
-  },
-);
+    ),
+    [dateConfig, loading, onChangeBar],
+  );
+
+  return (
+    <div className="statisticsModule">
+      <TitleModule classNameTitle="statisticsModuleTitle" title="Статистика" />
+      <div className="statisticsModule__main">
+        <div className="col-6">
+          {
+            <Bar
+              data={barData}
+              textContent={textContent}
+              loading={loading || shouldUpdate}
+              subDataList={Object.keys(barData)}
+            />
+          }
+        </div>
+      </div>
+      <FixedToolbar name="Настройки" customRender={toolbarBody} />
+    </div>
+  );
+});
 
 StatisticsModule.defaultProps = {
-  moduleContext: {},
-  router: {},
   path: '',
-  onLoadCurrentData: null,
-  statusList: [],
-  appConfig: [],
   clientDB: null,
 };
 
 StatisticsModule.propTypes = statisticsModuleType;
 
-const mapStateToProps = (state, props) => {
-  const { router, publicReducer } = state;
-  const { appConfig } = publicReducer;
-  return { router, statusList: settingsStatusSelector(state, props), appConfig };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onLoadCurrentData: (props) => dispatch(loadCurrentData(props)),
-  };
-};
-
-export default compose(
-  moduleContextToProps,
-  withClientDb,
-  connect(mapStateToProps, mapDispatchToProps),
-)(StatisticsModule);
+export default withClientDb(StatisticsModule);
