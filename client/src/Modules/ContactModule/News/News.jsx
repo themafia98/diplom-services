@@ -1,26 +1,33 @@
 import React, { memo, useState, useCallback, useMemo } from 'react';
 import { newsType } from '../ContactModule.types';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Pagination, Button, message, Empty, Spin } from 'antd';
-
 import Scrollbars from 'react-custom-scrollbars';
-import { addTabAction } from 'Redux/actions/routerActions';
-import { middlewareCaching } from 'Redux/actions/publicActions/middleware';
-
+import { addTabAction, setActiveTabAction } from 'Redux/actions/routerActions';
 import NewsCard from './NewsCard';
 import TitleModule from 'Components/TitleModule';
-
 import { routePathNormalise, routeParser } from 'Utils';
-import { compose } from 'redux';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { openTab } from 'Redux/actions/routerActions/middleware';
 
-const News = memo(({ addTab, router, setCurrentTab, appConfig, data, onOpenTab }) => {
-  const { activeTabs = [], routeData = {} } = router || {};
+const News = memo(({ data }) => {
   const { news: newsData = [], loading = false, load = false } = data || {};
-  const { contactModule: { news: newsStore = [] } = {} } = routeData;
 
   const [currentPage, setCurrentPage] = useState(1);
+  const dispatch = useDispatch();
+
+  const { router, appConfig } = useSelector((state) => {
+    const { publicReducer, router } = state;
+    const { appConfig } = publicReducer;
+    return {
+      router,
+      appConfig,
+    };
+  });
+
+  const { activeTabs = [], routeData = {} } = router;
+  const { contactModule = {} } = routeData;
+  const { news: newsStore = [] } = contactModule;
 
   const onOpenCreateNews = useCallback(() => {
     const moduleId = 'createNews';
@@ -34,24 +41,30 @@ const News = memo(({ addTab, router, setCurrentTab, appConfig, data, onOpenTab }
     const index = activeTabs.findIndex((tab) => tab === pathNormalize);
     const isFind = index !== -1;
 
-    if (isFind) setCurrentTab(activeTabs[index], { hardCodeUpdate: false });
+    if (isFind) dispatch(setActiveTabAction(activeTabs[index], { hardCodeUpdate: false }));
 
     if (tabsLimit <= activeTabs.length) {
       message.error(`Максимальное количество вкладок: ${tabsLimit}`);
       return;
     }
 
-    if (!isFind) addTab(routeParser({ path: pathNormalize }), { hardCodeUpdate: false });
-  }, [activeTabs, addTab, appConfig, setCurrentTab]);
+    if (!isFind)
+      dispatch(
+        addTabAction({
+          tab: routeParser({ path: pathNormalize }),
+          config: { hardCodeUpdate: false },
+        }),
+      );
+  }, [activeTabs, appConfig, dispatch]);
 
   const onOpen = useCallback(
     (uuid) => {
       const dataList = Array.isArray(newsData) ? newsData : newsStore;
       const data = dataList?.find(({ _id = '' }) => _id === uuid) || dataList || {};
 
-      onOpenTab({ uuid, data, action: 'contactModule' });
+      dispatch(openTab({ uuid, data, action: 'contactModule' }));
     },
-    [newsData, newsStore, onOpenTab],
+    [dispatch, newsData, newsStore],
   );
 
   const renderNewsBlock = useCallback(
@@ -113,32 +126,9 @@ const News = memo(({ addTab, router, setCurrentTab, appConfig, data, onOpenTab }
 });
 
 News.defaultProps = {
-  addTab: null,
-  router: {},
-  setCurrentTab: null,
-  appConfig: {},
   data: {},
-  onOpenTab: null,
 };
 
 News.propTypes = newsType;
 
-const mapStateToProps = (state) => {
-  const { publicReducer, router } = state;
-  const { status: statusApp = '', appConfig } = publicReducer;
-  return {
-    router,
-    statusApp,
-    appConfig,
-  };
-};
-
-const mapDispathToProps = (dispatch) => {
-  return {
-    addTab: (tab, config = {}) => dispatch(addTabAction({ tab, config })),
-    onOpenTab: (params) => dispatch(openTab(params)),
-    onCaching: async (params) => await dispatch(middlewareCaching(params)),
-  };
-};
-
-export default compose(moduleContextToProps, connect(mapStateToProps, mapDispathToProps))(News);
+export default moduleContextToProps(News);

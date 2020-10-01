@@ -15,14 +15,6 @@ export const contactModuleType = {
 
 export const newsType = {
   data: object.isRequired,
-  isLoading: bool.isRequired,
-  isBackground: bool,
-  visible: bool,
-  router: object.isRequired,
-  statusApp: string.isRequired,
-  onOpenPageWithData: func.isRequired,
-  setCurrentTab: func.isRequired,
-  onCaching: func.isRequired,
 };
 
 export const newsViewType = {

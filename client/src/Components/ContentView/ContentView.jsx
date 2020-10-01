@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { getComponentByKey, parseModuleKey, getModuleTypeByParsedKey } from 'Utils';
 import { contentViewType } from './ContentView.types';
 import _ from 'lodash';
-import { Layout } from 'antd';
+import { Layout, Spin } from 'antd';
 
 import ActionPortal from 'Components/ActionPortal';
 import Chat from 'Modules/ContactModule/Chat';
@@ -180,15 +180,23 @@ class ContentView extends Component {
 
   render() {
     const { key, visibilityPortal } = this.state;
-    const { webSocket, path, appConfig } = this.props;
+    const { webSocket, path, appConfig, shouldShowSpinner } = this.props;
 
     if (!key) return <div>Not available application, not found content key</div>;
+
+    if (shouldShowSpinner) {
+      return (
+        <Content className="contentView contentView--loader">
+          <Spin size="large" tip="Загрузка контента" />
+        </Content>
+      );
+    }
 
     const isBackgroundChat = this.getBackground('contactModule_chat');
     const tabs = this.tabsCreate();
 
     return (
-      <Content key={key}>
+      <Content className="contentView" key={key}>
         {tabs.map(({ component = null }) => component)}
         <ActionPortal appConfig={appConfig} visible={visibilityPortal}>
           <Chat

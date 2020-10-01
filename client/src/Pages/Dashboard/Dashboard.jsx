@@ -403,7 +403,7 @@ class Dashboard extends PureComponent {
               dashboardStrem={this.dashboardStrem}
               cbMenuTabHandler={this.menuHandler}
               activeTabEUID={currentActionTab}
-              tabs={activeTabsData ? activeTabsData : false}
+              tabs={activeTabsData}
               logout={this.logout}
               goCabinet={this.goCabinet}
             />
@@ -422,6 +422,7 @@ class Dashboard extends PureComponent {
               key="contentView"
               rest={rest}
               path={currentActionTab}
+              shouldShowSpinner={!activeTabsData.length}
             />
             {visibleInstallApp ? (
               <Modal

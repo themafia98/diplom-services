@@ -68,7 +68,8 @@
       "EUID": "taskModule_createTask",
       "VALUE": "Новая задача",
       "ICON": null,
-      "SIGN": "freedom"
+      "SIGN": "freedom",
+      "PARENT_CODE": "taskModule"
     },
     {
       "EUID": "customersModule",
@@ -98,7 +99,8 @@
       "EUID": "contactModule_createNews",
       "VALUE": "Создание новой новости",
       "ICON": null,
-      "SIGN": "freedom"
+      "SIGN": "freedom",
+      "PARENT_CODE": "contactModule"
     },
     {
       "EUID": "contactModule_chat",

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { menuViewType } from './MenuView.types';
 import { Menu, Layout, Icon } from 'antd';
 
@@ -8,13 +8,17 @@ const { Sider } = Layout;
 const { SubMenu } = Menu;
 
 const MenuView = ({ collapsed, cbOnCollapse, items, cbMenuHandler, activeTabEUID, cbGoMain }) => {
-  const renderMenu = (items) =>
-    items
-      .filter(({ PARENT_CODE = '' }) => PARENT_CODE === null)
-      .map(({ EUID = '', ICON = '', VALUE = '' } = {}) => {
+  const { VALUE: defaultSelectedKeys = '' } = items?.[0] || {};
+  const menuItems = useMemo(
+    () =>
+      items.reduce((acc, { EUID = '', ICON = '', VALUE = '', PARENT_CODE = null } = {}) => {
+        if (PARENT_CODE !== null) return acc;
+
         const children = items.filter(({ PARENT_CODE = '' } = {}) => EUID === PARENT_CODE);
+
         if (children.length > 0) {
-          return (
+          return [
+            ...acc,
             <SubMenu
               key={EUID}
               className="menuItem"
@@ -30,17 +34,20 @@ const MenuView = ({ collapsed, cbOnCollapse, items, cbMenuHandler, activeTabEUID
                   {child.VALUE}
                 </Menu.Item>
               ))}
-            </SubMenu>
-          );
+            </SubMenu>,
+          ];
         } else
-          return (
+          return [
+            ...acc,
             <Menu.Item className="menuItem" onClick={cbMenuHandler} key={EUID}>
               {ICON ? <Icon type={ICON} /> : null}
               <span>{VALUE}</span>
-            </Menu.Item>
-          );
-      });
-  if (!items[0]?.VALUE) return null;
+            </Menu.Item>,
+          ];
+      }, []),
+    [cbMenuHandler, items],
+  );
+
   return (
     <Sider collapsible collapsed={collapsed} onCollapse={cbOnCollapse}>
       <div className="logo" onClick={cbGoMain}>
@@ -50,10 +57,10 @@ const MenuView = ({ collapsed, cbOnCollapse, items, cbMenuHandler, activeTabEUID
         <Menu
           selectedKeys={[activeTabEUID]}
           theme="dark"
-          defaultSelectedKeys={[items[0].VALUE]}
+          defaultSelectedKeys={[defaultSelectedKeys]}
           mode="inline"
         >
-          {renderMenu(items)}
+          {menuItems}
         </Menu>
       ) : null}
     </Sider>
