@@ -1,4 +1,5 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
+import _ from 'lodash';
 import { compose } from 'redux';
 import { taskModuleType } from './TaskModule.types';
 import { connect } from 'react-redux';
@@ -24,7 +25,7 @@ import actionPath from 'actions.path';
 import { requestTemplate } from 'Utils/Api/api.utils';
 import { ACTIONS } from 'App.constant';
 
-class TaskModule extends PureComponent {
+class TaskModule extends Component {
   state = {
     height: null,
     heightController: null,
@@ -36,7 +37,7 @@ class TaskModule extends PureComponent {
   static propTypes = taskModuleType;
 
   static getDerivedStateFromProps = (props, state) => {
-    if (props.path !== state.path) {
+    if (props.path && props.path !== state.path && props.path.toLowerCase().includes('task')) {
       return {
         ...state,
         path: props.path,
@@ -44,6 +45,13 @@ class TaskModule extends PureComponent {
     }
 
     return state;
+  };
+
+  shouldComponentUpdate = (prevProps) => {
+    const { path = '' } = this.state;
+    const { path: pathProps } = this.props;
+
+    return path === pathProps && !_.isEqual(this.props, prevProps);
   };
 
   componentDidMount = () => {
@@ -80,23 +88,18 @@ class TaskModule extends PureComponent {
     window.removeEventListener('resize', this.recalcHeight, false);
   };
 
-  shouldUpdateTasks = () => {
-    const { path = '' } = this.props;
-    const viewId = path.split(regExpRegister.MODULE_ID)[1];
-    return !!path && path.includes('task') && !viewId && !path.includes('createTask');
-  };
-
   componentDidUpdate = () => {
     const { router, path = '', moduleContext, appConfig } = this.props;
     const { shouldUpdate = false, routeData = {} } = router;
 
     const { visibility = false } = moduleContext;
-    const { isListCounterLoading = false } = this.state;
+    const { isListCounterLoading = false, height } = this.state;
     const { task: { limitList = 20 } = {} } = appConfig;
 
     if (!visibility) return;
 
-    if ([this.moduleTask, this.controller].every((type) => type !== null)) {
+    const shouldBeInit = height === null && this.moduleTask !== null && visibility;
+    if (shouldBeInit || [this.moduleTask, this.controller].every((type) => type !== null)) {
       this.recalcHeight();
     }
 
@@ -117,6 +120,12 @@ class TaskModule extends PureComponent {
 
       this.shouldUpdateTasks() && this.fetchTaskModule(null, saveData, saveDataState);
     }
+  };
+
+  shouldUpdateTasks = () => {
+    const { path = '' } = this.props;
+    const viewId = path.split(regExpRegister.MODULE_ID)[1];
+    return !!path && path.includes('task') && !viewId && !path.includes('createTask');
   };
 
   fetchTaskModule = async (customOptions = null, saveData = {}, saveDataState) => {
@@ -224,7 +233,7 @@ class TaskModule extends PureComponent {
     if (height !== heightForState || heightControllerForState !== heightController)
       this.setState({
         ...this.state,
-        height: window.innerHeight - 10 > heightForState ? heightForState : window.innerHeight - 15,
+        height: window.innerHeight - 10 > heightForState ? heightForState - 250 : window.innerHeight - 250,
         heightController: heightControllerForState,
       });
   };
@@ -284,69 +293,69 @@ class TaskModule extends PureComponent {
   };
 
   getTaskByPath = (path) => {
-    if (path) {
-      const { height, heightController, counter, createTaskAvailable } = this.state;
-      const {
-        router,
-        router: { currentActionTab = '' } = {},
-        status,
-        onOpenPageWithData,
-        onLoadCurrentData,
-        onLoadCacheData,
-        rest,
-        removeTab,
-        setCurrentTab,
-        udata = {},
-        statusList = {},
-        onSetStatus = null,
-        type: typeDefault = Symbol(''),
-      } = this.props;
+    if (!path) return <div>Not found path module</div>;
 
-      const route = routeParser({ pageType: 'moduleItem', path });
-      const [namePath = '', uuid = ''] = path.split(regExpRegister.MODULE_ID);
-      const type = uuid ? types.$entity_entrypoint : typeDefault;
+    const { height, heightController, counter, createTaskAvailable } = this.state;
+    const {
+      router,
+      router: { currentActionTab = '' } = {},
+      status,
+      onOpenPageWithData,
+      onLoadCurrentData,
+      onLoadCacheData,
+      rest,
+      removeTab,
+      setCurrentTab,
+      udata = {},
+      statusList = {},
+      onSetStatus = null,
+      type: typeDefault = Symbol(''),
+    } = this.props;
 
-      const subTabProps = {
-        currentActionTab,
-        rest,
-        statusApp: status,
-        counter,
-        setCurrentTab,
-        loading: router?.routeData[path] && router?.routeData[path]?.loading,
-        height: heightController ? height - heightController : height,
-        data: router?.routeData[path],
-        uuid,
-        namePath,
-        route,
-        statusList,
-        onSetStatus,
-        onLoadCurrentData,
-        onOpenPageWithData,
-        onLoadCacheData,
-        removeTab,
-        router,
-        udata,
-      };
+    const route = routeParser({ pageType: 'moduleItem', path });
+    const [namePath = '', uuid = ''] = path.split(regExpRegister.MODULE_ID);
+    const type = uuid ? types.$entity_entrypoint : typeDefault;
 
-      return (
-        <>
-          {oneOfType(types.$sub_entrypoint_module, types.$entrypoint_module)(type) &&
-          (path?.includes('all') || path?.includes('myTasks')) ? (
-            <div key="controllers" ref={this.refControllers} className="controllersWrapper">
-              <Button
-                disabled={!createTaskAvailable}
-                className="newTaskButton"
-                onClick={this.handlerNewTask}
-                type="primary"
-              >
-                Создать новую задачу
-              </Button>
-            </div>
-          ) : null}
-          {this.renderTasksSubTabs(subTabProps)}
-        </>
-      );
-    } else return <div>Not found path module</div>;
+    const subTabProps = {
+      currentActionTab,
+      rest,
+      statusApp: status,
+      counter,
+      setCurrentTab,
+      loading: router?.routeData[path] && router?.routeData[path]?.loading,
+      height: heightController ? height - heightController : height,
+      data: router?.routeData[path],
+      uuid,
+      namePath,
+      route,
+      statusList,
+      onSetStatus,
+      onLoadCurrentData,
+      onOpenPageWithData,
+      onLoadCacheData,
+      removeTab,
+      router,
+      udata,
+    };
+
+    return (
+      <>
+        {oneOfType(types.$sub_entrypoint_module, types.$entrypoint_module)(type) &&
+        (path?.includes('all') || path?.includes('myTasks')) ? (
+          <div key="controllers" ref={this.refControllers} className="controllersWrapper">
+            <Button
+              disabled={!createTaskAvailable}
+              className="newTaskButton"
+              onClick={this.handlerNewTask}
+              type="primary"
+            >
+              Создать новую задачу
+            </Button>
+          </div>
+        ) : null}
+        {this.renderTasksSubTabs(subTabProps)}
+      </>
+    );
   };
 
   render() {

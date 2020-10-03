@@ -17,7 +17,7 @@ const TaskModuleList = ({ router, data, height, loading, counter, statusApp }) =
           key="taskModule_tableTask"
           counter={counter}
           statusApp={statusApp}
-          height={height}
+          height={height || 500}
           router={router}
           loading={loading}
           dataSource={tasks}

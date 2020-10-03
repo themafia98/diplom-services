@@ -21,7 +21,7 @@ const TableView = ({
   router,
   requestError,
   udata,
-  height: heightProps,
+  height,
   visible,
   onOpenPageWithData,
   setCurrentTab,
@@ -96,8 +96,6 @@ const TableView = ({
       const { routeData, currentActionTab = '' } = router;
       let currentData = routeData[currentActionTab];
 
-      const height = heightProps - 250;
-
       if (path === 'mainModule__global' && visible) {
         currentData = path && routeData[path] ? routeData[path] : currentData;
         const isUsers = currentData && currentData.users;
@@ -166,7 +164,7 @@ const TableView = ({
       counter,
       filterBy,
       getRowsTable,
-      heightProps,
+      height,
       loading,
       onAddRouteData,
       onOpenPageWithData,
