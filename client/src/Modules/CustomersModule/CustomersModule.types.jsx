@@ -1,13 +1,15 @@
 import PropTypes from 'prop-types';
-const { func, string, bool, object, arrayOf } = PropTypes;
+const { func, string, bool, object, arrayOf, symbol } = PropTypes;
 
 export const customersModuleType = {
   path: string.isRequired,
+  type: symbol.isRequired,
   visible: bool,
   activeTabs: arrayOf(string),
-  rest: object.isRequired,
-  onSetStatus: func.isRequired,
-  router: object.isRequired,
+  statusApp: string,
+  webSocket: object,
+  visibilityPortal: bool,
+  entitysList: arrayOf(string),
 };
 
 export const contactsType = {

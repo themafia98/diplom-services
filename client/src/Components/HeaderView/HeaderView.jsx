@@ -1,9 +1,8 @@
 import React, { useState, useRef, memo, useEffect } from 'react';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Layout } from 'antd';
 import { dragEndTabAction } from 'Redux/actions/tabActions';
-import { saveComponentStateAction } from 'Redux/actions/routerActions';
 import RightPanel from './RightPanel';
 import Tab from './Tab/index';
 import { MARGIN_TAB } from './HeaderView.constant';
@@ -12,26 +11,26 @@ import { headerViewType } from './HeaderView.types';
 const { Header } = Layout;
 
 const HeaderView = memo(
-  ({
-    tabs,
-    goCabinet,
-    status,
-    shouldUpdate,
-    logout,
-    udata,
-    onSaveComponentState,
-    appConfig,
-    onDragEndTabAction,
-    activeTabEUID,
-    cbMenuTabHandler,
-    dashboardStrem,
-  }) => {
+  ({ tabs, goCabinet, logout, activeTabEUID, cbMenuTabHandler, dashboardStrem, webSocket }) => {
+    const dispatch = useDispatch();
+
     const [length, setLength] = useState(1);
     const [size, setSize] = useState(160);
     const [sizeParent, setSizeParent] = useState(null);
 
     const tabsMenuRef = useRef(null);
     const { current: tabsMenuNode = null } = tabsMenuRef || {};
+
+    const { shouldUpdate, status, udata, appConfig } = useSelector((state) => {
+      const { status, udata, appConfig } = state.publicReducer;
+      const { shouldUpdate = false } = state.router;
+      return {
+        shouldUpdate,
+        status,
+        udata,
+        appConfig,
+      };
+    });
 
     useEffect(() => {
       const sizes = sizeParent / tabs.length - MARGIN_TAB;
@@ -60,7 +59,7 @@ const HeaderView = memo(
 
       if (!destination) return;
 
-      onDragEndTabAction(reorder([...tabsList], index, indexDest));
+      dispatch(dragEndTabAction(reorder([...tabsList], index, indexDest)));
     };
 
     const renderTabs = (items) => {
@@ -100,7 +99,6 @@ const HeaderView = memo(
       streamModule: 'system',
       store: 'redux',
       filterStream: 'uidCreater',
-      onSaveComponentState,
     };
 
     return (
@@ -115,6 +113,7 @@ const HeaderView = memo(
           onLogout={logout}
           onUpdate={update}
           notificationDep={notificationDep}
+          webSocket={webSocket}
         />
       </Header>
     );
@@ -122,43 +121,9 @@ const HeaderView = memo(
 );
 
 HeaderView.defaultProps = {
-  tabArray: [],
-  activeTabEUID: 'mainModule',
-  activeTabs: [],
-  dashboardStrem: null,
-  tabs: [],
   goCabinet: null,
-  status: '',
-  shouldUpdate: false,
-  logout: null,
-  udata: {},
-  onSaveComponentState: null,
-  appConfig: {},
-  onDragEndTabAction: null,
-  cbMenuTabHandler: null,
 };
 
 HeaderView.propTypes = headerViewType;
 
-const mapStateTopProps = (state) => {
-  const { status = 'online', udata = {}, appConfig } = state.publicReducer;
-  const { shouldUpdate = false, routeData = {}, activeTabs } = state.router;
-  return {
-    activeTabs,
-    shouldUpdate,
-    status,
-    udata,
-    routeData,
-    appConfig,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onSaveComponentState: (data) => dispatch(saveComponentStateAction(data)),
-    onDragEndTabAction: (payload) => dispatch(dragEndTabAction(payload)),
-  };
-};
-
-export default connect(mapStateTopProps, mapDispatchToProps)(HeaderView);
-export { HeaderView };
+export default HeaderView;

@@ -1,12 +1,8 @@
 import PropTypes from 'prop-types';
-import { udataType } from 'App.types';
-const { object, bool } = PropTypes;
+const { object, bool, func } = PropTypes;
 
 export const loginType = {
-  router: object.isRequired,
-  history: object.isRequired,
-  location: object.isRequired,
-  match: object.isRequired,
+  location: object,
   authLoad: bool.isRequired,
-  udata: udataType.isRequired,
+  initialSession: func.isRequired,
 };

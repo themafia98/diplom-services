@@ -1,5 +1,4 @@
 import React, { memo, useRef, useState, useEffect, useCallback } from 'react';
-import { connect } from 'react-redux';
 import { mainModuleType } from './MainModule.types';
 import { Calendar } from 'antd';
 import ClockWidjet from 'Components/ClockWidjet/index';
@@ -12,12 +11,23 @@ import { compose } from 'redux';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { withClientDb } from 'Models/ClientSideDatabase';
 import actionPath from 'actions.path';
+import { useDispatch, useSelector } from 'react-redux';
 
-const MainModule = memo(({ onLoadCurrentData, moduleContext, clientDB, visibilityWidgets }) => {
+const MainModule = memo(({ moduleContext, clientDB }) => {
+  const dispatch = useDispatch();
+
   const [tableViewHeight, setTableViewHeight] = useState(300);
 
   const rightColumnRef = useRef(null);
   const widgetsContainerRef = useRef(null);
+
+  const { visibilityWidgets } = useSelector((state) => {
+    const { publicReducer } = state;
+    const { appConfig } = publicReducer;
+    return {
+      visibilityWidgets: appConfig?.visibilityWidgets,
+    };
+  });
 
   const onResizeWindow = useCallback(() => {
     const { visibility = false } = moduleContext;
@@ -47,22 +57,24 @@ const MainModule = memo(({ onLoadCurrentData, moduleContext, clientDB, visibilit
     });
 
     if (isMounted && visibility && page === 'mainModule' && itemId === 'global') {
-      onLoadCurrentData({
-        action: actionPath.$GLOBAL_LOAD_USERS,
-        options: {
-          departament: 'department',
-          displayName: 'displayName',
-          email: 'email',
-          isHideEmail: 'isHideEmail',
-          isHidePhone: 'isHidePhone',
-          position: 'position',
-          isOnline: 'isOnline',
-        },
-        path: validPath,
-        clientDB,
-      });
+      dispatch(
+        loadCurrentData({
+          action: actionPath.$GLOBAL_LOAD_USERS,
+          options: {
+            departament: 'department',
+            displayName: 'displayName',
+            email: 'email',
+            isHideEmail: 'isHideEmail',
+            isHidePhone: 'isHidePhone',
+            position: 'position',
+            isOnline: 'isOnline',
+          },
+          path: validPath,
+          clientDB,
+        }),
+      );
     }
-  }, [clientDB, moduleContext, onLoadCurrentData]);
+  }, [clientDB, dispatch, moduleContext]);
 
   useEffect(() => {
     window.addEventListener('resize', onResizeWindow, false);
@@ -114,22 +126,4 @@ const MainModule = memo(({ onLoadCurrentData, moduleContext, clientDB, visibilit
 
 MainModule.propTypes = mainModuleType;
 
-const mapStateToProps = (state) => {
-  const { publicReducer } = state;
-  const { appConfig } = publicReducer;
-  return {
-    visibilityWidgets: appConfig?.visibilityWidgets,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onLoadCurrentData: (props) => dispatch(loadCurrentData(props)),
-  };
-};
-
-export default compose(
-  moduleContextToProps,
-  withClientDb,
-  connect(mapStateToProps, mapDispatchToProps),
-)(MainModule);
+export default compose(moduleContextToProps, withClientDb)(MainModule);

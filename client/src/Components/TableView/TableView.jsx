@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback, useState } from 'react';
 import { tableViewType } from './TableView.types';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Empty, Spin, Tooltip, Icon } from 'antd';
 import Scrollbars from 'react-custom-scrollbars';
 
@@ -8,32 +8,27 @@ import { routePathNormalise, routeParser } from 'Utils';
 import Output from 'Components/Output';
 import DynamicTable from './DynamicTable';
 
-import {
-  openPageWithDataAction,
-  removeTabAction,
-  addToRouteDataAction,
-  setActiveTabAction,
-} from 'Redux/actions/routerActions';
-
 const TableView = ({
   user,
   filterBy,
-  router,
-  requestError,
-  udata,
   height,
   visible,
-  onOpenPageWithData,
-  setCurrentTab,
   loading,
   counter,
   tableViewHeight,
-  onAddRouteData,
   statusApp,
-  removeTab,
   path,
 }) => {
   const [isScroll, setIsScroll] = useState(null);
+
+  const { router, udata, requestError } = useSelector((state) => {
+    const { udata = {}, requestError } = state.publicReducer;
+    return {
+      router: state.router,
+      requestError,
+      udata,
+    };
+  });
 
   const setSizeWindow = useCallback(
     (event) => {
@@ -61,10 +56,7 @@ const TableView = ({
               action={'cabinet'}
               typeOutput="link"
               router={router}
-              removeTab={removeTab}
               udata={udata}
-              onOpenPageWithData={onOpenPageWithData}
-              setCurrentTab={setCurrentTab}
               key={`${id}${it.displayName}}nameSurname`}
               type="table"
               className="nameSurname"
@@ -88,7 +80,7 @@ const TableView = ({
         );
       });
     },
-    [onOpenPageWithData, removeTab, router, setCurrentTab, udata],
+    [router, udata],
   );
 
   const getComponentByPath = useCallback(
@@ -143,16 +135,13 @@ const TableView = ({
             routePathNormalise={routePathNormalise}
             routeParser={routeParser}
             dataSource={tasks}
-            onOpenPageWithData={onOpenPageWithData}
             router={router}
-            setCurrentTab={setCurrentTab}
             udata={udata}
             counter={countPagination}
             filterBy={filterBy}
             user={user}
             visible={visible}
             loading={loading}
-            onAddRouteData={onAddRouteData}
             height={height}
           />
         );
@@ -166,11 +155,8 @@ const TableView = ({
       getRowsTable,
       height,
       loading,
-      onAddRouteData,
-      onOpenPageWithData,
       requestError,
       router,
-      setCurrentTab,
       statusApp,
       tableViewHeight,
       udata,
@@ -191,43 +177,13 @@ const TableView = ({
   return component;
 };
 
-const mapStateToProps = (state) => {
-  const { udata = {}, requestError } = state.publicReducer;
-  return {
-    router: state.router,
-    requestError,
-    udata,
-  };
-};
-
 TableView.propTypes = tableViewType;
 TableView.defaultProps = {
-  tasks: [],
-  filterBy: '',
-  visible: false,
   user: {},
-  router: [],
-  udata: {},
   height: 300,
-  onOpenPageWithData: null,
-  setCurrentTab: null,
   loading: false,
   counter: null,
   tableViewHeight: window?.innerHeight / 2 - 70,
-  onAddRouteData: null,
-  statusApp: '',
-  requestError: '',
-  removeTab: null,
-  path: '',
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    removeTab: (tab) => dispatch(removeTabAction(tab)),
-    onOpenPageWithData: (data) => dispatch(openPageWithDataAction(data)),
-    setCurrentTab: (tab) => dispatch(setActiveTabAction(tab)),
-    onAddRouteData: (data) => dispatch(addToRouteDataAction(data)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(TableView);
+export default TableView;

@@ -15,6 +15,7 @@ const RightPanel = ({
   udata,
   notificationDep,
   appConfig,
+  webSocket,
 }) => (
   <div className="headerControllers rightPanel">
     <UserPopup statusApp={status} udata={udata} goCabinet={goCabinet} />
@@ -24,6 +25,7 @@ const RightPanel = ({
         statusApp={status}
         udata={udata}
         notificationDep={notificationDep}
+        webSocket={webSocket}
       />
       <Updater statusApp={status} onClick={onUpdate} additionalClassName="updaterDefault" />
       <div onClick={onLogout} className="logout">

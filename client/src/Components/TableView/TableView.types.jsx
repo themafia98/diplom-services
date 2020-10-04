@@ -1,22 +1,18 @@
 import PropTypes from 'prop-types';
 import { udataType } from '../../App.types';
-const { func, string, number, object, bool, array, oneOfType, arrayOf } = PropTypes;
+const { func, string, number, object, bool, array, oneOfType, arrayOf, oneOf } = PropTypes;
 
 export const tableViewType = {
-  setCurrentTab: func,
-  height: oneOfType([string, number]),
+  filterBy: oneOfType([string, arrayOf(string)]).isRequired,
   tasks: array.isRequired,
-  filterBy: oneOfType([string.isRequired, arrayOf(string).isRequired]).isRequired,
   visible: bool.isRequired,
-  udata: udataType.isRequired,
   path: string.isRequired,
+  height: oneOfType([string, number]),
   user: oneOfType([string, object]),
-  router: object.isRequired,
-  onOpenPageWithData: oneOfType([func, () => null]),
+  counter: oneOfType([number, string, oneOf([null])]),
   loading: bool,
-  counter: oneOfType([number, string, () => null]),
-  onAddRouteData: oneOfType([func, () => null]),
   statusApp: string,
+  tableViewHeight: number,
 };
 
 export const dynamicTableType = {
@@ -33,5 +29,5 @@ export const dynamicTableType = {
   filteredUsers: array,
   cachesAuthorList: array,
   cachesEditorList: array,
-  onAddRouteData: oneOfType([func, () => null]),
+  onAddRouteData: oneOfType([func, oneOf([null])]),
 };

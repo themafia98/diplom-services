@@ -1,14 +1,18 @@
 import React, { memo, useCallback } from 'react';
 import { customersModuleType } from './CustomersModule.types';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
+import { useSelector } from 'react-redux';
 import withRouter from 'Components/Helpers/withRouter/withRouter';
 import entityRender from 'Utils/Tools/entityRender';
 import types from 'types.modules';
 
 const CustomersModule = memo(
-  ({ activeTabs, path, statusApp, router, udata, webSocket, visibilityPortal, entitysList, type }) => {
-    const { routeData = {} } = router || {};
+  ({ activeTabs, path, statusApp, webSocket, visibilityPortal, entitysList, type }) => {
+    const { udata, router } = useSelector((state) => {
+      const { udata } = state.publicReducer;
+      return { udata, router: state.router };
+    });
+
+    const { routeData } = router;
 
     const checkBackground = useCallback(
       (path) => {
@@ -55,12 +59,15 @@ const CustomersModule = memo(
   },
 );
 
-CustomersModule.propTypes = customersModuleType;
-
-const mapStateToProps = (state) => {
-  const { publicReducer } = state;
-  const { appConfig, udata } = publicReducer;
-  return { appConfig, udata };
+CustomersModule.defaultProps = {
+  visible: false,
+  activeTabs: [],
+  statusApp: '',
+  webSocket: null,
+  visibilityPortal: false,
+  entitysList: [],
 };
 
-export default compose(connect(mapStateToProps), withRouter)(CustomersModule);
+CustomersModule.propTypes = customersModuleType;
+
+export default withRouter(CustomersModule);

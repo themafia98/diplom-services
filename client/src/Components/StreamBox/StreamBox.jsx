@@ -34,7 +34,6 @@ class StreamBox extends Component {
     type: null,
     setCounter: null,
     onMultipleLoadData: null,
-    onSaveComponentState: null,
     onLoadPopover: null,
     personalUid: null,
     buildItems: null,

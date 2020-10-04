@@ -6,6 +6,11 @@ import { Table, message, Input, Button, Icon, Empty } from 'antd';
 import { getDataSource, findData } from 'Utils';
 import ModelContext from 'Models/context';
 import { connect } from 'react-redux';
+import {
+  addToRouteDataAction,
+  openPageWithDataAction,
+  setActiveTabAction,
+} from 'Redux/actions/routerActions';
 
 class DynamicTable extends PureComponent {
   state = {
@@ -26,10 +31,7 @@ class DynamicTable extends PureComponent {
     filteredUsers: [],
     cachesAuthorList: [],
     cachesEditorList: [],
-    onOpenPageWithData: null,
-    setCurrentTab: null,
     routeParser: null,
-    onAddRouteData: null,
     routePathNormalise: '',
   };
 
@@ -410,8 +412,10 @@ const mapStateTopProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {};
-};
+const mapDispatchToProps = (dispatch) => ({
+  onOpenPageWithData: (payload) => dispatch(openPageWithDataAction(payload)),
+  setCurrentTab: (tab) => dispatch(setActiveTabAction(tab)),
+  onAddRouteData: (data) => dispatch(addToRouteDataAction(data)),
+});
 
 export default connect(mapStateTopProps, mapDispatchToProps)(DynamicTable);

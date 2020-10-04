@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect, useCallback, useMemo } from 'react';
 import clsx from 'clsx';
 import { userCardType } from './UserCard.types';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { updateUdata } from 'Redux/actions/publicActions';
 import { Avatar, Button, Icon, Dropdown, Menu, Tooltip, message, Popover } from 'antd';
 import ModalWindow from 'Components/ModalWindow';
@@ -15,15 +15,17 @@ const { Item: MenuItem } = Menu;
 
 const UserCard = ({
   modePage: modePageProps,
-  udata,
-  onUpdateUdata,
   cdShowModal,
   imageUrl,
   personalData,
   isHidePhone,
   isHideEmail,
 }) => {
-  const { _id: uid = '' } = udata || {};
+  const dispatch = useDispatch();
+  const { udata } = useSelector((state) => {
+    const { udata = {} } = state.publicReducer;
+    return { udata };
+  });
 
   const [visibilityModal, setVisibilityModal] = useState(false);
   const [modePage, setModePage] = useState('');
@@ -31,6 +33,7 @@ const UserCard = ({
   const context = useContext(ModelContext);
 
   const isPersonalPage = modePage === 'personal';
+  const { _id: uid = '' } = udata;
   const {
     displayName = '',
     departament = '',
@@ -86,7 +89,7 @@ const UserCard = ({
 
         const { response: { metadata: { summary = '' } = {} } = {} } = res.data || {};
 
-        if (onUpdateUdata) onUpdateUdata({ summary });
+        dispatch(updateUdata({ summary }));
 
         setVisibilityModal(false);
       } catch (error) {
@@ -94,7 +97,7 @@ const UserCard = ({
         message.error('Ошибка обновления описания.');
       }
     },
-    [context, onUpdateUdata, uid],
+    [context, uid, dispatch],
   );
 
   const onRejectEditSummary = () => {
@@ -212,25 +215,10 @@ const UserCard = ({
 
 UserCard.propTypes = userCardType;
 UserCard.defaultProps = {
-  modePage: '',
-  udata: {},
-  onUpdateUdata: null,
   cdShowModal: null,
-  imageUrl: '',
   personalData: {},
   isHidePhone: false,
   isHideEmail: false,
 };
 
-const mapStateToProps = (state) => {
-  const { udata = {} } = state.publicReducer;
-  return { udata };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onUpdateUdata: (udata) => dispatch(updateUdata(udata)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(UserCard);
+export default UserCard;

@@ -3,14 +3,14 @@ import { udataType, contentState, emptyShape, newsItemType } from 'App.types';
 const { func, string, bool, object, oneOf, arrayOf, oneOfType, number, array, symbol } = PropTypes;
 
 export const contactModuleType = {
+  type: symbol.isRequired,
   path: string.isRequired,
   activeTabs: arrayOf(string.isRequired).isRequired,
   statusApp: string.isRequired,
-  router: object.isRequired,
-  rest: object.isRequired,
-  onSetStatus: func.isRequired,
-  udata: udataType.isRequired,
-  onLoadCurrentData: func.isRequired,
+  visibilityPortal: bool,
+  clientDB: func.isRequired,
+  webSocket: object,
+  onChangeVisibleAction: func,
 };
 
 export const newsType = {

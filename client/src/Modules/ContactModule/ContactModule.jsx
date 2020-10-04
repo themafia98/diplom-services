@@ -1,54 +1,53 @@
 import React, { memo, useState, useEffect, useCallback } from 'react';
 import { contactModuleType } from './ContactModule.types';
-import { connect } from 'react-redux';
-
+import { useDispatch, useSelector } from 'react-redux';
 import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
 import entityRender from 'Utils/Tools/entityRender';
 import withRouter from 'Components/Helpers/withRouter';
 import types from 'types.modules';
 import { oneOfType } from 'Utils';
-import { setStatus } from 'Redux/actions/publicActions';
 import { compose } from 'redux';
 import { withClientDb } from 'Models/ClientSideDatabase';
 import actionPath from 'actions.path';
 
 const ContactModule = memo(
-  ({
-    onLoadCurrentData,
-    path,
-    type,
-    clientDB,
-    router,
-    statusApp,
-    udata,
-    webSocket,
-    visibilityPortal,
-    onChangeVisibleAction,
-    entitysList,
-  }) => {
+  ({ path, type, clientDB, statusApp, webSocket, visibilityPortal, onChangeVisibleAction, entitysList }) => {
+    const dispatch = useDispatch();
+
+    const { router, udata } = useSelector((state) => {
+      const { router, publicReducer } = state;
+      const { udata = {} } = publicReducer;
+
+      return { router, udata };
+    });
+
     const { shouldUpdate = false, routeData = {}, activeTabs = [] } = router;
 
     const [isLoading, setLoading] = useState(false);
 
     useEffect(() => {
       if (path === 'contactModule_feedback' && type === types.$sub_entrypoint_module) {
-        onLoadCurrentData({
+        dispatch(
+          loadCurrentData({
+            action: actionPath.$LOAD_NEWS,
+            path,
+            optionsForParse: { noCorsClient: false },
+            clientDB,
+          }),
+        );
+      }
+    }, [clientDB, dispatch, path, type]);
+
+    const onLoadingData = useCallback(async () => {
+      dispatch(
+        loadCurrentData({
           action: actionPath.$LOAD_NEWS,
           path,
           optionsForParse: { noCorsClient: false },
           clientDB,
-        });
-      }
-    }, [clientDB, onLoadCurrentData, path, type]);
-
-    const onLoadingData = useCallback(async () => {
-      await onLoadCurrentData({
-        action: actionPath.$LOAD_NEWS,
-        path,
-        optionsForParse: { noCorsClient: false },
-        clientDB,
-      });
-    }, [clientDB, onLoadCurrentData, path]);
+        }),
+      );
+    }, [clientDB, dispatch, path]);
 
     useEffect(() => {
       const shouldUpdateList = routeData[path] && routeData[path]?.shouldUpdate;
@@ -65,7 +64,7 @@ const ContactModule = memo(
       setLoading(true);
       onLoadingData();
       setLoading(false);
-    }, [clientDB, isLoading, onLoadCurrentData, onLoadingData, path, routeData, shouldUpdate, type]);
+    }, [clientDB, isLoading, onLoadingData, path, routeData, shouldUpdate, type]);
 
     const checkBackground = useCallback(
       (path, visible, mode = 'default') => {
@@ -135,27 +134,9 @@ const ContactModule = memo(
 
 ContactModule.propTypes = contactModuleType;
 ContactModule.defaultProps = {
-  type: Symbol(''),
-  statusApp: '',
-  udata: {},
-  router: {},
   webSocket: null,
-  visibilityPorta: false,
+  visibilityPortal: false,
   onChangeVisibleAction: null,
 };
 
-const mapStateToProps = (state) => {
-  const { router, publicReducer } = state;
-  const { udata = {}, appConfig } = publicReducer;
-
-  return { router, udata, appConfig };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onLoadCurrentData: (props) => dispatch(loadCurrentData(props)),
-    onSetStatus: (props) => dispatch(setStatus(props)),
-  };
-};
-
-export default compose(connect(mapStateToProps, mapDispatchToProps), withClientDb, withRouter)(ContactModule);
+export default compose(withClientDb, withRouter)(ContactModule);

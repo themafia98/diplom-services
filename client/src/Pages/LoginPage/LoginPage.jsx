@@ -2,14 +2,20 @@ import React, { useState, useCallback, useContext, useRef } from 'react';
 import { loginType } from './LoginPage.types';
 import { Redirect, NavLink } from 'react-router-dom';
 import { Button, Input } from 'antd';
-import { connect } from 'react-redux';
-
+import { useSelector } from 'react-redux';
 import Logo from 'Components/Logo';
 import ModalWindow from 'Components/ModalWindow';
 import ModelContext from 'Models/context';
 import { SIGNS } from 'App.constant';
 
-const LoginPage = ({ appConfig, initialSession, authLoad, location }) => {
+const LoginPage = ({ initialSession, authLoad, location }) => {
+  const { appConfig } = useSelector((state) => {
+    const { appConfig } = state.publicReducer;
+    return {
+      appConfig,
+    };
+  });
+
   const { pathname = '' } = location || {};
   const { regInclude = true, recovoryInclude = true } = appConfig || {};
 
@@ -134,22 +140,7 @@ const LoginPage = ({ appConfig, initialSession, authLoad, location }) => {
 
 LoginPage.propTypes = loginType;
 LoginPage.defaultProps = {
-  authLoad: false,
-  appConfig: {},
-  initialSession: null,
   location: {},
 };
 
-const mapStateToProps = (state) => {
-  const { router, publicReducer } = state;
-  const { udata = {}, appConfig = {} } = publicReducer;
-
-  return {
-    router,
-    udata,
-    appConfig,
-  };
-};
-
-export default connect(mapStateToProps, null)(LoginPage);
-export { LoginPage };
+export default LoginPage;
