@@ -53,9 +53,22 @@ class StreamBox extends Component {
   };
 
   static getDerivedStateFromProps = (props, state) => {
+    const { countItems = null } = props;
+
+    const shouldBeSetCount = countItems !== null && countItems !== state.count;
+    const shouldBeSetType = state.type === null && props.type;
+
+    if (!(shouldBeSetCount && shouldBeSetType)) {
+      return state;
+    }
+
     const newState = {
       ...state,
     };
+
+    if (countItems !== null && countItems !== state.count) {
+      newState.count = countItems;
+    }
 
     if (state.type === null && props.type) {
       newState.type = props.type;
@@ -139,7 +152,8 @@ class StreamBox extends Component {
   };
 
   getNormalizeUidNotification = () => {
-    const { udata: { _id = '' } = {}, personalUid } = this.props;
+    const { udata = {}, personalUid } = this.props;
+    const { _id = '' } = udata;
 
     return !personalUid ? _id : personalUid;
   };
@@ -381,10 +395,14 @@ class StreamBox extends Component {
     } = this.state;
 
     const uid = this.getNormalizeUidNotification();
-    const nameModuleStream = this.getNotificationPath(uid);
+    let nameModuleStream = this.getNotificationPath(uid);
 
     /** TODO: removed when will be implemented backend (loading Listlimit) */
-    const _streamList = withStore ? routeData?.[nameModuleStream]?.[streamStore] : streamListState;
+    const _streamList = withStore
+      ? routeData[nameModuleStream] && routeData[nameModuleStream][streamStore]
+        ? routeData[nameModuleStream][streamStore]
+        : []
+      : streamListState;
 
     const streamList = parseArrayByLimit(_streamList, {
       listLimit,

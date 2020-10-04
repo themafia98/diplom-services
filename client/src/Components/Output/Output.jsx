@@ -34,7 +34,7 @@ const Output = memo(
     const childRef = createRef(null);
 
     const update = useCallback(() => {
-      const isDefaultList = Array.isArray(children) && typeOutput === 'default';
+      const isDefaultList = isChildrenList && typeOutput === 'default';
       const { current: childNode = null } = childRef;
       const { current: parentNode = null } = parentRef;
       if (
@@ -68,7 +68,7 @@ const Output = memo(
           setWidthParent(parentWidth);
         }
       }
-    }, [childRef, children, parentRef, showTooltip, typeOutput, widthChild, widthParent]);
+    }, [childRef, isChildrenList, parentRef, showTooltip, typeOutput, widthChild, widthParent]);
 
     useEffect(() => {
       update();
@@ -86,6 +86,7 @@ const Output = memo(
     const renderLinks = useCallback(
       (item = '', mode = 'default') => {
         if ((!isLoad && Array.isArray(item) && !item.length) || !item) return <Spin size="small" />;
+
         if (!Array.isArray(item) || mode === 'single') {
           const { displayName = '', _id: id = '' } = item || {};
           const displayValue = typeof item === 'string' ? item : displayName;

@@ -405,6 +405,7 @@ class Dashboard extends PureComponent {
               activeTabEUID={currentActionTab}
               tabs={activeTabsData}
               logout={this.logout}
+              webSocket={this.webSocket}
               goCabinet={this.goCabinet}
             />
             <ContentView

@@ -11,6 +11,7 @@ const NotificationPopup = memo(({ appConfig, notificationDep, udata, type }) => 
   const { _id: uid } = udata;
   const { IntervalPrivateNotifications = 10000 } = appConfig;
 
+  const [total, setTotal] = useState(0);
   const [counter, setCounter] = useState(0);
   const [isLoadPopover, setLoadPopover] = useState(false);
   const [isCounter, setIsCounter] = useState(true);
@@ -22,7 +23,8 @@ const NotificationPopup = memo(({ appConfig, notificationDep, udata, type }) => 
   const changeCounter = useCallback(
     (value, mode = '') => {
       if (counter !== value || !isLoadPopover) {
-        setCounter(mode === 'calc' ? counter + value : value);
+        const newCount = mode === 'calc' ? counter + value : value;
+        setCounter(newCount < 0 ? 0 : newCount);
         setLoadPopover(true);
       }
     },
@@ -53,12 +55,16 @@ const NotificationPopup = memo(({ appConfig, notificationDep, udata, type }) => 
       );
 
       if (res.status !== 200 && res.status !== 404) throw new Error('Bad get notification request');
+      debugger;
+      const { response = {} } = res.data;
+      const { metadata = {} } = response;
+      const { result = [], count = 0 } = metadata;
 
-      const {
-        data: { response: { metadata = [] } = {} },
-      } = res;
+      if (result && result.length) {
+        changeCounter(result.filter((it) => it?.isRead === false).length);
+      }
 
-      if (metadata && metadata?.length) changeCounter(metadata.filter((it) => it?.isRead === false).length);
+      setTotal(count);
     } catch (error) {
       if (error?.response?.status !== 404) console.error(error);
     }
@@ -127,12 +133,13 @@ const NotificationPopup = memo(({ appConfig, notificationDep, udata, type }) => 
           isLoadPopover={isLoadPopover}
           onLoadPopover={onLoadPopover}
           buildItems={buildItems}
+          countItems={total}
           {...notificationDep}
           listHeight="200px"
         />
       </div>
     ),
-    [buildItems, changeCounter, isLoadPopover, notificationDep, visible],
+    [buildItems, changeCounter, isLoadPopover, notificationDep, total, visible],
   );
 
   return (

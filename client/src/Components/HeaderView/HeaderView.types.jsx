@@ -5,11 +5,10 @@ export const headerViewType = {
   dashboardStrem: object.isRequired,
   cbMenuTabHandler: func.isRequired,
   activeTabEUID: string.isRequired,
-  activeTabs: oneOfType([array, bool]).isRequired,
   logout: PropTypes.func.isRequired,
   tabs: array.isRequired,
   goCabinet: func,
-  webSocket: object.isRequired,
+  webSocket: object,
 };
 
 export const tabType = {
@@ -32,7 +31,7 @@ export const rightPanelType = {
   onLogout: oneOfType([func, () => null]),
   goCabinet: oneOfType([func, () => null]),
   shouldUpdate: bool,
-  webSocket: object.isRequired,
+  webSocket: object,
 };
 
 export const statusType = {

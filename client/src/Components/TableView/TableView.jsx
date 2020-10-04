@@ -179,6 +179,7 @@ const TableView = ({
 
 TableView.propTypes = tableViewType;
 TableView.defaultProps = {
+  filterBy: '',
   user: {},
   height: 300,
   loading: false,

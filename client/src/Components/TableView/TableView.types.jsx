@@ -4,7 +4,6 @@ const { func, string, number, object, bool, array, oneOfType, arrayOf, oneOf } =
 
 export const tableViewType = {
   filterBy: oneOfType([string, arrayOf(string)]).isRequired,
-  tasks: array.isRequired,
   visible: bool.isRequired,
   path: string.isRequired,
   height: oneOfType([string, number]),
@@ -22,7 +21,7 @@ export const dynamicTableType = {
   routeParser: func.isRequired,
   routePathNormalise: func.isRequired,
   dataSource: array.isRequired,
-  filterBy: oneOfType([string.isRequired, arrayOf(string).isRequired]).isRequired,
+  filterBy: oneOfType([string, arrayOf(string)]),
   udata: udataType.isRequired,
   height: oneOfType([string.isRequired, number.isRequired]).isRequired,
   loading: bool,

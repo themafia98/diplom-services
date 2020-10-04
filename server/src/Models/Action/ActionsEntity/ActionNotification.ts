@@ -48,6 +48,9 @@ class ActionNotification implements Action {
         ],
       };
 
+      const privateCountQuery = { type: { $in: concactType }, ...(ids as object) };
+      const count = await this.getEntity().getCounter(model, privateCountQuery);
+
       const result = await this.getEntity().getAll(
         model,
         { type: concactType, ...privateMethodQuery },
@@ -55,7 +58,7 @@ class ActionNotification implements Action {
         skip as number,
         'asc',
       );
-      return result;
+      return { result, count };
     }
 
     const query = isObject ? { type: concactType, ...(ids as object) } : { type: concactType };
