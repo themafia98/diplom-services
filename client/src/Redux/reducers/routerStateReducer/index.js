@@ -228,18 +228,18 @@ export default handleActions(
       const { routeData = {}, activeTabs = [] } = state;
 
       const copyRouteData = { ...routeData };
-      const {
-        activePage = {},
-        activePage: { from = 'default' } = {},
-        routeDataActive: RDA = {},
-        routeDataActive: { key: keyRouteData = '', _id: id = '' } = {},
-      } = payload || {};
+      const { activePage = {}, routeDataActive: RDA = {} } = payload || {};
+      const { key: keyRouteData = '', _id: id = '' } = RDA;
+      const { from = 'default', moduleId = '' } = activePage;
+      const isLinkRedirect = moduleId === '$link$';
+
+      const isAccessRedirect = isLinkRedirect || activePage?.key === keyRouteData;
+      const isStrictEqaulEntity = activePage?.key === id;
 
       const isEmptyActivePage = !activePage || typeof activePage !== 'object';
-      const isEqualKeys = (activePage && activePage?.key === keyRouteData) || activePage?.key === id;
-      const isValidModuleId = activePage && activePage?.moduleId;
+      const isEqualKeys = (activePage && isAccessRedirect) || isStrictEqaulEntity;
 
-      if (isEmptyActivePage || (!isEqualKeys && isValidModuleId)) {
+      if (isEmptyActivePage || (!isEqualKeys && moduleId)) {
         return { ...state };
       }
 
@@ -248,7 +248,7 @@ export default handleActions(
       /**
        * 07.08.2020
        * @deprecated "___link" is legacy key
-       * Here to support the old version
+       * Here to support the old version link redirect
        */
       const linkEntity = pathPage.includes('___link') && pathPage.split(regExpRegister.MODULE_ID)[1];
       let currentActionTab = pathPage;

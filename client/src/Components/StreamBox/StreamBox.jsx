@@ -2,13 +2,13 @@ import React, { Component, createRef } from 'react';
 import { streamBoxType } from './StreamBox.types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { multipleLoadData, openTab } from 'Redux/actions/routerActions/middleware';
+import { openTab } from 'Redux/actions/routerActions/middleware';
 import { saveComponentStateAction } from 'Redux/actions/routerActions';
 import _ from 'lodash';
 import { Avatar, message, Tooltip, Spin, Button } from 'antd';
 import { Scrollbars } from 'react-custom-scrollbars';
 import clsx from 'clsx';
-import { routeParser, buildRequestList, parseArrayByLimit } from 'Utils';
+import { parseArrayByLimit } from 'Utils';
 import ModelContext from 'Models/context';
 import actionsTypes from 'actions.types';
 import { compose } from 'redux';
@@ -164,7 +164,6 @@ class StreamBox extends Component {
       const { Request } = this.context;
       const {
         type = '',
-        onMultipleLoadData,
         onSaveComponentState,
         streamStore,
         filterStream,
@@ -173,7 +172,6 @@ class StreamBox extends Component {
         isLoadPopover,
         onLoadPopover,
         appConfig: { streamLimit } = {},
-        clientDB,
       } = this.props;
 
       const uid = this.getNormalizeUidNotification();
@@ -224,11 +222,6 @@ class StreamBox extends Component {
 
       const metadata = Array.isArray(draftMetadata) ? draftMetadata : draftMetadata?.result;
 
-      await onMultipleLoadData({
-        requestsParamsList: buildRequestList(metadata, '#notification'),
-        clientDB,
-      });
-
       if (visiblePopover && (shouldUpdatePrivate || (type === 'private' && metadata?.length))) {
         const ids = metadata.reduce((idsList, data) => {
           if (!data?.isRead) return [...idsList, data?._id];
@@ -245,15 +238,18 @@ class StreamBox extends Component {
 
       const pathNotification = this.getNotificationPath(uid);
 
+      let metaSorted = metadata;
+
+      if (type === 'private') {
+        metaSorted = metadata.sort((a, b) => {
+          const aDate = moment(a.createdAt).unix();
+          const bDate = moment(b.createdAt).unix();
+          return bDate - aDate;
+        });
+      }
+
       await onSaveComponentState({
-        [streamStore]:
-          type === 'private'
-            ? metadata.sort((a, b) => {
-                const aDate = moment(a.createdAt).unix();
-                const bDate = moment(b.createdAt).unix();
-                return bDate - aDate;
-              })
-            : metadata,
+        [streamStore]: metaSorted,
         load: true,
         path: pathNotification,
         shoudParseToUniq: true,
@@ -278,20 +274,14 @@ class StreamBox extends Component {
         : []
       : streamListState;
 
-    const {
-      action: { type: typeAction = '', link: actionLink = '', moduleName: name = '' } = {},
-      type = '',
-    } = streamList[actionIndex] || {};
+    const { action = {}, type = '' } = streamList[actionIndex] || {};
+    const { type: typeAction = '', link: actionLink = '', moduleName: name = '' } = action;
 
     const moduleName = `${name}${prefix}`;
-    const [storeName, typeCurrentAction = ''] = typeAction.split('_');
+    const [, typeCurrentAction = ''] = typeAction.split('_');
     const pathLink = this.getPathLink(moduleName, type);
 
-    const { page = '' } = routeParser({ path: pathLink, pageType: 'link' });
-    const { [storeName]: dataList = [] } = routeData[page] || {};
-    const data = dataList?.find((it) => it?.key === actionLink || it?._id === actionLink) || {};
-
-    onOpenTab({ uuid: actionLink, action: pathLink, data, openType: typeCurrentAction });
+    onOpenTab({ uuid: actionLink, action: pathLink, data: {}, openType: typeCurrentAction });
   };
 
   showMessageError = ({ tabsLimit }) => {
@@ -531,7 +521,6 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onOpenTab: (params) => dispatch(openTab(params)),
     onSaveComponentState: (data) => dispatch(saveComponentStateAction(data)),
-    onMultipleLoadData: (props) => dispatch(multipleLoadData(props)),
   };
 };
 

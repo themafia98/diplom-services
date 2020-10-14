@@ -252,7 +252,7 @@ const openTab = ({ uuid, action, depKey = '', data = null, openType = '' }) => a
       return;
     }
 
-    if (!data || (data && _.isEmpty(data))) {
+    if (!data) {
       message.warning('Данные при переходе по ссылке не найдены.');
       return;
     }
