@@ -45,16 +45,16 @@ export const ACCESS_MODULE_MEMBER: Array<AccessConfig> = [
   { name: 'taskModule', access: true, actions: [ACTIONS_ACCESS.VIEW] },
   { name: 'taskModule_myTasks', access: true, actions: [ACTIONS_ACCESS.VIEW, ACTIONS_ACCESS.EDIT] },
   { name: 'taskModule_сalendar', access: true, actions: [ACTIONS_ACCESS.VIEW] },
-  { name: 'taskModule_createTask', access: false, actions: [] },
+  { name: 'taskModule_createTask', access: false, actions: [ACTIONS_ACCESS.CREATE] },
   { name: 'customersModule', access: true, actions: [ACTIONS_ACCESS.VIEW] },
   { name: 'customersModule_contacts', access: false, actions: [ACTIONS_ACCESS.VIEW] },
   { name: 'contactModule', access: true, actions: [ACTIONS_ACCESS.VIEW] },
   { name: 'contactModule_feedback', access: true, actions: [ACTIONS_ACCESS.VIEW] },
-  { name: 'contactModule_createNews', access: true, actions: [] },
+  { name: 'contactModule_createNews', access: false, actions: [] },
   { name: 'contactModule_chat', access: true, actions: [] },
   { name: 'statisticModule', access: false, actions: [ACTIONS_ACCESS.VIEW] },
   { name: 'wikiModule', access: true, actions: [ACTIONS_ACCESS.VIEW, ACTIONS_ACCESS.EDIT] },
-  { name: 'settingsModule', access: false, actions: [ACTIONS_ACCESS.EDIT] },
+  { name: 'settingsModule', access: true, actions: [ACTIONS_ACCESS.READ_VIEW] },
 ];
 
 export const ACCESS_MODULE_GUEST: Array<AccessConfig> = [

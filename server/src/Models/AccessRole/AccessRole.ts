@@ -28,9 +28,16 @@ class AccessRole implements UserRole {
   get menu() {
     return this.menuList.filter((module: MenuConfig) => {
       return this.accessConfig.some((config) => {
-        const isCurrentModule = config.name === module.EUID || config.name === module.PARENT_CODE;
+        const isEqualModule = config.name === module.EUID;
+        const isEqualSubModule = config.name === module.PARENT_CODE;
 
-        return isCurrentModule && config.access;
+        const isAccessCreate =
+          !module.EUID.toUpperCase().includes(ACTIONS_ACCESS.CREATE) ||
+          config.actions.some((action) => action === ACTIONS_ACCESS.CREATE);
+
+        const isCurrentModule = isEqualModule || isEqualSubModule;
+
+        return isCurrentModule && isAccessCreate && config.access;
       });
     });
   }

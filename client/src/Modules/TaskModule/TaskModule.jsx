@@ -182,6 +182,7 @@ class TaskModule extends Component {
           );
           if (res.status !== 200) throw new Error('Bad list');
           const { data: { response: { metadata = 0 } = {}, actions = [] } = {} } = res || {};
+
           const createTaskAvailable = actions.some((it) => it === ACTIONS.CREATE);
 
           if (counter !== metadata)
@@ -191,12 +192,11 @@ class TaskModule extends Component {
               createTaskAvailable,
             });
         } catch (error) {
-          if (error?.response?.status === 404) {
-            this.setState({
-              ...this.state,
-              counter: 1,
-            });
-          } else console.error(error);
+          const { response = {} } = error || {};
+          const { actions = [] } = response?.data || {};
+          const createTaskAvailable = actions.some((it) => it === ACTIONS.CREATE);
+
+          this.setState({ counter: 1, createTaskAvailable });
         }
 
         await onLoadCurrentData({

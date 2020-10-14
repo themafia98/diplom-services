@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState, useMemo, useCallback } from 'react';
+import React, { memo, useEffect, useState, useMemo, useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { cabinetType } from './CabinetModule.types';
 import { Modal, Upload, message, Icon, Button, Spin } from 'antd';
@@ -9,10 +9,11 @@ import StreamBox from 'Components/StreamBox';
 import { findUser, routeParser } from 'Utils';
 import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
 import actionPath from 'actions.path';
+import modelsContext from 'Models/context';
 
 const { Dragger } = Upload;
 
-const CabinetModule = memo(({ path, modelsContext }) => {
+const CabinetModule = memo(({ path }) => {
   const dispatch = useDispatch();
   const [state, setState] = useState({
     modePage: '',
@@ -22,7 +23,8 @@ const CabinetModule = memo(({ path, modelsContext }) => {
     disabled: false,
   });
 
-  const { rest, clientDB } = modelsContext;
+  const { rest, clientDB } = useContext(modelsContext);
+
   const { modePage, imageUrl, visible } = state;
 
   const { udata, currentActionTab, routeDataActive } = useSelector((state) => {

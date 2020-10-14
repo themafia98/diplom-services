@@ -18,7 +18,7 @@ const PanelAdmin = ({ onSaveSettings, statusList: statusConfig }) => {
   const [haveChanges, setChanges] = useState([]);
 
   useEffect(() => {
-    if (settings !== statusList || settings?.length !== statusList?.length) {
+    if (settings?.length !== statusList?.length) {
       setStatusList(settings);
     }
   }, [settings, statusList]);

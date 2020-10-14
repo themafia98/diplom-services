@@ -55,7 +55,7 @@ const NotificationPopup = memo(({ appConfig, notificationDep, udata, type }) => 
       );
 
       if (res.status !== 200 && res.status !== 404) throw new Error('Bad get notification request');
-      debugger;
+
       const { response = {} } = res.data;
       const { metadata = {} } = response;
       const { result = [], count = 0 } = metadata;
