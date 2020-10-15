@@ -14,11 +14,12 @@ namespace News {
   export class NewsController implements ControllerApi<FunctionConstructor> {
     @Post({ path: '/createNews', private: true })
     protected async createNews(req: Request, res: Response): ResRequest {
-      const bodyRequest: BodyLogin = req.body;
+      const body: BodyLogin = req.body;
 
-      const { queryParams = {} } = bodyRequest;
+      const { params: bodyParams = {} } = body as Record<string, any>;
+      const { queryParams = {}, metadata = {} } = bodyParams;
+
       const { actionType = '' } = queryParams as Record<string, string>;
-      const body: ActionParams = bodyRequest.metadata as ActionParams;
 
       const params: Params = {
         methodQuery: actionType,
@@ -27,9 +28,15 @@ namespace News {
         from: 'news',
       };
 
+      const { shouldBeCreate = false } = req as Record<string, any>;
+
+      if (!shouldBeCreate) {
+        params.customErrorMessage = 'Access error for create news';
+      }
+
       const actionNews = new Action.ActionParser({ actionPath: 'news', actionType });
 
-      const responseExec: Function = await actionNews.actionsRunner(body);
+      const responseExec: Function = await actionNews.actionsRunner(shouldBeCreate ? metadata : {});
       return responseExec(req, res, params);
     }
 

@@ -77,7 +77,7 @@ const createEntity = async (
         'POST',
         {
           ...requestTemplate,
-          actionType: 'create_task',
+          actionType: `create_${storeName}`,
           moduleName: customTaskModule || storeName,
           params,
         },

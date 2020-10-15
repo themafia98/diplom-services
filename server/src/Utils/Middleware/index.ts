@@ -9,6 +9,7 @@ import url from 'url';
 import querystring from 'querystring';
 import { Types } from 'mongoose';
 import AccessRole from '../../Models/AccessRole';
+import { ACTIONS_ACCESS } from '../../app.constant';
 
 namespace Middleware {
   const LocalStrategy = passportLocal.Strategy;
@@ -30,6 +31,14 @@ namespace Middleware {
       request.session.availableActions = AccessRole.getAvailableActions(
         request.body.moduleName || '',
         request.session.access,
+      );
+    }
+
+    const { actionType = '' } = req.body || {};
+
+    if ((<string>actionType).toUpperCase().includes(ACTIONS_ACCESS.CREATE) && request.session) {
+      request.shouldBeCreate = request.session.availableActions.some(
+        (it: string) => it === ACTIONS_ACCESS.CREATE,
       );
     }
 

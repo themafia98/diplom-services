@@ -47,10 +47,15 @@ const CreateNews = memo(({ statusApp, udata, onSetStatus, clientDB, readOnly }) 
         },
         metadata: { title: titleNews, content: contentState, key: uuid() },
       };
-      const res = await createEntity('news', body, { clientDB, statusApp, onSetStatus });
-      const { result: { data = {} } = {}, offline = false } = res || {};
-      const { response = {} } = data || {};
-      const { metadata: { _id: id = '', key = '' } = {}, params: { done = false } = {} } = response;
+      const res = await createEntity('news', body, { clientDB, statusApp, onSetStatus }, 0, 'createNews');
+
+      const { result = {}, offline = false } = res || {};
+      const { data = {} } = result;
+      const { response = {} } = data;
+      const { metadata = {}, params = {} } = response;
+
+      const { done = false } = params;
+      const { _id: id = '', key = '' } = metadata;
 
       if (!done && !offline) throw new Error('Bad create news');
 
