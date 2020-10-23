@@ -113,8 +113,10 @@ const errorHook = async (error, dispatch, dep = {}, callback) => {
   } else dispatch(errorRequestAction(error.message));
 };
 
-export default {
+const modulesApi = {
   coreUpdaterDataHook,
   errorHook,
   updateEntityHook,
 };
+
+export default modulesApi;

@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState, useCallback } from 'react';
+import React, { memo, useEffect, useState, useCallback, useMemo } from 'react';
 import { contactsType } from '../CustomersModule.types';
 import TitleModule from 'Components/TitleModule';
 
@@ -17,7 +17,7 @@ const Contacts = memo(({ modelsContext }) => {
   const [data, setData] = useState([]);
   const [isLoadingModule, setLoadingModule] = useState(false);
 
-  const loadedRowsMap = {};
+  const loadedRowsMap = useMemo(() => {}, []);
 
   const fetchData = useCallback(
     async (callback) => {

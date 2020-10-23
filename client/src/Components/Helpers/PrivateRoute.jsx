@@ -44,7 +44,7 @@ const PrivateRoute = ({ component: Component, onLogoutAction, onSetStatus, ...ro
     history.push(history.location.pathname);
   }, [history]);
 
-  const getRouters = useCallback(getRoutersFunc, [rest]);
+  const getRouters = useCallback(getRoutersFunc, [rest, status, onSetStatus]);
 
   const startTimer = useCallback(() => {
     timerRef.current = setInterval(getRouters, 50000);

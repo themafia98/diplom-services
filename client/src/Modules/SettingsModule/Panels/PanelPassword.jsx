@@ -41,7 +41,7 @@ const PanelPassword = ({ onSaveSettings, oldPassword: oldPasswordProps, newPassw
     setReadOnly(true);
   };
 
-  const saveSettings = useCallback(onSaveSettings, [newPassword, oldPassword, onClear]);
+  const saveSettings = useCallback(onSaveSettings, [newPassword, oldPassword, onClear, onSaveSettings]);
 
   const onSubmit = () => {
     if (onSaveSettings)

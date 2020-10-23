@@ -6,7 +6,7 @@ import { BREAKPOINTS, SCALE_FACTORS } from './Tab.constant';
 import { tabType } from '../HeaderView.types';
 
 const Tab = ({ value, active, hendlerTab, itemKey, index, sizeTab }) => {
-  const callbackHendlerTab = useCallback(hendlerTab, []);
+  const callbackHendlerTab = useCallback(hendlerTab, [hendlerTab]);
 
   const eventHandler = (event) => {
     event.stopPropagation();

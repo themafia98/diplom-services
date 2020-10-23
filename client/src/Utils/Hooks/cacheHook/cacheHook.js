@@ -102,4 +102,5 @@ const getterCacheHook = async (dispatch, dep = {}, depActions = {}) => {
   }
 };
 
-export default { cachingHook, getterCacheHook, putterCacheHook };
+const modulesApi = { cachingHook, getterCacheHook, putterCacheHook };
+export default modulesApi;

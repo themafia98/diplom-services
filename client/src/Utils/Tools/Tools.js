@@ -223,7 +223,7 @@ const getValidRouteData = ({ currentRouteData }, { uuid, depRouteDataKey }, stor
   return null;
 };
 
-export default {
+const tools = {
   createNotification,
   createEntity,
   deleteFile,
@@ -235,3 +235,5 @@ export default {
   getValidRouteData,
   findUser,
 };
+
+export default tools;

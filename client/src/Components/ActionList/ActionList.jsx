@@ -16,7 +16,7 @@ const ActionList = ({
   rulesEdit,
   onEdit,
 }) => {
-  const showModal = useCallback(onShowModal, []);
+  const showModal = useCallback(onShowModal, [onShowModal]);
 
   const onAction = useCallback(
     (event, key) => {

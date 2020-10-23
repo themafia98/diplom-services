@@ -104,7 +104,7 @@ const WikiPage = ({ selectedNode, metadata, onChangeWikiPage, udata: { displayNa
     if (onChangeWikiPage) onChangeWikiPage(paramsState, onChangeStateEditor);
   };
 
-  const fetchWikiPage = useCallback(fetchWikiPageMethod, []);
+  const fetchWikiPage = useCallback(fetchWikiPageMethod, [loading, models, nodeMetadata, statusPage]);
 
   useEffect(() => {
     fetchWikiPage();

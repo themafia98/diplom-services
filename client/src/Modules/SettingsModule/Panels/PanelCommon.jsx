@@ -44,7 +44,13 @@ const PanelCommon = ({ emailValue: emailValueProps, telValue: telValueProps, onS
     setReadOnly(true);
   };
 
-  const saveSettings = useCallback(onSaveSettings, [emailValue, telValue, haveChanges, onClear]);
+  const saveSettings = useCallback(onSaveSettings, [
+    emailValue,
+    telValue,
+    haveChanges,
+    onClear,
+    onSaveSettings,
+  ]);
 
   const onSubmit = () => {
     if (onSaveSettings)

@@ -31,7 +31,7 @@ const PanelProfile = ({ onSaveSettings, isHideEmail: isHideEmailProps, isHidePho
     setReadOnly(true);
   };
 
-  const saveSettings = useCallback(onSaveSettings, [isHideEmail, isHidePhone, onClear]);
+  const saveSettings = useCallback(onSaveSettings, [isHideEmail, isHidePhone, onClear, onSaveSettings]);
 
   const onSubmit = () => {
     if (onSaveSettings)

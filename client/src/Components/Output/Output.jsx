@@ -220,32 +220,31 @@ const Output = memo(
       ],
     );
 
-    if (type === 'table') return renderTableOutput(children);
     const shouldRenderList = links || isStaticList;
-
-    if (shouldRenderList && isChildrenList && links && typeof children === 'string') {
-      return renderLinks(links.find((link) => link?._id === children));
-    }
+    const shouldBeRunRenderLinks =
+      shouldRenderList && isChildrenList && links && typeof children === 'string';
 
     const value = useMemo(
       () =>
-        renderLinks(
-          !isStaticList && Array.isArray(links)
-            ? links
-                .reduce((links, link) => {
-                  if (children.some((child) => child === link?._id)) {
-                    return [...links, { displayValue: link?.displayName, id: link?._id }];
-                  }
-                  return links;
-                }, [])
-                .sort((a, b) => a?.displayName - b?.displayName)
-            : isChildrenList
-            ? children.map((link) => {
-                return { displayValue: link?.displayName, id: link?._id };
-              })
-            : children,
-        ),
-      [children, isChildrenList, isStaticList, links, renderLinks],
+        shouldBeRunRenderLinks
+          ? null
+          : renderLinks(
+              !isStaticList && Array.isArray(links)
+                ? links
+                    .reduce((links, link) => {
+                      if (children.some((child) => child === link?._id)) {
+                        return [...links, { displayValue: link?.displayName, id: link?._id }];
+                      }
+                      return links;
+                    }, [])
+                    .sort((a, b) => a?.displayName - b?.displayName)
+                : isChildrenList
+                ? children.map((link) => {
+                    return { displayValue: link?.displayName, id: link?._id };
+                  })
+                : children,
+            ),
+      [children, isChildrenList, isStaticList, links, renderLinks, shouldBeRunRenderLinks],
     );
 
     const output = useMemo(
@@ -281,6 +280,12 @@ const Output = memo(
         value,
       ],
     );
+
+    if (type === 'table') return renderTableOutput(children);
+
+    if (shouldBeRunRenderLinks) {
+      return renderLinks(links.find((link) => link?._id === children));
+    }
 
     if (!showTooltip) return output;
     else
