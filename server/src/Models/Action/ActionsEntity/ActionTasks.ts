@@ -1,5 +1,5 @@
 import { Model, Document, Types, isValidObjectId } from 'mongoose';
-import { ActionParams, Actions, Action, TicketRemote } from '../../../Utils/Interfaces';
+import { ActionParams, Actions, Action, TicketRemote, QueryParams } from '../../../Utils/Interfaces';
 import { ParserData, Pagination } from '../../../Utils/Types';
 import Utils from '../../../Utils';
 import _ from 'lodash';
@@ -62,7 +62,8 @@ class ActionTasks implements Action {
   }
 
   private async getTasks(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
-    const { queryParams, limitList = 20, saveData = {}, filterCounter = '' } = actionParam || {};
+    const { queryParams = null, limitList = 20, saveData = {}, filterCounter = '' } = actionParam;
+
     const _id: ObjectID | string =
       filterCounter && isValidObjectId(filterCounter) ? Types.ObjectId(filterCounter as string) : '';
 
@@ -72,18 +73,24 @@ class ActionTasks implements Action {
     } = saveData as Record<string, any>;
     const pagination: Pagination = initialPagination ? initialPagination : nextPagination;
 
-    const params: ActionParams =
-      _.isEmpty(queryParams) || !(queryParams as Record<string, string[]>).keys
-        ? {}
-        : (queryParams as ActionParams);
-    const { keys = [] } = (queryParams as Record<string, string[]>) || {};
-    const parsedKeys: Array<Types.ObjectId> = Array.isArray(keys)
-      ? keys.reduce((keysList: Array<Types.ObjectId>, key: string) => {
-          if (key && isValidObjectId(key)) return [...keysList, Types.ObjectId(key)];
+    let params: QueryParams = {};
+    const isEmpty = actionParam.queryParams && _.isEmpty(actionParam.queryParams);
 
-          return keysList;
-        }, [])
-      : keys;
+    if (!(isEmpty || (queryParams && !(<QueryParams>queryParams).keys))) {
+      params = queryParams as QueryParams;
+    }
+
+    const { keys = [] } = queryParams as Record<string, Array<string>>;
+
+    let parsedKeys: Array<Types.ObjectId | string> = keys;
+
+    if (Array.isArray(keys)) {
+      parsedKeys = keys.reduce((keysList: Array<Types.ObjectId>, key: string) => {
+        if (key && isValidObjectId(key)) return [...keysList, Types.ObjectId(key)];
+
+        return keysList;
+      }, []);
+    }
 
     const filter: Record<string, Array<object>> = getFilterQuery(
       actionParam,
@@ -97,7 +104,7 @@ class ActionTasks implements Action {
       filter,
     };
 
-    const paramsList: ActionParams = _.isEmpty(params) ? { ...params, ...filter } : query;
+    const paramsList: ActionParams = _.isEmpty(params) ? filter : query;
 
     const isPagerParams = pagination && pagination.current && pagination.pageSize;
     const skip: number = isPagerParams && limitList ? (pagination.current - 1) * pagination.pageSize : 0;
@@ -120,13 +127,13 @@ class ActionTasks implements Action {
   }
 
   private async getStats(model: Model<Document>, actionParam: ActionParams): Promise<ParserData> {
-    const { queryParams = {} } = actionParam as Record<string, object>;
+    const { queryParams = {} } = actionParam as Record<string, QueryParams>;
     const { type = '', todayISO = '', limitList = '', queryType = '' } = actionParam as Record<
       string,
       string
     >;
 
-    const { statsListFields = [] } = (queryParams as Record<string, Array<string>>) || {};
+    const { statsListFields = [] } = queryParams || {};
     const dateQuery: object =
       todayISO && queryType !== 'full'
         ? { createdAt: { $gte: new Date(todayISO) } }

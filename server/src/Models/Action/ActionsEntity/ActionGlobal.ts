@@ -1,4 +1,4 @@
-import { ActionParams, Actions, Action } from '../../../Utils/Interfaces';
+import { ActionParams, Actions, Action, QueryParams } from '../../../Utils/Interfaces';
 import path from 'path';
 import { ParserData } from '../../../Utils/Types';
 import { files } from 'dropbox';
@@ -12,11 +12,11 @@ class ActionGlobal implements Action {
   }
 
   private async loadFiles(actionParam: ActionParams): Promise<ParserData> {
-    const {
-      body: { queryParams = {} },
-    } = actionParam as Record<string, any>;
+    const { body = {} } = actionParam as Record<string, object>;
 
-    const entityId: string = (queryParams as Record<string, string>).entityId;
+    const { queryParams = {} } = body as Record<string, QueryParams>;
+    const { entityId } = queryParams;
+
     const moduleName: string = (actionParam as Record<string, string>).moduleName;
 
     const pathFile: string = `/${moduleName}/${entityId}/`;
@@ -25,10 +25,13 @@ class ActionGlobal implements Action {
   }
 
   private async deleteFile(actionParam: ActionParams): Promise<ParserData> {
-    const { body: { queryParams = {} } = {}, store = '' } = actionParam as Record<string, any>;
+    const { body = {}, store = '' } = actionParam as Record<string, object | string>;
 
-    const file: object = (queryParams as Record<string, any>).file;
-    const url: string = (file as Record<string, string>).url || '';
+    const { queryParams = {} } = body as Record<string, QueryParams>;
+
+    const { file = {} } = queryParams;
+
+    const url: string = file.url || '';
 
     const pathFile: string = `${store}${url.split('download')[1]}` || '';
 

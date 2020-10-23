@@ -1,6 +1,6 @@
 import { Response, Request } from 'express';
 import _ from 'lodash';
-import { Params, ActionParams, Controller as ControllerApi } from '../../Utils/Interfaces';
+import { Params, ActionParams, Controller as ControllerApi, QueryParams } from '../../Utils/Interfaces';
 import { ResRequest } from '../../Utils/Types';
 
 import Action from '../../Models/Action';
@@ -21,7 +21,7 @@ namespace Settings {
       };
 
       const body: Record<string, object> = req.body;
-      const { queryParams } = body;
+      const { queryParams } = body as Record<string, QueryParams>;
 
       const changePasswordAction = new Action.ActionParser({
         actionPath: 'users',
@@ -48,8 +48,8 @@ namespace Settings {
       };
 
       const body: Record<string, object> = req.body;
-      const { params: queryParams = {} } = body as Record<string, object>;
-      const { items = [], query = '' } = queryParams as Record<string, Array<object>>;
+      const { params: queryParams = {} } = body as Record<string, QueryParams>;
+      const { items = [], query = '' } = queryParams;
 
       const changeStatusList = new Action.ActionParser({
         actionPath: 'settings',
@@ -71,7 +71,7 @@ namespace Settings {
         status: 'OK',
       };
 
-      const body: Record<string, object> = req.body;
+      const body: Record<string, QueryParams> = req.body;
       const { queryParams } = body;
 
       const changeCommonAction = new Action.ActionParser({
@@ -94,7 +94,7 @@ namespace Settings {
         status: 'OK',
       };
 
-      const body: Record<string, object> = req.body;
+      const body: Record<string, QueryParams> = req.body;
       const { queryParams } = body;
 
       const changeProfileAction = new Action.ActionParser({

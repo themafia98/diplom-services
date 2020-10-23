@@ -3,7 +3,15 @@ import _ from 'lodash';
 import passport from 'passport';
 import { UserModel } from '../Models/Database/Schema';
 import { ResRequest, ParserResult } from '../Utils/Types';
-import { Request, App, BodyLogin, Mail, User, Controller as ControllerApi } from '../Utils/Interfaces';
+import {
+  Request,
+  App,
+  BodyLogin,
+  Mail,
+  User,
+  Controller as ControllerApi,
+  QueryParams,
+} from '../Utils/Interfaces';
 import Action from '../Models/Action';
 import Decorators from '../Decorators';
 import { SentMessageInfo } from 'nodemailer';
@@ -152,8 +160,8 @@ namespace General {
         const { mailer } = server.locals;
         const body: BodyLogin = req.body;
 
-        const { queryParams = {} } = body as Record<string, string>;
-        const { mailBody = '', themeMail = '', to = '' } = (queryParams as Record<string, string>) || {};
+        const { queryParams = {} } = body;
+        const { mailBody = '', themeMail = '', to = '' } = queryParams as QueryParams;
 
         if (!mailBody || !to) {
           throw new Error('Invalid mail data');

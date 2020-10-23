@@ -56,6 +56,21 @@ export type MessageOptions = {
   membersIds: Array<string>;
 };
 
+export type SocketMeta = {
+  socketConnection: boolean;
+  module: string;
+  tokenRoom?: string;
+  uid?: string;
+  updateField?: string | object;
+};
+
+export type SocketMessage = {
+  authorId: string;
+  moduleName: string;
+  tokenRoom: string;
+  groupName: string;
+};
+
 export type DeleteEntitiyParams = {
   ids?: Array<string>;
   updateProps?: object;
@@ -117,3 +132,5 @@ export type transOptions = {
   host?: string;
   port?: number;
 };
+
+export type expressFile = Express.Multer.File[] | Express.Multer.File;

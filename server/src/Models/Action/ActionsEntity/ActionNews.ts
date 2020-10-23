@@ -1,5 +1,5 @@
 import { Model, Document, Types } from 'mongoose';
-import { ActionParams, Actions, Action } from '../../../Utils/Interfaces';
+import { ActionParams, Actions, Action, QueryParams } from '../../../Utils/Interfaces';
 import { ParserData } from '../../../Utils/Types';
 import Utils from '../../../Utils';
 import _ from 'lodash';
@@ -14,13 +14,12 @@ class ActionNews implements Action {
   }
 
   private getNews(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
-    const { queryParams, limitList = null } = actionParam || {};
-    const { keys = [] } = (queryParams as Record<string, string[]>) || {};
+    const { queryParams, limitList = null } = (actionParam as Record<string, QueryParams>) || {};
+    const { keys = [] } = queryParams || {};
+
     const params: ActionParams =
-      _.isEmpty(queryParams) || !(queryParams as Record<string, string[]>).keys
-        ? {}
-        : (queryParams as ActionParams);
-    const parsedKeys: Array<ObjectId> = keys.map((id) => Types.ObjectId(id));
+      _.isEmpty(queryParams) || !queryParams.keys ? {} : (queryParams as ActionParams);
+    const parsedKeys: Array<ObjectId> = (<Array<string>>keys).map((id) => Types.ObjectId(id));
     const query = {
       where: '_id',
       in: parsedKeys,

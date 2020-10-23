@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 
 import Decorators from '../../../Decorators';
 import Action from '../../../Models/Action';
-import { Controller as ControllerApi } from '../../../Utils/Interfaces';
+import { Controller as ControllerApi, QueryParams } from '../../../Utils/Interfaces';
 
 namespace Chat {
   const Post = Decorators.Post;
@@ -19,7 +19,7 @@ namespace Chat {
     const actionType: string = 'create_FakeRoom';
 
     const actionCreateRoom = new Action.ActionParser({ actionPath, actionType });
-    const queryParams = { fakeMsg, interlocutorId };
+    const queryParams: QueryParams = { fakeMsg, interlocutorId };
     const data: ParserResult = await actionCreateRoom.actionsRunner(queryParams);
 
     return data;

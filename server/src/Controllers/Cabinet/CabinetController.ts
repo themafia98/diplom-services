@@ -36,7 +36,7 @@ namespace Cabinet {
         actionType: 'update_single',
       });
 
-      const body = { queryParams: { uid }, updateItem: { avatar: dataUrl } };
+      const body: ActionParams = { queryParams: { uid }, updateItem: { avatar: dataUrl } };
       const responseExec: Function = await updateAvatarAction.actionsRunner(body);
       return responseExec(req, res, params);
     }

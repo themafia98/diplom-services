@@ -1,5 +1,5 @@
 import { Model, Document, Types, isValidObjectId } from 'mongoose';
-import { ActionParams, Actions, Action } from '../../../Utils/Interfaces';
+import { ActionParams, Actions, Action, QueryParams } from '../../../Utils/Interfaces';
 import { ParserData } from '../../../Utils/Types';
 import Utils from '../../../Utils';
 import _ from 'lodash';
@@ -33,7 +33,7 @@ class ActionWiki implements Action {
   }
 
   private async deleteLeafs(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
-    const { queryParams = null } = (actionParam as Record<string, object>) || {};
+    const { queryParams = null } = (actionParam as Record<string, QueryParams>) || {};
 
     if (!queryParams || (queryParams && _.isEmpty(queryParams))) return null;
     const { ids = [] } = (queryParams as Record<string, string[]>) || {};
@@ -100,7 +100,7 @@ class ActionWiki implements Action {
   private async update(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     try {
       const { queryParams = {}, updateItem: updateItemDirty = {} } = actionParam as Record<string, object>;
-      const { pageId: pageIdDirty = '' } = queryParams as Record<string, string>;
+      const { pageId: pageIdDirty = '' } = queryParams as QueryParams;
 
       const isVirtual = pageIdDirty.includes('virtual');
 

@@ -1,6 +1,6 @@
 import Utils from '../../../Utils';
 import { Model, Document } from 'mongoose';
-import { ActionParams, Actions, Action } from '../../../Utils/Interfaces';
+import { ActionParams, Actions, Action, QueryParams } from '../../../Utils/Interfaces';
 import { ParserData } from '../../../Utils/Types';
 import _ from 'lodash';
 
@@ -79,7 +79,7 @@ class ActionNotification implements Action {
   private async updateMany(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const { params = {} } = actionParam;
     const { options = {} } = params as Record<string, object>;
-    const queryParams = { queryType: 'many', actionParam: options };
+    const queryParams: QueryParams = { queryType: 'many', actionParam: options };
 
     const result = await this.getEntity().updateEntity(model, queryParams);
     return result;

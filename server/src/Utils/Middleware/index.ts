@@ -53,16 +53,8 @@ namespace Middleware {
 
   export const catchError = (err: Error, req: Request, res: Response, next: NextFunction): void => {
     // set locals, only providing error in development
-    const today: Readonly<Date> = new Date();
-    const time: Readonly<string> = today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds();
-    const day: Readonly<string> = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-    console.error(err.name);
-    console.log(`time: ${time}, day: ${day}.`);
-    if (!err.name) {
-      return void next();
-    }
+    console.error(err);
 
-    console.error(err.name);
     next();
   };
 

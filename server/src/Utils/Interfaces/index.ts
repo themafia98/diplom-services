@@ -11,6 +11,9 @@ import {
   OptionsUpdate,
   MenuConfig,
   Role,
+  SocketMeta,
+  SocketMessage,
+  expressFile,
 } from '../Types';
 import socketio from 'socket.io';
 import mongoose, { Mongoose, Connection, Model, Document, FilterQuery } from 'mongoose';
@@ -31,6 +34,39 @@ export interface ActionsAccess {
 
 export interface JsonConfig {
   menu: MenuConfig[];
+}
+
+export interface QueryParams {
+  actionType?: string;
+  // mail params
+  mailBody?: string;
+  themeMail?: string;
+  to?: string;
+  // other
+  uid?: string | ObjectId;
+  // chat params
+  fakeMsg?: Record<string, string | object>;
+  interlocutorId?: string | ObjectId;
+  // settings
+  items?: object[];
+  query?: string;
+  // tasks
+  keys?: string | Array<string | number>;
+  statsListFields?: Array<string>;
+  // files
+  entityId?: string;
+  file?: Record<string, string>;
+  // users
+  oldPassword?: string;
+  newPassword?: string;
+  isHidePhone?: boolean | null;
+  isHideEmail?: boolean | null;
+  newEmail?: string;
+  newPhone?: string;
+  // some requests
+  queryType?: 'many';
+  actionParam?: object;
+  pageId?: string;
 }
 
 export interface AccessConfig {
@@ -156,7 +192,7 @@ export interface MetadataMongo extends Metadata {
 }
 
 export interface ActionParams {
-  [key: string]: boolean | number | string | Date | object | Express.Multer.File[] | Express.Multer.File;
+  [key: string]: Meta | boolean | SocketMeta | SocketMessage | expressFile;
 }
 
 export interface ResponseDocument {
@@ -352,14 +388,14 @@ export interface EntityActionApi {
 
 export interface Action {
   getEntity(): Actions;
-  run(actionParam: ActionParams): Promise<ParserData>;
+  run(actionParam: ActionParams | Meta): Promise<ParserData>;
 }
 
 export interface Actions extends EntityActionApi {
   getCounter(model: Model<Document>, query: FilterQuery<any>, options?: object): Promise<number>;
   getAll(
     model: Model<Document>,
-    actionParam: ActionParams,
+    actionParam: ActionParams | QueryParams,
     limit?: limiter,
     skip?: number,
     sortType?: string,
@@ -367,7 +403,11 @@ export interface Actions extends EntityActionApi {
   getFilterData(model: Model<Document>, filter: object, sort?: string): Promise<ParserData>;
   createEntity(model: Model<Document>, item: object): Promise<ParserData>;
   deleteEntity(model: Model<Document>, query: ActionParams): Promise<ParserData>;
-  updateEntity(model: Model<Document>, query: ActionParams, options?: OptionsUpdate): Promise<ParserData>;
+  updateEntity(
+    model: Model<Document>,
+    query: ActionParams | QueryParams,
+    options?: OptionsUpdate,
+  ): Promise<ParserData>;
   findOnce(model: Model<Document>, actionParam: ActionParams): Promise<ParserData>;
   actionsRunner(
     this: Actions,

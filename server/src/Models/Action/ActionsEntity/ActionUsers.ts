@@ -1,7 +1,7 @@
 import generator from 'generate-password';
 import _ from 'lodash';
 import { Model, Document, Types } from 'mongoose';
-import { ActionParams, Actions, Action, User } from '../../../Utils/Interfaces';
+import { ActionParams, Actions, Action, User, QueryParams } from '../../../Utils/Interfaces';
 import { ParserData } from '../../../Utils/Types';
 import Utils from '../../../Utils';
 
@@ -56,11 +56,11 @@ class ActionUsers implements Action {
   }
 
   private async changePassword(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
-    const { queryParams = {} } = actionParam as Record<string, any>;
+    const { queryParams = {} } = actionParam as Record<string, QueryParams>;
     const { oldPassword = '', newPassword = '', uid = '' } = queryParams || {};
 
     const checkProps = {
-      _id: Types.ObjectId(uid),
+      _id: Types.ObjectId(uid as string),
     };
 
     const result: ParserData = await this.getEntity().findOnce(model, {
@@ -96,14 +96,14 @@ class ActionUsers implements Action {
   }
 
   private async updateProfileChanges(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
-    const { queryParams = {} } = actionParam as Record<string, any>;
+    const { queryParams = {} } = actionParam as Record<string, QueryParams>;
     const { isHidePhone = null, isHideEmail = null, uid = '' } = queryParams || {};
 
     if (!uid || [isHidePhone, isHideEmail].every((type) => type === null)) {
       return null;
     }
 
-    const _id = Types.ObjectId(uid);
+    const _id = Types.ObjectId(uid as string);
     if (!_id) {
       console.error('Invalid user id');
       return null;
@@ -122,7 +122,7 @@ class ActionUsers implements Action {
   }
 
   private async updateCommonChanges(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
-    const { queryParams = {} } = actionParam as Record<string, any>;
+    const { queryParams = {} } = actionParam as Record<string, QueryParams>;
     const { newEmail = '', newPhone = '', uid = '' } = queryParams || {};
 
     if (!uid || (!newEmail && !newPhone)) {
@@ -130,7 +130,7 @@ class ActionUsers implements Action {
     }
 
     const checkProps = {
-      _id: Types.ObjectId(uid),
+      _id: Types.ObjectId(uid as string),
     };
 
     const result: ParserData = await this.getEntity().findOnce(model, {
@@ -144,8 +144,8 @@ class ActionUsers implements Action {
 
     const { _id: id } = (result as Record<string, string>) || {};
     const _id = Types.ObjectId(id);
-    const email: string = newEmail || null;
-    const phone: string = newPhone || null;
+    const email: string | null = newEmail || null;
+    const phone: string | null = newPhone || null;
 
     const updateProps: Record<string, string> = {};
 

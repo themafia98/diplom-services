@@ -1,6 +1,12 @@
 import { NextFunction, Response, Request } from 'express';
-import { Params, ActionParams, Controller as ControllerApi, BodyLogin } from '../../../Utils/Interfaces';
-import { ResRequest } from '../../../Utils/Types';
+import {
+  ActionParams,
+  Controller as ControllerApi,
+  BodyLogin,
+  Params,
+  QueryParams,
+} from '../../../Utils/Interfaces';
+import { Meta, ResRequest } from '../../../Utils/Types';
 
 import Decorators from '../../../Decorators';
 import Action from '../../../Models/Action';
@@ -16,10 +22,10 @@ namespace News {
     protected async createNews(req: Request, res: Response): ResRequest {
       const body: BodyLogin = req.body;
 
-      const { params: bodyParams = {} } = body as Record<string, any>;
+      const { params: bodyParams = {} } = body as Record<string, ActionParams>;
       const { queryParams = {}, metadata = {} } = bodyParams;
 
-      const { actionType = '' } = queryParams as Record<string, string>;
+      const { actionType = '' } = queryParams as QueryParams;
 
       const params: Params = {
         methodQuery: actionType,
@@ -36,7 +42,7 @@ namespace News {
 
       const actionNews = new Action.ActionParser({ actionPath: 'news', actionType });
 
-      const responseExec: Function = await actionNews.actionsRunner(shouldBeCreate ? metadata : {});
+      const responseExec: Function = await actionNews.actionsRunner(shouldBeCreate ? <Meta>metadata : {});
       return responseExec(req, res, params);
     }
 

@@ -1,6 +1,6 @@
 import Utils from '../../../Utils';
 import { Model, Document } from 'mongoose';
-import { ActionParams, Actions, Action } from '../../../Utils/Interfaces';
+import { ActionParams, Actions, Action, QueryParams } from '../../../Utils/Interfaces';
 import { ParserData } from '../../../Utils/Types';
 
 const { getModelByName } = Utils;
@@ -13,8 +13,8 @@ class ActionLogger implements Action {
   }
 
   private async getUserSettingsLog(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
-    const { queryParams = {} } = actionParam;
-    return this.getEntity().getAll(model, queryParams as Record<string, any>);
+    const { queryParams = {} } = actionParam as Record<string, QueryParams>;
+    return this.getEntity().getAll(model, queryParams);
   }
 
   private async saveUserSettingsLog(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {

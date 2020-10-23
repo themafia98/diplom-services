@@ -122,7 +122,7 @@ namespace ActionApi {
     public async deleteEntity(model: Model<Document>, query: ActionParams): Promise<ParserData> {
       try {
         const { multiple = false, mode = '$pullAll', findBy, queryParams = {} } = query;
-        const { uid = '', updateField = '', ids = [] } = (queryParams as DeleteEntitiyParams) || {};
+        const { uid = '', updateField = '', ids = [] } = queryParams as DeleteEntitiyParams;
 
         const isPull = mode === '$pullAll';
         let actionData: Document | null = null;
@@ -241,7 +241,7 @@ namespace ActionApi {
       }
     }
 
-    public async runSyncClient(actionParam: ActionParams): Promise<ParserData> {
+    public async runSyncClient(actionParam: ActionParams | Meta): Promise<ParserData> {
       const { syncList = [] } = actionParam as Record<string, Array<object>>;
 
       for await (let syncItem of syncList) {
@@ -269,7 +269,7 @@ namespace ActionApi {
       return [{ syncDone: true }];
     }
 
-    private async actionExec(actionParam: ActionParams): Promise<ParserData> {
+    private async actionExec(actionParam: ActionParams | Meta): Promise<ParserData> {
       if (this.getActionType() === 'sync') {
         return await this.runSyncClient(actionParam);
       }
@@ -336,7 +336,11 @@ namespace ActionApi {
       }
     }
 
-    public async actionsRunner(actionParam: ActionParams = {}, mode?: string, queryString?: ParsedUrlQuery) {
+    public async actionsRunner(
+      actionParam: ActionParams | Meta = {},
+      mode?: string,
+      queryString?: ParsedUrlQuery,
+    ) {
       const connect = await this.getDbm()
         .connection()
         .catch((err: Error) => console.error(err));
@@ -351,7 +355,7 @@ namespace ActionApi {
           if (this.getActionType() === 'download_files' && actionResult) {
             const file: files.GetTemporaryLinkResult = actionResult as files.GetTemporaryLinkResult;
             const { link = '' } = file;
-            const { filename = '' } = actionParam;
+            const { filename = '' } = actionParam as ActionParams;
             const mimetype = mime.getType(filename as string);
 
             res.setHeader('Content-disposition', 'attachment; filename=' + filename);

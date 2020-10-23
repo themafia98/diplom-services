@@ -1,7 +1,7 @@
 import { Model, Document, Types, isValidObjectId } from 'mongoose';
 import { v4 as uuid } from 'uuid';
 import { ActionParams, Actions, Action } from '../../../Utils/Interfaces';
-import { ParserData } from '../../../Utils/Types';
+import { ParserData, SocketMeta, SocketMessage } from '../../../Utils/Types';
 import Utils from '../../../Utils';
 const { getModelByName, checkEntity } = Utils;
 
@@ -13,14 +13,14 @@ class ActionChatRoom implements Action {
   }
 
   private async getEntrypointData(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
-    const { uid: uidDirty = '', socket = {} } = (actionParam as Record<string, string | object>) || {};
+    const { uid: uidDirty = '', socket = {} } = actionParam;
     const uid: Types.ObjectId | null = isValidObjectId(uidDirty as string)
       ? Types.ObjectId(uidDirty as string)
       : null;
 
     if (!uid) return null;
 
-    const { socketConnection = false, module: moduleName = '' } = socket as Record<string, boolean | string>;
+    const { socketConnection = false, module: moduleName = '' } = socket as Record<string, SocketMeta>;
     const query: ActionParams = { moduleName, membersIds: { $in: [uid] } };
 
     if (socketConnection && moduleName) return this.getEntity().getAll(model, query);
@@ -29,7 +29,7 @@ class ActionChatRoom implements Action {
   }
 
   private getUpdateRooms(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
-    const { tokenRoom = '', moduleName = '' } = (actionParam as Record<string, any>) || {};
+    const { tokenRoom = '', moduleName = '' } = actionParam as Record<string, SocketMeta>;
 
     const query: ActionParams = { tokenRoom, moduleName };
 
@@ -54,7 +54,7 @@ class ActionChatRoom implements Action {
   }
 
   private async leaveRoom(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
-    const { uid = '', roomToken = '', updateField = '' } = actionParam as Record<string, string>;
+    const { uid = '', roomToken = '', updateField = '' } = actionParam as Record<string, SocketMeta>;
     const query = { findBy: roomToken, uid, updateField };
     const actionData: ParserData = await this.getEntity().deleteEntity(model, query);
     return actionData as Document | null;
@@ -62,9 +62,9 @@ class ActionChatRoom implements Action {
 
   private async roomGenerator(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const modelMsg: Model<Document> | null = getModelByName('chatMsg', 'chatMsg');
-    const { fakeMsg: msg } = (actionParam as Record<string, Record<string, any>>) || {};
+    const { fakeMsg: msg } = actionParam as Record<string, SocketMessage>;
     const { interlocutorId: interlocutorIdDirty = '' } = actionParam as Record<string, string>;
-    const { authorId: authorIdDirty = '', moduleName = '', tokenRoom = '', groupName = '' } = msg || {};
+    const { authorId: authorIdDirty = '', moduleName = '', tokenRoom = '', groupName = '' } = msg;
 
     const interlocutorId: Types.ObjectId | null = isValidObjectId(interlocutorIdDirty)
       ? Types.ObjectId(interlocutorIdDirty)

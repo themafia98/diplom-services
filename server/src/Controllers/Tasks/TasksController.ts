@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import _ from 'lodash';
-import { Params, ActionParams, BodyLogin } from '../../Utils/Interfaces';
+import { Params, ActionParams, BodyLogin, QueryParams } from '../../Utils/Interfaces';
 import { ResRequest } from '../../Utils/Types';
 import Action from '../../Models/Action';
 import Decorators from '../../Decorators';
@@ -28,7 +28,7 @@ namespace Tasks {
       } = req.body || {};
       const { itemId = '' } = options;
 
-      const queryParams: Record<string, any> = {};
+      const queryParams: QueryParams = {};
 
       if (keys) queryParams.keys = keys;
       else if (itemId) queryParams.keys = [itemId];
