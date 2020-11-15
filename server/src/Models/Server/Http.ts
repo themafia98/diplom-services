@@ -127,7 +127,7 @@ namespace Http {
       this.getRest().use(limiter);
       this.getRest().use('/tasks/regTicket', regTicketLimitter);
 
-      Instanse.ws.startSocketConnection(socketio(server));
+      Instanse.ws.startSocketConnection(new socketio.Server(server));
       wsEvents(Instanse.ws, Instanse.dbm, server); /** chat */
 
       Utils.initControllers(

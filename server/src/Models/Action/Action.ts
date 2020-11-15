@@ -251,10 +251,24 @@ namespace ActionApi {
 
         if (!model) continue;
         for await (let updateProps of items) {
-          const copy: { _id: string } = { ...updateProps } as { _id: string };
+          let copy = { ...updateProps };
+
           const { _id = null, key = '' } = (updateProps as Record<string, string>) || {};
+
           const validId: any = typeof _id === 'string' ? Types.ObjectId(_id) : null;
-          if (!validId) delete copy._id;
+
+          if (!validId) {
+            copy = Object.keys(copy).reduce((acc, key: string) => {
+              if (key === '_id') return acc;
+
+              const { [key]: item } = copy as Record<string, string | number | boolean>;
+
+              return {
+                ...acc,
+                [key]: item,
+              };
+            }, {});
+          }
 
           const query: ActionParams = {
             updateProps: copy,
