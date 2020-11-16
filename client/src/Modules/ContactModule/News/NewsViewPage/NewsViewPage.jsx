@@ -1,13 +1,26 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { newsViewType } from '../../ContactModule.types';
-import { v4 as uuid } from 'uuid';
-
 import TitleModule from 'Components/TitleModule';
 import Textarea from 'Components/Textarea';
+import { Spin } from 'antd';
+import classes from './newsViewPage.module.scss';
 
-const NewsViewPage = ({ id: _id, listdata }) => {
+const NewsViewPage = ({ id: newsId, listdata, _id: preloadId, entityId, onLoadingData }) => {
   const { content: contentEntity = {}, title = '' } = listdata || {};
-  const [id] = useState(_id);
+  const [id, setId] = useState(newsId);
+
+  useEffect(() => {
+    if (entityId && newsId === null) {
+      setId(entityId);
+      return;
+    }
+
+    if (entityId || preloadId || !onLoadingData) {
+      return;
+    }
+
+    onLoadingData();
+  }, [preloadId, onLoadingData, entityId, newsId]);
 
   const contentState = useMemo(() => {
     const content = Object.keys(contentEntity).reduce((data, key) => {
@@ -34,6 +47,10 @@ const NewsViewPage = ({ id: _id, listdata }) => {
 
   if (!contentEntity && (contentEntity?.blocks || contentEntity?.entityMap)) return null;
 
+  if (!(entityId || preloadId || !onLoadingData)) {
+    return <Spin size="large" tip="Загрузка новости" className={classes.spin} />;
+  }
+
   return (
     <article className="newsView-page">
       <TitleModule classNameTitle="tittle_contactModule_pageNews" title={title ? title : `Новость № ${id}`} />
@@ -48,7 +65,7 @@ NewsViewPage.defaultProps = {
   isBackground: false,
   content: null,
   title: '',
-  id: uuid(),
+  id: null,
 };
 NewsViewPage.propTypes = newsViewType;
 export default NewsViewPage;

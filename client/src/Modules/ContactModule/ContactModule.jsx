@@ -5,7 +5,7 @@ import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
 import entityRender from 'Utils/Tools/entityRender';
 import withRouter from 'Components/Helpers/withRouter';
 import types from 'types.modules';
-import { oneOfType } from 'Utils';
+import { oneOfType, routeParser } from 'Utils';
 import { compose } from 'redux';
 import { withClientDb } from 'Models/ClientSideDatabase';
 import actionPath from 'actions.path';
@@ -25,19 +25,6 @@ const ContactModule = memo(
 
     const [isLoading, setLoading] = useState(false);
 
-    useEffect(() => {
-      if (path === 'contactModule_feedback' && type === types.$sub_entrypoint_module) {
-        dispatch(
-          loadCurrentData({
-            action: actionPath.$LOAD_NEWS,
-            path,
-            optionsForParse: { noCorsClient: false },
-            clientDB,
-          }),
-        );
-      }
-    }, [clientDB, dispatch, path, type]);
-
     const onLoadingData = useCallback(async () => {
       dispatch(
         loadCurrentData({
@@ -48,6 +35,12 @@ const ContactModule = memo(
         }),
       );
     }, [clientDB, dispatch, path]);
+
+    useEffect(() => {
+      if (path === 'contactModule_feedback' && type === types.$sub_entrypoint_module) {
+        onLoadingData();
+      }
+    }, [type, path, onLoadingData]);
 
     useEffect(() => {
       const shouldUpdateList = routeData[path] && routeData[path]?.shouldUpdate;
@@ -63,7 +56,6 @@ const ContactModule = memo(
 
       setLoading(true);
       onLoadingData();
-      setLoading(false);
     }, [clientDB, isLoading, onLoadingData, path, routeData, shouldUpdate, type]);
 
     const checkBackground = useCallback(
@@ -78,6 +70,13 @@ const ContactModule = memo(
       const { load = false, news = [] } = routeData[path] || {};
 
       const isVisibleChatModal = visibilityPortal && path !== 'contactModule_chat';
+      const enitityId = routeParser({ pageType: 'moduleItem', path }).itemId;
+
+      let normalizeData = data;
+
+      if (news.length && routeData?.[enitityId]) {
+        normalizeData = news.find((it) => it._id === enitityId) || data;
+      }
 
       const subTabProps = {
         isPortal: visibilityPortal,
@@ -85,12 +84,13 @@ const ContactModule = memo(
         isTab: path === 'contactModule_chat',
         webSocket: webSocket,
         type: isVisibleChatModal ? 'modal' : type,
-        data,
+        data: normalizeData,
         isLoading: !load && !news.length,
         path,
         udata,
         statusApp,
         router,
+        onLoadingData,
       };
 
       const config = {
@@ -122,6 +122,7 @@ const ContactModule = memo(
       udata,
       visibilityPortal,
       webSocket,
+      onLoadingData,
     ]);
 
     return (

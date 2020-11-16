@@ -106,7 +106,7 @@ const News = memo(({ data }) => {
         <div className="news__main">
           <div className="col-fullscreen">
             {(loading && !listdata?.length) || !load ? (
-              <Spin size="large" />
+              <Spin size="large" tip="Загрузка модуля новостей" />
             ) : (
               renderNewsBlock(currentPage, listdata)
             )}

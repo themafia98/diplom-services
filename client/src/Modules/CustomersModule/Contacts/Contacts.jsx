@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState, useCallback, useMemo } from 'react';
+import React, { memo, useEffect, useState, useCallback } from 'react';
 import { contactsType } from '../CustomersModule.types';
 import TitleModule from 'Components/TitleModule';
 
@@ -16,8 +16,7 @@ import { setStatus } from 'Redux/actions/publicActions';
 const Contacts = memo(({ modelsContext }) => {
   const [data, setData] = useState([]);
   const [isLoadingModule, setLoadingModule] = useState(false);
-
-  const loadedRowsMap = useMemo(() => {}, []);
+  const [loadedRowsMap, setRowsMap] = useState(() => ({}));
 
   const fetchData = useCallback(
     async (callback) => {
@@ -50,19 +49,14 @@ const Contacts = memo(({ modelsContext }) => {
     });
   }, [fetchData]);
 
-  const handleInfiniteOnLoad = useCallback(
-    ({ startIndex, stopIndex }) => {
-      for (let i = startIndex; i <= stopIndex; i++) {
-        // 1 means loading
-        loadedRowsMap[i] = 1;
-      }
+  const handleInfiniteOnLoad = ({ startIndex, stopIndex }) => {
+    const _loadedRowsMap = {};
 
-      message.success('Список контактов успешно загружен');
+    for (let i = startIndex; i <= stopIndex; i++) _loadedRowsMap[i] = 1;
 
-      setLoadingModule(false);
-    },
-    [loadedRowsMap],
-  );
+    setRowsMap(_loadedRowsMap);
+    setLoadingModule(false);
+  };
 
   const isRowLoaded = ({ index }) => !!loadedRowsMap[index];
 
