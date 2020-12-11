@@ -1,7 +1,7 @@
-import { Response, NextFunction } from 'express';
+import { Response, NextFunction, Request } from 'express';
 import passport from 'passport';
 import * as passportLocal from 'passport-local';
-import { Dbms, User, Request } from '../Interfaces';
+import { Dbms, User } from '../Interfaces';
 import { UserModel } from '../../Models/Database/Schema';
 import { ObjectId } from 'mongodb';
 
@@ -15,7 +15,7 @@ namespace Middleware {
   const LocalStrategy = passportLocal.Strategy;
 
   export const timer = (req: Request, res: Response, next: NextFunction): void => {
-    req.start = new Date();
+    (<any>req).start = new Date();
     next();
   };
 
