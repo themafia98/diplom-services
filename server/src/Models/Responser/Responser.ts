@@ -1,5 +1,5 @@
 import { ResponseBuilder } from '../../Utils/Interfaces';
-import { Params } from '../../Utils/Interfaces';
+import { Params, Request as RequestCustom } from '../../Utils/Interfaces';
 import { Response, Request } from 'express';
 import { ParserResult } from '../../Utils/Types';
 import Utils from '../../Utils';
@@ -10,7 +10,7 @@ const { loggerError } = Logger;
 
 class Responser implements ResponseBuilder {
   private readonly response: Response;
-  private readonly request: Request;
+  private readonly request: RequestCustom;
   private readonly paramsList: Params;
   private readonly error: Error | null;
   private readonly statusResponse: number;
@@ -25,7 +25,7 @@ class Responser implements ResponseBuilder {
     metadata: ParserResult = null,
   ) {
     this.response = res;
-    this.request = req;
+    this.request = req as RequestCustom;
     this.paramsList = params;
     this.error = err;
     this.statusResponse = status;
@@ -36,7 +36,7 @@ class Responser implements ResponseBuilder {
     return this.response;
   }
 
-  public get req(): Request {
+  public get req(): RequestCustom {
     return this.request;
   }
 

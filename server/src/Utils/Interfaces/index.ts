@@ -153,7 +153,7 @@ export interface ResponseMetadata<T> {
 export interface Request extends RequestExpress {
   start?: Date;
   body: BodyLogin;
-  session?: any;
+  session: any;
   isAuthenticated(): boolean;
 }
 
