@@ -6,7 +6,7 @@
   "author": "Pavel Petrovich <gaara33377@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "heroku-postbuild": "cd client && yarn install && yarn add node-sass --dev && cd ../ && yarn buildprod",
+    "heroku-postbuild": "cd client && yarn install && yarn add node-sass@4.12 --dev && cd ../ && yarn buildprod",
     "dev": "run-p dev:**",
     "start": "node --inspect=9229 -r ts-node/register ./server/src/index.ts && start:watch",
     "start:watch": "nodemon --watch ./server",
