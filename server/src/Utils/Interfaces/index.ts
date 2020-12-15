@@ -16,7 +16,7 @@ import {
   expressFile,
 } from '../Types';
 import socketio from 'socket.io';
-import mongoose, { Mongoose, Connection, Model, Document, FilterQuery } from 'mongoose';
+import mongoose, { Connection, Model, Document, FilterQuery } from 'mongoose';
 import { ObjectId } from 'mongodb';
 import { ParsedUrlQuery } from 'querystring';
 export interface Controller<T> {
