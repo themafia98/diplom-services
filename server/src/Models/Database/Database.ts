@@ -8,7 +8,6 @@ namespace Database {
   export class ManagmentDatabase implements Dbms {
     private readonly dbClient: string;
     private readonly connectionString: string;
-    private readonly connect: Promise<typeof mongoose>;
 
     public status: any = null;
 
@@ -19,7 +18,7 @@ namespace Database {
       this.dbClient = db;
       this.connectionString = connectionString;
 
-      this.connect = mongoose.connect(
+      mongoose.connect(
         connectionString,
         {
           useNewUrlParser: true,
@@ -37,6 +36,10 @@ namespace Database {
       return this.dbClient;
     }
 
+    public async connection(): Promise<Connection | typeof mongoose> {
+      return mongoose.connection;
+    }
+
     public getStatus(): number {
       return mongoose.connection.readyState;
     }
@@ -45,27 +48,8 @@ namespace Database {
       return this.connectionString;
     }
 
-    public async connection(): Promise<Connection | typeof mongoose> {
-      try {
-        return mongoose.connection;
-      } catch (err) {
-        return this.connect;
-      }
-    }
-
-    /** @deprecated 20.05.2020 */
-    public async disconnect(): Promise<typeof mongoose | null> {
-      try {
-        // await mongoose.disconnect();
-        return this.getConnect();
-      } catch (err) {
-        console.error('Disconnect error:', err);
-        return null;
-      }
-    }
-
-    public getConnect(): Promise<typeof mongoose> {
-      return this.connect;
+    public disconnect(): Promise<void> {
+      return mongoose.disconnect();
     }
   }
 }
