@@ -74,7 +74,7 @@ const ContactModule = memo(
 
       let normalizeData = data;
 
-      if (news.length && routeData?.[enitityId]) {
+      if (news.length) {
         normalizeData = news.find((it) => it._id === enitityId) || data;
       }
 

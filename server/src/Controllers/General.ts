@@ -46,16 +46,15 @@ namespace General {
           throw new Error('Bad user data for registration');
         }
 
-        await UserModel.create(
-          { ...user, accept: true, rules: 'full' },
-          async (err: Error): ResRequest => {
-            if (err) {
-              console.error(err);
-              return res.sendStatus(400);
-            }
-            if (!res.headersSent) return res.sendStatus(200);
-          },
-        );
+        const userDoc: object = { ...user, accept: true, rules: 'full' };
+        const userValues = await UserModel.create(userDoc);
+
+        if (!userValues) {
+          res.sendStatus(400);
+          return;
+        }
+
+        if (!res.headersSent) return res.sendStatus(200);
       } catch (err) {
         console.error(err);
         if (!res.headersSent) return res.sendStatus(400);

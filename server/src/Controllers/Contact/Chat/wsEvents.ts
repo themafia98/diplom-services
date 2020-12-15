@@ -49,7 +49,7 @@ export default (ws: WebSocketWorker, dbm: Dbms, server: HttpServer) => {
           socket.join(tokenRoom);
           const { displayName = '' } = msgObj;
           if (msgObj && typeof msgObj === 'object' && displayName !== 'System') {
-            const saveMsg = await model.create(msgObj);
+            const saveMsg = await model.create(msgObj as object);
 
             if (!saveMsg) throw new TypeError('Bad msg object');
             console.log('tokenRoom:', tokenRoom);

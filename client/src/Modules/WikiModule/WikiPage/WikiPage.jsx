@@ -23,6 +23,8 @@ const WikiPage = ({ selectedNode, metadata, onChangeWikiPage, udata: { displayNa
 
   const fetchWikiPageMethod = async () => {
     try {
+      if (content !== null) return;
+
       const { Request } = models;
       const { _id, path, accessGroups = [] } = nodeMetadata;
       const rest = new Request();
@@ -55,7 +57,10 @@ const WikiPage = ({ selectedNode, metadata, onChangeWikiPage, udata: { displayNa
       setLastEditDate(lastEditDate);
       setContent(getValidContent(contentState));
     } catch ({ response: { status = '' } = {}, messsage = 'err wikiPage' }) {
-      if (status !== 404) console.error(messsage);
+      if (status === 404) {
+        setContent('Not found');
+      }
+
       if (statusPage) setStatus(0);
       setLoading(false);
     }
@@ -118,36 +123,42 @@ const WikiPage = ({ selectedNode, metadata, onChangeWikiPage, udata: { displayNa
     </Button>
   );
 
+  const isErrorMessage = typeof content === 'string';
+
   return (
     <div className="wikiPage">
-      <h2 className="wikiPage__title">{title}</h2>
-      <div className="edit-inform">
-        {lastEditName ? <p className="lastEditName">Последний редактор: {lastEditName}. </p> : null}
-        {lastEditDate ? <p className="lastEditDate">Время редактирования: {lastEditDate}. </p> : null}
-      </div>
-      <div className="wikiPage-content">
-        {loading ? (
-          <Spin size="large" />
-        ) : !content && readOnly ? (
-          <div className="empty-wikiPage">
-            {editorButton}
-            <div className="empty-wikiPage__msg">Тут ничего нет</div>
+      <h2 className="wikiPage__title">{isErrorMessage ? content : title}</h2>
+      {!isErrorMessage && (
+        <>
+          <div className="edit-inform">
+            {lastEditName ? <p className="lastEditName">Последний редактор: {lastEditName}. </p> : null}
+            {lastEditDate ? <p className="lastEditDate">Время редактирования: {lastEditDate}. </p> : null}
           </div>
-        ) : (
           <div className="wikiPage-content">
-            <Textarea
-              editor={true}
-              onChange={onChangeContent}
-              editorKey={pageId}
-              readOnly={readOnly}
-              contentState={content}
-              shouldDisplayButton={true}
-              onPublish={!readOnly ? onSubmitChanges : content && readOnly ? onChangeStateEditor : null}
-              buttonName={content && readOnly ? 'Редактировать страницу' : 'Принять изменения'}
-            />
+            {loading ? (
+              <Spin size="large" />
+            ) : !content && readOnly ? (
+              <div className="empty-wikiPage">
+                {editorButton}
+                <div className="empty-wikiPage__msg">Тут ничего нет</div>
+              </div>
+            ) : (
+              <div className="wikiPage-content">
+                <Textarea
+                  editor={true}
+                  onChange={onChangeContent}
+                  editorKey={pageId}
+                  readOnly={readOnly}
+                  contentState={content}
+                  shouldDisplayButton={true}
+                  onPublish={!readOnly ? onSubmitChanges : content && readOnly ? onChangeStateEditor : null}
+                  buttonName={content && readOnly ? 'Редактировать страницу' : 'Принять изменения'}
+                />
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </>
+      )}
     </div>
   );
 };
