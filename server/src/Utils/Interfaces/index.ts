@@ -116,9 +116,17 @@ export interface Route {
 
 export interface Dbms {
   db: string;
-  getConnect(): Promise<typeof mongoose | null>;
+  getStatus(): number;
+  getConnectionString(): string;
+  disconnect(): Promise<void>;
   connection(): Promise<Connection | typeof mongoose>;
-  disconnect(): Promise<null | Mongoose>;
+}
+
+export interface SocketMessageDoc extends Document {
+  authorId: string;
+  moduleName: string;
+  tokenRoom: string;
+  groupName: string;
 }
 
 export interface CryptoSecurity {

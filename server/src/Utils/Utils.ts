@@ -71,7 +71,7 @@ namespace Utils {
     }
   };
 
-  export const getModelByName = (name: string, schemaType: string): Model<Document, {}> | null => {
+  export const getModelByName = (name: string, schemaType: string): Model<Document> | null => {
     try {
       const schema: Schema | null = getSchemaByName(schemaType);
 
@@ -264,13 +264,13 @@ namespace Utils {
   };
 
   /**
-   *  TODO: parseFilterFields example.
-   *
-    const queryFIlter = parseFilterFields([
-     { user: 'regexp' },
-     { _id: 'equal' }
-    ], '123'(optional));
-   */
+     *  TODO: parseFilterFields example.
+     *
+      const queryFIlter = parseFilterFields([
+       { user: 'regexp' },
+       { _id: 'equal' }
+      ], '123'(optional));
+     */
   export const parseFilterFields = (
     filterFields: Array<object> = [],
     id: string | ObjectID = '',

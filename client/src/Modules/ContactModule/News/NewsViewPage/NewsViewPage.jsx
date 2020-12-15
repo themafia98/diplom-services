@@ -15,12 +15,15 @@ const NewsViewPage = ({ id: newsId, listdata, _id: preloadId, entityId, onLoadin
       return;
     }
 
-    if (entityId || preloadId || !onLoadingData) {
+    if (!entityId && !preloadId) {
+      onLoadingData();
       return;
     }
 
-    onLoadingData();
-  }, [preloadId, onLoadingData, entityId, newsId]);
+    if (preloadId && !id && preloadId !== id) {
+      setId(preloadId);
+    }
+  }, [preloadId, onLoadingData, id, entityId, newsId]);
 
   const contentState = useMemo(() => {
     const content = Object.keys(contentEntity).reduce((data, key) => {
@@ -47,9 +50,7 @@ const NewsViewPage = ({ id: newsId, listdata, _id: preloadId, entityId, onLoadin
 
   if (!contentEntity && (contentEntity?.blocks || contentEntity?.entityMap)) return null;
 
-  if (!(entityId || preloadId || !onLoadingData)) {
-    return <Spin size="large" tip="Загрузка новости" className={classes.spin} />;
-  }
+  if (!id) return <Spin size="large" tip="Загрузка новости" className={classes.spin} />;
 
   return (
     <article className="newsView-page">

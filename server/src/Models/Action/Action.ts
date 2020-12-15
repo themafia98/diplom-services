@@ -66,7 +66,7 @@ namespace ActionApi {
             .find()
             .or(orCondition)
             .skip(toSkip)
-            .where(where)
+            .where(where as string)
             .and(andComdition)
             .in(inn as Array<object>)
             .limit(limit as number)
@@ -215,14 +215,11 @@ namespace ActionApi {
 
             const _id: any = id ? Types.ObjectId(id) : null;
 
-            const findQuery: object =
-              _id && !customQuery
-                ? { _id }
-                : key
-                ? { key }
-                : customQuery
-                ? { [customQuery as string]: customQueryValue }
-                : {};
+            let findQuery: object = {};
+
+            if (_id && !customQuery) findQuery = { _id };
+            else if (key) findQuery = { key };
+            else if (customQuery) findQuery = { [customQuery as string]: customQueryValue };
 
             const actionData: Document = await model.updateOne(
               findQuery,

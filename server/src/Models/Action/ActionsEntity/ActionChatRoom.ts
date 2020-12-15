@@ -1,7 +1,7 @@
 import { Model, Document, Types, isValidObjectId } from 'mongoose';
 import { v4 as uuid } from 'uuid';
-import { ActionParams, Actions, Action } from '../../../Utils/Interfaces';
-import { ParserData, SocketMeta, SocketMessage } from '../../../Utils/Types';
+import { ActionParams, Actions, Action, SocketMessageDoc } from '../../../Utils/Interfaces';
+import { ParserData, SocketMeta } from '../../../Utils/Types';
 import Utils from '../../../Utils';
 const { getModelByName, checkEntity } = Utils;
 
@@ -62,7 +62,7 @@ class ActionChatRoom implements Action {
 
   private async roomGenerator(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const modelMsg: Model<Document> | null = getModelByName('chatMsg', 'chatMsg');
-    const { fakeMsg: msg } = actionParam as Record<string, SocketMessage>;
+    const { fakeMsg: msg } = actionParam as Record<string, SocketMessageDoc>;
     const { interlocutorId: interlocutorIdDirty = '' } = actionParam as Record<string, string>;
     const { authorId: authorIdDirty = '', moduleName = '', tokenRoom = '', groupName = '' } = msg;
 
