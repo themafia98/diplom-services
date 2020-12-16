@@ -55,8 +55,10 @@ const Bar = ({
       });
     });
 
-    setSource(sourceDraft);
-  }, [data, dataKeys]);
+    if (JSON.stringify(source) !== JSON.stringify(sourceDraft)) {
+      setSource(sourceDraft);
+    }
+  }, [data, dataKeys, source]);
 
   const getDefs = () => {
     return [
