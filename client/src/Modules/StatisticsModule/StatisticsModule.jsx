@@ -43,7 +43,7 @@ const StatisticsModule = memo(({ path, clientDB }) => {
     const { tasks = [] } = currentModule;
     const { bar: barData = {} } = tasks[0] || {};
 
-    const { settings = [] } = settingsStatusSelector(state) || {};
+    const { settings = [] } = settingsStatusSelector(state);
 
     return {
       routeData,

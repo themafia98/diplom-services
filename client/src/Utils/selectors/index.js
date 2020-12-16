@@ -25,7 +25,7 @@ const settingsLogsSelector = createSelector(cache, (caches) => {
 });
 
 const settingsStatusSelector = createSelector(settings, (list) => {
-  return list.find((item) => item?.idSettings && item?.idSettings === 'statusSettings');
+  return list.find((item) => item?.idSettings && item?.idSettings === 'statusSettings') || {};
 });
 
 const settingsArtifactsSelector = createSelector(artifacts, (list) => {
