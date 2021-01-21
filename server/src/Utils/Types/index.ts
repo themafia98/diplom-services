@@ -14,7 +14,7 @@ import {
   Settings,
   Access,
 } from '../Interfaces';
-import { DocumentQuery, Document } from 'mongoose';
+import { Document } from 'mongoose';
 import { Response } from 'express';
 import { Socket } from 'socket.io';
 import { BinaryLike } from 'crypto';
@@ -28,7 +28,6 @@ export type ListFolderResult = files.ListFolderResult | null;
 export type FileMetadata = files.FileMetadata | null;
 export type DeleteFile = files.DeleteResult;
 export type Entity = Document | null | string | number;
-export type BuilderResponse = Promise<DocumentQuery<any, Document> | object | null>;
 export type ResRequest = Promise<Response | void | WriteStream | ReadableStream | WritableStream>;
 export type Decorator = <Function extends ClassDecorator>(target: object, propKey?: string) => void;
 export type FileTransportInstance = winston.transports.FileTransportInstance;
