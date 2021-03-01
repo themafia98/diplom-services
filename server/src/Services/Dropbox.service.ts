@@ -3,6 +3,7 @@ import { Dropbox, files } from 'dropbox';
 import { FileMetadata, ListFolderResult } from '../Utils/Types';
 import Service from '../Models/Service';
 import Logger from '../Utils/Logger';
+import dropboxConfig from '../config/dropbox.config';
 
 /**
  *
@@ -14,13 +15,8 @@ namespace DropboxStorage {
     /**
      * @param props init service
      */
-    constructor(props: DropboxAccess) {
-      super(
-        new Dropbox({
-          fetch: require('isomorphic-fetch'),
-          accessToken: props.token,
-        }),
-      );
+    constructor(config: DropboxAccess = dropboxConfig) {
+      super(Dropbox, config);
     }
 
     /**

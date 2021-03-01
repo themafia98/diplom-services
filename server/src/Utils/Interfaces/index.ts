@@ -1,5 +1,4 @@
 import { Application, Router as RouteExpress, Request as RequestExpress, Response } from 'express';
-
 import nodemailer, { SendMailOptions, Transporter, SentMessageInfo } from 'nodemailer';
 import { files } from 'dropbox';
 import {
@@ -15,12 +14,23 @@ import {
   SocketMessage,
   expressFile,
 } from '../Types';
-import socketio from 'socket.io';
+import socketio, { Server as WorkerIO } from 'socket.io';
 import mongoose, { Connection, Model, Document, FilterQuery } from 'mongoose';
 import { ObjectId } from 'mongodb';
 import { ParsedUrlQuery } from 'querystring';
+import WebSocketWorker from '../../Models/WebSocketWorker';
 export interface Controller<T> {
   [key: string]: any;
+}
+
+export interface ServiceConstructor<T> {
+  new (...props: any): T;
+}
+
+export interface ChatModel {
+  run(): void;
+  ws: WebSocketWorker;
+  worker: WorkerIO;
 }
 
 export interface ActionsAccess {
@@ -213,12 +223,14 @@ export interface MetadataConfig {
 }
 
 export interface DropboxAccess {
-  token: string;
+  fetch: () => void;
+  accessToken: string;
 }
 
 export interface ServiceManager<T> {
   getService(): T;
-  changeService(service: T): void;
+  getServiceType(): string;
+  getConfig(): object;
 }
 
 export interface User extends Document {

@@ -12,6 +12,7 @@ import RouterInstance from '../Router';
 import { Server as HttpServer } from 'http';
 import { Mail } from '../../Utils/Interfaces';
 import RestEntitiy from './RestEntity';
+import Chat from '../Chat';
 import Utils from '../../Utils';
 
 import Statistic from '../../Controllers/Statistic';
@@ -19,15 +20,13 @@ import System from '../../Controllers/Main';
 import Cabinet from '../../Controllers/Cabinet';
 import Settings from '../../Controllers/Settings';
 import General from '../../Controllers/General';
-import Chat from '../../Controllers/Contact/Chat';
+import ChatController from '../../Controllers/Contact/Chat';
 import Tasks from '../../Controllers/Tasks';
 import Wiki from '../../Controllers/Wiki';
 import News from '../../Controllers/Contact/News';
 import Mailer from '../Mail';
 
-import DropboxStorage from '../../Services/Dropbox';
-
-import wsEvents from '../../Controllers/Contact/Chat/wsEvents';
+import DropboxStorage from '../../Services/Dropbox.service';
 
 import limiter from '../../config/limiter';
 import Instanse from '../../Utils/instanse';
@@ -70,7 +69,7 @@ namespace Http {
       const TasksAlias: Readonly<Function> = Tasks.TasksController;
       const SystemAlias: Readonly<Function> = System.SystemData;
       const NewsAlias: Readonly<Function> = News.NewsController;
-      const ChatAlias: Readonly<Function> = Chat.ChatController;
+      const ChatAlias: Readonly<Function> = ChatController;
       const SettingsAlias: Readonly<Function> = Settings.SettingsController;
       const WikiAlias: Readonly<Function> = Wiki.WikiController;
       const CabinetAlias: Readonly<Function> = Cabinet.CabinetController;
@@ -85,14 +84,12 @@ namespace Http {
       this.getApp().use(express.json());
       this.getApp().set('port', this.getPort());
 
-      const DROPBOX_TOKEN: Readonly<string> = process.env.DROPBOX_TOKEN as string;
-
       this.getApp().use(session(this.session));
       this.getApp().use(passport.initialize());
       this.getApp().use(passport.session());
       this.getApp().use(catchError as any);
 
-      const dropbox = new DropboxStorage.DropboxManager({ token: DROPBOX_TOKEN });
+      const dropbox = new DropboxStorage.DropboxManager();
       const mailer: Readonly<Mail> = new Mailer.MailManager(nodemailer, this.smtp, {
         from: process.env.TOKEN_YANDEX_USER,
       });
@@ -128,7 +125,8 @@ namespace Http {
       this.getRest().use('/tasks/regTicket', regTicketLimitter);
 
       Instanse.ws.startSocketConnection(new socketio.Server(server));
-      wsEvents(Instanse.ws, Instanse.dbm, server); /** chat */
+      const chat = new Chat(Instanse.ws);
+      chat.run();
 
       Utils.initControllers(
         [
