@@ -1,5 +1,5 @@
 import { сachingAction, errorRequestAction, setStatus } from '../';
-import { cachingHook, getterCacheHook, putterCacheHook, errorHook, updateEntityHook } from 'Utils';
+import { errorThunk, cachingThunk, getterCacheThunk, putterCacheThunk, updateEntityThunk } from 'Redux/core';
 import { onLoadArtifacts, onLoadSettings } from '../';
 import { multipleLoadData } from '../../routerActions/middleware';
 import { updateItemStateAction } from '../../routerActions';
@@ -64,7 +64,7 @@ const middlewareCaching = ({
         multipleLoadData,
       };
 
-      await cachingHook(dispatch, dep, depActions);
+      await cachingThunk(dispatch, dep, depActions);
       return;
     }
 
@@ -79,7 +79,7 @@ const middlewareCaching = ({
       multipleLoadData,
     };
 
-    await putterCacheHook(dispatch, dep, depActions);
+    await putterCacheThunk(dispatch, dep, depActions);
   } catch (error) {
     const depError = {
       depStore,
@@ -96,7 +96,7 @@ const middlewareCaching = ({
       rest,
     };
     console.error(error);
-    errorHook(error, dispatch, depError);
+    errorThunk(error, dispatch, depError);
   }
 };
 
@@ -144,7 +144,7 @@ const loadCacheData = ({
       updateBy,
     };
 
-    await getterCacheHook(dispatch, dep, depActions);
+    await getterCacheThunk(dispatch, dep, depActions);
   } catch (error) {
     const depError = {
       depStore,
@@ -161,7 +161,7 @@ const loadCacheData = ({
       rest,
     };
     console.error(error);
-    errorHook(error, dispatch, depError);
+    errorThunk(error, dispatch, depError);
   }
 };
 
@@ -230,7 +230,7 @@ const middlewareUpdate = ({
       updateItemStateAction,
     };
 
-    await updateEntityHook(dispatch, dep);
+    await updateEntityThunk(dispatch, dep);
 
     if (systemMessage?.done) message.success(systemMessage.done);
   } catch (error) {
@@ -247,7 +247,7 @@ const middlewareUpdate = ({
       rest,
     };
     console.error(error);
-    errorHook(error, dispatch, depError);
+    errorThunk(error, dispatch, depError);
     if (systemMessage?.error) message.error(systemMessage.error);
   }
 };

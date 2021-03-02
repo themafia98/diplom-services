@@ -1,10 +1,10 @@
 import _ from 'lodash';
-import { sucessEvent } from '../';
-import { dataParser } from '../';
+import { sucessEvent } from '../../Utils';
+import { dataParser } from '../../Utils';
 
 /** Utils hooks */
 
-const runBadNetworkAction = (dispatch, error, dep) => {
+const runBadNetworkMode = (dispatch, error, dep) => {
   const {
     rest,
     setStatus,
@@ -55,7 +55,7 @@ const runBadNetworkAction = (dispatch, error, dep) => {
   );
 };
 
-const runNoCorsAction = (dispatch, dep, multiple) => {
+const runNoCorsSave = (dispatch, dep, multiple) => {
   const { saveComponentStateAction, params = {} } = dep;
   const { data = {}, shouldUpdateState = true } = dataParser(false, false, dep);
 
@@ -84,7 +84,7 @@ const runRefreshIndexedDb = async (dispatch, storeName, dep, multiple) => {
   return [null, null, shouldUpdate];
 };
 
-const runLocalUpdateAction = async (dispatch, depAction, depParser, multiple) => {
+const runLocalUpdate = async (dispatch, depAction, depParser, multiple) => {
   const { errorRequestAction, saveComponentStateAction, params = {}, add = false } = depAction;
 
   const { data, shoudClearError = false, shouldUpdateState = true } = dataParser(true, false, depParser);
@@ -94,6 +94,4 @@ const runLocalUpdateAction = async (dispatch, depAction, depParser, multiple) =>
   else if (multiple) return data;
 };
 
-const modulesUtils = { runLocalUpdateAction, runBadNetworkAction, runRefreshIndexedDb, runNoCorsAction };
-
-export default modulesUtils;
+export default { runLocalUpdate, runBadNetworkMode, runRefreshIndexedDb, runNoCorsSave };

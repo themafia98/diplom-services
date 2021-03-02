@@ -1,9 +1,7 @@
-import utilsHooks from '../utils';
-import { getStoreSchema } from '../../utilsHook';
+import { runLocalUpdate, runRefreshIndexedDb, runNoCorsSave, runBadNetworkMode } from '../core.utils';
+import { getStoreSchema } from '../../../Utils/utilsHook';
 
-const { runLocalUpdateAction, runRefreshIndexedDb, runNoCorsAction, runBadNetworkAction } = utilsHooks;
-
-const coreUpdaterDataHook = async (dispatch, dep = {}, multiple = false, badNetwork = false) => {
+const coreDataUpdater = async (dispatch, dep = {}, multiple = false, badNetwork = false) => {
   const {
     noCorsClient,
     requestError,
@@ -24,7 +22,7 @@ const coreUpdaterDataHook = async (dispatch, dep = {}, multiple = false, badNetw
   let isLocalUpdate = localUpdateStat;
 
   if (noCorsClient && requestError === null) {
-    const [isDone, data] = runNoCorsAction(dispatch, dep, multiple);
+    const [isDone, data] = runNoCorsSave(dispatch, dep, multiple);
     if (isDone) return data;
   }
 
@@ -59,14 +57,14 @@ const coreUpdaterDataHook = async (dispatch, dep = {}, multiple = false, badNetw
       add,
     };
     try {
-      return await runLocalUpdateAction(dispatch, depAction, depParser, multiple);
+      return await runLocalUpdate(dispatch, depAction, depParser, multiple);
     } catch (error) {
       console.error(error);
     }
   }
 };
 
-const updateEntityHook = async (dispatch, dep = {}) => {
+const updateEntityThunk = async (dispatch, dep = {}) => {
   const {
     parsedRoutePath = null,
     store,
@@ -104,19 +102,17 @@ const updateEntityHook = async (dispatch, dep = {}) => {
   if (schema?.isPublicKey(dataItems)) await clientDB.updateItem(store, dataItems);
 };
 
-const errorHook = async (error, dispatch, dep = {}, callback) => {
+const errorThunk = async (error, dispatch, dep = {}, callback) => {
   const { errorRequestAction } = dep;
 
   if (error?.message === 'Network Error') {
-    runBadNetworkAction(dispatch, error, dep);
+    runBadNetworkMode(dispatch, error, dep);
     if (typeof callback === 'function') dispatch(callback());
   } else dispatch(errorRequestAction(error.message));
 };
 
-const modulesApi = {
-  coreUpdaterDataHook,
-  errorHook,
-  updateEntityHook,
+export default {
+  coreDataUpdater,
+  errorThunk,
+  updateEntityThunk,
 };
-
-export default modulesApi;

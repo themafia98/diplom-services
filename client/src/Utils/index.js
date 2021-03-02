@@ -1,6 +1,5 @@
 import namespaceParser from './Parser';
 import namespaceEvents from './Events';
-import namespaceHooks from './Hooks';
 import namespaceTools from './Tools';
 
 /**
@@ -9,14 +8,6 @@ import namespaceTools from './Tools';
  */
 
 const { sucessEvent, forceUpdateDetectedInit, showSystemMessage } = namespaceEvents;
-const {
-  errorHook,
-  coreUpdaterDataHook,
-  cachingHook,
-  getterCacheHook,
-  putterCacheHook,
-  updateEntityHook,
-} = namespaceHooks;
 
 const {
   dataParser,
@@ -60,14 +51,8 @@ export {
   getBase64,
   routeParser,
   routePathNormalise,
-  errorHook,
-  coreUpdaterDataHook,
   buildRequestList,
   getValidContent,
-  cachingHook,
-  getterCacheHook,
-  putterCacheHook,
-  updateEntityHook,
   createNotification,
   createEntity,
   deleteFile,
