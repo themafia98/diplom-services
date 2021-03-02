@@ -1,8 +1,8 @@
 import { Model, Document, Types, isValidObjectId } from 'mongoose';
 import { v4 as uuid } from 'uuid';
-import { ActionParams, Actions, Action, SocketMessageDoc } from '../../../Utils/Interfaces';
-import { ParserData, SocketMeta } from '../../../Utils/Types';
-import Utils from '../../../Utils';
+import { ActionParams, Actions, Action, SocketMessageDoc } from '../../../utils/Interfaces/Interfaces.global';
+import { ParserData, SocketMeta } from '../../../utils/Types/types.global';
+import Utils from '../../../utils/utils.global';
 const { getModelByName, checkEntity } = Utils;
 
 class ActionChatRoom implements Action {

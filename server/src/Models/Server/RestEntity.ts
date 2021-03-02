@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { Rest } from '../../Utils/Interfaces';
+import { Rest } from '../../utils/Interfaces/Interfaces.global';
 import { Application } from 'express';
 
 abstract class RestEntitiy implements Rest {

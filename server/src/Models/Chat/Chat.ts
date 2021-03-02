@@ -1,7 +1,7 @@
 import { Server as WorkerIO, Socket } from 'socket.io';
 import _ from 'lodash';
 import cluster from 'cluster';
-import { ChatModel } from '../../Utils/Interfaces';
+import { ChatModel } from '../../utils/Interfaces/Interfaces.global';
 import WebSocketWorker from '../WebSocketWorker';
 import { initFakeRoomEvent, newMessageEvent, processMessageEvent, workerDisconnect } from './Chat.events';
 
@@ -38,6 +38,14 @@ class Chat implements ChatModel {
     }
 
     this.worker.on('connection', this.registerEventsListeners);
+  }
+
+  public destroy(socket: Socket): void {
+    socket.off('newMessage', newMessageEvent(socket));
+    socket.off('initFakeRoom', initFakeRoomEvent(socket));
+    socket.off('onChatRoomActive', initFakeRoomEvent(socket));
+    this.worker.off('disconnect', workerDisconnect);
+    process.off('message', processMessageEvent(this.ws));
   }
 }
 

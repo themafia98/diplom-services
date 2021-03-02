@@ -1,5 +1,5 @@
 import { Schema, model, Model, Document, Types } from 'mongoose';
-import { SchemaEntity } from '../../../Utils/Types';
+import { SchemaEntity } from '../../../utils/Types/types.global';
 import {
   User,
   Task,
@@ -12,7 +12,7 @@ import {
   WikiTree,
   WikiPage,
   Settings,
-} from '../../../Utils/Interfaces';
+} from '../../../utils/Interfaces/Interfaces.global';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { ROLES } from '../../AccessRole/AcessRole.constant';

@@ -6,7 +6,7 @@ import { updateUdata } from 'Redux/actions/publicActions';
 import UserCard from 'Components/UserCard';
 import TitleModule from 'Components/TitleModule';
 import StreamBox from 'Components/StreamBox';
-import { findUser, routeParser } from 'Utils';
+import { findUser, routeParser } from 'Utils/utils.global';
 import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
 import actionPath from 'actions.path';
 import modelsContext from 'Models/context';

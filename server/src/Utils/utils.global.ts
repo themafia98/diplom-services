@@ -4,7 +4,7 @@ import { NextFunction, Response, Request } from 'express';
 import multer from 'multer';
 import winston from 'winston';
 import { model, Schema, Model, Document } from 'mongoose';
-import { getSchemaByName } from '../Models/Database/Schema';
+import { getSchemaByName } from '../models/Database/Schema';
 import {
   RouteDefinition,
   ResponseDocument,
@@ -13,13 +13,13 @@ import {
   ActionParams,
   TicketRemote,
   TaskEntity,
-} from './Interfaces';
+} from './Interfaces/Interfaces.global';
 import { v4 as uuid } from 'uuid';
-import { docResponse, ParserResult, Meta } from './Types';
+import { docResponse, ParserResult, Meta } from './Types/types.global';
 import { ObjectID } from 'mongodb';
-import { ROLES } from '../Models/AccessRole/AcessRole.constant';
+import { ROLES } from '../models/AccessRole/AcessRole.constant';
 import { ParsedUrlQuery } from 'querystring';
-import { CONTROLLERS_MAP } from '../Models/Server/Server.constant';
+import { CONTROLLERS_MAP } from '../models/Server/Server.constant';
 
 namespace Utils {
   const upload = multer();
@@ -27,9 +27,7 @@ namespace Utils {
   /**
    * @returns {boolean} current process is production or not
    */
-  export const isProd = (): boolean => {
-    return process.env.NODE_ENV === 'production';
-  };
+  export const isProd = (): boolean => process.env.NODE_ENV === 'production';
 
   export const checkEntity = async (
     mode: string,

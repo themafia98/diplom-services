@@ -7,7 +7,7 @@ import TitleModule from 'Components/TitleModule';
 import { Calendar, Popover, Button, message, Dropdown, Menu } from 'antd';
 import DrawerViewer from 'Components/DrawerViewer';
 
-import { routePathNormalise } from 'Utils';
+import { routePathNormalise } from 'Utils/utils.global';
 import Output from 'Components/Output';
 import types from 'types.modules';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';

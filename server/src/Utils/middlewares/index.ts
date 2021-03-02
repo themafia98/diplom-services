@@ -1,14 +1,14 @@
 import { Response, NextFunction, Request } from 'express';
 import passport from 'passport';
 import * as passportLocal from 'passport-local';
-import { Dbms, User } from '../Interfaces';
-import { UserModel } from '../../Models/Database/Schema';
+import { Dbms, User } from '../Interfaces/Interfaces.global';
+import { UserModel } from '../../models/Database/Schema';
 import { ObjectId } from 'mongodb';
 
 import url from 'url';
 import querystring from 'querystring';
 import { Types } from 'mongoose';
-import AccessRole from '../../Models/AccessRole';
+import AccessRole from '../../models/AccessRole';
 import { ACTIONS_ACCESS } from '../../app.constant';
 
 namespace Middleware {

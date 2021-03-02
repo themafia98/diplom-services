@@ -1,8 +1,8 @@
-import { DropboxAccess, FileApi } from '../Utils/Interfaces';
+import { DropboxAccess, FileApi } from '../utils/Interfaces/Interfaces.global';
 import { Dropbox, files } from 'dropbox';
-import { FileMetadata, ListFolderResult } from '../Utils/Types';
-import Service from '../Models/Service';
-import Logger from '../Utils/Logger';
+import { FileMetadata, ListFolderResult } from '../utils/Types/types.global';
+import Service from '../models/Service';
+import Logger from '../utils/Logger';
 import dropboxConfig from '../config/dropbox.config';
 
 /**

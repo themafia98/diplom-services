@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { Empty, Spin, Tooltip, Icon } from 'antd';
 import Scrollbars from 'react-custom-scrollbars';
 
-import { routePathNormalise, routeParser } from 'Utils';
+import { routePathNormalise, routeParser } from 'Utils/utils.global';
 import Output from 'Components/Output';
 import DynamicTable from './DynamicTable';
 

@@ -5,7 +5,7 @@ import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
 import entityRender from 'Utils/Tools/entityRender';
 import withRouter from 'Components/Helpers/withRouter';
 import types from 'types.modules';
-import { oneOfType, routeParser } from 'Utils';
+import { oneOfType, routeParser } from 'Utils/utils.global';
 import { compose } from 'redux';
 import { withClientDb } from 'Models/ClientSideDatabase';
 import actionPath from 'actions.path';

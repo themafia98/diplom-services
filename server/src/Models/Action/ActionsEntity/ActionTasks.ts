@@ -1,7 +1,13 @@
 import { Model, Document, Types, isValidObjectId } from 'mongoose';
-import { ActionParams, Actions, Action, TicketRemote, QueryParams } from '../../../Utils/Interfaces';
-import { ParserData, Pagination } from '../../../Utils/Types';
-import Utils from '../../../Utils';
+import {
+  ActionParams,
+  Actions,
+  Action,
+  TicketRemote,
+  QueryParams,
+} from '../../../utils/Interfaces/Interfaces.global';
+import { ParserData, Pagination } from '../../../utils/Types/types.global';
+import Utils from '../../../utils/utils.global';
 import _ from 'lodash';
 import { ObjectID } from 'mongodb';
 const { getModelByName, generateRemoteTask, getFilterQuery, parseFilterFields } = Utils;

@@ -1,9 +1,15 @@
 import generator from 'generate-password';
 import _ from 'lodash';
 import { Model, Document, Types } from 'mongoose';
-import { ActionParams, Actions, Action, User, QueryParams } from '../../../Utils/Interfaces';
-import { ParserData } from '../../../Utils/Types';
-import Utils from '../../../Utils';
+import {
+  ActionParams,
+  Actions,
+  Action,
+  User,
+  QueryParams,
+} from '../../../utils/Interfaces/Interfaces.global';
+import { ParserData } from '../../../utils/Types/types.global';
+import Utils from '../../../utils/utils.global';
 
 const { getModelByName } = Utils;
 

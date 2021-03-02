@@ -1,5 +1,5 @@
-import { AccessConfig } from '../../Utils/Interfaces';
-import { ROLES } from '../../Models/AccessRole/AcessRole.constant';
+import { AccessConfig } from '../../utils/Interfaces/Interfaces.global';
+import { ROLES } from '../../models/AccessRole/AcessRole.constant';
 import { ACTIONS_ACCESS, FULL_ACTIONS_ACCESS } from '../../app.constant';
 
 export const ACCESS_MODULE_SUPERADMIN: Array<AccessConfig> = [
