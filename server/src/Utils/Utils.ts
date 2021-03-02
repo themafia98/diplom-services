@@ -19,6 +19,7 @@ import { docResponse, ParserResult, Meta } from './Types';
 import { ObjectID } from 'mongodb';
 import { ROLES } from '../Models/AccessRole/AcessRole.constant';
 import { ParsedUrlQuery } from 'querystring';
+import { CONTROLLERS_MAP } from '../Models/Server/Server.constant';
 
 namespace Utils {
   const upload = multer();
@@ -88,13 +89,13 @@ namespace Utils {
   };
 
   export const initControllers = (
-    controllers: Array<FunctionConstructor>,
+    controllers: Array<typeof CONTROLLERS_MAP['']>,
     getApp: Function,
     getRest: Function,
     isPrivateRoute: Function,
     wsWorkerManager: WsWorker,
   ) => {
-    controllers.forEach((Controller: FunctionConstructor) => {
+    controllers.forEach((Controller) => {
       // This is our instantiated class
       const instance: object = new Controller();
       const prefix = Reflect.getMetadata('prefix', Controller);

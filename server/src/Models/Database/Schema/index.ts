@@ -16,6 +16,7 @@ import {
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { ROLES } from '../../AccessRole/AcessRole.constant';
+import authConfig from '../../../config/auth.config';
 
 const userSchema: Schema<User> = new Schema(
   {
@@ -85,7 +86,7 @@ userSchema.methods.generateJWT = function (this: User): any {
       id: this._id,
       exp: expirationDate.getTime() / 1000,
     },
-    'jwtsecret',
+    authConfig.SECRET,
   );
 };
 

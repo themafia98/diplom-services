@@ -57,6 +57,10 @@ class ProcessRouter {
   }
 
   public onExit(worker: Worker): void {
+    if (!worker || (worker && !worker.process)) {
+      throw new Error('worker not found for exit');
+    }
+
     const { pid = '' } = worker.process;
 
     console.log(`${chalk.yellow('worker')} ${chalk.red(pid || '')} exit.`);
@@ -64,7 +68,7 @@ class ProcessRouter {
     this.removeWorker(worker.id);
 
     const child: Worker = cluster.fork();
-    const { pid: pidChild } = child.process;
+    const { pid: pidChild = '' } = child.process;
 
     this.subscribe(child);
     this.addWorker(child);

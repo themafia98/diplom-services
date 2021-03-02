@@ -1,5 +1,6 @@
 import jwt from 'express-jwt';
 import { Request } from 'express';
+import authConfig from '../../config/auth.config';
 
 namespace Auth {
   const getTokenFromHeaders = (req: Request) => {
@@ -15,14 +16,14 @@ namespace Auth {
 
   export const config = {
     required: jwt({
-      secret: 'jwtsecret',
-      userProperty: 'payload',
+      secret: authConfig.SECRET,
+      userProperty: authConfig.USER_PROPERTY,
       getToken: getTokenFromHeaders,
       credentialsRequired: true,
     }),
     optional: jwt({
-      secret: 'jwtsecret',
-      userProperty: 'payload',
+      secret: authConfig.SECRET,
+      userProperty: authConfig.USER_PROPERTY,
       getToken: getTokenFromHeaders,
       credentialsRequired: false,
     }),

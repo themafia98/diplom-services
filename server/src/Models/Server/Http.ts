@@ -14,16 +14,6 @@ import { Mail } from '../../Utils/Interfaces';
 import RestEntitiy from './RestEntity';
 import Chat from '../Chat';
 import Utils from '../../Utils';
-
-import Statistic from '../../Controllers/Statistic';
-import System from '../../Controllers/Main';
-import Cabinet from '../../Controllers/Cabinet';
-import Settings from '../../Controllers/Settings';
-import General from '../../Controllers/General';
-import ChatController from '../../Controllers/Contact/Chat';
-import Tasks from '../../Controllers/Tasks';
-import Wiki from '../../Controllers/Wiki';
-import News from '../../Controllers/Contact/News';
 import Mailer from '../Mail';
 
 import DropboxStorage from '../../Services/Dropbox.service';
@@ -32,13 +22,16 @@ import limiter from '../../config/limiter';
 import Instanse from '../../Utils/instanse';
 import Middleware from '../../Utils/Middleware';
 import ProcessRouter from '../Process/ProcessRouter';
+import { CONTROLLERS, CONTROLLERS_MAP } from './Server.constant';
+import authConfig from '../../config/auth.config';
 
 namespace Http {
+  const { catchError, jsonWebTokenRegister, checkPrivateRoute, timer, securityChecker } = Middleware;
   export class ServerRunner extends RestEntitiy {
     SessionStore = MongoStore(session);
 
     private sessionConfig = {
-      secret: 'jwtsecret',
+      secret: authConfig.SECRET,
       saveUninitialized: true,
       resave: true,
       store: new this.SessionStore({
@@ -65,18 +58,6 @@ namespace Http {
     }
 
     public async start(): Promise<void> {
-      const Main: Readonly<Function> = General.Main;
-      const TasksAlias: Readonly<Function> = Tasks.TasksController;
-      const SystemAlias: Readonly<Function> = System.SystemData;
-      const NewsAlias: Readonly<Function> = News.NewsController;
-      const ChatAlias: Readonly<Function> = ChatController;
-      const SettingsAlias: Readonly<Function> = Settings.SettingsController;
-      const WikiAlias: Readonly<Function> = Wiki.WikiController;
-      const CabinetAlias: Readonly<Function> = Cabinet.CabinetController;
-      const StatisticAlias: Readonly<Function> = Statistic.StatisticController;
-
-      const { catchError, jsonWebTokenRegister, checkPrivateRoute, timer, securityChecker } = Middleware;
-
       this.setApp(express());
       this.getApp().disabled('x-powerd-by');
       this.getApp().use(helmet());
@@ -129,17 +110,7 @@ namespace Http {
       chat.run();
 
       Utils.initControllers(
-        [
-          Main as FunctionConstructor,
-          TasksAlias as FunctionConstructor,
-          WikiAlias as FunctionConstructor,
-          NewsAlias as FunctionConstructor,
-          SystemAlias as FunctionConstructor,
-          ChatAlias as FunctionConstructor,
-          SettingsAlias as FunctionConstructor,
-          CabinetAlias as FunctionConstructor,
-          StatisticAlias as FunctionConstructor,
-        ],
+        Object.keys(CONTROLLERS).map((controllerKey) => CONTROLLERS_MAP[controllerKey]),
         this.getApp.bind(this),
         this.getRest.bind(this),
         checkPrivateRoute.bind(this),
