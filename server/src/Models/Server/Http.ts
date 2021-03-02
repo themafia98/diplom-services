@@ -110,7 +110,7 @@ namespace Http {
       chat.run();
 
       Utils.initControllers(
-        Object.keys(CONTROLLERS).map((controllerKey) => CONTROLLERS_MAP[controllerKey]),
+        Object.values(CONTROLLERS).map((controllerKey) => CONTROLLERS_MAP[controllerKey]),
         this.getApp.bind(this),
         this.getRest.bind(this),
         checkPrivateRoute.bind(this),
