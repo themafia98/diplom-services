@@ -1,12 +1,6 @@
-import {
-  sucessEvent,
-  errorHook,
-  coreUpdaterDataHook,
-  routePathNormalise,
-  findData,
-  routeParser,
-  findUser,
-} from 'Utils';
+import { sucessEvent, routePathNormalise, findData, routeParser, findUser } from 'Utils';
+
+import { errorThunk, coreDataUpdater } from 'Redux/core';
 import { saveComponentStateAction, loadFlagAction, openPageWithDataAction, setActiveTabAction } from '../';
 import { errorRequestAction, setStatus } from '../../publicActions';
 import actionsTypes from 'actions.types';
@@ -69,7 +63,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
 
       if (force) {
         dep.copyStore = result;
-        await coreUpdaterDataHook(dispatch, dep);
+        await coreDataUpdater(dispatch, dep);
         return;
       }
 
@@ -90,7 +84,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
 
         dep.copyStore = copyStore;
 
-        await coreUpdaterDataHook(dispatch, dep);
+        await coreDataUpdater(dispatch, dep);
       } catch (error) {
         const { status: errorStatus = '', response: { status: responseStatus = 503 } = {} } = error || {};
         const dep = {
@@ -117,11 +111,11 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
         };
 
         if (responseStatus === 404 || errorStatus === 404) {
-          await coreUpdaterDataHook(dispatch, { ...dep });
+          await coreDataUpdater(dispatch, { ...dep });
           return;
         }
 
-        await errorHook(error, dispatch, dep, loadCurrentData.bind(this, params));
+        await errorThunk(error, dispatch, dep, loadCurrentData.bind(this, params));
       }
       return;
     }
@@ -217,7 +211,7 @@ const multipleLoadData = (params) => async (dispatch, getState, { schema, Reques
 
   for await (let res of responseList) {
     const { dep } = res;
-    const resultHook = await coreUpdaterDataHook(dispatch, dep, true);
+    const resultHook = await coreDataUpdater(dispatch, dep, true);
     if (resultHook) hookData.push(resultHook);
   }
 

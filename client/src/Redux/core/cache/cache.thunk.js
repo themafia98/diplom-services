@@ -1,8 +1,8 @@
-import { getStoreSchema } from '../../utilsHook';
+import { getStoreSchema } from '../../../Utils/utilsHook';
 import actionsTypes from 'actions.types';
 import { requestTemplate, paramsTemplate } from 'Utils/Api/api.utils';
 
-const cachingHook = async (dispatch, dep = {}, depActions = {}) => {
+const cachingThunk = async (dispatch, dep = {}, depActions = {}) => {
   const { dataItems = {}, store, actionType, clientDB, schema, updateBy } = dep;
   const { сachingAction, errorRequestAction } = depActions;
 
@@ -29,7 +29,7 @@ const cachingHook = async (dispatch, dep = {}, depActions = {}) => {
   }
 };
 
-const putterCacheHook = async (dispatch, dep = {}, depActions = {}) => {
+const putterCacheThunk = async (dispatch, dep = {}, depActions = {}) => {
   const { depStore, item = {}, type, uid, Request, actionType, updateBy = '' } = dep;
   const { errorRequestAction, сachingAction } = depActions;
 
@@ -80,7 +80,7 @@ const putterCacheHook = async (dispatch, dep = {}, depActions = {}) => {
   }
 };
 
-const getterCacheHook = async (dispatch, dep = {}, depActions = {}) => {
+const getterCacheThunk = async (dispatch, dep = {}, depActions = {}) => {
   const { dataItems, actionType, store, schema, clientDB, updateBy } = dep;
   const { errorRequestAction, сachingAction } = depActions;
 
@@ -102,5 +102,4 @@ const getterCacheHook = async (dispatch, dep = {}, depActions = {}) => {
   }
 };
 
-const modulesApi = { cachingHook, getterCacheHook, putterCacheHook };
-export default modulesApi;
+export default { cachingThunk, getterCacheThunk, putterCacheThunk };
