@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getComponentByKey, parseModuleKey, getModuleTypeByParsedKey } from 'Utils';
+import { getComponentByKey, parseModuleKey, getModuleTypeByParsedKey } from 'Utils/utils.global';
 import { contentViewType } from './ContentView.types';
 import _ from 'lodash';
 import { Layout, Spin } from 'antd';

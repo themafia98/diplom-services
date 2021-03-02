@@ -1,7 +1,7 @@
 import winston, { Logger } from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
 import path from 'path';
-import Utils from '..';
+import Utils from '../utils.global';
 
 namespace LoggerSpace {
   const factory = (

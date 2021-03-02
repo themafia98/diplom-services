@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import clsx from 'clsx';
-import { getComponentByKey } from 'Utils';
+import { getComponentByKey } from 'Utils/utils.global';
 import { drawerViewerType } from './DrawerViewer.types';
 import { Drawer } from 'antd';
 import types from 'types.modules';

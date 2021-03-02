@@ -1,5 +1,5 @@
-import { Decorator } from '../Utils/Types';
-import { RouteDefinition, DecoratorConfig } from '../Utils/Interfaces';
+import { Decorator } from '../Types/types.global';
+import { RouteDefinition, DecoratorConfig } from '../Interfaces/Interfaces.global';
 
 namespace Decorators {
   export const Controller = (prefix: string): Decorator => (target: Object): void => {

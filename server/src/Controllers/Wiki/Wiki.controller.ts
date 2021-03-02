@@ -1,10 +1,10 @@
 import { Response, Request } from 'express';
 import _ from 'lodash';
-import { Params, ActionParams, Controller as ControllerApi } from '../../Utils/Interfaces';
-import { ResRequest } from '../../Utils/Types';
+import { Params, ActionParams, Controller as ControllerApi } from '../../utils/Interfaces/Interfaces.global';
+import { ResRequest } from '../../utils/Types/types.global';
 
-import Decorators from '../../Decorators';
-import Action from '../../Models/Action';
+import Decorators from '../../utils/decorators';
+import Action from '../../models/Action';
 import { createParams } from '../Controllers.utils';
 
 namespace Wiki {

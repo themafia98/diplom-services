@@ -1,6 +1,6 @@
 import cluster, { Worker } from 'cluster';
 import { Server as HttpServer } from 'http';
-import { WsWorker, Dbms } from '../../Utils/Interfaces';
+import { WsWorker, Dbms } from '../../utils/Interfaces/Interfaces.global';
 import chalk from 'chalk';
 import { Socket } from 'net';
 

@@ -1,7 +1,7 @@
 import nodemailer, { SendMailOptions, Transporter, createTransport, SentMessageInfo } from 'nodemailer';
 import _ from 'lodash';
-import { Mail } from '../../Utils/Interfaces';
-import { transOptions } from '../../Utils/Types';
+import { Mail } from '../../utils/Interfaces/Interfaces.global';
+import { transOptions } from '../../utils/Types/types.global';
 
 namespace Mailer {
   export class MailManager implements Mail {

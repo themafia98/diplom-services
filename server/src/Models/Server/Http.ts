@@ -7,20 +7,20 @@ import socketio from 'socket.io';
 import passport from 'passport';
 import helmet from 'helmet';
 import chalk from 'chalk';
-import { Route } from '../../Utils/Interfaces';
+import { Route } from '../../utils/Interfaces/Interfaces.global';
 import RouterInstance from '../Router';
 import { Server as HttpServer } from 'http';
-import { Mail } from '../../Utils/Interfaces';
+import { Mail } from '../../utils/Interfaces/Interfaces.global';
 import RestEntitiy from './RestEntity';
 import Chat from '../Chat';
-import Utils from '../../Utils';
+import Utils from '../../utils/utils.global';
 import Mailer from '../Mail';
 
 import DropboxStorage from '../../Services/Dropbox.service';
 
 import limiter from '../../config/limiter';
-import Instanse from '../../Utils/instanse';
-import Middleware from '../../Utils/Middleware';
+import Instanse from '../../utils/instanse';
+import Middleware from '../../utils/middlewares';
 import ProcessRouter from '../Process/ProcessRouter';
 import { CONTROLLERS, CONTROLLERS_MAP } from './Server.constant';
 import authConfig from '../../config/auth.config';
@@ -106,8 +106,7 @@ namespace Http {
       this.getRest().use('/tasks/regTicket', regTicketLimitter);
 
       Instanse.ws.startSocketConnection(new socketio.Server(server));
-      const chat = new Chat(Instanse.ws);
-      chat.run();
+      new Chat(Instanse.ws).run();
 
       Utils.initControllers(
         Object.values(CONTROLLERS).map((controllerKey) => CONTROLLERS_MAP[controllerKey]),

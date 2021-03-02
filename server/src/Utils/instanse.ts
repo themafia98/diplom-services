@@ -1,6 +1,6 @@
-import WebSocketWorker from '../Models/WebSocketWorker';
-import Database from '../Models/Database';
-import { Dbms } from './Interfaces';
+import WebSocketWorker from '../models/WebSocketWorker';
+import Database from '../models/Database';
+import { Dbms } from './Interfaces/Interfaces.global';
 
 namespace Instanse {
   export const ws: WebSocketWorker = new WebSocketWorker();

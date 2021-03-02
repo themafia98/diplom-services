@@ -1,9 +1,9 @@
-import { ResponseBuilder } from '../../Utils/Interfaces';
-import { Params, Request as RequestCustom } from '../../Utils/Interfaces';
+import { ResponseBuilder } from '../../utils/Interfaces/Interfaces.global';
+import { Params, Request as RequestCustom } from '../../utils/Interfaces/Interfaces.global';
 import { Response, Request } from 'express';
-import { ParserResult } from '../../Utils/Types';
-import Utils from '../../Utils';
-import Logger from '../../Utils/Logger';
+import { ParserResult } from '../../utils/Types/types.global';
+import Utils from '../../utils/utils.global';
+import Logger from '../../utils/Logger';
 
 const { getResponseJson } = Utils;
 const { loggerError } = Logger;

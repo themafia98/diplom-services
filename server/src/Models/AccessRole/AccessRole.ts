@@ -1,6 +1,6 @@
 import getAccessConfig from '../../core/Access/Access.config';
-import { JsonConfig, UserRole, User, AccessConfig } from '../../Utils/Interfaces';
-import { MenuConfig, Role } from '../../Utils/Types';
+import { JsonConfig, UserRole, User, AccessConfig } from '../../utils/Interfaces/Interfaces.global';
+import { MenuConfig, Role } from '../../utils/Types/types.global';
 import { ObjectId } from 'mongodb';
 import { ACTIONS_ACCESS } from '../../app.constant';
 

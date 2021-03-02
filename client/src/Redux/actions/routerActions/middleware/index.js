@@ -1,4 +1,4 @@
-import { sucessEvent, routePathNormalise, findData, routeParser, findUser } from 'Utils';
+import { sucessEvent, routePathNormalise, findData, routeParser, findUser } from 'Utils/utils.global';
 import reduxCoreThunk from 'Redux/core';
 import { saveComponentStateAction, loadFlagAction, openPageWithDataAction, setActiveTabAction } from '../';
 import { errorRequestAction, setStatus } from '../../publicActions';

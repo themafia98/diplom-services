@@ -1,7 +1,7 @@
-import Utils from '../../../Utils';
+import Utils from '../../../utils/utils.global';
 import { Model, Document } from 'mongoose';
-import { ActionParams, Actions, Action, QueryParams } from '../../../Utils/Interfaces';
-import { ParserData } from '../../../Utils/Types';
+import { ActionParams, Actions, Action, QueryParams } from '../../../utils/Interfaces/Interfaces.global';
+import { ParserData } from '../../../utils/Types/types.global';
 import _ from 'lodash';
 
 const { getModelByName } = Utils;

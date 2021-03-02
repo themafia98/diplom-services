@@ -1,8 +1,8 @@
 import { Response, NextFunction } from 'express';
 import _ from 'lodash';
 import passport from 'passport';
-import { UserModel } from '../Models/Database/Schema';
-import { ResRequest, ParserResult } from '../Utils/Types';
+import { UserModel } from '../../models/Database/Schema';
+import { ResRequest, ParserResult } from '../../utils/Types/types.global';
 import {
   Request,
   App,
@@ -11,9 +11,9 @@ import {
   User,
   Controller as ControllerApi,
   QueryParams,
-} from '../Utils/Interfaces';
-import Action from '../Models/Action';
-import Decorators from '../Decorators';
+} from '../../utils/Interfaces/Interfaces.global';
+import Action from '../../models/Action';
+import Decorators from '../../utils/decorators';
 import { SentMessageInfo } from 'nodemailer';
 
 namespace General {

@@ -1,12 +1,12 @@
-import Cabinet from '../../Controllers/Cabinet';
-import ChatController from '../../Controllers/Contact/Chat';
-import News from '../../Controllers/Contact/News';
-import General from '../../Controllers/General';
-import System from '../../Controllers/Main';
-import Settings from '../../Controllers/Settings';
-import Statistic from '../../Controllers/Statistic';
-import Tasks from '../../Controllers/Tasks';
-import Wiki from '../../Controllers/Wiki';
+import Cabinet from '../../controllers/Cabinet/Cabinet.controller';
+import ChatController from '../../controllers/Contact/Chat/Chat.controller';
+import News from '../../controllers/Contact/News/News.controller';
+import General from '../../controllers/General/General.controller';
+import System from '../../controllers/Main/Main.controller';
+import Settings from '../../controllers/Settings/Settings.controller';
+import Statistic from '../../controllers/Statistic/Statistic.controller';
+import Tasks from '../../controllers/Tasks/Tasks.controller';
+import Wiki from '../../controllers/Wiki/Wiki.controller';
 
 export const CONTROLLERS = {
   MAIN: 'MAIN_CONTROLLER',

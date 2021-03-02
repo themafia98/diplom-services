@@ -1,9 +1,9 @@
-import { ResRequest } from '../../../Utils/Types';
+import { ResRequest } from '../../../utils/Types/types.global';
 import { Request, Response } from 'express';
 
-import Decorators from '../../../Decorators';
-import Action from '../../../Models/Action';
-import { Controller as ControllerApi } from '../../../Utils/Interfaces';
+import Decorators from '../../../utils/decorators';
+import Action from '../../../models/Action';
+import { Controller as ControllerApi } from '../../../utils/Interfaces/Interfaces.global';
 
 const Post = Decorators.Post;
 const Delete = Decorators.Delete;

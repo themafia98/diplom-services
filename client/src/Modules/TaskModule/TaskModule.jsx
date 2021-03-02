@@ -4,7 +4,7 @@ import { compose } from 'redux';
 import { taskModuleType } from './TaskModule.types';
 import { connect } from 'react-redux';
 import { Button, message } from 'antd';
-import { routeParser, oneOfType } from 'Utils';
+import { routeParser, oneOfType } from 'Utils/utils.global';
 import { settingsStatusSelector } from 'Redux/selectors';
 import {
   addTabAction,

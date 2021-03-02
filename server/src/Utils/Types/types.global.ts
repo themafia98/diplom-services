@@ -13,7 +13,7 @@ import {
   WikiPage,
   Settings,
   Access,
-} from '../Interfaces';
+} from '../Interfaces/Interfaces.global';
 import { Document } from 'mongoose';
 import { Response } from 'express';
 import { Socket } from 'socket.io';

@@ -6,7 +6,7 @@ import TitleModule from 'Components/TitleModule';
 import EditorTextarea from 'Components/Textarea/EditorTextarea';
 import { message, notification, Input } from 'antd';
 
-import { createNotification, createEntity } from 'Utils';
+import { createNotification, createEntity } from 'Utils/utils.global';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { compose } from 'redux';
 import { withClientDb } from 'Models/ClientSideDatabase';

@@ -1,10 +1,15 @@
 import { Response, Request } from 'express';
 import url from 'url';
 import querystring from 'querystring';
-import { Params, Controller as ControllerApi, Actions, ActionParams } from '../../Utils/Interfaces';
-import { ResRequest, FileBody } from '../../Utils/Types';
-import Action from '../../Models/Action';
-import Decorators from '../../Decorators';
+import {
+  Params,
+  Controller as ControllerApi,
+  Actions,
+  ActionParams,
+} from '../../utils/Interfaces/Interfaces.global';
+import { ResRequest, FileBody } from '../../utils/Types/types.global';
+import Action from '../../models/Action';
+import Decorators from '../../utils/decorators';
 import { isValidObjectId, Types } from 'mongoose';
 import { createParams } from '../Controllers.utils';
 

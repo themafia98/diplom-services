@@ -13,12 +13,12 @@ import {
   SocketMeta,
   SocketMessage,
   expressFile,
-} from '../Types';
-import socketio, { Server as WorkerIO } from 'socket.io';
+} from '../Types/types.global';
+import socketio, { Server as WorkerIO, Socket } from 'socket.io';
 import mongoose, { Connection, Model, Document, FilterQuery } from 'mongoose';
 import { ObjectId } from 'mongodb';
 import { ParsedUrlQuery } from 'querystring';
-import WebSocketWorker from '../../Models/WebSocketWorker';
+import WebSocketWorker from '../../models/WebSocketWorker';
 export interface Controller<T> {
   [key: string]: any;
 }
@@ -29,6 +29,7 @@ export interface ServiceConstructor<T> {
 
 export interface ChatModel {
   run(): void;
+  destroy(socket: Socket): void;
   ws: WebSocketWorker;
   worker: WorkerIO;
 }
