@@ -1,5 +1,7 @@
-import { runLocalUpdate, runRefreshIndexedDb, runNoCorsSave, runBadNetworkMode } from '../core.utils';
+import coreUtils from '../core.utils';
 import { getStoreSchema } from '../../../Utils/utilsHook';
+
+const { runLocalUpdate, runRefreshIndexedDb, runNoCorsSave, runBadNetworkMode } = coreUtils;
 
 const coreDataUpdater = async (dispatch, dep = {}, multiple = false, badNetwork = false) => {
   const {
