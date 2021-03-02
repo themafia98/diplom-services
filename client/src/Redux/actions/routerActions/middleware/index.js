@@ -1,6 +1,5 @@
 import { sucessEvent, routePathNormalise, findData, routeParser, findUser } from 'Utils';
-
-import { errorThunk, coreDataUpdater } from 'Redux/core';
+import reduxCoreThunk from 'Redux/core';
 import { saveComponentStateAction, loadFlagAction, openPageWithDataAction, setActiveTabAction } from '../';
 import { errorRequestAction, setStatus } from '../../publicActions';
 import actionsTypes from 'actions.types';
@@ -9,6 +8,8 @@ import _ from 'lodash';
 import { message } from 'antd';
 import { makeApiAction, getActionStore } from 'Utils/Api';
 import { setSystemMessageAction } from 'Redux/actions/systemActions';
+
+const { errorThunk, coreDataUpdater } = reduxCoreThunk;
 
 const loadCurrentData = (params) => async (dispatch, getState, { schema, Request }) => {
   const {
