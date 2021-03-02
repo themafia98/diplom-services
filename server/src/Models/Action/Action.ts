@@ -1,11 +1,8 @@
-import { ActionParams, Actions, Action, ActionProps, Params } from '../../Utils/Interfaces';
-import request from 'request';
-import mime from 'mime';
+import { ActionParams, Actions, ActionProps, Params } from '../../Utils/Interfaces';
 import { Model, Document, Types, FilterQuery } from 'mongoose';
 import _ from 'lodash';
 import ActionEntity from './ActionEntity';
 import Utils from '../../Utils';
-//import Logger from '../../Utils/Logger';
 import {
   ParserData,
   limiter,
@@ -16,24 +13,14 @@ import {
   Meta,
 } from '../../Utils/Types';
 import { files } from 'dropbox';
-/** Actions */
-import ActionLogger from './ActionsEntity/ActionLogger';
-import ActionNotification from './ActionsEntity/ActionNotification';
-import ActionNews from './ActionsEntity/ActionNews';
-import ActionJournal from './ActionsEntity/ActionJurnal';
-import ActionUsers from './ActionsEntity/ActionUsers';
-import ActionChatMessage from './ActionsEntity/ActionChatMessage';
-import ActionChatRoom from './ActionsEntity/ActionChatRoom';
-import ActionGlobal from './ActionsEntity/ActionGlobal';
-import ActionTasks from './ActionsEntity/ActionTasks';
-import ActionWiki from './ActionsEntity/ActionWiki';
-import ActionSettings from './ActionsEntity/ActionSettings';
 import Responser from '../Responser';
 import { Response, Request } from 'express';
 import { ParsedUrlQuery } from 'querystring';
+import { ACTIONS_ENTITYS_REGISTER } from './Action.constant';
+import { runSyncClient, startDownloadPipe } from './Action.utils';
 
 namespace ActionApi {
-  const { getModelByName, parsePublicData } = Utils;
+  const { parsePublicData } = Utils;
 
   export class ActionParser extends ActionEntity implements Actions {
     constructor(props: ActionProps) {
@@ -238,113 +225,27 @@ namespace ActionApi {
       }
     }
 
-    public async runSyncClient(actionParam: ActionParams | Meta): Promise<ParserData> {
-      const { syncList = [] } = actionParam as Record<string, Array<object>>;
-
-      for await (let syncItem of syncList) {
-        const { entity = '' } = syncItem as Record<string, string>;
-        const { items = [] } = syncItem as Record<string, Array<object>>;
-        const model: Model<Document> | null = getModelByName(entity, entity === 'tasks' ? 'task' : entity);
-
-        if (!model) continue;
-        for await (let updateProps of items) {
-          let copy = { ...updateProps };
-
-          const { _id = null, key = '' } = (updateProps as Record<string, string>) || {};
-
-          const validId: any = typeof _id === 'string' ? Types.ObjectId(_id) : null;
-
-          if (!validId) {
-            copy = Object.keys(copy).reduce((acc, key: string) => {
-              if (key === '_id') return acc;
-
-              const { [key]: item } = copy as Record<string, string | number | boolean>;
-
-              return {
-                ...acc,
-                [key]: item,
-              };
-            }, {});
-          }
-
-          const query: ActionParams = {
-            updateProps: copy,
-            _id: validId,
-            key,
-          };
-
-          await this.updateEntity(model, query, { upsert: true });
-        }
-      }
-
-      return [{ syncDone: true }];
-    }
-
     private async actionExec(actionParam: ActionParams | Meta): Promise<ParserData> {
       if (this.getActionType() === 'sync') {
-        return await this.runSyncClient(actionParam);
+        return await runSyncClient(this, actionParam);
       }
 
-      switch (this.getActionPath()) {
-        case 'global': {
-          const action: Action = new ActionGlobal(this);
-          return action.run(actionParam);
-        }
+      let ActionConstructor = null;
 
-        case 'notification': {
-          const action: Action = new ActionNotification(this);
-          return action.run(actionParam);
-        }
+      for (const actionKey of Object.keys(ACTIONS_ENTITYS_REGISTER)) {
+        const entityKey = this.getActionPath();
 
-        case 'chatRoom': {
-          const action: Action = new ActionChatRoom(this);
-          return action.run(actionParam);
-        }
-
-        case 'chatMsg': {
-          const action: Action = new ActionChatMessage(this);
-          return action.run(actionParam);
-        }
-
-        case 'users': {
-          const action: Action = new ActionUsers(this);
-          return action.run(actionParam);
-        }
-
-        case 'jurnalworks': {
-          const action: Action = new ActionJournal(this);
-          return action.run(actionParam);
-        }
-
-        case 'tasks': {
-          const action: Action = new ActionTasks(this);
-          return action.run(actionParam);
-        }
-
-        case 'news': {
-          const action: Action = new ActionNews(this);
-          return action.run(actionParam);
-        }
-
-        case 'settingsLog': {
-          const action: Action = new ActionLogger(this);
-          return action.run(actionParam);
-        }
-
-        case 'wiki': {
-          const action: Action = new ActionWiki(this);
-          return action.run(actionParam);
-        }
-
-        case 'settings': {
-          const action: Action = new ActionSettings(this);
-          return action.run(actionParam);
-        }
-
-        default: {
-          return null;
+        if (actionKey === entityKey) {
+          ActionConstructor = ACTIONS_ENTITYS_REGISTER[entityKey];
+          break;
         }
       }
+
+      if (ActionConstructor) {
+        return new ActionConstructor(this).run(actionParam as ActionParams);
+      }
+
+      return null;
     }
 
     public async actionsRunner(
@@ -365,17 +266,8 @@ namespace ActionApi {
         try {
           if (this.getActionType() === 'download_files' && actionResult) {
             const file: files.GetTemporaryLinkResult = actionResult as files.GetTemporaryLinkResult;
-            const { link = '' } = file;
-            const { filename = '' } = actionParam as ActionParams;
-            const mimetype = mime.getType(filename as string);
 
-            res.setHeader('Content-disposition', 'attachment; filename=' + filename);
-            res.setHeader('Content-type', mimetype ? mimetype : 'plain/text');
-
-            if (process.env.NODE_ENV === 'development') {
-              console.log('trace memory:', process.memoryUsage());
-            }
-            return request(link).pipe(res);
+            return startDownloadPipe(res, file, actionParam as ActionParams);
           }
 
           if (mode === 'exec') return actionResult as any;

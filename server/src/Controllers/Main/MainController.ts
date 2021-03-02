@@ -12,7 +12,6 @@ import {
   Controller as ControllerApi,
   BodyLogin,
   Actions,
-  ActionParams,
   User,
   JsonConfig,
   AccessConfig,
@@ -23,6 +22,8 @@ import Decorators from '../../Decorators';
 import Action from '../../Models/Action';
 import AccessRole from '../../Models/AccessRole';
 import { UserModel } from '../../Models/Database/Schema';
+import { createParams } from '../Controllers.utils';
+import { NOTIFICATION_TYPE } from './MainController.constant';
 
 namespace System {
   const readFile = promisify(fs.readFile);
@@ -83,7 +84,7 @@ namespace System {
       const { query } = url.parse(req.url);
       const queryString = querystring.parse(query as string);
 
-      const params: Params = { methodQuery: 'get_all', status: 'done', done: true, from: 'users' };
+      const params: Params = createParams('get_all', 'done', 'users');
       const actionUserList: Actions = new Action.ActionParser({
         actionPath: 'users',
         actionType: 'get_all',
@@ -97,14 +98,9 @@ namespace System {
     protected async saveFile(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { module: moduleName = '' } = req.params;
       const { dropbox: store } = server.locals;
-      const params: Params = {
-        methodQuery: 'save_file',
-        status: 'done',
-        done: true,
-        from: moduleName,
-      };
+      const params: Params = createParams('save_file', 'done', moduleName);
 
-      const files: ActionParams = req.files as any;
+      const files: Express.Multer.File[] = req.files as Express.Multer.File[];
       const saveFileAction: Actions = new Action.ActionParser({
         actionPath: 'global',
         actionType: 'save_file',
@@ -118,14 +114,10 @@ namespace System {
     @Put({ path: '/:module/load/file', private: true })
     protected async loadTaskFiles(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { module: moduleName = '' } = req.params;
-      const params: Params = {
-        methodQuery: 'load_files',
-        status: 'done',
-        done: true,
-        from: moduleName,
-      };
-
       const { dropbox } = server.locals;
+
+      const params: Params = createParams('load_files', 'done', moduleName);
+
       const downloadAction: Actions = new Action.ActionParser({
         actionPath: 'global',
         actionType: 'load_files',
@@ -144,12 +136,8 @@ namespace System {
     @Get({ path: '/:module/download/:entityId/:filename', private: true })
     protected async downloadFile(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { entityId = '', filename = '', module: moduleName = '' } = req.params;
-      const params: Params = {
-        methodQuery: 'download_files',
-        status: 'done',
-        done: true,
-        from: 'tasks',
-      };
+      const params: Params = createParams('download_files', 'done', 'tasks');
+
       const { dropbox: store } = server.locals;
       const downloadAction: Actions = new Action.ActionParser({
         actionPath: 'global',
@@ -169,12 +157,8 @@ namespace System {
     protected async deleteTaskFile(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { dropbox: store } = server.locals;
       const { module: moduleName = '' } = req.params;
-      const params: Params = {
-        methodQuery: 'delete_file',
-        status: 'done',
-        done: true,
-        from: moduleName,
-      };
+
+      const params: Params = createParams('delete_file', 'done', moduleName);
 
       const deleteFileAction: Actions = new Action.ActionParser({
         actionPath: 'global',
@@ -193,14 +177,10 @@ namespace System {
     @Post({ path: '/:module/update/single', private: true })
     protected async updateSingle(req: Request, res: Response): ResRequest {
       const { module: moduleName = '' } = req.params;
-      const { params: paramsRequest = {} } = req.body || {};
+      const { params: paramsRequest = {} } = req.body;
 
-      const params: Params = {
-        methodQuery: 'update_single',
-        status: 'done',
-        done: true,
-        from: moduleName,
-      };
+      const params: Params = createParams('update_single', 'done', moduleName);
+
       const updateSingleAction: Actions = new Action.ActionParser({
         actionPath: moduleName,
         actionType: 'update_single',
@@ -224,12 +204,7 @@ namespace System {
             }
           : {};
 
-      const params: Params = {
-        methodQuery: 'update_many',
-        status: 'done',
-        done: true,
-        from: moduleName,
-      };
+      const params: Params = createParams('update_many', 'done', moduleName);
 
       const updateManyAction: Actions = new Action.ActionParser({
         actionPath: moduleName,
@@ -243,15 +218,10 @@ namespace System {
 
     @Post({ path: '/:type/notification', private: true })
     protected async notification(req: Request, res: Response): ResRequest {
-      const { type = '' } = req.params;
-      const params: Params = {
-        methodQuery: type,
-        status: 'done',
-        done: true,
-        from: 'notification',
-      };
+      const { type: notificationType = '' } = req.params;
+      const params: Params = createParams(notificationType, 'done', 'notification');
 
-      if (type !== 'private' && type !== 'global') {
+      if (Object.keys(NOTIFICATION_TYPE).every((type) => type !== notificationType)) {
         return res.sendStatus(500);
       }
 
@@ -267,19 +237,19 @@ namespace System {
         actionType: actionType as string,
       });
 
-      const responseExec: Function = await createNotificationAction.actionsRunner({ ...options, item, type });
+      const responseExec: Function = await createNotificationAction.actionsRunner({
+        ...options,
+        item,
+        type: notificationType,
+      });
       return responseExec(req, res, params, true);
     }
 
     @Post({ path: '/sync', private: true })
     protected async syncClientData(req: Request, res: Response): ResRequest {
       const { module: moduleName = '' } = req.params;
-      const params: Params = {
-        methodQuery: 'sync',
-        status: 'done',
-        done: true,
-        from: 'sync_all',
-      };
+
+      const params: Params = createParams('sync', 'done', 'sync_all');
       const body: BodyLogin = req.body;
 
       const syncAction: Actions = new Action.ActionParser({

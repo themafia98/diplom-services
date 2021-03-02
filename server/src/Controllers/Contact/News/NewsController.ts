@@ -10,6 +10,7 @@ import { Meta, ResRequest } from '../../../Utils/Types';
 
 import Decorators from '../../../Decorators';
 import Action from '../../../Models/Action';
+import { createParams } from '../../Controllers.utils';
 
 namespace News {
   const Controller = Decorators.Controller;
@@ -27,13 +28,7 @@ namespace News {
 
       const { actionType = '' } = queryParams as QueryParams;
 
-      const params: Params = {
-        methodQuery: actionType,
-        status: 'done',
-        done: true,
-        from: 'news',
-      };
-
+      const params: Params = createParams(actionType, 'done', 'news');
       const { shouldBeCreate = false } = req as Record<string, any>;
 
       if (!shouldBeCreate) {

@@ -4,6 +4,7 @@ import { Params, Controller as ControllerApi } from '../../Utils/Interfaces';
 import { ResRequest } from '../../Utils/Types';
 import Decorators from '../../Decorators';
 import Action from '../../Models/Action';
+import { createParams } from '../Controllers.utils';
 
 namespace Statistic {
   const Controller = Decorators.Controller;
@@ -13,9 +14,8 @@ namespace Statistic {
   export class StatisticController implements ControllerApi<FunctionConstructor> {
     @Post({ path: '/taskBar', private: true })
     protected async getTaskBarStats(req: Request, res: Response): ResRequest {
-      const params: Params = { methodQuery: 'get_stats', status: 'done', done: true, from: 'tasks' };
-
-      const { params: { options = {} } = {} } = req.body || {};
+      const params: Params = createParams('get_stats', 'done', 'tasks');
+      const { params: { options = {} } = {} } = req.body;
 
       const actionStats = new Action.ActionParser({
         actionPath: 'tasks',
