@@ -5,7 +5,7 @@ import { taskModuleType } from './TaskModule.types';
 import { connect } from 'react-redux';
 import { Button, message } from 'antd';
 import { routeParser, oneOfType } from 'Utils';
-import { settingsStatusSelector } from 'Utils/selectors';
+import { settingsStatusSelector } from 'Redux/selectors';
 import {
   addTabAction,
   openPageWithDataAction,

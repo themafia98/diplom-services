@@ -5,7 +5,7 @@ import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
 import Bar from './Charts/Bar';
 import TitleModule from 'Components/TitleModule';
-import { settingsStatusSelector } from 'Utils/selectors';
+import { settingsStatusSelector } from 'Redux/selectors';
 import FixedToolbar from 'Components/FixedToolbar';
 import { Button } from 'antd';
 import { withClientDb } from 'Models/ClientSideDatabase';

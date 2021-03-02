@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import Scrollbars from 'react-custom-scrollbars';
 import { deleteFile, loadFile, routeParser, sortedByKey } from 'Utils';
 import { TASK_SCHEMA } from 'Models/Schema/const';
-import { settingsStatusSelector } from 'Utils/selectors';
+import { settingsStatusSelector } from 'Redux/selectors';
 import { middlewareCaching, middlewareUpdate } from 'Redux/actions/publicActions/middleware';
 import { сachingAction } from 'Redux/actions/publicActions';
 

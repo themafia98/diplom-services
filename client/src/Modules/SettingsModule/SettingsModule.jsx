@@ -1,7 +1,7 @@
 import React, { PureComponent, createRef } from 'react';
 import { settingsModuleType } from './SettingsModule.types';
 import { connect } from 'react-redux';
-import { settingsLogsSelector, settingsStatusSelector, settingsArtifactsSelector } from 'Utils/selectors';
+import { settingsLogsSelector, settingsStatusSelector, settingsArtifactsSelector } from 'Redux/selectors';
 import { saveComponentStateAction } from 'Redux/actions/routerActions';
 import { updateUdata, setStatus, onLoadSettings } from 'Redux/actions/publicActions';
 import { message } from 'antd';
