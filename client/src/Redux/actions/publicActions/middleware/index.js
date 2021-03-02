@@ -1,11 +1,13 @@
 import { сachingAction, errorRequestAction, setStatus } from '../';
-import { errorThunk, cachingThunk, getterCacheThunk, putterCacheThunk, updateEntityThunk } from 'Redux/core';
+import reduxCoreThunk from 'Redux/core';
 import { onLoadArtifacts, onLoadSettings } from '../';
 import { multipleLoadData } from '../../routerActions/middleware';
 import { updateItemStateAction } from '../../routerActions';
 import actionsTypes from 'actions.types';
 import { requestTemplate, paramsTemplate } from 'Utils/Api/api.utils';
 import { message } from 'antd';
+
+const { errorThunk, cachingThunk, getterCacheThunk, putterCacheThunk, updateEntityThunk } = reduxCoreThunk;
 
 /**
  * Middleware
