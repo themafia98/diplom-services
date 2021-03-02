@@ -221,7 +221,7 @@ namespace System {
       const { type: notificationType = '' } = req.params;
       const params: Params = createParams(notificationType, 'done', 'notification');
 
-      if (Object.keys(NOTIFICATION_TYPE).every((type) => type !== notificationType)) {
+      if (Object.values(NOTIFICATION_TYPE).every((type) => type !== notificationType)) {
         return res.sendStatus(500);
       }
 
