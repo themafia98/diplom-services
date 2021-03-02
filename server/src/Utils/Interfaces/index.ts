@@ -435,7 +435,6 @@ export interface Actions extends EntityActionApi {
     mode?: string,
     queryString?: ParsedUrlQuery,
   ): Promise<Function>;
-  runSyncClient(actionParam: ActionParams): Promise<ParserData>;
 }
 
 export interface TicketRemote {

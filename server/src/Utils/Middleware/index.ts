@@ -34,7 +34,7 @@ namespace Middleware {
       );
     }
 
-    const { actionType = '' } = req.body || {};
+    const { actionType = '' } = req.body;
 
     if ((<string>actionType).toUpperCase().includes(ACTIONS_ACCESS.CREATE) && request.session) {
       request.shouldBeCreate = request.session.availableActions.some(

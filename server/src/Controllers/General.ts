@@ -36,13 +36,13 @@ namespace General {
     @Post({ path: '/reg', private: false })
     protected async reg(req: Request, res: Response): ResRequest {
       try {
-        if (!req.body || (req.body && _.isEmpty(req.body))) {
+        if (!req.body) {
           throw new Error('Invalid auth data');
         }
 
-        const { user = {} } = req.body as Record<string, User>;
+        const { user = null } = req.body as Record<string, User>;
 
-        if (!user || _.isEmpty(user)) {
+        if (!user) {
           throw new Error('Bad user data for registration');
         }
 
@@ -65,7 +65,9 @@ namespace General {
     protected async login(req: Request, res: Response, next: NextFunction) {
       const body: BodyLogin = req.body;
 
-      if (!body || (body && _.isEmpty(body))) return void res.sendStatus(503);
+      if (!body || (body && _.isEmpty(body))) {
+        res.sendStatus(503);
+      }
 
       const result = await passport.authenticate(
         'local',
@@ -195,12 +197,9 @@ namespace General {
 
         const { recovoryField = '' } = body;
 
-        const actionPath: string = 'users';
-        const actionType: string = 'recovory_checker';
-
         const checkerAction: Action.ActionParser = new Action.ActionParser({
-          actionPath,
-          actionType,
+          actionPath: 'users',
+          actionType: 'recovory_checker',
           body,
         });
 

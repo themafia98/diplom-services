@@ -5,6 +5,7 @@ import { ResRequest } from '../../Utils/Types';
 
 import Action from '../../Models/Action';
 import Decorators from '../../Decorators';
+import { createParams } from '../Controllers.utils';
 
 namespace Settings {
   const { Controller, Post, Put, Get } = Decorators;
@@ -87,14 +88,9 @@ namespace Settings {
 
     @Post({ path: '/profile', private: true })
     protected async profileSettings(req: Request, res: Response): ResRequest {
-      const params: Params = {
-        methodQuery: 'profile_changes',
-        from: 'users',
-        done: true,
-        status: 'OK',
-      };
-
+      const params: Params = createParams('profile_changes', 'OK', 'users');
       const body: Record<string, QueryParams> = req.body;
+
       const { queryParams } = body;
 
       const changeProfileAction = new Action.ActionParser({
@@ -114,12 +110,7 @@ namespace Settings {
       const body: Record<string, object | string> = req.body;
       const { actionType = '' } = body;
 
-      const params: Params = {
-        methodQuery: actionType as string,
-        from: 'settingsLog',
-        done: true,
-        status: 'OK',
-      };
+      const params: Params = createParams(actionType as string, 'OK', 'settingsLog');
 
       const settingsLogger = new Action.ActionParser({
         actionPath: 'settingsLog',

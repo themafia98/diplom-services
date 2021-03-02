@@ -6,6 +6,7 @@ import { ResRequest, FileBody } from '../../Utils/Types';
 import Action from '../../Models/Action';
 import Decorators from '../../Decorators';
 import { isValidObjectId, Types } from 'mongoose';
+import { createParams } from '../Controllers.utils';
 
 namespace Cabinet {
   const { Controller, Post, Get } = Decorators;
@@ -14,12 +15,7 @@ namespace Cabinet {
   export class CabinetController implements ControllerApi<FunctionConstructor> {
     @Post({ path: '/:uid/loadAvatar', private: true, file: true })
     protected async loadAvatar(req: Request, res: Response): ResRequest {
-      const params: Params = {
-        methodQuery: 'update_avatar',
-        from: 'users',
-        done: true,
-        status: 'OK',
-      };
+      const params: Params = createParams('update_avatar', 'OK', 'users');
       const files: Array<FileBody> = req.files as Array<FileBody>;
       const { uid = '' } = req.params;
 
@@ -43,7 +39,7 @@ namespace Cabinet {
 
     @Get({ path: '/findUser', private: true })
     protected async findUser(req: Request, res: Response): ResRequest {
-      const params: Params = { methodQuery: 'get_all', status: 'done', done: true, from: 'users' };
+      const params: Params = createParams('get_all', 'done', 'users');
       const actionUser: Actions = new Action.ActionParser({
         actionPath: 'users',
         actionType: 'get_all',

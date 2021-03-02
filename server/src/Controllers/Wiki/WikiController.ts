@@ -5,6 +5,7 @@ import { ResRequest } from '../../Utils/Types';
 
 import Decorators from '../../Decorators';
 import Action from '../../Models/Action';
+import { createParams } from '../Controllers.utils';
 
 namespace Wiki {
   const Controller = Decorators.Controller;
@@ -17,7 +18,7 @@ namespace Wiki {
   export class WikiController implements ControllerApi<FunctionConstructor> {
     @Get({ path: '/list', private: true })
     protected async getTreeList(req: Request, res: Response): ResRequest {
-      const params: Params = { methodQuery: 'get_all', status: 'done', done: true, from: 'wiki' };
+      const params: Params = createParams('get_all', 'done', 'wiki');
 
       const actionTreeList = new Action.ActionParser({
         actionPath: 'wiki',
@@ -30,7 +31,7 @@ namespace Wiki {
 
     @Put({ path: '/createLeaf', private: true })
     protected async createLeaf(req: Request, res: Response): ResRequest {
-      const params: Params = { methodQuery: 'create_leaf', status: 'done', done: true, from: 'wiki' };
+      const params: Params = createParams('create_leaf', 'done', 'wiki');
       const { params: leafEntity = {} } = req.body;
 
       const actionCreateLeaf = new Action.ActionParser({
@@ -44,7 +45,7 @@ namespace Wiki {
 
     @Delete({ path: '/deleteLeafs', private: true })
     protected async deleteLeafs(req: Request, res: Response): ResRequest {
-      const params: Params = { methodQuery: 'delete_leafs', status: 'done', done: true, from: 'wiki' };
+      const params: Params = createParams('delete_leafs', 'done', 'wiki');
 
       const { params: leafParam = {} } = req.body;
 
@@ -59,8 +60,7 @@ namespace Wiki {
 
     @Post({ path: '/wikiPage', private: true })
     protected async getWikiPage(req: Request, res: Response): ResRequest {
-      const params: Params = { methodQuery: 'wiki_page', status: 'done', done: true, from: 'wiki' };
-
+      const params: Params = createParams('wiki_page', 'done', 'wiki');
       const body: ActionParams = req.body;
 
       const actionWikiPage = new Action.ActionParser({
