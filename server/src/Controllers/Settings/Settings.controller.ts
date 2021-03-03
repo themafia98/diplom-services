@@ -5,11 +5,11 @@ import {
   ActionParams,
   Controller as ControllerApi,
   QueryParams,
-} from '../../utils/Interfaces/Interfaces.global';
-import { ResRequest } from '../../utils/Types/types.global';
+} from '../../Utils/Interfaces/Interfaces.global';
+import { ResRequest } from '../../Utils/Types/types.global';
 
-import Action from '../../models/Action';
-import Decorators from '../../utils/decorators';
+import Action from '../../Models/Action';
+import Decorators from '../../Utils/decorators';
 import { createParams } from '../Controllers.utils';
 
 namespace Settings {

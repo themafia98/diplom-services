@@ -1,4 +1,4 @@
-import { ActionsAccess } from './utils/Interfaces/Interfaces.global';
+import { ActionsAccess } from './Utils/Interfaces/Interfaces.global';
 
 export const ACTIONS_ACCESS: Readonly<ActionsAccess> = {
   EDIT: 'EDIT',

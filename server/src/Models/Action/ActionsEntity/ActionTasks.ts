@@ -5,9 +5,9 @@ import {
   Action,
   TicketRemote,
   QueryParams,
-} from '../../../utils/Interfaces/Interfaces.global';
-import { ParserData, Pagination } from '../../../utils/Types/types.global';
-import Utils from '../../../utils/utils.global';
+} from '../../../Utils/Interfaces/Interfaces.global';
+import { ParserData, Pagination } from '../../../Utils/Types/types.global';
+import Utils from '../../../Utils/utils.global';
 import _ from 'lodash';
 import { ObjectID } from 'mongodb';
 const { getModelByName, generateRemoteTask, getFilterQuery, parseFilterFields } = Utils;

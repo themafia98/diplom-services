@@ -1,6 +1,6 @@
-import { ActionParams, Actions, Action, QueryParams } from '../../../utils/Interfaces/Interfaces.global';
+import { ActionParams, Actions, Action, QueryParams } from '../../../Utils/Interfaces/Interfaces.global';
 import path from 'path';
-import { ParserData } from '../../../utils/Types/types.global';
+import { ParserData } from '../../../Utils/Types/types.global';
 import { files } from 'dropbox';
 //import { BinaryLike } from 'crypto';
 

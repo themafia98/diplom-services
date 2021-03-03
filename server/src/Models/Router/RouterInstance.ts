@@ -1,5 +1,5 @@
 import express, { Application, Router as RouteExpress } from 'express';
-import { Route } from '../../utils/Interfaces/Interfaces.global';
+import { Route } from '../../Utils/Interfaces/Interfaces.global';
 
 namespace RouterInstance {
   export let instanceRoute: Route | null = null;

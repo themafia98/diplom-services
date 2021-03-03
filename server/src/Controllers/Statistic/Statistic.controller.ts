@@ -1,9 +1,9 @@
 import { Response, Request } from 'express';
 import _ from 'lodash';
-import { Params, Controller as ControllerApi } from '../../utils/Interfaces/Interfaces.global';
-import { ResRequest } from '../../utils/Types/types.global';
-import Decorators from '../../utils/decorators';
-import Action from '../../models/Action';
+import { Params, Controller as ControllerApi } from '../../Utils/Interfaces/Interfaces.global';
+import { ResRequest } from '../../Utils/Types/types.global';
+import Decorators from '../../Utils/decorators';
+import Action from '../../Models/Action';
 import { createParams } from '../Controllers.utils';
 
 namespace Statistic {

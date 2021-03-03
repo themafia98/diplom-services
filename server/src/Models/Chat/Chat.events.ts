@@ -1,9 +1,9 @@
 import { Document, Model } from 'mongoose';
 import _ from 'lodash';
 import { Socket } from 'socket.io';
-import Utils from '../../utils/utils.global';
-import { ChatMessage } from '../../utils/Interfaces/Interfaces.global';
-import { ParserResult, Payload } from '../../utils/Types/types.global';
+import Utils from '../../Utils/utils.global';
+import { ChatMessage } from '../../Utils/Interfaces/Interfaces.global';
+import { ParserResult, Payload } from '../../Utils/Types/types.global';
 import { createRealRoom, updateFakeRoom } from './Chat.utils';
 import WebSocketWorker from '../WebSocketWorker';
 

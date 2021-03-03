@@ -1,8 +1,8 @@
-import Utils from '../../../utils/utils.global';
+import Utils from '../../../Utils/utils.global';
 import { v4 as uuid } from 'uuid';
 import { Model, Document } from 'mongoose';
-import { ActionParams, Actions, Action } from '../../../utils/Interfaces/Interfaces.global';
-import { ParserData } from '../../../utils/Types/types.global';
+import { ActionParams, Actions, Action } from '../../../Utils/Interfaces/Interfaces.global';
+import { ParserData } from '../../../Utils/Types/types.global';
 import _ from 'lodash';
 
 const { getModelByName } = Utils;

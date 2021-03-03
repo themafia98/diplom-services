@@ -1,7 +1,7 @@
 import { Model, Document, Types, isValidObjectId } from 'mongoose';
-import { ActionParams, Actions, Action, QueryParams } from '../../../utils/Interfaces/Interfaces.global';
-import { ParserData } from '../../../utils/Types/types.global';
-import Utils from '../../../utils/utils.global';
+import { ActionParams, Actions, Action, QueryParams } from '../../../Utils/Interfaces/Interfaces.global';
+import { ParserData } from '../../../Utils/Types/types.global';
+import Utils from '../../../Utils/utils.global';
 import _ from 'lodash';
 
 const { getModelByName } = Utils;

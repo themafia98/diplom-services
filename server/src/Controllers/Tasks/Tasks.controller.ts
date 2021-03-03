@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 import _ from 'lodash';
-import { Params, ActionParams, BodyLogin, QueryParams } from '../../utils/Interfaces/Interfaces.global';
-import { ResRequest } from '../../utils/Types/types.global';
-import Action from '../../models/Action';
-import Decorators from '../../utils/decorators';
+import { Params, ActionParams, BodyLogin, QueryParams } from '../../Utils/Interfaces/Interfaces.global';
+import { ResRequest } from '../../Utils/Types/types.global';
+import Action from '../../Models/Action';
+import Decorators from '../../Utils/decorators';
 import { createParams } from '../Controllers.utils';
 
 namespace Tasks {

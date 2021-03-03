@@ -4,7 +4,7 @@ import { NextFunction, Response, Request } from 'express';
 import multer from 'multer';
 import winston from 'winston';
 import { model, Schema, Model, Document } from 'mongoose';
-import { getSchemaByName } from '../models/Database/Schema';
+import { getSchemaByName } from '../Models/Database/Schema';
 import {
   RouteDefinition,
   ResponseDocument,
@@ -17,9 +17,9 @@ import {
 import { v4 as uuid } from 'uuid';
 import { docResponse, ParserResult, Meta } from './Types/types.global';
 import { ObjectID } from 'mongodb';
-import { ROLES } from '../models/AccessRole/AcessRole.constant';
+import { ROLES } from '../Models/AccessRole/AcessRole.constant';
 import { ParsedUrlQuery } from 'querystring';
-import { CONTROLLERS_MAP } from '../models/Server/Server.constant';
+import { CONTROLLERS_MAP } from '../Models/Server/Server.constant';
 
 namespace Utils {
   const upload = multer();

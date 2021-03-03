@@ -1,5 +1,5 @@
-import { ActionProps, EntityActionApi, FileApi, Dbms } from '../../utils/Interfaces/Interfaces.global';
-import Instanse from '../../utils/instanse';
+import { ActionProps, EntityActionApi, FileApi, Dbms } from '../../Utils/Interfaces/Interfaces.global';
+import Instanse from '../../Utils/instanse';
 
 abstract class ActionEntity implements EntityActionApi {
   private actionPath: string = '';

@@ -15,13 +15,13 @@ import {
   User,
   JsonConfig,
   AccessConfig,
-} from '../../utils/Interfaces/Interfaces.global';
-import { ResRequest } from '../../utils/Types/types.global';
+} from '../../Utils/Interfaces/Interfaces.global';
+import { ResRequest } from '../../Utils/Types/types.global';
 
-import Decorators from '../../utils/decorators';
-import Action from '../../models/Action';
-import AccessRole from '../../models/AccessRole';
-import { UserModel } from '../../models/Database/Schema';
+import Decorators from '../../Utils/decorators';
+import Action from '../../Models/Action';
+import AccessRole from '../../Models/AccessRole';
+import { UserModel } from '../../Models/Database/Schema';
 import { createParams } from '../Controllers.utils';
 import { NOTIFICATION_TYPE } from './MainController.constant';
 

@@ -6,10 +6,10 @@ import {
   Controller as ControllerApi,
   Actions,
   ActionParams,
-} from '../../utils/Interfaces/Interfaces.global';
-import { ResRequest, FileBody } from '../../utils/Types/types.global';
-import Action from '../../models/Action';
-import Decorators from '../../utils/decorators';
+} from '../../Utils/Interfaces/Interfaces.global';
+import { ResRequest, FileBody } from '../../Utils/Types/types.global';
+import Action from '../../Models/Action';
+import Decorators from '../../Utils/decorators';
 import { isValidObjectId, Types } from 'mongoose';
 import { createParams } from '../Controllers.utils';
 

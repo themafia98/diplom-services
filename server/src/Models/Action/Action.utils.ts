@@ -3,9 +3,9 @@ import request from 'request';
 import { Response } from 'express';
 import mime from 'mime';
 import { Document, Model, Types } from 'mongoose';
-import Utils from '../../utils/utils.global';
-import { ActionParams, Actions } from '../../utils/Interfaces/Interfaces.global';
-import { Meta, ParserData } from '../../utils/Types/types.global';
+import Utils from '../../Utils/utils.global';
+import { ActionParams, Actions } from '../../Utils/Interfaces/Interfaces.global';
+import { Meta, ParserData } from '../../Utils/Types/types.global';
 
 export const runSyncClient = async (
   action: Actions,

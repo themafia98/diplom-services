@@ -7,9 +7,9 @@ import {
   Action,
   User,
   QueryParams,
-} from '../../../utils/Interfaces/Interfaces.global';
-import { ParserData } from '../../../utils/Types/types.global';
-import Utils from '../../../utils/utils.global';
+} from '../../../Utils/Interfaces/Interfaces.global';
+import { ParserData } from '../../../Utils/Types/types.global';
+import Utils from '../../../Utils/utils.global';
 
 const { getModelByName } = Utils;
 
