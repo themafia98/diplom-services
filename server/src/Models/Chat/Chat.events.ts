@@ -86,37 +86,3 @@ export const workerDisconnect = (socket: Socket) => {
   console.log(socket.eventNames);
   console.log('user disconnected');
 };
-
-export const processMessageEvent = (ws: WebSocketWorker) => (
-  data: Record<string, object | string | null>,
-) => {
-  try {
-    console.log('process message', data);
-    const { action = '', payload = {} } = data;
-
-    switch (action) {
-      case 'emitSocket': {
-        const { event = '', data = {}, to = '', socket = null } = payload as Record<string, Payload>;
-        let worker = ws.getWorker();
-        if (to && to === 'broadcast' && socket) {
-          (socket as Socket).broadcast.emit(event as string, data);
-          break;
-        }
-
-        if (to) {
-          worker.to(to as string).emit(event as string, data);
-          break;
-        }
-
-        worker.emit(event as string, data);
-        break;
-      }
-
-      default: {
-        console.warn('No router process');
-      }
-    }
-  } catch (err) {
-    console.error(err);
-  }
-};
