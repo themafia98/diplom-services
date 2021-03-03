@@ -1,7 +1,7 @@
 import { Model, Document, Types, isValidObjectId } from 'mongoose';
-import { ActionParams, Actions, Action } from '../../../utils/Interfaces/Interfaces.global';
-import { ParserData, MessageOptions } from '../../../utils/Types/types.global';
-import Utils from '../../../utils/utils.global';
+import { ActionParams, Actions, Action } from '../../../Utils/Interfaces/Interfaces.global';
+import { ParserData, MessageOptions } from '../../../Utils/Types/types.global';
+import Utils from '../../../Utils/utils.global';
 
 const { getModelByName } = Utils;
 

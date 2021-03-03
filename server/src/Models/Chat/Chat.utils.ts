@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io';
-import { QueryParams } from '../../utils/Interfaces/Interfaces.global';
-import { ParserResult } from '../../utils/Types/types.global';
+import { QueryParams } from '../../Utils/Interfaces/Interfaces.global';
+import { ParserResult } from '../../Utils/Types/types.global';
 import ActionApi from '../Action';
 
 export const createRealRoom = async (

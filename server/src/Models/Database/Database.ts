@@ -1,7 +1,7 @@
 import mongoose, { Connection } from 'mongoose';
 import dotenv from 'dotenv';
 
-import { Dbms } from '../../utils/Interfaces/Interfaces.global';
+import { Dbms } from '../../Utils/Interfaces/Interfaces.global';
 
 namespace Database {
   dotenv.config();

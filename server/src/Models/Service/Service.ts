@@ -1,4 +1,4 @@
-import { ServiceManager, ServiceConstructor } from '../../utils/Interfaces/Interfaces.global';
+import { ServiceManager, ServiceConstructor } from '../../Utils/Interfaces/Interfaces.global';
 
 abstract class Service<T> implements ServiceManager<T> {
   private serviceConfig: object;

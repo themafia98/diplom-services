@@ -1,7 +1,7 @@
 import { Socket } from 'socket.io';
 import _ from 'lodash';
 import cluster from 'cluster';
-import { ChatModel } from '../../utils/Interfaces/Interfaces.global';
+import { ChatModel } from '../../Utils/Interfaces/Interfaces.global';
 import WebSocketWorker from '../WebSocketWorker';
 import { initFakeRoomEvent, newMessageEvent, processMessageEvent, workerDisconnect } from './Chat.events';
 

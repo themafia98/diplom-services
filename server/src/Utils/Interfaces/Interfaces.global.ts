@@ -18,7 +18,7 @@ import socketio, { Socket } from 'socket.io';
 import mongoose, { Connection, Model, Document, FilterQuery } from 'mongoose';
 import { ObjectId } from 'mongodb';
 import { ParsedUrlQuery } from 'querystring';
-import WebSocketWorker from '../../models/WebSocketWorker';
+import WebSocketWorker from '../../Models/WebSocketWorker';
 export interface Controller<T> {
   [key: string]: any;
 }

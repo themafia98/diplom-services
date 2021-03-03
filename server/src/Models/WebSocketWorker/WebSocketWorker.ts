@@ -1,5 +1,5 @@
 import socketio from 'socket.io';
-import { WsWorker } from '../../utils/Interfaces/Interfaces.global';
+import { WsWorker } from '../../Utils/Interfaces/Interfaces.global';
 import cluster from 'cluster';
 
 // TODO: https://blog.imaginea.com/7597-2/

@@ -1,8 +1,8 @@
-import { ActionParams, Actions, ActionProps, Params } from '../../utils/Interfaces/Interfaces.global';
+import { ActionParams, Actions, ActionProps, Params } from '../../Utils/Interfaces/Interfaces.global';
 import { Model, Document, Types, FilterQuery } from 'mongoose';
 import _ from 'lodash';
 import ActionEntity from './ActionEntity';
-import Utils from '../../utils/utils.global';
+import Utils from '../../Utils/utils.global';
 import {
   ParserData,
   limiter,
@@ -11,7 +11,7 @@ import {
   DeleteEntitiyParams,
   ResRequest,
   Meta,
-} from '../../utils/Types/types.global';
+} from '../../Utils/Types/types.global';
 import { files } from 'dropbox';
 import Responser from '../Responser';
 import { Response, Request } from 'express';

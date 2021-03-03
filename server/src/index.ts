@@ -3,12 +3,12 @@ import 'reflect-metadata';
 import fs from 'fs';
 import os from 'os';
 
-import { ServerRun } from './utils/Interfaces/Interfaces.global';
-import Logger from './utils/Logger';
-import Utils from './utils/utils.global';
-import ProcessRouter from './models/Process/ProcessRouter';
-import Http from './models/Server';
-import Instanse from './utils/instanse';
+import { ServerRun } from './Utils/Interfaces/Interfaces.global';
+import Logger from './Utils/Logger';
+import Utils from './Utils/utils.global';
+import ProcessRouter from './Models/Process/ProcessRouter';
+import Http from './Models/Server';
+import Instanse from './Utils/instanse';
 
 if (Utils.isProd()) {
   fs.openSync('/tmp/app-initialized', 'w');

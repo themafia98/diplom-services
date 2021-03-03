@@ -1,4 +1,4 @@
-import { DropboxAccess } from '../utils/Interfaces/Interfaces.global';
+import { DropboxAccess } from '../Utils/Interfaces/Interfaces.global';
 
 export default {
   fetch: require('isomorphic-fetch'),

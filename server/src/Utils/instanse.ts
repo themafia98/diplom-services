@@ -1,5 +1,5 @@
-import WebSocketWorker from '../models/WebSocketWorker';
-import Database from '../models/Database';
+import WebSocketWorker from '../Models/WebSocketWorker';
+import Database from '../Models/Database';
 import { Dbms } from './Interfaces/Interfaces.global';
 
 namespace Instanse {
