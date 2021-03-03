@@ -6,7 +6,7 @@ import TableView from 'Components/TableView';
 import StreamBox from 'Components/StreamBox';
 import TitleModule from 'Components/TitleModule';
 import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
-import { routeParser } from 'Utils/utils.global';
+import { routeParser } from 'Utils';
 import { compose } from 'redux';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { withClientDb } from 'Models/ClientSideDatabase';

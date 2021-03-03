@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect, useCallback } from 'react';
 import { v4 as uuid } from 'uuid';
-import { getValidContent } from 'Utils/utils.global';
+import { getValidContent } from 'Utils';
 import Textarea from 'Components/Textarea';
 import { wikiPageTypes } from '../WikiModule.types';
 import ModelContext from 'Models/context';

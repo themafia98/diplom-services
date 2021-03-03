@@ -10,7 +10,7 @@ import Textarea from 'Components/Textarea';
 //import File from 'Components/File';
 import { v4 as uuid } from 'uuid';
 
-import { routePathNormalise, routeParser, createEntity, createNotification } from 'Utils/utils.global';
+import { routePathNormalise, routeParser, createEntity, createNotification } from 'Utils';
 
 import { CREATE_TASK_SCHEMA } from 'Models/Schema/const';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';

@@ -9,7 +9,7 @@ import { Button, Empty, message, notification } from 'antd';
 import Textarea from 'Components/Textarea';
 import Comment from './Comment';
 import actionsTypes from 'actions.types';
-import { routeParser } from 'Utils/utils.global';
+import { routeParser } from 'Utils';
 import { withClientDb } from 'Models/ClientSideDatabase';
 
 const Comments = memo(({ data, onUpdate, path, udata, clientDB, rules, commentProps }) => {

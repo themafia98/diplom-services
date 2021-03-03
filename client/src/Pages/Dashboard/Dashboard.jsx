@@ -14,7 +14,7 @@ import {
 } from 'Redux/actions/routerActions';
 
 import { clearCache, showGuile } from 'Redux/actions/publicActions';
-import { getAvailableTabNameKey, routeParser, saveAndNormalizeRoute } from 'Utils/utils.global';
+import { getAvailableTabNameKey, routeParser, saveAndNormalizeRoute } from 'Utils';
 
 import FixedToolbar from 'Components/FixedToolbar';
 import Loader from 'Components/Loader';

@@ -4,7 +4,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import { Modal, Button, message, Select } from 'antd';
 import { TASK_CONTROLL_JURNAL_SCHEMA } from 'Models/Schema/const';
-import { createNotification, isTimeLostValue, routeParser } from 'Utils/utils.global';
+import { createNotification, isTimeLostValue, routeParser } from 'Utils';
 import SimpleEditableModal from './SimpleEditableModal';
 import RegistrationModal from './RegistrationModal';
 import ActionList from 'Components/ActionList';

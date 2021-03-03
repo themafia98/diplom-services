@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import TabContainer from 'Components/TabContainer';
-import { getComponentByKey } from 'Utils/utils.global';
+import { getComponentByKey } from 'Utils';
 import types from 'types.modules';
 import regExpRegister from './regexpStorage';
 

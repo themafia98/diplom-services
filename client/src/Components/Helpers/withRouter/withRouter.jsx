@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { getDependencyModules } from 'Utils/utils.global';
+import { getDependencyModules } from 'Utils';
 
 /**
  *

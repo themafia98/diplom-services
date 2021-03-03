@@ -6,7 +6,7 @@ import Scrollbars from 'react-custom-scrollbars';
 import { addTabAction, setActiveTabAction } from 'Redux/actions/routerActions';
 import NewsCard from './NewsCard';
 import TitleModule from 'Components/TitleModule';
-import { routePathNormalise, routeParser } from 'Utils/utils.global';
+import { routePathNormalise, routeParser } from 'Utils';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { openTab } from 'Redux/actions/routerActions/middleware';
 
