@@ -3,7 +3,7 @@ import { editorTextareaType } from '../Textarea.types';
 import clsx from 'clsx';
 import { stateFromHTML } from 'draft-js-import-html';
 import { convertFromRaw } from 'draft-js';
-import { getValidContent } from 'Utils/utils.global';
+import { getValidContent } from 'Utils';
 import { Editor } from 'react-draft-wysiwyg';
 import _ from 'lodash';
 

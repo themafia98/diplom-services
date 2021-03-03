@@ -8,7 +8,7 @@ import _ from 'lodash';
 import { Avatar, message, Tooltip, Spin, Button } from 'antd';
 import { Scrollbars } from 'react-custom-scrollbars';
 import clsx from 'clsx';
-import { parseArrayByLimit } from 'Utils/utils.global';
+import { parseArrayByLimit } from 'Utils';
 import ModelContext from 'Models/context';
 import actionsTypes from 'actions.types';
 import { compose } from 'redux';

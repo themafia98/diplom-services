@@ -3,7 +3,7 @@ import { dynamicTableType } from '../TableView.types';
 import moment from 'moment';
 import Output from 'Components/Output';
 import { Table, message, Input, Button, Icon, Empty } from 'antd';
-import { getDataSource, findData } from 'Utils/utils.global';
+import { getDataSource, findData } from 'Utils';
 import ModelContext from 'Models/context';
 import { connect } from 'react-redux';
 import {
