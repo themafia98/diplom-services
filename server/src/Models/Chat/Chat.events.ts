@@ -3,9 +3,8 @@ import _ from 'lodash';
 import { Socket } from 'socket.io';
 import Utils from '../../Utils/utils.global';
 import { ChatMessage } from '../../Utils/Interfaces/Interfaces.global';
-import { ParserResult, Payload } from '../../Utils/Types/types.global';
+import { ParserResult } from '../../Utils/Types/types.global';
 import { createRealRoom, updateFakeRoom } from './Chat.utils';
-import WebSocketWorker from '../WebSocketWorker';
 
 const { getModelByName } = Utils;
 
