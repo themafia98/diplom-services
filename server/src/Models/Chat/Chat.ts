@@ -1,4 +1,4 @@
-import { Server as WorkerIO, Socket } from 'socket.io';
+import { Socket } from 'socket.io';
 import _ from 'lodash';
 import cluster from 'cluster';
 import { ChatModel } from '../../utils/Interfaces/Interfaces.global';
@@ -7,19 +7,13 @@ import { initFakeRoomEvent, newMessageEvent, processMessageEvent, workerDisconne
 
 class Chat implements ChatModel {
   private _ws: WebSocketWorker;
-  private _worker: WorkerIO;
 
   constructor(ws: WebSocketWorker) {
     this._ws = ws;
-    this._worker = ws.getWorker(cluster.worker.id);
   }
 
   get ws() {
     return this._ws;
-  }
-
-  get worker() {
-    return this._worker;
   }
 
   private registerEventsListeners(socket: Socket): void {
@@ -28,23 +22,25 @@ class Chat implements ChatModel {
     socket.on('newMessage', newMessageEvent(socket));
     socket.on('initFakeRoom', initFakeRoomEvent(socket));
     socket.on('onChatRoomActive', initFakeRoomEvent(socket));
-    this.worker.on('disconnect', workerDisconnect);
     process.on('message', processMessageEvent(this.ws));
   }
 
   public run(): void {
-    if (!this.worker) {
+    const worker = this.ws.getWorker();
+    if (!worker) {
       throw new Error('Worker in Chat not found');
     }
 
-    this.worker.on('connection', this.registerEventsListeners);
+    worker.on('connection', this.registerEventsListeners);
+    worker.on('disconnect', workerDisconnect);
   }
 
   public destroy(socket: Socket): void {
+    const worker = this.ws.getWorker();
     socket.off('newMessage', newMessageEvent(socket));
     socket.off('initFakeRoom', initFakeRoomEvent(socket));
     socket.off('onChatRoomActive', initFakeRoomEvent(socket));
-    this.worker.off('disconnect', workerDisconnect);
+    worker.off('disconnect', workerDisconnect);
     process.off('message', processMessageEvent(this.ws));
   }
 }
