@@ -24,7 +24,7 @@ export const newMessageEvent = (socket: Socket) => async (msgObj: ChatMessage) =
         console.log('tokenRoom:', tokenRoom);
 
         (process as any).send({
-          action: PROCESS_ACTIONS.CHAT_EMIT_SOCKET_ACTION,
+          action: PROCESS_ACTIONS.CHAT_PROCESS_MESSAGE_ACTION,
           payload: {
             event: 'msg',
             to: tokenRoom,
@@ -33,7 +33,7 @@ export const newMessageEvent = (socket: Socket) => async (msgObj: ChatMessage) =
         });
       } else {
         (process as any).send({
-          action: PROCESS_ACTIONS.CHAT_EMIT_SOCKET_ACTION,
+          action: PROCESS_ACTIONS.CHAT_PROCESS_MESSAGE_ACTION,
           payload: {
             event: 'msg',
             to: tokenRoom,
@@ -71,7 +71,7 @@ export const initChatRoomEvent = (socket: Socket) => ({ token: tokenRoom = '' })
   socket.join(tokenRoom);
 
   (process as any).send({
-    action: PROCESS_ACTIONS.CHAT_EMIT_SOCKET_ACTION,
+    action: PROCESS_ACTIONS.CHAT_PROCESS_MESSAGE_ACTION,
     payload: {
       event: 'joinMsg',
       to: tokenRoom,

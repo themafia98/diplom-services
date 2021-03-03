@@ -20,6 +20,7 @@ import modelsContext from 'Models/context';
 import { compose } from 'redux';
 import { withClientDb } from 'Models/ClientSideDatabase';
 import { openTab } from 'Redux/actions/routerActions/middleware';
+import { CHAT_EVENTS } from './Chat.constant';
 
 class Chat extends PureComponent {
   state = {
@@ -54,11 +55,11 @@ class Chat extends PureComponent {
     this.chat = new ChatModel(webSocket);
 
     this.chat.useDefaultEvents();
-    this.chat.getSocket().on('updateChatsRooms', onUpdateRoom);
-    this.chat.getSocket().on('connection', this.connection);
-    this.chat.getSocket().on('updateFakeRoom', this.updateFakeRoom);
-    this.chat.getSocket().on('msg', this.addMsg);
-    this.chat.getSocket().on('error', this.errorConnection);
+    this.chat.getSocket().on(CHAT_EVENTS.UPDATE_ROOMS_EVENT, onUpdateRoom);
+    this.chat.getSocket().on(CHAT_EVENTS.CONNECTION, this.connection);
+    this.chat.getSocket().on(CHAT_EVENTS.UPDATE_FAKE_ROOM_EVENT, this.updateFakeRoom);
+    this.chat.getSocket().on(CHAT_EVENTS.CHAT_ADD_MESSAGE_EVENT, this.addMsg);
+    this.chat.getSocket().on(CHAT_EVENTS.HANDLE_ERROR_EVENT, this.errorConnection);
   };
 
   componentWillUnmount = () => {
@@ -257,7 +258,7 @@ class Chat extends PureComponent {
 
     if (chatToken !== token || !token) {
       onLoadingDataByToken(token, listdata, 'chat', false);
-      this.chat.getSocket().emit('onChatRoomActive', { token, displayName });
+      this.chat.getSocket().emit(CHAT_EVENTS.ACTIVATE_CHAT_ROOM_EVENT, { token, displayName });
     } else if (!token) message.warning('Чат комната не найдена либо требуется обновить систему.');
   };
 

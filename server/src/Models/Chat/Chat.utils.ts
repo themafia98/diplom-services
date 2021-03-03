@@ -2,6 +2,7 @@ import { Socket } from 'socket.io';
 import { QueryParams } from '../../Utils/Interfaces/Interfaces.global';
 import { ParserResult } from '../../Utils/Types/types.global';
 import ActionApi from '../Action';
+import { PROCESS_ACTIONS, PROCESS_CHAT_EVENTS } from './Chat.constant';
 
 export const createRealRoom = async (
   fakeMsg: Record<string, string | object>,
@@ -23,15 +24,15 @@ export const updateFakeRoom = (socket: Socket) => (result: ParserResult, fakeMsg
   const response = { room: result, msg: fakeMsg };
 
   (process as any).send({
-    action: 'emitSocket',
+    action: PROCESS_ACTIONS.CHAT_PROCESS_MESSAGE_ACTION,
     payload: {
-      event: 'updateFakeRoom',
+      event: PROCESS_CHAT_EVENTS.UPDATE_FAKE_ROOM_EVENT,
       to: tokenRoom,
       data: response,
     },
   });
 
-  socket.broadcast.emit('updateChatsRooms', {
+  socket.broadcast.emit(PROCESS_CHAT_EVENTS.UPDATE_ROOMS_EVENT, {
     ...response,
     fullUpdate: true,
     activeModule: 'chat',
