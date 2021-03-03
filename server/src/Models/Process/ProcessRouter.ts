@@ -39,6 +39,11 @@ class ProcessRouter {
     });
   }
 
+  private handleWorkerError(err: Error) {
+    console.error('Worker handle error');
+    console.error(err);
+  }
+
   public getWsWorker(): WsWorker {
     return this.wsWorker;
   }
@@ -86,6 +91,7 @@ class ProcessRouter {
   public subscribe(worker: Worker): void {
     worker.on('exit', this.onExit.bind(this));
     worker.on('message', this.router.bind(this));
+    worker.on('error', this.handleWorkerError);
   }
 }
 

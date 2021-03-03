@@ -5,6 +5,7 @@ import Utils from '../../Utils/utils.global';
 import { ChatMessage } from '../../Utils/Interfaces/Interfaces.global';
 import { ParserResult } from '../../Utils/Types/types.global';
 import { createRealRoom, updateFakeRoom } from './Chat.utils';
+import { PROCESS_ACTIONS } from './Chat.constant';
 
 const { getModelByName } = Utils;
 
@@ -23,7 +24,7 @@ export const newMessageEvent = (socket: Socket) => async (msgObj: ChatMessage) =
         console.log('tokenRoom:', tokenRoom);
 
         (process as any).send({
-          action: 'emitSocket',
+          action: PROCESS_ACTIONS.CHAT_EMIT_SOCKET_ACTION,
           payload: {
             event: 'msg',
             to: tokenRoom,
@@ -32,7 +33,7 @@ export const newMessageEvent = (socket: Socket) => async (msgObj: ChatMessage) =
         });
       } else {
         (process as any).send({
-          action: 'emitSocket',
+          action: PROCESS_ACTIONS.CHAT_EMIT_SOCKET_ACTION,
           payload: {
             event: 'msg',
             to: tokenRoom,
@@ -70,7 +71,7 @@ export const initChatRoomEvent = (socket: Socket) => ({ token: tokenRoom = '' })
   socket.join(tokenRoom);
 
   (process as any).send({
-    action: 'emitSocket',
+    action: PROCESS_ACTIONS.CHAT_EMIT_SOCKET_ACTION,
     payload: {
       event: 'joinMsg',
       to: tokenRoom,
