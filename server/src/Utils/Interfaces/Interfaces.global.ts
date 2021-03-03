@@ -14,7 +14,7 @@ import {
   SocketMessage,
   expressFile,
 } from '../Types/types.global';
-import socketio, { Server as WorkerIO, Socket } from 'socket.io';
+import socketio, { Socket } from 'socket.io';
 import mongoose, { Connection, Model, Document, FilterQuery } from 'mongoose';
 import { ObjectId } from 'mongodb';
 import { ParsedUrlQuery } from 'querystring';
@@ -31,7 +31,6 @@ export interface ChatModel {
   run(): void;
   destroy(socket: Socket): void;
   ws: WebSocketWorker;
-  worker: WorkerIO;
 }
 
 export interface ActionsAccess {

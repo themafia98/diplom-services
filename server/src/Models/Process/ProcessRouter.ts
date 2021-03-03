@@ -58,6 +58,7 @@ class ProcessRouter {
 
   public onExit(worker: Worker): void {
     if (!worker || (worker && !worker.process)) {
+      console.error(worker);
       throw new Error('worker not found for exit');
     }
 

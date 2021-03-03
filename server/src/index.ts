@@ -34,8 +34,12 @@ namespace Entrypoint {
       const app: ServerRun = new Http.ServerRunner(process.env.APP_PORT || '3001');
       app.start();
     } catch (err) {
-      loggerError(`PPID: ${process.ppid} || ${err}`);
-      process.kill(process.ppid);
+      loggerError(
+        `Server shut down. PPID: ${process.ppid} || ${err}. Node: ${process.versions.node}. v8: ${process.versions.v8}`,
+      );
+      console.error('Server shut down');
+
+      process.exit(1);
     }
   }
 }
