@@ -4,7 +4,7 @@ import { ChatModel } from '../../Utils/Interfaces/Interfaces.global';
 import WebSocketWorker from '../WebSocketWorker';
 import { initFakeRoomEvent, newMessageEvent, workerDisconnect } from './Chat.events';
 import { Payload } from '../../Utils/Types/types.global';
-import { PROCESS_ACTIONS } from './Chat.constant';
+import { PROCESS_ACTIONS, PROCESS_CHAT_EVENTS } from './Chat.constant';
 
 class Chat implements ChatModel {
   private _ws: WebSocketWorker;
@@ -23,7 +23,7 @@ class Chat implements ChatModel {
       const { action = '', payload = {} } = data;
 
       switch (action) {
-        case PROCESS_ACTIONS.CHAT_EMIT_SOCKET_ACTION: {
+        case PROCESS_ACTIONS.CHAT_PROCESS_MESSAGE_ACTION:
           const { event = '', data = {}, to = '', socket = null } = payload as Record<string, Payload>;
           const worker = this.ws.getWorker();
 
@@ -39,7 +39,6 @@ class Chat implements ChatModel {
 
           worker.emit(event as string, data);
           break;
-        }
 
         default: {
           console.log(action);
@@ -54,9 +53,9 @@ class Chat implements ChatModel {
   private registerEventsListeners(socket: Socket): void {
     socket.emit('connection', true);
 
-    socket.on('newMessage', newMessageEvent(socket));
-    socket.on('initFakeRoom', initFakeRoomEvent(socket));
-    socket.on('onChatRoomActive', initFakeRoomEvent(socket));
+    socket.on(PROCESS_CHAT_EVENTS.CHAT_MESSAGE_EVENT, newMessageEvent(socket));
+    socket.on(PROCESS_CHAT_EVENTS.INITIAL_FAKE_ROOM, initFakeRoomEvent(socket));
+    socket.on(PROCESS_CHAT_EVENTS.ACTIVATE_CHAT_ROOM_EVENT, initFakeRoomEvent(socket));
     process.on('message', this.processMessageEvent.bind(this));
   }
 
@@ -66,17 +65,14 @@ class Chat implements ChatModel {
       throw new Error('Worker in Chat not found');
     }
 
-    worker.on('connection', this.registerEventsListeners);
-    worker.on('disconnect', workerDisconnect);
+    worker.on(PROCESS_CHAT_EVENTS.CONNECTION_EVENT, this.registerEventsListeners.bind(this));
+    worker.on(PROCESS_CHAT_EVENTS.DISCONNECT_EVENT, workerDisconnect.bind(this));
   }
 
   public destroy(socket: Socket): void {
-    const worker = this.ws.getWorker();
-    socket.off('newMessage', newMessageEvent(socket));
-    socket.off('initFakeRoom', initFakeRoomEvent(socket));
-    socket.off('onChatRoomActive', initFakeRoomEvent(socket));
-    worker.off('disconnect', workerDisconnect);
-    process.off('message', this.processMessageEvent.bind(this));
+    socket.off(PROCESS_CHAT_EVENTS.CHAT_MESSAGE_EVENT, newMessageEvent(socket));
+    socket.off(PROCESS_CHAT_EVENTS.INITIAL_FAKE_ROOM, initFakeRoomEvent(socket));
+    socket.off(PROCESS_CHAT_EVENTS.ACTIVATE_CHAT_ROOM_EVENT, initFakeRoomEvent(socket));
   }
 }
 

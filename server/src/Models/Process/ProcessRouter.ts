@@ -33,10 +33,12 @@ class ProcessRouter {
         console.error(err);
       } else {
         console.error(err);
-        console.log('exit error, uptime:', process.uptime());
+        console.log('uncaughtException. exit error, uptime:', process.uptime());
         process.exit(1);
       }
     });
+
+    process.on('exit', (code) => console.warn(`Exit with code ${code}`));
   }
 
   private handleWorkerError(err: Error) {
