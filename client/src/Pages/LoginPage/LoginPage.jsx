@@ -38,7 +38,9 @@ const LoginPage = ({ initialSession, authLoad, location }) => {
     const { state: { value: loginValue = '' } = {} } = loginNode || {};
     const { state: { value: passwordValue = '' } = {} } = passwordNode || {};
 
-    if (!loginValue || !passwordValue) return;
+    if (!loginValue || !passwordValue) {
+      return;
+    }
 
     const rest = new Request();
 
@@ -62,9 +64,13 @@ const LoginPage = ({ initialSession, authLoad, location }) => {
 
       const { user: udata, token } = response.data;
 
-      if (!token) throw new Error('Bad user auth token');
+      if (!token) {
+        throw new Error('Bad user auth token');
+      }
 
-      if (!udata) throw new Error('Invalid udata');
+      if (!udata) {
+        throw new Error('Invalid udata');
+      }
 
       localStorage.setItem('token', token);
 
@@ -95,7 +101,10 @@ const LoginPage = ({ initialSession, authLoad, location }) => {
     if (key === 'Enter') enterLoading();
   };
 
-  if (authLoad || loginAuth) return <Redirect to="/dashboard" />;
+  if (authLoad || loginAuth) {
+    return <Redirect to="/dashboard" />;
+  }
+
   if ((!authLoad || !loginAuth) && pathname !== '/') {
     return <Redirect to="/" />;
   }

@@ -42,40 +42,50 @@ class App extends Component {
   client = null;
 
   componentDidMount = async () => {
-    const {
-      coreConfig: { appActive = true, forceUpdate = false, clientDB: { name = '', version = '' } = {} } = {},
-      coreConfig = {},
-      onLoadCoreConfig,
-    } = this.props;
+    const { coreConfig = {}, onLoadCoreConfig } = this.props;
+
+    const { appActive = true, forceUpdate = false, clientDB = {} } = coreConfig;
+    const { name = '', version = '' } = clientDB;
+
     const { Request } = this.context;
-    if (!appActive) return;
+
+    if (!appActive) {
+      console.log('Application unactive');
+      return;
+    }
 
     if (onLoadCoreConfig && coreConfig && typeof coreConfig === 'object') {
       onLoadCoreConfig({ ...coreConfig });
     }
 
     this.client = name && version ? new ClientSideDatabase(name, version) : null;
-    if (this.client) await this.client.init();
+
+    if (this.client) {
+      await this.client.init();
+    }
 
     if (window.location.pathname === '/demoPage') {
       return this.loadApp();
     }
 
     const rest = new Request();
-    rest
-      .authCheck()
-      .then((res) => {
-        if (res.status === 200) {
-          this.loadAppSession();
-        } else {
-          throw new Error(res.message);
-        }
-      })
-      .catch((error) => {
-        console.warn(error);
-        this.loadApp();
-      });
-    if (forceUpdate === true || forceUpdate === 'true') forceUpdateDetectedInit();
+
+    try {
+      const response = await rest.authCheck();
+
+      if (response.status === 200) {
+        this.loadAppSession();
+      } else {
+        throw new Error(response.message);
+      }
+    } catch (error) {
+      console.error(error);
+      this.loadApp();
+    }
+
+    if (forceUpdate === true || forceUpdate === 'true') {
+      forceUpdateDetectedInit();
+    }
   };
 
   componentDidUpdate = async (prevProps) => {
@@ -84,12 +94,13 @@ class App extends Component {
       onLoadCoreConfig,
       coreConfig,
       typeConfig = '',
-      coreConfig: { clientDB: { name = '', version = '' } = {} } = {},
+      coreConfig = {},
       appConfig = {},
       udata = {},
       onSetSystemMessage,
       systemMessage = {},
     } = this.props;
+    const { clientDB: { name = '', version = '' } = {} } = coreConfig;
     const { sync } = this.state;
 
     if (systemMessage?.msg) {
@@ -113,7 +124,9 @@ class App extends Component {
       await this.client.init();
     }
 
-    if (prevTypeConfig === typeConfig && _.isEqual(appConfig, coreConfig)) return;
+    if (prevTypeConfig === typeConfig && _.isEqual(appConfig, coreConfig)) {
+      return;
+    }
 
     if (
       typeof coreConfig === 'object' &&
@@ -132,14 +145,20 @@ class App extends Component {
   };
 
   loadAppSession = async () => {
-    const { router: { currentActionTab = '', activeTabs = [] } = {}, coreConfig = {} } = this.props;
+    const { router = {}, coreConfig = {} } = this.props;
+    const { currentActionTab = '', activeTabs = [] } = router;
     const { appActive = true, menu = [], tabsLimit = 20 } = coreConfig;
     const { Request } = this.context;
-    if (!appActive) return;
+
+    if (!appActive) {
+      console.log('Application unactive');
+      return;
+    }
+
     const rest = new Request();
 
     try {
-      const res = await rest.sendRequest(
+      const response = await rest.sendRequest(
         '/userload',
         'POST',
         {
@@ -148,7 +167,9 @@ class App extends Component {
         true,
       );
 
-      if (res?.status !== 200) throw new Error('Bad user data');
+      if (response.status !== 200) {
+        throw new Error('Bad user data');
+      }
 
       let path = 'mainModule';
       const defaultModule = menu.find((item) => item?.SIGN === 'default');
@@ -157,7 +178,7 @@ class App extends Component {
       const activeTabsCopy = [...activeTabs];
       const isFind = activeTabsCopy.findIndex((tab) => tab === path) !== -1;
 
-      const { data = {} } = res || {};
+      const { data = {} } = response;
       const { user = {} } = data;
 
       const udata = Object.keys(user).reduce((acc, key) => {
@@ -169,12 +190,18 @@ class App extends Component {
           : acc || {};
       }, {});
 
-      if (!isFind && tabsLimit <= activeTabsCopy.length)
-        return message.error(`Максимальное количество вкладок: ${tabsLimit}`);
+      if (!isFind && tabsLimit <= activeTabsCopy.length) {
+        message.error(`Максимальное количество вкладок: ${tabsLimit}`);
+        return;
+      }
+
       const isUserData = udata && !_.isEmpty(udata);
 
-      if ((currentActionTab !== path || !isFind) && isUserData) this.initialSession(udata, path, true);
-      else if (!isUserData) return rest.signOut();
+      if ((currentActionTab !== path || !isFind) && isUserData) {
+        this.initialSession(udata, path, true);
+      } else if (!isUserData) {
+        return rest.signOut();
+      }
     } catch (error) {
       const { response: { data = '' } = {}, message = '' } = error || {};
       this.showErrorMessage(data || message || error);
@@ -205,7 +232,9 @@ class App extends Component {
       await onLoadUdata(udata);
       await this.loadSettings();
 
-      if (!localStorage.getItem('router')) await addTab(routeParser({ path }));
+      if (!localStorage.getItem('router')) {
+        await addTab(routeParser({ path }));
+      }
     } catch (error) {
       const { response: { data = '' } = {}, message = '' } = error || {};
       this.showErrorMessage(data || message || error);
@@ -216,7 +245,10 @@ class App extends Component {
   loadSettings = async () => {
     const { onLoadSettings = null } = this.props;
 
-    if (this.loadingSettingsLoop) clearInterval(this.loadingSettingsLoop);
+    if (this.loadingSettingsLoop) {
+      clearInterval(this.loadingSettingsLoop);
+    }
+
     await onLoadSettings({ wishList: [{ name: 'statusList' }] });
 
     this.loadingSettingsLoop = setInterval(async () => {
@@ -250,11 +282,8 @@ class App extends Component {
 
   render() {
     const { loadState, authLoad } = this.state;
-    const {
-      onLogoutAction,
-      onSetStatus,
-      coreConfig: { supportIE = true, appActive = true, unactiveAppMsg = '' } = {},
-    } = this.props;
+    const { onLogoutAction, onSetStatus, coreConfig = {} } = this.props;
+    const { supportIE = true, appActive = true, unactiveAppMsg = '' } = coreConfig;
 
     if (!appActive) {
       return <div className="app-unactive">{unactiveAppMsg}</div>;
@@ -284,20 +313,22 @@ class App extends Component {
       </Switch>
     );
 
-    if (loadState && this.client)
+    if (loadState && this.client) {
       return (
         <ClientDbContext.Provider value={this.client}>
           {!supportIE ? this.withoutIE(route) : route}
         </ClientDbContext.Provider>
       );
-    else return <Loader title="Загрузка состояния приложения" />;
+    }
+
+    return <Loader title="Загрузка состояния приложения" />;
   }
 }
 
-const mapStateToProps = (state) => {
-  const { router, publicReducer, systemReducer } = state;
+const mapStateToProps = ({ router, publicReducer, systemReducer }) => {
   const { udata } = publicReducer;
   const { systemMessage } = systemReducer;
+
   return {
     router,
     udata,

@@ -149,12 +149,27 @@ class Request {
   }
 
   async authCheck() {
-    return await axios.post(this.getApi() + '/auth', {
+    const authorizationHeaderObject = this.getAuthorizationHeaderObjectWithCredentials();
+
+    if (!authorizationHeaderObject) {
+      throw new Error('Unauthorized');
+    }
+    return await axios.post(this.getApi() + '/auth', authorizationHeaderObject);
+  }
+
+  getAuthorizationHeaderObjectWithCredentials() {
+    const token = this.getToken(true);
+
+    if (!token) {
+      return null;
+    }
+
+    return {
       headers: {
-        Authorization: this.getToken(true),
+        Authorization: token,
       },
       credentials: 'include',
-    });
+    };
   }
 
   getAuthorizationHeader() {
@@ -223,24 +238,26 @@ class Request {
   }
 
   signOut = async () => {
-    /**
-     * @param {any} error
-     */
-    await /**
-     * @param {{ status: number }} res
-     */
-    axios
-      .delete(this.getApi() + '/logout', {
-        headers: {
-          Authorization: this.getToken(true),
-        },
-        credentials: 'include',
-      })
-      .then((res) => {
-        if (res.status === 200) this.restartApp();
-        else throw new Error('invalid logout');
-      })
-      .catch((error) => error?.response?.status !== 404 && console.error(error));
+    try {
+      const authorizationHeaderObject = this.getAuthorizationHeaderObjectWithCredentials();
+
+      if (!authorizationHeaderObject) {
+        throw new Error('Invalid jwt');
+      }
+
+      const response = await axios.delete(this.getApi() + '/logout', authorizationHeaderObject);
+
+      if (response.status === 200) {
+        this.restartApp();
+        return;
+      }
+
+      throw new Error('invalid logout');
+    } catch (error) {
+      if (error?.response?.status !== 404) {
+        console.error(error);
+      }
+    }
   };
 }
 

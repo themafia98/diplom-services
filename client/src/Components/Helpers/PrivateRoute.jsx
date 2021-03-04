@@ -18,26 +18,25 @@ const PrivateRoute = ({ component: Component, onLogoutAction, onSetStatus, ...ro
   const [init, setInit] = useState(null);
 
   const getRoutersFunc = async () => {
-    await rest
-      .authCheck()
-      .then((res) => {
-        if (res.status === 200) {
-          if (res.status !== status) {
-            onSetStatus('online');
-            setRoute(<Component rest={rest} />);
-            setStatus(res.status);
-          }
-        } else {
-          rest.restartApp();
-        }
-      })
-      .catch((err) => {
-        if (err?.message.toLowerCase().includes('network error')) {
-          console.warn(err);
-          setStatus(522);
-          onSetStatus('offline');
-        } else rest.restartApp();
-      });
+    try {
+      const response = await rest.authCheck();
+
+      if (response.status === 200 && response.status !== status) {
+        onSetStatus('online');
+        setRoute(<Component rest={rest} />);
+        setStatus(res.status);
+      }
+
+      if (response.status !== 200) {
+        rest.restartApp();
+      }
+    } catch (err) {
+      if (err?.message.toLowerCase().includes('network error')) {
+        console.warn(err);
+        setStatus(522);
+        onSetStatus('offline');
+      } else rest.restartApp();
+    }
   };
 
   useEffect(() => {
