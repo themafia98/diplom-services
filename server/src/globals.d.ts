@@ -8,5 +8,6 @@ declare namespace NodeJS {
     HOST: string;
     DB_URL: string;
     DB_NAME?: string;
+    API_VERSION: string;
   }
 }

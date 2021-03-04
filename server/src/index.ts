@@ -14,6 +14,10 @@ if (Utils.isProd()) {
   fs.openSync('/tmp/app-initialized', 'w');
 }
 
+if (!process.env.API_VERSION) {
+  throw new Error('Api version not found');
+}
+
 namespace Entrypoint {
   const { loggerError, loggerInfo } = Logger;
   const cpuLentgh: number = os.cpus().length;
