@@ -92,7 +92,6 @@ class App extends Component {
     const { typeConfig: prevTypeConfig = '', coreConfig: prevCoreConfig = {} } = prevProps;
     const {
       onLoadCoreConfig,
-      coreConfig,
       typeConfig = '',
       coreConfig = {},
       appConfig = {},
