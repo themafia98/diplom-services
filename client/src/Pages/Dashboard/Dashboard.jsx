@@ -46,7 +46,7 @@ class Dashboard extends PureComponent {
   webSocket = null;
 
   componentDidMount = () => {
-    const { onLoadSaveRouter, addTab } = this.props;
+    const { onLoadSaveRouter, addTab, appConfig } = this.props;
 
     this.webSocket = io('/', {
       path: '/socket.io',
@@ -54,7 +54,9 @@ class Dashboard extends PureComponent {
       secure: window.location.protocol === 'https',
     });
 
-    setInterval(this.autoSaveRoute, 10000);
+    if (appConfig && appConfig.autoSave) {
+      setInterval(this.autoSaveRoute, 10000);
+    }
 
     const saveRoute = localStorage.getItem('router');
     if (saveRoute) {
@@ -102,8 +104,13 @@ class Dashboard extends PureComponent {
   };
 
   componentWillUnmount = () => {
-    if (this.webSocket) this.webSocket.disconnect();
-    if (this.autoSaveRoute) clearInterval(this.autoSaveRoute);
+    if (this.webSocket) {
+      this.webSocket.disconnect();
+    }
+
+    if (this.autoSaveRoute) {
+      clearInterval(this.autoSaveRoute);
+    }
   };
 
   componentDidUpdate = () => {
@@ -115,13 +122,16 @@ class Dashboard extends PureComponent {
     } = this.props;
     const { showLoader, status: statusState, counterError } = this.state;
 
-    if (loader !== showLoader) this.onChangeLoaderVisibility(loader);
+    if (loader !== showLoader) {
+      this.onChangeLoaderVisibility(loader);
+    }
 
-    if (!showLoader && statusState !== status && status === 'online')
+    if (!showLoader && statusState !== status && status === 'online') {
       notification.success({
         message: 'Удачно',
         description: 'Интернет соединение восстановлено.',
       });
+    }
 
     if (showLoader && requestError === null && status === 'online') {
       const [moduleName, entityKey] = currentActionTab.split(regExpRegister.MODULE_AND_ENTITYID);
@@ -185,7 +195,9 @@ class Dashboard extends PureComponent {
     const currentRouter = JSON.stringify(router);
     const saveRouter = localStorage.getItem('router');
 
-    if (currentRouter !== saveRouter) saveAndNormalizeRoute(router, appConfig);
+    if (currentRouter !== saveRouter) {
+      saveAndNormalizeRoute(router, appConfig);
+    }
   };
 
   onCollapse = (collapsed) => {

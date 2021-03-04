@@ -66,7 +66,7 @@ class Responser implements ResponseBuilder {
     return this.res.json(
       getResponseJson(
         this.params.methodQuery,
-        { params: this.params, metadata: this.metadata, done: true, status: 'OK' },
+        { params: this.params, metadata: this.metadata, done: true, status: 'done' },
         (this.req as any).start,
         this.req.method !== 'GET' ? actions : null,
       ),

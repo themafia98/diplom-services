@@ -26,7 +26,7 @@ import { CONTROLLERS, CONTROLLERS_MAP } from './Server.constant';
 import authConfig from '../../config/auth.config';
 
 namespace Http {
-  const { catchError, jsonWebTokenRegister, checkPrivateRoute, timer, securityChecker } = Middleware;
+  const { catchError, jsonWebTokenRegister, timer, securityChecker } = Middleware;
   export class ServerRunner extends RestEntitiy {
     SessionStore = MongoStore(session);
 
