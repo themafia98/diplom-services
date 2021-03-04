@@ -157,9 +157,9 @@ class Request {
     });
   }
 
-  getHeaders() {
+  getAuthorizationHeader() {
     return {
-      Authorization: this.getToken(true),
+      Authorization: `Bearer ${this.getToken(true)}`,
     };
   }
 

@@ -73,7 +73,7 @@ const File = ({
       name: `${uuid()}_$FT$P$_${_id}`,
       multiple: !isLocal,
       withCredentials: true,
-      headers: rest && isLocal ? rest.getHeaders() : null,
+      headers: rest && isLocal ? rest.getAuthorizationHeader() : null,
       fileList: filesList,
       action: customUrl ? customUrl : rest && isLocal ? `${rest.getApi()}/system/${module}/file` : null,
       onPreview: handlePreview,
