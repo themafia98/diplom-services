@@ -60,11 +60,13 @@ const LoginPage = ({ initialSession, authLoad, location }) => {
         throw new Error(`${response.status}`);
       }
 
-      const { user: udata = {}, token = '' } = response.data;
+      const { user: udata, token } = response.data;
 
       if (!token) throw new Error('Bad user auth token');
 
-      localStorage.setItem('token', JSON.stringify(token));
+      if (!udata) throw new Error('Invalid udata');
+
+      localStorage.setItem('token', token);
 
       const defaultModule = menu?.find((item) => item?.SIGN === SIGNS.DEFAULT_SIGN);
 
