@@ -13,10 +13,10 @@ const Controller = Decorators.Controller;
 
 @Controller('/chat')
 export class ChatController implements ControllerApi<FunctionConstructor> {
-  @Post({ path: CHAT_ROUTE.LOAD_DATA, private: true })
-  @Delete({ path: CHAT_ROUTE.LEAVE_FROM_ROOM, private: true })
-  @Post({ path: CHAT_ROUTE.LOAD_CHATS, private: true })
-  @Put({ path: CHAT_ROUTE.CREATE_ROOM, private: true })
+  @Post({ path: CHAT_ROUTE[process.env.API_VERSION].LOAD_DATA, private: true })
+  @Delete({ path: CHAT_ROUTE[process.env.API_VERSION].LEAVE_FROM_ROOM, private: true })
+  @Post({ path: CHAT_ROUTE[process.env.API_VERSION].LOAD_CHATS, private: true })
+  @Put({ path: CHAT_ROUTE[process.env.API_VERSION].CREATE_ROOM, private: true })
   protected async getRooms(req: Request, res: Response): ResRequest {
     const { actionPath = '', actionType = '', params = {}, moduleName = '' } = req.body;
     const { options = {} } = params;
