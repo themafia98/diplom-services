@@ -159,7 +159,7 @@ class Request {
 
   getAuthorizationHeader() {
     return {
-      Authorization: `Bearer ${this.getToken(true)}`,
+      Authorization: this.getToken(true),
     };
   }
 
@@ -171,18 +171,12 @@ class Request {
    * @param {object} customHeaders
    */
   sendRequest(requestUrl, method, body, auth = false, customHeaders = {}) {
-    let jsonwebtoken = null;
-
     const isObjectBody = body && typeof body === 'object';
-
-    if (auth) {
-      jsonwebtoken = auth === 'worker' ? this.getLocalToken() : this.getToken(auth);
-    }
 
     const props = auth
       ? {
           headers: {
-            Authorization: `Bearer ${jsonwebtoken}`,
+            Authorization: auth === 'worker' ? this.getLocalToken() : this.getToken(auth),
           },
           data: isObjectBody
             ? {
@@ -221,11 +215,11 @@ class Request {
     if ((auth && !token) || !token) {
       return null;
     }
-    return `Token ${token}`;
+    return `Bearer ${token}`;
   }
 
   getLocalToken() {
-    return this.token;
+    return `Bearer ${this.token}`;
   }
 
   signOut = async () => {
