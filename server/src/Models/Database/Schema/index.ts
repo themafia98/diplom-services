@@ -76,15 +76,12 @@ userSchema.methods.changePassword = async function (password: string): Promise<s
 };
 
 userSchema.methods.generateJWT = function (this: User): any {
-  const today = new Date();
-  const expirationDate = new Date(today as Date);
-  expirationDate.setDate(today.getDate() + 30);
-
   return jwt.sign(
     {
-      email: this.email,
-      id: this._id,
-      exp: expirationDate.getTime() / 1000,
+      iss: this.email,
+      sub: this._id,
+      iat: new Date().getTime(),
+      exp: new Date().setHours(new Date().getHours() + 8),
     },
     authConfig.SECRET,
   );

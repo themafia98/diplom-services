@@ -15,6 +15,7 @@ import {
 import Action from '../../Models/Action';
 import Decorators from '../../Utils/decorators';
 import { SentMessageInfo } from 'nodemailer';
+import { GENERAL_ROUTE } from './General.path';
 
 namespace General {
   const Post = Decorators.Post;
@@ -23,17 +24,12 @@ namespace General {
 
   @Controller('/')
   export class Main implements ControllerApi<FunctionConstructor> {
-    @Post({ path: '/auth', private: true })
+    @Post({ path: GENERAL_ROUTE.CHECK_SESSION_JWT, private: true })
     protected auth(req: Request, res: Response): Response {
-      try {
-        return res.sendStatus(200);
-      } catch (err) {
-        console.error(err);
-        return res.sendStatus(503);
-      }
+      return res.sendStatus(200);
     }
 
-    @Post({ path: '/reg', private: false })
+    @Post({ path: GENERAL_ROUTE.CREATE_USER, private: false })
     protected async reg(req: Request, res: Response): ResRequest {
       try {
         if (!req.body) {
@@ -61,7 +57,7 @@ namespace General {
       }
     }
 
-    @Post({ path: '/login', private: false })
+    @Post({ path: GENERAL_ROUTE.LOG_IN, private: false })
     protected async login(req: Request, res: Response, next: NextFunction) {
       const body: BodyLogin = req.body;
 
@@ -128,29 +124,32 @@ namespace General {
       return result;
     }
 
-    @Post({ path: '/userload', private: true })
-    protected async userload(req: Request, res: Response): Promise<Response> {
-      const { user } = req;
-      if (user) return res.json({ user: (user as User).toAuthJSON() });
-      else {
-        res.clearCookie('connect.sid');
-        return res.sendStatus(302);
+    @Post({ path: GENERAL_ROUTE.LOAD_USER, private: true })
+    protected async userload({ user }: Request, res: Response): Promise<Response> {
+      if (user) {
+        return res.json({ user: (user as User).toAuthJSON() });
       }
+
+      res.clearCookie('connect.sid');
+      return res.sendStatus(302);
     }
 
-    @Delete({ path: '/logout', private: true })
+    @Delete({ path: GENERAL_ROUTE.LOG_OUT, private: true })
     protected async logout(req: Request, res: Response): Promise<Response> {
       return req.session.destroy(
         (err: Error): Response => {
-          if (err) console.error(err);
-          req.logOut(); // passportjs logout
+          if (err) {
+            console.error(err);
+          }
+
+          req.logOut();
           res.clearCookie('connect.sid');
           return res.sendStatus(200);
         },
       );
     }
 
-    @Post({ path: '/mailerResponse', private: true })
+    @Post({ path: GENERAL_ROUTE.SEND_MAIL, private: true })
     protected async mailerResponse(
       req: Request,
       res: Response,
@@ -184,7 +183,7 @@ namespace General {
       }
     }
 
-    @Post({ path: '/recovory', private: false })
+    @Post({ path: GENERAL_ROUTE.RECOVORY_PASSWORD, private: false })
     protected async recovoryPassword(
       req: Request,
       res: Response,

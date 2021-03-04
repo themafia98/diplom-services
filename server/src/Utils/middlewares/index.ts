@@ -1,6 +1,7 @@
 import { Response, NextFunction, Request } from 'express';
 import passport from 'passport';
-import * as passportLocal from 'passport-local';
+import JwtStrategy, { ExtractJwt } from 'passport-jwt';
+import LocalStrategy from 'passport-local';
 import { Dbms, User } from '../Interfaces/Interfaces.global';
 import { UserModel } from '../../Models/Database/Schema';
 import { ObjectId } from 'mongodb';
@@ -10,10 +11,9 @@ import querystring from 'querystring';
 import { Types } from 'mongoose';
 import AccessRole from '../../Models/AccessRole';
 import { ACTIONS_ACCESS } from '../../app.constant';
+import authConfig from '../../config/auth.config';
 
 namespace Middleware {
-  const LocalStrategy = passportLocal.Strategy;
-
   export const timer = (req: Request, res: Response, next: NextFunction): void => {
     (<any>req).start = new Date();
     next();
@@ -60,7 +60,7 @@ namespace Middleware {
 
   export const jsonWebTokenRegister = (dbm: Dbms): void => {
     passport.use(
-      new LocalStrategy(
+      new LocalStrategy.Strategy(
         {
           usernameField: 'email',
           passwordField: 'password',
@@ -93,6 +93,28 @@ namespace Middleware {
         },
       ),
     );
+
+    passport.use(
+      new JwtStrategy.Strategy(
+        {
+          jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+          secretOrKey: authConfig.SECRET,
+        },
+        async (jwt_payload, done) => {
+          const currentUser: User = (await UserModel.findOne({
+            where: { _id: jwt_payload.sub || '' },
+          })) as User;
+
+          if (!currentUser) {
+            done(null, false, { message: 'Incorrect email.' });
+            return;
+          }
+
+          return done(null, currentUser);
+        },
+      ),
+    );
+
     passport.serializeUser((user: Record<string, ObjectId>, done: Function): void => {
       /** save cookie sesson */
       const { id } = user || {};

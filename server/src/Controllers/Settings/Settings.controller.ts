@@ -19,12 +19,7 @@ namespace Settings {
   export class SettingsController implements ControllerApi<FunctionConstructor> {
     @Post({ path: '/password', private: true })
     protected async passwordChanged(req: Request, res: Response): ResRequest {
-      const params: Params = {
-        methodQuery: 'change_password',
-        from: 'users',
-        done: true,
-        status: 'OK',
-      };
+      const params: Params = createParams('change_password', 'done', 'users');
 
       const body: Record<string, object> = req.body;
       const { queryParams } = body as Record<string, QueryParams>;
@@ -46,12 +41,11 @@ namespace Settings {
     protected async statusList(req: Request, res: Response): ResRequest {
       const isGetter = req.method === 'GET';
 
-      const params: Params = {
-        methodQuery: isGetter ? 'get_statusList' : 'change_statusList',
-        from: 'settings',
-        done: true,
-        status: 'OK',
-      };
+      const params: Params = createParams(
+        isGetter ? 'get_statusList' : 'change_statusList',
+        'done',
+        'settings',
+      );
 
       const body: Record<string, object> = req.body;
       const { params: queryParams = {} } = body as Record<string, QueryParams>;
@@ -70,12 +64,7 @@ namespace Settings {
 
     @Post({ path: '/common', private: true })
     protected async commonSettings(req: Request, res: Response): ResRequest {
-      const params: Params = {
-        methodQuery: 'common_changes',
-        from: 'users',
-        done: true,
-        status: 'OK',
-      };
+      const params: Params = createParams('common_changes', 'done', 'users');
 
       const body: Record<string, QueryParams> = req.body;
       const { queryParams } = body;
@@ -93,7 +82,7 @@ namespace Settings {
 
     @Post({ path: '/profile', private: true })
     protected async profileSettings(req: Request, res: Response): ResRequest {
-      const params: Params = createParams('profile_changes', 'OK', 'users');
+      const params: Params = createParams('profile_changes', 'done', 'users');
       const body: Record<string, QueryParams> = req.body;
 
       const { queryParams } = body;
@@ -115,7 +104,7 @@ namespace Settings {
       const body: Record<string, object | string> = req.body;
       const { actionType = '' } = body;
 
-      const params: Params = createParams(actionType as string, 'OK', 'settingsLog');
+      const params: Params = createParams(actionType as string, 'done', 'settingsLog');
 
       const settingsLogger = new Action.ActionParser({
         actionPath: 'settingsLog',

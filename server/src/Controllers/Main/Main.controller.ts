@@ -24,6 +24,7 @@ import AccessRole from '../../Models/AccessRole';
 import { UserModel } from '../../Models/Database/Schema';
 import { createParams } from '../Controllers.utils';
 import { NOTIFICATION_TYPE } from './MainController.constant';
+import { MAIN_ROUTE } from './Main.path';
 
 namespace System {
   const readFile = promisify(fs.readFile);
@@ -35,7 +36,7 @@ namespace System {
 
   @Controller('/system')
   export class SystemData implements ControllerApi<FunctionConstructor> {
-    @Get({ path: '/core/:type/config', private: false })
+    @Get({ path: MAIN_ROUTE.CORE_APP_CONFIG, private: false })
     protected async loadSystemConfig(req: Request, res: Response): ResRequest {
       const { uid = '' } = req as Record<string, any>;
 
@@ -79,7 +80,7 @@ namespace System {
       }
     }
 
-    @Get({ path: '/userList', private: true })
+    @Get({ path: MAIN_ROUTE.USERS_LIST, private: true })
     protected async getUsersList(req: Request, res: Response): ResRequest {
       const { query } = url.parse(req.url);
       const queryString = querystring.parse(query as string);

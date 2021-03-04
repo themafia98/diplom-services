@@ -26,7 +26,7 @@ import { CONTROLLERS, CONTROLLERS_MAP } from './Server.constant';
 import authConfig from '../../config/auth.config';
 
 namespace Http {
-  const { catchError, jsonWebTokenRegister, checkPrivateRoute, timer, securityChecker } = Middleware;
+  const { catchError, jsonWebTokenRegister, timer, securityChecker } = Middleware;
   export class ServerRunner extends RestEntitiy {
     SessionStore = MongoStore(session);
 
@@ -64,8 +64,6 @@ namespace Http {
       this.getApp().use(express.urlencoded({ extended: true }));
       this.getApp().use(express.json());
       this.getApp().set('port', this.getPort());
-
-      this.getApp().use(session(this.session));
       this.getApp().use(passport.initialize());
       this.getApp().use(passport.session());
       this.getApp().use(catchError as any);
@@ -112,7 +110,7 @@ namespace Http {
         Object.values(CONTROLLERS).map((controllerKey) => CONTROLLERS_MAP[controllerKey]),
         this.getApp.bind(this),
         this.getRest.bind(this),
-        checkPrivateRoute.bind(this),
+        passport.authenticate('jwt', { session: false }),
         Instanse.ws,
       );
       ProcessRouter.errorEventsRegister(server, Instanse.dbm);
