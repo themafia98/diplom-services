@@ -102,7 +102,7 @@ namespace Middleware {
         },
         async (jwt_payload: { sub: string }, done: any) => {
           const currentUser: User = (await UserModel.findOne({
-            where: { _id: jwt_payload.sub || '' },
+            where: { _id: jwt_payload.sub },
           })) as User;
 
           if (!currentUser) {

@@ -171,18 +171,25 @@ class Request {
    * @param {object} customHeaders
    */
   sendRequest(requestUrl, method, body, auth = false, customHeaders = {}) {
+    let jsonwebtoken = null;
+
+    const isObjectBody = body && typeof body === 'object';
+
+    if (auth) {
+      jsonwebtoken = auth === 'worker' ? this.getLocalToken() : this.getToken(auth);
+    }
+
     const props = auth
       ? {
           headers: {
-            Authorization: auth === 'worker' ? this.getLocalToken() : this.getToken(auth),
+            Authorization: `Bearer ${jsonwebtoken}`,
           },
-          data:
-            body && typeof body === 'object'
-              ? {
-                  actionType: null,
-                  ...body,
-                }
-              : body,
+          data: isObjectBody
+            ? {
+                actionType: null,
+                ...body,
+              }
+            : body,
         }
       : {
           headers: {
