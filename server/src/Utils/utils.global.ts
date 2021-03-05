@@ -20,6 +20,7 @@ import { ObjectID } from 'mongodb';
 import { ROLES } from '../Models/AccessRole/AcessRole.constant';
 import { ParsedUrlQuery } from 'querystring';
 import { CONTROLLERS_MAP } from '../Models/Server/Server.constant';
+import passport from 'passport';
 
 namespace Utils {
   const upload = multer();
@@ -90,7 +91,6 @@ namespace Utils {
     controllers: Array<typeof CONTROLLERS_MAP['']>,
     getApp: Function,
     getRest: Function,
-    isPrivateRoute: Function,
     wsWorkerManager: WsWorker,
   ) => {
     controllers.forEach((Controller) => {
@@ -108,7 +108,7 @@ namespace Utils {
 
         const middlewares: Record<string, object> = {};
 
-        if (isPrivate) middlewares.private = isPrivateRoute;
+        if (isPrivate) middlewares.private = passport.authenticate('jwt', { session: false });
         if (isFile) middlewares.file = upload.any();
         if (isWs) middlewares.ws = wsWorkerManager;
 
