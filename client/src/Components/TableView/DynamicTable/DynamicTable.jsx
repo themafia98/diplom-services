@@ -12,7 +12,6 @@ import {
   setActiveTabAction,
 } from 'Redux/actions/routerActions';
 import { TASK_STATUS } from 'Modules/TaskModule/TaskModule.constant';
-import { Switch } from 'react-router-dom';
 
 class DynamicTable extends PureComponent {
   state = {
