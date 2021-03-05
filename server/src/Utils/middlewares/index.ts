@@ -8,7 +8,7 @@ import { ObjectId } from 'mongodb';
 
 import url from 'url';
 import querystring from 'querystring';
-import { Types } from 'mongoose';
+import { isValidObjectId, Types } from 'mongoose';
 import AccessRole from '../../Models/AccessRole';
 import { ACTIONS_ACCESS } from '../../app.constant';
 import authConfig from '../../config/auth.config';
@@ -101,8 +101,12 @@ namespace Middleware {
           secretOrKey: authConfig.SECRET,
         },
         async (jwt_payload: { sub: string }, done: any) => {
+          if (!isValidObjectId(jwt_payload.sub)) {
+            done(null, false, { message: 'Invalid token' });
+          }
+
           const currentUser: User = (await UserModel.findOne({
-            where: { _id: jwt_payload.sub },
+            where: { _id: Types.ObjectId(jwt_payload.sub) },
           })) as User;
 
           if (!currentUser) {
@@ -116,14 +120,12 @@ namespace Middleware {
     );
 
     passport.serializeUser((user: Record<string, ObjectId>, done: Function): void => {
-      /** save cookie sesson */
       const { id } = user || {};
       done(null, id);
     });
 
     passport.deserializeUser(
       async (id: string, done: Function): Promise<void | Function> => {
-        /** clear cookie session */
         try {
           const connect = await dbm.connection();
           if (!connect) throw new Error('Bad connect');

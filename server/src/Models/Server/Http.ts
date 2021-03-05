@@ -110,7 +110,6 @@ namespace Http {
         Object.values(CONTROLLERS).map((controllerKey) => CONTROLLERS_MAP[controllerKey]),
         this.getApp.bind(this),
         this.getRest.bind(this),
-        passport.authenticate('jwt', { session: false }),
         Instanse.ws,
       );
       ProcessRouter.errorEventsRegister(server, Instanse.dbm);
