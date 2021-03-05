@@ -11,6 +11,7 @@ import {
   openPageWithDataAction,
   setActiveTabAction,
 } from 'Redux/actions/routerActions';
+import { TASK_STATUS } from 'Modules/TaskModule/TaskModule.constant';
 
 class DynamicTable extends PureComponent {
   state = {
@@ -48,6 +49,21 @@ class DynamicTable extends PureComponent {
     return state;
   };
 
+  getStatusByTitle = (text) => {
+    switch (text) {
+      case TASK_STATUS.IN_WORK:
+        return 'active';
+      case TASK_STATUS.CLOSE:
+        return 'close';
+      case TASK_STATUS.DONE:
+        return 'done';
+      case TASK_STATUS.OPEN:
+        return 'open';
+      default:
+        return '';
+    }
+  };
+
   getConfigColumns = () => {
     const {
       router: { path = '' } = {},
@@ -58,9 +74,11 @@ class DynamicTable extends PureComponent {
       cachesAuthorList,
       cachesEditorList,
     } = this.props;
-    const {
-      router: { routeData: { [path]: { saveData: { sortedInfo = [] } = {} } = {} } = {} } = {},
-    } = this.props;
+    const { path, routeData } = router;
+    const { [path]: routerData = {} } = routeData;
+    const { saveData = {} } = routerData;
+    const { sortedInfo = [] } = saveData;
+
     return [
       {
         title: 'Статус',
@@ -70,12 +88,7 @@ class DynamicTable extends PureComponent {
         sortOrder: sortedInfo && sortedInfo.columnKey === 'status' && sortedInfo.order,
         key: 'status',
         render: (text, row, index) => {
-          let className = '';
-          if (text === 'В работе') className = 'active';
-          else if (text === 'Открыт') className = '';
-          else if (text === 'Закрыт') className = 'close';
-          else if (text === 'Выполнен') className = 'done';
-          else className = '';
+          let className = this.getStatusByTitle(text);
 
           return (
             <Output className={className} key={`${text}${row}${index}status`}>
