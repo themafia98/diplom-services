@@ -31,16 +31,12 @@ const LoginPage = ({ initialSession, authLoad, location }) => {
   const enterLoading = useCallback(async () => {
     const { Request } = context;
 
-    const { menu = [] } = appConfig || {};
-    const { current: loginNode = null } = loginRef || {};
-    const { current: passwordNode = null } = passwordRef || {};
-
-    const { state: { value: loginValue = '' } = {} } = loginNode || {};
-    const { state: { value: passwordValue = '' } = {} } = passwordNode || {};
-
-    if (!loginValue || !passwordValue) {
+    if (!loginRef.current || !passwordRef.current) {
       return;
     }
+
+    const { value: email } = loginRef.current.state;
+    const { value: password } = passwordRef.current.state;
 
     const rest = new Request();
 
@@ -52,8 +48,8 @@ const LoginPage = ({ initialSession, authLoad, location }) => {
         '/login',
         'POST',
         {
-          email: loginValue,
-          password: passwordValue,
+          email,
+          password,
         },
         false,
       );
@@ -74,12 +70,13 @@ const LoginPage = ({ initialSession, authLoad, location }) => {
 
       localStorage.setItem('token', token);
 
-      const defaultModule = menu?.find((item) => item?.SIGN === SIGNS.DEFAULT_SIGN);
+      const { EUID: defaultModule = 'mainModule' } =
+        appConfig?.menu.find((item) => item?.SIGN === SIGNS.DEFAULT_SIGN) || {};
 
-      initialSession(udata, defaultModule?.EUID || 'mainModule');
+      initialSession(udata, defaultModule);
       setAuth(true);
     } catch (error) {
-      const { data = '' } = error?.response || {};
+      const { data } = error.response;
 
       const parser = new DOMParser();
       const doc = parser.parseFromString(data, 'text/html');
@@ -97,8 +94,10 @@ const LoginPage = ({ initialSession, authLoad, location }) => {
     }
   }, [appConfig, context, initialSession]);
 
-  const onKeyDown = ({ key = '' }) => {
-    if (key === 'Enter') enterLoading();
+  const onKeyDown = ({ key }) => {
+    if (key === 'Enter') {
+      enterLoading();
+    }
   };
 
   if (authLoad || loginAuth) {

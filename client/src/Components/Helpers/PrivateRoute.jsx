@@ -8,12 +8,10 @@ import PropTypes from 'prop-types';
 const { object, func, array } = PropTypes;
 
 const PrivateRoute = ({ component: Component, onLogoutAction, onSetStatus, ...routeProps }) => {
-  const timerRef = useRef(); // instance timer
+  const timerRef = useRef();
   const history = useHistory();
   const { rest } = useContext(modelsContext);
 
-  const [route, setRoute] = useState(<Loader title="Загрузка данных" />);
-  /** @type {[number|null, Function|null]} */
   const [status, setStatus] = useState(null);
   const [init, setInit] = useState(null);
 
@@ -23,12 +21,13 @@ const PrivateRoute = ({ component: Component, onLogoutAction, onSetStatus, ...ro
 
       if (response.status === 200 && response.status !== status) {
         onSetStatus('online');
-        setRoute(<Component rest={rest} />);
         setStatus(res.status);
       }
 
       if (response.status !== 200) {
-        rest.restartApp();
+        setStatus(response.status);
+
+        setTimeout(() => rest.restartApp(), 3000);
       }
     } catch (err) {
       if (err?.message.toLowerCase().includes('network error')) {
@@ -61,7 +60,16 @@ const PrivateRoute = ({ component: Component, onLogoutAction, onSetStatus, ...ro
     }
     return () => clearTimer();
   }, [getRouters, status, init, clearTimer, startTimer]);
-  return <Route exact {...routeProps} render={(props) => route} />;
+
+  const pageRender = (props) => {
+    if (status === 200) {
+      return <Component {...props} />;
+    }
+
+    return <Loader title="Загрузка данных" />;
+  };
+
+  return <Route exact {...routeProps} render={pageRender} />;
 };
 
 PrivateRoute.propTypes = {
