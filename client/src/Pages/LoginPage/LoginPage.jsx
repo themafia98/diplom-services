@@ -76,7 +76,7 @@ const LoginPage = ({ initialSession, authLoad, location }) => {
       initialSession(udata, defaultModule);
       setAuth(true);
     } catch (error) {
-      const { data } = error.response;
+      const { data } = error?.response || {};
 
       const parser = new DOMParser();
       const doc = parser.parseFromString(data, 'text/html');
