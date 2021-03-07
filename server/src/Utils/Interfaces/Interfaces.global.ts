@@ -469,7 +469,7 @@ export interface ResponseBuilder {
   err: Error | null;
   status: number;
   metadata: ParserResult;
-  emit(): Promise<Response>;
+  sendMessage(): Promise<Response>;
 }
 
 export interface Access {

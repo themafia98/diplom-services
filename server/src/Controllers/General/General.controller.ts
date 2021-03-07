@@ -135,18 +135,9 @@ namespace General {
     }
 
     @Delete({ path: GENERAL_ROUTE.LOG_OUT, private: true })
-    protected async logout(req: Request, res: Response): Promise<Response> {
-      return req.session.destroy(
-        (err: Error): Response => {
-          if (err) {
-            console.error(err);
-          }
-
-          req.logOut();
-          res.clearCookie('connect.sid');
-          return res.sendStatus(200);
-        },
-      );
+    protected async logout(req: Request, res: Response): Promise<void> {
+      req.logOut();
+      res.sendStatus(200);
     }
 
     @Post({ path: GENERAL_ROUTE.SEND_MAIL, private: true })

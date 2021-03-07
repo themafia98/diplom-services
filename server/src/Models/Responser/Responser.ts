@@ -62,13 +62,15 @@ class Responser implements ResponseBuilder {
   }
 
   private async doneResponse(): Promise<Response> {
-    const actions = (this.req as any).session.availableActions || null;
+    const { user = null } = this.req as Record<string, any>;
+    const { availableActions = null } = user?.actions || {};
+
     return this.res.json(
       getResponseJson(
         this.params.methodQuery,
         { params: this.params, metadata: this.metadata, done: true, status: 'done' },
         (this.req as any).start,
-        this.req.method !== 'GET' ? actions : null,
+        this.req.method !== 'GET' ? availableActions : null,
       ),
     );
   }
@@ -85,19 +87,21 @@ class Responser implements ResponseBuilder {
   }
 
   private async errorResponse(): Promise<Response> {
-    const actions = (this.req as any).session.availableActions || null;
+    const { user = null } = this.req as Record<string, any>;
+    const { availableActions = null } = user?.actions || {};
+
     const status: string = this.getErrorStatus();
     return this.res.json(
       getResponseJson(
         status,
         { status: this.params.status, params: this.params, done: false, metadata: this.metadata },
         (this.req as Record<string, any>).start,
-        this.req.method !== 'GET' ? actions : null,
+        this.req.method !== 'GET' ? availableActions : null,
       ),
     );
   }
 
-  public async emit(): Promise<Response> {
+  public async sendMessage(): Promise<Response> {
     if (this.res.headersSent) return this.res;
     if (this.status) this.res.status(this.status);
 

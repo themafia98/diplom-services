@@ -23,19 +23,19 @@ namespace Middleware {
     const { query } = url.parse(request.url);
     const { uid = '' } = querystring.parse(query as string);
 
-    const { session = null } = request as Record<string, null | object | AccessRole>;
+    const { user = null } = request as Record<string, null | object | AccessRole>;
 
-    if (session && request.session.access && request.body) {
-      request.session.availableActions = AccessRole.getAvailableActions(
+    if (user && request.user.access && request.body) {
+      request.user.availableActions = AccessRole.getAvailableActions(
         request.body.moduleName || '',
-        request.session.access,
+        request.user.access,
       );
     }
 
     const { actionType = '' } = req.body;
 
-    if ((<string>actionType).toUpperCase().includes(ACTIONS_ACCESS.CREATE) && request.session) {
-      request.shouldBeCreate = request.session.availableActions.some(
+    if ((<string>actionType).toUpperCase().includes(ACTIONS_ACCESS.CREATE) && request.user) {
+      request.shouldBeCreate = request.user.availableActions.some(
         (it: string) => it === ACTIONS_ACCESS.CREATE,
       );
     }
@@ -103,9 +103,7 @@ namespace Middleware {
             done(null, false, { message: 'Invalid token' });
           }
 
-          const currentUser: User = (await UserModel.findOne({
-            where: { _id: Types.ObjectId(jwt_payload.sub) },
-          })) as User;
+          const currentUser: User = (await UserModel.findById(Types.ObjectId(jwt_payload.sub))) as User;
 
           if (!currentUser) {
             done(null, false, { message: 'Incorrect email.' });

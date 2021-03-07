@@ -71,8 +71,7 @@ namespace System {
             ...parsedJsonPrivateConfig,
           };
 
-          if (req.session)
-            (<Record<string, AccessConfig[]>>(<unknown>req.session)).access = accessUser.config;
+          if (req.user) (<Record<string, AccessConfig[]>>(<unknown>req.user)).access = accessUser.config;
         }
 
         res.json(parseConfig);

@@ -275,7 +275,7 @@ namespace ActionApi {
           if (!actionResult) {
             params.done = false;
             params.status = 'FAIL';
-            return await new Responser(res, req, params, null, 404, []).emit();
+            return await new Responser(res, req, params, null, 404, []).sendMessage();
           }
 
           let metadata: Meta = [];
@@ -284,12 +284,12 @@ namespace ActionApi {
             metadata = parsePublicData(actionResult, 'default', this.getActionPath(), queryString);
           else metadata = actionResult;
 
-          return await new Responser(res, req, params, null, 200, metadata).emit();
+          return await new Responser(res, req, params, null, 200, metadata).sendMessage();
         } catch (err) {
           console.error(err);
           params.status = 'FAIL';
           params.done = false;
-          return await new Responser(res, req, params, err, 503, []).emit();
+          return await new Responser(res, req, params, err, 503, []).sendMessage();
         }
       };
     }
