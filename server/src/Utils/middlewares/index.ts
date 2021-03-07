@@ -4,8 +4,6 @@ import JwtStrategy, { ExtractJwt } from 'passport-jwt';
 import LocalStrategy from 'passport-local';
 import { Dbms, User } from '../Interfaces/Interfaces.global';
 import { UserModel } from '../../Models/Database/Schema';
-import { ObjectId } from 'mongodb';
-
 import url from 'url';
 import querystring from 'querystring';
 import { isValidObjectId, Types } from 'mongoose';
@@ -119,9 +117,8 @@ namespace Middleware {
       ),
     );
 
-    passport.serializeUser((user: Record<string, ObjectId>, done: Function): void => {
-      const { id } = user || {};
-      done(null, id);
+    passport.serializeUser((user: any, done: Function): void => {
+      done(null, user?.id);
     });
 
     passport.deserializeUser(

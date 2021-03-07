@@ -6,6 +6,7 @@ import Action from '../../Models/Action';
 import Decorators from '../../Utils/decorators';
 import { createParams } from '../Controllers.utils';
 import { TASKS_ROUTE } from './Tasks.path';
+import Utils from '../../Utils/utils.global';
 
 namespace Tasks {
   const Controller = Decorators.Controller;
@@ -15,7 +16,7 @@ namespace Tasks {
 
   @Controller('/tasks')
   export class TasksController {
-    @Post({ path: TASKS_ROUTE[process.env.API_VERSION].LOAD_TASKS_LIST, private: true })
+    @Post({ path: TASKS_ROUTE[Utils.getVersion()].LOAD_TASKS_LIST, private: true })
     @Get({ path: '/list', private: true })
     protected async getList(req: Request, res: Response): ResRequest {
       const params: Params = createParams('get_all', 'done', 'tasks');
@@ -42,8 +43,8 @@ namespace Tasks {
       return responseExec(req, res, params, true);
     }
 
-    @Post({ path: TASKS_ROUTE[process.env.API_VERSION].LOAD_COUNTER, private: true })
-    @Get({ path: TASKS_ROUTE[process.env.API_VERSION].LOAD_COUNTER, private: true })
+    @Post({ path: TASKS_ROUTE[Utils.getVersion()].LOAD_COUNTER, private: true })
+    @Get({ path: TASKS_ROUTE[Utils.getVersion()].LOAD_COUNTER, private: true })
     protected async getListCounter(req: Request, res: Response): ResRequest {
       const { params: { filterCounter = null, saveData = {} } = {} } = req.body;
 
@@ -60,7 +61,7 @@ namespace Tasks {
       return responseExec(req, res, params);
     }
 
-    @Post({ path: TASKS_ROUTE[process.env.API_VERSION].CREATE_TASK, private: true })
+    @Post({ path: TASKS_ROUTE[Utils.getVersion()].CREATE_TASK, private: true })
     protected async create(req: Request, res: Response): ResRequest {
       const { params: task = {} } = req.body;
 
@@ -80,7 +81,7 @@ namespace Tasks {
       return responseExec(req, res, params);
     }
 
-    @Put({ path: TASKS_ROUTE[process.env.API_VERSION].CACHING_JURNAL, private: true })
+    @Put({ path: TASKS_ROUTE[Utils.getVersion()].CACHING_JURNAL, private: true })
     protected async setJurnalWorks(req: Request, res: Response): ResRequest {
       const params: Params = createParams('set_jurnal', 'done', 'jurnalworks');
       const { params: jurnalEntity = {} } = req.body;
@@ -97,7 +98,7 @@ namespace Tasks {
       return responseExec(req, res, params);
     }
 
-    @Put({ path: TASKS_ROUTE[process.env.API_VERSION].LOAD_JURNAL_LIST, private: true })
+    @Put({ path: TASKS_ROUTE[Utils.getVersion()].LOAD_JURNAL_LIST, private: true })
     protected async getCachingList(req: Request, res: Response): ResRequest {
       const { params: { options = {} } = {}, actionType = '' } = req.body;
 

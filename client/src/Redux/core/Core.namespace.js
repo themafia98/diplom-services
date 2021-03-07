@@ -4,7 +4,7 @@ import namespaceCore from './updater';
 const { cachingThunk, getterCacheThunk, putterCacheThunk } = namespaceCache;
 const { coreDataUpdater, errorThunk, updateEntityThunk } = namespaceCore;
 
-export default {
+const core = {
   errorThunk,
   coreDataUpdater,
   cachingThunk,
@@ -12,3 +12,5 @@ export default {
   putterCacheThunk,
   updateEntityThunk,
 };
+
+export default core;

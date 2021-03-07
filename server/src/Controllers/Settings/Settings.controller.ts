@@ -12,13 +12,14 @@ import Action from '../../Models/Action';
 import Decorators from '../../Utils/decorators';
 import { createParams } from '../Controllers.utils';
 import { SETTINGS_ROUTE } from './Settings.path';
+import Utils from '../../Utils/utils.global';
 
 namespace Settings {
   const { Controller, Post, Put, Get } = Decorators;
 
   @Controller('/settings')
   export class SettingsController implements ControllerApi<FunctionConstructor> {
-    @Post({ path: SETTINGS_ROUTE[process.env.API_VERSION].CHANGE_PASSWORD, private: true })
+    @Post({ path: SETTINGS_ROUTE[Utils.getVersion()].CHANGE_PASSWORD, private: true })
     protected async passwordChanged(req: Request, res: Response): ResRequest {
       const params: Params = createParams('change_password', 'done', 'users');
 
@@ -37,8 +38,8 @@ namespace Settings {
       return responseExec(req, res, params);
     }
 
-    @Get({ path: SETTINGS_ROUTE[process.env.API_VERSION].LOAD_STATUS_LIST, private: true })
-    @Put({ path: SETTINGS_ROUTE[process.env.API_VERSION].LOAD_STATUS_LIST, private: true })
+    @Get({ path: SETTINGS_ROUTE[Utils.getVersion()].LOAD_STATUS_LIST, private: true })
+    @Put({ path: SETTINGS_ROUTE[Utils.getVersion()].LOAD_STATUS_LIST, private: true })
     protected async statusList(req: Request, res: Response): ResRequest {
       const isGetter = req.method === 'GET';
 
@@ -63,7 +64,7 @@ namespace Settings {
       return responseExec(req, res, params);
     }
 
-    @Post({ path: SETTINGS_ROUTE[process.env.API_VERSION].SAVE_COMMON, private: true })
+    @Post({ path: SETTINGS_ROUTE[Utils.getVersion()].SAVE_COMMON, private: true })
     protected async commonSettings(req: Request, res: Response): ResRequest {
       const params: Params = createParams('common_changes', 'done', 'users');
 
@@ -81,7 +82,7 @@ namespace Settings {
       return responseExec(req, res, params);
     }
 
-    @Post({ path: SETTINGS_ROUTE[process.env.API_VERSION].SAVE_PROFILE, private: true })
+    @Post({ path: SETTINGS_ROUTE[Utils.getVersion()].SAVE_PROFILE, private: true })
     protected async profileSettings(req: Request, res: Response): ResRequest {
       const params: Params = createParams('profile_changes', 'done', 'users');
       const body: Record<string, QueryParams> = req.body;
@@ -99,7 +100,7 @@ namespace Settings {
       return responseExec(req, res, params);
     }
 
-    @Put({ path: SETTINGS_ROUTE[process.env.API_VERSION].SAVE_LOGS, private: true })
+    @Put({ path: SETTINGS_ROUTE[Utils.getVersion()].SAVE_LOGS, private: true })
     @Post({ path: '/logger', private: true })
     protected async logger(req: Request, res: Response): ResRequest {
       const body: Record<string, object | string> = req.body;

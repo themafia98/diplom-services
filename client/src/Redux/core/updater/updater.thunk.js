@@ -113,8 +113,10 @@ const errorThunk = async (error, dispatch, dep = {}, callback) => {
   } else dispatch(errorRequestAction(error.message));
 };
 
-export default {
+const updater = {
   coreDataUpdater,
   errorThunk,
   updateEntityThunk,
 };
+
+export default updater;

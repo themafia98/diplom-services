@@ -102,4 +102,6 @@ const getterCacheThunk = async (dispatch, dep = {}, depActions = {}) => {
   }
 };
 
-export default { cachingThunk, getterCacheThunk, putterCacheThunk };
+const cacheThunks = { cachingThunk, getterCacheThunk, putterCacheThunk };
+
+export default cacheThunks;

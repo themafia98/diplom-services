@@ -12,6 +12,7 @@ import Decorators from '../../../Utils/decorators';
 import Action from '../../../Models/Action';
 import { createParams } from '../../Controllers.utils';
 import { NEWS_ROUTE } from './News.path';
+import Utils from '../../../Utils/utils.global';
 
 namespace News {
   const Controller = Decorators.Controller;
@@ -20,7 +21,7 @@ namespace News {
 
   @Controller('/news')
   export class NewsController implements ControllerApi<FunctionConstructor> {
-    @Post({ path: NEWS_ROUTE[process.env.API_VERSION].CREATE_NEWS, private: true })
+    @Post({ path: NEWS_ROUTE[Utils.getVersion()].CREATE_NEWS, private: true })
     protected async createNews(req: Request, res: Response): ResRequest {
       const body: BodyLogin = req.body;
 
@@ -42,8 +43,8 @@ namespace News {
       return responseExec(req, res, params);
     }
 
-    @Post({ path: NEWS_ROUTE[process.env.API_VERSION].LOAD_NEWS, private: true })
-    @Get({ path: NEWS_ROUTE[process.env.API_VERSION].LOAD_NEWS, private: true })
+    @Post({ path: NEWS_ROUTE[Utils.getVersion()].LOAD_NEWS, private: true })
+    @Get({ path: NEWS_ROUTE[Utils.getVersion()].LOAD_NEWS, private: true })
     protected async getNewsList(req: Request, res: Response, next: NextFunction): ResRequest {
       const params: Params = { methodQuery: 'get_all', status: 'done', done: true, from: 'news' };
 

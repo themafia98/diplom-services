@@ -11,7 +11,7 @@
     "start": "node --inspect=9229 -r ts-node/register ./server/src/index.ts && start:watch",
     "start:watch": "nodemon --watch ./server",
     "start:app": "cd client && yarn start",
-    "dev:server": "cross-env NODE_ENV=development nodemon ./server/src/index.ts --inspect",
+    "dev:server": "cross-env NODE_ENV=development cross-env API_VERSION=v1 nodemon ./server/src/index.ts --inspect",
     "dev:app": "cd client && yarn start",
     "build": "run-p build:**",
     "buildprod": "cd server && tsc && cd ../ cd client && yarn build",
@@ -26,7 +26,8 @@
     "lint:eslint": "eslint \"./**/*.*\"",
     "lint:prettier": "prettier --check \"./**/*.*\"",
     "format": "prettier --write **/**/**/*.{js,jsx,json,css,ts,scss}",
-    "lint-staged": "lint-staged"
+    "lint-staged": "lint-staged",
+    "disabled": "eslint --cache"
   },
   "nodemonConfig": {
     "ignore": [
@@ -101,6 +102,7 @@
     "@types/node": "^14.14.7",
     "@types/nodemailer": "^6.2.2",
     "@types/passport": "^1.0.2",
+    "@types/passport-jwt": "^3.0.5",
     "@types/passport-local": "^1.0.33",
     "@types/request": "^2.48.5",
     "@types/socket.io": "^2.1.4",

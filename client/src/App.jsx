@@ -184,7 +184,7 @@ class App extends Component {
         return key !== 'token'
           ? {
               ...acc,
-              [key]: res.data?.user[key],
+              [key]: data?.user[key],
             }
           : acc || {};
       }, {});

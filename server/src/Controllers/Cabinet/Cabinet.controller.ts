@@ -14,13 +14,14 @@ import { isValidObjectId, Types } from 'mongoose';
 import { createParams } from '../Controllers.utils';
 import { CABINET_ROUTE } from './Cabinet.path';
 import { ROUTE_PARAMS } from '../../Models/Router/Router.constant';
+import Utils from '../../Utils/utils.global';
 
 namespace Cabinet {
   const { Controller, Post, Get } = Decorators;
 
   @Controller('/cabinet')
   export class CabinetController implements ControllerApi<FunctionConstructor> {
-    @Post({ path: CABINET_ROUTE[process.env.API_VERSION].LOAD_USER, private: true, file: true })
+    @Post({ path: CABINET_ROUTE[Utils.getVersion()].LOAD_USER, private: true, file: true })
     protected async loadAvatar(req: Request, res: Response): ResRequest {
       const params: Params = createParams('update_avatar', 'done', 'users');
       const files: Array<FileBody> = req.files as Array<FileBody>;
@@ -44,7 +45,7 @@ namespace Cabinet {
       return responseExec(req, res, params);
     }
 
-    @Get({ path: CABINET_ROUTE[process.env.API_VERSION].FIND_USER, private: true })
+    @Get({ path: CABINET_ROUTE[Utils.getVersion()].FIND_USER, private: true })
     protected async findUser(req: Request, res: Response): ResRequest {
       const params: Params = createParams('get_all', 'done', 'users');
       const actionUser: Actions = new Action.ActionParser({

@@ -21,7 +21,7 @@ const PrivateRoute = ({ component: Component, onLogoutAction, onSetStatus, ...ro
 
       if (response.status === 200 && response.status !== status) {
         onSetStatus('online');
-        setStatus(res.status);
+        setStatus(response.status);
       }
 
       if (response.status !== 200) {

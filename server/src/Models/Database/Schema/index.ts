@@ -1,18 +1,5 @@
 import { Schema, model, Model, Document, Types } from 'mongoose';
-import { SchemaEntity } from '../../../Utils/Types/types.global';
-import {
-  User,
-  Task,
-  Jurnal,
-  Logger,
-  News,
-  ChatMessage,
-  ChatRoom,
-  Notification,
-  WikiTree,
-  WikiPage,
-  Settings,
-} from '../../../Utils/Interfaces/Interfaces.global';
+import { User, Task } from '../../../Utils/Interfaces/Interfaces.global';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { ROLES } from '../../AccessRole/AcessRole.constant';
@@ -141,7 +128,7 @@ export const task: Schema<Task> = new Schema(
   { timestamps: true },
 );
 
-export const jurnalItem: Schema<Jurnal> = new Schema(
+export const jurnalItem = new Schema(
   {
     depKey: { type: Types.ObjectId, ref: 'task', required: true },
     timeLost: { type: String, required: true },
@@ -154,7 +141,7 @@ export const jurnalItem: Schema<Jurnal> = new Schema(
   { timestamps: true },
 );
 
-export const logger: Schema<Logger> = new Schema(
+export const logger = new Schema(
   {
     uid: { type: String, required: true },
     message: { type: String, required: true },
@@ -164,7 +151,7 @@ export const logger: Schema<Logger> = new Schema(
   { timestamps: true },
 );
 
-export const news: Schema<News> = new Schema(
+export const news = new Schema(
   {
     title: { type: String, required: true },
     content: {
@@ -177,7 +164,7 @@ export const news: Schema<News> = new Schema(
   { timestamps: true },
 );
 
-export const chatMsg: Schema<ChatMessage> = new Schema(
+export const chatMsg = new Schema(
   {
     msg: { type: String, required: true },
     authorId: { type: String, required: true },
@@ -190,7 +177,7 @@ export const chatMsg: Schema<ChatMessage> = new Schema(
   { timestamps: true },
 );
 
-export const chatRoom: Schema<ChatRoom> = new Schema(
+export const chatRoom = new Schema(
   {
     type: { type: String, required: true },
     moduleName: { type: String, required: true },
@@ -210,7 +197,7 @@ export const chatRoom: Schema<ChatRoom> = new Schema(
   { timestamps: true },
 );
 
-export const notification: Schema<Notification> = new Schema(
+export const notification = new Schema(
   {
     key: { type: String, required: false },
     type: { type: String, required: true },
@@ -230,7 +217,7 @@ export const notification: Schema<Notification> = new Schema(
   },
 );
 
-export const wikiTree: Schema<WikiTree> = new Schema(
+export const wikiTree = new Schema(
   {
     title: { type: String, required: true },
     level: { type: Number, required: true },
@@ -245,7 +232,7 @@ export const wikiTree: Schema<WikiTree> = new Schema(
   },
 );
 
-export const wikiPage: Schema<WikiPage> = new Schema(
+export const wikiPage = new Schema(
   {
     treeId: { type: Types.ObjectId, ref: 'wikiTree', required: true },
     lastEditName: { type: String, required: true },
@@ -259,7 +246,7 @@ export const wikiPage: Schema<WikiPage> = new Schema(
   { timestamps: true },
 );
 
-export const settings: Schema<Settings> = new Schema(
+export const settings = new Schema(
   {
     idSettings: { type: String, required: true, dropDups: true },
     settings: {
@@ -280,7 +267,7 @@ export const settings: Schema<Settings> = new Schema(
 
 export const UserModel: Model<Document> = model('users', userSchema);
 
-export const getSchemaByName = (name: string): Schema<SchemaEntity> | null => {
+export const getSchemaByName = (name: string) => {
   switch (name) {
     case 'task':
       return task;

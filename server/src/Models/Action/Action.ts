@@ -208,7 +208,7 @@ namespace ActionApi {
             else if (key) findQuery = { key };
             else if (customQuery) findQuery = { [customQuery as string]: customQueryValue };
 
-            const actionData: Document = await model.updateOne(
+            const actionData = await model.updateOne(
               findQuery,
               {
                 ...updateProps,

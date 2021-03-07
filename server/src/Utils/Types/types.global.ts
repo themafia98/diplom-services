@@ -104,7 +104,8 @@ export type SchemaEntity =
   | string
   | Settings
   | WikiPage
-  | Access;
+  | Access
+  | Document<any, {}>;
 
 export type actionGet = {
   collection: string;

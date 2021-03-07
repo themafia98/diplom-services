@@ -7,6 +7,7 @@ import Decorators from '../../Utils/decorators';
 import Action from '../../Models/Action';
 import { createParams } from '../Controllers.utils';
 import { WIKI_ROUTE } from './Wiki.path';
+import Utils from '../../Utils/utils.global';
 
 namespace Wiki {
   const Controller = Decorators.Controller;
@@ -17,7 +18,7 @@ namespace Wiki {
 
   @Controller('/wiki')
   export class WikiController implements ControllerApi<FunctionConstructor> {
-    @Get({ path: WIKI_ROUTE[process.env.API_VERSION].LOAD_WIKI_PAGES_LIST, private: true })
+    @Get({ path: WIKI_ROUTE[Utils.getVersion()].LOAD_WIKI_PAGES_LIST, private: true })
     protected async getTreeList(req: Request, res: Response): ResRequest {
       const params: Params = createParams('get_all', 'done', 'wiki');
 
@@ -30,7 +31,7 @@ namespace Wiki {
       return responseExec(req, res, params);
     }
 
-    @Put({ path: WIKI_ROUTE[process.env.API_VERSION].CREATE_LEAF, private: true })
+    @Put({ path: WIKI_ROUTE[Utils.getVersion()].CREATE_LEAF, private: true })
     protected async createLeaf(req: Request, res: Response): ResRequest {
       const params: Params = createParams('create_leaf', 'done', 'wiki');
       const { params: leafEntity = {} } = req.body;
@@ -44,7 +45,7 @@ namespace Wiki {
       return responseExec(req, res, params);
     }
 
-    @Delete({ path: WIKI_ROUTE[process.env.API_VERSION].DELETE_LEAF, private: true })
+    @Delete({ path: WIKI_ROUTE[Utils.getVersion()].DELETE_LEAF, private: true })
     protected async deleteLeafs(req: Request, res: Response): ResRequest {
       const params: Params = createParams('delete_leafs', 'done', 'wiki');
 
@@ -59,7 +60,7 @@ namespace Wiki {
       return responseExec(req, res, params);
     }
 
-    @Post({ path: WIKI_ROUTE[process.env.API_VERSION].LOAD_WIKI_PAGE, private: true })
+    @Post({ path: WIKI_ROUTE[Utils.getVersion()].LOAD_WIKI_PAGE, private: true })
     protected async getWikiPage(req: Request, res: Response): ResRequest {
       const params: Params = createParams('wiki_page', 'done', 'wiki');
       const body: ActionParams = req.body;

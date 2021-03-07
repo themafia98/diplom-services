@@ -94,4 +94,6 @@ const runLocalUpdate = async (dispatch, depAction, depParser, multiple) => {
   else if (multiple) return data;
 };
 
-export default { runLocalUpdate, runBadNetworkMode, runRefreshIndexedDb, runNoCorsSave };
+const coreUtils = { runLocalUpdate, runBadNetworkMode, runRefreshIndexedDb, runNoCorsSave };
+
+export default coreUtils;

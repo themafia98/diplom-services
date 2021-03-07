@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { NextFunction, Response, Request } from 'express';
 import multer from 'multer';
 import winston from 'winston';
-import { model, Schema, Model, Document } from 'mongoose';
+import { model, Model, Document } from 'mongoose';
 import { getSchemaByName } from '../Models/Database/Schema';
 import {
   RouteDefinition,
@@ -73,7 +73,7 @@ namespace Utils {
 
   export const getModelByName = (name: string, schemaType: string): Model<Document> | null => {
     try {
-      const schema: Schema | null = getSchemaByName(schemaType);
+      const schema = getSchemaByName(schemaType);
 
       if (schema) return model(name, schema);
       else return null;
@@ -356,6 +356,11 @@ namespace Utils {
   /** @deprecated 01.06.2020 should use mongoose isValidObjectId */
   export const isValidObjectId = (id: string): boolean => {
     return !!id && typeof id === 'string' && id.length <= 24;
+  };
+
+  export const getVersion = (): string => {
+    const { API_VERSION = '' } = process.env;
+    return API_VERSION;
   };
 }
 

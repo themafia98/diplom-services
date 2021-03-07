@@ -25,6 +25,7 @@ import { UserModel } from '../../Models/Database/Schema';
 import { createParams } from '../Controllers.utils';
 import { NOTIFICATION_TYPE } from './MainController.constant';
 import { MAIN_ROUTE } from './Main.path';
+import Utils from '../../Utils/utils.global';
 
 namespace System {
   const readFile = promisify(fs.readFile);
@@ -36,7 +37,7 @@ namespace System {
 
   @Controller('/system')
   export class SystemData implements ControllerApi<FunctionConstructor> {
-    @Get({ path: MAIN_ROUTE[process.env.API_VERSION].CORE_APP_CONFIG, private: false })
+    @Get({ path: MAIN_ROUTE[Utils.getVersion()].CORE_APP_CONFIG, private: false })
     protected async loadSystemConfig(req: Request, res: Response): ResRequest {
       const { uid = '' } = req as Record<string, any>;
 
@@ -80,7 +81,7 @@ namespace System {
       }
     }
 
-    @Get({ path: MAIN_ROUTE[process.env.API_VERSION].USERS_LIST, private: true })
+    @Get({ path: MAIN_ROUTE[Utils.getVersion()].USERS_LIST, private: true })
     protected async getUsersList(req: Request, res: Response): ResRequest {
       const { query } = url.parse(req.url);
       const queryString = querystring.parse(query as string);
@@ -95,7 +96,7 @@ namespace System {
       return responseExec(req, res, params, true);
     }
 
-    @Post({ path: MAIN_ROUTE[process.env.API_VERSION].SAVE_FILE, private: true, file: true })
+    @Post({ path: MAIN_ROUTE[Utils.getVersion()].SAVE_FILE, private: true, file: true })
     protected async saveFile(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { module: moduleName = '' } = req.params;
       const { dropbox: store } = server.locals;
@@ -112,7 +113,7 @@ namespace System {
       return responseExec(req, res, params);
     }
 
-    @Put({ path: MAIN_ROUTE[process.env.API_VERSION].LOAD_FILE, private: true })
+    @Put({ path: MAIN_ROUTE[Utils.getVersion()].LOAD_FILE, private: true })
     protected async loadTaskFiles(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { module: moduleName = '' } = req.params;
       const { dropbox } = server.locals;
@@ -134,7 +135,7 @@ namespace System {
       return responseExec(req, res, params);
     }
 
-    @Get({ path: MAIN_ROUTE[process.env.API_VERSION].DOWNLOAD_FILE, private: true })
+    @Get({ path: MAIN_ROUTE[Utils.getVersion()].DOWNLOAD_FILE, private: true })
     protected async downloadFile(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { entityId = '', filename = '', module: moduleName = '' } = req.params;
       const params: Params = createParams('download_files', 'done', 'tasks');
@@ -154,7 +155,7 @@ namespace System {
       responseExec(req, res, params);
     }
 
-    @Delete({ path: MAIN_ROUTE[process.env.API_VERSION].DELETE_FILE, private: true })
+    @Delete({ path: MAIN_ROUTE[Utils.getVersion()].DELETE_FILE, private: true })
     protected async deleteTaskFile(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { dropbox: store } = server.locals;
       const { module: moduleName = '' } = req.params;
@@ -175,7 +176,7 @@ namespace System {
       return responseExec(req, res, params);
     }
 
-    @Post({ path: MAIN_ROUTE[process.env.API_VERSION].UPDATE_SINGLE, private: true })
+    @Post({ path: MAIN_ROUTE[Utils.getVersion()].UPDATE_SINGLE, private: true })
     protected async updateSingle(req: Request, res: Response): ResRequest {
       const { module: moduleName = '' } = req.params;
       const { params: paramsRequest = {} } = req.body;
@@ -192,7 +193,7 @@ namespace System {
       return responseExec(req, res, params);
     }
 
-    @Post({ path: MAIN_ROUTE[process.env.API_VERSION].UPDATE_MANY, private: true })
+    @Post({ path: MAIN_ROUTE[Utils.getVersion()].UPDATE_MANY, private: true })
     protected async updateMany(req: Request, res: Response): ResRequest {
       const { module: moduleName = '' } = req.params;
       const { params: paramsRequest = {} } = req.body;
@@ -217,7 +218,7 @@ namespace System {
       return responseExec(req, res, params, true);
     }
 
-    @Post({ path: MAIN_ROUTE[process.env.API_VERSION].LOAD_NOTIFICATION, private: true })
+    @Post({ path: MAIN_ROUTE[Utils.getVersion()].LOAD_NOTIFICATION, private: true })
     protected async notification(req: Request, res: Response): ResRequest {
       const { type: notificationType = '' } = req.params;
       const params: Params = createParams(notificationType, 'done', 'notification');
@@ -246,7 +247,7 @@ namespace System {
       return responseExec(req, res, params, true);
     }
 
-    @Post({ path: MAIN_ROUTE[process.env.API_VERSION].SYNC, private: true })
+    @Post({ path: MAIN_ROUTE[Utils.getVersion()].SYNC, private: true })
     protected async syncClientData(req: Request, res: Response): ResRequest {
       const { module: moduleName = '' } = req.params;
 
