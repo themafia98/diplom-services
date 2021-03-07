@@ -70,8 +70,11 @@ const LoginPage = ({ initialSession, authLoad, location }) => {
 
       localStorage.setItem('token', token);
 
-      const { EUID: defaultModule = 'mainModule' } =
-        appConfig?.menu.find((item) => item?.SIGN === SIGNS.DEFAULT_SIGN) || {};
+      let defaultModule = 'mainModule';
+
+      if (appConfig?.menu) {
+        defaultModule = defaultModule.menu.find((modul) => module?.SIGN === SIGNS.DEFAULT_SIGN);
+      }
 
       initialSession(udata, defaultModule);
       setAuth(true);

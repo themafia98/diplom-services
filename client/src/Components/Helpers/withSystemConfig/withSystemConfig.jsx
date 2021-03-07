@@ -44,7 +44,9 @@ const withSystemConfig = (Component) => (props) => {
         const queryString = query && !queryId ? `?uid=${query}` : queryId ? `?uid=${queryId}` : '';
 
         const rest = new Request();
+
         const response = await rest.sendRequest(`/system/core/${loadType}/config${queryString}`, 'GET');
+
         const { data: configJson = null } = response;
 
         if (!configJson) throw new Error('Invalid system config');

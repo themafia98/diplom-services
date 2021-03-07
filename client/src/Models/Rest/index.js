@@ -154,7 +154,7 @@ class Request {
     if (!authorizationHeaderObject) {
       throw new Error('Unauthorized');
     }
-    return await axios.post(this.getApi() + '/auth', authorizationHeaderObject);
+    return await axios.post(this.getApi() + '/auth', { authorization: true }, authorizationHeaderObject);
   }
 
   getAuthorizationHeaderObjectWithCredentials() {
@@ -168,7 +168,7 @@ class Request {
       headers: {
         Authorization: token,
       },
-      credentials: 'include',
+      withCredentials: true,
     };
   }
 

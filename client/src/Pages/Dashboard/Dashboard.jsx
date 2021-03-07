@@ -204,10 +204,11 @@ class Dashboard extends PureComponent {
     this.setState({ ...this.state, collapsed });
   };
 
-  logout = async () => {
-    const { rest } = this.props;
+  logout = () => {
+    const { rest } = this.context;
+
     if (rest) {
-      await rest.signOut();
+      rest.signOut();
     }
   };
 
@@ -382,14 +383,8 @@ class Dashboard extends PureComponent {
       visibleInstallApp = false,
       isToolbarActive = false,
     } = this.state;
-    const {
-      router = {},
-      rest,
-      firstConnect = false,
-      udata = {},
-      appConfig: config = {},
-      status,
-    } = this.props;
+    const { router = {}, firstConnect = false, udata = {}, appConfig: config = {}, status } = this.props;
+    const { rest } = this.context;
     const { activeTabs = [], currentActionTab, shouldUpdate = false } = router;
     const { menu: menuItems = [] } = config || {};
     if (redirect) return <Redirect to={{ pathname: '/' }} />;

@@ -67,7 +67,7 @@ class DynamicTable extends PureComponent {
   getConfigColumns = () => {
     const { router, depDataKey, udata, filteredUsers, cachesAuthorList, cachesEditorList } = this.props;
 
-    const routerData = router.routeData[router.path];
+    const routerData = router.routeData[router.path] || {};
     const { saveData = {} } = routerData;
     const { sortedInfo = [] } = saveData;
 

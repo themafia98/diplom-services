@@ -194,7 +194,7 @@ class TaskModule extends Component {
         } catch (error) {
           const { response = {} } = error || {};
           const { actions = [] } = response?.data || {};
-          const createTaskAvailable = actions.some((it) => it === ACTIONS.CREATE);
+          const createTaskAvailable = Array.isArray(actions) && actions.some((it) => it === ACTIONS.CREATE);
 
           this.setState({ counter: 1, createTaskAvailable });
         }

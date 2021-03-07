@@ -29,12 +29,17 @@ const PrivateRoute = ({ component: Component, onLogoutAction, onSetStatus, ...ro
 
         setTimeout(() => rest.restartApp(), 3000);
       }
-    } catch (err) {
-      if (err?.message.toLowerCase().includes('network error')) {
-        console.warn(err);
+    } catch (error) {
+      const { message = '' } = error;
+
+      if (message.toLowerCase().includes('network error')) {
+        console.error(error);
         setStatus(522);
         onSetStatus('offline');
-      } else rest.restartApp();
+        return;
+      }
+
+      setTimeout(() => rest.restartApp(), 3000);
     }
   };
 

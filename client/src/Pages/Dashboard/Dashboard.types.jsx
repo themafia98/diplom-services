@@ -3,7 +3,6 @@ import { udataType } from 'App.types';
 const { func, object, bool } = PropTypes;
 
 export const dashboardType = {
-  rest: object.isRequired,
   router: object.isRequired,
   firstConnect: bool.isRequired,
   udata: udataType.isRequired,
