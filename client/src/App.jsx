@@ -320,7 +320,7 @@ class App extends Component {
       );
     }
 
-    return <Loader title="Загрузка состояния приложения" />;
+    return <Loader title="Loading application state" />;
   }
 }
 

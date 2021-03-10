@@ -67,16 +67,8 @@ const withSystemConfig = (Component) => (props) => {
     fetchConfig();
   }, [fetchConfig, typeConfig]);
 
-  if (!coreConfig && !isBlock) return <Loader title="Загрузка настроек" />;
-  else if (isBlock)
-    return (
-      <NotFound
-        message="Недостаточно прав для просмотра данной страницы"
-        trace={trace}
-        redirectType="hard"
-        showRedirectIndexButton
-      />
-    );
+  if (!coreConfig && !isBlock) return <Loader title="Loading settings" />;
+  else if (isBlock) return <NotFound trace={trace} redirectType="hard" showRedirectIndexButton />;
 
   return (
     <Component

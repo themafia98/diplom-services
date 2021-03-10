@@ -71,7 +71,7 @@ const PrivateRoute = ({ component: Component, onLogoutAction, onSetStatus, ...ro
       return <Component {...props} />;
     }
 
-    return <Loader title="Загрузка данных" />;
+    return <Loader title="Loading data" />;
   };
 
   return <Route exact {...routeProps} render={pageRender} />;
