@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { string, bool, oneOf } from 'prop-types';
 import clsx from 'clsx';
 import {
@@ -12,7 +12,7 @@ import {
 } from './notFound.module.scss';
 import { Button, Icon } from 'antd';
 
-const NotFound = ({ message, showRedirectIndexButton, redirectType, trace }) => {
+const NotFound = ({ message, showRedirectIndexButton, redirectType, trace, error }) => {
   const [stackList] = useState(() => new Error().stack);
   const [visible, setVisibility] = useState(false);
 
@@ -22,6 +22,10 @@ const NotFound = ({ message, showRedirectIndexButton, redirectType, trace }) => 
     if (redirectType === 'hard') window.location.reload(true);
     else window.location.reload(false);
   };
+
+  useEffect(() => {
+    console.error(error.message);
+  }, [error]);
 
   return (
     <div className={notFoundModule}>
