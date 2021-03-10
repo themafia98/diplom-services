@@ -81,14 +81,14 @@ class Dashboard extends PureComponent {
         validKeysRoute?.length === keysRoute?.length;
       if (isValid) {
         notification.success({
-          message: 'Успешо',
-          description: 'Загрузка сохраненной сессии',
+          message: 'Done',
+          description: 'Session loading...',
         });
         onLoadSaveRouter(parsedRoute);
       } else {
         notification.warn({
-          message: 'Конфликт',
-          description: 'Найдена поврежденная сессия, загрузить не удалось.',
+          message: 'Conflict',
+          description: 'Detect invalid session',
         });
 
         addTab(routeParser({ path: 'mainModule' }));

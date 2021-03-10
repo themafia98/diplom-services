@@ -174,7 +174,7 @@ const CabinetModule = memo(({ path }) => {
   if (!uidUser) {
     return (
       <div className="cabinetModule cabinetModule--cabinetLoader">
-        <Spin size="large" tip="Загрузка кабинета..." />
+        <Spin size="large" tip="Loading personal page..." />
       </div>
     );
   }

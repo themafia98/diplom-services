@@ -6,7 +6,7 @@ import Scrollbars from 'react-custom-scrollbars';
 
 import { routePathNormalise, routeParser } from 'Utils';
 import Output from 'Components/Output';
-import DynamicTable from './DynamicTable';
+import Table from './Table';
 
 const TableView = ({
   user,
@@ -130,7 +130,7 @@ const TableView = ({
         const { tasks = [] } = currentData || {};
         const countPagination = counter ? counter : statusApp === 'offline' && !counter ? 0 : counter;
         return (
-          <DynamicTable
+          <Table
             key={currentActionTab}
             routePathNormalise={routePathNormalise}
             routeParser={routeParser}

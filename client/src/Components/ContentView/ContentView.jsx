@@ -187,7 +187,7 @@ class ContentView extends Component {
     if (shouldShowSpinner) {
       return (
         <Content className="contentView contentView--loader">
-          <Spin size="large" tip="Загрузка контента" />
+          <Spin size="large" tip="Content loading" />
         </Content>
       );
     }

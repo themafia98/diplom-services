@@ -23,6 +23,7 @@ import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { withClientDb } from 'Models/ClientSideDatabase';
 import actionPath from 'actions.path';
 import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
+import { getClassNameByStatus } from './TaskView.utils';
 
 class TaskView extends PureComponent {
   state = {
@@ -606,20 +607,6 @@ class TaskView extends PureComponent {
     ]).filter(Boolean);
   };
 
-  getClassNameByStatus = () => {
-    const {
-      router: { routeDataActive = {} },
-    } = this.props;
-    const { status = '' } = routeDataActive;
-    return status === 'Выполнен'
-      ? 'done'
-      : status === 'Закрыт'
-      ? 'close'
-      : status === 'В работе'
-      ? 'active'
-      : null;
-  };
-
   getModalWindow = (accessStatus, rulesEdit = true, rulesStatus = false) => {
     const {
       router: { routeDataActive = {} } = {},
@@ -721,7 +708,7 @@ class TaskView extends PureComponent {
     if (!key)
       return findTaskLoading ? (
         <div className="taskView taskView--taskLoader">
-          <Spin size="large" tip="Загрузка задачи" />
+          <Spin size="large" tip="Loading task..." />
         </div>
       ) : (
         <div>This task not found</div>
@@ -734,7 +721,7 @@ class TaskView extends PureComponent {
     const rulesEdit = uid === uidCreater || isRemoteTicket;
     const rulesStatus = editor.some((editorId) => editorId === uid) || uid === uidCreater || isRemoteTicket;
 
-    const statusClassName = this.getClassNameByStatus();
+    const statusClassName = getClassNameByStatus(status);
     const renderMethods = {
       onChangeEditable,
       onChangeEditableStart,

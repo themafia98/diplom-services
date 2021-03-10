@@ -30,7 +30,7 @@ const ActionList = ({
 
   const showLoader = () => {
     return (
-      <Tooltip mouseEnterDelay={0.1} title="Загрузка или обновление данных">
+      <Tooltip mouseEnterDelay={0.1} title="Loading data">
         <Spin type="small" />
       </Tooltip>
     );

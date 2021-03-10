@@ -14,7 +14,7 @@ export const tableViewType = {
   tableViewHeight: number,
 };
 
-export const dynamicTableType = {
+export const tableType = {
   onOpenPageWithData: func.isRequired,
   router: object.isRequired,
   setCurrentTab: func.isRequired,

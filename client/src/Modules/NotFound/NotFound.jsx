@@ -26,8 +26,8 @@ const NotFound = ({ message, showRedirectIndexButton, redirectType, trace }) => 
   return (
     <div className={notFoundModule}>
       <section className={empty}>
-        <p>{message}</p>
-        {showRedirectIndexButton ? <Button onClick={onRedirect}>Попробовать снова</Button> : null}
+        {message && <p>{message}</p>}
+        {showRedirectIndexButton ? <Button onClick={onRedirect}>Refresh</Button> : null}
       </section>
       {process.env.NODE_ENV === 'development' && (
         <section className={traceBox}>
@@ -53,7 +53,7 @@ NotFound.propsTypes = {
 };
 
 NotFound.defaultProps = {
-  message: 'Страница удалена либо ещё не создана',
+  message: 'Page unavailable',
   trace: '',
   redirectType: 'soft',
   showRedirectIndexButton: false,

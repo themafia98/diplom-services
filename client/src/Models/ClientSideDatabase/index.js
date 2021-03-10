@@ -359,7 +359,11 @@ const withClientDb = (Component) => (props) => {
   return (
     <ClientDbContext.Consumer>
       {(clientDB) =>
-        clientDB ? <Component {...props} clientDB={clientDB} /> : <NotFound a={console.log(Component)} />
+        clientDB ? (
+          <Component {...props} clientDB={clientDB} />
+        ) : (
+          <NotFound message="Offline mode not available" />
+        )
       }
     </ClientDbContext.Consumer>
   );

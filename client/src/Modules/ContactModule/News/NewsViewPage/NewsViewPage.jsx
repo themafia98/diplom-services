@@ -50,7 +50,7 @@ const NewsViewPage = ({ id: newsId, listdata, _id: preloadId, entityId, onLoadin
 
   if (!contentEntity && (contentEntity?.blocks || contentEntity?.entityMap)) return null;
 
-  if (!id) return <Spin size="large" tip="Загрузка новости" className={classes.spin} />;
+  if (!id) return <Spin size="large" tip="Loading news..." className={classes.spin} />;
 
   return (
     <article className="newsView-page">
