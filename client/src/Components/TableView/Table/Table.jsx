@@ -256,12 +256,16 @@ class Table extends PureComponent {
     const isExistsSource = dataSource && dataSource?.length;
     let source = isExistsSource && frontFilter ? getDataSource(dataSource, filterBy, uid) : dataSource;
 
-    const columns = type === TABLE_TYPE.TASK ? this.getTaskConfigColumns() : [];
+    const columns = type === TABLE_TYPE.TASK ? this.getTaskConfigColumns() : null;
+
+    if (!columns) {
+      return <Empty image={Empty.PRESENTED_IMAGE_DEFAULT} description="Not found data for display table" />;
+    }
 
     return (
       <AntTable
         locale={{
-          emptyText: <Empty image={Empty.PRESENTED_IMAGE_DEFAULT} description="Журнал пуст" />,
+          emptyText: <Empty image={Empty.PRESENTED_IMAGE_DEFAULT} description="Table is empty" />,
         }}
         pagination={pager}
         size={tableSize}

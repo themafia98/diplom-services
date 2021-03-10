@@ -18,6 +18,7 @@ const TableView = ({
   tableViewHeight,
   statusApp,
   path,
+  type,
 }) => {
   const [isScroll, setIsScroll] = useState(null);
 
@@ -131,6 +132,7 @@ const TableView = ({
         const countPagination = counter ? counter : statusApp === 'offline' && !counter ? 0 : counter;
         return (
           <Table
+            type={type}
             key={currentActionTab}
             routePathNormalise={routePathNormalise}
             routeParser={routeParser}
@@ -179,6 +181,7 @@ const TableView = ({
 
 TableView.propTypes = tableViewType;
 TableView.defaultProps = {
+  type: '',
   filterBy: '',
   user: {},
   height: 300,

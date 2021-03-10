@@ -3,6 +3,7 @@ import { taskModuleListType } from '../TaskModule.types';
 import TableView from 'Components/TableView';
 import TitleModule from 'Components/TitleModule';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
+import { TABLE_TYPE } from 'Components/TableView/Table/Table.constant';
 
 const TaskModuleList = ({ router, data, height, loading, counter, statusApp }) => {
   const refModuleTask = useRef(null);
@@ -14,6 +15,7 @@ const TaskModuleList = ({ router, data, height, loading, counter, statusApp }) =
       <TitleModule additional="Все задачи" classNameTitle="taskModuleTitle" title="Список всех задач" />
       <div className="taskModuleAll_main">
         <TableView
+          type={TABLE_TYPE.TASK}
           key="taskModule_tableTask"
           counter={counter}
           statusApp={statusApp}
