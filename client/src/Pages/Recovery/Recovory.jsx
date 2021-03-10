@@ -12,9 +12,7 @@ const Recovory = () => {
   const [mode] = useState('emailMode');
   const [recovoryField, setField] = useState('');
 
-  const onChange = ({ currentTarget: { value = '' } = {} }) => {
-    setField(value);
-  };
+  const onChange = ({ currentTarget }) => setField(currentTarget.value);
 
   const onSubmit = async () => {
     try {
@@ -42,9 +40,7 @@ const Recovory = () => {
     }
   };
 
-  const OnLocation = () => {
-    window.location.assign('/');
-  };
+  const onLocation = () => window.location.assign('/');
 
   return (
     <div className="recovory">
@@ -58,13 +54,16 @@ const Recovory = () => {
           value={recovoryField}
         />
 
-        {/* <Button onClick={onChangeMode} type="link">
+        {
+          // TODO: should impelement in future
+          /* <Button onClick={onChangeMode} type="link">
           {msgLink}
-        </Button> */}
+        </Button> */
+        }
         <Button disabled={!recovoryField} type="primary" onClick={onSubmit}>
           Восстановить
         </Button>
-        <Button type="primary" onClick={OnLocation}>
+        <Button type="primary" onClick={onLocation}>
           На главную
         </Button>
       </form>

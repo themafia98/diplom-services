@@ -24,6 +24,8 @@ import MenuView from 'Components/MenuView';
 import ModelContext from 'Models/context';
 import regExpRegister from 'Utils/Tools/regexpStorage';
 import { APP_STATUS } from 'App.constant';
+import ws from 'config/ws.config';
+import autoSaveConfig from 'config/autoSave.config';
 
 let deferredPrompt = null;
 
@@ -49,14 +51,10 @@ class Dashboard extends PureComponent {
   componentDidMount = () => {
     const { onLoadSaveRouter, addTab, appConfig } = this.props;
 
-    this.webSocket = io('/', {
-      path: '/socket.io',
-      transports: ['websocket'],
-      secure: window.location.protocol === 'https',
-    });
+    this.webSocket = io(ws.startUrl, ws.socketIO);
 
     if (appConfig && appConfig.autoSave) {
-      setInterval(this.autoSaveRoute, 10000);
+      setInterval(this.autoSaveRoute, autoSaveConfig.interval);
     }
 
     const saveRoute = localStorage.getItem('router');
@@ -64,22 +62,11 @@ class Dashboard extends PureComponent {
       const parsedRoute = JSON.parse(saveRoute);
       const keysRoute = Object.keys(parsedRoute);
 
-      const validKeysRoute = [
-        'path',
-        'currentActionTab',
-        'activeTabs',
-        'routeDataActive',
-        'routeData',
-        'load',
-        'partDataPath',
-        'shouldUpdate',
-      ];
-
       const isValid =
         typeof parsedRoute === 'object' &&
         parsedRoute &&
-        keysRoute.every((key) => validKeysRoute.some((routeKey) => routeKey === key)) &&
-        validKeysRoute?.length === keysRoute?.length;
+        keysRoute.every((key) => autoSaveConfig.validKeysRouteForSave.some((routeKey) => routeKey === key)) &&
+        autoSaveConfig.validKeysRouteForSave?.length === keysRoute?.length;
       if (isValid) {
         notification.success({
           message: 'Done',
