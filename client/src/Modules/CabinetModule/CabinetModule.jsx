@@ -10,6 +10,7 @@ import { findUser, routeParser } from 'Utils';
 import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
 import actionPath from 'actions.path';
 import modelsContext from 'Models/context';
+import { CABINET_PAGE_TYPE } from './CabinetModule.constant';
 
 const { Dragger } = Upload;
 
@@ -28,8 +29,8 @@ const CabinetModule = memo(({ path }) => {
   const { modePage, imageUrl, visible } = state;
 
   const { udata, currentActionTab, routeDataActive } = useSelector((state) => {
-    const { udata = {} } = state.publicReducer;
-    const { routeDataActive = {}, currentActionTab } = state.router;
+    const { udata = null } = state.publicReducer;
+    const { routeDataActive = null, currentActionTab } = state.router;
 
     return {
       udata,
@@ -38,14 +39,30 @@ const CabinetModule = memo(({ path }) => {
     };
   });
 
-  const isPersonal = modePage === 'personal';
-  const { _id: uidUser = '', avatar = '', isHidePhone = false, isHideEmail = false } = isPersonal
+  const fetchCurrentUser = async (id) => {
+    try {
+      const user = await findUser(id);
+
+      if (!user) {
+        throw new Error('Bad user for load page');
+      }
+
+      return user;
+    } catch {
+      return null;
+    }
+  };
+
+  const isPersonal = modePage === CABINET_PAGE_TYPE.PERSONAL;
+
+  const { _id: uidUser, avatar, isHidePhone = false, isHideEmail = false } = isPersonal
     ? routeDataActive
     : udata;
 
   const getCurrentCabinetUser = useCallback(async () => {
-    const { page = '', itemId = '' } = routeParser({ pageType: 'moduleItem', path: currentActionTab });
-    const user = await findUser(itemId);
+    const { page, itemId } = routeParser({ pageType: 'moduleItem', path: currentActionTab });
+
+    const user = await fetchCurrentUser(itemId);
 
     dispatch(
       loadCurrentData({
@@ -68,28 +85,28 @@ const CabinetModule = memo(({ path }) => {
   }, [getCurrentCabinetUser, uidUser]);
 
   useEffect(() => {
-    const isPersonalPage = path && path.includes('personalPage');
+    const isPersonalPage = path && path.includes(CABINET_PAGE_TYPE.PERSONAL);
 
-    if (isPersonalPage && modePage !== 'personal') {
-      setState({ ...state, modePage: 'personal' });
+    if (isPersonalPage && modePage !== CABINET_PAGE_TYPE.PERSONAL) {
+      setState({ ...state, modePage: CABINET_PAGE_TYPE.PERSONAL });
       return;
     }
 
-    if (!isPersonalPage && modePage === 'personal') {
+    if (!isPersonalPage && modePage === CABINET_PAGE_TYPE.PERSONAL) {
       setState({ ...state, modePage: '' });
       return;
     }
 
-    if (!isPersonalPage && modePage === 'personal') {
+    if (!isPersonalPage && modePage === CABINET_PAGE_TYPE.PERSONAL) {
       setState({ ...state, modePage: '' });
     }
   }, [modePage, path, state]);
 
-  const showModal = (event) => {
+  const showModal = () => {
     setState({ ...state, visible: true });
   };
 
-  const hideModal = (event) => {
+  const hideModal = () => {
     setState({
       ...state,
       visible: false,
@@ -103,14 +120,14 @@ const CabinetModule = memo(({ path }) => {
     const isJpgOrPng = file.type.startsWith('image/');
     if (!isJpgOrPng) {
       setState((state) => ({ ...state, loading: !state.loading, disabled: false, error: true }));
-      message.error('Вы можете загрузить только изображение.');
+      message.error('You can only upload image.');
     }
-    const isLt2M = file.size / 1024 / 1024 < 5;
-    if (!isLt2M) {
+    const isLt5M = file.size / 1024 / 1024 < 5;
+    if (!isLt5M) {
       setState((state) => ({ ...state, loading: !state.loading, disabled: false, error: true }));
-      message.error('Изображение должно быть меньше 5 мб.');
+      message.error('Must be less than 5 mb.');
     }
-    return isJpgOrPng && isLt2M;
+    return isJpgOrPng && isLt5M;
   };
 
   const setFile = (imageUrl, disabled) => {
@@ -179,18 +196,21 @@ const CabinetModule = memo(({ path }) => {
     );
   }
 
+  const shouldHidePhone = isPersonal && isHidePhone;
+  const shouldHideEmail = isPersonal && isHideEmail;
+
   return (
     <div className="cabinetModule">
       <TitleModule
-        additional="Профиль"
+        additional="Profile"
         classNameTitle="cabinetModuleTitle"
-        title={!isPersonal ? 'Личный кабинет' : 'Карточка сотрудника'}
+        title={!isPersonal ? 'Personal Area' : 'Employee card'}
       />
       <div className="cabinetModule_main">
         <div className="col-6">
           <UserCard
-            isHidePhone={isPersonal && isHidePhone ? true : false}
-            isHideEmail={isPersonal && isHideEmail ? true : false}
+            isHidePhone={shouldHidePhone}
+            isHideEmail={shouldHideEmail}
             personalData={routeDataActive}
             modePage={modePage}
             imageUrl={avatar}
@@ -198,7 +218,7 @@ const CabinetModule = memo(({ path }) => {
           />
         </div>
         <div className="col-6">
-          <p className="lastActivity">Последняя активность</p>
+          <p className="lastActivity">Last Activity</p>
           <StreamBox
             type="global"
             prefix="#notification"
@@ -216,7 +236,7 @@ const CabinetModule = memo(({ path }) => {
       <Modal
         destroyOnClose={true}
         className="loadingAvatar-modal"
-        title="Сменить фото"
+        title="Change photo"
         visible={visible}
         onCancel={hideModal}
         onOk={hideModal}
@@ -237,7 +257,7 @@ const CabinetModule = memo(({ path }) => {
           )}
           {imageUrl ? (
             <Button className="deleteButton" onClick={reset} type="primary">
-              Удалить загруженное изображение
+              Delete image
             </Button>
           ) : null}
         </Dragger>
