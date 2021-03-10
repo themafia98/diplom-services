@@ -24,7 +24,9 @@ const NotFound = ({ message, showRedirectIndexButton, redirectType, trace, error
   };
 
   useEffect(() => {
-    console.error(error.message);
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
   }, [error]);
 
   return (
