@@ -8,6 +8,7 @@ import _ from 'lodash';
 import { message } from 'antd';
 import { makeApiAction, getActionStore } from 'Utils/Api';
 import { setSystemMessageAction } from 'Redux/actions/systemActions';
+import { APP_STATUS } from 'App.constant';
 
 const { errorThunk, coreDataUpdater } = reduxCoreThunk;
 
@@ -28,7 +29,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
   let isLocalUpdate = true;
   const pathValid = pagePath.includes('_') ? pagePath : pagePath.split(regExpRegister.MODULE_ID)[0];
   const { router, publicReducer } = getState();
-  const { requestError, status = 'online' } = publicReducer;
+  const { requestError, status = APP_STATUS.ON } = publicReducer;
 
   const isExist = router.routeData && router.routeData[pathValid];
 
@@ -42,7 +43,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
   const rest = new Request();
 
   switch (status) {
-    case 'online': {
+    case APP_STATUS.ON: {
       const dep = {
         requestError,
         noCorsClient,
@@ -137,7 +138,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
 
       dispatch(setStatus({ params, path: pagePath }));
       const cursor = await clientDB.getAllItems('');
-      return await sucessEvent(dispatch, dep, 'offline', false, cursor);
+      return await sucessEvent(dispatch, dep, APP_STATUS.OFF, false, cursor);
     }
   }
 };
@@ -146,9 +147,9 @@ const multipleLoadData = (params) => async (dispatch, getState, { schema, Reques
   const { requestsParamsList = [], saveModuleName = '', clientDB = null } = params;
 
   const { publicReducer } = getState();
-  const { requestError, status = 'online' } = publicReducer;
+  const { requestError, status = APP_STATUS.ON } = publicReducer;
 
-  if (status !== 'online') return;
+  if (status !== APP_STATUS.ON) return;
 
   const responseList = [];
   const rest = new Request();

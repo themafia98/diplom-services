@@ -1,3 +1,4 @@
+import { APP_STATUS } from 'App.constant';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
@@ -10,8 +11,8 @@ export const initialState = {
     flag: false,
   },
   publicReducer: {
-    status: 'online',
-    prewStatus: 'online',
+    status: APP_STATUS.ON,
+    prewStatus: APP_STATUS.ON,
     requestError: null,
     caches: {},
   },

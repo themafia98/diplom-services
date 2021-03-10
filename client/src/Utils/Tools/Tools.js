@@ -6,15 +6,15 @@ import componentsModules from './components';
 import types from 'types.modules';
 import actionsTypes from 'actions.types';
 import { requestTemplate, paramsTemplate } from 'Utils/Api/api.utils';
+import { APP_STATUS } from 'App.constant';
 
 const findUser = async (uid) => {
   if (!uid) return null;
 
   try {
     const rest = new Request();
-    const res = await rest.sendRequest(`/cabinet/findUser?uid=${uid}`);
-    const { response = {} } = res.data;
-    const { metadata = [] } = response;
+    const { data } = await rest.sendRequest(`/cabinet/findUser?uid=${uid}`);
+    const { metadata = [] } = data.response || {};
 
     return metadata?.[0];
   } catch (error) {
@@ -54,20 +54,14 @@ const createNotification = async (type = '', item = {}, actionType = actionsType
  * @param {object} dep entity dependences
  * @param {number} sliceCreaterNumber slice start name of entity, default: 0
  */
-const createEntity = async (
-  storeName = '',
-  params = {},
-  dep = {},
-  sliceCreaterNumber = 0,
-  customTaskModule = '',
-) => {
+const createEntity = async (storeName, params, dep, sliceCreaterNumber, customTaskModule) => {
   const { metadata = {} } = params || {};
-  const { statusApp = 'online', clientDB = null, onSetStatus } = dep;
+  const { statusApp = APP_STATUS.ON, clientDB = null, onSetStatus } = dep || {};
 
   if (!storeName || _.isEmpty(params)) return;
   try {
     const rest = new Request();
-    if (statusApp === 'online') {
+    if (statusApp === APP_STATUS.ON) {
       const createPath = `${storeName[0].toUpperCase()}${storeName.slice(1)}`;
       const res = await rest.sendRequest(
         `/${storeName}/create${createPath.slice(
@@ -104,53 +98,13 @@ const createEntity = async (
 
     if (error?.message === 'Network Error' && onSetStatus) {
       await onSetStatus({
-        statusRequst: 'offline',
+        statusRequst: APP_STATUS.OFF,
       });
 
-      return await createEntity(storeName, params, { ...dep, statusApp: 'offline' }, sliceCreaterNumber);
+      return await createEntity(storeName, params, { ...dep, statusApp: APP_STATUS.OFF }, sliceCreaterNumber);
     }
     return { result: null, offline: null };
   }
-};
-
-/**
- *
- * @param {string} store name module
- * @param {object} body file
- */
-const deleteFile = async (store = '', body = {}) => {
-  if (!store || _.isEmpty(body)) return;
-  const rest = new Request();
-  return await rest.sendRequest(
-    `/system/${store}/delete/file`,
-    'DELETE',
-    {
-      ...requestTemplate,
-      actionType: actionsTypes.$DELETE_FILE,
-      ...body,
-    },
-    true,
-  );
-};
-
-/**
- *
- * @param {string} store name module
- * @param {object} body file
- */
-const loadFile = async (store = '', body = {}) => {
-  if (!store || _.isEmpty(body)) return;
-  const rest = new Request();
-  return await rest.sendRequest(
-    `/system/${store}/load/file`,
-    'PUT',
-    {
-      ...requestTemplate,
-      actionType: actionsTypes.$PUT_FILE,
-      ...body,
-    },
-    true,
-  );
 };
 
 /**
@@ -226,8 +180,6 @@ const getValidRouteData = ({ currentRouteData }, { uuid, depRouteDataKey }, stor
 const tools = {
   createNotification,
   createEntity,
-  deleteFile,
-  loadFile,
   findData,
   getComponentByKey,
   getDependencyModules,

@@ -32,8 +32,6 @@ const {
 const {
   createNotification,
   createEntity,
-  deleteFile,
-  loadFile,
   findData,
   getComponentByKey,
   getDependencyModules,
@@ -55,8 +53,6 @@ export {
   getValidContent,
   createNotification,
   createEntity,
-  deleteFile,
-  loadFile,
   getDataSource,
   validationItems,
   isTimeLostValue,

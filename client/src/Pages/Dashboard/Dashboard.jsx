@@ -23,6 +23,7 @@ import ContentView from 'Components/ContentView';
 import MenuView from 'Components/MenuView';
 import ModelContext from 'Models/context';
 import regExpRegister from 'Utils/Tools/regexpStorage';
+import { APP_STATUS } from 'App.constant';
 
 let deferredPrompt = null;
 
@@ -34,7 +35,7 @@ class Dashboard extends PureComponent {
     visibleInstallApp: false,
     isToolbarActive: false,
     redirect: false,
-    status: 'online',
+    status: APP_STATUS.ON,
     counterError: 0,
     showLoader: false,
   };
@@ -126,14 +127,14 @@ class Dashboard extends PureComponent {
       this.onChangeLoaderVisibility(loader);
     }
 
-    if (!showLoader && statusState !== status && status === 'online') {
+    if (!showLoader && statusState !== status && status === APP_STATUS.ON) {
       notification.success({
         message: 'Удачно',
         description: 'Интернет соединение восстановлено.',
       });
     }
 
-    if (showLoader && requestError === null && status === 'online') {
+    if (showLoader && requestError === null && status === APP_STATUS.ON) {
       const [moduleName, entityKey] = currentActionTab.split(regExpRegister.MODULE_AND_ENTITYID);
       const existsModuleData = Object.keys(routeData).find((mdn) =>
         entityKey ? mdn.includes(entityKey) : mdn.includes(moduleName),
@@ -151,7 +152,7 @@ class Dashboard extends PureComponent {
           });
         }, 500);
         return;
-      } else if (requestError === null && status === 'online') {
+      } else if (requestError === null && status === APP_STATUS.ON) {
         setTimeout(() => {
           this.setState({
             counter: 0,
@@ -161,7 +162,7 @@ class Dashboard extends PureComponent {
         }, 500);
         return;
       }
-    } else if (showLoader && status === 'offline') {
+    } else if (showLoader && status === APP_STATUS.OFF) {
       setTimeout(() => {
         this.setState({
           status: status,
@@ -174,7 +175,7 @@ class Dashboard extends PureComponent {
     if (
       requestError !== null &&
       requestError[requestError?.length - 1] === 'Network error' &&
-      status === 'offline' &&
+      status === APP_STATUS.OFF &&
       counterError === 0
     ) {
       this.setState({ counterError: counterError + 1 }, () =>

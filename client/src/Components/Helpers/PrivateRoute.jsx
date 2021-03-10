@@ -4,6 +4,7 @@ import { Route } from 'react-router-dom';
 import Loader from 'Components/Loader';
 import modelsContext from 'Models/context';
 import PropTypes from 'prop-types';
+import { APP_STATUS } from 'App.constant';
 
 const { object, func, array } = PropTypes;
 
@@ -20,7 +21,7 @@ const PrivateRoute = ({ component: Component, onLogoutAction, onSetStatus, ...ro
       const response = await rest.authCheck();
 
       if (response.status === 200 && response.status !== status) {
-        onSetStatus('online');
+        onSetStatus(APP_STATUS.ON);
         setStatus(response.status);
       }
 
@@ -35,7 +36,7 @@ const PrivateRoute = ({ component: Component, onLogoutAction, onSetStatus, ...ro
       if (message.toLowerCase().includes('network error')) {
         console.error(error);
         setStatus(522);
-        onSetStatus('offline');
+        onSetStatus(APP_STATUS.OFF);
         return;
       }
 

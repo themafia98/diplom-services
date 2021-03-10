@@ -7,6 +7,7 @@ import {
   WIKI_NODE_TREE,
 } from './const';
 import Ajv from 'ajv';
+import { APP_STATUS } from 'App.constant';
 
 class Schema {
   /**
@@ -200,7 +201,7 @@ class Schema {
     let validLenth = keysData.length;
     let IS_SHOULD_USE_KEY = false;
 
-    const isFindMode = keysData.findIndex((it) => it === 'offline') !== -1;
+    const isFindMode = keysData.findIndex((it) => it === APP_STATUS.OFF) !== -1;
     if (isFindMode) validLenth--;
 
     const isCreated = keysData.findIndex((it) => it === 'createdAt' && typeof data[it] === 'string') !== -1;
@@ -228,7 +229,7 @@ class Schema {
       ? keysData.every((dataKey, i) => dataKey === keysSchema[i])
       : keysData.every((dataKey) => {
           const IS_KEY_UNIQE = dataKey === '_id' && IS_SHOULD_USE_KEY;
-          if (dataKey !== 'offline' && this.isPublicKey(dataKey) && !IS_KEY_UNIQE) {
+          if (dataKey !== APP_STATUS.OFF && this.isPublicKey(dataKey) && !IS_KEY_UNIQE) {
             return keysSchema.findIndex((it) => it === dataKey) !== -1;
           } else if (IS_KEY_UNIQE) return true;
 

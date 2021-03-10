@@ -6,7 +6,7 @@ import moment from 'moment';
 import { Empty, message, Spin } from 'antd';
 import { connect } from 'react-redux';
 import Scrollbars from 'react-custom-scrollbars';
-import { deleteFile, loadFile, routeParser, sortedByKey } from 'Utils';
+import { loadFile, routeParser, sortedByKey } from 'Utils';
 import { TASK_SCHEMA } from 'Models/Schema/const';
 import { settingsStatusSelector } from 'Redux/selectors';
 import { middlewareCaching, middlewareUpdate } from 'Redux/actions/publicActions/middleware';
@@ -24,6 +24,7 @@ import { withClientDb } from 'Models/ClientSideDatabase';
 import actionPath from 'actions.path';
 import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
 import { getClassNameByStatus } from './TaskView.utils';
+import fs from 'Utils/Tools/Fs';
 
 class TaskView extends PureComponent {
   state = {
@@ -320,7 +321,7 @@ class TaskView extends PureComponent {
         },
       };
 
-      const res = await deleteFile('tasks', deleteFileBody);
+      const res = await fs.deleteFile('tasks', deleteFileBody);
       const { response = null } = res.data;
 
       if (!response.done) throw new Error('Invalid delete file');

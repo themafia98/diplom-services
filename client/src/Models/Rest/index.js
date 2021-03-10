@@ -1,3 +1,4 @@
+import { APP_STATUS } from 'App.constant';
 import axios from 'axios';
 
 class Request {
@@ -84,13 +85,13 @@ class Request {
    * @param {CallableFunction} event function
    * @param {string} mode string
    */
-  subscribe(event, mode = 'offline') {
-    if (mode === 'offline') {
+  subscribe(event, mode = APP_STATUS.OFF) {
+    if (mode === APP_STATUS.OFF) {
       this.observerOffline = event;
-      return { status: 'ok', mode: 'offline', event: this.observerOffline };
-    } else if (mode === 'online') {
+      return { status: 'ok', mode: APP_STATUS.OFF, event: this.observerOffline };
+    } else if (mode === APP_STATUS.ON) {
       this.observerOnline = event;
-      return { status: 'ok', mode: 'online', event: this.observerOnline };
+      return { status: 'ok', mode: APP_STATUS.ON, event: this.observerOnline };
     }
   }
 
@@ -99,7 +100,7 @@ class Request {
    * @param {function} callback function
    * @param {number|undefiend} timeout number
    */
-  follow(mode = 'offline', callback, timeout = 5000) {
+  follow(mode = APP_STATUS.OFF, callback, timeout = 5000) {
     if (this.followObserver === null)
       this.followObserver = setInterval(() => {
         this.test(callback);
@@ -130,17 +131,17 @@ class Request {
         testRequst.onload = function () {
           if (this.status === 200 || this.status === 204) {
             console.clear();
-            resolve('online');
+            resolve(APP_STATUS.ON);
           } else {
-            reject('offline');
+            reject(APP_STATUS.OFF);
           }
         };
         testRequst.onerror = function () {
-          reject('offline');
+          reject(APP_STATUS.OFF);
         };
         testRequst.send();
       });
-      if (response === 'online' && callback) {
+      if (response === APP_STATUS.ON && callback) {
         callback(response);
       }
     } catch (error) {

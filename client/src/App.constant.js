@@ -10,3 +10,8 @@ export const ACTIONS = {
   CREATE: 'CREATE',
   DELETE: 'DELETE',
 };
+
+export const APP_STATUS = {
+  ON: 'online',
+  OFF: 'offline',
+};

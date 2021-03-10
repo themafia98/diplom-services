@@ -17,6 +17,7 @@ import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import regExpRegister from 'Utils/Tools/regexpStorage';
 import { compose } from 'redux';
 import { withClientDb } from 'Models/ClientSideDatabase';
+import { APP_STATUS } from 'App.constant';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -340,7 +341,7 @@ class CreateTask extends PureComponent {
           message.success(`Задача создана.`);
           const { key: recordKey = '', _id: id = '' } = metadata[0] || metadata || {};
           const key = id ? id : recordKey;
-          if (!key || statusApp !== 'online') return;
+          if (!key || statusApp !== APP_STATUS.ON) return;
 
           const itemNotification = {
             type: 'global',

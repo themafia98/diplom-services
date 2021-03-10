@@ -12,11 +12,12 @@ import {
   LOAD_CORE_CONFIG,
 } from '../../actions/publicActions/const';
 import regExpRegister from 'Utils/Tools/regexpStorage';
+import { APP_STATUS } from 'App.constant';
 
 const initialState = {
   appConfig: {},
-  status: 'online',
-  prewStatus: 'online',
+  status: APP_STATUS.ON,
+  prewStatus: APP_STATUS.ON,
   firstConnect: true,
   requestError: null,
   udata: {},

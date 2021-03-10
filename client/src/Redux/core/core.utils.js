@@ -1,3 +1,4 @@
+import { APP_STATUS } from 'App.constant';
 import _ from 'lodash';
 import { sucessEvent } from '../../Utils';
 import { dataParser } from '../../Utils';
@@ -20,20 +21,20 @@ const runBadNetworkMode = (dispatch, error, dep) => {
 
   if (!loadCurrentData && errorRequestAction) {
     dispatch(errorRequestAction(error.message));
-    if (setStatus) dispatch(setStatus({ statusRequst: 'offline', params, path }));
+    if (setStatus) dispatch(setStatus({ statusRequst: APP_STATUS.OFF, params, path }));
   }
 
-  if (setStatus) dispatch(setStatus({ statusRequst: 'offline', params, path }));
+  if (setStatus) dispatch(setStatus({ statusRequst: APP_STATUS.OFF, params, path }));
   else return;
   dispatch(errorRequestAction(error.message));
 
   rest.follow(
-    'offline',
+    APP_STATUS.OFF,
     async (statusRequst) => {
       const state = getState ? getState() : {};
       const { publicReducer: { paramsList = [] } = {}, router = {} } = state;
 
-      if (statusRequst === 'online') {
+      if (statusRequst === APP_STATUS.ON) {
         const { path, routeData = {} } = router;
         const currentModule = path && routeData[path] ? routeData[path] : {};
         const currnetParams = !currentModule?.params ? {} : currentModule.params;

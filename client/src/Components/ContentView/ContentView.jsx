@@ -9,6 +9,7 @@ import Chat from 'Modules/ContactModule/Chat';
 import TabContainer from 'Components/TabContainer';
 import { v4 as uuid } from 'uuid';
 import types from 'types.modules';
+import { APP_STATUS } from 'App.constant';
 
 const { Content } = Layout;
 
@@ -25,7 +26,7 @@ class ContentView extends Component {
     path: '',
     activeTabs: [],
     router: {},
-    statusApp: 'online',
+    statusApp: APP_STATUS.ON,
     rest: null,
     webSocket: null,
     onChangeVisibleAction: null,

@@ -7,6 +7,7 @@ import Scrollbars from 'react-custom-scrollbars';
 import { routePathNormalise, routeParser } from 'Utils';
 import Output from 'Components/Output';
 import Table from './Table';
+import { APP_STATUS } from 'App.constant';
 
 const TableView = ({
   user,
@@ -129,7 +130,7 @@ const TableView = ({
         );
       } else if (path === 'searchTable') {
         const { tasks = [] } = currentData || {};
-        const countPagination = counter ? counter : statusApp === 'offline' && !counter ? 0 : counter;
+        const countPagination = counter ? counter : statusApp === APP_STATUS.OFF && !counter ? 0 : counter;
         return (
           <Table
             type={type}

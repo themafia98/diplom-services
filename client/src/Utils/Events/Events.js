@@ -1,6 +1,7 @@
 import { getStoreSchema } from '../utilsHook';
 import { dataParser } from '../';
 import { message } from 'antd';
+import { APP_STATUS } from 'App.constant';
 
 /** Events */
 const sucessEvent = async (dispatch, dep, mode = '', multiple = false, cursor = null, offlineStore = []) => {
@@ -16,7 +17,7 @@ const sucessEvent = async (dispatch, dep, mode = '', multiple = false, cursor = 
     params,
   } = dep;
 
-  if (mode === 'offline') {
+  if (mode === APP_STATUS.OFF) {
     const schemaTemplate = getStoreSchema(storeLoad);
 
     const itemsCopy = cursor.map((it) => schema?.getSchema(schemaTemplate, it)).filter(Boolean);
@@ -24,7 +25,7 @@ const sucessEvent = async (dispatch, dep, mode = '', multiple = false, cursor = 
       [storeLoad]: itemsCopy,
       load: true,
       path: pathValid,
-      mode: 'offline',
+      mode: APP_STATUS.OFF,
       params,
       loading: false,
     };

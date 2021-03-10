@@ -10,6 +10,7 @@ import { createNotification, createEntity } from 'Utils';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { compose } from 'redux';
 import { withClientDb } from 'Models/ClientSideDatabase';
+import { APP_STATUS } from 'App.constant';
 
 const CreateNews = memo(({ statusApp, udata, onSetStatus, clientDB, readOnly }) => {
   const { displayName = '', _id: uid = '' } = udata;
@@ -31,7 +32,7 @@ const CreateNews = memo(({ statusApp, udata, onSetStatus, clientDB, readOnly }) 
       return message.error('Название не найдено');
     }
 
-    if (statusApp !== 'online') {
+    if (statusApp !== APP_STATUS.ON) {
       notification.error({
         title: 'Ошибка сети',
         message: 'Интернет соединение отсутствует',
@@ -111,7 +112,7 @@ const CreateNews = memo(({ statusApp, udata, onSetStatus, clientDB, readOnly }) 
 
 CreateNews.propTypes = createNewsType;
 CreateNews.defaultProps = {
-  statusApp: 'online',
+  statusApp: APP_STATUS.ON,
   readOnly: '',
   udata: {},
   onSetStatus: null,
