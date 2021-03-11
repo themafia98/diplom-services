@@ -162,6 +162,7 @@ const TableView = ({
       router,
       statusApp,
       tableViewHeight,
+      type,
       udata,
       user,
       visible,

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import Loader from 'Components/Loader/Loader';
 import NotFound from 'Modules/NotFound';
 import ModelContext from 'Models/context';
+import { Suspense } from 'react';
 
 const withSystemConfig = (Component) => (props) => {
   const [isSideEffect, setUseSideEffect] = useState(false);
@@ -68,7 +69,12 @@ const withSystemConfig = (Component) => (props) => {
   }, [fetchConfig, typeConfig]);
 
   if (!coreConfig && !isBlock) return <Loader title="Loading settings" />;
-  else if (isBlock) return <NotFound trace={trace} redirectType="hard" showRedirectIndexButton />;
+  else if (isBlock)
+    return (
+      <Suspense fallback="loading">
+        <NotFound trace={trace} redirectType="hard" showRedirectIndexButton />
+      </Suspense>
+    );
 
   return (
     <Component
