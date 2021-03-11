@@ -9,10 +9,12 @@ import TitleModule from 'Components/TitleModule';
 import { routePathNormalise, routeParser } from 'Utils';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { openTab } from 'Redux/actions/routerActions/middleware';
+import { useTranslation } from 'react-i18next';
 
 const News = memo(({ data }) => {
   const { news: newsData = [], loading = false, load = false } = data || {};
 
+  const { t } = useTranslation();
   const [currentPage, setCurrentPage] = useState(1);
   const dispatch = useDispatch();
 
@@ -44,7 +46,7 @@ const News = memo(({ data }) => {
     if (isFind) dispatch(setActiveTabAction(activeTabs[index], { hardCodeUpdate: false }));
 
     if (tabsLimit <= activeTabs.length) {
-      message.error(`Максимальное количество вкладок: ${tabsLimit}`);
+      message.error(`${t('globalMessages_messages_maxTabs:')} ${tabsLimit}`);
       return;
     }
 
@@ -55,7 +57,7 @@ const News = memo(({ data }) => {
           config: { hardCodeUpdate: false },
         }),
       );
-  }, [activeTabs, appConfig, dispatch]);
+  }, [activeTabs, appConfig, dispatch, t]);
 
   const onOpen = useCallback(
     (uuid) => {
@@ -71,7 +73,7 @@ const News = memo(({ data }) => {
     (currentPage, listdata = []) => {
       const start = currentPage > 1 ? currentPage * 4 - 4 : 0;
 
-      if (!listdata?.length) return <Empty description={<span>Данных нету</span>} />;
+      if (!listdata?.length) return <Empty description={<span>{t('news_list_emptyData')}</span>} />;
 
       return listdata
         .slice(start, start + 4 > listdata.length ? listdata.length : start + 4)
@@ -98,15 +100,15 @@ const News = memo(({ data }) => {
 
   return (
     <div className="news">
-      <TitleModule classNameTitle="mainModuleTitle" title="Информация" />
+      <TitleModule classNameTitle="mainModuleTitle" title={t('news_list_title')} />
       <Button onClick={onOpenCreateNews} type="primary">
-        Создать новость
+        {t('news_list_createNewsButton')}
       </Button>
       <Scrollbars autoHide hideTracksWhenNotNeeded>
         <div className="news__main">
           <div className="col-fullscreen">
             {(loading && !listdata?.length) || !load ? (
-              <Spin size="large" tip="Loading news module..." />
+              <Spin size="large" tip={t('news_list_loadingList')} />
             ) : (
               renderNewsBlock(currentPage, listdata)
             )}

@@ -1,4 +1,10 @@
 {
+  "globalMessages": {
+    "maxTabs": "Максимальное количество вкладок:",
+    "networkError": "Ошибка сети",
+    "webEmpty": "Интернет соединение отсутствует",
+    "notificationCreateBad": "Ошибка создания уведомления"
+  },
   "notFoundPage": {
     "title": "Страница недоступна",
     "refreshButton": "Обновить"
@@ -49,6 +55,32 @@
       "openRooms": "Открыть комнаты",
       "closeRooms": "Скрыть комнаты",
       "createRoom": "Создать комнату"
+    }
+  },
+  "news": {
+    "list": {
+      "title": "Информация",
+      "emptyData": "Данных нету",
+      "createNewsButton": "Создать новость",
+      "loadingList": "Загрузка модуля новостей..."
+    },
+    "view": {
+      "name": "Новость",
+      "loadingNewsData": "Загрузка новости..."
+    },
+    "card": {
+      "readButton": "Читать",
+      "cardContent": "Нажмите 'читать' для просмотра новости."
+    },
+    "create": {
+      "title": "Создание новой новости",
+      "newNewsPlaceholder": "Заголовок новости",
+      "messages": {
+        "nameNotFound": "Название не найдено",
+        "newsCreate": "Новость создана.",
+        "errorCreateNewNews": "Ошибка создания новой новости",
+        "invalidData": "Возможно данные повреждены"
+      }
     }
   }
 }

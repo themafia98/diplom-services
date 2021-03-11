@@ -1,4 +1,7 @@
 {
+  "globalMessages": {
+    "maxTabs": "Max tabs counter:"
+  },
   "notFoundPage": {
     "title": "Page unavailable",
     "refreshButton": "Refresh"
@@ -49,6 +52,32 @@
       "openRooms": "Open rooms",
       "closeRooms": "Hide rooms",
       "createRoom": "Create room"
+    }
+  },
+  "news": {
+    "list": {
+      "title": "Информация",
+      "emptyData": "Данных нету",
+      "createNewsButton": "Создать новость",
+      "loadingList": "Загрузка модуля новостей..."
+    },
+    "view": {
+      "name": "Новость",
+      "loadingNewsData": "Загрузка новости..."
+    },
+    "card": {
+      "readButton": "Читать",
+      "cardContent": "Нажмите 'читать' для просмотра новости."
+    },
+    "create": {
+      "title": "Создание новой новости",
+      "newNewsPlaceholder": "Заголовок новости",
+      "messages": {
+        "nameNotFound": "Название не найдено",
+        "newsCreate": "Новость создана.",
+        "errorCreateNewNews": "Ошибка создания новой новости",
+        "invalidData": "Возможно данные повреждены"
+      }
     }
   }
 }
