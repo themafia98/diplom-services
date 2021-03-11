@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { panelCommonType } from './types';
 import { Button, Collapse, Input } from 'antd';
+import { useTranslation } from 'react-i18next';
 const { Panel } = Collapse;
 
 const PanelCommon = ({ emailValue: emailValueProps, telValue: telValueProps, onSaveSettings, appConfig }) => {
+  const { t } = useTranslation();
   const { settings = {} } = appConfig;
   const { includeChangeEmail = false } = settings;
 
@@ -67,11 +69,11 @@ const PanelCommon = ({ emailValue: emailValueProps, telValue: telValueProps, onS
 
   return (
     <Collapse>
-      <Panel header="Общие настройки" key="common">
+      <Panel header={t('settingsModule_common_name')} key="common">
         <div className="settingsPanel--center-flex">
           {includeChangeEmail ? (
             <div className="configWrapper flexWrapper">
-              <span>Сменить почту:</span>
+              <span>{t('settingsModule_common_changeEmail')}:</span>
               <Input
                 data-id="email"
                 allowClear
@@ -81,7 +83,7 @@ const PanelCommon = ({ emailValue: emailValueProps, telValue: telValueProps, onS
             </div>
           ) : null}
           <div className="configWrapper flexWrapper">
-            <span>Сменить телефон:</span>
+            <span>{t('settingsModule_common_changePhone')}:</span>
             <Input
               data-id="tel"
               type="tel"
@@ -92,7 +94,7 @@ const PanelCommon = ({ emailValue: emailValueProps, telValue: telValueProps, onS
           </div>
         </div>
         <Button onClick={onSubmit} className="submit" type="primary" disabled={readOnly}>
-          Принять изменения
+          {t('settingsModule_submitButton')}
         </Button>
       </Panel>
     </Collapse>

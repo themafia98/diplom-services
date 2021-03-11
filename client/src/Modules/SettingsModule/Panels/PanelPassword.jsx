@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { panelPasswordType } from './types';
 import { Input, Collapse, Button } from 'antd';
+import { useTranslation } from 'react-i18next';
 const { Panel } = Collapse;
 
 const PanelPassword = ({ onSaveSettings, oldPassword: oldPasswordProps, newPassword: newPasswordProps }) => {
+  const { t } = useTranslation();
   const [readOnly, setReadOnly] = useState(true);
   const [haveChanges, setChanges] = useState([]);
   const [newPassword, setNewPassword] = useState(newPasswordProps);
@@ -57,9 +59,9 @@ const PanelPassword = ({ onSaveSettings, oldPassword: oldPasswordProps, newPassw
 
   return (
     <Collapse>
-      <Panel header="Смена пароля" key="password">
+      <Panel header={t('settingsModule_password_name')} key="password">
         <div className="configWrapper flexWrapper">
-          <span>Старый пароль:</span>
+          <span>{t('settingsModule_password_oldPassword')}:</span>
           <Input
             type="password"
             allowClear
@@ -68,7 +70,7 @@ const PanelPassword = ({ onSaveSettings, oldPassword: oldPasswordProps, newPassw
           />
         </div>
         <div className="configWrapper flexWrapper">
-          <span>Новый пароль:</span>
+          <span>{t('settingsModule_password_newPassword')}:</span>
           <Input
             type="password"
             allowClear
@@ -77,7 +79,7 @@ const PanelPassword = ({ onSaveSettings, oldPassword: oldPasswordProps, newPassw
           />
         </div>
         <Button onClick={onSubmit} className="submit" type="primary" disabled={readOnly}>
-          Принять изменения
+          {t('settingsModule_submitButton')}
         </Button>
       </Panel>
     </Collapse>

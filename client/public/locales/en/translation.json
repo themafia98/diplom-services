@@ -56,28 +56,74 @@
   },
   "news": {
     "list": {
-      "title": "Информация",
-      "emptyData": "Данных нету",
-      "createNewsButton": "Создать новость",
-      "loadingList": "Загрузка модуля новостей..."
+      "title": "Information",
+      "emptyData": "No data",
+      "createNewsButton": "Create news",
+      "loadingList": "Loading news module..."
     },
     "view": {
-      "name": "Новость",
-      "loadingNewsData": "Загрузка новости..."
+      "name": "News",
+      "loadingNewsData": "Loading news..."
     },
     "card": {
-      "readButton": "Читать",
-      "cardContent": "Нажмите 'читать' для просмотра новости."
+      "readButton": "Read",
+      "cardContent": "Click 'read' to view news."
     },
     "create": {
-      "title": "Создание новой новости",
-      "newNewsPlaceholder": "Заголовок новости",
+      "title": "Create new news",
+      "newNewsPlaceholder": "News title",
       "messages": {
-        "nameNotFound": "Название не найдено",
-        "newsCreate": "Новость создана.",
-        "errorCreateNewNews": "Ошибка создания новой новости",
-        "invalidData": "Возможно данные повреждены"
+        "nameNotFound": "Title not found",
+        "newsCreate": "News has been created.",
+        "errorCreateNewNews": "Error creating new news",
+        "invalidData": "Data may be corrupted"
       }
+    }
+  },
+  "contacts": {
+    "title": "Contacts",
+    "messages": {
+      "invalidLoadContactsList": "Failed to load list"
+    }
+  },
+  "mainModule": {
+    "title": "General information",
+    "pageName": "Main page"
+  },
+  "settingsModule": {
+    "title": "Settings",
+    "messageChange": "Change Password.",
+    "submitButton": "Accept changes",
+    "messages": {
+      "userNotFound": "User is not found",
+      "badEmail": "Mail format not respected",
+      "badPassword": "Password format not respected",
+      "phoneUpdate": "Phone updated.",
+      "emailUpdate": "Email updated.",
+      "passwordUpdate": "Password changed.",
+      "errorChangePassword": "Password change error",
+      "emailPhoneUpdate": "Mail and phone have been updated.",
+      "updateSettings": "Settings updated successfully",
+      "invalidChangePassword": "Password change error"
+    },
+    "admin": {
+      "name": "Setting task statuses",
+      "statusSelectPlaceholder": "Task statuses"
+    },
+    "common": {
+      "name": "General settings",
+      "changeEmail": "Change mail",
+      "changePhone": "Change phone"
+    },
+    "password": {
+      "name": "Password change",
+      "newPassword": "New password",
+      "oldPassword": "Old password"
+    },
+    "profile": {
+      "name": "Profile settings",
+      "hideEmail": "Hide mail",
+      "hidePhone": "Hide phone"
     }
   }
 }

@@ -12,8 +12,10 @@ import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { withClientDb } from 'Models/ClientSideDatabase';
 import actionPath from 'actions.path';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 
 const MainModule = memo(({ moduleContext, clientDB }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
 
   const [tableViewHeight, setTableViewHeight] = useState(300);
@@ -90,7 +92,11 @@ const MainModule = memo(({ moduleContext, clientDB }) => {
 
   return (
     <div className="mainModule">
-      <TitleModule additional="Общая информация" classNameTitle="mainModuleTitle" title="Главная страница" />
+      <TitleModule
+        additional={t('mainModule_title')}
+        classNameTitle="mainModuleTitle"
+        title={t('mainModule_pageName')}
+      />
       <div className="mainModule_main">
         <div className="col-4 columnModuleLeft">
           <StreamBox

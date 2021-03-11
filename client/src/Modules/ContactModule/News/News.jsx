@@ -81,7 +81,7 @@ const News = memo(({ data }) => {
           <NewsCard key={it._id || index} onClick={onOpen.bind(this, it._id)} className="card" data={it} />
         ));
     },
-    [onOpen],
+    [onOpen, t],
   );
 
   const onChange = (pageNumber) => {

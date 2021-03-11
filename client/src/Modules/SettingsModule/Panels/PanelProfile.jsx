@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { panelProfileType } from './types';
 import { Button, Collapse, Switch } from 'antd';
+import { useTranslation } from 'react-i18next';
 const { Panel } = Collapse;
 
 const PanelProfile = ({ onSaveSettings, isHideEmail: isHideEmailProps, isHidePhone: isHidePhoneProps }) => {
+  const { t } = useTranslation();
   const [haveChanges, setChanges] = useState([]);
   const [isHideEmail, setHideEmail] = useState(isHideEmailProps);
   const [isHidePhone, setHidePhone] = useState(isHidePhoneProps);
@@ -47,17 +49,17 @@ const PanelProfile = ({ onSaveSettings, isHideEmail: isHideEmailProps, isHidePho
 
   return (
     <Collapse>
-      <Panel header="Настройки профиля" key="profile">
+      <Panel header={t('settingsModule_profile_name')} key="profile">
         <div className="configWrapper">
           <Switch defaultChecked={isHideEmail} onChange={onHide.bind(this, 'isHideEmail')} />
-          <span className="configTitle">Скрывать почту</span>
+          <span className="configTitle">{t('settingsModule_profile_hideEmail')}</span>
         </div>
         <div className="configWrapper">
           <Switch defaultChecked={isHidePhone} onChange={onHide.bind(this, 'isHidePhone')} />
-          <span className="configTitle">Скрывать телефон</span>
+          <span className="configTitle">{t('settingsModule_profile_hidePhone')}</span>
         </div>
         <Button onClick={onSubmit} className="submit" type="primary" disabled={readOnly}>
-          Принять изменения
+          {t('settingsModule_submitButton')}
         </Button>
       </Panel>
     </Collapse>

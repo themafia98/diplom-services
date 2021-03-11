@@ -2,11 +2,13 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { v4 as uuid } from 'uuid';
 import _ from 'lodash';
 import { Button, Collapse, Select } from 'antd';
+import { useTranslation } from 'react-i18next';
 const { Panel } = Collapse;
 
 const { Option } = Select;
 
 const PanelAdmin = ({ onSaveSettings, statusList: statusConfig }) => {
+  const { t } = useTranslation();
   const { settings = [] } = statusConfig;
   const memoStatusList = useMemo(() => settings.filter(({ active }) => active).map(({ id }) => id), [
     settings,
@@ -93,11 +95,11 @@ const PanelAdmin = ({ onSaveSettings, statusList: statusConfig }) => {
 
   return (
     <Collapse>
-      <Panel header="Настройка статусов задач" key="statusSettings">
+      <Panel header={t('settingsModule_admin_name')} key="statusSettings">
         <Select
           className="settingsSelect-status"
           mode="tags"
-          placeholder="Статусы задач"
+          placeholder={t('settingsModule_admin_statusSelectPlaceholder')}
           onChange={addStatus}
           value={value}
           optionLabelProp="label"
@@ -106,7 +108,7 @@ const PanelAdmin = ({ onSaveSettings, statusList: statusConfig }) => {
           {renderStatusList()}
         </Select>
         <Button onClick={onSubmit} className="submit" type="primary" disabled={readOnly}>
-          Принять изменения
+          {t('settingsModule_submitButton')}
         </Button>
       </Panel>
     </Collapse>

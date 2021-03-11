@@ -12,8 +12,10 @@ import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { setStatus } from 'Redux/actions/publicActions';
+import { useTranslation } from 'react-i18next';
 
 const Contacts = memo(({ modelsContext }) => {
+  const { t } = useTranslation();
   const [data, setData] = useState([]);
   const [isLoadingModule, setLoadingModule] = useState(false);
   const [loadedRowsMap, setRowsMap] = useState(() => ({}));
@@ -32,12 +34,12 @@ const Contacts = memo(({ modelsContext }) => {
         callback(response);
       } catch (error) {
         if (error?.response?.status !== 404) console.error(error);
-        message.error('Не удалось загрузить список');
+        message.error(t('contacts_messages_invalidLoadContactsList'));
 
         setLoadingModule(false);
       }
     },
-    [modelsContext],
+    [modelsContext, t],
   );
 
   useEffect(() => {
@@ -132,7 +134,7 @@ const Contacts = memo(({ modelsContext }) => {
 
   return (
     <div className="contactsModule">
-      <TitleModule classNameTitle="contactsModuleTitle" title="Контакты" />
+      <TitleModule classNameTitle="contactsModuleTitle" title={t('contacts_title')} />
       <div className="contactsModule__main">
         <Scrollbars autoHide hideTracksWhenNotNeeded>
           <List>

@@ -82,5 +82,51 @@
         "invalidData": "Возможно данные повреждены"
       }
     }
+  },
+  "contacts": {
+    "title": "Контакты",
+    "messages": {
+      "invalidLoadContactsList": "Не удалось загрузить список контактов"
+    }
+  },
+  "mainModule": {
+    "title": "Общая информация",
+    "pageName": "Главная страница"
+  },
+  "settingsModule": {
+    "title": "Настройки",
+    "messageChange": "Изменение пароля.",
+    "submitButton": "Принять изменения",
+    "messages": {
+      "userNotFound": "Пользователь не найден",
+      "badEmail": "Формат почты не соблюден",
+      "badPassword": "Формат пароля не соблюден",
+      "phoneUpdate": "Телефон обновлен.",
+      "emailUpdate": "Почта обновлена.",
+      "passwordUpdate": "Пароль изменен.",
+      "errorChangePassword": "Ошибка смены пароля",
+      "emailPhoneUpdate": "Почта и телефон обновлены.",
+      "updateSettings": "Настройки успешно обновлены",
+      "invalidChangePassword": "Ошибка смены пароля"
+    },
+    "admin": {
+      "name": "Настройка статусов задач",
+      "statusSelectPlaceholder": "Статусы задач"
+    },
+    "common": {
+      "name": "Общие настройки",
+      "changeEmail": "Сменить почту",
+      "changePhone": "Сменить телефон"
+    },
+    "password": {
+      "name": "Смена пароля",
+      "newPassword": "Новый пароль",
+      "oldPassword": "Старый пароль"
+    },
+    "profile": {
+      "name": "Настройки профиля",
+      "hideEmail": "Скрывать почту",
+      "hidePhone": "Скрывать телефон"
+    }
   }
 }

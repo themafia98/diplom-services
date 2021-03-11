@@ -21,6 +21,7 @@ import { compose } from 'redux';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { withClientDb } from 'Models/ClientSideDatabase';
 import { requestTemplate, paramsTemplate } from 'Utils/Api/api.utils';
+import { withTranslation } from 'react-i18next';
 
 class SettingsModule extends PureComponent {
   state = {
@@ -183,7 +184,7 @@ class SettingsModule extends PureComponent {
 
   onChangeProfile = async (state, callback) => {
     try {
-      const { udata: { _id: uid = '' } = {}, onUpdateUdata = null, modelsContext, appConfig } = this.props;
+      const { udata: { _id: uid = '' } = {}, onUpdateUdata = null, modelsContext, appConfig, t } = this.props;
       const { isHideEmail = false, isHidePhone = false } = state;
       const {
         settings: { includeChangeProfile = false },
@@ -193,7 +194,7 @@ class SettingsModule extends PureComponent {
       if (!includeChangeProfile) return;
 
       if (!uid) {
-        message.error('Пользователь не найден');
+        message.error(t('settingsModule_messages_userNotFound'));
         return;
       }
 
@@ -232,25 +233,27 @@ class SettingsModule extends PureComponent {
   };
 
   onChangeCommon = async (state, callback) => {
+    const {
+      udata: { _id: uid = '' } = {},
+      onUpdateUdata = null,
+      onCaching = null,
+      modelsContext,
+      clientDB,
+      appConfig,
+      t,
+    } = this.props;
+
     try {
-      const {
-        udata: { _id: uid = '' } = {},
-        onUpdateUdata = null,
-        onCaching = null,
-        modelsContext,
-        clientDB,
-        appConfig,
-      } = this.props;
       const { emailValue: newEmail = '', telValue: newPhone = '', haveChanges = [] } = state;
       const { settings: { includeChangeEmail = false } = {} } = appConfig;
       const { Request } = modelsContext;
       if (includeChangeEmail && (!newEmail || !regExpRegister.VALID_EMAIL.test(newEmail))) {
-        message.error('Формат почты не соблюден');
+        message.error(t('settingsModule_messages_badEmail'));
         return;
       }
 
       if (!uid) {
-        message.error('Пользователь не найден');
+        message.error(t('settingsModule_messages_userNotFound'));
         return;
       }
 
@@ -291,10 +294,10 @@ class SettingsModule extends PureComponent {
       const isOnlyEmail = haveChanges.includes('commonEmail') && !haveChanges.includes('commonPhone');
 
       const msg = isOnlyPhone
-        ? 'Телефон обновлен.'
+        ? t('settingsModule_messages_phoneUpdate')
         : isOnlyEmail
-        ? 'Почта обновлена.'
-        : 'Почта и телефон обновлены.';
+        ? t('settingsModule_messages_emailUpdate')
+        : t('settingsModule_messages_emailPhoneUpdate');
 
       if (!onCaching) return;
 
@@ -312,26 +315,26 @@ class SettingsModule extends PureComponent {
         clientDB,
       });
 
-      message.success('Настройки успешно обновлены.');
+      message.success(t('settingsModule_messages_updateSettings'));
     } catch (error) {
       if (error?.response?.status !== 404) console.error(error);
-      message.error('Ошибка смены пароля');
+      message.error(t('settingsModule_messsages_invalidChangePassword'));
     }
   };
 
   onChangePassword = async (state, callback) => {
+    const { t, udata: { _id: uid = '' } = {}, onCaching, modelsContext, clientDB } = this.props;
     try {
-      const { udata: { _id: uid = '' } = {}, onCaching, modelsContext, clientDB } = this.props;
       const { Request = {} } = modelsContext;
 
       const { oldPassword = '', newPassword = '' } = state;
       if (!oldPassword || !newPassword) {
-        message.warning('Формат пароля не верен');
+        message.warning(t('settingsModule_messsages_badPassword'));
         return;
       }
 
       if (!uid) {
-        message.error('Пользователь не найден');
+        message.error(t('settingsModule_messages_userNotFound'));
         return;
       }
 
@@ -360,7 +363,7 @@ class SettingsModule extends PureComponent {
 
       if (callback) callback();
 
-      const msg = 'Изменение пароля.';
+      const msg = t('settingsModule_messageChange');
 
       if (!onCaching) return;
 
@@ -378,10 +381,10 @@ class SettingsModule extends PureComponent {
         clientDB,
       });
 
-      message.success('Пароль изменен.');
+      message.success(t('settingsModule_messages_passwordUpdate'));
     } catch (error) {
       if (error?.response?.status !== 404) console.error(error);
-      message.error('Ошибка смены пароля');
+      message.error(t('settingsModule_messages_errorChangePassword'));
     }
   };
 
@@ -393,6 +396,7 @@ class SettingsModule extends PureComponent {
       settings = [],
       appConfig,
       isLoad,
+      t,
     } = this.props;
     const { settings: settingsConfig = {} } = appConfig;
     const { includeRulesSettings = false } = settingsConfig;
@@ -400,7 +404,7 @@ class SettingsModule extends PureComponent {
     const isAdmin = departament === 'Admin' && rules === 'full';
     return (
       <div className="settingsModule">
-        <TitleModule classNameTitle="settingsModuleTitle" title="Настройки" />
+        <TitleModule classNameTitle="settingsModuleTitle" title={t('settingsModule_title')} />
         <div className="settingsModule__main">
           <div ref={this.refColumn} className="col-6">
             <Scrollbars autoHide hideTracksWhenNotNeeded>
@@ -472,4 +476,5 @@ export default compose(
   moduleContextToProps,
   withClientDb,
   connect(mapStateToProps, mapDispatchToProps),
+  withTranslation(),
 )(SettingsModule);
