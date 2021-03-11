@@ -11,10 +11,12 @@ import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { compose } from 'redux';
 import { withClientDb } from 'Models/ClientSideDatabase';
 import { APP_STATUS } from 'App.constant';
+import { useTranslation } from 'react-i18next';
 
 const CreateNews = memo(({ statusApp, udata, onSetStatus, clientDB, readOnly }) => {
   const { displayName = '', _id: uid = '' } = udata;
 
+  const { t } = useTranslation();
   const [titleNews, setTitleNews] = useState('');
   const [clear, setClear] = useState(false);
 
@@ -29,13 +31,13 @@ const CreateNews = memo(({ statusApp, udata, onSetStatus, clientDB, readOnly }) 
 
   const onPublish = async (contentState) => {
     if (!titleNews || !contentState) {
-      return message.error('Название не найдено');
+      return message.error(t('news_create_messages_nameNotFound'));
     }
 
     if (statusApp !== APP_STATUS.ON) {
       notification.error({
-        title: 'Ошибка сети',
-        message: 'Интернет соединение отсутствует',
+        title: t('globalMessages_networkError'),
+        message: t('globalMessages_webEmpty'),
       });
       return;
     }
@@ -77,27 +79,31 @@ const CreateNews = memo(({ statusApp, udata, onSetStatus, clientDB, readOnly }) 
 
         createNotification('global', itemNotification).catch((error) => {
           if (error?.response?.status !== 404) console.error(error);
-          message.error('Error create notification');
+          message.error(t('globalMessages_notificationCreateBad'));
         });
       }
 
       setClear(true);
-      message.success('Новость создана.');
+      message.success(t('news_create_messages_newsCreate'));
     } catch (error) {
       if (error?.response?.status !== 404) console.error(error);
       notification.error({
-        title: 'Ошибка создания новой новости',
-        message: 'Возможно данные повреждены',
+        title: t('news_create_messages_errorCreateNewNews'),
+        message: t('news_create_messages_invalidData'),
       });
     }
   };
 
   return (
     <div className="createNews">
-      <TitleModule classNameTitle="createNewsTitle" title="Создание новой новости" />
+      <TitleModule classNameTitle="createNewsTitle" title={t('news_create_title')} />
       <div className="createNews__main">
-        <Input autoFocus={true} value={titleNews} onChange={onChange} placeholder="Заголовок новости" />
-
+        <Input
+          autoFocus={true}
+          value={titleNews}
+          onChange={onChange}
+          placeholder={t('news_create_newNewsPlaceholder')}
+        />
         <EditorTextarea
           disabled={readOnly}
           clearStatus={clearStatus}

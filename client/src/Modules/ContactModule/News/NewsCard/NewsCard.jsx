@@ -3,8 +3,10 @@ import { newsCardType } from '../../ContactModule.types';
 import _ from 'lodash';
 import { Card, Button } from 'antd';
 import clsx from 'clsx';
+import { useTranslation } from 'react-i18next';
 
 const NewsCard = ({ onClick, className, data }) => {
+  const { t } = useTranslation();
   const cardTitle = useMemo(() => (data?.title ? data?.title : data?._id ? data?._id : null), [data]);
 
   if (!data || _.isEmpty(data)) return null;
@@ -15,11 +17,11 @@ const NewsCard = ({ onClick, className, data }) => {
       title={cardTitle}
       extra={
         <Button onClick={onClick} type="primary">
-          Читать
+          {t('news_card_readButton')}
         </Button>
       }
     >
-      Нажмите "читать" для просмотра новости.
+      {t('news_card_cardContent')}
     </Card>
   );
 };

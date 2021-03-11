@@ -4,9 +4,12 @@ import TitleModule from 'Components/TitleModule';
 import Textarea from 'Components/Textarea';
 import { Spin } from 'antd';
 import classes from './newsViewPage.module.scss';
+import { useTranslation } from 'react-i18next';
 
 const NewsViewPage = ({ id: newsId, listdata, _id: preloadId, entityId, onLoadingData }) => {
   const { content: contentEntity = {}, title = '' } = listdata || {};
+
+  const { t } = useTranslation();
   const [id, setId] = useState(newsId);
 
   useEffect(() => {
@@ -50,11 +53,14 @@ const NewsViewPage = ({ id: newsId, listdata, _id: preloadId, entityId, onLoadin
 
   if (!contentEntity && (contentEntity?.blocks || contentEntity?.entityMap)) return null;
 
-  if (!id) return <Spin size="large" tip="Loading news..." className={classes.spin} />;
+  if (!id) return <Spin size="large" tip={t('news_view_loadingNewsData')} className={classes.spin} />;
 
   return (
     <article className="newsView-page">
-      <TitleModule classNameTitle="tittle_contactModule_pageNews" title={title ? title : `Новость № ${id}`} />
+      <TitleModule
+        classNameTitle="tittle_contactModule_pageNews"
+        title={title ? title : `${t('news_view_name')} № ${id}`}
+      />
       <div className="newsView-page__main">
         <Textarea editor={true} key={id} readOnly={true} contentState={contentState} />
       </div>
