@@ -11,10 +11,12 @@ import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
 import actionPath from 'actions.path';
 import modelsContext from 'Models/context';
 import { CABINET_PAGE_TYPE } from './CabinetModule.constant';
+import { useTranslation } from 'react-i18next';
 
 const { Dragger } = Upload;
 
 const CabinetModule = memo(({ path }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const [state, setState] = useState({
     modePage: '',
@@ -120,12 +122,12 @@ const CabinetModule = memo(({ path }) => {
     const isJpgOrPng = file.type.startsWith('image/');
     if (!isJpgOrPng) {
       setState((state) => ({ ...state, loading: !state.loading, disabled: false, error: true }));
-      message.error('You can only upload image.');
+      message.error(t('cabinetModule_files_onlyImageError'));
     }
     const isLt5M = file.size / 1024 / 1024 < 5;
     if (!isLt5M) {
       setState((state) => ({ ...state, loading: !state.loading, disabled: false, error: true }));
-      message.error('Must be less than 5 mb.');
+      message.error(t('cabinetModule_files_onlyLessThan'));
     }
     return isJpgOrPng && isLt5M;
   };
@@ -150,7 +152,7 @@ const CabinetModule = memo(({ path }) => {
     if (status !== 'uploading') setState({ ...state, disabled: false });
 
     if (status === 'done') {
-      message.success(`${info.file.name} file uploaded successfully.`);
+      message.success(`${info.file.name} ${t('cabinetModule_files_fileSuccess')}`);
       const { file: { xhr: { response = null } = {} } = {} } = info;
 
       const res = typeof response === 'string' ? JSON.parse(response) : response;
@@ -159,14 +161,14 @@ const CabinetModule = memo(({ path }) => {
 
       if (!done) {
         setState({ ...state, disabled: false });
-        message.error(`${info.file.name} file upload failed.`);
+        message.error(`${info.file.name} ${t('cabinetModule_files_fileFailed')}`);
         return;
       }
 
       setFile(metadata, true);
     } else if (status === 'error') {
       setState({ ...state, disabled: false });
-      message.error(`${info.file.name} file upload failed.`);
+      message.error(`${info.file.name} ${t('cabinetModule_files_fileFailed')}`);
     }
   };
 
@@ -184,14 +186,14 @@ const CabinetModule = memo(({ path }) => {
   const uploadButton = (
     <div>
       <Icon type="plus" />
-      <div className="ant-upload-text">Upload</div>
+      <div className="ant-upload-text">{t('cabinetModule_files_uploadButton')}</div>
     </div>
   );
 
   if (!uidUser) {
     return (
       <div className="cabinetModule cabinetModule--cabinetLoader">
-        <Spin size="large" tip="Loading personal page..." />
+        <Spin size="large" tip={t('cabinetModule_loadingPage')} />
       </div>
     );
   }
@@ -202,9 +204,9 @@ const CabinetModule = memo(({ path }) => {
   return (
     <div className="cabinetModule">
       <TitleModule
-        additional="Profile"
+        additional={t('cabinetModule_pageName')}
         classNameTitle="cabinetModuleTitle"
-        title={!isPersonal ? 'Personal Area' : 'Employee card'}
+        title={!isPersonal ? t('cabinetModule_titlePersonal') : t('cabinetModule_titleEmployee')}
       />
       <div className="cabinetModule_main">
         <div className="col-6">
@@ -218,7 +220,7 @@ const CabinetModule = memo(({ path }) => {
           />
         </div>
         <div className="col-6">
-          <p className="lastActivity">Last Activity</p>
+          <p className="lastActivity">{t('cabinetModule_activity')}</p>
           <StreamBox
             type="global"
             prefix="#notification"
@@ -257,7 +259,7 @@ const CabinetModule = memo(({ path }) => {
           )}
           {imageUrl ? (
             <Button className="deleteButton" onClick={reset} type="primary">
-              Delete image
+              {t('cabinetModule_files_deleteButton')}
             </Button>
           ) : null}
         </Dragger>

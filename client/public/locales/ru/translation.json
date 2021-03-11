@@ -1,3 +1,21 @@
 {
-  "notFoundTitle": "Страница недоступна"
+  "notFoundPage": {
+    "title": "Страница недоступна",
+    "refreshButton": "Обновить"
+  },
+  "cabinetModule": {
+    "pageName": "Профиль",
+    "titlePersonal": "Личный кабинет",
+    "titleEmployee": "Карточка сотрудника",
+    "activity": "Последняя активность",
+    "loadingPage": "Загрузка кабинета...",
+    "files": {
+      "onlyImageError": "вы можете загружать только изображения.",
+      "onlyLessThan": "должно быть не больше 5 мб.",
+      "fileSuccess": "файл загружен успешно.",
+      "fileFailed": "ошибка загрузки.",
+      "uploadButton": "Загрузить",
+      "deleteButton": "Удалить изображение"
+    }
+  }
 }
