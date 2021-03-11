@@ -498,4 +498,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default compose(withClientDb, connect(mapStateToProps, mapDispatchToProps), withTranslation)(Chat);
+export default compose(withClientDb, connect(mapStateToProps, mapDispatchToProps), withTranslation())(Chat);
