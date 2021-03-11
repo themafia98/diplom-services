@@ -6,6 +6,7 @@ export const notificationPopupType = {
   notificationDep: object.isRequired,
   udata: udataType.isRequired,
   type: string.isRequired,
+  appConfig: object,
 };
 
 export const notificationItemType = {

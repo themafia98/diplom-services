@@ -29,7 +29,9 @@ const RightPanel = ({
 
   return (
     <div className="headerControllers rightPanel">
-      <Button onClick={changeLanguage}>{currentLanguage}</Button>
+      <Button className="rightPanel__changeLangButton" onClick={changeLanguage}>
+        {currentLanguage}
+      </Button>
       <UserPopup statusApp={status} udata={udata} goCabinet={goCabinet} />
       <div className="groupControllers">
         <NotificationPopup

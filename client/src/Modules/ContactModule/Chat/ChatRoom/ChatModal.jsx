@@ -4,10 +4,12 @@ import { Modal, Select, message, Input } from 'antd';
 import ModelContext from 'Models/context';
 import actionsTypes from 'actions.types';
 import { requestTemplate, paramsTemplate } from 'Utils/Api/api.utils';
+import { useTranslation } from 'react-i18next';
 
 const { Option } = Select;
 
 const ChatModal = memo(({ visible, usersList, onVisibleChange, uid }) => {
+  const { t } = useTranslation();
   const [type, setType] = useState('single');
   const [membersIds, setMembers] = useState([]);
 
@@ -90,16 +92,16 @@ const ChatModal = memo(({ visible, usersList, onVisibleChange, uid }) => {
         <Select
           onChange={onChangeType}
           dropdownMatchSelectWidth={true}
-          placeholder="выберете тип комнаты"
+          placeholder={t('chat_modelRoom_selectRoomTypePlaceholder')}
           defaultValue={'single'}
           defaultActiveFirstOption={true}
           value={type}
         >
           <Option value="single" label="single">
-            <span>Приватный</span>
+            <span>{t('chat_modelRoom_roomTypes_private')}</span>
           </Option>
           <Option value="group" label="group">
-            <span>Групповой</span>
+            <span>{t('chat_modelRoom_roomTypes_group')}</span>
           </Option>
         </Select>
         {type !== 'single' ? (
@@ -107,7 +109,7 @@ const ChatModal = memo(({ visible, usersList, onVisibleChange, uid }) => {
             ref={groupNameRef}
             className="groupName__Input"
             name="groupName"
-            placeholder="Название группы"
+            placeholder={t('chat_modelRoom_selectRoomNamePlaceholder')}
             required
           />
         ) : null}
@@ -115,7 +117,7 @@ const ChatModal = memo(({ visible, usersList, onVisibleChange, uid }) => {
           onChange={onChangeSelect}
           name="users"
           mode={type !== 'single' ? 'multiple' : 'default'}
-          placeholder="выберете собеседника/собеседников"
+          placeholder={t('chat_modelRoom_selectInterlocutorPlaceholder')}
           optionLabelProp="label"
           value={valueUser}
         >
