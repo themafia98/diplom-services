@@ -1,3 +1,21 @@
 {
-  "notFoundTitle": "Page unavailable"
+  "notFoundPage": {
+    "title": "Page unavailable",
+    "refreshButton": "Refresh"
+  },
+  "cabinetModule": {
+    "pageName": "Profile",
+    "titlePersonal": "Personal Area",
+    "titleEmployee": "Employee card",
+    "activity": "Last Activity",
+    "loadingPage": "Loading personal page...",
+    "files": {
+      "onlyImageError": "You can only upload image.",
+      "onlyLessThan": "Must be less than 5 mb.",
+      "fileSuccess": "file uploaded successfully.",
+      "fileFailed": "file upload failed.",
+      "uploadButton": "Upload",
+      "deleteButton": "Delete image"
+    }
+  }
 }

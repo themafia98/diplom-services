@@ -13,7 +13,7 @@ const findUser = async (uid) => {
 
   try {
     const rest = new Request();
-    const { data } = await rest.sendRequest(`/cabinet/findUser?uid=${uid}`);
+    const { data } = await rest.sendRequest(`/cabinet/findUser?uid=${uid}`, 'GET', null, true);
     const { metadata = [] } = data.response || {};
 
     return metadata?.[0];
