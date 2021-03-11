@@ -36,6 +36,7 @@
       "tryReconnect": "No connection established. Attempt to reconnect."
     },
     "modelRoom": {
+      "title": "Create chat room.",
       "roomTypes": {
         "private": "Private",
         "group": "Group"

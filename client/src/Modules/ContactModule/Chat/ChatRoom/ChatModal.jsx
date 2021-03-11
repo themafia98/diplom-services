@@ -81,7 +81,7 @@ const ChatModal = memo(({ visible, usersList, onVisibleChange, uid }) => {
 
   return (
     <Modal
-      title="Создание чат комнаты."
+      title={t('chat_modelRoom_title')}
       visible={visible}
       onOk={handleOk}
       disabled={!membersIds || (Array.isArray(membersIds) && !membersIds.length)}
