@@ -21,6 +21,7 @@ import { compose } from 'redux';
 import { withClientDb } from 'Models/ClientSideDatabase';
 import { openTab } from 'Redux/actions/routerActions/middleware';
 import { CHAT_EVENTS } from './Chat.constant';
+import { withTranslation } from 'react-i18next';
 
 class Chat extends PureComponent {
   state = {
@@ -148,6 +149,7 @@ class Chat extends PureComponent {
       udata: { _id: uid } = {},
       onLoadActiveChats,
       clientDB,
+      t,
     } = this.props;
 
     if (socketConnection) {
@@ -168,7 +170,7 @@ class Chat extends PureComponent {
           clientDB,
         });
     } else {
-      message.error('Соединение не установлено, попытка восстановить соединение.');
+      message.error(t('chat_messages_tryReconnect'));
     }
   };
   loadChat = () => {
@@ -213,13 +215,19 @@ class Chat extends PureComponent {
       interlocutorIdFakeRoom = null,
       chat: { chatToken: tokenRoom = '', group = '' } = {},
       udata: { displayName = '', _id: authorId = '' } = {},
+      t,
     } = this.props;
 
     if (tokenRoom === null) {
-      return notification.error({ message: 'Ошибка чата', description: 'Данные повреждены.' });
+      return notification.error({
+        message: t('chat_messages_chatError'),
+        description: t('chat_messages_invalidData'),
+      });
     }
 
-    if (!msg) return message.error('Недопустимые значения или вы ничего не ввели.');
+    if (!msg) {
+      return message.error(t('chat_messages_invalidPrintMsg'));
+    }
 
     const parseMsg = {
       authorId,
@@ -246,6 +254,7 @@ class Chat extends PureComponent {
       chat: { chatToken = null, listdata = [] } = {},
       udata: { displayName = '' } = {},
       onLoadingDataByToken = null,
+      t,
     } = this.props;
 
     if (id < 0 && onLoadingDataByToken) {
@@ -259,7 +268,7 @@ class Chat extends PureComponent {
     if (chatToken !== token || !token) {
       onLoadingDataByToken(token, listdata, 'chat', false);
       this.chat.getSocket().emit(CHAT_EVENTS.ACTIVATE_CHAT_ROOM_EVENT, { token, displayName });
-    } else if (!token) message.warning('Чат комната не найдена либо требуется обновить систему.');
+    } else if (!token) message.warning(t('chat.messages.chatRoomNotFound'));
   };
 
   onVisibleChange = (visible) => {
@@ -369,6 +378,7 @@ class Chat extends PureComponent {
       socketErrorStatus,
       type,
       webSocket,
+      t,
     } = this.props;
     const isWs = webSocket !== null;
 
@@ -377,7 +387,7 @@ class Chat extends PureComponent {
     return (
       <div className="chat">
         {type !== 'modal' ? (
-          <TitleModule classNameTitle="ContactModule__chatTitle" title="Корпоративный чат" />
+          <TitleModule classNameTitle="ContactModule__chatTitle" title={t('chat_title')} />
         ) : null}
         {isWs ? this.renderModal(visible) : null}
         <div className="chat__main">
@@ -398,11 +408,11 @@ class Chat extends PureComponent {
             <div className="chat_content">
               <div className="chat_content__header">
                 <div className="area-left">
-                  <p className="chat_content__header__title">Окно чата.</p>
+                  <p className="chat_content__header__title">{t('chat_headerTitle')}</p>
                   {tokenRoom && !tokenRoom.includes('fakeRoom') ? (
                     <Popover content={usersListComponent}>
                       <p className="counter-room">
-                        Участников: <span className="link">{count}</span>
+                        {t('chat_counterOf')} <span className="link">{count}</span>
                       </p>
                     </Popover>
                   ) : null}
@@ -413,7 +423,7 @@ class Chat extends PureComponent {
                     !socketConnection ? 'isOffline' : 'isOnline',
                   )}
                 >
-                  {!socketConnection && !tokenRoom ? 'не активен' : 'активен'}
+                  {!socketConnection && !tokenRoom ? t('chat_status_noActive') : t('chat_status_active')}
                 </p>
               </div>
               <div className="chat_content__main">
@@ -436,11 +446,11 @@ class Chat extends PureComponent {
                 ) : (
                   <div className="emptyChatRoom">
                     {!socketErrorStatus && isWs ? (
-                      <p className="emptyChatRoomMsg">Выберите собеседника</p>
+                      <p className="emptyChatRoomMsg">{t('chat_selectInter')}</p>
                     ) : isWs ? (
                       <p className="socket-error">{socketErrorStatus}</p>
                     ) : (
-                      <p className="webSocket-disable">WebSocket connection is not available</p>
+                      <p className="webSocket-disable">{t('chat_messages_wsUnavailable')}</p>
                     )}
                   </div>
                 )}
@@ -488,4 +498,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default compose(withClientDb, connect(mapStateToProps, mapDispatchToProps))(Chat);
+export default compose(withClientDb, connect(mapStateToProps, mapDispatchToProps), withTranslation)(Chat);

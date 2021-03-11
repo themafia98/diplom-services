@@ -17,5 +17,37 @@
       "uploadButton": "Upload",
       "deleteButton": "Delete image"
     }
+  },
+  "chat": {
+    "title": "Corporate chat",
+    "headerTitle": "Chat window.",
+    "counterOf": "Members:",
+    "selectInter": "Select interlocutor",
+    "status": {
+      "noActive": "not active",
+      "active": "active"
+    },
+    "messages": {
+      "chatError": "Chat error.",
+      "invalidData": "Invalid data.",
+      "wsUnavailable": "WebSocket connection is not available",
+      "chatRoomNotFound": "The chat room was not found or system should be updated.",
+      "invalidPrintMsg": "Invalid values or you didn't enter anything.",
+      "tryReconnect": "No connection established. Attempt to reconnect."
+    },
+    "modelRoom": {
+      "roomTypes": {
+        "private": "Private",
+        "group": "Group"
+      },
+      "selectRoomTypePlaceholder": "select room type",
+      "selectRoomNamePlaceholder": "room name",
+      "selectInterlocutorPlaceholder": "choose interlocutor/interlocutors"
+    },
+    "chatMenu": {
+      "openRooms": "Open rooms",
+      "closeRooms": "Hide rooms",
+      "createRoom": "Create room"
+    }
   }
 }

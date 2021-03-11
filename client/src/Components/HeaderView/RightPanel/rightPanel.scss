@@ -8,6 +8,11 @@
   min-width: 300px;
   max-width: 500px;
   font-weight: bold;
+
+  .rightPanel__changeLangButton {
+    margin-right: 5px;
+  }
+
   .userPopup {
     display: flex;
     align-items: center;

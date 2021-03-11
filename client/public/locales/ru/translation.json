@@ -17,5 +17,37 @@
       "uploadButton": "Загрузить",
       "deleteButton": "Удалить изображение"
     }
+  },
+  "chat": {
+    "title": "Корпоративный чат",
+    "headerTitle": "Окно чата.",
+    "counterOf": "Участников:",
+    "selectInter": "Выбрать участника",
+    "status": {
+      "noActive": "не активен",
+      "active": "активен"
+    },
+    "messages": {
+      "chatError": "Ошибка чата.",
+      "invalidData": "Данные повреждены.",
+      "wsUnavailable": "WebSocket соединение недоступно",
+      "chatRoomNotFound": "Чат комната не найдена либо требуется обновить систему.",
+      "invalidPrintMsg": "Недопустимые значения или вы ничего не ввели.",
+      "tryReconnect": "Соединение не установлено. Попытка восстановить соединение."
+    },
+    "modelRoom": {
+      "roomTypes": {
+        "private": "Приватный",
+        "group": "Групповой"
+      },
+      "selectRoomTypePlaceholder": "выберете тип комнаты",
+      "selectRoomNamePlaceholder": "название группы",
+      "selectInterlocutorPlaceholder": "выберете собеседника/собеседников"
+    },
+    "chatMenu": {
+      "openRooms": "Открыть комнаты",
+      "closeRooms": "Скрыть комнаты",
+      "createRoom": "Создать комнату"
+    }
   }
 }

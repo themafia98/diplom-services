@@ -6,6 +6,7 @@ import Scrollbars from 'react-custom-scrollbars';
 import { Skeleton, List, Avatar, Button } from 'antd';
 import { v4 as uuid } from 'uuid';
 import { withClientDb } from 'Models/ClientSideDatabase';
+import { useTranslation } from 'react-i18next';
 
 const { Item: { Meta } = {}, Item = {} } = List || {};
 
@@ -23,6 +24,7 @@ const ChatMenu = ({
   clientDB,
   isWs,
 }) => {
+  const { t } = useTranslation();
   const [iDs, setIDs] = useState([]);
   const [visible, setVisible] = useState(false);
   const [rooms, updateRooms] = useState([]);
@@ -87,7 +89,7 @@ const ChatMenu = ({
     <>
       {type !== 'modal' ? null : isWs ? (
         <Button type="primary" className="openMenu-button" onClick={onOpenMenu}>
-          {!visible ? 'Открыть комнаты' : 'Скрыть комнаты'}
+          {!visible ? t('chat_chatMenu_openRooms') : t('chat_chatMenu_closeRooms')}
         </Button>
       ) : null}
       <div
@@ -144,7 +146,7 @@ const ChatMenu = ({
             disabled={!socketConnection || !isWs}
             className="chat_main__createRoom"
           >
-            Создать комнату
+            {t('chat_chatMenu_createRoom')}
           </Button>
         ) : null}
       </div>
