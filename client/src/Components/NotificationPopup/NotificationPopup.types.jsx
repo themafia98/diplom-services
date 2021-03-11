@@ -5,7 +5,7 @@ const { object, string, oneOfType, oneOf } = PropTypes;
 export const notificationPopupType = {
   notificationDep: object.isRequired,
   udata: udataType.isRequired,
-  type: string.isRequired,
+  type: string,
   appConfig: object,
 };
 

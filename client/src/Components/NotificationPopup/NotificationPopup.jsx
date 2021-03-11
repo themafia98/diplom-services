@@ -168,6 +168,7 @@ const NotificationPopup = memo(({ appConfig, notificationDep, udata, type }) => 
 });
 
 NotificationPopup.defaultProps = {
+  type: 'private',
   appConfig: {},
 };
 
