@@ -11,8 +11,10 @@ import {
   iconRow,
 } from './notFound.module.scss';
 import { Button, Icon } from 'antd';
+import { useTranslation } from 'react-i18next';
 
 const NotFound = ({ message, showRedirectIndexButton, redirectType, trace, error }) => {
+  const { t } = useTranslation();
   const [stackList] = useState(() => new Error().stack);
   const [visible, setVisibility] = useState(false);
 
@@ -32,7 +34,7 @@ const NotFound = ({ message, showRedirectIndexButton, redirectType, trace, error
   return (
     <div className={notFoundModule}>
       <section className={empty}>
-        {message && <p>{message}</p>}
+        {message && <p>{t(message)}</p>}
         {showRedirectIndexButton ? <Button onClick={onRedirect}>Refresh</Button> : null}
       </section>
       {process.env.NODE_ENV === 'development' && (
@@ -59,7 +61,7 @@ NotFound.propsTypes = {
 };
 
 NotFound.defaultProps = {
-  message: 'Page unavailable',
+  message: 'notFoundTitle',
   trace: '',
   redirectType: 'soft',
   showRedirectIndexButton: false,

@@ -6,7 +6,7 @@ import moment from 'moment';
 import { Empty, message, Spin } from 'antd';
 import { connect } from 'react-redux';
 import Scrollbars from 'react-custom-scrollbars';
-import { loadFile, routeParser, sortedByKey } from 'Utils';
+import { routeParser, sortedByKey } from 'Utils';
 import { TASK_SCHEMA } from 'Models/Schema/const';
 import { settingsStatusSelector } from 'Redux/selectors';
 import { middlewareCaching, middlewareUpdate } from 'Redux/actions/publicActions/middleware';
@@ -248,7 +248,7 @@ class TaskView extends PureComponent {
             },
           };
 
-          const res = await loadFile('tasks', fileLoaderBody);
+          const res = await fs.loadFile('tasks', fileLoaderBody);
           const { response = null } = res.data;
 
           if (!response.done) throw new Error('Bad fetch files');
