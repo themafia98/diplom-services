@@ -2,7 +2,7 @@ import React, { memo, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 import { createNewsType } from '../../ContactModule.types';
 import moment from 'moment';
-import TitleModule from 'Components/TitleModule';
+import Title from 'Components/Title';
 import EditorTextarea from 'Components/Textarea/EditorTextarea';
 import { message, notification, Input } from 'antd';
 
@@ -96,7 +96,7 @@ const CreateNews = memo(({ statusApp, udata, onSetStatus, clientDB, readOnly }) 
 
   return (
     <div className="createNews">
-      <TitleModule classNameTitle="createNewsTitle" title={t('news_create_title')} />
+      <Title classNameTitle="createNewsTitle" title={t('news_create_title')} />
       <div className="createNews__main">
         <Input
           autoFocus={true}

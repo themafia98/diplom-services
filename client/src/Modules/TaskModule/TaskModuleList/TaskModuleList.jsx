@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { taskModuleListType } from '../TaskModule.types';
 import TableView from 'Components/TableView';
-import TitleModule from 'Components/TitleModule';
+import Title from 'Components/Title';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { TABLE_TYPE } from 'Components/TableView/Table/Table.constant';
 import { useTranslation } from 'react-i18next';
@@ -14,7 +14,7 @@ const TaskModuleList = ({ router, data, height, loading, counter, statusApp }) =
 
   return (
     <div ref={refModuleTask} className="taskModule_all">
-      <TitleModule
+      <Title
         additional={t('taskModule_listPage_commonName')}
         classNameTitle="taskModuleTitle"
         title={t('taskModule_listPage_commonTitle')}

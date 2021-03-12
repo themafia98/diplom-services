@@ -13,7 +13,7 @@ import { loadActiveChats, loadingDataByToken, updateRooms } from 'Redux/actions/
 
 import ChatModel from 'Models/Chat';
 import ChatModal from './ChatRoom/ChatModal';
-import TitleModule from 'Components/TitleModule';
+import Title from 'Components/Title';
 import ChatRoom from './ChatRoom';
 
 import modelsContext from 'Models/context';
@@ -387,7 +387,7 @@ class Chat extends PureComponent {
     return (
       <div className="chat">
         {type !== 'modal' ? (
-          <TitleModule classNameTitle="ContactModule__chatTitle" title={t('chat_title')} />
+          <Title classNameTitle="ContactModule__chatTitle" title={t('chat_title')} />
         ) : null}
         {isWs ? this.renderModal(visible) : null}
         <div className="chat__main">

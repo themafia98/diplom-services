@@ -2,6 +2,7 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { Dropdown, Icon, Menu, Spin, Tooltip } from 'antd';
 import { ActionListType } from './ActionList.types';
+import { useTranslation } from 'react-i18next';
 
 const ActionList = ({
   viewType,
@@ -16,6 +17,7 @@ const ActionList = ({
   rulesEdit,
   onEdit,
 }) => {
+  const { t } = useTranslation();
   const showModal = useCallback(onShowModal, [onShowModal]);
 
   const onAction = useCallback(
@@ -30,7 +32,7 @@ const ActionList = ({
 
   const showLoader = () => {
     return (
-      <Tooltip mouseEnterDelay={0.1} title="Loading data">
+      <Tooltip mouseEnterDelay={0.1} title={t('components_actionList_loading')}>
         <Spin type="small" />
       </Tooltip>
     );
@@ -44,7 +46,7 @@ const ActionList = ({
             <Menu>
               <Menu.Item>
                 <p className="jur" onClick={isEdit ? onMessage : (evt) => onAction(evt, 'jur')}>
-                  Занести в журнал работы
+                  {t('components_actionList_enterWorkLogs')}
                 </p>
               </Menu.Item>
               {rulesStatus ? (
@@ -53,21 +55,21 @@ const ActionList = ({
                     className="statusTask"
                     onClick={isEdit ? onMessage : (evt) => onAction(evt, 'statusTask')}
                   >
-                    Сменить статус задачи
+                    {t('components_actionList_changeTaskStatus')}
                   </p>
                 </Menu.Item>
               ) : null}
               {rulesEdit ? (
                 <Menu.Item>
                   <p className="statusTask" onClick={isEdit ? onMessage : onEdit}>
-                    Редактировать задачу
+                    {t('components_actionList_editTask')}
                   </p>
                 </Menu.Item>
               ) : null}
               {viewType === 'remote' ? (
                 <Menu.Item>
                   <p className="mailResponseType" onClick={(evt) => onAction(evt, 'mailResponse')}>
-                    Отправить ответ на почту
+                    {t('components_actionList_sendMail')}
                   </p>
                 </Menu.Item>
               ) : null}
@@ -78,23 +80,23 @@ const ActionList = ({
       default:
         return <div className="empty" />;
     }
-  }, [entityName, isEdit, onAction, onEdit, onMessage, rulesEdit, rulesStatus, viewType]);
+  }, [entityName, isEdit, onAction, onEdit, onMessage, rulesEdit, rulesStatus, t, viewType]);
 
   return (
     <>
       <Dropdown overlay={overlay}>
         <p className="action-dropdown-link">
-          Управление задачей
+          {t('components_actionList_controlTask')}
           <Icon type="down" />
         </p>
       </Dropdown>
       {isEdit ? (
         <>
           <p onClick={onUpdateEditable} className="modeControllEdit">
-            Сохранить изменения
+            {t('components_actionList_save')}
           </p>
           <p onClick={onRejectEdit} className="modeControllEditReject">
-            Отмена изменений
+            {t('components_actionList_reject')}
           </p>
         </>
       ) : null}

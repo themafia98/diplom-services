@@ -7,7 +7,7 @@
     justify-content: center;
   }
 
-  .titleModule {
+  .title {
     flex: 0 0 10%;
     user-select: none;
     span {
@@ -57,7 +57,7 @@
   .mainModule {
     flex-direction: column;
     flex-wrap: wrap;
-    .titleModule {
+    .title {
       align-self: center;
       width: 100%;
       text-align: center;

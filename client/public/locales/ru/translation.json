@@ -7,6 +7,18 @@
     "empty": "Тут ничего нет",
     "notificationGlobalError": "Ошибка глобального уведомления"
   },
+  "components": {
+    "actionList": {
+      "loading": "Загрузка данных...",
+      "enterWorkLogs": "Занести в журнал работы",
+      "changeTaskStatus": "Изменить статус задачи",
+      "editTask": "Редактировать задачу",
+      "sendMail": " Отправить ответ на почту",
+      "controlTask": "Управление задачей",
+      "save": "Сохранить изменения",
+      "reject": "Отмена изменений"
+    }
+  },
   "notFoundPage": {
     "title": "Страница недоступна",
     "refreshButton": "Обновить"

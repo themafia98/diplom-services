@@ -5,7 +5,7 @@ import { Pagination, Button, message, Empty, Spin } from 'antd';
 import Scrollbars from 'react-custom-scrollbars';
 import { addTabAction, setActiveTabAction } from 'Redux/actions/routerActions';
 import NewsCard from './NewsCard';
-import TitleModule from 'Components/TitleModule';
+import Title from 'Components/Title';
 import { routePathNormalise, routeParser } from 'Utils';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { openTab } from 'Redux/actions/routerActions/middleware';
@@ -100,7 +100,7 @@ const News = memo(({ data }) => {
 
   return (
     <div className="news">
-      <TitleModule classNameTitle="mainModuleTitle" title={t('news_list_title')} />
+      <Title classNameTitle="mainModuleTitle" title={t('news_list_title')} />
       <Button onClick={onOpenCreateNews} type="primary">
         {t('news_list_createNewsButton')}
       </Button>

@@ -4,7 +4,7 @@ import { statisticsModuleType } from './StatisticsModule.types';
 import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
 import Bar from './Charts/Bar';
-import TitleModule from 'Components/TitleModule';
+import Title from 'Components/Title';
 import { settingsStatusSelector } from 'Redux/selectors';
 import FixedToolbar from 'Components/FixedToolbar';
 import { Button } from 'antd';
@@ -195,7 +195,7 @@ const StatisticsModule = memo(({ path, clientDB }) => {
 
   return (
     <div className="statisticsModule">
-      <TitleModule classNameTitle="statisticsModuleTitle" title={t('statisticsModule_title')} />
+      <Title classNameTitle="statisticsModuleTitle" title={t('statisticsModule_title')} />
       <div className="statisticsModule__main">
         <div className="col-6">
           {

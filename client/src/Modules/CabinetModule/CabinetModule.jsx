@@ -4,7 +4,7 @@ import { cabinetType } from './CabinetModule.types';
 import { Modal, Upload, message, Icon, Button, Spin } from 'antd';
 import { updateUdata } from 'Redux/actions/publicActions';
 import UserCard from 'Components/UserCard';
-import TitleModule from 'Components/TitleModule';
+import Title from 'Components/Title';
 import StreamBox from 'Components/StreamBox';
 import { findUser, routeParser } from 'Utils';
 import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
@@ -203,7 +203,7 @@ const CabinetModule = memo(({ path }) => {
 
   return (
     <div className="cabinetModule">
-      <TitleModule
+      <Title
         additional={t('cabinetModule_pageName')}
         classNameTitle="cabinetModuleTitle"
         title={!isPersonal ? t('cabinetModule_titlePersonal') : t('cabinetModule_titleEmployee')}

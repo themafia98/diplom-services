@@ -3,7 +3,7 @@ import { createTaskType } from '../TaskModule.types';
 import clsx from 'clsx';
 import _ from 'lodash';
 import Scrollbars from 'react-custom-scrollbars';
-import TitleModule from 'Components/TitleModule';
+import Title from 'Components/Title';
 import moment from 'moment';
 import { Button, Input, Select, DatePicker, message } from 'antd';
 import Textarea from 'Components/Textarea';
@@ -434,7 +434,7 @@ class CreateTask extends PureComponent {
       <Scrollbars autoHide hideTracksWhenNotNeeded>
         <div className="createTask">
           {visibleMode === 'default' ? (
-            <TitleModule
+            <Title
               additional={t('taskModule_createPage_formName')}
               classNameTitle="createTaskTitle"
               title={t('taskModule_createPage_title')}

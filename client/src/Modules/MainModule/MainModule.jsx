@@ -4,7 +4,7 @@ import { Calendar } from 'antd';
 import ClockWidjet from 'Components/ClockWidjet/index';
 import TableView from 'Components/TableView';
 import StreamBox from 'Components/StreamBox';
-import TitleModule from 'Components/TitleModule';
+import Title from 'Components/Title';
 import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
 import { routeParser } from 'Utils';
 import { compose } from 'redux';
@@ -92,7 +92,7 @@ const MainModule = memo(({ moduleContext, clientDB }) => {
 
   return (
     <div className="mainModule">
-      <TitleModule
+      <Title
         additional={t('mainModule_title')}
         classNameTitle="mainModuleTitle"
         title={t('mainModule_pageName')}

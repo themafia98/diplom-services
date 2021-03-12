@@ -8,7 +8,7 @@ import { Tree, Button, Input, Select, Dropdown, Menu, message, Spin } from 'antd
 
 import WikiPage from './WikiPage';
 import ModalWindow from 'Components/ModalWindow';
-import TitleModule from 'Components/TitleModule';
+import Title from 'Components/Title';
 import actionsTypes from 'actions.types';
 import { compose } from 'redux';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
@@ -426,7 +426,7 @@ class WikiModule extends PureComponent {
       <>
         <div className="wikiModule">
           <div className="wikiModule__controlls">
-            <TitleModule classNameTitle="wikiModuleTitle" title={t('wiki_title')} />
+            <Title classNameTitle="wikiModuleTitle" title={t('wiki_title')} />
             <Button
               disabled={isLoadingState}
               onClick={this.onVisibleModalChange}

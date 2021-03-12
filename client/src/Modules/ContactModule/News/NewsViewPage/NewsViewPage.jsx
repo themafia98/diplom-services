@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { newsViewType } from '../../ContactModule.types';
-import TitleModule from 'Components/TitleModule';
+import Title from 'Components/Title';
 import Textarea from 'Components/Textarea';
 import { Spin } from 'antd';
 import classes from './newsViewPage.module.scss';
@@ -57,7 +57,7 @@ const NewsViewPage = ({ id: newsId, listdata, _id: preloadId, entityId, onLoadin
 
   return (
     <article className="newsView-page">
-      <TitleModule
+      <Title
         classNameTitle="tittle_contactModule_pageNews"
         title={title ? title : `${t('news_view_name')} № ${id}`}
       />

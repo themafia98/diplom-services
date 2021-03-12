@@ -228,7 +228,7 @@
 
       div:last-child {
         page-break-before: always;
-        .titleModule {
+        .title {
           page-break-before: always;
         }
       }
@@ -238,13 +238,13 @@
       }
 
       .col-taskDescription:first-child {
-        div:first-child:not(.titleModule) > div:last-child > div {
+        div:first-child:not(.title) > div:last-child > div {
           display: none !important;
         }
       }
 
       .col-taskDescription:last-child {
-        div:last-child:not(.titleModule) > div:last-child > div {
+        div:last-child:not(.title) > div:last-child > div {
           display: none !important;
         }
       }

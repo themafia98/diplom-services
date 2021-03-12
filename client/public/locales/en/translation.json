@@ -7,6 +7,18 @@
     "empty": "There is nothing here",
     "notificationGlobalError": "Global notification error"
   },
+  "components": {
+    "actionList": {
+      "loading": "Data loading...",
+      "enterWorkLogs": "Log work",
+      "changeTaskStatus": "Change task status",
+      "editTask": "Edit task",
+      "sendMail": "Send reply to mail",
+      "controlTask": "Task management",
+      "save": "Save changes",
+      "reject": "Cancel changes"
+    }
+  },
   "notFoundPage": {
     "title": "Page unavailable",
     "refreshButton": "Refresh"

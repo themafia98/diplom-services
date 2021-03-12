@@ -9,7 +9,7 @@ import Scrollbars from 'react-custom-scrollbars';
 import { middlewareCaching } from 'Redux/actions/publicActions/middleware';
 
 import ObserverTime from 'Components/ObserverTime';
-import TitleModule from 'Components/TitleModule';
+import Title from 'Components/Title';
 
 import PanelPassword from './Panels/PanelPassword';
 import PanelCommon from './Panels/PanelCommon';
@@ -404,7 +404,7 @@ class SettingsModule extends PureComponent {
     const isAdmin = departament === 'Admin' && rules === 'full';
     return (
       <div className="settingsModule">
-        <TitleModule classNameTitle="settingsModuleTitle" title={t('settingsModule_title')} />
+        <Title classNameTitle="settingsModuleTitle" title={t('settingsModule_title')} />
         <div className="settingsModule__main">
           <div ref={this.refColumn} className="col-6">
             <Scrollbars autoHide hideTracksWhenNotNeeded>

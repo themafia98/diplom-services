@@ -3,7 +3,7 @@ import { taskModuleCalendarType } from '../TaskModule.types';
 import _ from 'lodash';
 import Scrollbars from 'react-custom-scrollbars';
 import moment from 'moment';
-import TitleModule from 'Components/TitleModule';
+import Title from 'Components/Title';
 import { Calendar, Popover, Button, message, Dropdown, Menu } from 'antd';
 import DrawerViewer from 'Components/DrawerViewer';
 
@@ -209,7 +209,7 @@ class TaskModuleCalendar extends PureComponent {
     return (
       <Scrollbars autoHide hideTracksWhenNotNeeded>
         <div className="taskModuleCalendar">
-          <TitleModule classNameTitle="taskModuleTitle" title={t('taskModule_calendar_title')} />
+          <Title classNameTitle="taskModuleTitle" title={t('taskModule_calendar_title')} />
           <div className="taskModuleCalendar__main">
             <Calendar
               fullscreen={true}

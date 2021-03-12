@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useState, useCallback } from 'react';
 import { contactsType } from '../CustomersModule.types';
-import TitleModule from 'Components/TitleModule';
+import Title from 'Components/Title';
 
 import WindowScroller from 'react-virtualized/dist/commonjs/WindowScroller';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
@@ -134,7 +134,7 @@ const Contacts = memo(({ modelsContext }) => {
 
   return (
     <div className="contactsModule">
-      <TitleModule classNameTitle="contactsModuleTitle" title={t('contacts_title')} />
+      <Title classNameTitle="contactsModuleTitle" title={t('contacts_title')} />
       <div className="contactsModule__main">
         <Scrollbars autoHide hideTracksWhenNotNeeded>
           <List>
