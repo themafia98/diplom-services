@@ -18,6 +18,7 @@ import regExpRegister from 'Utils/Tools/regexpStorage';
 import { compose } from 'redux';
 import { withClientDb } from 'Models/ClientSideDatabase';
 import { APP_STATUS } from 'App.constant';
+import { withTranslation } from 'react-i18next';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -149,6 +150,7 @@ class CreateTask extends PureComponent {
   };
 
   validation = _.debounce((onChangeValidation = false) => {
+    const { t } = this.props;
     const { card = {}, errorBundle: errorBundleState, trySubmit = false } = this.state;
     const copyErrorBundleState = { ...errorBundleState };
 
@@ -175,7 +177,7 @@ class CreateTask extends PureComponent {
 
     if (JSON.stringify(newErrorBundle) !== JSON.stringify(errorBundleState))
       this.setState({ ...this.state, errorBundle: { ...newErrorBundle } }, () => {
-        if (!onChangeValidation) message.error('Не все поля заполнены!');
+        if (!onChangeValidation) message.error(t('taskModule_createPage_messages_emptyFields'));
       });
 
     return false;
@@ -277,6 +279,7 @@ class CreateTask extends PureComponent {
       onSetStatus,
       modelsContext,
       clientDB,
+      t,
     } = this.props;
 
     const {
@@ -301,7 +304,7 @@ class CreateTask extends PureComponent {
 
     const validHashCopy = [{ ...card }];
     const validHash = validHashCopy.map((it) => schema?.getSchema(CREATE_TASK_SCHEMA, it)).filter(Boolean)[0];
-    if (!validHash) return message.error('Не валидные данные.');
+    if (!validHash) return message.error(t('taskModule_createPage_messages_invalidData'));
 
     const parseDateArray = [];
     if (parseDateArray.length) validHash.date = parseDateArray;
@@ -338,16 +341,16 @@ class CreateTask extends PureComponent {
           load: false,
         },
         () => {
-          message.success(`Задача создана.`);
+          message.success(t('taskModule_createPage_messages_taskCreated'));
           const { key: recordKey = '', _id: id = '' } = metadata[0] || metadata || {};
           const key = id ? id : recordKey;
           if (!key || statusApp !== APP_STATUS.ON) return;
 
           const itemNotification = {
             type: 'global',
-            title: 'Новая задача',
+            title: t('taskModule_createPage_notification_title'),
             isRead: false,
-            message: `Создана новая задача № ${key}. ${name}`,
+            message: `${t('taskModule_createPage_notification_message')} № ${key}. ${name}`,
             action: {
               type: 'tasks_link',
               moduleName: 'taskModule',
@@ -360,12 +363,12 @@ class CreateTask extends PureComponent {
           if (createNotification) {
             createNotification('global', itemNotification).catch((error) => {
               if (error?.response?.status !== 404) console.error(error);
-              message.error('Ошибка глобального уведомления');
+              message.error(t('globalMessages_notificationGlobalError'));
             });
           }
 
           if (config.tabsLimit <= activeTabs.length)
-            return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
+            return message.error(`${t('globalMessages_maxTabs')} ${config.tabsLimit}`);
 
           const { moduleId = '', page = '' } = routeParser({ path });
           if (!moduleId || !page) return;
@@ -417,7 +420,7 @@ class CreateTask extends PureComponent {
   };
 
   render() {
-    const { visibleMode = 'default', dateFormat = 'DD.MM.YYYY' } = this.props;
+    const { visibleMode = 'default', dateFormat = 'DD.MM.YYYY', t } = this.props;
 
     const {
       errorBundle = {},
@@ -432,23 +435,23 @@ class CreateTask extends PureComponent {
         <div className="createTask">
           {visibleMode === 'default' ? (
             <TitleModule
-              additional="Форма создания задачи"
+              additional={t('taskModule_createPage_formName')}
               classNameTitle="createTaskTitle"
-              title="Новая задача"
+              title={t('taskModule_createPage_title')}
             />
           ) : null}
           <div className="createTask__main">
             <div className={clsx(visibleMode !== 'default' ? 'col-fullscreen' : 'col-6', 'col-task')}>
               <Scrollbars autoHide hideTracksWhenNotNeeded>
                 <form className="taskForm" name="taskForm">
-                  <label>Название: </label>
+                  <label>{t('taskModule_createPage_form_name')}: </label>
                   <Input
                     className={clsx(!_.isEmpty(errorBundle) && errorBundle.name ? 'isError' : null)}
                     onChange={this.onChangeHandler}
                     name="name"
                     type="text"
                   />
-                  <label> Статус: </label>
+                  <label> {t('taskModule_createPage_form_status')}: </label>
                   <Select
                     className={clsx(!_.isEmpty(errorBundle) && errorBundle.state ? 'isError' : null)}
                     onChange={this.onChangeHandlerSelectState}
@@ -457,7 +460,7 @@ class CreateTask extends PureComponent {
                   >
                     {this.renderStatusList()}
                   </Select>
-                  <label>Приоритет: </label>
+                  <label>{t('taskModule_createPage_form_priority')}: </label>
                   <Select
                     className={clsx(!_.isEmpty(errorBundle) && errorBundle.priority ? 'isError' : null)}
                     onChange={this.onChangeHandlerSelectPriority}
@@ -465,18 +468,18 @@ class CreateTask extends PureComponent {
                     name="priority"
                     type="text"
                   >
-                    <Option value="Низкий">Низкий</Option>
-                    <Option value="Средний">Средний</Option>
-                    <Option value="Высокий">Высокий</Option>
-                    <Option value="Критический">Критический</Option>
+                    <Option value="Низкий">{t('taskModule_createPage_form_priorityList_low')}</Option>
+                    <Option value="Средний">{t('taskModule_createPage_form_priorityList_medium')}</Option>
+                    <Option value="Высокий">{t('taskModule_createPage_form_priorityList_high')}</Option>
+                    <Option value="Критический">{t('taskModule_createPage_form_priorityList_hot')}</Option>
                   </Select>
-                  <label>Назначить исполнителя/исполнителей:</label>
+                  <label>{t('taskModule_createPage_form_executor')}:</label>
                   <Select
                     className={clsx(!_.isEmpty(errorBundle) && errorBundle.editor ? 'isError' : null)}
                     onChange={this.onChangeHandlerSelectEditor}
                     name="editor"
                     mode="multiple"
-                    placeholder="выберете исполнителя"
+                    placeholder={t('taskModule_createPage_form_selectExecutorPlaceholder')}
                     optionLabelProp="label"
                   >
                     {filteredUsers && filteredUsers.length
@@ -487,7 +490,7 @@ class CreateTask extends PureComponent {
                         ))
                       : null}
                   </Select>
-                  <label>Описание задачи: </label>
+                  <label>${t('taskModule_createPage_form_aboutTask')}: </label>
                   <Textarea
                     key="createTextare"
                     className={clsx(!_.isEmpty(errorBundle) && errorBundle.description ? 'isError' : null)}
@@ -503,7 +506,7 @@ class CreateTask extends PureComponent {
                     module="tasks"
                     rest={rest}
                   /> */}
-                  <label>Срок сдачи: </label>
+                  <label>{t('taskModule_createPage_form_deadline')}: </label>
                   <RangePicker
                     className={clsx(!_.isEmpty(errorBundle) && errorBundle.date ? 'isError' : null)}
                     onChange={this.onChangeHandlerDate}
@@ -519,7 +522,7 @@ class CreateTask extends PureComponent {
                     loading={this.state.load}
                     type="primary"
                   >
-                    Создать задачу
+                    {t('taskModule_createPage_form_createTask')}
                   </Button>
                 </form>
               </Scrollbars>
@@ -536,4 +539,4 @@ class CreateTask extends PureComponent {
   }
 }
 
-export default compose(withClientDb)(moduleContextToProps(CreateTask));
+export default compose(withClientDb, withTranslation())(moduleContextToProps(CreateTask));

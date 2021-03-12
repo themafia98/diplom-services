@@ -4,7 +4,8 @@
     "networkError": "Network error",
     "webEmpty": "No internet connection",
     "notificationCreateBad": "Error creating notification",
-    "empty": "There is nothing here"
+    "empty": "There is nothing here",
+    "notificationGlobalError": "Global notification error"
   },
   "notFoundPage": {
     "title": "Page unavailable",
@@ -155,6 +156,84 @@
       "messages": {
         "treeIdNotFound": "TreeId not found"
       }
+    }
+  },
+  "taskModule": {
+    "createNewTaskButton": "Create new task",
+    "createPage": {
+      "title": "New task",
+      "formName": "Task creation form",
+      "messages": {
+        "emptyFields": "Not all fields are filled in!",
+        "invalidData": "Invalid data.",
+        "taskCreated": "Task created"
+      },
+      "form": {
+        "name": "Name",
+        "status": "Status",
+        "priority": "Priority",
+        "excecutor": "Assign performer/performers",
+        "selectExecutorPlaceholder": "choose a performer",
+        "aboutTask": "Task description",
+        "deadline": "Deadline",
+        "createTask": "Create task",
+        "priorityList": {
+          "low": "Low",
+          "medium": "Medium",
+          "high": "Hight",
+          "hot": "Critical"
+        }
+      },
+      "notification": {
+        "title": "New task",
+        "message": "New task created"
+      }
+    },
+    "listPage": {
+      "commonName": "All tasks",
+      "commonTitle": "List of all tasks",
+      "myListName": "My tasks",
+      "myListTitle": "List of my tasks"
+    },
+    "view": {
+      "loading": "Loading task...",
+      "notFound": "Task not found",
+      "notSet": "not installed",
+      "spendTime": "Time taken",
+      "comments": "Comments",
+      "messages": {
+        "errorLoadUsers": "Employee loading error",
+        "fileDelete": "File deleted successfully",
+        "errorFileDelete": "Delete file error",
+        "taskRefresh": "Task updated",
+        "errorTaskRefresh": "Task update error",
+        "aboutEmpty": "No task description"
+      },
+      "aboutBlock": {
+        "title": "Task",
+        "files": "Additional files for the task"
+      },
+      "desc": {
+        "articleLabel": "Vendor code",
+        "name": "Name",
+        "status": "Status",
+        "priority": "Priority",
+        "author": "Task author",
+        "executor": "Performer",
+        "executorPlaceholder": "choose a performer",
+        "mark": "Marks",
+        "dateStart": "Appointment date",
+        "dateEnd": "Date of completion",
+        "spendTime": "Time taken",
+        "spendTimeHour": "h"
+      }
+    },
+    "calendar": {
+      "title": "Task calendar",
+      "startAndEndTerm": "End and beginning of term",
+      "endTerm": "End of term",
+      "createTask": "Create task",
+      "creatingTask": "Create a task"
     }
   }
 }

@@ -25,6 +25,7 @@ import actionPath from 'actions.path';
 import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
 import { getClassNameByStatus } from './TaskView.utils';
 import fs from 'Utils/Tools/Fs';
+import { withTranslation } from 'react-i18next';
 
 class TaskView extends PureComponent {
   state = {
@@ -168,7 +169,7 @@ class TaskView extends PureComponent {
   };
 
   fetchDepUsersList = async () => {
-    const { onSaveCache = null, router = {}, modelsContext } = this.props;
+    const { onSaveCache = null, router = {}, modelsContext, t } = this.props;
     const { routeDataActive = {} } = router;
     const { editor = '' } = routeDataActive;
     const { key: taskId } = this.state;
@@ -215,7 +216,7 @@ class TaskView extends PureComponent {
         filteredUsers,
       });
     } catch (error) {
-      message.error('Ошибка загрузки сотрудников.');
+      message.error(t('taskModule_view_messages_errorLoadUsers'));
 
       if (error?.response?.status !== 404) {
         console.error(error);
@@ -310,6 +311,7 @@ class TaskView extends PureComponent {
   };
 
   onRemoveFile = async (file) => {
+    const { t } = this.props;
     try {
       const { filesArray } = this.state;
 
@@ -340,12 +342,12 @@ class TaskView extends PureComponent {
           filesArray: filesArray.filter((it) => it.uid !== idResponse),
         },
         () => {
-          message.success('Файл успешно удален');
+          message.success(t('taskModule_view_messages_fileDelete'));
         },
       );
     } catch (error) {
       if (error?.response?.status !== 404) console.error(error);
-      message.error('Ошибка удаления файла.');
+      message.error(t('taskModule_view_messages_errorFileDelete'));
     }
   };
 
@@ -468,6 +470,7 @@ class TaskView extends PureComponent {
       route = null,
       modelsContext,
       clientDB,
+      t,
     } = this.props;
 
     const { modeControllEdit = {} } = this.state;
@@ -500,9 +503,9 @@ class TaskView extends PureComponent {
         clientDB,
       });
       this.onRejectEdit(event);
-      message.success('Задача обновлена.');
+      message.success(t('taskModule_view_messages_taskRefresh'));
     } catch (error) {
-      message.error('Ошибка обновления задачи.');
+      message.error(t('taskModule_view_messages_errorTaskRefresh'));
     }
   };
 
@@ -523,6 +526,7 @@ class TaskView extends PureComponent {
   };
 
   renderWorkJournal = (cachesJournalList = []) => {
+    const { t } = this.props;
     return _.uniqBy(cachesJournalList, '_id')
       .sort((a, b) => moment(b?.date[0]).unix() - moment(a?.date[0]).unix())
       .map((item, index) => {
@@ -532,22 +536,26 @@ class TaskView extends PureComponent {
           <div key={`${item?._id}${index}`} className="journalItem">
             {item.editor ? <p className="editor">{item.editor}</p> : null}
             <p className="timeLost">
-              <span className="title">Затрачено времени:</span>
-              {item?.timeLost ? item.timeLost : item[0] ? item[0]?.timeLost : 'не установлено'}
+              <span className="title">{t('taskModule_view_spendTime')}:</span>
+              {item?.timeLost ? item.timeLost : item[0] ? item[0]?.timeLost : t('taskModule_view_notSet')}
             </p>
             <p className="date">
               <span className="title">Дата:</span>
-              {item?.date && date !== 'Invalid date' ? date : item[0] ? item[0].date : 'не установлено'}
+              {item?.date && date !== 'Invalid date'
+                ? date
+                : item[0]
+                ? item[0].date
+                : t('taskModule_view_notSet')}
             </p>
             <p className="comment">
-              <span className="title">Коментарии:</span>
+              <span className="title">{t('taskModule_view_comments')}:</span>
             </p>
             <p className="msg">
               {item?.description
                 ? item.description
                 : Array.isArray(item) && item[0]?.description
                 ? item[0].description
-                : 'не установлено'}
+                : t('taskModule_view_notSet')}
             </p>
           </div>
         );
@@ -672,6 +680,7 @@ class TaskView extends PureComponent {
       columnStyleConfig = {},
       currentActionTab: path = '',
       modelsContext,
+      t,
     } = this.props;
 
     const {
@@ -709,10 +718,10 @@ class TaskView extends PureComponent {
     if (!key)
       return findTaskLoading ? (
         <div className="taskView taskView--taskLoader">
-          <Spin size="large" tip="Loading task..." />
+          <Spin size="large" tip={t('taskModule_view_loading')} />
         </div>
       ) : (
-        <div>This task not found</div>
+        <div>{t('taskModule_view_notFound')}</div>
       );
 
     const [cachesAuthorList, cachesEditorList, cachesJurnalList] = this.getCacheItemsList();
@@ -794,7 +803,7 @@ class TaskView extends PureComponent {
             <TitleModule classNameTitle="historyTaskTitle" title="Журнал работы" />
             <Scrollbars hideTracksWhenNotNeeded>
               {!cachesJurnalList?.length ? (
-                <Empty description={<span>Нету данных в журнале</span>} />
+                <Empty description={<span>{t('globalMessages_empty')}</span>} />
               ) : (
                 this.renderWorkJournal(cachesJurnalList)
               )}
@@ -831,4 +840,5 @@ export default compose(
   moduleContextToProps,
   withClientDb,
   connect(mapStateTopProps, mapDispatchToProps),
+  withTranslation(),
 )(TaskView);

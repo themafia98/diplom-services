@@ -24,6 +24,7 @@ import { withClientDb } from 'Models/ClientSideDatabase';
 import actionPath from 'actions.path';
 import { requestTemplate } from 'Utils/Api/api.utils';
 import { ACTIONS } from 'App.constant';
+import { withTranslation } from 'react-i18next';
 
 class TaskModule extends Component {
   state = {
@@ -249,12 +250,12 @@ class TaskModule extends Component {
       setCurrentTab,
       router: { currentActionTab, activeTabs },
       appConfig,
+      t,
     } = this.props;
     const { tabsLimit = 50 } = appConfig;
 
     if (currentActionTab !== 'taskModule_createTask') {
-      if (tabsLimit <= activeTabs.length)
-        return message.error(`Максимальное количество вкладок: ${tabsLimit}`);
+      if (tabsLimit <= activeTabs.length) return message.error(`${t('globalMessages_maxTabs')} ${tabsLimit}`);
       const path = 'taskModule_createTask';
       const isFind = activeTabs.findIndex((tab) => tab === path) !== -1;
       const config = { hardCodeUpdate: false };
@@ -310,6 +311,7 @@ class TaskModule extends Component {
       statusList = {},
       onSetStatus = null,
       type: typeDefault = Symbol(''),
+      t,
     } = this.props;
 
     const route = routeParser({ pageType: 'moduleItem', path });
@@ -349,7 +351,7 @@ class TaskModule extends Component {
               onClick={this.handlerNewTask}
               type="primary"
             >
-              Создать новую задачу
+              {t('taskModule_createNewTaskButton')}
             </Button>
           </div>
         ) : null}
@@ -404,4 +406,5 @@ export default compose(
   moduleContextToProps,
   withClientDb,
   connect(mapStateToProps, mapDispatchToProps),
+  withTranslation(),
 )(TaskModule);

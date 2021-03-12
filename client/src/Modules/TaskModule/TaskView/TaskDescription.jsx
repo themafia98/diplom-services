@@ -5,6 +5,7 @@ import { Descriptions, Input, Select, DatePicker } from 'antd';
 import Output from 'Components/Output';
 import moment from 'moment';
 import { calculateTime } from '../TaskModule.utils';
+import { useTranslation } from 'react-i18next';
 
 const { Option } = Select;
 
@@ -40,6 +41,7 @@ const TaskDescription = ({
   date,
   taskKey,
 }) => {
+  const { t } = useTranslation();
   const time = useMemo(() => calculateTime(cachesJurnalList), [cachesJurnalList]);
 
   const statusList = useMemo(
@@ -74,17 +76,17 @@ const TaskDescription = ({
 
   return (
     <Descriptions bordered column={columnStyleConfig}>
-      <Descriptions.Item label="Артикул">
+      <Descriptions.Item label={t('taskModule_view_desc_articleLabel')}>
         <Output className="key">{taskKey}</Output>
       </Descriptions.Item>
-      <Descriptions.Item label="Название">
+      <Descriptions.Item label={t('taskModule_view_desc_name')}>
         {modeControll === 'default' ? (
           <Output className="name">{name}</Output>
         ) : modeControll === 'edit' && modeControllEdit ? (
           <Input className="nameEdit" onChange={onChangeEditable} value={modeControllEdit.name} />
         ) : null}
       </Descriptions.Item>
-      <Descriptions.Item label="Статус">
+      <Descriptions.Item label={t('taskModule_view_desc_status')}>
         {modeControll === 'default' ? (
           <Output className={clsx('status', statusClassName)}>{status}</Output>
         ) : modeControll === 'edit' && modeControllEdit ? (
@@ -100,7 +102,7 @@ const TaskDescription = ({
           </Select>
         ) : null}
       </Descriptions.Item>
-      <Descriptions.Item label="Приоритет">
+      <Descriptions.Item label={t('taskModule_view_desc_priority')}>
         {modeControll === 'default' ? (
           <Output className="priority">{priority}</Output>
         ) : modeControll === 'edit' && modeControllEdit ? (
@@ -116,7 +118,7 @@ const TaskDescription = ({
           </Select>
         ) : null}
       </Descriptions.Item>
-      <Descriptions.Item label="Автор задачи">
+      <Descriptions.Item label={t('taskModule_view_desc_author')}>
         <Output
           className="author"
           typeOutput="link"
@@ -134,7 +136,7 @@ const TaskDescription = ({
           {cachesAuthorList?.length ? cachesAuthorList : uidCreater}
         </Output>
       </Descriptions.Item>
-      <Descriptions.Item label="Исполнитель">
+      <Descriptions.Item label={t('taskModule_view_desc_executor')}>
         {modeControll === 'default' ? (
           <Output
             typeOutput="link"
@@ -159,14 +161,14 @@ const TaskDescription = ({
             name="editor"
             mode="multiple"
             defaultValue={editor}
-            placeholder="выберете исполнителя"
+            placeholder={t('taskModule_view_desc_executorPlaceholder')}
             optionLabelProp="label"
           >
             {users}
           </Select>
         ) : null}
       </Descriptions.Item>
-      <Descriptions.Item label="Метки">
+      <Descriptions.Item label={t('taskModule_view_desc_mark')}>
         <div className="tags">
           <TagsContainer
             tagList={tagList}
@@ -178,7 +180,7 @@ const TaskDescription = ({
           />
         </div>
       </Descriptions.Item>
-      <Descriptions.Item label="Дата назначения">
+      <Descriptions.Item label={t('taskModule_view_desc_dateStart')}>
         {modeControll === 'default' ? (
           <Output className="startDate"> {date[0] ? date[0] : null}</Output>
         ) : modeControll === 'edit' && modeControllEdit ? (
@@ -202,7 +204,7 @@ const TaskDescription = ({
           />
         ) : null}
       </Descriptions.Item>
-      <Descriptions.Item label="Дата завершения">
+      <Descriptions.Item label={t('taskModule_view_desc_dateEnd')}>
         {modeControll === 'default' ? (
           <Output className="endDate"> {date[1] ? date[1] : null}</Output>
         ) : modeControll === 'edit' && modeControllEdit ? (
@@ -226,8 +228,8 @@ const TaskDescription = ({
           />
         ) : null}
       </Descriptions.Item>
-      <Descriptions.Item label="Затрачено времени">
-        <Output>{`${time} ч`}</Output>
+      <Descriptions.Item label={t('taskModule_view_desc_spendTime')}>
+        <Output>{`${time} ${t('taskModule_view_desc_spendTimeHour')}`}</Output>
       </Descriptions.Item>
     </Descriptions>
   );

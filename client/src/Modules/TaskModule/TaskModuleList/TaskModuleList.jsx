@@ -4,15 +4,21 @@ import TableView from 'Components/TableView';
 import TitleModule from 'Components/TitleModule';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { TABLE_TYPE } from 'Components/TableView/Table/Table.constant';
+import { useTranslation } from 'react-i18next';
 
 const TaskModuleList = ({ router, data, height, loading, counter, statusApp }) => {
+  const { t } = useTranslation();
   const refModuleTask = useRef(null);
 
   const { tasks = [] } = data || {};
 
   return (
     <div ref={refModuleTask} className="taskModule_all">
-      <TitleModule additional="Все задачи" classNameTitle="taskModuleTitle" title="Список всех задач" />
+      <TitleModule
+        additional={t('taskModule_listPage_commonName')}
+        classNameTitle="taskModuleTitle"
+        title={t('taskModule_listPage_commonTitle')}
+      />
       <div className="taskModuleAll_main">
         <TableView
           type={TABLE_TYPE.TASK}

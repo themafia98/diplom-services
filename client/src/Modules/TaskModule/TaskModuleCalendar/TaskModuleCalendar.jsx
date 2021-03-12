@@ -11,6 +11,8 @@ import { routePathNormalise } from 'Utils';
 import Output from 'Components/Output';
 import types from 'types.modules';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
+import { compose } from 'redux';
+import { withTranslation } from 'react-i18next';
 
 class TaskModuleCalendar extends PureComponent {
   state = {
@@ -37,6 +39,7 @@ class TaskModuleCalendar extends PureComponent {
       router: { routeData, currentActionTab, activeTabs } = {},
       setCurrentTab,
       modelsContext,
+      t,
     } = this.props;
     const { config = {} } = modelsContext;
     const { tasks = [] } = routeData[currentActionTab] || routeData['taskModule'] || {};
@@ -61,7 +64,7 @@ class TaskModuleCalendar extends PureComponent {
       if (!item) return;
 
       if (config.tabsLimit <= activeTabs.length)
-        return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
+        return message.error(`${t('globalMessages_maxTabs')} ${config.tabsLimit}`);
 
       onOpenPageWithData({
         activePage: routePathNormalise({
@@ -75,7 +78,7 @@ class TaskModuleCalendar extends PureComponent {
     }
   };
   getListData = (value) => {
-    const { router: { routeData, currentActionTab } = {} } = this.props;
+    const { router: { routeData, currentActionTab } = {}, t } = this.props;
     const { tasks = [] } = routeData[currentActionTab] || routeData['taskModule'] || {};
     let valueDate = moment(value.toString()).format('DD.MM.YYYY').trim();
     let dateArrayTask =
@@ -84,11 +87,11 @@ class TaskModuleCalendar extends PureComponent {
             const { date = [], name = '', _id: id = '' } = it || {};
 
             if (valueDate === date[1] && date[0] === date[1]) {
-              return [...list, { ...it, name: `Конец и начало срока: ${name}`, id }];
+              return [...list, { ...it, name: `${t('taskModule_calendar_startAndEndTerm')}: ${name}`, id }];
             }
 
             if (valueDate === date[1]) {
-              return [...list, { ...it, name: `Конец срока: ${it.name}`, id }];
+              return [...list, { ...it, name: `${t('taskModule_calendar_endTerm')}: ${it.name}`, id }];
             }
 
             return list;
@@ -127,6 +130,7 @@ class TaskModuleCalendar extends PureComponent {
   };
 
   dateCellRender = (value) => {
+    const { t } = this.props;
     const { visbileDropdown = false, visbileDropdownId = '' } = this.state;
     const listData = this.getListData(value);
     const content = listData.map((item) => {
@@ -155,7 +159,7 @@ class TaskModuleCalendar extends PureComponent {
       <Menu className="dropdown-action">
         <Menu.Item>
           <Button type="primary" className="item-action" onClick={this.createTask.bind(this, value)}>
-            Создать задачу
+            {t('taskModule_calendar_createTask')}
           </Button>
         </Menu.Item>
       </Menu>
@@ -200,12 +204,12 @@ class TaskModuleCalendar extends PureComponent {
   };
 
   render() {
-    const { drawerVisible = false, selectedEntity = null } = this.state;
+    const { drawerVisible = false, selectedEntity = null, t } = this.state;
     const { udata = {} } = this.props;
     return (
       <Scrollbars autoHide hideTracksWhenNotNeeded>
         <div className="taskModuleCalendar">
-          <TitleModule classNameTitle="taskModuleTitle" title="Календарь задач" />
+          <TitleModule classNameTitle="taskModuleTitle" title={t('taskModule_calendar_title')} />
           <div className="taskModuleCalendar__main">
             <Calendar
               fullscreen={true}
@@ -214,7 +218,7 @@ class TaskModuleCalendar extends PureComponent {
             />
           </div>
           <DrawerViewer
-            title="Создание задачи"
+            title={t('taskModule_calendar_creatingTask')}
             visible={drawerVisible}
             selectedEntity={selectedEntity}
             contentKey="taskModule_createTask"
@@ -229,4 +233,4 @@ class TaskModuleCalendar extends PureComponent {
   }
 }
 
-export default moduleContextToProps(TaskModuleCalendar);
+export default compose(moduleContextToProps, withTranslation())(TaskModuleCalendar);

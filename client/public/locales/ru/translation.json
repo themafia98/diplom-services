@@ -4,7 +4,8 @@
     "networkError": "Ошибка сети",
     "webEmpty": "Интернет соединение отсутствует",
     "notificationCreateBad": "Ошибка создания уведомления",
-    "empty": "Тут ничего нет"
+    "empty": "Тут ничего нет",
+    "notificationGlobalError": "Ошибка глобального уведомления"
   },
   "notFoundPage": {
     "title": "Страница недоступна",
@@ -155,6 +156,84 @@
       "messages": {
         "treeIdNotFound": "TreeId не найдено"
       }
+    }
+  },
+  "taskModule": {
+    "createNewTaskButton": "Создать новую задачу",
+    "createPage": {
+      "title": "Новая задача",
+      "formName": "Форма создания задачи",
+      "messages": {
+        "emptyFields": "Не все поля заполнены!",
+        "invalidData": "Не валидные данные.",
+        "taskCreated": "Задача создана"
+      },
+      "form": {
+        "name": "Название",
+        "status": "Статус",
+        "priority": "Приоритет",
+        "excecutor": "Назначить исполнителя/исполнителей",
+        "selectExecutorPlaceholder": "выберете исполнителя",
+        "aboutTask": "Описание задачи",
+        "deadline": "Срок сдачи",
+        "createTask": "Создать задачу",
+        "priorityList": {
+          "low": "Низкий",
+          "medium": "Средний",
+          "high": "Высокий",
+          "hot": "Критический"
+        }
+      },
+      "notification": {
+        "title": "Новая задача",
+        "message": "Создана новая задача"
+      }
+    },
+    "listPage": {
+      "commonName": "Все задачи",
+      "commonTitle": "Список всех задач",
+      "myListName": "Мои задачи",
+      "myListTitle": "Список моих задач"
+    },
+    "view": {
+      "loading": "Загрузка задачи...",
+      "notFound": "Задача не найдена",
+      "notSet": "не установлено",
+      "spendTime": "Затрачено времени",
+      "comments": "Комментарии",
+      "messages": {
+        "errorLoadUsers": "Ошибка загрузки сотрудников.",
+        "fileDelete": "Файл успешно удален",
+        "errorFileDelete": "Ошибка удаления файла",
+        "taskRefresh": "Задача обновлена",
+        "errorTaskRefresh": "Ошибка обновления задачи",
+        "aboutEmpty": "Описания задачи нету."
+      },
+      "aboutBlock": {
+        "title": "Задача",
+        "files": "Дополнительные файлы для задачи"
+      },
+      "desc": {
+        "articleLabel": "Артикул",
+        "name": "Название",
+        "status": "Статус",
+        "priority": "Приоритет",
+        "author": "Автор задачи",
+        "executor": "Исполнитель",
+        "executorPlaceholder": "выберете исполнителя",
+        "mark": "Метки",
+        "dateStart": "Дата назначения",
+        "dateEnd": "Дата завершения",
+        "spendTime": "Затрачено времени",
+        "spendTimeHour": "ч"
+      }
+    },
+    "calendar": {
+      "title": "Календарь задач",
+      "startAndEndTerm": "Конец и начало срока",
+      "endTerm": "Конец срока",
+      "createTask": "Создать задачу",
+      "creatingTask": "Создание задачи"
     }
   }
 }
