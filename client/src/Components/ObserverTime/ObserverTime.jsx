@@ -34,7 +34,7 @@ const ObserverTime = ({ title, settingsLogs, isLoading }) => {
       <Scrollbars autoHide hideTracksWhenNotNeeded>
         <div className="observerWrapper">
           {isInvalid ? (
-            <span className="empty-logger">{t('globalMessage_empty')}</span>
+            <span className="empty-logger">{t('globalMessages_empty')}</span>
           ) : isLoading ? (
             <Spin size="large" />
           ) : (

@@ -10,6 +10,9 @@
     "error": "Ошибка"
   },
   "components": {
+    "editorTextarea": {
+      "addButton": "Опубликовать"
+    },
     "actionList": {
       "loading": "Загрузка данных...",
       "enterWorkLogs": "Занести в журнал работы",
@@ -82,7 +85,7 @@
   },
   "chat": {
     "title": "Корпоративный чат",
-    "headerTitle": "Окно чата.",
+    "headerTitle": "Окно чата",
     "counterOf": "Участников:",
     "selectInter": "Выбрать участника",
     "status": {
@@ -226,7 +229,7 @@
         "name": "Название",
         "status": "Статус",
         "priority": "Приоритет",
-        "excecutor": "Назначить исполнителя/исполнителей",
+        "executor": "Назначить исполнителя/исполнителей",
         "selectExecutorPlaceholder": "выберете исполнителя",
         "aboutTask": "Описание задачи",
         "deadline": "Срок сдачи",
@@ -257,6 +260,7 @@
       "notSet": "не установлено",
       "spendTime": "Затрачено времени",
       "comments": "Комментарии",
+      "historyDate": "Дата",
       "messages": {
         "errorLoadUsers": "Ошибка загрузки сотрудников.",
         "fileDelete": "Файл успешно удален",
@@ -266,7 +270,7 @@
         "aboutEmpty": "Описания задачи нету."
       },
       "aboutBlock": {
-        "title": "Задача",
+        "title": "Описание задачи",
         "files": "Дополнительные файлы для задачи"
       },
       "desc": {

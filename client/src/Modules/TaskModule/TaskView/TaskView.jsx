@@ -540,7 +540,7 @@ class TaskView extends PureComponent {
               {item?.timeLost ? item.timeLost : item[0] ? item[0]?.timeLost : t('taskModule_view_notSet')}
             </p>
             <p className="date">
-              <span className="title">Дата:</span>
+              <span className="title">{t('taskModule_view_historyDate')}:</span>
               {item?.date && date !== 'Invalid date'
                 ? date
                 : item[0]

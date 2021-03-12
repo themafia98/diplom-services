@@ -30,6 +30,10 @@
     background-color: $journalColorBg;
     border-radius: 6px;
 
+    p {
+      display: flex;
+    }
+
     .editor {
       color: $softViolet;
       &:before {

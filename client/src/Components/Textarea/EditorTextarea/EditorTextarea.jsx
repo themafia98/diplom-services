@@ -10,6 +10,7 @@ import _ from 'lodash';
 import '../../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { Button } from 'antd';
 import ModelContext from 'Models/context';
+import { withTranslation } from 'react-i18next';
 
 class EditorTextarea extends Component {
   state = {
@@ -86,7 +87,7 @@ class EditorTextarea extends Component {
 
   render() {
     const { contentState = null } = this.state;
-    const { mode, onPublish, readOnly, disabled, buttonName, shouldDisplayButton } = this.props;
+    const { mode, onPublish, readOnly, disabled, buttonName, shouldDisplayButton, t } = this.props;
 
     const readOnlyProps =
       readOnly && contentState
@@ -116,7 +117,7 @@ class EditorTextarea extends Component {
             className={classNameButton}
             type="primary"
           >
-            {buttonName ? buttonName : 'Опубликовать'}
+            {buttonName ? buttonName : t('components_editorTextarea_addButton')}
           </Button>
         ) : null}
       </div>
@@ -124,4 +125,4 @@ class EditorTextarea extends Component {
   }
 }
 
-export default EditorTextarea;
+export default withTranslation()(EditorTextarea);

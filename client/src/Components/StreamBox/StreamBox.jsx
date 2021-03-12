@@ -14,7 +14,7 @@ import actionsTypes from 'actions.types';
 import { compose } from 'redux';
 import { withClientDb } from 'Models/ClientSideDatabase';
 import { paramsTemplate, requestTemplate } from 'Utils/Api/api.utils';
-import { withTranslation } from 'react-i18next/*';
+import { withTranslation } from 'react-i18next';
 
 class StreamBox extends Component {
   state = {

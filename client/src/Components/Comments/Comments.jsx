@@ -235,7 +235,7 @@ const Comments = memo(({ data, onUpdate, path, udata, clientDB, rules, commentPr
           className="sendCommentsButton"
           type="primary"
         >
-          t({'components_comments_add'})
+          {t('components_comments_add')}
         </Button>
       </div>
     </div>

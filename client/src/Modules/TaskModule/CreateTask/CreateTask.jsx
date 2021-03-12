@@ -490,7 +490,7 @@ class CreateTask extends PureComponent {
                         ))
                       : null}
                   </Select>
-                  <label>${t('taskModule_createPage_form_aboutTask')}: </label>
+                  <label>{t('taskModule_createPage_form_aboutTask')}: </label>
                   <Textarea
                     key="createTextare"
                     className={clsx(!_.isEmpty(errorBundle) && errorBundle.description ? 'isError' : null)}

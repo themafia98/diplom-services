@@ -10,6 +10,9 @@
     "error": "Error"
   },
   "components": {
+    "editorTextarea": {
+      "addButton": "Publish"
+    },
     "actionList": {
       "loading": "Data loading...",
       "enterWorkLogs": "Log work",
@@ -36,7 +39,7 @@
       "comment": {
         "editMessage": "Edit comment",
         "deleteMessage": "Delete comment",
-        "write": "wrote",
+        "write": "write",
         "submit": "Submit"
       }
     },
@@ -82,7 +85,7 @@
   },
   "chat": {
     "title": "Corporate chat",
-    "headerTitle": "Chat window.",
+    "headerTitle": "Chat window",
     "counterOf": "Members:",
     "selectInter": "Select interlocutor",
     "status": {
@@ -226,7 +229,7 @@
         "name": "Name",
         "status": "Status",
         "priority": "Priority",
-        "excecutor": "Assign performer/performers",
+        "executor": "Assign performer/performers",
         "selectExecutorPlaceholder": "choose a performer",
         "aboutTask": "Task description",
         "deadline": "Deadline",
@@ -256,6 +259,7 @@
       "notFound": "Task not found",
       "notSet": "not installed",
       "spendTime": "Time taken",
+      "historyDate": "Date",
       "comments": "Comments",
       "messages": {
         "errorLoadUsers": "Employee loading error",
@@ -266,7 +270,7 @@
         "aboutEmpty": "No task description"
       },
       "aboutBlock": {
-        "title": "Task",
+        "title": "Description task",
         "files": "Additional files for the task"
       },
       "desc": {
