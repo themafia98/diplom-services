@@ -15,6 +15,7 @@ import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { withClientDb } from 'Models/ClientSideDatabase';
 import actionPath from 'actions.path';
 import { requestTemplate, paramsTemplate } from 'Utils/Api/api.utils';
+import { withTranslation } from 'react-i18next';
 
 const { Option } = Select;
 const { Search } = Input;
@@ -118,14 +119,14 @@ class WikiModule extends PureComponent {
 
   onCreateNode = async (item = null) => {
     const { node: nodeState = {} } = this.state;
-    const { metadata = [], modelsContext } = this.props;
+    const { metadata = [], modelsContext, t } = this.props;
     const { Request } = modelsContext;
     if (!Request) return;
     try {
       const node = !nodeState?.parentId ? { ...nodeState, parentId: 'root' } : { ...nodeState };
       const indexId = !item ? 'root' : item?.parentId;
       if (indexId === null) {
-        message.error('Ошибка создания ветки или функция не доступна.');
+        message.error(t('wiki_messages_errorCreateLeaf'));
         return this.onVisibleModalChange();
       }
       const index = ++metadata.filter((nodeMeta) => nodeMeta?.parentId === indexId).length;
@@ -162,13 +163,13 @@ class WikiModule extends PureComponent {
       else this.fetchTree('', true);
     } catch (error) {
       if (error?.response?.status !== 404) console.error(error);
-      message.error('Ошибка создания новой ветки');
+      message.error(t('wiki_messages_errorCreateLeaf'));
     }
   };
 
   onDeleteNode = async (params) => {
+    const { modelsContext, t } = this.props;
     try {
-      const { modelsContext } = this.props;
       const { Request } = modelsContext;
       const rest = new Request();
 
@@ -190,10 +191,10 @@ class WikiModule extends PureComponent {
       const { data: { response: { metadata: { deletedCount = 0, ok = 0 } = {} } = {} } = {} } = res;
 
       if (deletedCount && ok) this.fetchTree('', true);
-      message.success('Ветка удалена');
+      message.success(t('wiki_messages_deleteLeaf'));
     } catch (error) {
       if (error?.response?.status !== 404) console.error(error);
-      message.error('Ошибка удаления ветки');
+      message.error(t('wiki_messages_errorDeleteLeaf'));
     }
   };
 
@@ -246,12 +247,12 @@ class WikiModule extends PureComponent {
 
     if (!sign || !id) return;
 
-    const { metadata = [] } = this.props;
+    const { metadata = [], t } = this.props;
 
     const item = metadata.find((node) => node?._id === id);
 
     if (!item) {
-      message.error('Ветка не найдена');
+      message.error(t('wiki_messages_leafNotFound'));
       return;
     }
 
@@ -301,7 +302,7 @@ class WikiModule extends PureComponent {
 
   renderTree = () => {
     const { searchValue, visbileDropdownId = null, visbileDropdown = false } = this.state;
-    const { metadata = [] } = this.props;
+    const { metadata = [], t } = this.props;
 
     const listData = this.getTreeData(metadata);
 
@@ -315,18 +316,18 @@ class WikiModule extends PureComponent {
         const menu = (
           <Menu className="dropdown-action">
             <Menu.Item key={`add${it?._id}`}>
-              <Input autoFocus placeholder="название новой ветки" type="text" ref={this.titleRef} />
+              <Input autoFocus placeholder={t('wiki_newLeafPlaceholder')} type="text" ref={this.titleRef} />
               <Button
                 type="primary"
                 className="item-action"
                 onClick={this.onDropdownEvent.bind(this, 'add', it?._id)}
               >
-                Добавить ветку
+                {t('wiki_addLeaf')}
               </Button>
             </Menu.Item>
             <Menu.Item key={`delete${it?._id}`}>
               <Button type="link" onClick={this.onDropdownEvent.bind(this, 'delete', it?._id)}>
-                Удалить выбраную ветку
+                {t('wiki_deleteSelectLeaf')}
               </Button>
             </Menu.Item>
           </Menu>
@@ -418,21 +419,21 @@ class WikiModule extends PureComponent {
       selectedNode = '',
     } = this.state;
     const { _id: id = '' } = selectedNodeMetadata || {};
-    const { metadata = [], router: { shouldUpdate = false } = {}, udata = {} } = this.props;
+    const { metadata = [], router: { shouldUpdate = false } = {}, udata = {}, t } = this.props;
     const isLoading = isLoadingState || (shouldUpdate && !metadata?.length);
 
     return (
       <>
         <div className="wikiModule">
           <div className="wikiModule__controlls">
-            <TitleModule classNameTitle="wikiModuleTitle" title="Википедия системы" />
+            <TitleModule classNameTitle="wikiModuleTitle" title={t('wiki_title')} />
             <Button
               disabled={isLoadingState}
               onClick={this.onVisibleModalChange}
               type="primary"
               className="createNode"
             >
-              Создать новую ветку
+              {t('wiki_createNewLeaf')}
             </Button>
           </div>
           <div className="wikiModule__main">
@@ -441,7 +442,7 @@ class WikiModule extends PureComponent {
                 <>
                   <Search
                     className="wikiModule__searchInput"
-                    placeholder="Поиск по дереву"
+                    placeholder={t('wiki_treeSearchPlaceholder')}
                     onChange={this.onSearch}
                   />
                   <Scrollbars autoHide hideTracksWhenNotNeeded>
@@ -449,7 +450,7 @@ class WikiModule extends PureComponent {
                   </Scrollbars>
                 </>
               ) : !isLoading ? (
-                <p className="empty-tree">В Wiki ничего нет</p>
+                <p className="empty-tree">{t('wiki_empty')}</p>
               ) : (
                 <Spin size="large" />
               )}
@@ -478,15 +479,15 @@ class WikiModule extends PureComponent {
                 value={title}
                 onChange={this.onChangeTitleNode}
                 type="text"
-                placeholder="название ветки"
+                placeholder={t('wiki_treeNamePlaceholder')}
               />
               <Select
-                placeholder="группы доступа"
+                placeholder={t('wiki_accessGroupsPlaceholder')}
                 value={accessGroup}
                 onChange={this.onChangeSelect}
                 mode="multiple"
               >
-                <Option value="full">Все</Option>
+                <Option value="full">{t('wiki_accessAll')}</Option>
               </Select>
             </div>
           }
@@ -519,4 +520,5 @@ export default compose(
   moduleContextToProps,
   withClientDb,
   connect(mapStateToProps, mapDispatchToProps),
+  withTranslation(),
 )(WikiModule);

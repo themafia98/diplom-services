@@ -3,7 +3,8 @@
     "maxTabs": "Максимальное количество вкладок:",
     "networkError": "Ошибка сети",
     "webEmpty": "Интернет соединение отсутствует",
-    "notificationCreateBad": "Ошибка создания уведомления"
+    "notificationCreateBad": "Ошибка создания уведомления",
+    "empty": "Тут ничего нет"
   },
   "notFoundPage": {
     "title": "Страница недоступна",
@@ -127,6 +128,33 @@
       "name": "Настройки профиля",
       "hideEmail": "Скрывать почту",
       "hidePhone": "Скрывать телефон"
+    }
+  },
+  "wiki": {
+    "title": "Википедия системы",
+    "empty": "В Wiki ничего нет",
+    "createNewLeaf": "Создать новую ветку",
+    "addLeaf": " Добавить ветку",
+    "deleteSelectLeaf": "Удалить выбраную ветку",
+    "newLeafPlaceholder": "название новой ветки",
+    "treeSearchPlaceholder": "Поиск по дереву",
+    "treeNamePlaceholder": "название ветки",
+    "accessGroupsPlaceholder": "группы доступа",
+    "accessAll": "Все",
+    "messages": {
+      "deleteLeaf": "Ветка удалена",
+      "leafNotFound": "Ветка не найдена",
+      "errorDeleteLeaf": "Ошибка удаления ветки",
+      "errorCreateLeaf": "Ошибка создания ветки или функция не доступна."
+    },
+    "wikiPage": {
+      "lastEditor": "Последний редактор",
+      "timeEdit": "Время редактирования",
+      "editPage": "Редактировать страницу",
+      "applyEdit": "Принять изменения",
+      "messages": {
+        "treeIdNotFound": "TreeId не найдено"
+      }
     }
   }
 }

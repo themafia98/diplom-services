@@ -1,6 +1,10 @@
 {
   "globalMessages": {
-    "maxTabs": "Max tabs counter:"
+    "maxTabs": "Max tabs counter:",
+    "networkError": "Network error",
+    "webEmpty": "No internet connection",
+    "notificationCreateBad": "Error creating notification",
+    "empty": "There is nothing here"
   },
   "notFoundPage": {
     "title": "Page unavailable",
@@ -124,6 +128,33 @@
       "name": "Profile settings",
       "hideEmail": "Hide mail",
       "hidePhone": "Hide phone"
+    }
+  },
+  "wiki": {
+    "title": "Wikipedia",
+    "empty": "There is nothing in the wiki",
+    "createNewLeaf": "Create a new branch",
+    "addLeaf": "Add branch",
+    "deleteSelectLeaf": "Delete selected branch",
+    "newLeafPlaceholder": "new branch name",
+    "treeSearchPlaceholder": "Tree search",
+    "treeNamePlaceholder": "branch name",
+    "accessGroupsPlaceholder": "access groups",
+    "accessAll": "All",
+    "messages": {
+      "deleteLeaf": "Branch deleted",
+      "leafNotFound": "Branch not found",
+      "errorDeleteLeaf": "Delete branch error",
+      "errorCreateLeaf": "Branch creation error or not available."
+    },
+    "wikiPage": {
+      "lastEditor": "Latest editor",
+      "timeEdit": "Editing time",
+      "editPage": "Edit page",
+      "applyEdit": "Accept changes",
+      "messages": {
+        "treeIdNotFound": "TreeId not found"
+      }
     }
   }
 }

@@ -46,7 +46,7 @@ const News = memo(({ data }) => {
     if (isFind) dispatch(setActiveTabAction(activeTabs[index], { hardCodeUpdate: false }));
 
     if (tabsLimit <= activeTabs.length) {
-      message.error(`${t('globalMessages_messages_maxTabs:')} ${tabsLimit}`);
+      message.error(`${t('globalMessages_messages_maxTabs')} ${tabsLimit}`);
       return;
     }
 

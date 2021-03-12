@@ -7,8 +7,10 @@ import ModelContext from 'Models/context';
 import { Spin, Button, message } from 'antd';
 import moment from 'moment';
 import actionsTypes from 'actions.types';
+import { useTranslation } from 'react-i18next';
 
 const WikiPage = ({ selectedNode, metadata, onChangeWikiPage, udata: { displayName } }) => {
+  const { t } = useTranslation();
   const models = useContext(ModelContext);
 
   const [pageId, setPageId] = useState(`${uuid()}_virtual`);
@@ -91,7 +93,7 @@ const WikiPage = ({ selectedNode, metadata, onChangeWikiPage, udata: { displayNa
     const { _id: treeId } = nodeMetadata;
     if (!treeId) {
       onChangeStateEditor();
-      message.error('TreeId not found');
+      message.error(t('wiki_wikiPage_messages_treeIdNotFound'));
       return;
     }
     const paramsState = {
@@ -125,7 +127,7 @@ const WikiPage = ({ selectedNode, metadata, onChangeWikiPage, udata: { displayNa
 
   const editorButton = (
     <Button onClick={onChangeStateEditor} type="primary">
-      Редактировать страницу
+      {t('wiki_wikiPage_editPage')}
     </Button>
   );
 
@@ -135,8 +137,16 @@ const WikiPage = ({ selectedNode, metadata, onChangeWikiPage, udata: { displayNa
     <div className="wikiPage">
       <h2 className="wikiPage__title">{isErrorMessage ? content : title}</h2>
       <div className="edit-inform">
-        {lastEditName ? <p className="lastEditName">Последний редактор: {lastEditName}. </p> : null}
-        {lastEditDate ? <p className="lastEditDate">Время редактирования: {lastEditDate}. </p> : null}
+        {lastEditName ? (
+          <p className="lastEditName">
+            {t('wiki_wikiPage_lastEditor')}: {lastEditName}.{' '}
+          </p>
+        ) : null}
+        {lastEditDate ? (
+          <p className="lastEditDate">
+            {t('wiki_wikiPage_timeEdit')}: {lastEditDate}.{' '}
+          </p>
+        ) : null}
       </div>
       <div className="wikiPage-content">
         {loading ? (
@@ -144,7 +154,7 @@ const WikiPage = ({ selectedNode, metadata, onChangeWikiPage, udata: { displayNa
         ) : !content && readOnly ? (
           <div className="empty-wikiPage">
             {editorButton}
-            <div className="empty-wikiPage__msg">Тут ничего нет</div>
+            <div className="empty-wikiPage__msg">{t('globalMessages_empty')}</div>
           </div>
         ) : (
           <div className="wikiPage-content">
@@ -156,7 +166,7 @@ const WikiPage = ({ selectedNode, metadata, onChangeWikiPage, udata: { displayNa
               contentState={content}
               shouldDisplayButton={true}
               onPublish={!readOnly ? onSubmitChanges : content && readOnly ? onChangeStateEditor : null}
-              buttonName={content && readOnly ? 'Редактировать страницу' : 'Принять изменения'}
+              buttonName={content && readOnly ? t('wiki_wikiPage_editPage') : t('wiki_wikiPage_applyEdit')}
             />
           </div>
         )}
