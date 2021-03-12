@@ -237,5 +237,18 @@
       "createTask": "Create task",
       "creatingTask": "Create a task"
     }
+  },
+  "statisticsModule": {
+    "title": "Statistics",
+    "dayStatButton": "Daily statistics",
+    "twoWeeksStatButton": "Statistics for 2 weeks",
+    "monthStatButton": "Statistics for 1 month",
+    "yearStatButton": "Statistics for 1 year",
+    "allStatButton": "All time statistics",
+    "toolbarName": "Settings",
+    "barChart": {
+      "statDoneTasksLegend": "Completed tasks statistics",
+      "empty": "No data available for plotting"
+    }
   }
 }

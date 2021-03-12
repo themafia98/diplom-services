@@ -4,6 +4,7 @@ import { Spin } from 'antd';
 import { ResponsiveBar } from '@nivo/bar';
 import { useDispatch } from 'react-redux';
 import { loadFlagAction } from 'Redux/actions/routerActions';
+import { useTranslation } from 'react-i18next';
 
 const Bar = ({
   data,
@@ -17,6 +18,7 @@ const Bar = ({
   path,
   isLoading,
 }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const [dateParams, setDateParams] = useState(dateConfig);
   const [source, setSource] = useState([]);
@@ -44,7 +46,7 @@ const Bar = ({
     const keysSub = Object.values(dataKeys);
     const sourceDraft = [];
 
-    keysSub.forEach((keySub, index) => {
+    keysSub.forEach((keySub) => {
       const item = data[keySub];
 
       sourceDraft.push({
@@ -60,7 +62,7 @@ const Bar = ({
     }
   }, [data, dataKeys, source]);
 
-  const getDefs = () => {
+  const defs = useMemo(() => {
     return [
       {
         id: 'dots',
@@ -81,9 +83,9 @@ const Bar = ({
         spacing: 10,
       },
     ];
-  };
+  }, []);
 
-  const getFill = () => {
+  const fill = useMemo(() => {
     return [
       {
         match: {
@@ -98,7 +100,7 @@ const Bar = ({
         id: 'lines',
       },
     ];
-  };
+  }, []);
 
   const border = useMemo(() => {
     return { from: 'color', modifiers: [['darker', 1.6]] };
@@ -119,12 +121,12 @@ const Bar = ({
           : legendName
           ? legendName
           : textContent
-          ? `Статистика выполненных задач ( ${textContent} )`
-          : 'Статистика выполненных задач',
+          ? `${t('statisticsModule_barChart_statDoneTasksLegend')} ( ${textContent} )`
+          : t('statisticsModule_barChart_statDoneTasksLegend'),
       legendPosition: 'middle',
       legendOffset: 32,
     };
-  }, [legendName, textContent]);
+  }, [legendName, t, textContent]);
 
   const axisLeft = useMemo(() => {
     return {
@@ -176,8 +178,9 @@ const Bar = ({
 
   if (isLoading) return <Spin size="large" />;
 
-  if (!source?.length)
-    return <div className="empty-bar">Нету данных для построения графика выполненных задач</div>;
+  if (!source?.length) {
+    return <div className="empty-bar">{t('statisticsModule_barChart_empty')}</div>;
+  }
 
   return (
     <div className="barWrapper">
@@ -188,8 +191,8 @@ const Bar = ({
         margin={marginBar}
         padding={0.3}
         colors={colorScheme}
-        defs={getDefs()}
-        fill={getFill()}
+        defs={defs}
+        fill={fill}
         borderColor={border}
         axisTop={null}
         axisRight={null}

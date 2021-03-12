@@ -237,5 +237,18 @@
       "createTask": "Создать задачу",
       "creatingTask": "Создание задачи"
     }
+  },
+  "statisticsModule": {
+    "title": "Статистика",
+    "dayStatButton": "Статистика за день",
+    "twoWeeksStatButton": "Статистика за 2 недели",
+    "monthStatButton": "Статистика за 1 месяц",
+    "yearStatButton": "Статистика за 1 год",
+    "allStatButton": "Статистика за все время",
+    "toolbarName": "Настройки",
+    "barChart": {
+      "statDoneTasksLegend": "Статистика выполненных задач",
+      "empty": "Нету данных для построения графика"
+    }
   }
 }

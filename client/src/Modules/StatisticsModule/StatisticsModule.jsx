@@ -11,8 +11,10 @@ import { Button } from 'antd';
 import { withClientDb } from 'Models/ClientSideDatabase';
 import actionPath from 'actions.path';
 import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
+import { useTranslation } from 'react-i18next';
 
 const StatisticsModule = memo(({ path, clientDB }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
 
   const [isLoad, setLoad] = useState(false);
@@ -143,7 +145,7 @@ const StatisticsModule = memo(({ path, clientDB }) => {
                 className={clsx(dateConfig[1] === 'day' ? 'active' : null)}
                 onClick={(evt) => onChangeBar(evt, [1, 'day'])}
               >
-                Статистика за день
+                {t('statisticsModule_dayStatButton')}
               </Button>
             </li>
             <li className="toolbar-action-item">
@@ -152,7 +154,7 @@ const StatisticsModule = memo(({ path, clientDB }) => {
                 className={clsx(dateConfig[1] === 'weeks' ? 'active' : null)}
                 onClick={(evt) => onChangeBar(evt, [2, 'weeks'])}
               >
-                Статистика за 2 недели
+                {t('statisticsModule_twoWeeksStatButton')}
               </Button>
             </li>
             <li className="toolbar-action-item">
@@ -161,7 +163,7 @@ const StatisticsModule = memo(({ path, clientDB }) => {
                 className={clsx(dateConfig[1] === 'month' ? 'active' : null)}
                 onClick={(evt) => onChangeBar(evt, [1, 'month'])}
               >
-                Статистика за 1 месяц
+                {t('statisticsModule_monthStatButton')}
               </Button>
             </li>
             <li className="toolbar-action-item">
@@ -170,7 +172,7 @@ const StatisticsModule = memo(({ path, clientDB }) => {
                 className={clsx(dateConfig[1] === 'year' ? 'active' : null)}
                 onClick={(evt) => onChangeBar(evt, [1, 'year'])}
               >
-                Статистика за 1 год
+                {t('statisticsModule_yearStatButton')}
               </Button>
             </li>
             <li className="toolbar-action-item">
@@ -179,21 +181,21 @@ const StatisticsModule = memo(({ path, clientDB }) => {
                 className={clsx(dateConfig[0] === 'full' ? 'active' : null)}
                 onClick={(evt) => onChangeBar(evt, ['full'])}
               >
-                Статистика за все время
+                {t('statisticsModule_allStatButton')}
               </Button>
             </li>
           </ul>
         </div>
       </div>
     ),
-    [dateConfig, loading, onChangeBar],
+    [dateConfig, loading, onChangeBar, t],
   );
 
   const dataKeys = useMemo(() => Object.keys(barData), [barData]);
 
   return (
     <div className="statisticsModule">
-      <TitleModule classNameTitle="statisticsModuleTitle" title="Статистика" />
+      <TitleModule classNameTitle="statisticsModuleTitle" title={t('statisticsModule_title')} />
       <div className="statisticsModule__main">
         <div className="col-6">
           {
@@ -209,7 +211,7 @@ const StatisticsModule = memo(({ path, clientDB }) => {
           }
         </div>
       </div>
-      <FixedToolbar name="Настройки" customRender={toolbarBody} />
+      <FixedToolbar name={t('statisticsModule_toolbarName')} customRender={toolbarBody} />
     </div>
   );
 });
