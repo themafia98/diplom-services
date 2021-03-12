@@ -5,8 +5,10 @@ import _ from 'lodash';
 import moment from 'moment';
 import Title from 'Components/Title';
 import { Timeline, Spin } from 'antd';
+import { useTranslation } from 'react-i18next';
 
 const ObserverTime = ({ title, settingsLogs, isLoading }) => {
+  const { t } = useTranslation();
   const renderLogs = useCallback((settingsLogs = []) => {
     if (!settingsLogs?.length) return null;
 
@@ -28,11 +30,11 @@ const ObserverTime = ({ title, settingsLogs, isLoading }) => {
 
   return (
     <>
-      <Title classNameTitle="observerTitle" title={title ? title : 'История изменений'} />
+      <Title classNameTitle="observerTitle" title={title ? title : t('components_observerTime_historyLog')} />
       <Scrollbars autoHide hideTracksWhenNotNeeded>
         <div className="observerWrapper">
           {isInvalid ? (
-            <span className="empty-logger">Истории пока нет</span>
+            <span className="empty-logger">{t('globalMessage_empty')}</span>
           ) : isLoading ? (
             <Spin size="large" />
           ) : (

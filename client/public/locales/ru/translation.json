@@ -48,6 +48,17 @@
       "loadDir": "Загрузка директории",
       "dndLoad": "Нажмите или перетащите файл в эту область, чтобы загрузить",
       "aboutLoad": "Поддержка разовой или массовой загрузки"
+    },
+    "rightPanel": {
+      "logout": "Выйти"
+    },
+    "observerTime": {
+      "historyLog": "История изменений"
+    },
+    "stream": {
+      "loadMoreButton": "Загрузить еще...",
+      "noNotifications": "Уведомления отсутствуют",
+      "notificationLinkTooltip": "Кликните для перехода на страницу уведомления"
     }
   },
   "notFoundPage": {

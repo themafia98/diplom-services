@@ -48,6 +48,17 @@
       "loadDir": "Loading a directory",
       "dndLoad": "Click or drag a file to this area to download",
       "aboutLoad": "Supports one-time or multiply uploads"
+    },
+    "rightPanel": {
+      "logout": "Logout"
+    },
+    "observerTime": {
+      "historyLog": "Change history"
+    },
+    "stream": {
+      "loadMoreButton": "Load more...",
+      "noNotifications": "No notifications",
+      "notificationLinkTooltip": "Click for redirect to notification page"
     }
   },
   "notFoundPage": {

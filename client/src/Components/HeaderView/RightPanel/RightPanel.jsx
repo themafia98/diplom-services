@@ -18,7 +18,7 @@ const RightPanel = ({
   appConfig,
   webSocket,
 }) => {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [currentLanguage, setLanguage] = useState(i18n.language);
 
   const changeLanguage = () => {
@@ -43,7 +43,7 @@ const RightPanel = ({
         />
         <Updater statusApp={status} onClick={onUpdate} additionalClassName="updaterDefault" />
         <div onClick={onLogout} className="logout">
-          Выйти
+          {t('components_rightPanel_logout')}
         </div>
         <Status shouldUpdate={shouldUpdate} statusApp={status} />
       </div>

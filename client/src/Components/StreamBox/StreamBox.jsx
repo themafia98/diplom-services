@@ -14,6 +14,7 @@ import actionsTypes from 'actions.types';
 import { compose } from 'redux';
 import { withClientDb } from 'Models/ClientSideDatabase';
 import { paramsTemplate, requestTemplate } from 'Utils/Api/api.utils';
+import { withTranslation } from 'react-i18next/*';
 
 class StreamBox extends Component {
   state = {
@@ -285,7 +286,8 @@ class StreamBox extends Component {
   };
 
   showMessageError = ({ tabsLimit }) => {
-    message.error('Максимальное количество вкладок:' + tabsLimit);
+    const { t } = this.props;
+    message.error(`${t('globalMessages_maxTabs')}:` + tabsLimit);
   };
 
   getPathLink = (moduleName, type) => `${moduleName}_$link$__${type}Notification`;
@@ -373,6 +375,7 @@ class StreamBox extends Component {
       withStore,
       buildItems,
       listHeight,
+      t,
     } = this.props;
 
     const {
@@ -414,7 +417,7 @@ class StreamBox extends Component {
               {buildItems(streamList, this.onRunAction)}
               {shouldShowLoadingButton ? (
                 <Button className="private-loadAction" onClick={this.onLoadItemsList}>
-                  Загрузить еще...
+                  {t('components_stream_loadMoreButton')}
                 </Button>
               ) : null}
             </div>
@@ -422,7 +425,7 @@ class StreamBox extends Component {
             <Spin className="popover-spiner" size="large" />
           ) : (
             <div className="empty-streamBox">
-              <span>Уведомления отсутствуют</span>
+              <span>{t('components_stream_noNotifications')}</span>
             </div>
           )}
         </Scrollbars>
@@ -487,7 +490,7 @@ class StreamBox extends Component {
                 <Tooltip
                   key={`cardTooltip_${_id ? _id : Math.random()}`}
                   mouseEnterDelay={0.2}
-                  title="Кликните для перехода на страницу уведомления"
+                  title={t('components_stream_notificationLinkTooltip')}
                 >
                   {cardItem}
                 </Tooltip>
@@ -499,10 +502,12 @@ class StreamBox extends Component {
             <Spin size="large" />
           ) : (
             <div className="empty-streamBox">
-              <span>Уведомления отсутствуют</span>
+              <span>{t('components_stream_noNotifications')}</span>
             </div>
           )}
-          {shouldShowLoadingButton ? <Button onClick={this.onLoadItemsList}>Загрузить еще...</Button> : null}
+          {shouldShowLoadingButton ? (
+            <Button onClick={this.onLoadItemsList}>{t('components_stream_loadMoreButton')}</Button>
+          ) : null}
           {showLoader ? <Spin className="popover-spiner-preloader" /> : null}
         </div>
       </Scrollbars>
@@ -524,4 +529,8 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default compose(withClientDb, connect(mapStateToProps, mapDispatchToProps))(StreamBox);
+export default compose(
+  withClientDb,
+  connect(mapStateToProps, mapDispatchToProps),
+  withTranslation(),
+)(StreamBox);
