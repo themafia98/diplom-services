@@ -196,6 +196,8 @@
       "myListTitle": "List of my tasks"
     },
     "view": {
+      "title": "Task card",
+      "workHistory": "Work log",
       "loading": "Loading task...",
       "notFound": "Task not found",
       "notSet": "not installed",

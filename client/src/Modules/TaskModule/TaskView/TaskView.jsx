@@ -788,7 +788,7 @@ class TaskView extends PureComponent {
 
     return (
       <Scrollbars hideTracksWhenNotNeeded>
-        <TitleModule classNameTitle="taskModuleTitle" title="Карточка задачи" />
+        <TitleModule classNameTitle="taskModuleTitle" title={t('taskModule_view_title')} />
         {this.getModalWindow(accessStatus, rulesEdit, rulesStatus)}
         <div className="taskView">
           <div className="col-6 col-taskDescription">
@@ -800,7 +800,7 @@ class TaskView extends PureComponent {
             </Scrollbars>
           </div>
           <div className="col-6 col-taskDescription">
-            <TitleModule classNameTitle="historyTaskTitle" title="Журнал работы" />
+            <TitleModule classNameTitle="historyTaskTitle" title={t('taskModule_view_workHistory')} />
             <Scrollbars hideTracksWhenNotNeeded>
               {!cachesJurnalList?.length ? (
                 <Empty description={<span>{t('globalMessages_empty')}</span>} />
