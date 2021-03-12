@@ -3,6 +3,7 @@ import { fileType } from './File.types';
 import { v4 as uuid } from 'uuid';
 import { Upload, Icon, message, Checkbox } from 'antd';
 import ModelContext from 'Models/context';
+import { useTranslation } from 'react-i18next';
 const { Dragger } = Upload;
 
 const File = ({
@@ -14,6 +15,7 @@ const File = ({
   isLocal,
   customUrl,
 }) => {
+  const { t } = useTranslation();
   const { _id = '' } = moduleData;
 
   const [directory, setDirectory] = useState(null);
@@ -41,10 +43,10 @@ const File = ({
     if (status === 'done') {
       if (onAddFileList) {
         onAddFileList(fileList, status);
-        message.success(`${name} файл загружен успешно.`);
+        message.success(`${name} ${t('components_file_messages_fileLoad')}.`);
       } else message.error('Error add file');
     } else if (status === 'error') {
-      message.error(`${name} файл загрузить не удалось.`);
+      message.error(`${name} ${t('components_file_messages_failFileLoad')}.`);
     }
   };
 
@@ -86,14 +88,14 @@ const File = ({
   return (
     <div className="file">
       <Checkbox defaultChecked={false} onChange={onChangeMode} checked={directory}>
-        Загрузка дирректории
+        {t('components_file_loadDir')}
       </Checkbox>
       <Dragger onChange={onChange} onRemove={onRemove} {...draggerProps}>
         <p className="ant-upload-drag-icon">
           <Icon type="inbox" />
         </p>
-        <p className="ant-upload-text">Нажмите или перетащите файл в эту область, чтобы загрузить</p>
-        <p className="ant-upload-hint">Поддержка разовой или массовой загрузки.</p>
+        <p className="ant-upload-text">{t('components_file_dndLoad')}</p>
+        <p className="ant-upload-hint">{t('components_file_aboutLoad')}</p>
       </Dragger>
     </div>
   );

@@ -39,6 +39,15 @@
         "write": "wrote",
         "submit": "Submit"
       }
+    },
+    "file": {
+      "messages": {
+        "fileLoad": "file uploaded successfully",
+        "failFileLoad": "file upload failed"
+      },
+      "loadDir": "Loading a directory",
+      "dndLoad": "Click or drag a file to this area to download",
+      "aboutLoad": "Supports one-time or multiply uploads"
     }
   },
   "notFoundPage": {
