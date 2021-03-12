@@ -27,7 +27,8 @@
     "lint:prettier": "prettier --check \"./**/*.*\"",
     "format": "prettier --write **/**/**/*.{js,jsx,json,css,ts,scss}",
     "lint-staged": "lint-staged",
-    "disabled": "eslint --cache"
+    "disabled": "eslint --cache",
+    "test": "cd client && npm run test"
   },
   "nodemonConfig": {
     "ignore": [
