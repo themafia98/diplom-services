@@ -5,7 +5,9 @@
     "webEmpty": "No internet connection",
     "notificationCreateBad": "Error creating notification",
     "empty": "There is nothing here",
-    "notificationGlobalError": "Global notification error"
+    "notificationGlobalError": "Global notification error",
+    "invalidData": "Invalid data",
+    "error": "Error"
   },
   "components": {
     "actionList": {
@@ -17,6 +19,26 @@
       "controlTask": "Task management",
       "save": "Save changes",
       "reject": "Cancel changes"
+    },
+    "comments": {
+      "add": "Publish",
+      "messages": {
+        "addCommentDone": "Comment added",
+        "errorAddComment": "Comment could not added",
+        "removeCommentDone": "Comment deleted successfully",
+        "errorRemoveComment": "Comment could not deleted",
+        "refreshCommentDone": "Comment updated successfully",
+        "errorRefreshComment": "Comment could not updated",
+        "badOper": "Incorrect operation",
+        "invalidComment": "Message is invalid",
+        "notComment": "Comment not exist"
+      },
+      "comment": {
+        "editMessage": "Edit comment",
+        "deleteMessage": "Delete comment",
+        "write": "wrote",
+        "submit": "Submit"
+      }
     }
   },
   "notFoundPage": {

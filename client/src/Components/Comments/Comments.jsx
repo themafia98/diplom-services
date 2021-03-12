@@ -11,13 +11,39 @@ import Comment from './Comment';
 import actionsTypes from 'actions.types';
 import { routeParser } from 'Utils';
 import { withClientDb } from 'Models/ClientSideDatabase';
+import { useTranslation } from 'react-i18next';
 
 const Comments = memo(({ data, onUpdate, path, udata, clientDB, rules, commentProps }) => {
+  const { t } = useTranslation();
   const [updateDisabled, setDisable] = useState(false);
   const [msg, setValue] = useState(null);
 
   const { comments, key, _id: id } = data;
   const { displayName = '', _id: uId = '' } = udata;
+
+  const addSystemMessage = useMemo(
+    () => ({
+      done: t('components_comments_messages_addCommentDone'),
+      error: t('components_comments_errorAddComment'),
+    }),
+    [t],
+  );
+
+  const removeSystemMessage = useMemo(
+    () => ({
+      done: t('components_comments_messages_removeCommentDone'),
+      error: t('components_comments_messages_errorRemoveComment'),
+    }),
+    [t],
+  );
+
+  const refreshSystemMessage = useMemo(
+    () => ({
+      done: t('components_comments_messages_refreshCommentDone'),
+      error: t('components_comments_messages_errorRefreshComment'),
+    }),
+    [t],
+  );
 
   const addCommentsDelay = useMemo(
     () =>
@@ -58,18 +84,21 @@ const Comments = memo(({ data, onUpdate, path, udata, clientDB, rules, commentPr
             updateField: 'comments',
             store: 'tasks',
             clientDB,
-            systemMessage: { done: 'Коментарий добавлен.', error: 'Комментарий добавить не удалось' },
+            systemMessage: addSystemMessage,
           });
 
           setDisable(false);
           return;
         } catch (error) {
           console.error(error);
-          notification.error({ message: 'Ошибка', description: 'Некоректные данные.' });
+          notification.error({
+            message: t('globalMessages_error'),
+            description: t('globalMessages_invalidData'),
+          });
           setDisable(false);
         }
       }, 500),
-    [clientDB, comments, data, id, key, msg, onUpdate, path, displayName, uId],
+    [msg, key, comments, data, uId, displayName, path, onUpdate, id, clientDB, addSystemMessage, t],
   );
 
   const addComments = (event) => {
@@ -105,24 +134,27 @@ const Comments = memo(({ data, onUpdate, path, udata, clientDB, rules, commentPr
         updateItem: filterComments,
         updateField: 'comments',
         clientDB,
-        systemMessage: { done: 'Коментарий успешно удален.', error: 'Комментарий удалить не удалось' },
+        systemMessage: removeSystemMessage,
       });
     } catch (error) {
       console.error(error);
-      notification.error({ message: 'Ошибка', description: 'Некорректная операция.' });
+      notification.error({
+        message: t('globalMessages_error'),
+        description: t('components_comments_messages_badOper'),
+      });
     }
   };
 
   const onEdit = async (idComment, msg = null, callback = null) => {
     if (typeof msg !== 'string') {
-      message.error('Сообщение не валидно.');
+      message.error(t('components_comments_messages_invalidComment'));
       if (callback) callback();
       return;
     }
 
     const commentIndex = comments.findIndex((item) => item?.id === idComment);
     if (commentIndex === -1) {
-      message.error('Коментарий не существует.');
+      message.error(t('components_comments_messages_notComment'));
       if (callback) callback();
       return;
     }
@@ -146,7 +178,7 @@ const Comments = memo(({ data, onUpdate, path, udata, clientDB, rules, commentPr
         updateItem: newCommentsArray,
         updateField: 'comments',
         clientDB,
-        systemMessage: { done: 'Коментарий успешно обновлен.', error: 'Комментарий обновить не удалось' },
+        systemMessage: refreshSystemMessage,
       });
 
       if (callback) callback();
@@ -176,7 +208,7 @@ const Comments = memo(({ data, onUpdate, path, udata, clientDB, rules, commentPr
         />
       ))
     ) : (
-      <Empty description={<span>Данных нету</span>} />
+      <Empty description={<span>{t('globalMessages_empty')}</span>} />
     );
   };
 
@@ -203,7 +235,7 @@ const Comments = memo(({ data, onUpdate, path, udata, clientDB, rules, commentPr
           className="sendCommentsButton"
           type="primary"
         >
-          Опубликовать
+          t({'components_comments_add'})
         </Button>
       </div>
     </div>

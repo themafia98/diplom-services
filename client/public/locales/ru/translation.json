@@ -5,7 +5,9 @@
     "webEmpty": "Интернет соединение отсутствует",
     "notificationCreateBad": "Ошибка создания уведомления",
     "empty": "Тут ничего нет",
-    "notificationGlobalError": "Ошибка глобального уведомления"
+    "notificationGlobalError": "Ошибка глобального уведомления",
+    "invalidData": "Некоректные данные",
+    "error": "Ошибка"
   },
   "components": {
     "actionList": {
@@ -17,6 +19,26 @@
       "controlTask": "Управление задачей",
       "save": "Сохранить изменения",
       "reject": "Отмена изменений"
+    },
+    "comments": {
+      "add": "Опубликовать",
+      "messages": {
+        "addCommentDone": "Комментарий добавлен",
+        "errorAddComment": "Комментарий добавить не удалось",
+        "removeCommentDone": "Комментарий успешно удален",
+        "errorRemoveComment": "Комментарий удалить не удалось",
+        "refreshCommentDone": "Комментарий успешно обновлен",
+        "errorRefreshComment": "Комментарий обновить не удалось",
+        "badOper": "Некорректная операция",
+        "invalidComment": "Сообщение не валидно",
+        "notComment": "Комментарий не существует"
+      },
+      "comment": {
+        "editMessage": "Редактировать комментарий",
+        "deleteMessage": "Удалить комментарий",
+        "write": "написал",
+        "submit": "Принять изменения"
+      }
     }
   },
   "notFoundPage": {

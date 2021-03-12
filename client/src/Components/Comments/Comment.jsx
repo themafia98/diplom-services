@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { commentType } from './Comments.types';
 import Output from 'Components/Output';
 import { Icon, Tooltip, Input, Button } from 'antd';
+import { useTranslation } from 'react-i18next';
 
 const Comment = ({
   onDelete,
@@ -15,6 +16,7 @@ const Comment = ({
   onOpenPageWithData,
   setCurrentTab,
 }) => {
+  const { t } = useTranslation();
   const { id = '', message = '', time = '', uId = '', username = '' } = it;
 
   const [value, setValue] = useState(message);
@@ -52,10 +54,10 @@ const Comment = ({
         <span className="commentControllers">
           {userId === uId ? (
             <>
-              <Tooltip mouseEnterDelay={0.3} title="Редактировать сообщение">
+              <Tooltip mouseEnterDelay={0.3} title={t('components_comments_comment_editMessage')}>
                 <Icon type="edit" onClick={onEditMode} className="editComment " />
               </Tooltip>
-              <Tooltip mouseEnterDelay={0.3} title="Удалить сообщение">
+              <Tooltip mouseEnterDelay={0.3} title={t('components_comments_comment_deleteMessage')}>
                 <Icon type="delete" onClick={onAction.bind(this, 'delete')} className="deleteComment" />
               </Tooltip>
             </>
@@ -81,7 +83,7 @@ const Comment = ({
         >
           {username}
         </Output>
-        написал:
+        {t('components_comments_comment_write')}:
       </span>
       {!editable ? (
         <span className="commentContet">{message}</span>
@@ -95,7 +97,7 @@ const Comment = ({
             size="small"
             type="primary"
           >
-            Принять изменения
+            {t('components_comments_comment_submit')}:
           </Button>
         </div>
       )}
