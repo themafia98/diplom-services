@@ -5,6 +5,7 @@ import {
   BodyLogin,
   Params,
   QueryParams,
+  RequestWithParams,
 } from '../../../Utils/Interfaces/Interfaces.global';
 import { Meta, ResRequest } from '../../../Utils/Types/types.global';
 
@@ -31,7 +32,7 @@ namespace News {
       const { actionType = '' } = queryParams as QueryParams;
 
       const params: Params = createParams(actionType, 'done', 'news');
-      const { shouldBeCreate = false } = req as Record<string, any>;
+      const { shouldBeCreate = false } = req as RequestWithParams;
 
       if (!shouldBeCreate) {
         params.customErrorMessage = 'Access error for create news';

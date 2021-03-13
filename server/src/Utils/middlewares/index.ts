@@ -2,15 +2,15 @@ import { Response, NextFunction, Request } from 'express';
 import passport from 'passport';
 import JwtStrategy, { ExtractJwt } from 'passport-jwt';
 import LocalStrategy from 'passport-local';
-import { AccessConfig, Dbms, User } from '../Interfaces/Interfaces.global';
+import { AccessConfig, Dbms, RequestWithParams, User } from '../Interfaces/Interfaces.global';
 import { UserModel } from '../../Models/Database/Schema';
 import url from 'url';
 import querystring from 'querystring';
 import { isValidObjectId, Types } from 'mongoose';
 import AccessRole from '../../Models/AccessRole';
-import { ACTIONS_ACCESS } from '../../app.constant';
 import authConfig from '../../config/auth.config';
 import { decode } from 'jsonwebtoken';
+import Utils from '../utils.global';
 
 namespace Middleware {
   export const timer = (req: Request, res: Response, next: NextFunction): void => {
@@ -19,9 +19,7 @@ namespace Middleware {
   };
 
   export const securityChecker = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const request = req as Record<string, any>;
-
-    const { query } = url.parse(request.url);
+    const { query } = url.parse(req.url);
     const { uid: urlUid = '' } = querystring.parse(query as string);
 
     const jwtToken = ExtractJwt.fromAuthHeaderAsBearerToken()(req);
@@ -39,24 +37,13 @@ namespace Middleware {
     const user = await UserModel.findById(Types.ObjectId(uid));
     const { access } = (user as Record<string, any>) || {};
 
-    if (user && request.body && access) {
-      availableActions = AccessRole.getAvailableActions(
-        request.body.moduleName || '',
-        access as AccessConfig[],
-      );
+
+    if (user && req.body && access) {
+      availableActions = AccessRole.getAvailableActions(req.body.moduleName || '', access as AccessConfig[]);
     }
 
-    const { actionType = '' } = req.body;
-
-    if (process.env.NODE_ENV === 'development') {
-      console.log('actionType:', actionType);
-      console.log('availableActions:', availableActions);
-    }
-
-    if ((<string>actionType).toUpperCase().includes(ACTIONS_ACCESS.CREATE) && availableActions) {
-      request.shouldBeCreate = (<string[]>availableActions).some(
-        (it: string) => it === ACTIONS_ACCESS.CREATE,
-      );
+    if (Array.isArray(availableActions) && availableActions.length) {
+      Utils.signAvailableActions(req as RequestWithParams, availableActions as string[]);
     }
 
     if (!uid) {
@@ -64,7 +51,7 @@ namespace Middleware {
       return;
     }
 
-    request.uid = isValidObjectId(uid) ? Types.ObjectId(uid as string) : null;
+    (<any>req).uid = isValidObjectId(uid) ? Types.ObjectId(uid as string) : null;
 
     next();
   };

@@ -1,6 +1,12 @@
 import { Request, Response } from 'express';
 import _ from 'lodash';
-import { Params, ActionParams, BodyLogin, QueryParams } from '../../Utils/Interfaces/Interfaces.global';
+import {
+  Params,
+  ActionParams,
+  BodyLogin,
+  QueryParams,
+  RequestWithParams,
+} from '../../Utils/Interfaces/Interfaces.global';
 import { ResRequest } from '../../Utils/Types/types.global';
 import Action from '../../Models/Action';
 import Decorators from '../../Utils/decorators';
@@ -66,7 +72,7 @@ namespace Tasks {
       const { params: task = {} } = req.body;
 
       const params: Params = createParams('set_single', 'done', 'users');
-      const { shouldBeCreate = false } = req as Record<string, any>;
+      const { shouldBeCreate = false } = req as RequestWithParams;
 
       if (!shouldBeCreate) {
         params.customErrorMessage = 'Access error for create task';
