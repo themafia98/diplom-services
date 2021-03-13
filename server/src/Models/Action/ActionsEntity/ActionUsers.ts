@@ -1,6 +1,6 @@
 import generator from 'generate-password';
 import _ from 'lodash';
-import { Model, Document, Types } from 'mongoose';
+import { Model, Document, Types, isValidObjectId } from 'mongoose';
 import {
   ActionParams,
   Actions,
@@ -117,14 +117,35 @@ class ActionUsers implements Action {
 
     const updateProps: Record<string, boolean> = {};
 
-    if (isHidePhone !== null) updateProps.isHidePhone = isHidePhone as boolean;
-    if (isHideEmail !== null) updateProps.isHideEmail = isHideEmail as boolean;
+    if (isHidePhone !== null) {
+      updateProps.isHidePhone = isHidePhone as boolean;
+    }
+    if (isHideEmail !== null) {
+      updateProps.isHideEmail = isHideEmail as boolean;
+    }
 
     const res = await this.getEntity().updateEntity(model, { _id, updateProps });
 
     if (!res) return null;
 
     return res;
+  }
+
+  private async changeLanguage(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
+    const { queryParams = {} } = actionParam as Record<string, QueryParams>;
+    const { lang = '', uid = '' } = queryParams || {};
+
+    if (!lang || !uid) {
+      return null;
+    }
+
+    if (!isValidObjectId(uid)) {
+      return null;
+    }
+
+    const updateProps: Record<string, string> = { lang };
+
+    return await this.getEntity().updateEntity(model, { _id: Types.ObjectId(uid as string), updateProps });
   }
 
   private async updateCommonChanges(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
@@ -205,6 +226,8 @@ class ActionUsers implements Action {
         return this.updateProfileChanges(actionParam, model);
       case 'update_single':
         return this.updateSingle(actionParam, model);
+      case 'change_language':
+        return this.changeLanguage(actionParam, model);
       case 'update_many':
         return this.updateMany(actionParam, model);
       default:

@@ -26,7 +26,7 @@ import { compose } from 'redux';
 import ClientSideDatabase, { ClientDbContext } from 'Models/ClientSideDatabase';
 import withSystemConfig from 'Components/Helpers/withSystemConfig';
 import { setSystemMessageAction } from 'Redux/actions/systemActions';
-
+import { withTranslation } from 'react-i18next';
 const workerInstanse = worker();
 
 class App extends Component {
@@ -196,7 +196,9 @@ class App extends Component {
 
       const isUserData = udata && !_.isEmpty(udata);
 
-      if ((currentActionTab !== path || !isFind) && isUserData) {
+      const canInitialSession = (currentActionTab !== path || !isFind) && isUserData;
+
+      if (canInitialSession) {
         this.initialSession(udata, path, true);
       } else if (!isUserData) {
         return rest.signOut();
@@ -219,12 +221,16 @@ class App extends Component {
   };
 
   initialSession = async (udata = null, path = '') => {
-    const { addTab, onLoadUdata, fetchConfig } = this.props;
+    const { addTab, onLoadUdata, fetchConfig, i18n } = this.props;
 
     try {
       if (!udata || !path) {
-        this.showErrorMessage('Ошибка загрузки рабочего стола.');
+        this.showErrorMessage('Error load dashboard.');
         return;
+      }
+
+      if (udata.lang) {
+        i18n.changeLanguage(udata.lang);
       }
 
       await fetchConfig(udata?._id);
@@ -348,4 +354,8 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default compose(withSystemConfig, connect(mapStateToProps, mapDispatchToProps))(App);
+export default compose(
+  withSystemConfig,
+  withTranslation(),
+  connect(mapStateToProps, mapDispatchToProps),
+)(App);

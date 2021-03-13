@@ -42,8 +42,7 @@ namespace General {
           throw new Error('Bad user data for registration');
         }
 
-        const userDoc: object = { ...user, accept: true, rules: 'full' };
-        const userValues = await UserModel.create(userDoc);
+        const userValues = await UserModel.create(user);
 
         if (!userValues) {
           res.sendStatus(400);

@@ -55,7 +55,14 @@ const createNotification = async (type = '', item = {}, actionType = actionsType
  * @param {object} dep entity dependences
  * @param {number} sliceCreaterNumber slice start name of entity, default: 0
  */
-const createEntity = async (storeName, params, dep, sliceCreaterNumber, customTaskModule) => {
+const createEntity = async (
+  storeName,
+  params,
+  dep,
+  sliceCreaterNumber,
+  customTaskModule,
+  method = 'POST',
+) => {
   const { metadata = {} } = params || {};
   const { statusApp = APP_STATUS.ON, clientDB = null, onSetStatus } = dep || {};
 
@@ -69,7 +76,7 @@ const createEntity = async (storeName, params, dep, sliceCreaterNumber, customTa
           0,
           sliceCreaterNumber ? sliceCreaterNumber : createPath.length,
         )}`,
-        'POST',
+        method,
         {
           ...requestTemplate,
           actionType: `create_${storeName}`,

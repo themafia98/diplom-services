@@ -82,6 +82,25 @@ namespace Settings {
       return responseExec(req, res, params);
     }
 
+    @Post({ path: SETTINGS_ROUTE[Utils.getVersion()].SAVE_LANGUAGE, private: true })
+    protected async saveLanguage(req: Request, res: Response): ResRequest {
+      const params: Params = createParams('change_language', 'done', 'users');
+
+      const { params: bodyParams = null } = req.body;
+
+      const { options: queryParams } = bodyParams as Record<string, QueryParams>;
+
+      const changeLangAction = new Action.ActionParser({
+        actionPath: 'users',
+        actionType: 'change_language',
+      });
+
+      const actionParams: ActionParams = { queryParams };
+
+      const responseExec: Function = await changeLangAction.actionsRunner(actionParams);
+      return responseExec(req, res, params);
+    }
+
     @Post({ path: SETTINGS_ROUTE[Utils.getVersion()].SAVE_PROFILE, private: true })
     protected async profileSettings(req: Request, res: Response): ResRequest {
       const params: Params = createParams('profile_changes', 'done', 'users');

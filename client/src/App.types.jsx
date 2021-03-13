@@ -9,8 +9,6 @@ export const udataType = shape({
   departament: string,
   isOnline: bool,
   phone: string,
-  rules: string,
-  accept: bool,
   avatar: string,
 });
 

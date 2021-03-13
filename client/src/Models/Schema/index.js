@@ -111,13 +111,12 @@ class Schema {
             isOnline: { type: 'boolean', default: false },
             departament: { type: 'string' },
             position: { type: 'string' },
-            rules: { type: 'string' },
-            accept: { type: 'boolean' },
             role: { type: 'string', default: 'GUEST' },
             avatar: { type: 'string', default: '' },
             isHideEmail: { type: 'boolean' },
             isHidePhone: { type: 'boolean' },
             access: { type: 'array', default: [] },
+            lang: { type: 'string', default: 'en' },
           },
         };
       case NEWS_SCHEMA:

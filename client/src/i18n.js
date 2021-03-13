@@ -9,7 +9,7 @@ i18n
   .use(initReactI18next) // passes i18n down to react-i18next
   .init({
     lng: navigator.language.split('-')[0],
-    fallbackLng: 'en', // use en if detected lng is not available
+    fallbackLng: ['en', 'ru'], // use en if detected lng is not available
     saveMissing: true, // send not translated keys to endpoint
     keySeparator: '_',
     interpolation: {

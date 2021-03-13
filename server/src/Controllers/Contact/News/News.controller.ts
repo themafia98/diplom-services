@@ -18,11 +18,12 @@ import Utils from '../../../Utils/utils.global';
 namespace News {
   const Controller = Decorators.Controller;
   const Post = Decorators.Post;
+  const Put = Decorators.Put;
   const Get = Decorators.Get;
 
   @Controller('/news')
   export class NewsController implements ControllerApi<FunctionConstructor> {
-    @Post({ path: NEWS_ROUTE[Utils.getVersion()].CREATE_NEWS, private: true })
+    @Put({ path: NEWS_ROUTE[Utils.getVersion()].CREATE_NEWS, private: true })
     protected async createNews(req: Request, res: Response): ResRequest {
       const body: BodyLogin = req.body;
 

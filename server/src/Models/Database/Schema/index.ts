@@ -20,12 +20,11 @@ const userSchema: Schema<User> = new Schema(
     displayName: { type: String, required: true },
     position: { type: String, required: true },
     role: { type: String, default: ROLES.GUEST, required: true },
-    rules: { type: String, default: 'guest', required: true },
-    accept: { type: Boolean, default: false, required: true },
     avatar: { type: String, default: '', required: false },
     isHideEmail: { type: Boolean, default: false },
     isHidePhone: { type: Boolean, default: false },
     access: { type: Array, default: [], required: false },
+    lang: { type: String, default: 'en', required: false },
   },
   { timestamps: true },
 );
@@ -85,11 +84,10 @@ userSchema.methods.toAuthJSON = function (this: User) {
     departament: this.departament,
     isOnline: this.isOnline,
     phone: this.phone,
-    rules: this.rules,
-    accept: this.accept,
     avatar: this.avatar,
     isHideEmail: this.isHideEmail,
     isHidePhone: this.isHidePhone,
+    lang: this.lang,
     token: this.generateJWT(),
   };
 };

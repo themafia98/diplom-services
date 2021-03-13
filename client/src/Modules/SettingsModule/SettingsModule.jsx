@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { settingsLogsSelector, settingsStatusSelector, settingsArtifactsSelector } from 'Redux/selectors';
 import { saveComponentStateAction } from 'Redux/actions/routerActions';
 import { updateUdata, setStatus, onLoadSettings } from 'Redux/actions/publicActions';
-import { message } from 'antd';
+import { message, Select } from 'antd';
 import Scrollbars from 'react-custom-scrollbars';
 import { middlewareCaching } from 'Redux/actions/publicActions/middleware';
 
@@ -22,6 +22,9 @@ import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { withClientDb } from 'Models/ClientSideDatabase';
 import { requestTemplate, paramsTemplate } from 'Utils/Api/api.utils';
 import { withTranslation } from 'react-i18next';
+import { showSystemMessage } from 'Utils';
+
+const { Option } = Select;
 
 class SettingsModule extends PureComponent {
   state = {
@@ -388,20 +391,64 @@ class SettingsModule extends PureComponent {
     }
   };
 
+  handleChangeLanguage = async (lang) => {
+    const { i18n, modelsContext, udata } = this.props;
+    const { Request } = modelsContext;
+    const { _id: uid = '' } = udata;
+
+    if (i18n.language === lang) {
+      return;
+    }
+
+    try {
+      const rest = new Request();
+      const res = await rest.sendRequest(
+        '/settings/language',
+        'POST',
+        {
+          ...requestTemplate,
+          moduleName: 'settingsModule',
+          actionType: actionsTypes.$SETTINGS_PUT,
+          params: {
+            ...paramsTemplate,
+            options: {
+              lang,
+              uid,
+            },
+          },
+        },
+        true,
+      );
+
+      if (res.status !== 200) {
+        throw new Error('Error action to save language');
+      }
+    } catch (error) {
+      console.error(error);
+
+      const message = typeof error === 'string' ? error : error?.message;
+
+      showSystemMessage('error', message);
+    } finally {
+      i18n.changeLanguage(lang);
+    }
+  };
+
   render() {
     const { emailValue, telValue, oldPassword, newPassword, isHideEmail, isHidePhone } = this.state;
     const {
       settingsLogs = null,
-      udata: { departament = '', rules = '' } = {},
+      udata: { departament = '' } = {},
       settings = [],
       appConfig,
       isLoad,
       t,
+      i18n,
     } = this.props;
     const { settings: settingsConfig = {} } = appConfig;
     const { includeRulesSettings = false } = settingsConfig;
 
-    const isAdmin = departament === 'Admin' && rules === 'full';
+    const isAdmin = departament === 'Admin';
     return (
       <div className="settingsModule">
         <Title classNameTitle="settingsModuleTitle" title={t('settingsModule_title')} />
@@ -430,6 +477,15 @@ class SettingsModule extends PureComponent {
                 {isAdmin && includeRulesSettings ? (
                   <PanelAdmin statusList={settings} onSaveSettings={this.onSaveSettings} />
                 ) : null}
+                <div className="settingsModule__language">
+                  <Select defaultValue={i18n.language} onSelect={this.handleChangeLanguage}>
+                    {i18n.languages.map((lang) => (
+                      <Option key={lang} value={lang}>
+                        {lang}
+                      </Option>
+                    ))}
+                  </Select>
+                </div>
               </div>
             </Scrollbars>
           </div>

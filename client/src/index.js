@@ -3,7 +3,7 @@ import 'react-app-polyfill/ie11';
 import 'react-app-polyfill/stable';
 /** --------------------- */
 import './i18n';
-import React from 'react';
+import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 
 import 'normalize.css';
@@ -22,9 +22,11 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 ReactDOM.render(
-  <Root>
-    <App />
-  </Root>,
+  <Suspense fallback="loading...">
+    <Root>
+      <App />
+    </Root>
+  </Suspense>,
   document.getElementById('root'),
 );
 

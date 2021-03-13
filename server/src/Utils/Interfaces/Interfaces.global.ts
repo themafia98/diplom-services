@@ -52,6 +52,7 @@ export interface ActionsAccess {
 
 export interface JsonConfig {
   menu: MenuConfig[];
+  lang: string;
 }
 
 export interface QueryParams {
@@ -85,6 +86,7 @@ export interface QueryParams {
   queryType?: 'many';
   actionParam?: object;
   pageId?: string;
+  lang?: string;
 }
 
 export interface AccessConfig {
@@ -246,6 +248,7 @@ export interface User extends Document {
   email: string;
   summary: string;
   phone: string;
+  lang: string;
   isOnline: boolean;
   avatar: string;
   isHideEmail: boolean;
@@ -254,8 +257,6 @@ export interface User extends Document {
   displayName: string;
   departament: string;
   position: string;
-  rules: string;
-  accept: boolean;
   token?: string;
   role: Role;
   _plainPassword?: string;

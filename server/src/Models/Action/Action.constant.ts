@@ -3,6 +3,7 @@ import ActionChatRoom from './ActionsEntity/ActionChatRoom';
 import ActionGlobal from './ActionsEntity/ActionGlobal';
 import ActionJournal from './ActionsEntity/ActionJurnal';
 import ActionLogger from './ActionsEntity/ActionLogger';
+import ActionNews from './ActionsEntity/ActionNews';
 import ActionNotification from './ActionsEntity/ActionNotification';
 import ActionSettings from './ActionsEntity/ActionSettings';
 import ActionTasks from './ActionsEntity/ActionTasks';
@@ -20,6 +21,7 @@ export const ACTIONS_ENTITYS_MAP = {
   SETTINGS_LOG: 'settingsLog',
   WIKI: 'wiki',
   SETTINGS: 'settings',
+  NEWS: 'news',
 };
 
 export const ACTIONS_ENTITYS_REGISTER = {
@@ -33,4 +35,5 @@ export const ACTIONS_ENTITYS_REGISTER = {
   [ACTIONS_ENTITYS_MAP.TASKS]: ActionTasks,
   [ACTIONS_ENTITYS_MAP.CHAT_MSG]: ActionChatMessage,
   [ACTIONS_ENTITYS_MAP.USERS]: ActionUsers,
+  [ACTIONS_ENTITYS_MAP.NEWS]: ActionNews,
 };

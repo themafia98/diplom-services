@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Updater from 'Components/Updater';
 import UserPopup from 'Components/UserPopup';
 import NotificationPopup from 'Components/NotificationPopup';
 import Status from './Status';
 import { rightPanelType } from '../HeaderView.types';
-import { Button } from 'antd';
 import { useTranslation } from 'react-i18next';
 
 const RightPanel = ({
@@ -18,20 +17,10 @@ const RightPanel = ({
   appConfig,
   webSocket,
 }) => {
-  const { t, i18n } = useTranslation();
-  const [currentLanguage, setLanguage] = useState(i18n.language);
-
-  const changeLanguage = () => {
-    const nextHardCodeLang = i18n.language === 'ru' ? 'en' : 'ru';
-    setLanguage(nextHardCodeLang);
-    i18n.changeLanguage(nextHardCodeLang);
-  };
+  const { t } = useTranslation();
 
   return (
     <div className="headerControllers rightPanel">
-      <Button className="rightPanel__changeLangButton" onClick={changeLanguage}>
-        {currentLanguage}
-      </Button>
       <UserPopup statusApp={status} udata={udata} goCabinet={goCabinet} />
       <div className="groupControllers">
         <NotificationPopup

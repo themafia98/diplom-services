@@ -9,6 +9,13 @@
     width: 100%;
   }
 
+  .settingsModule__language {
+    margin-top: 5px;
+    .ant-select {
+      width: 100%;
+    }
+  }
+
   .settingsPanel--center-flex {
     display: flex;
     flex-direction: column;

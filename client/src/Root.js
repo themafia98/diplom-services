@@ -5,13 +5,15 @@ import { IntlProvider } from 'react-intl';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import ErrorBoundary from './Components/ErrorBoundary';
+import { useTranslation } from 'react-i18next';
 
 const Root = ({ children }) => {
+  const { i18n } = useTranslation();
   return (
     <BrowserRouter basename={'/'}>
       <ErrorBoundary>
         <Provider store={store}>
-          <IntlProvider locale={'ru'}>{children}</IntlProvider>
+          <IntlProvider locale={i18n.language}>{children}</IntlProvider>
         </Provider>
       </ErrorBoundary>
     </BrowserRouter>

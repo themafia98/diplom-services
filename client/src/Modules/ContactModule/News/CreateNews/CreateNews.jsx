@@ -50,7 +50,14 @@ const CreateNews = memo(({ statusApp, udata, onSetStatus, clientDB, readOnly }) 
         },
         metadata: { title: titleNews, content: contentState, key: uuid() },
       };
-      const res = await createEntity('news', body, { clientDB, statusApp, onSetStatus }, 0, 'createNews');
+      const res = await createEntity(
+        'news',
+        body,
+        { clientDB, statusApp, onSetStatus },
+        0,
+        'createNews',
+        'PUT',
+      );
 
       if (!res.result) {
         throw new Error('Bad create news');

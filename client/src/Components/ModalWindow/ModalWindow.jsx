@@ -133,8 +133,6 @@ const ModalWindow = memo((props) => {
             displayName: `${name} ${surname}`,
             departament,
             position: 'Master',
-            rules: 'full',
-            accept: true,
           },
         },
         false,

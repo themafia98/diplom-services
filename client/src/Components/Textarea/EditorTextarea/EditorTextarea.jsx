@@ -87,7 +87,7 @@ class EditorTextarea extends Component {
 
   render() {
     const { contentState = null } = this.state;
-    const { mode, onPublish, readOnly, disabled, buttonName, shouldDisplayButton, t } = this.props;
+    const { mode, onPublish, readOnly, disabled, buttonName, shouldDisplayButton, t, i18n } = this.props;
 
     const readOnlyProps =
       readOnly && contentState
@@ -103,7 +103,7 @@ class EditorTextarea extends Component {
           key="editor"
           readOnly={disabled || readOnly}
           toolbarHidden={readOnly}
-          localization={{ locale: 'ru' }}
+          localization={{ locale: i18n.language }}
           handlePastedText={this.handlePastedText}
           wrapperClassName="editor-wrapper"
           editorClassName="editor"

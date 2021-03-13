@@ -97,7 +97,6 @@ class WikiModule extends PureComponent {
     const isModuleUpdate = shouldUpdate && visibility && !routeData['wikiModule']?.load;
 
     if (mode !== 'didMount' && isLoading && routeData['wikiModule']?.load) {
-      debugger;
       this.setState({
         ...this.state,
         isLoading: false,
@@ -111,7 +110,7 @@ class WikiModule extends PureComponent {
         sortBy: 'index',
         clientDB,
       });
-      debugger;
+
       this.setState({
         isLoading: false,
       });

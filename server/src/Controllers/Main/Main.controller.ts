@@ -49,13 +49,15 @@ namespace System {
             ? await readFile(path.join(__dirname, '../../', 'core', 'public', 'config.json'))
             : null;
 
-        if (!config || (type === 'private' && !configPublic)) throw new Error('Bad config.json');
+        if (!config || (type === 'private' && !configPublic)) {
+          throw new Error('Bad config.json');
+        }
 
         const parsedJsonPublicConfig: JsonConfig = JSON.parse(config as any);
         let parseConfig = parsedJsonPublicConfig;
 
         if (type === 'private') {
-          const user = await UserModel.findById(Types.ObjectId(uid));
+          const user = (await UserModel.findById(Types.ObjectId(uid))) as User;
 
           const accessUser: AccessRole = new AccessRole(user as User, parsedJsonPublicConfig);
 
@@ -69,6 +71,7 @@ namespace System {
           parseConfig = {
             ...parsedJsonPublicConfig,
             ...parsedJsonPrivateConfig,
+            lang: user ? user.lang : 'en',
           };
 
           if (user) {
