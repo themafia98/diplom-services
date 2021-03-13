@@ -37,6 +37,7 @@ namespace Middleware {
     const user = await UserModel.findById(Types.ObjectId(uid));
     const { access } = (user as Record<string, any>) || {};
 
+
     if (user && req.body && access) {
       availableActions = AccessRole.getAvailableActions(req.body.moduleName || '', access as AccessConfig[]);
     }
