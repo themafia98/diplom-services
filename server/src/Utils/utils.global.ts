@@ -13,6 +13,7 @@ import {
   ActionParams,
   TicketRemote,
   TaskEntity,
+  RequestWithParams,
 } from './Interfaces/Interfaces.global';
 import { v4 as uuid } from 'uuid';
 import { docResponse, ParserResult, Meta } from './Types/types.global';
@@ -21,6 +22,7 @@ import { ROLES } from '../Models/AccessRole/AcessRole.constant';
 import { ParsedUrlQuery } from 'querystring';
 import { CONTROLLERS_MAP } from '../Models/Server/Server.constant';
 import passport from 'passport';
+import { ACTIONS_ACCESS } from '../app.constant';
 
 namespace Utils {
   const upload = multer();
@@ -361,6 +363,28 @@ namespace Utils {
   export const getVersion = (): string => {
     const { API_VERSION = '' } = process.env;
     return API_VERSION;
+  };
+
+  export const signAvailableActions = (req: RequestWithParams, availableActions: string[]) => {
+    req.availableActions = availableActions;
+    availableActions.forEach((action) => {
+      switch (action) {
+        case ACTIONS_ACCESS.CREATE:
+          req.shouldBeCreate = true;
+          return;
+        case ACTIONS_ACCESS.EDIT:
+          req.shouldBeEdit = true;
+          return;
+        case ACTIONS_ACCESS.DELETE:
+          req.shouldBeDelete = true;
+          return;
+        case ACTIONS_ACCESS.VIEW:
+          req.shouldBeView = true;
+          return;
+        default:
+          return;
+      }
+    });
   };
 }
 

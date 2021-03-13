@@ -23,6 +23,14 @@ export interface Controller<T> {
   [key: string]: any;
 }
 
+export interface RequestWithParams extends Request {
+  shouldBeCreate?: boolean;
+  shouldBeEdit?: boolean;
+  shouldBeView?: boolean;
+  shouldBeDelete?: boolean;
+  availableActions?: string[];
+}
+
 export interface ServiceConstructor<T> {
   new (...props: any): T;
 }

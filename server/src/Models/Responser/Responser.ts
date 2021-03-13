@@ -1,4 +1,4 @@
-import { ResponseBuilder } from '../../Utils/Interfaces/Interfaces.global';
+import { RequestWithParams, ResponseBuilder } from '../../Utils/Interfaces/Interfaces.global';
 import { Params, Request as RequestCustom } from '../../Utils/Interfaces/Interfaces.global';
 import { Response, Request } from 'express';
 import { ParserResult } from '../../Utils/Types/types.global';
@@ -62,8 +62,7 @@ class Responser implements ResponseBuilder {
   }
 
   private async doneResponse(): Promise<Response> {
-    const { user = null } = this.req as Record<string, any>;
-    const { availableActions = null } = user?.actions || {};
+    const { availableActions = null } = this.req as RequestWithParams;
 
     return this.res.json(
       getResponseJson(
@@ -76,19 +75,21 @@ class Responser implements ResponseBuilder {
   }
 
   private async serverErrorResponse(): Promise<Response> {
+    const { availableActions = null } = this.req as RequestWithParams;
     loggerError(JSON.stringify(this.err));
+
     return this.res.json(
       getResponseJson(
         (this.err as Error).name,
         { metadata: 'Server error', params: this.params, done: false, status: 'FAIL' },
         (this.req as Record<string, any>).start,
+        this.req.method !== 'GET' ? availableActions : null,
       ),
     );
   }
 
   private async errorResponse(): Promise<Response> {
-    const { user = null } = this.req as Record<string, any>;
-    const { availableActions = null } = user?.actions || {};
+    const { availableActions = null } = this.req as RequestWithParams;
 
     const status: string = this.getErrorStatus();
     return this.res.json(
