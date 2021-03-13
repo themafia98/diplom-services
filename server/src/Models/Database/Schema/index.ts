@@ -25,6 +25,7 @@ const userSchema: Schema<User> = new Schema(
     avatar: { type: String, default: '', required: false },
     isHideEmail: { type: Boolean, default: false },
     isHidePhone: { type: Boolean, default: false },
+    access: { type: Array, default: [], required: false },
   },
   { timestamps: true },
 );

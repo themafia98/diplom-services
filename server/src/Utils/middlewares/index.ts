@@ -2,7 +2,7 @@ import { Response, NextFunction, Request } from 'express';
 import passport from 'passport';
 import JwtStrategy, { ExtractJwt } from 'passport-jwt';
 import LocalStrategy from 'passport-local';
-import { Dbms, User } from '../Interfaces/Interfaces.global';
+import { AccessConfig, Dbms, User } from '../Interfaces/Interfaces.global';
 import { UserModel } from '../../Models/Database/Schema';
 import url from 'url';
 import querystring from 'querystring';
@@ -10,6 +10,7 @@ import { isValidObjectId, Types } from 'mongoose';
 import AccessRole from '../../Models/AccessRole';
 import { ACTIONS_ACCESS } from '../../app.constant';
 import authConfig from '../../config/auth.config';
+import { decode } from 'jsonwebtoken';
 
 namespace Middleware {
   export const timer = (req: Request, res: Response, next: NextFunction): void => {
@@ -21,21 +22,39 @@ namespace Middleware {
     const request = req as Record<string, any>;
 
     const { query } = url.parse(request.url);
-    const { uid = '' } = querystring.parse(query as string);
+    const { uid: urlUid = '' } = querystring.parse(query as string);
 
-    const { user = null } = request as Record<string, null | object | AccessRole>;
+    const jwtToken = ExtractJwt.fromAuthHeaderAsBearerToken()(req);
+    const payload = jwtToken ? decode(jwtToken) : null;
 
-    if (user && request.user.access && request.body) {
-      request.user.availableActions = AccessRole.getAvailableActions(
+    let uid = null;
+    let availableActions = null;
+
+    if (urlUid) {
+      uid = urlUid;
+    } else if (payload && payload.sub) {
+      uid = payload.sub;
+    }
+
+    const user = await UserModel.findById(Types.ObjectId(uid));
+    const { access } = (user as Record<string, any>) || {};
+
+    if (user && request.body && access) {
+      availableActions = AccessRole.getAvailableActions(
         request.body.moduleName || '',
-        request.user.access,
+        access as AccessConfig[],
       );
     }
 
     const { actionType = '' } = req.body;
 
-    if ((<string>actionType).toUpperCase().includes(ACTIONS_ACCESS.CREATE) && request.user) {
-      request.shouldBeCreate = request.user.availableActions.some(
+    if (process.env.NODE_ENV === 'development') {
+      console.log('actionType:', actionType);
+      console.log('availableActions:', availableActions);
+    }
+
+    if ((<string>actionType).toUpperCase().includes(ACTIONS_ACCESS.CREATE) && availableActions) {
+      request.shouldBeCreate = (<string[]>availableActions).some(
         (it: string) => it === ACTIONS_ACCESS.CREATE,
       );
     }
@@ -45,7 +64,8 @@ namespace Middleware {
       return;
     }
 
-    request.uid = Types.ObjectId(uid as string);
+    request.uid = isValidObjectId(uid) ? Types.ObjectId(uid as string) : null;
+
     next();
   };
 
