@@ -6,7 +6,7 @@ import Title from 'Components/Title';
 import EditorTextarea from 'Components/Textarea/EditorTextarea';
 import { message, notification, Input } from 'antd';
 
-import { createNotification, createEntity } from 'Utils';
+import { createNotification, createEntity, showSystemMessage } from 'Utils';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { compose } from 'redux';
 import { withClientDb } from 'Models/ClientSideDatabase';
@@ -52,17 +52,21 @@ const CreateNews = memo(({ statusApp, udata, onSetStatus, clientDB, readOnly }) 
       };
       const res = await createEntity('news', body, { clientDB, statusApp, onSetStatus }, 0, 'createNews');
 
-      const { result = {}, offline = false } = res || {};
-      const { data = {} } = result;
-      const { response = {} } = data;
-      const { metadata = {}, params = {} } = response;
+      if (!res.result) {
+        throw new Error('Bad create news');
+      }
 
+      const { data } = res.result;
+      const { metadata, params } = data.response;
       const { done = false } = params;
-      const { _id: id = '', key = '' } = metadata;
 
-      if (!done && !offline) throw new Error('Bad create news');
+      const { _id: id, key } = metadata;
 
-      if (!offline) {
+      if (!done && !res.offline) {
+        throw new Error('Bad create news');
+      }
+
+      if (!res.offline) {
         const itemNotification = {
           type: 'global',
           title: 'Новость',
@@ -86,11 +90,13 @@ const CreateNews = memo(({ statusApp, udata, onSetStatus, clientDB, readOnly }) 
       setClear(true);
       message.success(t('news_create_messages_newsCreate'));
     } catch (error) {
-      if (error?.response?.status !== 404) console.error(error);
-      notification.error({
-        title: t('news_create_messages_errorCreateNewNews'),
-        message: t('news_create_messages_invalidData'),
-      });
+      const { status } = error?.response || {};
+
+      if (status !== 404) {
+        console.error(error);
+      }
+
+      showSystemMessage('error', t('news_create_messages_invalidData'));
     }
   };
 

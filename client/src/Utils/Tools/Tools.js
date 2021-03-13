@@ -7,6 +7,7 @@ import types from 'types.modules';
 import actionsTypes from 'actions.types';
 import { requestTemplate, paramsTemplate } from 'Utils/Api/api.utils';
 import { APP_STATUS } from 'App.constant';
+import { showSystemMessage } from 'Utils';
 
 const findUser = async (uid) => {
   if (!uid) return null;
@@ -103,6 +104,14 @@ const createEntity = async (storeName, params, dep, sliceCreaterNumber, customTa
 
       return await createEntity(storeName, params, { ...dep, statusApp: APP_STATUS.OFF }, sliceCreaterNumber);
     }
+
+    const { response } = error?.response.data || {};
+    const { customErrorMessage = '' } = response?.params || {};
+
+    if (customErrorMessage) {
+      showSystemMessage('error', customErrorMessage);
+    }
+
     return { result: null, offline: null };
   }
 };
