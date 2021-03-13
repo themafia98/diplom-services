@@ -14,7 +14,6 @@ import {
   Actions,
   User,
   JsonConfig,
-  AccessConfig,
 } from '../../Utils/Interfaces/Interfaces.global';
 import { ResRequest } from '../../Utils/Types/types.global';
 
@@ -26,6 +25,7 @@ import { createParams } from '../Controllers.utils';
 import { NOTIFICATION_TYPE } from './MainController.constant';
 import { MAIN_ROUTE } from './Main.path';
 import Utils from '../../Utils/utils.global';
+import { Types } from 'mongoose';
 
 namespace System {
   const readFile = promisify(fs.readFile);
@@ -55,7 +55,7 @@ namespace System {
         let parseConfig = parsedJsonPublicConfig;
 
         if (type === 'private') {
-          const user = await UserModel.findOne({ _id: uid });
+          const user = await UserModel.findById(Types.ObjectId(uid));
 
           const accessUser: AccessRole = new AccessRole(user as User, parsedJsonPublicConfig);
 
@@ -71,7 +71,9 @@ namespace System {
             ...parsedJsonPrivateConfig,
           };
 
-          if (req.user) (<Record<string, AccessConfig[]>>(<unknown>req.user)).access = accessUser.config;
+          if (user) {
+            await UserModel.updateOne({ _id: Types.ObjectId(uid) }, { access: accessUser.config });
+          }
         }
 
         res.json(parseConfig);

@@ -117,6 +117,7 @@ class Schema {
             avatar: { type: 'string', default: '' },
             isHideEmail: { type: 'boolean' },
             isHidePhone: { type: 'boolean' },
+            access: { type: 'array', default: [] },
           },
         };
       case NEWS_SCHEMA:
