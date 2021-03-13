@@ -10,6 +10,16 @@
     "error": "Error"
   },
   "components": {
+    "table": {
+      "taskConfig": {
+        "status": "Status",
+        "name": "Name",
+        "priority": "Priority",
+        "author": "Author",
+        "editor": "Executor",
+        "date": "Deadline"
+      }
+    },
     "editorTextarea": {
       "addButton": "Publish"
     },

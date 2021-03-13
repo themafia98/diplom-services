@@ -10,6 +10,16 @@
     "error": "Ошибка"
   },
   "components": {
+    "table": {
+      "taskConfig": {
+        "status": "Статус",
+        "name": "Наименование",
+        "priority": "Приоритет",
+        "author": "Автор",
+        "editor": "Исполнитель",
+        "date": "Сроки"
+      }
+    },
     "editorTextarea": {
       "addButton": "Опубликовать"
     },

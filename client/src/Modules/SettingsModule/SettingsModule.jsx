@@ -329,7 +329,7 @@ class SettingsModule extends PureComponent {
 
       const { oldPassword = '', newPassword = '' } = state;
       if (!oldPassword || !newPassword) {
-        message.warning(t('settingsModule_messsages_badPassword'));
+        message.warning(t('settingsModule_messages_badPassword'));
         return;
       }
 

@@ -2,7 +2,7 @@ import React, { createRef, PureComponent } from 'react';
 import { tableType } from '../TableView.types';
 import moment from 'moment';
 import Output from 'Components/Output';
-import { Table as AntTable, message, Empty } from 'antd';
+import { Table as AntTable, message, Empty, Input, Button } from 'antd';
 import { getDataSource, findData } from 'Utils';
 import ModelContext from 'Models/context';
 import { connect } from 'react-redux';
@@ -14,6 +14,8 @@ import {
 import { createTableConfig } from './Table.utils';
 import { TABLE_TYPE } from './Table.constant';
 import { getStatusByTitle } from './Table.utils';
+import { compose } from 'redux';
+import { withTranslation } from 'react-i18next';
 
 class Table extends PureComponent {
   state = {
@@ -53,58 +55,71 @@ class Table extends PureComponent {
     return state;
   };
 
+  getFilterDropdown = (dataValue) => ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => {
+    return (
+      <div className="Table-controllers">
+        <Input
+          className="searchInput-popover"
+          ref={this.searchInputRef}
+          placeholder={`Поиск по ${dataValue}`}
+          value={selectedKeys[0]}
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => this.handleSearch(selectedKeys, confirm)}
+        />
+        <Button
+          className="buttonSearch-popover"
+          type="primary"
+          onClick={() => this.handleSearch(selectedKeys, confirm, dataValue)}
+          icon="search"
+          size="small"
+        >
+          Искать
+        </Button>
+        <Button className="buttonReset-popover" onClick={() => this.handleReset(clearFilters)} size="small">
+          Сброс
+        </Button>
+      </div>
+    );
+  };
+
   getTaskConfigColumns = () => {
-    const { router } = this.props;
+    const { router, t } = this.props;
     const routerData = router.routeData[router.path] || {};
     const { saveData = {} } = routerData;
     const { sortedInfo = [] } = saveData;
 
     const columns = [
       {
-        name: 'Статус',
         dataValue: 'status',
-        render: this.getColumnRender.call(this, 'status'),
       },
       {
-        name: 'Наименование',
         dataValue: 'name',
-        render: this.getColumnRender.call(this, 'name'),
       },
       {
-        name: 'Приоритет',
         dataValue: 'priority',
-        render: this.getColumnRender.call(this, 'priority'),
       },
       {
-        name: 'Автор',
         dataValue: 'author',
-        render: this.getColumnRender.call(this, 'author'),
       },
       {
-        name: 'Исполнитель',
         dataValue: 'editor',
         customSorter: (a, b) => (a.editor && b.editor ? a.editor[0] - b.editor[0] : null),
-        render: this.getColumnRender.call(this, 'author'),
       },
       {
-        name: 'Сроки',
         dataValue: 'date',
         customSorter: (a, b) => {
           if (a.date && b.date) {
             return moment(a.date[0], 'DD:MM:YYYY') - moment(b.date[0], 'DD:MM:YYYY');
           }
         },
-        render: this.getColumnRender.call(this, 'data'),
       },
-    ];
+    ].map((column) => ({
+      ...column,
+      name: t(`components_table_taskConfig_${column.dataValue}`),
+      render: this.getColumnRender.bind(this),
+    }));
 
-    return createTableConfig(
-      columns,
-      sortedInfo,
-      this.searchInputRef,
-      this.handleSearch.bind(this),
-      this.handleReset.bind(this),
-    );
+    return createTableConfig(columns, sortedInfo, this.searchInputRef, this.getFilterDropdown.bind(this));
   };
 
   handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -117,7 +132,7 @@ class Table extends PureComponent {
     this.setState({ searchText: '' });
   };
 
-  getColumnRender = () => (text, currentData) => {
+  getColumnRender = (text, currentData) => {
     const { router, depDataKey, udata } = this.props;
     const isDateString = Array.isArray(text) && moment(text[0], 'DD.MM.YYYY')?._isValid;
     const isArrayEditors = Array.isArray(text) && !isDateString;
@@ -128,6 +143,7 @@ class Table extends PureComponent {
     const index = listKeys.findIndex((key) => currentData[key] === text);
     const currentKey = listKeys[index] || null;
     const isEditor = currentKey === 'editor';
+
     let propsOutput = isEditor
       ? {
           typeOutput: 'default',
@@ -139,7 +155,7 @@ class Table extends PureComponent {
           isLoad: true,
           isStaticList: true,
         }
-      : {};
+      : null;
 
     const children =
       isEditor && Array.isArray(text)
@@ -153,6 +169,10 @@ class Table extends PureComponent {
         : isDateString
         ? text.join(' - ')
         : text;
+
+    if (!children && propsOutput === null) {
+      return null;
+    }
 
     return (
       <Output {...propsOutput} className={className ? className : currentKey}>
@@ -171,13 +191,14 @@ class Table extends PureComponent {
           routeParser,
           routePathNormalise,
           appConfig: config,
+          t,
         } = this.props;
 
         const { key: recordKey = '', _id: id = '' } = record || {};
         if (!id && !recordKey) return;
         const key = id ? id : recordKey;
         if (config.tabsLimit <= activeTabs.length)
-          return message.error(`Максимальное количество вкладок: ${config.tabsLimit}`);
+          return message.error(`${t('globalMessages_maxTabs')} ${config.tabsLimit}`);
 
         const { moduleId = '', page = '' } = routeParser({ path });
         if (!moduleId || !page) return;
@@ -293,4 +314,4 @@ const mapDispatchToProps = (dispatch) => ({
   onAddRouteData: (data) => dispatch(addToRouteDataAction(data)),
 });
 
-export default connect(mapStateTopProps, mapDispatchToProps)(Table);
+export default compose(connect(mapStateTopProps, mapDispatchToProps), withTranslation())(Table);

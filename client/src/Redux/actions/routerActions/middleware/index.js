@@ -290,7 +290,7 @@ const openTab = ({ uuid, action, depKey = '', data = null, openType = '' }) => a
   let normalizeData = null;
 
   if (shouldBeTryLoad && uuid !== uid) {
-    dispatch(setSystemMessageAction({ msg: 'Открытие страницы', type: 'loading' }));
+    dispatch(setSystemMessageAction({ msg: 'Action in progress...', type: 'loading' }));
     normalizeData = await findUser(uuid || uid);
   }
 
