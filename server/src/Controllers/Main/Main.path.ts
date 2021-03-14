@@ -11,6 +11,7 @@ export const MAIN_ROUTE: Record<string, Record<string, string>> = {
     UPDATE_SINGLE: `/:${ROUTE_PARAMS.MODULE}/update/single`,
     UPDATE_MANY: `/:${ROUTE_PARAMS.MODULE}/update/many`,
     LOAD_NOTIFICATION: `/:${ROUTE_PARAMS.TYPE}/notification`,
+    CHECK_AVAILABLE_PAGE: '/security/page',
     SYNC: '/sync',
   },
 };

@@ -14,6 +14,7 @@ import {
   Actions,
   User,
   JsonConfig,
+  RequestWithParams,
 } from '../../Utils/Interfaces/Interfaces.global';
 import { ResRequest } from '../../Utils/Types/types.global';
 
@@ -26,6 +27,7 @@ import { NOTIFICATION_TYPE } from './MainController.constant';
 import { MAIN_ROUTE } from './Main.path';
 import Utils from '../../Utils/utils.global';
 import { Types } from 'mongoose';
+import Responser from '../../Models/Responser';
 
 namespace System {
   const readFile = promisify(fs.readFile);
@@ -266,6 +268,22 @@ namespace System {
 
       const responseExec: Function = await syncAction.actionsRunner(body);
       return responseExec(req, res, params);
+    }
+
+    @Post({ path: MAIN_ROUTE[Utils.getVersion()].CHECK_AVAILABLE_PAGE, private: true })
+    protected async checkPage(req: Request, res: Response): ResRequest {
+      const activePage = req.body;
+
+      if (!activePage) {
+        return new Responser(res, req, {} as Params, null, 404, []).sendMessage();
+        return;
+      }
+
+      if (!(<RequestWithParams>req).shouldBeView) {
+        return new Responser(res, req, {} as Params, null, 403, []).sendMessage();
+      }
+
+      return new Responser(res, req, {} as Params, null, 200, []).sendMessage();
     }
   }
 }

@@ -193,6 +193,40 @@ const getValidRouteData = ({ currentRouteData }, { uuid, depRouteDataKey }, stor
   return null;
 };
 
+/**
+ *
+ * @param {Object} activePage
+ * @param {Request} rest
+ * @returns
+ */
+const checkPageAvailable = async (activePage, rest) => {
+  try {
+    let moduleName = null;
+    const moduleIndex = activePage.path.indexOf('Module');
+
+    if (!moduleName && moduleName !== 0) {
+      moduleName = activePage.path.slice(0, moduleIndex + 'Module'.length);
+    }
+
+    const response = await rest.sendRequest(
+      '/system/security/page',
+      'POST',
+      { moduleName, activePage },
+      true,
+    );
+
+    if (response.status !== 200) {
+      throw new Error('Invlid page');
+    }
+  } catch (error) {
+    console.error(error);
+    debugger;
+    return false;
+  }
+
+  return true;
+};
+
 const tools = {
   createNotification,
   createEntity,
@@ -202,6 +236,7 @@ const tools = {
   oneOfType,
   getValidRouteData,
   findUser,
+  checkPageAvailable,
 };
 
 export default tools;

@@ -1,4 +1,4 @@
-import { sucessEvent, routePathNormalise, findData, routeParser, findUser } from 'Utils';
+import { sucessEvent, routePathNormalise, findData, routeParser, findUser, checkPageAvailable } from 'Utils';
 import reduxCoreThunk from 'Redux/core';
 import { saveComponentStateAction, loadFlagAction, openPageWithDataAction, setActiveTabAction } from '../';
 import { errorRequestAction, setStatus } from '../../publicActions';
@@ -222,7 +222,11 @@ const multipleLoadData = (params) => async (dispatch, getState, { schema, Reques
   }
 };
 
-const openTab = ({ uuid, action, depKey = '', data = null, openType = '' }) => async (dispatch, getState) => {
+const openTab = ({ uuid, action, depKey = '', data = null, openType = '' }) => async (
+  dispatch,
+  getState,
+  { Request },
+) => {
   const { publicReducer, router } = getState();
   const { activeTabs = [], routeData = {} } = router;
   const { appConfig = {}, udata } = publicReducer;
@@ -260,13 +264,22 @@ const openTab = ({ uuid, action, depKey = '', data = null, openType = '' }) => a
 
     const { path } = activePageParsed || {};
 
+    const activePage = {
+      ...activePageParsed,
+      path,
+      from: openType,
+    };
+
+    const isAvailablePage = await checkPageAvailable(activePage, new Request());
+
+    if (!isAvailablePage) {
+      console.error('Not access for open page', activePage);
+      return;
+    }
+
     dispatch(
       openPageWithDataAction({
-        activePage: {
-          ...activePageParsed,
-          path,
-          from: openType,
-        },
+        activePage,
         routeDataActive: { ...data },
       }),
     );
