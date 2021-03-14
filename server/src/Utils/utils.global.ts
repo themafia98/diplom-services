@@ -384,7 +384,6 @@ namespace Utils {
         case ACTIONS_ACCESS.READ_VIEW:
           req.shouldBeView = true;
           return;
-          return;
         default:
           return;
       }
