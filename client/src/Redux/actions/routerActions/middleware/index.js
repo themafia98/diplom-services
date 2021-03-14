@@ -323,6 +323,13 @@ const openTab = ({ uuid, action, depKey = '', data = null, openType = '' }) => a
     pathData: { page, moduleId, key: uuid },
   });
 
+  const isAvailablePage = await checkPageAvailable(activePage, new Request());
+
+  if (!isAvailablePage) {
+    console.error('Not access for open page');
+    return;
+  }
+
   const indexTab = activeTabs.findIndex(
     (tab) => (uid === uuid && tab === page) || (tab.includes(page) && tab.includes(uuid)),
   );
