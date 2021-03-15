@@ -482,7 +482,6 @@ window.addEventListener('appinstalled', (evt) => {
   console.log('appinstalled fired', evt);
 });
 
-Dashboard.contextType = ModelContext;
 Dashboard.propTypes = dashboardType;
 
 export default Dashboard;
