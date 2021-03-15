@@ -68,20 +68,26 @@ const withSystemConfig = (Component) => (props) => {
     fetchConfig();
   }, [fetchConfig, typeConfig]);
 
-  if (!coreConfig && !isBlock) return <Loader title="Loading settings" />;
-  else if (isBlock)
+  const createFetchPrivateConfig = useCallback(() => fetchConfig.bind(this, 'private'), [fetchConfig]);
+
+  if (!coreConfig && !isBlock) {
+    return <Loader title="Loading settings" />;
+  }
+
+  if (isBlock) {
     return (
       <Suspense fallback="loading">
         <NotFound trace={trace} redirectType="hard" showRedirectIndexButton />
       </Suspense>
     );
+  }
 
   return (
     <Component
       {...props}
       coreConfig={coreConfig}
       typeConfig={typeConfig?.current}
-      fetchConfig={fetchConfig.bind(this, 'private')}
+      fetchConfig={createFetchPrivateConfig()}
     />
   );
 };
