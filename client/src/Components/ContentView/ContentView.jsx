@@ -96,7 +96,7 @@ const ContentView = ({
       return null;
     }
     const tabProps = {
-      getBackground: this.getBackground,
+      getBackground,
       activeTabs,
       visibilityPortal,
       onChangeVisibleAction,
