@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback, useContext } from 'react';
+import React, { useRef, useState, useEffect, useCallback, useContext, useMemo } from 'react';
 import { dashboardType } from './Dashboard.types';
 import { Redirect } from 'react-router-dom';
 import { EventEmitter } from 'events';
@@ -230,7 +230,7 @@ const Dashboard = () => {
 
   const closeGuild = () => setGuildVisible(false);
 
-  const updateLoader = () => {
+  const updateLoader = useCallback(() => {
     const copyRouteData = { ...routeData };
 
     let currentArray = currentActionTab.split(regExpRegister.MODULE_KEY);
@@ -243,39 +243,37 @@ const Dashboard = () => {
     if (keys.length && !shouldUpdate) {
       showLoader(true);
     }
-  };
+  }, [currentActionTab, routeData, shouldUpdate, showLoader]);
 
-  const getTabName = (metadata = {}, DATAKEY = '') => getAvailableTabNameKey(DATAKEY, metadata);
+  const activeTabsData = useMemo(() => {
+    const { menuItems } = appConfig;
 
-  const getActiveTabs = (_tabs = [], menu) => {
-    const tabs = [..._tabs];
-    const normalizeTabsList = [];
+    const tabs = [...activeTabs];
+    const activeTabsData = [];
 
     for (const tab of tabs) {
-      let tabItem = Array.isArray(menu) ? menu.find((tab) => tab.EUID === tab) : null;
-
-      if (!tabItem) {
-        const PAGEDATA = routeParser({ pageType: 'page', path: tab });
-        const PARENT_CODE = PAGEDATA['page'];
-        const DATAKEY = PAGEDATA['pageChild'] || PAGEDATA['page'] || '';
-        const VALUE = getTabName(routeData[DATAKEY], DATAKEY);
-        tabItem = {
-          EUID: PAGEDATA['path'] || tab,
-          PARENT_CODE,
-          DATAKEY,
-          VALUE,
-        };
-      }
+      const tabItem = menuItems.find((tab) => tab.EUID === tab);
 
       if (tabItem) {
-        normalizeTabsList.push({ ...tabItem });
+        activeTabsData.push({ ...tabItem });
+        continue;
       }
+
+      const { page, path, pageChild } = routeParser({ pageType: 'page', path: tab });
+      const DATAKEY = pageChild || page || '';
+      const VALUE = getAvailableTabNameKey(DATAKEY, routeData[DATAKEY]);
+      activeTabsData.push({
+        EUID: path || tab,
+        PARENT_CODE: page,
+        DATAKEY,
+        VALUE,
+      });
     }
 
-    return normalizeTabsList;
-  };
+    return activeTabsData;
+  }, [activeTabs, appConfig, routeData]);
 
-  const goHome = () => {
+  const goHome = useCallback(() => {
     const { tabsLimit = 50 } = appConfig;
 
     if (currentActionTab === 'mainModule') {
@@ -292,9 +290,9 @@ const Dashboard = () => {
       return;
     }
     dispatch(setActiveTabAction('mainModule'));
-  };
+  }, [activeTabs, appConfig, currentActionTab, dispatch]);
 
-  const goCabinet = () => {
+  const goCabinet = useCallback(() => {
     const { tabsLimit = 50 } = appConfig;
 
     if (currentActionTab === 'cabinetModule') {
@@ -312,42 +310,45 @@ const Dashboard = () => {
     }
 
     dispatch(setActiveTabAction('cabinetModule'));
-  };
+  }, [activeTabs, appConfig, currentActionTab, dispatch]);
 
-  const menuHandler = (event, key, mode = 'open') => {
-    const path = event['key'] ? event['key'] : key;
-    const { tabsLimit = 50 } = appConfig;
+  const menuHandler = useCallback(
+    (event, key, mode = 'open') => {
+      const path = event['key'] ? event['key'] : key;
+      const { tabsLimit = 50 } = appConfig;
 
-    const activeTabsCopy = [...activeTabs];
-    const isFind = activeTabsCopy.findIndex((tab) => tab === path) !== -1;
+      const activeTabsCopy = [...activeTabs];
+      const isFind = activeTabsCopy.findIndex((tab) => tab === path) !== -1;
 
-    if (mode === 'open') {
-      if (!isFind && tabsLimit <= activeTabsCopy.length) {
-        message.error(`Максимальное количество вкладок: ${tabsLimit}`);
-        return;
+      if (mode === 'open') {
+        if (!isFind && tabsLimit <= activeTabsCopy.length) {
+          message.error(`Максимальное количество вкладок: ${tabsLimit}`);
+          return;
+        }
+
+        if (!isFind) {
+          dispatch(addTabAction(routeParser({ path })));
+        } else if (currentActionTab !== path) {
+          const { config = null } = routeData[path] || {};
+          dispatch(setActiveTabAction({ tab: path, config }));
+        }
+      } else if (mode === 'close') {
+        const [, entityId] = path.split(regExpRegister.MODULE_ID);
+
+        let type = entityId ? 'itemTab' : 'deafult';
+
+        if (entityId && !isFind) {
+          return;
+        }
+
+        if (entityId) {
+          dispatch(removeTabAction({ path: path, type: type }));
+          dispatch(clearCache({ path, type: type, currentActionTab }));
+        }
       }
-
-      if (!isFind) {
-        dispatch(addTabAction(routeParser({ path })));
-      } else if (currentActionTab !== path) {
-        const { config = null } = routeData[path] || {};
-        dispatch(setActiveTabAction({ tab: path, config }));
-      }
-    } else if (mode === 'close') {
-      const [, entityId] = path.split(regExpRegister.MODULE_ID);
-
-      let type = entityId ? 'itemTab' : 'deafult';
-
-      if (entityId && !isFind) {
-        return;
-      }
-
-      if (entityId) {
-        dispatch(removeTabAction({ path: path, type: type }));
-        dispatch(clearCache({ path, type: type, currentActionTab }));
-      }
-    }
-  };
+    },
+    [activeTabs, appConfig, currentActionTab, dispatch, routeData],
+  );
 
   const installApp = () => {
     Notification.requestPermission();
@@ -371,31 +372,31 @@ const Dashboard = () => {
     });
   };
 
-  const onChangeVisibleAction = (event, shouldChange = false, forceChangeState = true) => {
-    const isShoudChange = !event && shouldChange;
+  const onChangeVisibleAction = useCallback(
+    (event, shouldChange = false, forceChangeState = true) => {
+      const isShoudChange = !event && shouldChange;
 
-    if (!forceChangeState && isToolbarActive === shouldChange) {
-      return;
-    }
+      if (!forceChangeState && isToolbarActive === shouldChange) {
+        return;
+      }
 
-    if (!forceChangeState && isToolbarActive !== shouldChange) {
-      setToolbarActive(shouldChange);
-      return;
-    }
+      if (!forceChangeState && isToolbarActive !== shouldChange) {
+        setToolbarActive(shouldChange);
+        return;
+      }
 
-    if (isShoudChange && isToolbarActive !== !shouldChange) {
-      setToolbarActive(shouldChange);
-    }
+      if (isShoudChange && isToolbarActive !== !shouldChange) {
+        setToolbarActive(shouldChange);
+      }
 
-    if (isShoudChange) {
-      return;
-    }
+      if (isShoudChange) {
+        return;
+      }
 
-    setToolbarActive(!isToolbarActive);
-  };
-
-  const { menu: menuItems = [] } = appConfig || {};
-  const activeTabsData = !redirect ? getActiveTabs(activeTabs, menuItems) : null;
+      setToolbarActive(!isToolbarActive);
+    },
+    [isToolbarActive],
+  );
 
   if (redirect) {
     return <Redirect to={{ pathname: '/' }} />;
@@ -407,7 +408,7 @@ const Dashboard = () => {
       <Layout className="layout_menu">
         <MenuView
           key="menu"
-          items={menuItems}
+          items={appConfig?.menu}
           activeTabEUID={currentActionTab}
           cbMenuHandler={menuHandler}
           collapsed={collapsed}
