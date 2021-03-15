@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { getComponentByKey, parseModuleKey, getModuleTypeByParsedKey } from 'Utils';
 import { contentViewType } from './ContentView.types';
 import _ from 'lodash';
@@ -13,186 +13,188 @@ import { APP_STATUS } from 'App.constant';
 
 const { Content } = Layout;
 
-const ContentView = ({
-  isToolbarActive,
-  dashboardStrem,
-  path,
-  activeTabs,
-  router,
-  updateLoader,
-  statusApp,
-  rest,
-  webSocket,
-  onChangeVisibleAction,
-  shouldShowSpinner,
-  appConfig,
-}) => {
-  const [visibilityPortal, setVisiblePortal] = useState(false);
-  const [refreshKey, setRefreshKey] = useState(uuid);
+const ContentView = memo(
+  ({
+    isToolbarActive,
+    dashboardStrem,
+    path,
+    activeTabs,
+    router,
+    updateLoader,
+    statusApp,
+    rest,
+    webSocket,
+    onChangeVisibleAction,
+    shouldShowSpinner,
+    appConfig,
+  }) => {
+    const [visibilityPortal, setVisiblePortal] = useState(false);
+    const [refreshKey, setRefreshKey] = useState(uuid);
 
-  const { currentActionTab } = router;
+    const { currentActionTab } = router;
 
-  const updateFunction = useMemo(
-    () =>
-      _.debounce((forceUpdate) => {
-        setRefreshKey(uuid());
+    const updateFunction = useMemo(
+      () =>
+        _.debounce((forceUpdate) => {
+          setRefreshKey(uuid());
 
-        if (!forceUpdate) {
-          return;
+          if (!forceUpdate) {
+            return;
+          }
+
+          updateLoader();
+        }, 300),
+      [updateLoader],
+    );
+
+    const disableF5 = useCallback(
+      (event) => {
+        if ((event.which || event.keyCode) === 116) {
+          event.preventDefault();
+          updateFunction(true);
+        }
+      },
+      [updateFunction],
+    );
+
+    useEffect(() => {
+      if (isToolbarActive !== visibilityPortal) {
+        setVisiblePortal(isToolbarActive);
+      }
+    }, [isToolbarActive, visibilityPortal]);
+
+    useEffect(() => {
+      document.addEventListener('keydown', disableF5);
+      dashboardStrem.on('EventUpdate', updateFunction);
+      return () => {
+        document.removeEventListener('keydown', disableF5);
+        dashboardStrem.off('EventUpdate', updateFunction);
+      };
+    }, [dashboardStrem, disableF5, updateFunction]);
+
+    const checkBackground = useCallback(
+      (path) => {
+        if (!activeTabs) {
+          return false;
         }
 
-        updateLoader();
-      }, 300),
-    [updateLoader],
-  );
+        return activeTabs.some(
+          (actionTab) => (actionTab.startsWith(path) || actionTab === path) && currentActionTab !== actionTab,
+        );
+      },
+      [activeTabs, currentActionTab],
+    );
 
-  const disableF5 = useCallback(
-    (event) => {
-      if ((event.which || event.keyCode) === 116) {
-        event.preventDefault();
-        updateFunction(true);
-      }
-    },
-    [updateFunction],
-  );
+    const getBackground = useCallback(
+      (moduleName) => {
+        return !path?.includes(moduleName) && checkBackground(moduleName);
+      },
+      [path, checkBackground],
+    );
 
-  useEffect(() => {
-    if (isToolbarActive !== visibilityPortal) {
-      setVisiblePortal(isToolbarActive);
-    }
-  }, [isToolbarActive, visibilityPortal]);
-
-  useEffect(() => {
-    document.addEventListener('keydown', disableF5);
-    dashboardStrem.on('EventUpdate', updateFunction);
-    return () => {
-      document.removeEventListener('keydown', disableF5);
-      dashboardStrem.off('EventUpdate', updateFunction);
-    };
-  }, [dashboardStrem, disableF5, updateFunction]);
-
-  const checkBackground = useCallback(
-    (path) => {
+    const tabs = useMemo(() => {
       if (!activeTabs) {
-        return false;
+        return null;
       }
-
-      return activeTabs.some(
-        (actionTab) => (actionTab.startsWith(path) || actionTab === path) && currentActionTab !== actionTab,
-      );
-    },
-    [activeTabs, currentActionTab],
-  );
-
-  const getBackground = useCallback(
-    (moduleName) => {
-      return !path?.includes(moduleName) && checkBackground(moduleName);
-    },
-    [path, checkBackground],
-  );
-
-  const tabs = useMemo(() => {
-    if (!activeTabs) {
-      return null;
-    }
-    const tabProps = {
-      getBackground,
-      activeTabs,
-      visibilityPortal,
-      onChangeVisibleAction,
-      router,
-      webSocket,
-      statusApp,
-      rest,
-      path,
-    };
-
-    return activeTabs.reduce((tabsComponents, tabKey, index, tabs) => {
-      const [moduleNameDirty = '', subModuleName = '', entityDataId = ''] = parseModuleKey(tabKey);
-
-      const [moduleName] = moduleNameDirty.split('#');
-      const type = getModuleTypeByParsedKey(moduleNameDirty, subModuleName, entityDataId);
-      const Component = getComponentByKey(tabKey, types.$entrypoint_module);
-      const entrypointChildrenExist = !!tabs.find(
-        (tab) => path.includes(moduleName) && tab !== tabKey && tab.includes(moduleName),
-      );
-
-      const isExistTab = tabs.slice(0, index + 1).some((tab) => tab?.includes(moduleName));
-      const isExsistModule = tabsComponents.find(({ type: typeModule = '', tabKey: key }) => {
-        switch (typeModule) {
-          case types.$entity_entrypoint:
-            return key.includes(moduleName) && !key.includes(entityDataId) && isExistTab;
-          default:
-            return key.includes(moduleName) && isExistTab;
-        }
-      });
-
-      const tabParams = {
-        visible: entrypointChildrenExist || path === tabKey,
-        type,
+      const tabProps = {
+        getBackground,
+        activeTabs,
+        visibilityPortal,
+        onChangeVisibleAction,
+        router,
+        webSocket,
+        statusApp,
+        rest,
+        path,
       };
 
-      tabParams.isBackground = !tabParams?.visible && getBackground(tabKey);
-      const isLink = type === types.$link_entrypoint;
+      return activeTabs.reduce((tabsComponents, tabKey, index, tabs) => {
+        const [moduleNameDirty = '', subModuleName = '', entityDataId = ''] = parseModuleKey(tabKey);
 
-      if (tabsComponents.length && ((isExsistModule && !isLink) || (isLink && entrypointChildrenExist))) {
-        return tabsComponents;
-      }
-      const validModuleName = entityDataId ? moduleName : tabKey;
-      return [
-        ...tabsComponents,
-        {
-          tabKey,
+        const [moduleName] = moduleNameDirty.split('#');
+        const type = getModuleTypeByParsedKey(moduleNameDirty, subModuleName, entityDataId);
+        const Component = getComponentByKey(tabKey, types.$entrypoint_module);
+        const entrypointChildrenExist = !!tabs.find(
+          (tab) => path.includes(moduleName) && tab !== tabKey && tab.includes(moduleName),
+        );
+
+        const isExistTab = tabs.slice(0, index + 1).some((tab) => tab?.includes(moduleName));
+        const isExsistModule = tabsComponents.find(({ type: typeModule = '', tabKey: key }) => {
+          switch (typeModule) {
+            case types.$entity_entrypoint:
+              return key.includes(moduleName) && !key.includes(entityDataId) && isExistTab;
+            default:
+              return key.includes(moduleName) && isExistTab;
+          }
+        });
+
+        const tabParams = {
+          visible: entrypointChildrenExist || path === tabKey,
           type,
-          component: (
-            <TabContainer key={`${validModuleName}-tab`} actualParams={tabParams}>
-              <Component key={validModuleName} type={type} tabParams={tabParams} {...tabProps} />
-            </TabContainer>
-          ),
-        },
-      ];
-    }, []);
-  }, [
-    activeTabs,
-    getBackground,
-    onChangeVisibleAction,
-    path,
-    rest,
-    router,
-    statusApp,
-    visibilityPortal,
-    webSocket,
-  ]);
+        };
 
-  const isBackgroundChat = useMemo(() => getBackground('contactModule_chat'), [getBackground]);
+        tabParams.isBackground = !tabParams?.visible && getBackground(tabKey);
+        const isLink = type === types.$link_entrypoint;
 
-  if (!refreshKey) {
-    return <div>Not available application, not found content key</div>;
-  }
+        if (tabsComponents.length && ((isExsistModule && !isLink) || (isLink && entrypointChildrenExist))) {
+          return tabsComponents;
+        }
+        const validModuleName = entityDataId ? moduleName : tabKey;
+        return [
+          ...tabsComponents,
+          {
+            tabKey,
+            type,
+            component: (
+              <TabContainer key={`${validModuleName}-tab`} actualParams={tabParams}>
+                <Component key={validModuleName} type={type} tabParams={tabParams} {...tabProps} />
+              </TabContainer>
+            ),
+          },
+        ];
+      }, []);
+    }, [
+      activeTabs,
+      getBackground,
+      onChangeVisibleAction,
+      path,
+      rest,
+      router,
+      statusApp,
+      visibilityPortal,
+      webSocket,
+    ]);
 
-  if (shouldShowSpinner) {
+    const isBackgroundChat = useMemo(() => getBackground('contactModule_chat'), [getBackground]);
+
+    if (!refreshKey) {
+      return <div>Not available application, not found content key</div>;
+    }
+
+    if (shouldShowSpinner) {
+      return (
+        <Content className="contentView contentView--loader">
+          <Spin size="large" tip="Content loading" />
+        </Content>
+      );
+    }
+
     return (
-      <Content className="contentView contentView--loader">
-        <Spin size="large" tip="Content loading" />
+      <Content className="contentView" key={refreshKey}>
+        {tabs && tabs.map(({ component = null }) => component)}
+        <ActionPortal appConfig={appConfig} visible={visibilityPortal}>
+          <Chat
+            key="chatModule"
+            isBackground={isBackgroundChat}
+            webSocket={webSocket}
+            type="modal"
+            visible={visibilityPortal || path === 'contactModule_chat'}
+          />
+        </ActionPortal>
       </Content>
     );
-  }
-
-  return (
-    <Content className="contentView" key={refreshKey}>
-      {tabs && tabs.map(({ component = null }) => component)}
-      <ActionPortal appConfig={appConfig} visible={visibilityPortal}>
-        <Chat
-          key="chatModule"
-          isBackground={isBackgroundChat}
-          webSocket={webSocket}
-          type="modal"
-          visible={visibilityPortal || path === 'contactModule_chat'}
-        />
-      </ActionPortal>
-    </Content>
-  );
-};
+  },
+);
 
 ContentView.propTypes = contentViewType;
 ContentView.defaultProps = {

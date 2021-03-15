@@ -230,7 +230,7 @@ class Dashboard extends PureComponent {
 
   getTabName = (metadata = {}, DATAKEY = '') => getAvailableTabNameKey(DATAKEY, metadata);
 
-  getactiveTabs = (tabs = [], menu) => {
+  getActiveTabs = (tabs = [], menu) => {
     const { router: { routeData = {} } = {} } = this.props;
     const tabsCopy = [...tabs];
     const tabsArray = [];
@@ -377,7 +377,7 @@ class Dashboard extends PureComponent {
     const { menu: menuItems = [] } = config || {};
     if (redirect) return <Redirect to={{ pathname: '/' }} />;
 
-    const activeTabsData = this.getactiveTabs(activeTabs, menuItems);
+    const activeTabsData = this.getActiveTabs(activeTabs, menuItems);
 
     return (
       <div ref={this.dashboardRef} className="dashboard">
