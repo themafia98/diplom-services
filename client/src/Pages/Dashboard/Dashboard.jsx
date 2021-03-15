@@ -252,7 +252,7 @@ const Dashboard = () => {
     const activeTabsData = [];
 
     for (const tab of tabs) {
-      const tabItem = menuItems.find((tab) => tab.EUID === tab);
+      const tabItem = menuItems.find((menuItem) => menuItem.EUID === tab);
 
       if (tabItem) {
         activeTabsData.push({ ...tabItem });
