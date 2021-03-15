@@ -247,11 +247,9 @@ const Dashboard = () => {
 
   const activeTabsData = useMemo(() => {
     const { menuItems } = appConfig;
-
-    const tabs = [...activeTabs];
     const activeTabsData = [];
 
-    for (const tab of tabs) {
+    for (const tab of activeTabs) {
       const tabItem = menuItems.find((menuItem) => menuItem.EUID === tab);
 
       if (tabItem) {
