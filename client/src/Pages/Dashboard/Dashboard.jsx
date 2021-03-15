@@ -27,7 +27,6 @@ import ws from 'config/ws.config';
 import autoSaveConfig from 'config/autoSave.config';
 
 let deferredPrompt = null;
-const getInstanseDashboardStream = () => new EventEmitter();
 
 const Dashboard = () => {
   const { rest } = useContext(ModelContext);
@@ -42,7 +41,7 @@ const Dashboard = () => {
   const [counterError, setCounterError] = useState(0);
   const [showLoader, setShowLoader] = useState(false);
 
-  const dashboardStream = useRef(getInstanseDashboardStream);
+  const dashboardStream = useRef(new EventEmitter());
 
   const dashboardRef = useRef(null);
   const webSocket = useRef(null);
@@ -418,7 +417,7 @@ const Dashboard = () => {
         <Layout key="main">
           <HeaderView
             key="header"
-            dashboardStrem={dashboardStream.current}
+            dashboardStream={dashboardStream.current}
             cbMenuTabHandler={menuHandler}
             activeTabEUID={currentActionTab}
             tabs={activeTabsData}
@@ -427,7 +426,7 @@ const Dashboard = () => {
             goCabinet={goCabinet}
           />
           <ContentView
-            dashboardStrem={dashboardStream.current}
+            dashboardStream={dashboardStream.current}
             appConfig={appConfig}
             activeTabs={activeTabs}
             udata={udata}

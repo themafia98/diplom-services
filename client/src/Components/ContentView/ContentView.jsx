@@ -16,7 +16,7 @@ const { Content } = Layout;
 const ContentView = memo(
   ({
     isToolbarActive,
-    dashboardStrem,
+    dashboardStream,
     path,
     activeTabs,
     router,
@@ -65,12 +65,12 @@ const ContentView = memo(
 
     useEffect(() => {
       document.addEventListener('keydown', disableF5);
-      dashboardStrem.on('EventUpdate', updateFunction);
+      dashboardStream.on('EventUpdate', updateFunction);
       return () => {
         document.removeEventListener('keydown', disableF5);
-        dashboardStrem.off('EventUpdate', updateFunction);
+        dashboardStream.off('EventUpdate', updateFunction);
       };
-    }, [dashboardStrem, disableF5, updateFunction]);
+    }, [dashboardStream, disableF5, updateFunction]);
 
     const checkBackground = useCallback(
       (path) => {
@@ -198,7 +198,7 @@ const ContentView = memo(
 
 ContentView.propTypes = contentViewType;
 ContentView.defaultProps = {
-  dashboardStrem: null,
+  dashboardStream: null,
   shouldRenderMenu: true,
   path: '',
   activeTabs: null,

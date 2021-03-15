@@ -11,7 +11,7 @@ import { headerViewType } from './HeaderView.types';
 const { Header } = Layout;
 
 const HeaderView = memo(
-  ({ tabs, goCabinet, logout, activeTabEUID, cbMenuTabHandler, dashboardStrem, webSocket }) => {
+  ({ tabs, goCabinet, logout, activeTabEUID, cbMenuTabHandler, dashboardStream, webSocket }) => {
     const dispatch = useDispatch();
 
     const [length, setLength] = useState(1);
@@ -91,7 +91,7 @@ const HeaderView = memo(
     };
 
     const update = () => {
-      if (dashboardStrem) dashboardStrem.emit('EventUpdate', true);
+      if (dashboardStream) dashboardStream.emit('EventUpdate', true);
     };
 
     const notificationDep = {

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 const { object, func, string, array, bool, oneOfType, number } = PropTypes;
 
 export const headerViewType = {
-  dashboardStrem: object.isRequired,
+  dashboardStream: object.isRequired,
   cbMenuTabHandler: func.isRequired,
   activeTabEUID: string.isRequired,
   logout: PropTypes.func.isRequired,

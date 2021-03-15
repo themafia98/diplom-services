@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 const { object, func, string, arrayOf, bool, oneOfType, oneOf } = PropTypes;
 
 export const contentViewType = {
-  dashboardStrem: object.isRequired,
+  dashboardStream: object.isRequired,
   updateLoader: func.isRequired,
   path: string.isRequired,
   statusApp: string.isRequired,
