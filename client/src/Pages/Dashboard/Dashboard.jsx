@@ -249,6 +249,10 @@ const Dashboard = () => {
     const { menuItems } = appConfig;
     const activeTabsData = [];
 
+    if (!menuItems || !activeTabs) {
+      return null;
+    }
+
     for (const tab of activeTabs) {
       const tabItem = menuItems.find((menuItem) => menuItem.EUID === tab);
 

@@ -1,4 +1,4 @@
-import React, { useState, useRef, memo, useEffect } from 'react';
+import React, { useState, useRef, memo, useEffect, useMemo, useCallback } from 'react';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 import { Layout } from 'antd';
@@ -19,7 +19,6 @@ const HeaderView = memo(
     const [sizeParent, setSizeParent] = useState(null);
 
     const tabsMenuRef = useRef(null);
-    const { current: tabsMenuNode = null } = tabsMenuRef || {};
 
     const { shouldUpdate, status, udata, appConfig } = useSelector((state) => {
       const { status, udata, appConfig } = state.publicReducer;
@@ -33,19 +32,23 @@ const HeaderView = memo(
     });
 
     useEffect(() => {
+      if (!tabs) {
+        return;
+      }
+
       const sizes = sizeParent / tabs.length - MARGIN_TAB;
       const counter = ~~(sizeParent / size);
 
-      if (sizeParent === null && tabsMenuNode) {
+      if (sizeParent === null && tabsMenuRef.current) {
         setLength(tabs.length);
-        setSizeParent(tabsMenuNode.getBoundingClientRect().width);
+        setSizeParent(tabsMenuRef.current.getBoundingClientRect().width);
       }
 
       if ((tabs.length >= counter && sizeParent !== null) || (tabs.length < length && size < 160)) {
         setLength(tabs.length);
         setSize(sizes);
       }
-    }, [sizeParent, size, tabsMenuNode, length, tabs]);
+    }, [sizeParent, size, length, tabs]);
 
     const reorder = (list, dragIndex, dropIndex) => {
       const [removed] = list.splice(dragIndex, 1);
@@ -53,23 +56,32 @@ const HeaderView = memo(
       return list;
     };
 
-    const onDragEnd = ({ destination, source }, tabsList) => {
-      const { index: indexDest } = destination || {};
-      const { index } = source || {};
+    const onDragEnd = useCallback(
+      ({ destination, source }, tabsList) => {
+        const { index: indexDest } = destination || {};
+        const { index } = source || {};
 
-      if (!destination) return;
+        if (!destination) return;
 
-      dispatch(dragEndTabAction(reorder([...tabsList], index, indexDest)));
-    };
+        dispatch(dragEndTabAction(reorder([...tabsList], index, indexDest)));
+      },
+      [dispatch],
+    );
 
-    const renderTabs = (items) => {
+    const createHandleDragEnd = useCallback((tabs) => (event) => onDragEnd(event, tabs), [onDragEnd]);
+
+    const tabsItems = useMemo(() => {
+      if (!tabs) {
+        return null;
+      }
+
       return (
-        <DragDropContext onDragEnd={(event) => onDragEnd(event, items)}>
+        <DragDropContext onDragEnd={createHandleDragEnd(tabs)}>
           <Droppable direction="horizontal" droppableId="droppable">
-            {(provided, snapshot) => (
+            {(provided) => (
               <div className="droppable-wrapper" ref={provided.innerRef}>
                 <ul ref={tabsMenuRef} {...provided.droppableProps} className="tabsMenu">
-                  {items.map(({ EUID = '', VALUE = '' }, index) => {
+                  {tabs.map(({ EUID, VALUE }, index) => {
                     return (
                       <Tab
                         hendlerTab={cbMenuTabHandler}
@@ -88,7 +100,7 @@ const HeaderView = memo(
           </Droppable>
         </DragDropContext>
       );
-    };
+    }, [activeTabEUID, cbMenuTabHandler, createHandleDragEnd, size, tabs]);
 
     const update = () => {
       if (dashboardStream) dashboardStream.emit('EventUpdate', true);
@@ -103,7 +115,7 @@ const HeaderView = memo(
 
     return (
       <Header>
-        {tabs ? renderTabs(tabs) : null}
+        {tabsItems}
         <RightPanel
           appConfig={appConfig}
           udata={udata}
