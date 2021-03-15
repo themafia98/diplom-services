@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { getComponentByKey, parseModuleKey, getModuleTypeByParsedKey } from 'Utils';
 import { contentViewType } from './ContentView.types';
 import _ from 'lodash';
@@ -13,113 +13,88 @@ import { APP_STATUS } from 'App.constant';
 
 const { Content } = Layout;
 
-class ContentView extends Component {
-  state = {
-    visibilityPortal: false,
-    key: null,
-  };
+const ContentView = ({
+  isToolbarActive,
+  dashboardStrem,
+  path,
+  activeTabs,
+  router,
+  updateLoader,
+  statusApp,
+  rest,
+  webSocket,
+  onChangeVisibleAction,
+  shouldShowSpinner,
+  appConfig,
+}) => {
+  const [visibilityPortal, setVisiblePortal] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(uuid);
 
-  static propTypes = contentViewType;
-  static defaultProps = {
-    dashboardStrem: null,
-    shouldRenderMenu: true,
-    path: '',
-    activeTabs: [],
-    router: {},
-    statusApp: APP_STATUS.ON,
-    rest: null,
-    webSocket: null,
-    onChangeVisibleAction: null,
-    isToolbarActive: false,
-    visibilityPortal: false,
-  };
+  const { currentActionTab } = router;
 
-  static getDerivedStateFromProps = (props, state) => {
-    const { isToolbarActive } = props;
-    const { visibilityPortal } = state;
+  const updateFunction = useMemo(
+    () =>
+      _.debounce((forceUpdate) => {
+        setRefreshKey(uuid());
 
+        if (!forceUpdate) {
+          return;
+        }
+
+        updateLoader();
+      }, 300),
+    [updateLoader],
+  );
+
+  const disableF5 = useCallback(
+    (event) => {
+      if ((event.which || event.keyCode) === 116) {
+        event.preventDefault();
+        updateFunction(true);
+      }
+    },
+    [updateFunction],
+  );
+
+  useEffect(() => {
     if (isToolbarActive !== visibilityPortal) {
-      return {
-        ...state,
-        visibilityPortal: isToolbarActive,
-      };
+      setVisiblePortal(isToolbarActive);
     }
-    return state;
-  };
+  }, [isToolbarActive, visibilityPortal]);
 
-  componentDidMount = () => {
-    const { dashboardStrem, shouldRenderMenu } = this.props;
-    const { key = null } = this.state;
-    document.addEventListener('keydown', this.disableF5);
-    dashboardStrem.on('EventUpdate', this.updateFunction);
-    if (key !== null && !shouldRenderMenu) return;
+  useEffect(() => {
+    document.addEventListener('keydown', disableF5);
+    dashboardStrem.on('EventUpdate', updateFunction);
+    return () => {
+      document.removeEventListener('keydown', disableF5);
+      dashboardStrem.off('EventUpdate', updateFunction);
+    };
+  }, [dashboardStrem, disableF5, updateFunction]);
 
-    this.setState({ key: uuid() });
-  };
+  const checkBackground = useCallback(
+    (path) => {
+      if (!activeTabs) {
+        return false;
+      }
 
-  shouldComponentUpdate = (
-    { path: nextPath, appConfig: prevAppConfig, activeTabs: prevActiveTabs = [] },
-    { key: nextKey, visibilityPortal: nextVisibilityPortal },
-  ) => {
-    const { menu: prevMenu = [] } = prevAppConfig || {};
-    const { path: currentPath, appConfig, activeTabs } = this.props;
-    const { menu = [] } = appConfig || {};
-    const { key: currentKey, visibilityPortal } = this.state;
-    if (
-      nextPath !== currentPath ||
-      nextKey !== currentKey ||
-      nextVisibilityPortal !== visibilityPortal ||
-      !_.isEqual(prevAppConfig, appConfig) ||
-      activeTabs?.length !== prevActiveTabs?.length ||
-      prevMenu?.length !== menu?.length
-    ) {
-      return true;
-    } else return false;
-  };
+      return activeTabs.some(
+        (actionTab) => (actionTab.startsWith(path) || actionTab === path) && currentActionTab !== actionTab,
+      );
+    },
+    [activeTabs, currentActionTab],
+  );
 
-  componentWillUnmount = () => {
-    const { dashboardStrem = null } = this.props;
-    document.removeEventListener('keydown', this.disableF5);
-    dashboardStrem.off('EventUpdate', this.updateFunction);
-  };
+  const getBackground = useCallback(
+    (moduleName) => {
+      return !path?.includes(moduleName) && checkBackground(moduleName);
+    },
+    [path, checkBackground],
+  );
 
-  getBackground = (moduleName) => {
-    const { path } = this.props;
-    return !path?.includes(moduleName) && this.checkBackground(moduleName);
-  };
-
-  /**
-   * @param {string} path
-   */
-  checkBackground = (path) => {
-    const { activeTabs = [], router: { currentActionTab = '' } = {} } = this.props;
-    /**
-     * @param {string} actionTab
-     */
-    return activeTabs.some(
-      (actionTab) => (actionTab.startsWith(path) || actionTab === path) && currentActionTab !== actionTab,
-    );
-  };
-
-  updateFunction = _.debounce((forceUpdate) => {
-    const { updateLoader } = this.props;
-    this.setState({ ...this.state, key: uuid() }, () => {
-      if (!forceUpdate) return;
-      updateLoader();
-    });
-  }, 300);
-
-  disableF5 = (event) => {
-    if ((event.which || event.keyCode) === 116) {
-      event.preventDefault();
-      this.updateFunction(true);
+  const tabs = useMemo(() => {
+    if (!activeTabs) {
+      return null;
     }
-  };
-
-  tabsCreate = () => {
-    const { path, activeTabs, router, statusApp, rest, webSocket, onChangeVisibleAction } = this.props;
-    const { visibilityPortal = false } = this.state;
-
     const tabProps = {
       getBackground: this.getBackground,
       activeTabs,
@@ -135,7 +110,7 @@ class ContentView extends Component {
     return activeTabs.reduce((tabsComponents, tabKey, index, tabs) => {
       const [moduleNameDirty = '', subModuleName = '', entityDataId = ''] = parseModuleKey(tabKey);
 
-      const moduleName = moduleNameDirty.split('#')[0];
+      const [moduleName] = moduleNameDirty.split('#');
       const type = getModuleTypeByParsedKey(moduleNameDirty, subModuleName, entityDataId);
       const Component = getComponentByKey(tabKey, types.$entrypoint_module);
       const entrypointChildrenExist = !!tabs.find(
@@ -157,7 +132,7 @@ class ContentView extends Component {
         type,
       };
 
-      tabParams.isBackground = !tabParams?.visible && this.getBackground(tabKey);
+      tabParams.isBackground = !tabParams?.visible && getBackground(tabKey);
       const isLink = type === types.$link_entrypoint;
 
       if (tabsComponents.length && ((isExsistModule && !isLink) || (isLink && entrypointChildrenExist))) {
@@ -177,41 +152,62 @@ class ContentView extends Component {
         },
       ];
     }, []);
-  };
+  }, [
+    activeTabs,
+    getBackground,
+    onChangeVisibleAction,
+    path,
+    rest,
+    router,
+    statusApp,
+    visibilityPortal,
+    webSocket,
+  ]);
 
-  render() {
-    const { key, visibilityPortal } = this.state;
-    const { webSocket, path, appConfig, shouldShowSpinner } = this.props;
+  const isBackgroundChat = useMemo(() => getBackground('contactModule_chat'), [getBackground]);
 
-    if (!key) return <div>Not available application, not found content key</div>;
+  if (!refreshKey) {
+    return <div>Not available application, not found content key</div>;
+  }
 
-    if (shouldShowSpinner) {
-      return (
-        <Content className="contentView contentView--loader">
-          <Spin size="large" tip="Content loading" />
-        </Content>
-      );
-    }
-
-    const isBackgroundChat = this.getBackground('contactModule_chat');
-    const tabs = this.tabsCreate();
-
+  if (shouldShowSpinner) {
     return (
-      <Content className="contentView" key={key}>
-        {tabs.map(({ component = null }) => component)}
-        <ActionPortal appConfig={appConfig} visible={visibilityPortal}>
-          <Chat
-            key="chatModule"
-            isBackground={isBackgroundChat}
-            webSocket={webSocket}
-            type="modal"
-            visible={visibilityPortal || path === 'contactModule_chat'}
-          />
-        </ActionPortal>
+      <Content className="contentView contentView--loader">
+        <Spin size="large" tip="Content loading" />
       </Content>
     );
   }
-}
+
+  return (
+    <Content className="contentView" key={refreshKey}>
+      {tabs && tabs.map(({ component = null }) => component)}
+      <ActionPortal appConfig={appConfig} visible={visibilityPortal}>
+        <Chat
+          key="chatModule"
+          isBackground={isBackgroundChat}
+          webSocket={webSocket}
+          type="modal"
+          visible={visibilityPortal || path === 'contactModule_chat'}
+        />
+      </ActionPortal>
+    </Content>
+  );
+};
+
+ContentView.propTypes = contentViewType;
+ContentView.defaultProps = {
+  dashboardStrem: null,
+  shouldRenderMenu: true,
+  path: '',
+  activeTabs: null,
+  router: {},
+  statusApp: APP_STATUS.ON,
+  rest: null,
+  webSocket: null,
+  onChangeVisibleAction: null,
+  isToolbarActive: false,
+  visibilityPortal: false,
+};
 
 export { ContentView };
 export default ContentView;

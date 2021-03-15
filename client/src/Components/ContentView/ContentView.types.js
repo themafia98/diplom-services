@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-const { object, func, string, arrayOf, bool, oneOfType } = PropTypes;
+const { object, func, string, arrayOf, bool, oneOfType, oneOf } = PropTypes;
 
 export const contentViewType = {
   dashboardStrem: object.isRequired,
@@ -11,5 +11,5 @@ export const contentViewType = {
   onChangeVisibleAction: func.isRequired,
   isToolbarActive: bool,
   visibilityPortal: bool,
-  activeTabs: arrayOf(string.isRequired).isRequired,
+  activeTabs: oneOfType([oneOf([null]), arrayOf(string.isRequired)]).isRequired,
 };
