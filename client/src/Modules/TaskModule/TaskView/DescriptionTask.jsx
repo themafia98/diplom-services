@@ -18,7 +18,6 @@ const DescriptionTask = forwardRef(
       rulesEdit,
       filesArray,
       onUpdate,
-      udata,
       rest,
       path,
     },
@@ -59,7 +58,6 @@ const DescriptionTask = forwardRef(
         <p className="descriptionTask__comment">{t('taskModule_view_comments')}</p>
         <Comments
           commentProps={commentProps}
-          udata={udata}
           path={path}
           rules={true}
           onUpdate={onUpdate}

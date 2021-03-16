@@ -12,7 +12,6 @@ const RightPanel = ({
   goCabinet,
   status,
   shouldUpdate,
-  udata,
   notificationDep,
   appConfig,
   webSocket,
@@ -21,12 +20,11 @@ const RightPanel = ({
 
   return (
     <div className="headerControllers rightPanel">
-      <UserPopup statusApp={status} udata={udata} goCabinet={goCabinet} />
+      <UserPopup statusApp={status} goCabinet={goCabinet} />
       <div className="groupControllers">
         <NotificationPopup
           appConfig={appConfig}
           statusApp={status}
-          udata={udata}
           notificationDep={notificationDep}
           webSocket={webSocket}
         />
@@ -46,7 +44,6 @@ RightPanel.defaultProps = {
   goCabinet: null,
   shouldUpdate: false,
   active: true,
-  udata: {},
   notificationDep: {},
   appConfig: {},
   status: '',

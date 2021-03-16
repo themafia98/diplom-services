@@ -6,7 +6,7 @@ import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { TABLE_TYPE } from 'Components/TableView/Table/Table.constant';
 import { useTranslation } from 'react-i18next';
 
-const TaskModuleMyList = ({ udata, data, height, loading, counter, currentActionTab, statusApp }) => {
+const TaskModuleMyList = ({ data, height, loading, counter, currentActionTab, statusApp }) => {
   const { t } = useTranslation();
   const refModuleTask = useRef(null);
 
@@ -30,7 +30,6 @@ const TaskModuleMyList = ({ udata, data, height, loading, counter, currentAction
           data={data}
           loading={loading}
           filterBy={['editor', 'uidCreater']}
-          udata={udata}
           path="searchTable"
         />
       </div>
@@ -40,7 +39,6 @@ const TaskModuleMyList = ({ udata, data, height, loading, counter, currentAction
 
 TaskModuleMyList.defaultProps = {
   router: {},
-  udata: {},
   data: {},
   height: 0,
   isBackground: false,

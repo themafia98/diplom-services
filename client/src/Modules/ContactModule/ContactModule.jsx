@@ -14,12 +14,7 @@ const ContactModule = memo(
   ({ path, type, clientDB, statusApp, webSocket, visibilityPortal, onChangeVisibleAction, entitysList }) => {
     const dispatch = useDispatch();
 
-    const { router, udata } = useSelector((state) => {
-      const { router, publicReducer } = state;
-      const { udata = {} } = publicReducer;
-
-      return { router, udata };
-    });
+    const router = useSelector(({ router }) => router);
 
     const { shouldUpdate = false, routeData = {}, activeTabs = [] } = router;
 
@@ -87,7 +82,6 @@ const ContactModule = memo(
         data: normalizeData,
         isLoading: !load && !news.length,
         path,
-        udata,
         statusApp,
         router,
         onLoadingData,
@@ -119,7 +113,6 @@ const ContactModule = memo(
       router,
       statusApp,
       type,
-      udata,
       visibilityPortal,
       webSocket,
       onLoadingData,

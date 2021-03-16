@@ -33,7 +33,6 @@ class Chat extends PureComponent {
   static defaultProps = {
     type: 'default',
     chat: {},
-    udata: {},
     socketConnection: false,
     socketErrorStatus: null,
     webSocket: null,
@@ -73,12 +72,13 @@ class Chat extends PureComponent {
       tokenRoom = '',
       onSetSocketConnection,
       onLoadActiveChats,
-      udata: { _id: uid } = {},
+      udata,
       chat: { chatToken = null, listdata = [], shouldLoadingMessage = false } = {},
       onLoadingDataByToken = null,
       webSocket = null,
       clientDB,
     } = this.props;
+    const { _id: uid } = udata;
     if (!webSocket) return;
     const { shouldUpdate = false } = this.state;
 
@@ -144,14 +144,8 @@ class Chat extends PureComponent {
   };
 
   connection = (socketConnection) => {
-    const {
-      chat: { chatToken: tokenRoom = null } = {},
-      udata: { _id: uid } = {},
-      onLoadActiveChats,
-      clientDB,
-      t,
-    } = this.props;
-
+    const { chat: { chatToken: tokenRoom = null } = {}, udata, onLoadActiveChats, clientDB, t } = this.props;
+    const { _id: uid } = udata;
     if (socketConnection) {
       if (onLoadActiveChats)
         onLoadActiveChats({
@@ -174,7 +168,8 @@ class Chat extends PureComponent {
     }
   };
   loadChat = () => {
-    const { socketConnection, onLoadActiveChats, udata: { _id: uid } = {}, clientDB } = this.props;
+    const { socketConnection, onLoadActiveChats, udata, clientDB } = this.props;
+    const { _id: uid } = udata;
 
     onLoadActiveChats({
       path: 'loadChats',
@@ -214,9 +209,10 @@ class Chat extends PureComponent {
     const {
       interlocutorIdFakeRoom = null,
       chat: { chatToken: tokenRoom = '', group = '' } = {},
-      udata: { displayName = '', _id: authorId = '' } = {},
+      udata,
       t,
     } = this.props;
+    const { displayName, _id: authorId } = udata;
 
     if (tokenRoom === null) {
       return notification.error({
@@ -252,10 +248,11 @@ class Chat extends PureComponent {
   setActiveChatRoom = (event, id, membersIds = [], token = '') => {
     const {
       chat: { chatToken = null, listdata = [] } = {},
-      udata: { displayName = '' } = {},
+      udata,
       onLoadingDataByToken = null,
       t,
     } = this.props;
+    const { displayName } = udata;
 
     if (id < 0 && onLoadingDataByToken) {
       /**
@@ -282,10 +279,11 @@ class Chat extends PureComponent {
   renderModal = (visible) => {
     const {
       chat: { usersList = [], listdata = [] } = {},
-      udata: { _id: uid } = {},
+      udata,
       onSetActiveChatToken,
       onLoadActiveChats,
     } = this.props;
+    const { _id: uid } = udata;
 
     return (
       <ChatModal
@@ -333,10 +331,8 @@ class Chat extends PureComponent {
   };
 
   getUsersList = () => {
-    const {
-      chat: { chatToken: tokenRoom = null, usersList = [], listdata = [] } = {},
-      udata: { _id: uid = '' } = {},
-    } = this.props;
+    const { chat: { chatToken: tokenRoom = null, usersList = [], listdata = [] } = {}, udata } = this.props;
+    const { _id: uid } = udata;
 
     const room = listdata.find((room) => {
       return room.tokenRoom && room.tokenRoom === tokenRoom;
@@ -373,13 +369,14 @@ class Chat extends PureComponent {
     const { visible, shouldScroll = false } = this.state;
     const {
       chat: { listdata = [], usersList = [], listdataMsgs = [], chatToken: tokenRoom = null } = {},
-      udata: { _id: uid = '', avatar: myAvatar = null } = {},
+      udata,
       socketConnection,
       socketErrorStatus,
       type,
       webSocket,
       t,
     } = this.props;
+    const { _id: uid, avatar: myAvatar = null } = udata;
     const isWs = webSocket !== null;
 
     const { usersListComponent = null, count = 0 } = tokenRoom ? this.getUsersList() : {};
@@ -463,16 +460,15 @@ class Chat extends PureComponent {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = ({ socketReducer, publicReducer }) => {
   const {
     chat = {},
-    chat: { chatToken: tokenRoom = null, isFake: interlocutorIdFakeRoom = null } = {},
     socketConnection = false,
     activeSocketModule = null,
     socketErrorStatus = null,
-  } = state.socketReducer;
-
-  const { udata = {} } = state.publicReducer;
+  } = socketReducer;
+  const { chatToken: tokenRoom = null, isFake: interlocutorIdFakeRoom = null } = chat;
+  const { udata } = publicReducer;
 
   return {
     chat,

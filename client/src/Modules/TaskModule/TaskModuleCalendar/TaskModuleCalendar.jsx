@@ -205,7 +205,7 @@ class TaskModuleCalendar extends PureComponent {
 
   render() {
     const { drawerVisible = false, selectedEntity = null } = this.state;
-    const { udata, t } = this.props;
+    const { t } = this.props;
     return (
       <Scrollbars autoHide hideTracksWhenNotNeeded>
         <div className="taskModuleCalendar">
@@ -224,7 +224,6 @@ class TaskModuleCalendar extends PureComponent {
             contentKey="taskModule_createTask"
             contentType={types.$sub_entrypoint_module}
             onClose={this.onChangeDrawerVisible}
-            udata={udata}
             moduleProps={this.props}
           />
         </div>

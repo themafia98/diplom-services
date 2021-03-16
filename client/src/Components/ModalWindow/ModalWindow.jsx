@@ -17,6 +17,7 @@ import actionsTypes from 'actions.types';
 import { withClientDb } from 'Models/ClientSideDatabase';
 import { reducer, modalState } from './Modal.utils';
 import { ACTIONS } from './Modal.constant';
+import { useSelector } from 'react-redux';
 
 const { Option } = Select;
 
@@ -67,6 +68,8 @@ const ModalWindow = memo((props) => {
     }),
     [],
   );
+
+  const { displayName, _id: uid } = useSelector(({ publicReducer }) => publicReducer.udata);
 
   useEffect(() => {
     const { type } = state;
@@ -227,13 +230,7 @@ const ModalWindow = memo((props) => {
   const onTrackTask = useCallback(async () => {
     const { jurnal, type } = state;
 
-    const {
-      onCaching,
-      actionType,
-      keyTask,
-      udata: { displayName = '', _id: uid = '' },
-      clientDB,
-    } = props;
+    const { onCaching, actionType, keyTask, clientDB } = props;
 
     const item = { ...jurnal, depKey: keyTask, editor: displayName, uid };
     const { timeLost = '', description = '', date = '' } = jurnal;
@@ -269,7 +266,7 @@ const ModalWindow = memo((props) => {
       jurnal: { timeLost: null, date: moment().format('DD.MM.YYYY HH:mm:ss'), description: null },
       error: new Set(),
     });
-  }, [getTemplate, handleCancel, id, keyActiveRoute, nameActive, props, runAction, state]);
+  }, [displayName, getTemplate, handleCancel, id, keyActiveRoute, nameActive, props, runAction, state, uid]);
 
   const validation = useCallback(() => {
     const {
@@ -278,7 +275,6 @@ const ModalWindow = memo((props) => {
       type,
     } = state;
 
-    const { udata: { displayName = '' } = {} } = props;
     const { schema = {} } = context;
 
     let _valid = true;
@@ -596,7 +592,6 @@ ModalWindow.defaultProps = {
   mode: '',
   actionType: '',
   keyTask: '',
-  udata: {},
   path: '',
   statusTaskValue: '',
   accessStatus: [],

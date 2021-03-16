@@ -8,8 +8,10 @@ import { Spin, Button, message } from 'antd';
 import moment from 'moment';
 import actionsTypes from 'actions.types';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 
-const WikiPage = ({ selectedNode, metadata, onChangeWikiPage, udata: { displayName } }) => {
+const WikiPage = ({ selectedNode, metadata, onChangeWikiPage }) => {
+  const { displayName } = useSelector(({ publicReducer }) => publicReducer.udata);
   const { t } = useTranslation();
   const models = useContext(ModelContext);
 
@@ -180,6 +182,5 @@ WikiPage.defaultProps = {
   selectedNode: null,
   metadata: null,
   onChangeWikiPage: null,
-  udata: { displayName: '' },
 };
 export default WikiPage;

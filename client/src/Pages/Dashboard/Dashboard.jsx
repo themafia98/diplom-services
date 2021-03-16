@@ -49,19 +49,17 @@ const Dashboard = () => {
   const {
     router,
     firstConnect,
-    udata,
     appConfig,
     requestError,
     status: statusProps,
     loader,
     router: { currentActionTab, shouldUpdate, routeData, activeTabs },
   } = useSelector(({ router, publicReducer, systemReducer }) => {
-    const { firstConnect = false, udata, appConfig, requestError, status } = publicReducer;
+    const { firstConnect = false, appConfig, requestError, status } = publicReducer;
     const { loader } = systemReducer;
     return {
       router,
       firstConnect,
-      udata,
       appConfig,
       requestError,
       status,
@@ -432,7 +430,6 @@ const Dashboard = () => {
             dashboardStream={dashboardStream.current}
             appConfig={appConfig}
             activeTabs={activeTabs}
-            udata={udata}
             isToolbarActive={isToolbarActive}
             webSocket={webSocket.current}
             shouldUpdate={shouldUpdate}

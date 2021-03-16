@@ -5,16 +5,7 @@ import { drawerViewerType } from './DrawerViewer.types';
 import { Drawer } from 'antd';
 import types from 'types.modules';
 
-const DrawerViewer = ({
-  onClose,
-  visible,
-  title,
-  selectedEntity,
-  contentKey,
-  moduleProps,
-  udata,
-  contentType,
-}) => {
+const DrawerViewer = ({ onClose, visible, title, selectedEntity, contentKey, moduleProps, contentType }) => {
   const [content, setContent] = useState(selectedEntity);
 
   useEffect(() => {
@@ -38,13 +29,7 @@ const DrawerViewer = ({
       destroyOnClose={true}
     >
       {Component ? (
-        <Component
-          key={contentKey}
-          {...moduleProps}
-          visibleMode="drawerViewer"
-          contentDrawer={content}
-          udata={udata}
-        />
+        <Component key={contentKey} {...moduleProps} visibleMode="drawerViewer" contentDrawer={content} />
       ) : (
         <span>{content?.toString()}</span>
       )}
@@ -59,7 +44,6 @@ DrawerViewer.defaultProps = {
   title: '',
   selectedEntity: null,
   contentKey: '',
-  udata: {},
   moduleProps: {},
   contentType: types.$entrypoint_module,
 };

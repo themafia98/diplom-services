@@ -419,7 +419,7 @@ class WikiModule extends PureComponent {
       selectedNode = '',
     } = this.state;
     const { _id: id = '' } = selectedNodeMetadata || {};
-    const { metadata = [], router: { shouldUpdate = false } = {}, udata = {}, t } = this.props;
+    const { metadata = [], router: { shouldUpdate = false } = {}, t } = this.props;
     const isLoading = isLoadingState || (shouldUpdate && !metadata?.length);
 
     return (
@@ -459,7 +459,6 @@ class WikiModule extends PureComponent {
               {selectedNode ? (
                 <WikiPage
                   key={id}
-                  udata={udata}
                   onChangeWikiPage={this.onChangeWikiPage}
                   metadata={selectedNodeMetadata}
                   selectedNode={selectedNode}
@@ -497,15 +496,12 @@ class WikiModule extends PureComponent {
   }
 }
 
-const mapStateToProps = (state) => {
-  const { router, publicReducer } = state;
-  const { udata = {} } = publicReducer;
+const mapStateToProps = ({ router }) => {
   const { routeData } = router;
   const { wikiTree: metadata = [] } = routeData['wikiModule'] || {};
 
   return {
     router,
-    udata,
     metadata,
   };
 };

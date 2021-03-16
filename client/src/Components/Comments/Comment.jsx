@@ -12,7 +12,6 @@ const Comment = ({
   userId,
   router,
   removeTab,
-  udata,
   onOpenPageWithData,
   setCurrentTab,
 }) => {
@@ -73,7 +72,6 @@ const Comment = ({
           depDataKey="global"
           router={router}
           removeTab={removeTab}
-          udata={udata}
           id={uId}
           isStaticList={true}
           onOpenPageWithData={onOpenPageWithData}
@@ -107,7 +105,6 @@ const Comment = ({
 Comment.defaultProps = {
   rules: false,
   router: {},
-  udata: {},
   it: {},
   userId: '',
   uId: '',

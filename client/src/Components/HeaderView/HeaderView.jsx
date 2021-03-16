@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Layout } from 'antd';
 import { dragEndTabAction } from 'Redux/actions/tabActions';
 import RightPanel from './RightPanel';
-import Tab from './Tab/index';
+import Tab from './Tab/Tab';
 import { MARGIN_TAB } from './HeaderView.constant';
 import { headerViewType } from './HeaderView.types';
 
@@ -20,13 +20,12 @@ const HeaderView = memo(
 
     const tabsMenuRef = useRef(null);
 
-    const { shouldUpdate, status, udata, appConfig } = useSelector((state) => {
-      const { status, udata, appConfig } = state.publicReducer;
+    const { shouldUpdate, status, appConfig } = useSelector((state) => {
+      const { status, appConfig } = state.publicReducer;
       const { shouldUpdate = false } = state.router;
       return {
         shouldUpdate,
         status,
-        udata,
         appConfig,
       };
     });
@@ -118,7 +117,6 @@ const HeaderView = memo(
         {tabsItems}
         <RightPanel
           appConfig={appConfig}
-          udata={udata}
           shouldUpdate={shouldUpdate}
           status={status}
           goCabinet={goCabinet}

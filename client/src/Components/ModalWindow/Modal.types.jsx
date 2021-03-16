@@ -19,7 +19,6 @@ export const modalWindowType = {
   onCancelEditModeContent: func,
   onUpdateEditable: func,
   statusTaskValue: string,
-  udata: udataType,
   defaultView: bool,
   rulesEdit: bool,
   rulesStatus: bool,

@@ -8,7 +8,6 @@ export const wikiModuleType = {
   rest: object.isRequired,
   statusApp: string.isRequired,
   router: object.isRequired,
-  udata: udataType.isRequired,
   metadata: array.isRequired,
   onLoadCurrentData: func.isRequired,
 };

@@ -33,7 +33,7 @@ const UserCard = ({
   const context = useContext(ModelContext);
 
   const isPersonalPage = modePage === 'personal';
-  const { _id: uid = '' } = udata;
+  const { _id: uid } = udata;
   const {
     displayName = '',
     departament = '',

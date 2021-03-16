@@ -230,7 +230,7 @@ const openTab = ({ uuid, action, depKey = '', data = null, openType = '' }) => a
   const { publicReducer, router } = getState();
   const { activeTabs = [], routeData = {} } = router;
   const { appConfig = {}, udata } = publicReducer;
-  const { _id: uid = '' } = udata;
+  const { _id: uid } = udata;
 
   if (appConfig?.tabsLimit <= activeTabs.length) {
     message.error('Максимальное количество вкладок:' + appConfig?.tabsLimit);

@@ -7,7 +7,6 @@ export const commentType = {
   it: object.isRequired,
   userId: string.isRequired,
   router: object.isRequired,
-  udata: udataType.isRequired,
   uId: oneOfType([number, string]).isRequired,
   onDelete: func.isRequired,
   onEdit: func,
@@ -24,5 +23,4 @@ export const commentsContainerType = {
     _id: string,
     key: string,
   }).isRequired,
-  udata: udataType.isRequired,
 };

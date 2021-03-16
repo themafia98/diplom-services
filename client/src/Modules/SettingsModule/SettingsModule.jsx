@@ -53,7 +53,8 @@ class SettingsModule extends PureComponent {
   };
 
   static getDerivedStateFromProps = (props, state) => {
-    const { udata: { email: emailValue, phone: telValue, isHideEmail, isHidePhone } = {} } = props;
+    const { udata } = props;
+    const { email: emailValue, phone: telValue, isHideEmail, isHidePhone } = udata;
 
     if (
       [state.emailValue, state.telValue, state.isHideEmail, state.isHidePhone].every(
@@ -72,7 +73,8 @@ class SettingsModule extends PureComponent {
   };
 
   componentDidMount = async () => {
-    const { router, path, udata: { _id: uid = '' } = {}, onCaching, onSetStatus, clientDB } = this.props;
+    const { router, path, udata, onCaching, onSetStatus, clientDB } = this.props;
+    const { _id: uid } = udata;
 
     if (router?.routeData[path] && router?.routeData[path]?.haveChanges) {
       this.setState({ ...this.state, ...router.routeData[path] });
@@ -91,9 +93,9 @@ class SettingsModule extends PureComponent {
 
   componentDidUpdate = async () => {
     const { showScrollbar, emailValue = '', telValue = '' } = this.state;
-    const { udata = {}, router, path, onCaching, onSetStatus, moduleContext, clientDB } = this.props;
+    const { udata, router, path, onCaching, onSetStatus, moduleContext, clientDB } = this.props;
     const { shouldUpdate = false, routeData = {} } = router;
-    const { _id: uid = '' } = udata;
+    const { _id: uid } = udata;
     const { visibility = false } = moduleContext;
 
     if (!visibility) return;
@@ -187,11 +189,12 @@ class SettingsModule extends PureComponent {
 
   onChangeProfile = async (state, callback) => {
     try {
-      const { udata: { _id: uid = '' } = {}, onUpdateUdata = null, modelsContext, appConfig, t } = this.props;
+      const { udata, onUpdateUdata = null, modelsContext, appConfig, t } = this.props;
       const { isHideEmail = false, isHidePhone = false } = state;
       const {
         settings: { includeChangeProfile = false },
       } = appConfig;
+      const { _id: uid } = udata;
       const { Request } = modelsContext;
 
       if (!includeChangeProfile) return;
@@ -237,7 +240,7 @@ class SettingsModule extends PureComponent {
 
   onChangeCommon = async (state, callback) => {
     const {
-      udata: { _id: uid = '' } = {},
+      udata,
       onUpdateUdata = null,
       onCaching = null,
       modelsContext,
@@ -245,7 +248,7 @@ class SettingsModule extends PureComponent {
       appConfig,
       t,
     } = this.props;
-
+    const { _id: uid } = udata;
     try {
       const { emailValue: newEmail = '', telValue: newPhone = '', haveChanges = [] } = state;
       const { settings: { includeChangeEmail = false } = {} } = appConfig;
@@ -326,7 +329,8 @@ class SettingsModule extends PureComponent {
   };
 
   onChangePassword = async (state, callback) => {
-    const { t, udata: { _id: uid = '' } = {}, onCaching, modelsContext, clientDB } = this.props;
+    const { t, udata, onCaching, modelsContext, clientDB } = this.props;
+    const { _id: uid } = udata;
     try {
       const { Request = {} } = modelsContext;
 
@@ -394,7 +398,7 @@ class SettingsModule extends PureComponent {
   handleChangeLanguage = async (lang) => {
     const { i18n, modelsContext, udata } = this.props;
     const { Request } = modelsContext;
-    const { _id: uid = '' } = udata;
+    const { _id: uid } = udata;
 
     if (i18n.language === lang) {
       return;
@@ -436,15 +440,8 @@ class SettingsModule extends PureComponent {
 
   render() {
     const { emailValue, telValue, oldPassword, newPassword, isHideEmail, isHidePhone } = this.state;
-    const {
-      settingsLogs = null,
-      udata: { departament = '' } = {},
-      settings = [],
-      appConfig,
-      isLoad,
-      t,
-      i18n,
-    } = this.props;
+    const { settingsLogs = null, udata, settings = [], appConfig, isLoad, t, i18n } = this.props;
+    const { departament } = udata;
     const { settings: settingsConfig = {} } = appConfig;
     const { includeRulesSettings = false } = settingsConfig;
 
@@ -501,7 +498,7 @@ class SettingsModule extends PureComponent {
 const mapStateToProps = (state, props) => {
   const { publicReducer, router } = state;
   const { shouldUpdate = false, currentActionTab = '' } = router;
-  const { udata = {}, caches, appConfig } = publicReducer;
+  const { udata, caches, appConfig } = publicReducer;
 
   const isLoad = Object.keys(caches).some((key) => key.includes('get_user_settings_log'));
 

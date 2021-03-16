@@ -6,9 +6,10 @@ import StreamBox from 'Components/StreamBox';
 import ModelContext from 'Models/context';
 import actionsTypes from 'actions.types';
 import { requestTemplate, paramsTemplate } from 'Utils/Api/api.utils';
+import { useSelector } from 'react-redux';
 
-const NotificationPopup = memo(({ appConfig, notificationDep, udata, type }) => {
-  const { _id: uid } = udata;
+const NotificationPopup = memo(({ appConfig, notificationDep, type }) => {
+  const { _id: uid } = useSelector(({ publicReducer }) => publicReducer.udata);
   const { IntervalPrivateNotifications = 10000 } = appConfig;
 
   const [total, setTotal] = useState(0);

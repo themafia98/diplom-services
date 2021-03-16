@@ -130,14 +130,8 @@ class TaskModule extends Component {
   };
 
   fetchTaskModule = async (customOptions = null, saveData = {}, saveDataState) => {
-    const {
-      onLoadCurrentData,
-      path,
-      udata: { _id: uid = '' } = {},
-      modelsContext,
-      clientDB,
-      appConfig,
-    } = this.props;
+    const { onLoadCurrentData, path, udata, modelsContext, clientDB, appConfig } = this.props;
+    const { _id: uid } = udata;
     const { counter = null, isListCounterLoading } = this.state;
     const { Request } = modelsContext;
     const { task: { limitList = 20 } = {} } = appConfig || {};
@@ -307,7 +301,6 @@ class TaskModule extends Component {
       rest,
       removeTab,
       setCurrentTab,
-      udata = {},
       statusList = {},
       onSetStatus = null,
       type: typeDefault = Symbol(''),
@@ -337,7 +330,6 @@ class TaskModule extends Component {
       onLoadCacheData,
       removeTab,
       router,
-      udata,
     };
 
     return (
@@ -378,7 +370,7 @@ class TaskModule extends Component {
 
 const mapStateToProps = (state, props) => {
   const { router, publicReducer } = state;
-  const { udata = {}, appConfig, status } = publicReducer;
+  const { udata, appConfig, status } = publicReducer;
 
   return {
     status,

@@ -624,7 +624,6 @@ class TaskView extends PureComponent {
       router: { path = '' },
       route,
       uuid,
-      udata = {},
     } = this.props;
     const {
       mode,
@@ -658,7 +657,6 @@ class TaskView extends PureComponent {
         onCancelEditModeContent={this.onCancelEditModeContent}
         onUpdateEditable={this.onUpdateEditable}
         statusTaskValue={status ? status : null}
-        udata={udata}
         rulesEdit={rulesEdit}
         onEdit={this.onEdit}
         rulesStatus={rulesStatus}
@@ -672,8 +670,7 @@ class TaskView extends PureComponent {
     const {
       router: { routeDataActive = {} },
       onUpdate,
-      udata = {},
-      udata: { _id: uid = '' } = {},
+      udata,
       onOpenPageWithData,
       setCurrentTab,
       router = {},
@@ -682,6 +679,7 @@ class TaskView extends PureComponent {
       modelsContext,
       t,
     } = this.props;
+    const { _id: uid } = udata;
 
     const {
       modeControll,
@@ -751,7 +749,6 @@ class TaskView extends PureComponent {
       cachesJurnalList,
       filteredUsers,
       router,
-      udata,
     };
 
     const descriptionTaskProps = {
@@ -761,7 +758,6 @@ class TaskView extends PureComponent {
       rulesEdit,
       filesArray,
       onUpdate,
-      udata,
       path,
       rest,
     };

@@ -34,7 +34,6 @@ class Table extends PureComponent {
     counter: null,
     router: {},
     depDataKey: '',
-    udata: {},
     filteredUsers: [],
     cachesAuthorList: [],
     cachesEditorList: [],
@@ -151,7 +150,6 @@ class Table extends PureComponent {
           router,
           links: usersList,
           list: true,
-          udata: udata,
           isLoad: true,
           isStaticList: true,
         }
@@ -256,12 +254,13 @@ class Table extends PureComponent {
       type = '',
       dataSource = [],
       filterBy = '',
-      udata: { _id: uid },
+      udata,
       height,
       loading,
       router = {},
       appConfig = {},
     } = this.props;
+    const { _id: uid } = udata;
     const { path, routeData: { [path]: currentModuleData = {} } = {} } = router;
     const { task: { tableSize = 'default', frontFilter = true } = {} } = appConfig;
     const { saveData: { pagination = null } = {} } = currentModuleData || {};
@@ -301,10 +300,11 @@ class Table extends PureComponent {
   }
 }
 
-const mapStateTopProps = (state) => {
-  const { appConfig } = state.publicReducer;
+const mapStateTopProps = ({ publicReducer }) => {
+  const { appConfig, udata } = publicReducer;
   return {
     appConfig,
+    udata,
   };
 };
 

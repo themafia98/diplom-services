@@ -19,6 +19,7 @@ import { compose } from 'redux';
 import { withClientDb } from 'Models/ClientSideDatabase';
 import { APP_STATUS } from 'App.constant';
 import { withTranslation } from 'react-i18next';
+import { connect } from 'react-redux';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -50,11 +51,8 @@ class CreateTask extends PureComponent {
 
   static getDerivedStateFromProps = (props, state) => {
     const { card: { authorName: authorState = null, uidCreater = null, date = null } = {} } = state;
-    const {
-      udata: { _id: uid, displayName = '' } = {},
-      dateFormat = 'DD.MM.YYYY',
-      contentDrawer = '',
-    } = props;
+    const { udata, dateFormat = 'DD.MM.YYYY', contentDrawer = '' } = props;
+    const { _id: uid, displayName } = udata;
 
     const dateUpdater =
       date === null
@@ -275,12 +273,13 @@ class CreateTask extends PureComponent {
       router: { currentActionTab: path, activeTabs = [] },
       setCurrentTab,
       removeTab,
-      udata: { _id: uid = '', displayName = '' } = {},
+      udata,
       onSetStatus,
       modelsContext,
       clientDB,
       t,
     } = this.props;
+    const { _id: uid, displayName } = udata;
 
     const {
       trySubmit: trySubmitState = false,
@@ -539,4 +538,10 @@ class CreateTask extends PureComponent {
   }
 }
 
-export default compose(withClientDb, withTranslation())(moduleContextToProps(CreateTask));
+const mapStateTopProps = ({ publicReducer }) => ({ udata: publicReducer.udata });
+
+export default compose(
+  withClientDb,
+  withTranslation(),
+  connect(mapStateTopProps),
+)(moduleContextToProps(CreateTask));

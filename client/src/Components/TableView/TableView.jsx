@@ -23,12 +23,11 @@ const TableView = ({
 }) => {
   const [isScroll, setIsScroll] = useState(null);
 
-  const { router, udata, requestError } = useSelector((state) => {
-    const { udata = {}, requestError } = state.publicReducer;
+  const { router, requestError } = useSelector(({ router, publicReducer }) => {
+    const { requestError } = publicReducer;
     return {
-      router: state.router,
+      router,
       requestError,
-      udata,
     };
   });
 
@@ -58,7 +57,6 @@ const TableView = ({
               action={'cabinet'}
               typeOutput="link"
               router={router}
-              udata={udata}
               key={`${id}${it.displayName}}nameSurname`}
               type="table"
               className="nameSurname"
@@ -82,7 +80,7 @@ const TableView = ({
         );
       });
     },
-    [router, udata],
+    [router],
   );
 
   const getComponentByPath = useCallback(
@@ -139,7 +137,6 @@ const TableView = ({
             routeParser={routeParser}
             dataSource={tasks}
             router={router}
-            udata={udata}
             counter={countPagination}
             filterBy={filterBy}
             user={user}
@@ -163,7 +160,6 @@ const TableView = ({
       statusApp,
       tableViewHeight,
       type,
-      udata,
       user,
       visible,
     ],

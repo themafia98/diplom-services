@@ -12,9 +12,10 @@ import { compose } from 'redux';
 import { withClientDb } from 'Models/ClientSideDatabase';
 import { APP_STATUS } from 'App.constant';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 
-const CreateNews = memo(({ statusApp, udata, onSetStatus, clientDB, readOnly }) => {
-  const { displayName = '', _id: uid = '' } = udata;
+const CreateNews = memo(({ statusApp, onSetStatus, clientDB, readOnly }) => {
+  const { displayName, _id: uid } = useSelector(({ publicReducer }) => publicReducer.udata);
 
   const { t } = useTranslation();
   const [titleNews, setTitleNews] = useState('');
@@ -133,7 +134,6 @@ CreateNews.propTypes = createNewsType;
 CreateNews.defaultProps = {
   statusApp: APP_STATUS.ON,
   readOnly: '',
-  udata: {},
   onSetStatus: null,
   clientDB: null,
 };

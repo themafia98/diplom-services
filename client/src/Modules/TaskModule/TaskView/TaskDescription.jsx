@@ -36,7 +36,6 @@ const TaskDescription = ({
   isLoad,
   router,
   editor,
-  udata,
   name,
   date,
   taskKey,
@@ -129,7 +128,6 @@ const TaskDescription = ({
           list={true}
           onOpenPageWithData={onOpenPageWithData}
           setCurrentTab={setCurrentTab}
-          udata={udata}
           isLoad={isLoad}
           isStaticList={true}
         >
@@ -148,7 +146,6 @@ const TaskDescription = ({
             onOpenPageWithData={onOpenPageWithData}
             setCurrentTab={setCurrentTab}
             className="editor"
-            udata={udata}
             isLoad={isLoad}
           >
             {editor}

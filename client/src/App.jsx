@@ -92,14 +92,14 @@ class App extends Component {
     const { typeConfig: prevTypeConfig = '', coreConfig: prevCoreConfig = {} } = prevProps;
     const {
       onLoadCoreConfig,
-      typeConfig = '',
-      coreConfig = {},
-      appConfig = {},
-      udata = {},
+      typeConfig,
+      coreConfig,
+      appConfig,
+      udata,
       onSetSystemMessage,
-      systemMessage = {},
+      systemMessage,
     } = this.props;
-    const { clientDB: { name = '', version = '' } = {} } = coreConfig;
+    const { clientDB: { name = '', version = '' } = {} } = coreConfig || {};
     const { sync } = this.state;
 
     if (systemMessage?.msg) {

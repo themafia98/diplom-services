@@ -75,7 +75,7 @@ const Output = memo(
     }, [update]);
 
     const onOpenLink = useCallback(
-      ({ id: uuid = null, action = null }, event) => {
+      (uuid, action, event) => {
         if (event) event.stopPropagation();
 
         dispatch(openTab({ uuid, action, data: currentData, depKey: depDataKey }));
@@ -83,39 +83,50 @@ const Output = memo(
       [currentData, depDataKey, dispatch],
     );
 
+    const createHandleOpenLink = useCallback(
+      (id, action) => {
+        if (!id) {
+          return null;
+        }
+        return (event) => onOpenLink(id, action, event);
+      },
+      [onOpenLink],
+    );
+
     const renderLinks = useCallback(
-      (item = '', mode = 'default') => {
-        if ((!isLoad && Array.isArray(item) && !item.length) || !item) return <Spin size="small" />;
+      (item, mode = 'default') => {
+        if ((!isLoad && Array.isArray(item) && !item.length) || !item) {
+          return <Spin size="small" />;
+        }
 
         if (!Array.isArray(item) || mode === 'single') {
-          const { displayName = '', _id: id = '' } = item || {};
+          const { displayName, _id: id } = item;
           const displayValue = typeof item === 'string' ? item : displayName;
 
-          return (
-            <>
-              {typeOutput && typeOutput !== 'default' ? (
-                <Button
-                  onKeyDown={id ? onOpenLink.bind(this, { id, action: 'cabinet' }) : null}
-                  type="link"
-                  key={`${id}-editor`}
-                  className="editor"
-                >
-                  {displayValue}
-                </Button>
-              ) : (
-                <span className="list-item">{displayValue}</span>
-              )}
-            </>
-          );
+          if (typeOutput && typeOutput !== 'default') {
+            return (
+              <Button
+                onKeyDown={createHandleOpenLink(id, 'cabinet')}
+                type="link"
+                key={`${id}-editor`}
+                className="editor"
+              >
+                {displayValue}
+              </Button>
+            );
+          }
+
+          return <span className="list-item">{displayValue}</span>;
         }
 
         return item.map((it, index) => {
-          const { displayValue = '', displayName = '', _id = '', id = '' } = it || {};
+          const { displayValue, displayName, _id, id } = it || {};
+          const uuid = id || _id;
           return (
             <Fragment key={`${index}${_id}${id}`}>
               {typeOutput && typeOutput !== 'default' ? (
                 <Button
-                  onClick={id || _id ? onOpenLink.bind(this, { id: id ? id : _id, action: 'cabinet' }) : null}
+                  onClick={createHandleOpenLink(uuid, 'cabinet')}
                   type="link"
                   key={`${index}${_id}`}
                   className="editor"
@@ -131,7 +142,7 @@ const Output = memo(
           );
         });
       },
-      [isLoad, onOpenLink, typeOutput],
+      [createHandleOpenLink, isLoad, typeOutput],
     );
 
     const renderDefault = useCallback(
@@ -180,7 +191,7 @@ const Output = memo(
                   ) : (
                     <Button
                       key={`${id}`}
-                      onClick={onOpenLink.bind(this, { action, id })}
+                      onClick={createHandleOpenLink(id, action)}
                       type={typeOutput}
                       ref={childRef}
                       className={className ? className : null}
@@ -207,10 +218,10 @@ const Output = memo(
         action,
         childRef,
         className,
+        createHandleOpenLink,
         id,
         isLink,
         list,
-        onOpenLink,
         outputClassName,
         parentRef,
         renderDefault,
@@ -252,7 +263,7 @@ const Output = memo(
         <div className={clsx('output', outputClassName ? outputClassName : null)} ref={parentRef}>
           {typeOutput && typeOutput !== 'default' && !Array.isArray(children) ? (
             <Button
-              onClick={onOpenLink.bind(this, { action, id })}
+              onClick={createHandleOpenLink(id, action)}
               type={typeOutput}
               ref={childRef}
               className={className ? className : null}
@@ -269,10 +280,10 @@ const Output = memo(
         childRef,
         children,
         className,
+        createHandleOpenLink,
         id,
         isLink,
         list,
-        onOpenLink,
         outputClassName,
         parentRef,
         renderDefault,

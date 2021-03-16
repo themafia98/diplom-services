@@ -30,9 +30,9 @@ const CabinetModule = memo(({ path }) => {
 
   const { modePage, imageUrl, visible } = state;
 
-  const { udata, currentActionTab, routeDataActive } = useSelector((state) => {
-    const { udata = null } = state.publicReducer;
-    const { routeDataActive = null, currentActionTab } = state.router;
+  const { udata, currentActionTab, routeDataActive } = useSelector(({ publicReducer, router }) => {
+    const { udata } = publicReducer;
+    const { routeDataActive = null, currentActionTab } = router;
 
     return {
       udata,
@@ -271,7 +271,6 @@ const CabinetModule = memo(({ path }) => {
 CabinetModule.propTypes = cabinetType;
 CabinetModule.defaultProps = {
   path: '',
-  udata: {},
   routeDataActive: {},
   modelsContext: {},
 };

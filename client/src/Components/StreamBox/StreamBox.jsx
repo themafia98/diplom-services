@@ -50,7 +50,6 @@ class StreamBox extends Component {
     boxClassName: '',
     parentPath: '',
     router: {},
-    udata: {},
   };
 
   static getDerivedStateFromProps = (props, state) => {
@@ -111,7 +110,8 @@ class StreamBox extends Component {
   };
 
   onLoadingStreamList = async (shouldUpdatePrivate = false) => {
-    const { type, filterStream, udata: { _id: uid = '' } = {} } = this.props;
+    const { type, filterStream, udata } = this.props;
+    const { _id: uid } = udata;
 
     const isPrivate = type.includes('private');
 
@@ -153,8 +153,8 @@ class StreamBox extends Component {
   };
 
   getNormalizeUidNotification = () => {
-    const { udata = {}, personalUid } = this.props;
-    const { _id = '' } = udata;
+    const { udata, personalUid } = this.props;
+    const { _id } = udata;
 
     return !personalUid ? _id : personalUid;
   };
@@ -367,7 +367,7 @@ class StreamBox extends Component {
       mode,
       boxClassName,
       type,
-      udata: { avatar: myAvatar = null } = {},
+      udata,
       parentPath,
       parentDataName,
       router: { routeData = {} } = {},
@@ -377,6 +377,8 @@ class StreamBox extends Component {
       listHeight,
       t,
     } = this.props;
+
+    const { avatar: myAvatar = null } = udata;
 
     const {
       streamList: streamListState = [],

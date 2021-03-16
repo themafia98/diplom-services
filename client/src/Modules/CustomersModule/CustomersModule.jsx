@@ -7,10 +7,7 @@ import types from 'types.modules';
 
 const CustomersModule = memo(
   ({ activeTabs, path, statusApp, webSocket, visibilityPortal, entitysList, type }) => {
-    const { udata, router } = useSelector((state) => {
-      const { udata } = state.publicReducer;
-      return { udata, router: state.router };
-    });
+    const router = useSelector(({ router }) => router);
 
     const { routeData } = router;
 
@@ -27,7 +24,6 @@ const CustomersModule = memo(
         webSocket: webSocket,
         type,
         path,
-        udata,
         statusApp,
         router,
       };
@@ -42,18 +38,7 @@ const CustomersModule = memo(
 
       const entityList = entityRender(entitysList, routeData, subTabProps, config);
       return entityList.map(({ component = null }) => component);
-    }, [
-      checkBackground,
-      entitysList,
-      path,
-      routeData,
-      router,
-      statusApp,
-      type,
-      udata,
-      visibilityPortal,
-      webSocket,
-    ]);
+    }, [checkBackground, entitysList, path, routeData, router, statusApp, type, visibilityPortal, webSocket]);
 
     return <div className="customersModule">{renderCustomers()}</div>;
   },

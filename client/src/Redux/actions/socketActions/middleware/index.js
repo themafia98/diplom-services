@@ -69,7 +69,7 @@ const loadActiveChats = (payload) => async (dispatch, getState, { schema, Reques
       data: { response: { metadata: listdata = [] } = {} },
     } = response || {};
 
-    const { udata: { _id: uidState = '' } = {} } = getState().publicReducer || {};
+    const { _id: uidState } = getState().publicReducer.udata;
     let activeChatRoom = null;
     if (shouldRefresh) {
       activeChatRoom = listdata.find((room) => {
@@ -192,7 +192,7 @@ const updateRooms = (payload, clientDB = null) => async (dispatch, getState, { s
 
     const { chat: { usersList = [], listdata: listdataState = [] } = {} } = getState().socketReducer || {};
 
-    const { udata: { _id: uidState = '' } = {} } = getState().publicReducer || {};
+    const { _id: uidState } = getState().publicReducer.udata;
 
     let shouldAdd = false;
     if (Array.isArray(membersIds) && membersIds.length && fullUpdate) {

@@ -12,14 +12,16 @@ import actionsTypes from 'actions.types';
 import { routeParser } from 'Utils';
 import { withClientDb } from 'Models/ClientSideDatabase';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 
-const Comments = memo(({ data, onUpdate, path, udata, clientDB, rules, commentProps }) => {
+const Comments = memo(({ data, onUpdate, path, clientDB, rules, commentProps }) => {
   const { t } = useTranslation();
   const [updateDisabled, setDisable] = useState(false);
   const [msg, setValue] = useState(null);
 
   const { comments, key, _id: id } = data;
-  const { displayName = '', _id: uId = '' } = udata;
+
+  const { displayName, _id: uId } = useSelector(({ publicReducer }) => publicReducer.udata);
 
   const addSystemMessage = useMemo(
     () => ({

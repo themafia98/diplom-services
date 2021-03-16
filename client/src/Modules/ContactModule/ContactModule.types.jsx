@@ -33,7 +33,6 @@ export const newsCardType = {
 
 export const createNewsType = {
   readOnly: bool,
-  udata: udataType.isRequired,
   statusApp: string.isRequired,
   isBackground: bool,
   visible: bool,
@@ -76,7 +75,6 @@ export const messageType = {
 export const chatType = {
   type: oneOfType([string, symbol]),
   chat: object.isRequired,
-  udata: udataType,
   socketConnection: bool.isRequired,
   socketErrorStatus: oneOfType([string, () => null]),
   webSocket: oneOfType([object, () => null]),
