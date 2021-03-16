@@ -32,7 +32,6 @@ const ModalWindow = memo((props) => {
     rulesEdit,
     rulesStatus,
     isLoadList,
-    routeDataActive,
     actionTypeList: viewType,
     onUpdate,
     route,
@@ -47,10 +46,12 @@ const ModalWindow = memo((props) => {
     onEdit,
   } = props;
 
-  const { key: keyActiveRoute = null, _id: id = '', name: nameActive = '' } = routeDataActive || {};
-  const [state, dispatch] = useReducer(reducer, modalState);
+  const routeDataActive = useSelector(({ router }) => router.routeDataActive);
 
+  const [state, dispatch] = useReducer(reducer, modalState);
   const context = useContext(ModelContext);
+
+  const { key: keyActiveRoute, _id: id, name: nameActive } = routeDataActive;
 
   const { type: typeView = '' } = state;
   const {
@@ -168,7 +169,7 @@ const ModalWindow = memo((props) => {
           parsedRoutePath,
           key: keyActiveRoute,
           updateBy: '_id',
-          id: routeDataActive?._id,
+          id,
           updateItem: valueDescription,
           updateField: 'description',
           item: { ...routeDataActive },
@@ -192,6 +193,7 @@ const ModalWindow = memo((props) => {
     },
     [
       clientDB,
+      id,
       keyActiveRoute,
       onCancelEditModeContent,
       onUpdate,
@@ -543,7 +545,6 @@ const ModalWindow = memo((props) => {
         <MailResponserModal
           handleCancel={handleCancel}
           handleOk={handleOk}
-          routeDataActive={routeDataActive}
           typeView={typeView}
           visibleModal={isVisibleMailResponser}
         />
@@ -586,7 +587,6 @@ ModalWindow.defaultProps = {
   rulesEdit: true,
   rulesStatus: true,
   isLoadList: true,
-  routeDataActive: {},
   route: null,
   actionTypeList: 'default',
   mode: '',
