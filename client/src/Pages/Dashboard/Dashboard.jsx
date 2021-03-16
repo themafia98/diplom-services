@@ -246,15 +246,15 @@ const Dashboard = () => {
   }, [currentActionTab, routeData, shouldUpdate, showLoader]);
 
   const activeTabsData = useMemo(() => {
-    const { menuItems } = appConfig;
+    const { menu } = appConfig;
     const activeTabsData = [];
 
-    if (!menuItems || !activeTabs) {
+    if (!menu || !activeTabs) {
       return null;
     }
 
     for (const tab of activeTabs) {
-      const tabItem = menuItems.find((menuItem) => menuItem.EUID === tab);
+      const tabItem = menu.find((menuItem) => menuItem.EUID === tab);
 
       if (tabItem) {
         activeTabsData.push({ ...tabItem });
@@ -443,7 +443,7 @@ const Dashboard = () => {
             key="contentView"
             rest={rest}
             path={currentActionTab}
-            shouldShowSpinner={!activeTabsData.length}
+            shouldShowSpinner={!activeTabsData?.length}
           />
           {visibleInstallApp ? (
             <Modal

@@ -392,7 +392,7 @@ const saveAndNormalizeRoute = (router, config) => {
 };
 
 const getAvailableTabNameKey = (DATAKEY, metadata) => {
-  const { listdata = {}, title = '', name = '', displayName = '' } = metadata;
+  const { listdata = {}, title = '', name = '', displayName = '' } = metadata || {};
   const { title: titleListdata = '' } = listdata;
   const isName = DATAKEY && name;
 
