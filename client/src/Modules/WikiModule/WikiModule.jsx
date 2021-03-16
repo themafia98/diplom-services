@@ -51,9 +51,13 @@ class WikiModule extends PureComponent {
   };
 
   onSelect = (keys, event) => {
-    const { metadata = [] } = this.props;
+    const { metadata } = this.props;
     let selectedNodeMetadata = null;
     let selectedNode = null;
+
+    if (!metadata) {
+      return;
+    }
 
     if (keys?.length) {
       selectedNode = keys[0];
@@ -119,9 +123,13 @@ class WikiModule extends PureComponent {
 
   onCreateNode = async (item = null) => {
     const { node: nodeState = {} } = this.state;
-    const { metadata = [], modelsContext, t } = this.props;
+    const { metadata, modelsContext, t } = this.props;
     const { Request } = modelsContext;
-    if (!Request) return;
+
+    if (!Request || !metadata) {
+      return;
+    }
+
     try {
       const node = !nodeState?.parentId ? { ...nodeState, parentId: 'root' } : { ...nodeState };
       const indexId = !item ? 'root' : item?.parentId;
@@ -188,7 +196,7 @@ class WikiModule extends PureComponent {
         throw new Error('Bad delete leaf');
       }
 
-      const { data: { response: { metadata: { deletedCount = 0, ok = 0 } = {} } = {} } = {} } = res;
+      const { deletedCount = 0, ok = 0 } = res.data.response?.metadata || {};
 
       if (deletedCount && ok) this.fetchTree('', true);
       message.success(t('wiki_messages_deleteLeaf'));
@@ -247,7 +255,11 @@ class WikiModule extends PureComponent {
 
     if (!sign || !id) return;
 
-    const { metadata = [], t } = this.props;
+    const { metadata, t } = this.props;
+
+    if (!metadata) {
+      return;
+    }
 
     const item = metadata.find((node) => node?._id === id);
 
@@ -302,7 +314,11 @@ class WikiModule extends PureComponent {
 
   renderTree = () => {
     const { searchValue, visbileDropdownId = null, visbileDropdown = false } = this.state;
-    const { metadata = [], t } = this.props;
+    const { metadata, t } = this.props;
+
+    if (!metadata) {
+      return;
+    }
 
     const listData = this.getTreeData(metadata);
 
@@ -402,8 +418,8 @@ class WikiModule extends PureComponent {
       if (res?.status !== 200 && res?.status !== 404) {
         throw new Error(`Bad fetch update wikiPage. ${paramsState}`);
       }
-      const { metadata = {} } = response || {};
-      if (callback) callback(null, metadata);
+      const meta = response?.metadata || {};
+      if (callback) callback(null, meta);
     } catch (error) {
       if (error?.response?.status !== 404) console.error(error);
       if (callback) callback(null);
@@ -419,7 +435,7 @@ class WikiModule extends PureComponent {
       selectedNode = '',
     } = this.state;
     const { _id: id = '' } = selectedNodeMetadata || {};
-    const { metadata = [], router: { shouldUpdate = false } = {}, t } = this.props;
+    const { metadata, router: { shouldUpdate = false } = {}, t } = this.props;
     const isLoading = isLoadingState || (shouldUpdate && !metadata?.length);
 
     return (
@@ -438,7 +454,7 @@ class WikiModule extends PureComponent {
           </div>
           <div className="wikiModule__main">
             <div className="col-4">
-              {metadata.length ? (
+              {metadata?.length ? (
                 <>
                   <Search
                     className="wikiModule__searchInput"
@@ -498,7 +514,7 @@ class WikiModule extends PureComponent {
 
 const mapStateToProps = ({ router }) => {
   const { routeData } = router;
-  const { wikiTree: metadata = [] } = routeData['wikiModule'] || {};
+  const { wikiTree: metadata } = routeData['wikiModule'] || {};
 
   return {
     router,
