@@ -10,6 +10,10 @@
     "error": "Error"
   },
   "components": {
+    "errorPage": {
+      "reportButton": "Report error",
+      "updateButton": "Update app"
+    },
     "table": {
       "taskConfig": {
         "status": "Status",

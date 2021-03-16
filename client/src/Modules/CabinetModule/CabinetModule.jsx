@@ -271,7 +271,6 @@ const CabinetModule = memo(({ path }) => {
 CabinetModule.propTypes = cabinetType;
 CabinetModule.defaultProps = {
   path: '',
-  routeDataActive: {},
   modelsContext: {},
 };
 

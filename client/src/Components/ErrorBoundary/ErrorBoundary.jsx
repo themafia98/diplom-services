@@ -35,12 +35,13 @@ class ErrorBoundary extends Component {
   };
 
   render() {
-    if (this.state.hasError) {
-      //render fallback UI
+    const { hasError } = this.state;
+    const { children } = this.props;
+    if (hasError) {
       return <ErrorPage update={this.update} logger={this.logger} error={this.state.error} />;
     }
-    //when there's not an error, render children untouched
-    return this.props.children;
+
+    return children;
   }
 }
 export default ErrorBoundary;

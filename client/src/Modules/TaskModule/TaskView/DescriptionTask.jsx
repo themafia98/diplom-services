@@ -5,13 +5,13 @@ import Scrollbars from 'react-custom-scrollbars';
 import Comments from 'Components/Comments';
 import File from 'Components/File';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 
 const DescriptionTask = forwardRef(
   (
     {
       onEditContentMode,
       onAddFileList,
-      routeDataActive,
       onRemoveFile,
       commentProps,
       description,
@@ -24,6 +24,9 @@ const DescriptionTask = forwardRef(
     ref,
   ) => {
     const { t } = useTranslation();
+
+    const routeDataActive = useSelector(({ router }) => router.routeDataActive);
+
     const scrollStyle = useMemo(() => {
       return { height: '150px' };
     }, []);

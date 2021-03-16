@@ -17,7 +17,9 @@ const Tab = ({ value, active, hendlerTab, itemKey, index, sizeTab }) => {
   const eventCloseHandler = (event) => {
     event.stopPropagation();
 
-    if (itemKey === 'mainModule') return;
+    if (itemKey === 'mainModule') {
+      return;
+    }
 
     callbackHendlerTab(event, itemKey, 'close');
   };

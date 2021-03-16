@@ -10,6 +10,10 @@
     "error": "Ошибка"
   },
   "components": {
+    "errorPage": {
+      "reportButton": "Сообщить об ошибке",
+      "updateButton": "Обновить приложение"
+    },
     "table": {
       "taskConfig": {
         "status": "Статус",

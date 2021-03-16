@@ -1,7 +1,10 @@
 import React, { useMemo } from 'react';
-import PropTypes from 'prop-types';
+import { instanceOf, func } from 'prop-types';
+import { useTranslation } from 'react-i18next';
 
 const ErrorPage = ({ error, logger, update }) => {
+  const { t } = useTranslation();
+
   const hideStyle = useMemo(() => {
     return { display: 'none' };
   }, []);
@@ -13,15 +16,15 @@ const ErrorPage = ({ error, logger, update }) => {
         {error.message}
       </p>
       <button disabled={false} onClick={logger}>
-        Report error
+        {t('components_errorPage_reportButton')}
       </button>
-      <button onClick={update}>Update app</button>
+      <button onClick={update}>{t('components_errorPage_updateButton')}</button>
     </div>
   );
 };
 ErrorPage.propTypes = {
-  error: PropTypes.object.isRequired,
-  logger: PropTypes.func.isRequired,
-  update: PropTypes.func.isRequired,
+  error: instanceOf(Error).isRequired,
+  logger: func.isRequired,
+  update: func.isRequired,
 };
 export default ErrorPage;

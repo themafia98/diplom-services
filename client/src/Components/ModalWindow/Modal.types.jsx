@@ -1,11 +1,9 @@
 import PropTypes from 'prop-types';
-import { udataType } from 'App.types';
 const { func, string, object, array, bool, number, oneOfType } = PropTypes;
 
 export const modalWindowType = {
   onCaching: func,
   actionType: string,
-  routeDataActive: object,
   mode: string,
   path: string,
   keyTask: string,
@@ -53,7 +51,6 @@ export const trackerModalType = {
 };
 
 export const mailResponserType = {
-  routeDataActive: object.isRequired,
   visibleModal: bool,
   handleCancel: oneOfType([func, () => null]),
   handleOk: oneOfType([func, () => null]),

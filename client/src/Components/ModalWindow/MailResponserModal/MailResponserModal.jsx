@@ -2,13 +2,13 @@ import React, { useState, useContext } from 'react';
 import { mailResponserType } from '../Modal.types';
 import { Input, message, Modal } from 'antd';
 import modalContext from 'Models/context';
+import { useSelector } from 'react-redux';
 
-const MailResponserModal = ({
-  routeDataActive: { additionalCreaterData: { email = '' } = {} } = {},
-  visibleModal,
-  handleCancel,
-  handleOk,
-}) => {
+const MailResponserModal = ({ visibleModal, handleCancel, handleOk }) => {
+  const routeDataActive = useSelector(({ router }) => router.routeDataActive);
+
+  const { email } = routeDataActive?.additionalCreaterData || {};
+
   const context = useContext(modalContext);
   const [formData, setFormData] = useState({
     themeMail: 'Ответ на заявку об указании услуг',
@@ -83,7 +83,6 @@ const MailResponserModal = ({
 };
 
 MailResponserModal.defaultProps = {
-  routeDataActive: {},
   visibleModal: false,
   handleCancel: null,
   handleOk: null,

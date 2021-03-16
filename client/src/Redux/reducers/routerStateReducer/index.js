@@ -80,7 +80,7 @@ export default handleActions(
       };
     },
     [SET_ACTIVE_TAB]: (state, { payload: draftPayload }) => {
-      const { routeData: routeDataState = {}, routeDataActive = {} } = state;
+      const { routeData: routeDataState = {}, routeDataActive } = state;
       const withConfig = draftPayload && typeof draftPayload === 'object' && !!draftPayload?.config;
       const { config: { hardCodeUpdate = true } = {}, tab: tabWithConfig = '', config = {} } = withConfig
         ? draftPayload
@@ -139,14 +139,8 @@ export default handleActions(
     },
     [REMOVE_TAB]: (state, { payload }) => {
       const { type = '', path = '' } = payload;
-      const {
-        routeData = {},
-        currentActionTab = '',
-        activeTabs = [],
-        routeDataActive = {},
-        routeDataActive: { _id: id = '' } = {},
-      } = state;
-
+      const { routeData = {}, currentActionTab = '', activeTabs = [], routeDataActive } = state;
+      const { _id: id } = routeDataActive;
       const entityId = path.split(regExpRegister.MODULE_ID)[1];
       let deleteKey = type === 'itemTab' ? entityId : path;
       let deleteKeyOnce = !deleteKey ? path : null;

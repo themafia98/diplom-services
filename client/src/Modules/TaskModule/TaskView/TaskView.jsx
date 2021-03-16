@@ -64,8 +64,10 @@ class TaskView extends PureComponent {
   };
 
   static getDerivedStateFromProps = (props, state) => {
-    const { uuid, router: { routeDataActive: { uidCreater = '' } = {} } = {} } = props;
+    const { uuid, router } = props;
+    const { uidCreater } = router.routeDataActive;
     const { key, type } = state;
+
     if (uuid !== key) return { ...state, key: key };
     else if (uidCreater?.includes('__remoteTicket') && type !== 'remote') {
       return {
@@ -77,7 +79,7 @@ class TaskView extends PureComponent {
 
   componentDidMount = () => {
     const { router = {} } = this.props;
-    const { routeDataActive = {} } = router;
+    const { routeDataActive } = router;
     const { key = null } = routeDataActive;
 
     if (!key) {
@@ -119,8 +121,9 @@ class TaskView extends PureComponent {
 
   onLoadTaskAdditionalData = async () => {
     const { router = {}, onLoadCacheData, onSaveCache = null, clientDB } = this.props;
-    const { routeDataActive = {} } = router;
-    const { key = '', uidCreater = '', authorName = '' } = routeDataActive;
+    const { routeDataActive } = router;
+    const { key, uidCreater, authorName } = routeDataActive;
+
     const { actionType, key: taskId } = this.state;
 
     if (!taskId) return;
@@ -170,7 +173,7 @@ class TaskView extends PureComponent {
 
   fetchDepUsersList = async () => {
     const { onSaveCache = null, router = {}, modelsContext, t } = this.props;
-    const { routeDataActive = {} } = router;
+    const { routeDataActive } = router;
     const { editor = '' } = routeDataActive;
     const { key: taskId } = this.state;
     const { Request = {} } = modelsContext;
@@ -231,7 +234,7 @@ class TaskView extends PureComponent {
 
   fetchFiles = async () => {
     const { router = {}, modelsContext } = this.props;
-    const { routeDataActive = {} } = router;
+    const { routeDataActive } = router;
     const { rest } = modelsContext;
 
     try {
@@ -352,8 +355,8 @@ class TaskView extends PureComponent {
   };
 
   onEdit = () => {
-    const { router = {} } = this.props;
-    const { routeDataActive = {} } = router;
+    const { router } = this.props;
+    const { routeDataActive } = router;
 
     this.setState({
       ...this.state,
@@ -463,15 +466,8 @@ class TaskView extends PureComponent {
   };
 
   onUpdateEditable = async (event) => {
-    const {
-      onUpdate,
-      router: { routeDataActive = {} } = {},
-      router: { path = '' },
-      route = null,
-      modelsContext,
-      clientDB,
-      t,
-    } = this.props;
+    const { onUpdate, router, route = null, modelsContext, clientDB, t } = this.props;
+    const { routeDataActive, path } = router;
 
     const { modeControllEdit = {} } = this.state;
     const validHashCopy = [{ ...modeControllEdit }];
@@ -601,11 +597,9 @@ class TaskView extends PureComponent {
   };
 
   getAccessPriority = () => {
-    const {
-      router: { routeDataActive = {} },
-    } = this.props;
+    const { router } = this.props;
     const { modeControllEdit: { priority: priorityState = '' } = {} } = this.state;
-    const { priority = '' } = routeDataActive;
+    const { priority } = router.routeDataActive;
 
     return _.uniq([
       priorityState ? priorityState : priority ? priority : null,
@@ -618,7 +612,7 @@ class TaskView extends PureComponent {
 
   getModalWindow = (accessStatus, rulesEdit = true, rulesStatus = false) => {
     const {
-      router: { routeDataActive = {} } = {},
+      router,
       onCaching,
       onUpdate,
       router: { path = '' },
@@ -635,14 +629,13 @@ class TaskView extends PureComponent {
       customTypeModal,
     } = this.state;
 
-    const { _id: id = '', key = '', status = '', description = '' } = routeDataActive || {};
+    const { _id: id, key, status, description } = router.routeDataActive || {};
     return (
       <ModalWindow
         key={key ? key : uuid()}
         actionTypeList={type}
         onCaching={onCaching}
         actionType={actionType}
-        routeDataActive={routeDataActive}
         mode={mode}
         path={path}
         route={route}
@@ -692,16 +685,16 @@ class TaskView extends PureComponent {
     } = this.state;
 
     const {
-      key = '',
-      status = '',
-      priority = '',
-      name = '',
-      uidCreater = '',
-      editor = [],
-      date = [],
-      tags: tagsView = [],
-      description = '',
-    } = routeDataActive || {};
+      key,
+      status,
+      priority,
+      name,
+      uidCreater,
+      editor,
+      date,
+      tags: tagsView,
+      description,
+    } = routeDataActive;
     const {
       onChangeEditable,
       onChangeEditableStart,
@@ -753,7 +746,6 @@ class TaskView extends PureComponent {
 
     const descriptionTaskProps = {
       ...commonProps,
-      routeDataActive,
       description,
       rulesEdit,
       filesArray,
