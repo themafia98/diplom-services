@@ -132,7 +132,7 @@ class Table extends PureComponent {
   };
 
   getColumnRender = (text, currentData) => {
-    const { router, depDataKey, udata } = this.props;
+    const { router, depDataKey } = this.props;
     const isDateString = Array.isArray(text) && moment(text[0], 'DD.MM.YYYY')?._isValid;
     const isArrayEditors = Array.isArray(text) && !isDateString;
     const className = getStatusByTitle(text);

@@ -179,7 +179,7 @@ const TaskDescription = ({
       </Descriptions.Item>
       <Descriptions.Item label={t('taskModule_view_desc_dateStart')}>
         {modeControll === 'default' ? (
-          <Output className="startDate"> {date[0] ? date[0] : null}</Output>
+          <Output className="startDate"> {date?.[0] ? date[0] : null}</Output>
         ) : modeControll === 'edit' && modeControllEdit ? (
           <DatePicker
             value={
@@ -203,7 +203,7 @@ const TaskDescription = ({
       </Descriptions.Item>
       <Descriptions.Item label={t('taskModule_view_desc_dateEnd')}>
         {modeControll === 'default' ? (
-          <Output className="endDate"> {date[1] ? date[1] : null}</Output>
+          <Output className="endDate"> {date?.[1] ? date[1] : null}</Output>
         ) : modeControll === 'edit' && modeControllEdit ? (
           <DatePicker
             value={

@@ -235,7 +235,12 @@ class TaskView extends PureComponent {
   fetchFiles = async () => {
     const { router = {}, modelsContext } = this.props;
     const { routeDataActive } = router;
+    const { isLoadingFiles } = this.state;
     const { rest } = modelsContext;
+
+    if (isLoadingFiles) {
+      return;
+    }
 
     try {
       this.setState(
@@ -245,7 +250,8 @@ class TaskView extends PureComponent {
           isLoadingFiles: true,
         },
         async () => {
-          const { _id: entityId = '' } = routeDataActive;
+          const { _id: entityId } = routeDataActive;
+
           const fileLoaderBody = {
             queryParams: {
               entityId,
@@ -255,16 +261,21 @@ class TaskView extends PureComponent {
           const res = await fs.loadFile('tasks', fileLoaderBody);
           const { response = null } = res.data;
 
-          if (!response.done) throw new Error('Bad fetch files');
+          if (!response.done) {
+            throw new Error('Bad fetch files');
+          }
 
           const { metadata } = response;
-          const filesArray = Array.isArray(metadata)
-            ? metadata
-            : metadata && typeof metadata === 'object'
-            ? metadata?.entries
-            : [];
 
-          const files = filesArray.reduce((acc, file) => {
+          let filesList = [];
+
+          if (Array.isArray(metadata)) {
+            filesList = metadata;
+          } else if (metadata && typeof metadata === 'object') {
+            filesList = metadata?.entries;
+          }
+
+          const files = filesList.reduce((acc, file) => {
             const { name = '', path_display: url = '', id: uid = '' } = file || {};
             const [module, taskId, filename] = url?.slice(1)?.split(/\//gi);
 
@@ -720,7 +731,7 @@ class TaskView extends PureComponent {
     const accessPriority = this.getAccessPriority();
     const isRemoteTicket = uidCreater?.includes('__remoteTicket');
     const rulesEdit = uid === uidCreater || isRemoteTicket;
-    const rulesStatus = editor.some((editorId) => editorId === uid) || uid === uidCreater || isRemoteTicket;
+    const rulesStatus = editor?.some((editorId) => editorId === uid) || uid === uidCreater || isRemoteTicket;
 
     const statusClassName = getClassNameByStatus(status);
     const renderMethods = {
@@ -763,7 +774,7 @@ class TaskView extends PureComponent {
       modeControll,
       accessStatus,
       uidCreater,
-      tagList: _.uniqBy([...tagsListState, ...tagsView], 'id'),
+      tagList: tagsView ? _.uniqBy([...tagsListState, ...tagsView], 'id') : null,
       tagsView,
       priority,
       status,

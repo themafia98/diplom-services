@@ -58,7 +58,7 @@ const TagsContainer = ({
 
   return (
     <>
-      {tagList.map((tag) => {
+      {tagList?.map((tag) => {
         const { color = '', id = '', tagValue = '' } = tag;
         const editableTabProps = isEditable
           ? {

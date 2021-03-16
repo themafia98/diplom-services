@@ -243,7 +243,7 @@ const Output = memo(
               !isStaticList && Array.isArray(links)
                 ? links
                     .reduce((links, link) => {
-                      if (children.some((child) => child === link?._id)) {
+                      if (Array.isArray(children) && children.some((child) => child === link?._id)) {
                         return [...links, { displayValue: link?.displayName, id: link?._id }];
                       }
                       return links;

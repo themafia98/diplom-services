@@ -311,7 +311,7 @@ const ModalWindow = memo((props) => {
 
     if (validData) return _valid;
     else return false;
-  }, [context, keyTask, modeEditContent, props, runAction, state]);
+  }, [displayName, context, keyTask, modeEditContent, runAction, state]);
 
   const onChangeStatusTask = useCallback(
     async (customStatus = null) => {

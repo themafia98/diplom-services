@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types';
-import { udataType } from '../../App.types';
 const { func, string, oneOf, object, bool, array } = PropTypes;
 
 export const wikiModuleType = {

@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types';
-import { udataType } from 'App.types';
 const { bool, object, func, string, oneOfType, number, shape, array } = PropTypes;
 
 export const commentType = {
