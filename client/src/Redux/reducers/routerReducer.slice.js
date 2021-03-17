@@ -1,7 +1,6 @@
 import regExpRegister from 'Utils/Tools/regexpStorage';
 import { publicSlice } from './publicReducer.slice';
-
-const { createSlice } = require('@reduxjs/toolkit');
+import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   path: null,
