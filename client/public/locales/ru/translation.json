@@ -11,6 +11,7 @@
   },
   "components": {
     "errorPage": {
+      "errorStatus": "Сбой приложения",
       "reportButton": "Сообщить об ошибке",
       "updateButton": "Обновить приложение"
     },

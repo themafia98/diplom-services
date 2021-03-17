@@ -11,7 +11,7 @@ const ErrorPage = ({ error, logger, update }) => {
 
   return (
     <div className="errorPage">
-      <p className="errorStatus">App crash</p>
+      <p className="errorStatus">{t('components_errorPage_errorStatus')}</p>
       <p style={hideStyle} className="messageError">
         {error.message}
       </p>
