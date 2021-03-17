@@ -5,7 +5,7 @@ import ClockWidjet from 'Components/ClockWidjet/index';
 import TableView from 'Components/TableView';
 import StreamBox from 'Components/StreamBox';
 import Title from 'Components/Title';
-import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
+import { loadCurrentData } from 'Redux/middleware/routerReducer.thunk';
 import { routeParser } from 'Utils';
 import { compose } from 'redux';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';

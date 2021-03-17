@@ -2,8 +2,7 @@ import React, { Component, createRef } from 'react';
 import { streamBoxType } from './StreamBox.types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { openTab } from 'Redux/actions/routerActions/middleware';
-import { saveComponentStateAction } from 'Redux/actions/routerActions';
+import { openTab } from 'Redux/middleware/routerReducer.thunk';
 import _ from 'lodash';
 import { Avatar, message, Tooltip, Spin, Button } from 'antd';
 import { Scrollbars } from 'react-custom-scrollbars';
@@ -15,6 +14,7 @@ import { compose } from 'redux';
 import { withClientDb } from 'Models/ClientSideDatabase';
 import { paramsTemplate, requestTemplate } from 'Utils/Api/api.utils';
 import { withTranslation } from 'react-i18next';
+import { refreshRouterData } from 'Redux/reducers/routerReducer.slice';
 
 class StreamBox extends Component {
   state = {
@@ -165,7 +165,7 @@ class StreamBox extends Component {
       const { Request } = this.context;
       const {
         type = '',
-        onSaveComponentState,
+        onRefreshRouterData,
         streamStore,
         filterStream,
         setCounter,
@@ -233,7 +233,7 @@ class StreamBox extends Component {
         if (setCounter) setCounter(-count, 'calc');
       }
 
-      if (typeof onSaveComponentState !== 'function') {
+      if (typeof onRefreshRouterData !== 'function') {
         return this.setState({ streamList: metadata, isLoading: true, showLoader: false });
       }
 
@@ -249,7 +249,7 @@ class StreamBox extends Component {
         });
       }
 
-      await onSaveComponentState({
+      await onRefreshRouterData({
         [streamStore]: metaSorted,
         load: true,
         path: pathNotification,
@@ -527,7 +527,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     onOpenTab: (params) => dispatch(openTab(params)),
-    onSaveComponentState: (data) => dispatch(saveComponentStateAction(data)),
+    onRefreshRouterData: (data) => dispatch(refreshRouterData(data)),
   };
 };
 

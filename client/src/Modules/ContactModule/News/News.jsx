@@ -3,13 +3,13 @@ import { newsType } from '../ContactModule.types';
 import { useDispatch, useSelector } from 'react-redux';
 import { Pagination, Button, message, Empty, Spin } from 'antd';
 import Scrollbars from 'react-custom-scrollbars';
-import { addTabAction, setActiveTabAction } from 'Redux/actions/routerActions';
 import NewsCard from './NewsCard';
 import Title from 'Components/Title';
 import { routePathNormalise, routeParser } from 'Utils';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
-import { openTab } from 'Redux/actions/routerActions/middleware';
+import { openTab } from 'Redux/middleware/routerReducer.thunk';
 import { useTranslation } from 'react-i18next';
+import { createTab, setActiveTab } from 'Redux/reducers/routerReducer.slice';
 
 const News = memo(({ data }) => {
   const { news: newsData = [], loading = false, load = false } = data || {};
@@ -43,7 +43,7 @@ const News = memo(({ data }) => {
     const index = activeTabs.findIndex((tab) => tab === pathNormalize);
     const isFind = index !== -1;
 
-    if (isFind) dispatch(setActiveTabAction(activeTabs[index], { hardCodeUpdate: false }));
+    if (isFind) dispatch(setActiveTab(activeTabs[index], { hardCodeUpdate: false }));
 
     if (tabsLimit <= activeTabs.length) {
       message.error(`${t('globalMessages_messages_maxTabs')} ${tabsLimit}`);
@@ -52,7 +52,7 @@ const News = memo(({ data }) => {
 
     if (!isFind)
       dispatch(
-        addTabAction({
+        createTab({
           tab: routeParser({ path: pathNormalize }),
           config: { hardCodeUpdate: false },
         }),

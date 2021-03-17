@@ -14,7 +14,7 @@ const coreDataUpdater = async (dispatch, dep = {}, multiple = false, badNetwork 
     storeLoad,
     clientDB,
     methodQuery,
-    saveComponentStateAction,
+    refreshRouterData,
     setRequestError,
     isLocalUpdate: localUpdateStat,
     params,
@@ -54,7 +54,7 @@ const coreDataUpdater = async (dispatch, dep = {}, multiple = false, badNetwork 
       add,
     };
     const depAction = {
-      saveComponentStateAction,
+      refreshRouterData,
       setRequestError,
       add,
     };
@@ -73,7 +73,7 @@ const updateEntityThunk = async (dispatch, dep = {}) => {
     schema,
     dataItems,
     id,
-    updateItemStateAction,
+    refreshRouteDataItem,
     updateBy = '',
     clientDB = null,
   } = dep;
@@ -86,7 +86,7 @@ const updateEntityThunk = async (dispatch, dep = {}) => {
   if (!storeCopy) return;
 
   dispatch(
-    updateItemStateAction({
+    refreshRouteDataItem({
       updaterItem: dataItems,
       type: 'UPDATE',
       updateBy,

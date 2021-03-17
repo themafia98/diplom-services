@@ -1,14 +1,19 @@
 import { sucessEvent, routePathNormalise, findData, routeParser, findUser, checkPageAvailable } from 'Utils';
 import reduxCoreThunk from 'Redux/core';
-import { saveComponentStateAction, loadFlagAction, openPageWithDataAction, setActiveTabAction } from '../';
 import actionsTypes from 'actions.types';
 import regExpRegister from 'Utils/Tools/regexpStorage';
 import _ from 'lodash';
 import { message } from 'antd';
 import { makeApiAction, getActionStore } from 'Utils/Api';
 import { APP_STATUS } from 'App.constant';
-import { setSystemMessage } from 'Redux/reducers/systemReducer/systemReducer.slice';
-import { setAppStatus, setRequestError } from 'Redux/reducers/publicReducer/publicReducer.slice';
+import { setSystemMessage } from 'Redux/reducers/systemReducer.slice';
+import { setAppStatus, setRequestError } from 'Redux/reducers/publicReducer.slice';
+import {
+  openPageWithData,
+  refreshRouterData,
+  setActiveTab,
+  setIsLoadData,
+} from 'Redux/reducers/routerReducer.slice';
 
 const { errorThunk, coreDataUpdater } = reduxCoreThunk;
 
@@ -34,9 +39,9 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
   const isExist = router.routeData && router.routeData[pathValid];
 
   if (isExist && !router.routeData[pathValid].load) {
-    dispatch(loadFlagAction({ path: pathValid, load: true, loading: true }));
+    dispatch(setIsLoadData({ path: pathValid, load: true, loading: true }));
   } else if (pathValid && shouldSetLoading) {
-    dispatch(loadFlagAction({ path: pathValid, loading: true }));
+    dispatch(setIsLoadData({ path: pathValid, loading: true }));
   }
 
   const store = getActionStore(action);
@@ -54,7 +59,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
         clientDB,
         uuid: 'uuid',
         params,
-        saveComponentStateAction,
+        refreshRouterData,
         multipleLoadData,
         setRequestError,
         isLocalUpdate,
@@ -101,7 +106,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
           copyStore: [],
           getState,
           storeLoad: store,
-          saveComponentStateAction,
+          refreshRouterData,
           isLocalUpdate,
           path: pagePath,
           rest,
@@ -133,7 +138,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
         pathValid,
         requestError,
         uuid: 'uuid',
-        saveComponentStateAction,
+        refreshRouterData,
         setRequestError,
       };
 
@@ -200,7 +205,7 @@ const multipleLoadData = (params) => async (dispatch, getState, { schema, Reques
         clientDB,
         methodQuery: body?.params?.query,
         uuid: 'uuid',
-        saveComponentStateAction,
+        refreshRouterData,
         setRequestError,
         isLocalUpdate,
       };
@@ -219,7 +224,7 @@ const multipleLoadData = (params) => async (dispatch, getState, { schema, Reques
   }
 
   if (hookData.length) {
-    dispatch(saveComponentStateAction({ stateList: [...hookData], multiple: true, loading: false }));
+    dispatch(refreshRouterData({ stateList: [...hookData], multiple: true, loading: false }));
   }
 };
 
@@ -249,7 +254,7 @@ const openTab = ({ uuid, action, depKey = '', data = null, openType = '' }) => a
     const indexTab = activeTabs.findIndex((tab) => tab.includes(tabPage) && tab.includes(uuid));
 
     if (indexTab !== -1) {
-      dispatch(setActiveTabAction(activeTabs[indexTab]));
+      dispatch(setActiveTab(activeTabs[indexTab]));
       return;
     }
 
@@ -279,7 +284,7 @@ const openTab = ({ uuid, action, depKey = '', data = null, openType = '' }) => a
     }
 
     dispatch(
-      openPageWithDataAction({
+      openPageWithData({
         activePage,
         routeDataActive: { ...data },
       }),
@@ -338,7 +343,7 @@ const openTab = ({ uuid, action, depKey = '', data = null, openType = '' }) => a
   if (indexTab === -1) {
     const pageData = normalizeData ? normalizeData : newData;
     dispatch(
-      openPageWithDataAction({
+      openPageWithData({
         activePage,
         routeDataActive: { ...pageData, key: uuid },
       }),
@@ -346,7 +351,7 @@ const openTab = ({ uuid, action, depKey = '', data = null, openType = '' }) => a
     return;
   }
 
-  dispatch(setActiveTabAction(activeTabs[indexTab]));
+  dispatch(setActiveTab(activeTabs[indexTab]));
 };
 
 export { loadCurrentData, multipleLoadData, openTab };

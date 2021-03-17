@@ -57,11 +57,11 @@ const runBadNetworkMode = (dispatch, error, dep) => {
 };
 
 const runNoCorsSave = (dispatch, dep, multiple) => {
-  const { saveComponentStateAction, params = {} } = dep;
+  const { refreshRouterData, params = {} } = dep;
   const { data = {}, shouldUpdateState = true } = dataParser(false, false, dep);
 
   if (shouldUpdateState && !multiple) {
-    dispatch(saveComponentStateAction({ ...data, params }));
+    dispatch(refreshRouterData({ ...data, params }));
     return [true, null];
   }
 
@@ -86,12 +86,12 @@ const runRefreshIndexedDb = async (dispatch, storeName, dep, multiple) => {
 };
 
 const runLocalUpdate = async (dispatch, depAction, depParser, multiple) => {
-  const { setRequestError, saveComponentStateAction, params = {}, add = false } = depAction;
+  const { setRequestError, refreshRouterData, params = {}, add = false } = depAction;
 
   const { data, shoudClearError = false, shouldUpdateState = true } = dataParser(true, false, depParser);
   if (shoudClearError) await dispatch(setRequestError(null));
   if (shouldUpdateState && !multiple)
-    await dispatch(saveComponentStateAction({ ...data, loading: false, add, params }));
+    await dispatch(refreshRouterData({ ...data, loading: false, add, params }));
   else if (multiple) return data;
 };
 

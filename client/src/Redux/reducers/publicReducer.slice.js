@@ -15,7 +15,7 @@ const initialState = {
   artifacts: [],
 };
 
-const publicSlice = createSlice({
+export const publicSlice = createSlice({
   name: 'publicReducer',
   initialState,
   reducers: {

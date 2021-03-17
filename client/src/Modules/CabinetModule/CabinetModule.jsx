@@ -6,12 +6,12 @@ import UserCard from 'Components/UserCard';
 import Title from 'Components/Title';
 import StreamBox from 'Components/StreamBox';
 import { findUser, routeParser } from 'Utils';
-import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
+import { loadCurrentData } from 'Redux/middleware/routerReducer.thunk';
 import actionPath from 'actions.path';
 import modelsContext from 'Models/context';
 import { CABINET_PAGE_TYPE } from './CabinetModule.constant';
 import { useTranslation } from 'react-i18next';
-import { updateUserData } from 'Redux/reducers/publicReducer/publicReducer.slice';
+import { updateUserData } from 'Redux/reducers/publicReducer.slice';
 
 const { Dragger } = Upload;
 

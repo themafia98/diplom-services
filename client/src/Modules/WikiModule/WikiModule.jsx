@@ -3,7 +3,7 @@ import { wikiModuleType } from './WikiModule.types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import Scrollbars from 'react-custom-scrollbars';
-import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
+import { loadCurrentData } from 'Redux/middleware/routerReducer.thunk';
 import { Tree, Button, Input, Select, Dropdown, Menu, message, Spin } from 'antd';
 
 import WikiPage from './WikiPage';

@@ -6,16 +6,12 @@ import { Table as AntTable, message, Empty, Input, Button } from 'antd';
 import { getDataSource, findData } from 'Utils';
 import ModelContext from 'Models/context';
 import { connect } from 'react-redux';
-import {
-  addToRouteDataAction,
-  openPageWithDataAction,
-  setActiveTabAction,
-} from 'Redux/actions/routerActions';
 import { createTableConfig } from './Table.utils';
 import { TABLE_TYPE } from './Table.constant';
 import { getStatusByTitle } from './Table.utils';
 import { compose } from 'redux';
 import { withTranslation } from 'react-i18next';
+import { addToRouteData, openPageWithData, setActiveTab } from 'Redux/reducers/routerReducer.slice';
 
 class Table extends PureComponent {
   state = {
@@ -309,9 +305,9 @@ const mapStateTopProps = ({ publicReducer }) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  onOpenPageWithData: (payload) => dispatch(openPageWithDataAction(payload)),
-  setCurrentTab: (tab) => dispatch(setActiveTabAction(tab)),
-  onAddRouteData: (data) => dispatch(addToRouteDataAction(data)),
+  onOpenPageWithData: (payload) => dispatch(openPageWithData(payload)),
+  setCurrentTab: (tab) => dispatch(setActiveTab(tab)),
+  onAddRouteData: (data) => dispatch(addToRouteData(data)),
 });
 
 export default compose(connect(mapStateTopProps, mapDispatchToProps), withTranslation())(Table);

@@ -6,10 +6,10 @@ import {
   setInvalidSocketConnection,
   setActiveChatToken,
   updateChatEntity,
-} from 'Redux/reducers/socketReducer/socketReducer.slice';
+} from 'Redux/reducers/socketReducer.slice';
 import actionsTypes from 'actions.types';
 import { requestTemplate, paramsTemplate } from 'Utils/Api/api.utils';
-import { setRequestError } from 'Redux/reducers/publicReducer/publicReducer.slice';
+import { setRequestError } from 'Redux/reducers/publicReducer.slice';
 
 /**
  * Middleware

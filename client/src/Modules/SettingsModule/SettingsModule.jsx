@@ -2,10 +2,9 @@ import React, { PureComponent, createRef } from 'react';
 import { settingsModuleType } from './SettingsModule.types';
 import { connect } from 'react-redux';
 import { settingsLogsSelector, settingsStatusSelector, settingsArtifactsSelector } from 'Redux/selectors';
-import { saveComponentStateAction } from 'Redux/actions/routerActions';
 import { message, Select } from 'antd';
 import Scrollbars from 'react-custom-scrollbars';
-import { middlewareCaching } from 'Redux/actions/publicActions/middleware';
+import { middlewareCaching } from 'Redux/middleware/publicReducer.thunk';
 import ObserverTime from 'Components/ObserverTime';
 import Title from 'Components/Title';
 import PanelPassword from './Panels/PanelPassword';
@@ -20,7 +19,7 @@ import { withClientDb } from 'Models/ClientSideDatabase';
 import { requestTemplate, paramsTemplate } from 'Utils/Api/api.utils';
 import { withTranslation } from 'react-i18next';
 import { showSystemMessage } from 'Utils';
-import { loadSettings, setAppStatus, updateUserData } from 'Redux/reducers/publicReducer/publicReducer.slice';
+import { loadSettings, setAppStatus, updateUserData } from 'Redux/reducers/publicReducer.slice';
 
 const { Option } = Select;
 
@@ -514,7 +513,6 @@ const mapStateToProps = (state, props) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onSaveComponentState: (data) => dispatch(saveComponentStateAction(data)),
     onUpdateUdata: (payload) => dispatch(updateUserData(payload)),
     onCaching: (props) => dispatch(middlewareCaching(props)),
     onSetStatus: (props) => dispatch(setAppStatus(props)),

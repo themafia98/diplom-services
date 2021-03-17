@@ -9,7 +9,7 @@ import ModelContext from 'Models/context';
 import imageCard from './wallpaper_user.jpg';
 import actionsTypes from 'actions.types';
 import { requestTemplate, paramsTemplate } from 'Utils/Api/api.utils';
-import { updateUserData } from 'Redux/reducers/publicReducer/publicReducer.slice';
+import { updateUserData } from 'Redux/reducers/publicReducer.slice';
 
 const { Item: MenuItem } = Menu;
 

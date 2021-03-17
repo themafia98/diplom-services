@@ -6,8 +6,8 @@ import _ from 'lodash';
 import { chatType } from '../ContactModule.types';
 import ChatMenu from './ChatMenu';
 import { notification, message, Popover, Spin } from 'antd';
-import { setSocketConnection, addChatMsg } from 'Redux/reducers/socketReducer/socketReducer.slice';
-import { loadActiveChats, loadingDataByToken, updateRooms } from 'Redux/actions/socketActions/middleware';
+import { setSocketConnection, addChatMsg } from 'Redux/reducers/socketReducer.slice';
+import { loadActiveChats, loadingDataByToken, updateRooms } from 'Redux/middleware/socketReducer.thunk';
 
 import ChatModel from 'Models/Chat';
 import ChatModal from './ChatRoom/ChatModal';
@@ -17,7 +17,7 @@ import ChatRoom from './ChatRoom';
 import modelsContext from 'Models/context';
 import { compose } from 'redux';
 import { withClientDb } from 'Models/ClientSideDatabase';
-import { openTab } from 'Redux/actions/routerActions/middleware';
+import { openTab } from 'Redux/middleware/routerReducer.thunk';
 import { CHAT_EVENTS } from './Chat.constant';
 import { withTranslation } from 'react-i18next';
 

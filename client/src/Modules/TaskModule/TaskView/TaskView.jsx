@@ -9,7 +9,7 @@ import Scrollbars from 'react-custom-scrollbars';
 import { routeParser, sortedByKey } from 'Utils';
 import { TASK_SCHEMA } from 'Models/Schema/const';
 import { settingsStatusSelector } from 'Redux/selectors';
-import { middlewareCaching, middlewareUpdate } from 'Redux/actions/publicActions/middleware';
+import { middlewareCaching, middlewareUpdate } from 'Redux/middleware/publicReducer.thunk';
 
 import ModalWindow from 'Components/ModalWindow';
 import Title from 'Components/Title';
@@ -21,11 +21,11 @@ import { compose } from 'redux';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { withClientDb } from 'Models/ClientSideDatabase';
 import actionPath from 'actions.path';
-import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
+import { loadCurrentData } from 'Redux/middleware/routerReducer.thunk';
 import { getClassNameByStatus } from './TaskView.utils';
 import fs from 'Utils/Tools/Fs';
 import { withTranslation } from 'react-i18next';
-import { setAppCache } from 'Redux/reducers/publicReducer/publicReducer.slice';
+import { setAppCache } from 'Redux/reducers/publicReducer.slice';
 
 class TaskView extends PureComponent {
   state = {
