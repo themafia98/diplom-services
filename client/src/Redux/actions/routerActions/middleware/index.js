@@ -1,14 +1,14 @@
 import { sucessEvent, routePathNormalise, findData, routeParser, findUser, checkPageAvailable } from 'Utils';
 import reduxCoreThunk from 'Redux/core';
 import { saveComponentStateAction, loadFlagAction, openPageWithDataAction, setActiveTabAction } from '../';
-import { errorRequestAction, setStatus } from '../../publicActions';
 import actionsTypes from 'actions.types';
 import regExpRegister from 'Utils/Tools/regexpStorage';
 import _ from 'lodash';
 import { message } from 'antd';
 import { makeApiAction, getActionStore } from 'Utils/Api';
-import { setSystemMessageAction } from 'Redux/actions/systemActions';
 import { APP_STATUS } from 'App.constant';
+import { setSystemMessage } from 'Redux/reducers/systemReducer/systemReducer.slice';
+import { setAppStatus, setRequestError } from 'Redux/reducers/publicReducer/publicReducer.slice';
 
 const { errorThunk, coreDataUpdater } = reduxCoreThunk;
 
@@ -56,7 +56,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
         params,
         saveComponentStateAction,
         multipleLoadData,
-        errorRequestAction,
+        setRequestError,
         isLocalUpdate,
         rest,
         sync,
@@ -89,12 +89,13 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
         await coreDataUpdater(dispatch, dep);
       } catch (error) {
         const { status: errorStatus = '', response: { status: responseStatus = 503 } = {} } = error || {};
+
         const dep = {
           requestError,
           Request,
-          setStatus,
+          setAppStatus,
           params,
-          errorRequestAction,
+          setRequestError,
           loadCurrentData,
           multipleLoadData,
           copyStore: [],
@@ -133,10 +134,10 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
         requestError,
         uuid: 'uuid',
         saveComponentStateAction,
-        errorRequestAction,
+        setRequestError,
       };
 
-      dispatch(setStatus({ params, path: pagePath }));
+      dispatch(setAppStatus({ params, path: pagePath }));
       const cursor = await clientDB.getAllItems('');
       return await sucessEvent(dispatch, dep, APP_STATUS.OFF, false, cursor);
     }
@@ -200,7 +201,7 @@ const multipleLoadData = (params) => async (dispatch, getState, { schema, Reques
         methodQuery: body?.params?.query,
         uuid: 'uuid',
         saveComponentStateAction,
-        errorRequestAction,
+        setRequestError,
         isLocalUpdate,
       };
 
@@ -303,7 +304,7 @@ const openTab = ({ uuid, action, depKey = '', data = null, openType = '' }) => a
   let normalizeData = null;
 
   if (shouldBeTryLoad && uuid !== uid) {
-    dispatch(setSystemMessageAction({ msg: 'Action in progress...', type: 'loading' }));
+    dispatch(setSystemMessage({ msg: 'Action in progress...', type: 'loading' }));
     normalizeData = await findUser(uuid || uid);
   }
 

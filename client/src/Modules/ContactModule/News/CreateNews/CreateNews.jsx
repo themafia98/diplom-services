@@ -5,7 +5,6 @@ import moment from 'moment';
 import Title from 'Components/Title';
 import EditorTextarea from 'Components/Textarea/EditorTextarea';
 import { message, notification, Input } from 'antd';
-
 import { createNotification, createEntity, showSystemMessage } from 'Utils';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { compose } from 'redux';

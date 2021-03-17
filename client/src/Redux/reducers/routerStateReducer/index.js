@@ -13,7 +13,6 @@ import {
   LOAD_SAVE_ROUTER,
 } from 'Redux/actions/routerActions/const';
 import { ON_END_DRAG_TAB } from 'Redux/actions/tabActions/const';
-import { SET_STATUS } from 'Redux/actions/publicActions/const';
 import regExpRegister from 'Utils/Tools/regexpStorage';
 
 const initialState = {
@@ -530,13 +529,14 @@ export default handleActions(
         },
       };
     },
-    [SET_STATUS]: (state, { payload }) => {
-      const { shouldUpdate = false } = payload;
-      return {
-        ...state,
-        shouldUpdate,
-      };
-    },
+    // TODO: SHOULD BE REWORK FOR publicReducer slice  https://redux-toolkit.js.org/api/createSlice#examples
+    // [SET_STATUS]: (state, { payload }) => {
+    //   const { shouldUpdate = false } = payload;
+    //   return {
+    //     ...state,
+    //     shouldUpdate,
+    //   };
+    // },
     [LOGOUT]: (state) => {
       return {
         ...state,

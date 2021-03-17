@@ -11,8 +11,8 @@ import Scrollbars from 'react-custom-scrollbars';
 import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { setStatus } from 'Redux/actions/publicActions';
 import { useTranslation } from 'react-i18next';
+import { setAppStatus } from 'Redux/reducers/publicReducer/publicReducer.slice';
 
 const Contacts = memo(({ modelsContext }) => {
   const { t } = useTranslation();
@@ -155,7 +155,7 @@ Contacts.propTypes = contactsType;
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onSetStatus: (status) => dispatch(setStatus({ statusRequst: status })),
+    onSetStatus: (status) => dispatch(setAppStatus({ statusRequst: status })),
   };
 };
 

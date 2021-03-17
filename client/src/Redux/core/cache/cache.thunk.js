@@ -4,7 +4,7 @@ import { requestTemplate, paramsTemplate } from 'Utils/Api/api.utils';
 
 const cachingThunk = async (dispatch, dep = {}, depActions = {}) => {
   const { dataItems = {}, store, actionType, clientDB, schema, updateBy } = dep;
-  const { сachingAction, errorRequestAction } = depActions;
+  const { setAppCache, setRequestError } = depActions;
 
   try {
     const schemaTemplate = getStoreSchema(store, null);
@@ -15,7 +15,7 @@ const cachingThunk = async (dispatch, dep = {}, depActions = {}) => {
       if (clientDB) clientDB.addItem(store, validHash);
       else console.warn('No client db connect');
       dispatch(
-        сachingAction({
+        setAppCache({
           data: schemaTemplate ? validHash : dataItems,
           load: true,
           uuid: actionType,
@@ -25,13 +25,13 @@ const cachingThunk = async (dispatch, dep = {}, depActions = {}) => {
     } else throw new Error('Invalid data props');
   } catch (error) {
     console.error(error);
-    dispatch(errorRequestAction(error.message));
+    dispatch(setRequestError(error.message));
   }
 };
 
 const putterCacheThunk = async (dispatch, dep = {}, depActions = {}) => {
   const { depStore, item = {}, type, uid, Request, actionType, updateBy = '' } = dep;
-  const { errorRequestAction, сachingAction } = depActions;
+  const { setRequestError, setAppCache } = depActions;
 
   try {
     const path = `/${depStore}/${type ? type : 'caching'}`;
@@ -72,17 +72,17 @@ const putterCacheThunk = async (dispatch, dep = {}, depActions = {}) => {
 
       if (error) throw new Error(error);
 
-      dispatch(сachingAction({ data: updaterItem, load: true, uuid: actionType, updateBy }));
+      dispatch(setAppCache({ data: updaterItem, load: true, uuid: actionType, updateBy }));
     }
   } catch (error) {
     console.error(error);
-    dispatch(errorRequestAction(error.message));
+    dispatch(setRequestError(error.message));
   }
 };
 
 const getterCacheThunk = async (dispatch, dep = {}, depActions = {}) => {
   const { dataItems, actionType, store, schema, clientDB, updateBy } = dep;
-  const { errorRequestAction, сachingAction } = depActions;
+  const { setRequestError, setAppCache } = depActions;
 
   try {
     const schemaTemplate = getStoreSchema(store);
@@ -94,11 +94,11 @@ const getterCacheThunk = async (dispatch, dep = {}, depActions = {}) => {
       if (clientDB) await clientDB.addItem(store, !schemaTemplate ? dataItems : validHash);
       else console.warn('No client db connect');
 
-      dispatch(сachingAction({ data: validHash, load: true, uuid: actionType, updateBy }));
+      dispatch(setAppCache({ data: validHash, load: true, uuid: actionType, updateBy }));
     } else throw new Error('Invalid data props');
   } catch (error) {
     console.error(error);
-    dispatch(errorRequestAction(error.message));
+    dispatch(setRequestError(error.message));
   }
 };
 

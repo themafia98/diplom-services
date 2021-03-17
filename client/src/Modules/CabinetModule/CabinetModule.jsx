@@ -2,7 +2,6 @@ import React, { memo, useEffect, useState, useMemo, useCallback, useContext } fr
 import { useDispatch, useSelector } from 'react-redux';
 import { cabinetType } from './CabinetModule.types';
 import { Modal, Upload, message, Icon, Button, Spin } from 'antd';
-import { updateUdata } from 'Redux/actions/publicActions';
 import UserCard from 'Components/UserCard';
 import Title from 'Components/Title';
 import StreamBox from 'Components/StreamBox';
@@ -12,6 +11,7 @@ import actionPath from 'actions.path';
 import modelsContext from 'Models/context';
 import { CABINET_PAGE_TYPE } from './CabinetModule.constant';
 import { useTranslation } from 'react-i18next';
+import { updateUserData } from 'Redux/reducers/publicReducer/publicReducer.slice';
 
 const { Dragger } = Upload;
 
@@ -140,7 +140,7 @@ const CabinetModule = memo(({ path }) => {
       disabled,
     });
 
-    dispatch(updateUdata({ avatar: imageUrl }));
+    dispatch(updateUserData({ avatar: imageUrl }));
   };
 
   const reset = (event) => {

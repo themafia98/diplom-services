@@ -8,8 +8,8 @@ import { dataParser } from '../../Utils';
 const runBadNetworkMode = (dispatch, error, dep) => {
   const {
     rest,
-    setStatus,
-    errorRequestAction,
+    setAppStatus,
+    setRequestError,
     loadCurrentData,
     getState,
     path,
@@ -17,16 +17,16 @@ const runBadNetworkMode = (dispatch, error, dep) => {
     multipleLoadData,
   } = dep;
 
-  if (!loadCurrentData && !errorRequestAction) return;
+  if (!loadCurrentData && !setRequestError) return;
 
-  if (!loadCurrentData && errorRequestAction) {
-    dispatch(errorRequestAction(error.message));
-    if (setStatus) dispatch(setStatus({ statusRequst: APP_STATUS.OFF, params, path }));
+  if (!loadCurrentData && setRequestError) {
+    dispatch(setRequestError(error.message));
+    if (setAppStatus) dispatch(setAppStatus({ statusRequst: APP_STATUS.OFF, params, path }));
   }
 
-  if (setStatus) dispatch(setStatus({ statusRequst: APP_STATUS.OFF, params, path }));
+  if (setAppStatus) dispatch(setAppStatus({ statusRequst: APP_STATUS.OFF, params, path }));
   else return;
-  dispatch(errorRequestAction(error.message));
+  dispatch(setRequestError(error.message));
 
   rest.follow(
     APP_STATUS.OFF,
@@ -40,7 +40,7 @@ const runBadNetworkMode = (dispatch, error, dep) => {
         const currnetParams = !currentModule?.params ? {} : currentModule.params;
         rest.unfollow();
 
-        dispatch(setStatus({ statusRequst, clearParams: true }));
+        dispatch(setAppStatus({ statusRequst, clearParams: true }));
         const list = _.uniqBy([...paramsList, currnetParams], 'path');
 
         if (multipleLoadData) {
@@ -86,10 +86,10 @@ const runRefreshIndexedDb = async (dispatch, storeName, dep, multiple) => {
 };
 
 const runLocalUpdate = async (dispatch, depAction, depParser, multiple) => {
-  const { errorRequestAction, saveComponentStateAction, params = {}, add = false } = depAction;
+  const { setRequestError, saveComponentStateAction, params = {}, add = false } = depAction;
 
   const { data, shoudClearError = false, shouldUpdateState = true } = dataParser(true, false, depParser);
-  if (shoudClearError) await dispatch(errorRequestAction(null));
+  if (shoudClearError) await dispatch(setRequestError(null));
   if (shouldUpdateState && !multiple)
     await dispatch(saveComponentStateAction({ ...data, loading: false, add, params }));
   else if (multiple) return data;

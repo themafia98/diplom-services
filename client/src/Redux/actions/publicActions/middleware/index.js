@@ -1,11 +1,16 @@
-import { сachingAction, errorRequestAction, setStatus } from '../';
 import reduxCoreThunk from 'Redux/core';
-import { onLoadArtifacts, onLoadSettings } from '../';
 import { multipleLoadData } from '../../routerActions/middleware';
 import { updateItemStateAction } from '../../routerActions';
 import actionsTypes from 'actions.types';
 import { requestTemplate, paramsTemplate } from 'Utils/Api/api.utils';
 import { message } from 'antd';
+import {
+  loadArtifact,
+  loadSettings,
+  setAppCache,
+  setAppStatus,
+  setRequestError,
+} from 'Redux/reducers/publicReducer/publicReducer.slice';
 
 const { errorThunk, cachingThunk, getterCacheThunk, putterCacheThunk, updateEntityThunk } = reduxCoreThunk;
 
@@ -31,8 +36,8 @@ const middlewareCaching = ({
   const rest = new Request();
 
   const depActions = {
-    errorRequestAction,
-    сachingAction,
+    setRequestError,
+    setAppCache,
   };
 
   try {
@@ -92,8 +97,8 @@ const middlewareCaching = ({
       clientDB,
       schema,
       Request,
-      errorRequestAction,
-      setStatus,
+      setRequestError,
+      setAppStatus,
       multipleLoadData,
       rest,
     };
@@ -112,8 +117,8 @@ const loadCacheData = ({
 }) => async (dispatch, getState, { schema, Request }) => {
   const rest = new Request();
   const depActions = {
-    errorRequestAction,
-    сachingAction,
+    setRequestError,
+    setAppCache,
   };
 
   try {
@@ -158,8 +163,8 @@ const loadCacheData = ({
       Request,
       updateBy,
       multipleLoadData,
-      errorRequestAction,
-      setStatus,
+      setRequestError,
+      setAppStatus,
       rest,
     };
     console.error(error);
@@ -243,9 +248,9 @@ const middlewareUpdate = ({
       clientDB,
       schema,
       Request,
-      errorRequestAction,
+      setRequestError,
       multipleLoadData,
-      setStatus,
+      setAppStatus,
       rest,
     };
     console.error(error);
@@ -285,10 +290,10 @@ const settingsLoadAction = ({ wishList = [] }) => async (dispatch, getState, { R
   }
 
   if (artifacts.length) {
-    dispatch(onLoadArtifacts(artifacts));
+    dispatch(loadArtifact(artifacts));
   }
 
-  dispatch(onLoadSettings(settings));
+  dispatch(loadSettings(settings));
 };
 
 export { middlewareCaching, middlewareUpdate, loadCacheData, settingsLoadAction };

@@ -10,7 +10,6 @@ import { routeParser, sortedByKey } from 'Utils';
 import { TASK_SCHEMA } from 'Models/Schema/const';
 import { settingsStatusSelector } from 'Redux/selectors';
 import { middlewareCaching, middlewareUpdate } from 'Redux/actions/publicActions/middleware';
-import { сachingAction } from 'Redux/actions/publicActions';
 
 import ModalWindow from 'Components/ModalWindow';
 import Title from 'Components/Title';
@@ -26,6 +25,7 @@ import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
 import { getClassNameByStatus } from './TaskView.utils';
 import fs from 'Utils/Tools/Fs';
 import { withTranslation } from 'react-i18next';
+import { setAppCache } from 'Redux/reducers/publicReducer/publicReducer.slice';
 
 class TaskView extends PureComponent {
   state = {
@@ -120,7 +120,7 @@ class TaskView extends PureComponent {
   };
 
   onLoadTaskAdditionalData = async () => {
-    const { router = {}, onLoadCacheData, onSaveCache = null, clientDB } = this.props;
+    const { router = {}, onLoadCacheData, onSetAppCache = null, clientDB } = this.props;
     const { routeDataActive } = router;
     const { key, uidCreater, authorName } = routeDataActive;
 
@@ -128,7 +128,7 @@ class TaskView extends PureComponent {
 
     if (!taskId) return;
 
-    await onSaveCache({
+    await onSetAppCache({
       data: [{ _id: uidCreater, displayName: authorName, key: key || uuid() }],
       load: true,
       union: true,
@@ -172,7 +172,7 @@ class TaskView extends PureComponent {
   };
 
   fetchDepUsersList = async () => {
-    const { onSaveCache = null, router = {}, modelsContext, t } = this.props;
+    const { onSetAppCache = null, router = {}, modelsContext, t } = this.props;
     const { routeDataActive } = router;
     const { editor = '' } = routeDataActive;
     const { key: taskId } = this.state;
@@ -205,7 +205,7 @@ class TaskView extends PureComponent {
         ? filteredUsers.filter(({ _id: userId }) => editor.some((value) => value === userId))
         : filteredUsers;
 
-      onSaveCache({
+      onSetAppCache({
         data: dataEditor,
         load: true,
         union: true,
@@ -829,7 +829,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onCaching: async (props) => await dispatch(middlewareCaching(props)),
     onLoadCurrentData: (props) => dispatch(loadCurrentData(props)),
-    onSaveCache: (props) => dispatch(сachingAction(props)),
+    onSetAppCache: (props) => dispatch(setAppCache(props)),
     onUpdate: (props) => dispatch(middlewareUpdate(props)),
   };
 };

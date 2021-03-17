@@ -11,8 +11,6 @@ import {
   removeTabAction,
   loadSaveRouter,
 } from 'Redux/actions/routerActions';
-
-import { clearCache, showGuile } from 'Redux/actions/publicActions';
 import { getAvailableTabNameKey, routeParser, saveAndNormalizeRoute, showSystemMessage } from 'Utils';
 
 import FixedToolbar from 'Components/FixedToolbar';
@@ -25,6 +23,7 @@ import regExpRegister from 'Utils/Tools/regexpStorage';
 import { APP_STATUS } from 'App.constant';
 import ws from 'config/ws.config';
 import autoSaveConfig from 'config/autoSave.config';
+import { clearAppCache, setShowGuide } from 'Redux/reducers/publicReducer/publicReducer.slice';
 
 let deferredPrompt = null;
 
@@ -343,7 +342,7 @@ const Dashboard = () => {
 
         if (entityId) {
           dispatch(removeTabAction({ path: path, type: type }));
-          dispatch(clearCache({ path, type: type, currentActionTab }));
+          dispatch(clearAppCache({ path, type: type, currentActionTab }));
         }
       }
     },
@@ -367,7 +366,7 @@ const Dashboard = () => {
       } else {
         console.log('PWA setup rejected');
       }
-      dispatch(showGuile(false));
+      dispatch(setShowGuide(false));
       deferredPrompt = null;
     });
   };

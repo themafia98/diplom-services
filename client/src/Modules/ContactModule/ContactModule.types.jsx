@@ -82,5 +82,4 @@ export const chatType = {
   onLoadingDataByToken: func,
   tokenRoom: oneOfType([string, () => null]),
   onLoadActiveChats: func,
-  onSetSocketConnection: func,
 };
