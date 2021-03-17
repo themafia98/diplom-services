@@ -116,7 +116,7 @@ const ContentView = memo(
         const Component = getComponentByKey(tabKey, types.$entrypoint_module);
         const entrypointChildrenExist =
           tabs &&
-          !!tabs.find((tab) => path.includes(moduleName) && tab !== tabKey && tab?.includes(moduleName));
+          !!tabs.find((tab) => path?.includes(moduleName) && tab !== tabKey && tab?.includes(moduleName));
 
         const isExistTab = tabs.slice(0, index + 1).some((tab) => tab?.includes(moduleName));
         const isExsistModule = tabsComponents.find(({ type: typeModule = '', tabKey: key }) => {
