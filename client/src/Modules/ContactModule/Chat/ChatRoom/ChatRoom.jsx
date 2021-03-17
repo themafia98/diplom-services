@@ -7,7 +7,7 @@ import { Button, Avatar } from 'antd';
 import Textarea from 'Components/Textarea';
 import Message from './Message';
 import { useDispatch } from 'react-redux';
-import { openTab } from 'Redux/actions/routerActions/middleware';
+import { openTab } from 'Redux/middleware/routerReducer.thunk';
 
 const ChatRoom = ({
   uid,

@@ -6,16 +6,7 @@ import { APP_STATUS } from 'App.constant';
 /** Events */
 const sucessEvent = async (dispatch, dep, mode = '', multiple = false, cursor = null, offlineStore = []) => {
   const copyStoreOffline = [...offlineStore];
-  const {
-    copyStore,
-    uuid,
-    storeLoad,
-    schema,
-    pathValid,
-    saveComponentStateAction,
-    setRequestError,
-    params,
-  } = dep;
+  const { copyStore, uuid, storeLoad, schema, pathValid, refreshRouterData, setRequestError, params } = dep;
 
   if (mode === APP_STATUS.OFF) {
     const schemaTemplate = getStoreSchema(storeLoad);
@@ -31,7 +22,7 @@ const sucessEvent = async (dispatch, dep, mode = '', multiple = false, cursor = 
     };
 
     if (!multiple) {
-      dispatch(saveComponentStateAction(data));
+      dispatch(refreshRouterData(data));
       return;
     } else return data;
   }
@@ -40,7 +31,7 @@ const sucessEvent = async (dispatch, dep, mode = '', multiple = false, cursor = 
     if (shoudClearError) await dispatch(setRequestError(null));
 
     if (!multiple) {
-      dispatch(saveComponentStateAction({ ...data, params, loading: false }));
+      dispatch(refreshRouterData({ ...data, params, loading: false }));
       return;
     } else return data;
   }

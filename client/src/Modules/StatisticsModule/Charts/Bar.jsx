@@ -3,8 +3,8 @@ import { barType } from '../StatisticsModule.types';
 import { Spin } from 'antd';
 import { ResponsiveBar } from '@nivo/bar';
 import { useDispatch } from 'react-redux';
-import { loadFlagAction } from 'Redux/actions/routerActions';
 import { useTranslation } from 'react-i18next';
+import { setIsLoadData } from 'Redux/reducers/routerReducer.slice';
 
 const Bar = ({
   data,
@@ -33,12 +33,12 @@ const Bar = ({
     if (dateConfig !== dateParams) {
       setDateParams(dateConfig);
 
-      !isLoading && dispatch(loadFlagAction({ path, loading: true }));
+      !isLoading && dispatch(setIsLoadData({ path, loading: true }));
       return;
     }
 
     if (isLoading && dateConfig && dateParams && dateConfig === dateParams) {
-      dispatch(loadFlagAction({ path, loading: false }));
+      dispatch(setIsLoadData({ path, loading: false }));
     }
   }, [dateConfig, dateParams, path, dispatch, isLoading]);
 

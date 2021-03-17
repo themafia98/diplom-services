@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
-import publicReducer from './publicReducer/publicReducer.slice';
-import router from './routerStateReducer';
-import socketReducer from './socketReducer/socketReducer.slice';
-import systemReducer from './systemReducer/systemReducer.slice';
+import publicReducer from './publicReducer.slice';
+import router from './routerReducer.slice';
+import socketReducer from './socketReducer.slice';
+import systemReducer from './systemReducer.slice';
 
 export default combineReducers({
   publicReducer,

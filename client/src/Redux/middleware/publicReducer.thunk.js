@@ -1,6 +1,5 @@
 import reduxCoreThunk from 'Redux/core';
-import { multipleLoadData } from '../../routerActions/middleware';
-import { updateItemStateAction } from '../../routerActions';
+import { multipleLoadData } from './routerReducer.thunk';
 import actionsTypes from 'actions.types';
 import { requestTemplate, paramsTemplate } from 'Utils/Api/api.utils';
 import { message } from 'antd';
@@ -10,7 +9,8 @@ import {
   setAppCache,
   setAppStatus,
   setRequestError,
-} from 'Redux/reducers/publicReducer/publicReducer.slice';
+} from 'Redux/reducers/publicReducer.slice';
+import { refreshRouteDataItem } from 'Redux/reducers/routerReducer.slice';
 
 const { errorThunk, cachingThunk, getterCacheThunk, putterCacheThunk, updateEntityThunk } = reduxCoreThunk;
 
@@ -234,7 +234,7 @@ const middlewareUpdate = ({
       dataItems:
         Array.isArray(dataItems) && dataItems.length === 1 ? dataItems[dataItems.length - 1] : dataItems,
       id: id ? id : key,
-      updateItemStateAction,
+      refreshRouteDataItem,
     };
 
     await updateEntityThunk(dispatch, dep);

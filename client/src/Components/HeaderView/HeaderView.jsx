@@ -2,11 +2,11 @@ import React, { useState, useRef, memo, useEffect, useMemo, useCallback } from '
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 import { Layout } from 'antd';
-import { dragEndTabAction } from 'Redux/actions/tabActions';
 import RightPanel from './RightPanel';
 import Tab from './Tab/Tab';
 import { MARGIN_TAB } from './HeaderView.constant';
 import { headerViewType } from './HeaderView.types';
+import { setEndDndTab } from 'Redux/reducers/routerReducer.slice';
 
 const { Header } = Layout;
 
@@ -62,7 +62,7 @@ const HeaderView = memo(
 
         if (!destination) return;
 
-        dispatch(dragEndTabAction(reorder([...tabsList], index, indexDest)));
+        dispatch(setEndDndTab(reorder([...tabsList], index, indexDest)));
       },
       [dispatch],
     );

@@ -7,8 +7,7 @@ import { Switch, Route } from 'react-router-dom';
 import { message, notification } from 'antd';
 import { PrivateRoute } from './Components/Helpers';
 import { forceUpdateDetectedInit, showSystemMessage } from './Utils';
-import { settingsLoadAction } from './Redux/actions/publicActions/middleware';
-import { addTabAction, setActiveTabAction, logoutAction } from './Redux/actions/routerActions';
+import { settingsLoadAction } from './Redux/middleware/publicReducer.thunk';
 import { routeParser } from './Utils';
 import Loader from './Components/Loader';
 import Recovery from './Pages/Recovery';
@@ -23,8 +22,9 @@ import { compose } from 'redux';
 import ClientSideDatabase, { ClientDbContext } from 'Models/ClientSideDatabase';
 import withSystemConfig from 'Components/Helpers/withSystemConfig';
 import { withTranslation } from 'react-i18next';
-import { setSystemMessage } from 'Redux/reducers/systemReducer/systemReducer.slice';
-import { loadCoreConfig, loadUserData, setAppStatus } from 'Redux/reducers/publicReducer/publicReducer.slice';
+import { setSystemMessage } from 'Redux/reducers/systemReducer.slice';
+import { loadCoreConfig, loadUserData, setAppStatus } from 'Redux/reducers/publicReducer.slice';
+import { createTab, setActiveTab, setLogout } from 'Redux/reducers/routerReducer.slice';
 const workerInstanse = worker();
 
 class App extends Component {
@@ -341,10 +341,10 @@ const mapStateToProps = ({ router, publicReducer, systemReducer }) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addTab: async (tab) => await dispatch(addTabAction(tab)),
+    addTab: async (tab) => await dispatch(createTab(tab)),
     onSetStatus: (status) => dispatch(setAppStatus({ statusRequst: status })),
-    setCurrentTab: (tab) => dispatch(setActiveTabAction(tab)),
-    onLogoutAction: async () => await dispatch(logoutAction()),
+    setCurrentTab: (tab) => dispatch(setActiveTab(tab)),
+    onLogoutAction: async () => await dispatch(setLogout()),
     onLoadUdata: async (udata) => await dispatch(loadUserData(udata)),
     onLoadSettings: async (payload) => await dispatch(settingsLoadAction(payload)),
     onLoadCoreConfig: (payload) => dispatch(loadCoreConfig(payload)),

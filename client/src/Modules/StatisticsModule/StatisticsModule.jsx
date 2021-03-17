@@ -10,7 +10,7 @@ import FixedToolbar from 'Components/FixedToolbar';
 import { Button } from 'antd';
 import { withClientDb } from 'Models/ClientSideDatabase';
 import actionPath from 'actions.path';
-import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
+import { loadCurrentData } from 'Redux/middleware/routerReducer.thunk';
 import { useTranslation } from 'react-i18next';
 
 const StatisticsModule = memo(({ path, clientDB }) => {

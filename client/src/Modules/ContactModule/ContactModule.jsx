@@ -1,7 +1,7 @@
 import React, { memo, useState, useEffect, useCallback } from 'react';
 import { contactModuleType } from './ContactModule.types';
 import { useDispatch, useSelector } from 'react-redux';
-import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
+import { loadCurrentData } from 'Redux/middleware/routerReducer.thunk';
 import entityRender from 'Utils/Tools/entityRender';
 import withRouter from 'Components/Helpers/withRouter';
 import types from 'types.modules';

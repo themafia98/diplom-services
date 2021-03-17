@@ -4,7 +4,7 @@ import { outputType } from './Output.types';
 import clsx from 'clsx';
 import { Tooltip, Button, Spin } from 'antd';
 import { useDispatch } from 'react-redux';
-import { openTab } from 'Redux/actions/routerActions/middleware';
+import { openTab } from 'Redux/middleware/routerReducer.thunk';
 
 const Output = memo(
   ({

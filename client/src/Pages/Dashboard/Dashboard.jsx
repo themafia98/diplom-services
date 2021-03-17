@@ -5,14 +5,7 @@ import { EventEmitter } from 'events';
 import io from 'socket.io-client';
 import { Layout, message, Modal, Button } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  addTabAction,
-  setActiveTabAction,
-  removeTabAction,
-  loadSaveRouter,
-} from 'Redux/actions/routerActions';
 import { getAvailableTabNameKey, routeParser, saveAndNormalizeRoute, showSystemMessage } from 'Utils';
-
 import FixedToolbar from 'Components/FixedToolbar';
 import Loader from 'Components/Loader';
 import HeaderView from 'Components/HeaderView';
@@ -23,7 +16,8 @@ import regExpRegister from 'Utils/Tools/regexpStorage';
 import { APP_STATUS } from 'App.constant';
 import ws from 'config/ws.config';
 import autoSaveConfig from 'config/autoSave.config';
-import { clearAppCache, setShowGuide } from 'Redux/reducers/publicReducer/publicReducer.slice';
+import { clearAppCache, setShowGuide } from 'Redux/reducers/publicReducer.slice';
+import { createTab, loadSaveRouter, removeTab, setActiveTab } from 'Redux/reducers/routerReducer.slice';
 
 let deferredPrompt = null;
 
@@ -118,7 +112,7 @@ const Dashboard = () => {
         dispatch(loadSaveRouter(parsedRoute));
       } else {
         showSystemMessage('warn', 'Detect invalid session');
-        dispatch(addTabAction(routeParser({ path: 'mainModule' })));
+        dispatch(createTab(routeParser({ path: 'mainModule' })));
       }
     }
 
@@ -285,10 +279,10 @@ const Dashboard = () => {
     }
 
     if (!activeTabs.some((tab) => tab === 'mainModule')) {
-      dispatch(addTabAction('mainModule'));
+      dispatch(createTab('mainModule'));
       return;
     }
-    dispatch(setActiveTabAction('mainModule'));
+    dispatch(setActiveTab('mainModule'));
   }, [activeTabs, appConfig, currentActionTab, dispatch]);
 
   const goCabinet = useCallback(() => {
@@ -304,11 +298,11 @@ const Dashboard = () => {
     }
 
     if (!activeTabs.some((tab) => tab === 'cabinetModule')) {
-      dispatch(addTabAction('cabinetModule'));
+      dispatch(createTab('cabinetModule'));
       return;
     }
 
-    dispatch(setActiveTabAction('cabinetModule'));
+    dispatch(setActiveTab('cabinetModule'));
   }, [activeTabs, appConfig, currentActionTab, dispatch]);
 
   const menuHandler = useCallback(
@@ -326,10 +320,10 @@ const Dashboard = () => {
         }
 
         if (!isFind) {
-          dispatch(addTabAction(routeParser({ path })));
+          dispatch(createTab(routeParser({ path })));
         } else if (currentActionTab !== path) {
           const { config = null } = routeData[path] || {};
-          dispatch(setActiveTabAction({ tab: path, config }));
+          dispatch(setActiveTab({ tab: path, config }));
         }
       } else if (mode === 'close') {
         const [, entityId] = path.split(regExpRegister.MODULE_ID);
@@ -341,7 +335,7 @@ const Dashboard = () => {
         }
 
         if (entityId) {
-          dispatch(removeTabAction({ path: path, type: type }));
+          dispatch(removeTab({ path: path, type: type }));
           dispatch(clearAppCache({ path, type: type, currentActionTab }));
         }
       }

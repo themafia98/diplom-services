@@ -6,14 +6,8 @@ import { connect } from 'react-redux';
 import { Button, message } from 'antd';
 import { routeParser, oneOfType } from 'Utils';
 import { settingsStatusSelector } from 'Redux/selectors';
-import {
-  addTabAction,
-  openPageWithDataAction,
-  removeTabAction,
-  setActiveTabAction,
-} from 'Redux/actions/routerActions';
-import { loadCurrentData } from 'Redux/actions/routerActions/middleware';
-import { loadCacheData } from 'Redux/actions/publicActions/middleware';
+import { loadCurrentData } from 'Redux/middleware/routerReducer.thunk';
+import { loadCacheData } from 'Redux/middleware/publicReducer.thunk';
 import entityRender from 'Utils/Tools/entityRender';
 import withRouter from 'Components/Helpers/withRouter';
 import types from 'types.modules';
@@ -25,6 +19,7 @@ import actionPath from 'actions.path';
 import { requestTemplate } from 'Utils/Api/api.utils';
 import { ACTIONS } from 'App.constant';
 import { withTranslation } from 'react-i18next';
+import { createTab, openPageWithData, removeTab, setActiveTab } from 'Redux/reducers/routerReducer.slice';
 
 class TaskModule extends Component {
   state = {
@@ -383,10 +378,10 @@ const mapStateToProps = (state, props) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addTab: (tab, config = {}) => dispatch(addTabAction({ tab, config })),
-    setCurrentTab: (tab, config = {}) => dispatch(setActiveTabAction({ tab, config })),
-    removeTab: (tab) => dispatch(removeTabAction(tab)),
-    onOpenPageWithData: (data) => dispatch(openPageWithDataAction(data)),
+    addTab: (tab, config = {}) => dispatch(createTab({ tab, config })),
+    setCurrentTab: (tab, config = {}) => dispatch(setActiveTab({ tab, config })),
+    removeTab: (tab) => dispatch(removeTab(tab)),
+    onOpenPageWithData: (data) => dispatch(openPageWithData(data)),
     onLoadCacheData: (props) => dispatch(loadCacheData(props)),
     onLoadCurrentData: (props) => dispatch(loadCurrentData(props)),
   };

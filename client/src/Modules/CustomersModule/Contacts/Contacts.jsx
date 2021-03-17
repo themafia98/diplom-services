@@ -12,7 +12,7 @@ import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { setAppStatus } from 'Redux/reducers/publicReducer/publicReducer.slice';
+import { setAppStatus } from 'Redux/reducers/publicReducer.slice';
 
 const Contacts = memo(({ modelsContext }) => {
   const { t } = useTranslation();
