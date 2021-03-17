@@ -197,6 +197,7 @@ export const publicSlice = createSlice({
         state.prewStatus = state.status;
         state.paramsList = paramsListNew;
       },
+      prepare: (appStatusConfig) => ({ payload: appStatusConfig }),
     },
   },
 });
