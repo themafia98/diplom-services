@@ -2,7 +2,6 @@ import React, { useState, useContext, useEffect, useCallback, useMemo } from 're
 import clsx from 'clsx';
 import { userCardType } from './UserCard.types';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateUdata } from 'Redux/actions/publicActions';
 import { Avatar, Button, Icon, Dropdown, Menu, Tooltip, message, Popover } from 'antd';
 import ModalWindow from 'Components/ModalWindow';
 
@@ -10,6 +9,7 @@ import ModelContext from 'Models/context';
 import imageCard from './wallpaper_user.jpg';
 import actionsTypes from 'actions.types';
 import { requestTemplate, paramsTemplate } from 'Utils/Api/api.utils';
+import { updateUserData } from 'Redux/reducers/publicReducer/publicReducer.slice';
 
 const { Item: MenuItem } = Menu;
 
@@ -89,7 +89,7 @@ const UserCard = ({
 
         const { response: { metadata: { summary = '' } = {} } = {} } = res.data || {};
 
-        dispatch(updateUdata({ summary }));
+        dispatch(updateUserData({ summary }));
 
         setVisibilityModal(false);
       } catch (error) {

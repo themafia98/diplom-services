@@ -5,10 +5,8 @@ import moment from 'moment';
 import _ from 'lodash';
 import { chatType } from '../ContactModule.types';
 import ChatMenu from './ChatMenu';
-
 import { notification, message, Popover, Spin } from 'antd';
-
-import { setSocketConnection, addMsg } from 'Redux/actions/socketActions';
+import { setSocketConnection, addChatMsg } from 'Redux/reducers/socketReducer/socketReducer.slice';
 import { loadActiveChats, loadingDataByToken, updateRooms } from 'Redux/actions/socketActions/middleware';
 
 import ChatModel from 'Models/Chat';
@@ -277,12 +275,7 @@ class Chat extends PureComponent {
   };
 
   renderModal = (visible) => {
-    const {
-      chat: { usersList = [], listdata = [] } = {},
-      udata,
-      onSetActiveChatToken,
-      onLoadActiveChats,
-    } = this.props;
+    const { chat: { usersList = [], listdata = [] } = {}, udata, onLoadActiveChats } = this.props;
     const { _id: uid } = udata;
 
     return (
@@ -293,7 +286,6 @@ class Chat extends PureComponent {
         uid={uid}
         listdata={listdata}
         onLoadActiveChats={onLoadActiveChats}
-        onSetActiveChatToken={onSetActiveChatToken}
       />
     );
   };
@@ -483,7 +475,7 @@ const mapStateToProps = ({ socketReducer, publicReducer }) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onAddMsg: async (payload) => dispatch(addMsg(payload)),
+    onAddMsg: async (payload) => dispatch(addChatMsg(payload)),
     onLoadActiveChats: async (payload) => dispatch(loadActiveChats(payload)),
     onSetSocketConnection: (status) => dispatch(setSocketConnection(status)),
     onLoadingDataByToken: (token, listdata, moduleName, isFake) => {

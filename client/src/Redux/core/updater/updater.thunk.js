@@ -15,7 +15,7 @@ const coreDataUpdater = async (dispatch, dep = {}, multiple = false, badNetwork 
     clientDB,
     methodQuery,
     saveComponentStateAction,
-    errorRequestAction,
+    setRequestError,
     isLocalUpdate: localUpdateStat,
     params,
     add,
@@ -28,7 +28,7 @@ const coreDataUpdater = async (dispatch, dep = {}, multiple = false, badNetwork 
     if (isDone) return data;
   }
 
-  if (requestError !== null && !badNetwork) dispatch(errorRequestAction(null));
+  if (requestError !== null && !badNetwork) dispatch(setRequestError(null));
 
   const [cursor = null, eventResult = null, shouldUpdate = null] = await runRefreshIndexedDb(
     dispatch,
@@ -55,7 +55,7 @@ const coreDataUpdater = async (dispatch, dep = {}, multiple = false, badNetwork 
     };
     const depAction = {
       saveComponentStateAction,
-      errorRequestAction,
+      setRequestError,
       add,
     };
     try {
@@ -105,12 +105,12 @@ const updateEntityThunk = async (dispatch, dep = {}) => {
 };
 
 const errorThunk = async (error, dispatch, dep = {}, callback) => {
-  const { errorRequestAction } = dep;
+  const { setRequestError } = dep;
 
   if (error?.message === 'Network Error') {
     runBadNetworkMode(dispatch, error, dep);
     if (typeof callback === 'function') dispatch(callback());
-  } else dispatch(errorRequestAction(error.message));
+  } else dispatch(setRequestError(error.message));
 };
 
 const updater = {

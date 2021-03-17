@@ -1,9 +1,15 @@
 import moment from 'moment';
 import _ from 'lodash';
-import { setSocketConnection, onLoadActiveChats, setSocketError, setActiveChatToken, updateRoom } from '../';
-import { errorRequestAction } from '../../publicActions';
+import {
+  setSocketConnection,
+  loadChats,
+  setInvalidSocketConnection,
+  setActiveChatToken,
+  updateChatEntity,
+} from 'Redux/reducers/socketReducer/socketReducer.slice';
 import actionsTypes from 'actions.types';
 import { requestTemplate, paramsTemplate } from 'Utils/Api/api.utils';
+import { setRequestError } from 'Redux/reducers/publicReducer/publicReducer.slice';
 
 /**
  * Middleware
@@ -86,7 +92,7 @@ const loadActiveChats = (payload) => async (dispatch, getState, { schema, Reques
     }
 
     dispatch(
-      onLoadActiveChats({
+      loadChats({
         usersList: usersList.filter((user) => user._id !== uidState),
         activeChatRoom,
         shouldLoadingMessage: activeChatRoom && shouldRefresh,
@@ -98,12 +104,12 @@ const loadActiveChats = (payload) => async (dispatch, getState, { schema, Reques
   } catch (error) {
     console.error(error);
     dispatch(
-      setSocketError({
+      setInvalidSocketConnection({
         socketConnection: shouldRefresh ? shouldRefresh : false,
         msg: error.message,
       }),
     );
-    dispatch(errorRequestAction(error.message));
+    dispatch(setRequestError(error.message));
   }
 };
 
@@ -177,7 +183,7 @@ const loadingDataByToken = (token, listdata, activeModule, isFake = null) => asy
     );
   } catch (error) {
     console.error(error.message);
-    dispatch(errorRequestAction(error.message));
+    dispatch(setRequestError(error.message));
   }
 };
 
@@ -202,7 +208,7 @@ const updateRooms = (payload, clientDB = null) => async (dispatch, getState, { s
     }
 
     if (!fullUpdate) {
-      dispatch(updateRoom(payload));
+      dispatch(updateChatEntity(payload));
     }
 
     const rest = new Request();
@@ -237,7 +243,7 @@ const updateRooms = (payload, clientDB = null) => async (dispatch, getState, { s
     const normalizeRooms = _.uniqWith(rooms, (a, b) => a._id !== b._id);
 
     dispatch(
-      onLoadActiveChats({
+      loadChats({
         usersList: usersList.filter((user) => user._id !== uidState),
         listdata: normalizeRooms,
         options: {
@@ -251,7 +257,7 @@ const updateRooms = (payload, clientDB = null) => async (dispatch, getState, { s
     );
   } catch (error) {
     console.error(error.message);
-    dispatch(errorRequestAction(error.message));
+    dispatch(setRequestError(error.message));
   }
 };
 

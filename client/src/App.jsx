@@ -8,11 +8,8 @@ import { message, notification } from 'antd';
 import { PrivateRoute } from './Components/Helpers';
 import { forceUpdateDetectedInit, showSystemMessage } from './Utils';
 import { settingsLoadAction } from './Redux/actions/publicActions/middleware';
-import { setStatus, loadUdata, loadCoreConfigAction } from './Redux/actions/publicActions';
 import { addTabAction, setActiveTabAction, logoutAction } from './Redux/actions/routerActions';
-
 import { routeParser } from './Utils';
-
 import Loader from './Components/Loader';
 import Recovery from './Pages/Recovery';
 import LoginPage from './Pages/LoginPage';
@@ -25,8 +22,9 @@ import actionsTypes from 'actions.types';
 import { compose } from 'redux';
 import ClientSideDatabase, { ClientDbContext } from 'Models/ClientSideDatabase';
 import withSystemConfig from 'Components/Helpers/withSystemConfig';
-import { setSystemMessageAction } from 'Redux/actions/systemActions';
 import { withTranslation } from 'react-i18next';
+import { setSystemMessage } from 'Redux/reducers/systemReducer/systemReducer.slice';
+import { loadCoreConfig, loadUserData, setAppStatus } from 'Redux/reducers/publicReducer/publicReducer.slice';
 const workerInstanse = worker();
 
 class App extends Component {
@@ -344,13 +342,13 @@ const mapStateToProps = ({ router, publicReducer, systemReducer }) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     addTab: async (tab) => await dispatch(addTabAction(tab)),
-    onSetStatus: (status) => dispatch(setStatus({ statusRequst: status })),
+    onSetStatus: (status) => dispatch(setAppStatus({ statusRequst: status })),
     setCurrentTab: (tab) => dispatch(setActiveTabAction(tab)),
     onLogoutAction: async () => await dispatch(logoutAction()),
-    onLoadUdata: async (udata) => await dispatch(loadUdata(udata)),
+    onLoadUdata: async (udata) => await dispatch(loadUserData(udata)),
     onLoadSettings: async (payload) => await dispatch(settingsLoadAction(payload)),
-    onLoadCoreConfig: (payload) => dispatch(loadCoreConfigAction(payload)),
-    onSetSystemMessage: (message) => dispatch(setSystemMessageAction(message)),
+    onLoadCoreConfig: (payload) => dispatch(loadCoreConfig(payload)),
+    onSetSystemMessage: (message) => dispatch(setSystemMessage(message)),
   };
 };
 

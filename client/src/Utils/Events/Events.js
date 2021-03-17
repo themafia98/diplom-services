@@ -13,7 +13,7 @@ const sucessEvent = async (dispatch, dep, mode = '', multiple = false, cursor = 
     schema,
     pathValid,
     saveComponentStateAction,
-    errorRequestAction,
+    setRequestError,
     params,
   } = dep;
 
@@ -37,7 +37,7 @@ const sucessEvent = async (dispatch, dep, mode = '', multiple = false, cursor = 
   }
   if (!cursor) {
     const { data = {}, shoudClearError = false } = dataParser(true, true, dep, offlineStore);
-    if (shoudClearError) await dispatch(errorRequestAction(null));
+    if (shoudClearError) await dispatch(setRequestError(null));
 
     if (!multiple) {
       dispatch(saveComponentStateAction({ ...data, params, loading: false }));
