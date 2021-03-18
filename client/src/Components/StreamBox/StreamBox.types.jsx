@@ -13,7 +13,6 @@ export const streamBoxType = {
   boxClassName: string,
   isSingleLoading: bool,
   filterStream: string.isRequired,
-  onMultipleLoadData: func,
   onSaveComponentState: func,
   streamStore: string.isRequired,
   streamModule: string.isRequired,

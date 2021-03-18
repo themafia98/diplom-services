@@ -34,7 +34,6 @@ class StreamBox extends Component {
   static defaultProps = {
     type: null,
     setCounter: null,
-    onMultipleLoadData: null,
     onLoadPopover: null,
     personalUid: null,
     buildItems: null,

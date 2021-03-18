@@ -1,5 +1,4 @@
 import reduxCoreThunk from 'Redux/core';
-import { multipleLoadData } from './routerReducer.thunk';
 import actionsTypes from 'actions.types';
 import { requestTemplate, paramsTemplate } from 'Utils/Api/api.utils';
 import { loadArtifact, loadSettings } from 'Redux/reducers/publicReducer.slice';
@@ -55,7 +54,6 @@ const middlewareCaching = ({
         clientDB,
         dataItems,
         updateBy,
-        multipleLoadData,
       };
 
       await dispatch(cachingThunk(dep));
@@ -69,7 +67,6 @@ const middlewareCaching = ({
       type,
       actionType,
       uid,
-      multipleLoadData,
     };
 
     await dispatch(putterCacheThunk(dep));

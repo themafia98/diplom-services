@@ -134,6 +134,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
   }
 };
 
+/** @deprecated */
 const multipleLoadData = (params) => async (dispatch, getState, { schema, Request }) => {
   const { requestsParamsList = [], saveModuleName = '', clientDB = null } = params;
 
