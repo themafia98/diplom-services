@@ -1,5 +1,4 @@
 import { APP_STATUS } from 'App.constant';
-import _ from 'lodash';
 import { setRequestError } from 'Redux/reducers/publicReducer.slice';
 import { refreshRouterData } from 'Redux/reducers/routerReducer.slice';
 import { sucessEvent } from '../../Utils';

@@ -2,7 +2,7 @@ import reduxCoreThunk from 'Redux/core';
 import { multipleLoadData } from './routerReducer.thunk';
 import actionsTypes from 'actions.types';
 import { requestTemplate, paramsTemplate } from 'Utils/Api/api.utils';
-import { loadArtifact, loadSettings, setAppCache, setRequestError } from 'Redux/reducers/publicReducer.slice';
+import { loadArtifact, loadSettings } from 'Redux/reducers/publicReducer.slice';
 import { setSystemMessage } from 'Redux/reducers/systemReducer.slice';
 
 const { errorThunk, cachingThunk, getterCacheThunk, putterCacheThunk, updateEntityThunk } = reduxCoreThunk;
@@ -25,13 +25,8 @@ const middlewareCaching = ({
   type = '',
   updateBy = '_id',
   clientDB = null,
-}) => async (dispatch, getState, { schema, Request }) => {
+}) => async (dispatch, getState, { Request }) => {
   const rest = new Request();
-
-  const depActions = {
-    setRequestError,
-    setAppCache,
-  };
 
   try {
     if (actionType?.includes('__get')) {
@@ -99,12 +94,8 @@ const loadCacheData = ({
   store = '',
   updateBy = '_id',
   clientDB = null,
-}) => async (dispatch, getState, { schema, Request }) => {
+}) => async (dispatch, getState, { Request }) => {
   const rest = new Request();
-  const depActions = {
-    setRequestError,
-    setAppCache,
-  };
 
   try {
     const path = `/${depStore}/caching/list`;

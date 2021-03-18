@@ -64,7 +64,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
 
       if (force) {
         dependencies.copyStore = result;
-        await coreDataUpdater(dependencies);
+        await dispatch(coreDataUpdater(dependencies));
         return;
       }
 
@@ -108,7 +108,7 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
           return;
         }
 
-        dispatch(errorThunk(error, dispatch, dependenciesForParseError, loadCurrentData.bind(this, params)));
+        dispatch(errorThunk(error, dependenciesForParseError, loadCurrentData.bind(this, params)));
       }
       return;
     }
@@ -205,7 +205,9 @@ const multipleLoadData = (params) => async (dispatch, getState, { schema, Reques
   for await (let res of responseList) {
     const { dep } = res;
     const resultHook = await dispatch(coreDataUpdater(dep, true));
-    if (resultHook) hookData.push(resultHook);
+    if (resultHook) {
+      hookData.push(resultHook);
+    }
   }
 
   if (hookData.length) {
