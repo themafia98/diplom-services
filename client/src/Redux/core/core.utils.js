@@ -1,25 +1,20 @@
 import { APP_STATUS } from 'App.constant';
 import _ from 'lodash';
+import { setRequestError } from 'Redux/reducers/publicReducer.slice';
+import { refreshRouterData } from 'Redux/reducers/routerReducer.slice';
 import { sucessEvent } from '../../Utils';
 import { dataParser } from '../../Utils';
 
 /** Utils hooks */
 
-const runBadNetworkMode = (dispatch, error, dep) => {
-  const { rest, setAppStatus, setRequestError, loadCurrentData, path, params, followCallback } = dep;
+const runBadNetworkMode = (dispatch, error, dependencies, rest) => {
+  const { followCallback } = dependencies;
 
-  if (!loadCurrentData && !setRequestError) return;
+  // if (setAppStatus) dispatch(setAppStatus({ statusRequst: APP_STATUS.OFF, params, path }));
 
-  if (!loadCurrentData && setRequestError) {
-    dispatch(setRequestError(error.message));
-    if (setAppStatus) dispatch(setAppStatus({ statusRequst: APP_STATUS.OFF, params, path }));
-  }
-
-  if (setAppStatus) dispatch(setAppStatus({ statusRequst: APP_STATUS.OFF, params, path }));
-  else return;
   dispatch(setRequestError(error.message));
 
-  if (followCallback) {
+  if (followCallback && rest) {
     rest.follow(APP_STATUS.OFF, followCallback);
     return;
   }
@@ -27,9 +22,9 @@ const runBadNetworkMode = (dispatch, error, dep) => {
   console.error(`followCallback is ${followCallback}`);
 };
 
-const runNoCorsSave = (dispatch, dep, multiple) => {
-  const { refreshRouterData, params = {} } = dep;
-  const { data = {}, shouldUpdateState = true } = dataParser(false, false, dep);
+const runNoCorsSave = (dispatch, dependencies, multiple) => {
+  const { params } = dependencies;
+  const { data = {}, shouldUpdateState = true } = dataParser(dependencies);
 
   if (shouldUpdateState && !multiple) {
     dispatch(refreshRouterData({ ...data, params }));
@@ -57,9 +52,9 @@ const runRefreshIndexedDb = async (dispatch, storeName, dep, multiple) => {
 };
 
 const runLocalUpdate = async (dispatch, depAction, depParser, multiple) => {
-  const { setRequestError, refreshRouterData, params = {}, add = false } = depAction;
+  const { params = {}, add = false } = depAction;
 
-  const { data, shoudClearError = false, shouldUpdateState = true } = dataParser(true, false, depParser);
+  const { data, shoudClearError = false, shouldUpdateState = true } = dataParser(depParser);
   if (shoudClearError) await dispatch(setRequestError(null));
   if (shouldUpdateState && !multiple)
     await dispatch(refreshRouterData({ ...data, loading: false, add, params }));

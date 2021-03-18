@@ -6,7 +6,7 @@ import { getStoreSchema } from '../utilsHook';
 import regExpRegister from 'Utils/Tools/regexpStorage';
 import { getActionPathByKey } from 'actions.path';
 
-const dataParser = (flag = false, isLocalUpdate = true, dep = {}, offlineStore = []) => {
+const dataParser = (dependencies, offlineStore = []) => {
   const {
     copyStore = [],
     storeLoad = '',
@@ -18,7 +18,7 @@ const dataParser = (flag = false, isLocalUpdate = true, dep = {}, offlineStore =
     requestError,
     noCorsClient = false,
     add = false,
-  } = dep;
+  } = dependencies;
 
   const store = [...copyStore];
 

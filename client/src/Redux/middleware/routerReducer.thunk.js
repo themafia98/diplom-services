@@ -3,7 +3,6 @@ import reduxCoreThunk from 'Redux/core';
 import actionsTypes from 'actions.types';
 import regExpRegister from 'Utils/Tools/regexpStorage';
 import _ from 'lodash';
-import { message } from 'antd';
 import { makeApiAction, getActionStore } from 'Utils/Api';
 import { APP_STATUS } from 'App.constant';
 import { setSystemMessage } from 'Redux/reducers/systemReducer.slice';
@@ -49,28 +48,23 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
 
   switch (status) {
     case APP_STATUS.ON: {
-      const dep = {
+      const dependencies = {
         requestError,
         noCorsClient,
         sortBy,
         pathValid,
-        schema,
         storeLoad: store,
         clientDB,
         uuid: 'uuid',
         params,
-        refreshRouterData,
-        multipleLoadData,
-        setRequestError,
         isLocalUpdate,
-        rest,
         sync,
         add,
       };
 
       if (force) {
-        dep.copyStore = result;
-        await coreDataUpdater(dispatch, dep);
+        dependencies.copyStore = result;
+        await coreDataUpdater(dependencies);
         return;
       }
 
@@ -89,40 +83,32 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
 
         if (error) throw new Error(error);
 
-        dep.copyStore = copyStore;
+        dependencies.copyStore = copyStore;
 
-        await coreDataUpdater(dispatch, dep);
+        await dispatch(coreDataUpdater(dependencies));
       } catch (error) {
         const { status: errorStatus = '', response: { status: responseStatus = 503 } = {} } = error || {};
 
-        const dep = {
+        const dependenciesForParseError = {
           requestError,
-          Request,
-          setAppStatus,
           params,
-          setRequestError,
-          loadCurrentData,
-          multipleLoadData,
           copyStore: [],
           storeLoad: store,
-          refreshRouterData,
           isLocalUpdate,
           path: pagePath,
-          rest,
           noCorsClient,
           sortBy,
           pathValid,
-          schema,
           clientDB,
           uuid: 'uuid',
         };
 
         if (responseStatus === 404 || errorStatus === 404) {
-          await coreDataUpdater(dispatch, { ...dep });
+          await dispatch(coreDataUpdater(dependencies));
           return;
         }
 
-        await errorThunk(error, dispatch, dep, loadCurrentData.bind(this, params));
+        dispatch(errorThunk(error, dispatch, dependenciesForParseError, loadCurrentData.bind(this, params)));
       }
       return;
     }
@@ -218,7 +204,7 @@ const multipleLoadData = (params) => async (dispatch, getState, { schema, Reques
 
   for await (let res of responseList) {
     const { dep } = res;
-    const resultHook = await coreDataUpdater(dispatch, dep, true);
+    const resultHook = await dispatch(coreDataUpdater(dep, true));
     if (resultHook) hookData.push(resultHook);
   }
 

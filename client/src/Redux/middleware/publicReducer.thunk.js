@@ -2,15 +2,7 @@ import reduxCoreThunk from 'Redux/core';
 import { multipleLoadData } from './routerReducer.thunk';
 import actionsTypes from 'actions.types';
 import { requestTemplate, paramsTemplate } from 'Utils/Api/api.utils';
-import { message } from 'antd';
-import {
-  loadArtifact,
-  loadSettings,
-  setAppCache,
-  setAppStatus,
-  setRequestError,
-} from 'Redux/reducers/publicReducer.slice';
-import { refreshRouteDataItem } from 'Redux/reducers/routerReducer.slice';
+import { loadArtifact, loadSettings, setAppCache, setRequestError } from 'Redux/reducers/publicReducer.slice';
 import { setSystemMessage } from 'Redux/reducers/systemReducer.slice';
 
 const { errorThunk, cachingThunk, getterCacheThunk, putterCacheThunk, updateEntityThunk } = reduxCoreThunk;
@@ -66,13 +58,12 @@ const middlewareCaching = ({
         store,
         actionType,
         clientDB,
-        schema,
         dataItems,
         updateBy,
         multipleLoadData,
       };
 
-      await cachingThunk(dispatch, dep, depActions);
+      await dispatch(cachingThunk(dep));
       return;
     }
 
@@ -83,28 +74,21 @@ const middlewareCaching = ({
       type,
       actionType,
       uid,
-      Request,
       multipleLoadData,
     };
 
-    await putterCacheThunk(dispatch, dep, depActions);
+    await dispatch(putterCacheThunk(dep));
   } catch (error) {
-    const depError = {
+    const dependenciesForParseError = {
       depStore,
       depKey,
       item,
       store,
       actionType,
       clientDB,
-      schema,
-      Request,
-      setRequestError,
-      setAppStatus,
-      multipleLoadData,
-      rest,
     };
     console.error(error);
-    errorThunk(error, dispatch, depError);
+    dispatch(errorThunk(error, dependenciesForParseError));
   }
 };
 
@@ -146,30 +130,22 @@ const loadCacheData = ({
       dataItems,
       actionType,
       store,
-      schema,
       clientDB,
-      multipleLoadData,
       updateBy,
     };
 
-    await getterCacheThunk(dispatch, dep, depActions);
+    await dispatch(getterCacheThunk(dep));
   } catch (error) {
-    const depError = {
+    const dependenciesForParseError = {
       depStore,
       depKey,
       store,
       actionType,
       clientDB,
-      schema,
-      Request,
       updateBy,
-      multipleLoadData,
-      setRequestError,
-      setAppStatus,
-      rest,
     };
     console.error(error);
-    errorThunk(error, dispatch, depError);
+    dispatch(errorThunk(error, dependenciesForParseError));
   }
 };
 
@@ -235,29 +211,22 @@ const middlewareUpdate = ({
       dataItems:
         Array.isArray(dataItems) && dataItems.length === 1 ? dataItems[dataItems.length - 1] : dataItems,
       id: id ? id : key,
-      refreshRouteDataItem,
     };
 
-    await updateEntityThunk(dispatch, dep);
+    await dispatch(updateEntityThunk(dep));
 
     if (systemMessage?.done) {
       dispatch(setSystemMessage({ msg: systemMessage.done, type: 'success' }));
     }
   } catch (error) {
-    const depError = {
+    const dependenciesForParseError = {
       parsedRoutePath,
       store,
       actionType,
       clientDB,
-      schema,
-      Request,
-      setRequestError,
-      multipleLoadData,
-      setAppStatus,
-      rest,
     };
     console.error(error);
-    errorThunk(error, dispatch, depError);
+    dispatch(errorThunk(error, dependenciesForParseError));
     if (systemMessage?.error) {
       dispatch(setSystemMessage({ msg: systemMessage.error, type: 'error' }));
     }

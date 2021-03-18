@@ -27,7 +27,7 @@ const sucessEvent = async (dispatch, dep, mode = '', multiple = false, cursor = 
     } else return data;
   }
   if (!cursor) {
-    const { data = {}, shoudClearError = false } = dataParser(true, true, dep, offlineStore);
+    const { data = {}, shoudClearError = false } = dataParser(dep, offlineStore);
     if (shoudClearError) await dispatch(setRequestError(null));
 
     if (!multiple) {

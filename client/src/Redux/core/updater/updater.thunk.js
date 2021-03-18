@@ -1,39 +1,46 @@
 import coreUtils from '../core.utils';
 import { getStoreSchema } from '../../../Utils/utilsHook';
+import { setRequestError } from 'Redux/reducers/publicReducer.slice';
+import { refreshRouteDataItem } from 'Redux/reducers/routerReducer.slice';
 
 const { runLocalUpdate, runRefreshIndexedDb, runNoCorsSave, runBadNetworkMode } = coreUtils;
 
-const coreDataUpdater = async (dispatch, dep = {}, multiple = false, badNetwork = false) => {
+const coreDataUpdater = (dependencies, multiple = false, badNetwork = false) => async (
+  dispatch,
+  getState,
+  { schema, Request },
+) => {
   const {
     noCorsClient,
     requestError,
     copyStore,
     sortBy,
     pathValid,
-    schema,
     storeLoad,
     clientDB,
     methodQuery,
-    refreshRouterData,
-    setRequestError,
     isLocalUpdate: localUpdateStat,
     params,
     add,
-  } = dep;
+  } = dependencies;
+
+  dependencies.schema = schema;
 
   let isLocalUpdate = localUpdateStat;
 
   if (noCorsClient && requestError === null) {
-    const [isDone, data] = runNoCorsSave(dispatch, dep, multiple);
+    const [isDone, data] = runNoCorsSave(dispatch, dependencies, multiple);
     if (isDone) return data;
   }
 
-  if (requestError !== null && !badNetwork) dispatch(setRequestError(null));
+  if (requestError !== null && !badNetwork) {
+    dispatch(setRequestError(null));
+  }
 
   const [cursor = null, eventResult = null, shouldUpdate = null] = await runRefreshIndexedDb(
     dispatch,
     storeLoad,
-    dep,
+    dependencies,
     multiple,
   );
 
@@ -54,10 +61,9 @@ const coreDataUpdater = async (dispatch, dep = {}, multiple = false, badNetwork 
       add,
     };
     const depAction = {
-      refreshRouterData,
-      setRequestError,
       add,
     };
+
     try {
       return await runLocalUpdate(dispatch, depAction, depParser, multiple);
     } catch (error) {
@@ -66,17 +72,10 @@ const coreDataUpdater = async (dispatch, dep = {}, multiple = false, badNetwork 
   }
 };
 
-const updateEntityThunk = async (dispatch, dep = {}) => {
-  const {
-    parsedRoutePath = null,
-    store,
-    schema,
-    dataItems,
-    id,
-    refreshRouteDataItem,
-    updateBy = '',
-    clientDB = null,
-  } = dep;
+const updateEntityThunk = (dependencies) => async (dispatch, getState, { schema, Request }) => {
+  const { parsedRoutePath = null, store, dataItems, id, updateBy = '', clientDB = null } = dependencies;
+
+  dependencies.schema = schema;
 
   const schemaTemplate = getStoreSchema(store);
 
@@ -101,16 +100,26 @@ const updateEntityThunk = async (dispatch, dep = {}) => {
     return;
   }
 
-  if (schema?.isPublicKey(dataItems)) await clientDB.updateItem(store, dataItems);
+  if (schema?.isPublicKey(dataItems)) {
+    await clientDB.updateItem(store, dataItems);
+  }
 };
 
-const errorThunk = async (error, dispatch, dep = {}, callback) => {
-  const { setRequestError } = dep;
+const errorThunk = async (error, dependenciesForParseError, loadAction = null) => async (
+  dispatch,
+  getState,
+  { schema, Request },
+) => {
+  if (error?.message !== 'Network Error') {
+    dispatch(setRequestError(error.message));
+    return;
+  }
 
-  if (error?.message === 'Network Error') {
-    runBadNetworkMode(dispatch, error, dep);
-    if (typeof callback === 'function') dispatch(callback());
-  } else dispatch(setRequestError(error.message));
+  runBadNetworkMode(dispatch, error, dependenciesForParseError, new Request());
+
+  if (typeof loadAction === 'function') {
+    dispatch(loadAction());
+  }
 };
 
 const updater = {
