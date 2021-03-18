@@ -11,6 +11,7 @@ import {
   setRequestError,
 } from 'Redux/reducers/publicReducer.slice';
 import { refreshRouteDataItem } from 'Redux/reducers/routerReducer.slice';
+import { setSystemMessage } from 'Redux/reducers/systemReducer.slice';
 
 const { errorThunk, cachingThunk, getterCacheThunk, putterCacheThunk, updateEntityThunk } = reduxCoreThunk;
 
@@ -239,7 +240,9 @@ const middlewareUpdate = ({
 
     await updateEntityThunk(dispatch, dep);
 
-    if (systemMessage?.done) message.success(systemMessage.done);
+    if (systemMessage?.done) {
+      dispatch(setSystemMessage({ msg: systemMessage.done, type: 'success' }));
+    }
   } catch (error) {
     const depError = {
       parsedRoutePath,
@@ -255,7 +258,9 @@ const middlewareUpdate = ({
     };
     console.error(error);
     errorThunk(error, dispatch, depError);
-    if (systemMessage?.error) message.error(systemMessage.error);
+    if (systemMessage?.error) {
+      dispatch(setSystemMessage({ msg: systemMessage.error, type: 'error' }));
+    }
   }
 };
 

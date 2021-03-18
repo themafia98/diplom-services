@@ -6,16 +6,7 @@ import { dataParser } from '../../Utils';
 /** Utils hooks */
 
 const runBadNetworkMode = (dispatch, error, dep) => {
-  const {
-    rest,
-    setAppStatus,
-    setRequestError,
-    loadCurrentData,
-    getState,
-    path,
-    params,
-    multipleLoadData,
-  } = dep;
+  const { rest, setAppStatus, setRequestError, loadCurrentData, path, params, followCallback } = dep;
 
   if (!loadCurrentData && !setRequestError) return;
 
@@ -28,35 +19,12 @@ const runBadNetworkMode = (dispatch, error, dep) => {
   else return;
   dispatch(setRequestError(error.message));
 
-  rest.follow(
-    APP_STATUS.OFF,
-    async (statusRequst) => {
-      const state = getState ? getState() : {};
-      const {
-        publicReducer: { paramsList },
-        router,
-      } = state;
+  if (followCallback) {
+    rest.follow(APP_STATUS.OFF, followCallback);
+    return;
+  }
 
-      if (statusRequst === APP_STATUS.ON) {
-        const { path, routeData = {} } = router;
-        const currentModule = path && routeData[path] ? routeData[path] : {};
-        const currnetParams = !currentModule?.params ? {} : currentModule.params;
-        rest.unfollow();
-
-        dispatch(setAppStatus({ statusRequst, clearParams: true }));
-        const list = _.uniqBy([...paramsList, currnetParams], 'path');
-
-        if (multipleLoadData) {
-          dispatch(multipleLoadData({ requestsParamsList: list, sync: true }));
-          return;
-        }
-        for await (let requestParams of list) {
-          await dispatch(loadCurrentData({ ...requestParams, sync: true }));
-        }
-      }
-    },
-    3000,
-  );
+  console.error(`followCallback is ${followCallback}`);
 };
 
 const runNoCorsSave = (dispatch, dep, multiple) => {

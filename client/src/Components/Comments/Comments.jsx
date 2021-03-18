@@ -187,7 +187,6 @@ const Comments = memo(({ data, onUpdate, path, clientDB, rules, commentProps }) 
     } catch (error) {
       if (callback) callback();
       console.error(error);
-      notification.error({ message: 'Ошибка', description: 'Некорректная операция.' });
     }
   };
 

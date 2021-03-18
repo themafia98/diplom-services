@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import RenderInBrowser from 'react-render-in-browser';
 import { Switch, Route } from 'react-router-dom';
-import { message, notification } from 'antd';
+import { message } from 'antd';
 import { PrivateRoute } from './Components/Helpers';
 import { forceUpdateDetectedInit, showSystemMessage } from './Utils';
 import { settingsLoadAction } from './Redux/middleware/publicReducer.thunk';
@@ -142,7 +142,7 @@ class App extends Component {
   };
 
   loadAppSession = async () => {
-    const { router, coreConfig = {} } = this.props;
+    const { router, coreConfig = {}, dispatch } = this.props;
     const { currentActionTab = '', activeTabs = [] } = router;
     const { appActive = true, menu = [], tabsLimit = 20 } = coreConfig;
     const { Request } = this.context;
@@ -203,7 +203,8 @@ class App extends Component {
       }
     } catch (error) {
       const { response: { data = '' } = {}, message = '' } = error || {};
-      this.showErrorMessage(data || message || error);
+      dispatch(setSystemMessage({ msg: data || message || error, type: 'error' }));
+
       console.error(error);
       return rest.signOut();
     }
@@ -211,19 +212,12 @@ class App extends Component {
     return this.setState({ authLoad: true, loadState: true });
   };
 
-  showErrorMessage = (error = '') => {
-    notification.error({
-      message: 'Ошибка',
-      description: error,
-    });
-  };
-
   initialSession = async (udata = null, path = '') => {
-    const { addTab, onLoadUdata, fetchConfig, i18n } = this.props;
+    const { addTab, onLoadUdata, fetchConfig, i18n, dispatch } = this.props;
 
     try {
       if (!udata || !path) {
-        this.showErrorMessage('Error load dashboard.');
+        dispatch(setSystemMessage({ msg: 'Error load dashboard.', type: 'error' }));
         return;
       }
 
@@ -240,7 +234,7 @@ class App extends Component {
       }
     } catch (error) {
       const { response: { data = '' } = {}, message = '' } = error || {};
-      this.showErrorMessage(data || message || error);
+      dispatch(setSystemMessage({ msg: data || message || error, type: 'error' }));
       console.log(error);
     }
   };

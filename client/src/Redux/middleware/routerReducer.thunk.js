@@ -104,7 +104,6 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
           loadCurrentData,
           multipleLoadData,
           copyStore: [],
-          getState,
           storeLoad: store,
           refreshRouterData,
           isLocalUpdate,
@@ -239,14 +238,14 @@ const openTab = ({ uuid, action, depKey = '', data = null, openType = '' }) => a
   const { _id: uid } = udata;
 
   if (appConfig?.tabsLimit <= activeTabs.length) {
-    message.error('Максимальное количество вкладок:' + appConfig?.tabsLimit);
+    console.error('Max tabs limit:' + appConfig?.tabsLimit);
     return;
   }
 
   if (openType) {
     const { moduleId = '', page = '' } = routeParser({ path: action, pageType: openType });
     if (!moduleId || !page) {
-      message.warn('Страницу открыть по ссылке не удалось');
+      dispatch(setSystemMessage({ msg: 'Open page error', type: 'warn' }));
       return;
     }
 
@@ -259,7 +258,8 @@ const openTab = ({ uuid, action, depKey = '', data = null, openType = '' }) => a
     }
 
     if (!data) {
-      message.warning('Данные при переходе по ссылке не найдены.');
+      dispatch(setSystemMessage({ msg: 'Invalid data for open page', type: 'error' }));
+      console.error(data);
       return;
     }
 
@@ -279,7 +279,8 @@ const openTab = ({ uuid, action, depKey = '', data = null, openType = '' }) => a
     const isAvailablePage = await checkPageAvailable(activePage, new Request());
 
     if (!isAvailablePage) {
-      console.error('Not access for open page', activePage);
+      dispatch(setSystemMessage({ msg: 'Not access for open this', type: 'warn' }));
+      console.warn('Not access for open page', activePage);
       return;
     }
 
@@ -314,7 +315,8 @@ const openTab = ({ uuid, action, depKey = '', data = null, openType = '' }) => a
   }
 
   if (!normalizeData && !newData && uuid !== uid) {
-    message.warn('Страницу открыть не удалось');
+    dispatch(setSystemMessage({ msg: 'Error on open page', type: 'error' }));
+    console.error('Error on open page');
     const trace = {
       uuid,
       page,
