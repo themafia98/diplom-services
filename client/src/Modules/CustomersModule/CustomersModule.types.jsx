@@ -14,7 +14,6 @@ export const customersModuleType = {
 
 export const contactsType = {
   isBackground: bool,
-  router: object.isRequired,
   onSetStatus: func.isRequired,
   path: string.isRequired,
   visible: bool,

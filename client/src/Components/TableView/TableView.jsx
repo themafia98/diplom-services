@@ -23,10 +23,12 @@ const TableView = ({
 }) => {
   const [isScroll, setIsScroll] = useState(null);
 
-  const { router, requestError } = useSelector(({ router, publicReducer }) => {
+  const { routeData, currentActionTab, requestError } = useSelector(({ router, publicReducer }) => {
     const { requestError } = publicReducer;
+    const { routeData, currentActionTab } = router;
     return {
-      router,
+      routeData,
+      currentActionTab,
       requestError,
     };
   });
@@ -44,48 +46,43 @@ const TableView = ({
     return () => window.removeEventListener('resize', setSizeWindow);
   }, [setSizeWindow]);
 
-  const getRowsTable = useCallback(
-    (arrayData) => {
-      return arrayData.map((it, id) => {
-        return (
-          <tr className="content-row-table" key={`${id}content-row-table`}>
-            <Output key={`${id}${it.status}status`} type="table" className="status">
-              {it.status || 'Скрыт'}
-            </Output>
-            <Output
-              id={it?._id}
-              action={'cabinet'}
-              typeOutput="link"
-              router={router}
-              key={`${id}${it.displayName}}nameSurname`}
-              type="table"
-              className="nameSurname"
-            >
-              {`${it.displayName}`}
-            </Output>
-            <Output key={`${id}${it.departament}departament`} type="table" className="departament">
-              {it.departament}
-            </Output>
-            <Output key={`${id}departament`} type="table" className="departament">
-              {it.position}
-            </Output>
-            {it.email ? (
-              <td>
-                <Tooltip title={it.email}>
-                  {!it?.isHideEmail ? <Icon onClick={onMail.bind(this, it.email)} type="mail" /> : null}
-                </Tooltip>
-              </td>
-            ) : null}
-          </tr>
-        );
-      });
-    },
-    [router],
-  );
+  const getRowsTable = useCallback((arrayData) => {
+    return arrayData.map((it, id) => {
+      return (
+        <tr className="content-row-table" key={`${id}content-row-table`}>
+          <Output key={`${id}${it.status}status`} type="table" className="status">
+            {it.status || 'Скрыт'}
+          </Output>
+          <Output
+            id={it?._id}
+            action={'cabinet'}
+            typeOutput="link"
+            key={`${id}${it.displayName}}nameSurname`}
+            type="table"
+            className="nameSurname"
+          >
+            {`${it.displayName}`}
+          </Output>
+          <Output key={`${id}${it.departament}departament`} type="table" className="departament">
+            {it.departament}
+          </Output>
+          <Output key={`${id}departament`} type="table" className="departament">
+            {it.position}
+          </Output>
+          {it.email ? (
+            <td>
+              <Tooltip title={it.email}>
+                {!it?.isHideEmail ? <Icon onClick={onMail.bind(this, it.email)} type="mail" /> : null}
+              </Tooltip>
+            </td>
+          ) : null}
+        </tr>
+      );
+    });
+  }, []);
 
   const getComponentByPath = useCallback(
     (path) => {
-      const { routeData, currentActionTab = '' } = router;
       let currentData = routeData[currentActionTab];
 
       if (path === 'mainModule__global' && visible) {
@@ -136,7 +133,6 @@ const TableView = ({
             routePathNormalise={routePathNormalise}
             routeParser={routeParser}
             dataSource={tasks}
-            router={router}
             counter={countPagination}
             filterBy={filterBy}
             user={user}
@@ -151,12 +147,13 @@ const TableView = ({
     },
     [
       counter,
+      currentActionTab,
       filterBy,
       getRowsTable,
       height,
       loading,
       requestError,
-      router,
+      routeData,
       statusApp,
       tableViewHeight,
       type,

@@ -49,7 +49,6 @@ class StreamBox extends Component {
     prefix: '',
     boxClassName: '',
     parentPath: '',
-    router: {},
   };
 
   static getDerivedStateFromProps = (props, state) => {
@@ -265,7 +264,7 @@ class StreamBox extends Component {
 
   onRunAction = (actionIndex) => {
     const { streamList: streamListState = [] } = this.state;
-    const { router: { routeData = {} } = {}, withStore, prefix, streamStore, onOpenTab } = this.props;
+    const { routeData, withStore, prefix, streamStore, onOpenTab } = this.props;
 
     const nameModuleStream = this.getNotificationPath(this.getNormalizeUidNotification());
 
@@ -370,7 +369,7 @@ class StreamBox extends Component {
       udata,
       parentPath,
       parentDataName,
-      router: { routeData = {} } = {},
+      routeData,
       streamStore,
       withStore,
       buildItems,
@@ -520,8 +519,9 @@ class StreamBox extends Component {
 const mapStateToProps = (state) => {
   const { router, publicReducer } = state;
   const { udata, appConfig } = publicReducer;
+  const { routeData } = router;
 
-  return { router, udata, appConfig };
+  return { routeData, udata, appConfig };
 };
 
 const mapDispatchToProps = (dispatch) => {

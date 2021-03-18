@@ -234,7 +234,7 @@ const openTab = ({ uuid, action, depKey = '', data = null, openType = '' }) => a
   { Request },
 ) => {
   const { publicReducer, router } = getState();
-  const { activeTabs = [], routeData = {} } = router;
+  const { activeTabs, routeData } = router;
   const { appConfig = {}, udata } = publicReducer;
   const { _id: uid } = udata;
 

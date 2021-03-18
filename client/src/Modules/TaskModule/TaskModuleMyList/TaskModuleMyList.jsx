@@ -38,7 +38,6 @@ const TaskModuleMyList = ({ data, height, loading, counter, currentActionTab, st
 };
 
 TaskModuleMyList.defaultProps = {
-  router: {},
   data: {},
   height: 0,
   isBackground: false,

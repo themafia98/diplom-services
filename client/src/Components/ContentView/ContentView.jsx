@@ -10,6 +10,7 @@ import TabContainer from 'Components/TabContainer';
 import { v4 as uuid } from 'uuid';
 import types from 'types.modules';
 import { APP_STATUS } from 'App.constant';
+import { useSelector } from 'react-redux';
 
 const { Content } = Layout;
 
@@ -19,7 +20,6 @@ const ContentView = memo(
     dashboardStream,
     path,
     activeTabs,
-    router,
     updateLoader,
     statusApp,
     rest,
@@ -31,7 +31,7 @@ const ContentView = memo(
     const [visibilityPortal, setVisiblePortal] = useState(false);
     const [refreshKey, setRefreshKey] = useState(uuid);
 
-    const { currentActionTab } = router;
+    const { currentActionTab } = useSelector(({ router }) => router);
 
     const updateFunction = useMemo(
       () =>
@@ -101,65 +101,83 @@ const ContentView = memo(
         activeTabs,
         visibilityPortal,
         onChangeVisibleAction,
-        router,
         webSocket,
         statusApp,
         rest,
         path,
       };
 
-      return activeTabs.reduce((tabsComponents, tabKey, index, tabs) => {
-        const [moduleNameDirty = '', subModuleName = '', entityDataId = ''] = parseModuleKey(tabKey);
+      let tabsList = null;
 
+      activeTabs.forEach((tabKey, index) => {
+        const [moduleNameDirty = '', subModuleName = '', entityDataId = ''] = parseModuleKey(tabKey);
         const [moduleName] = moduleNameDirty.split('#');
         const type = getModuleTypeByParsedKey(moduleNameDirty, subModuleName, entityDataId);
-        const Component = getComponentByKey(tabKey, types.$entrypoint_module);
-        const entrypointChildrenExist =
-          tabs &&
-          !!tabs.find((tab) => path?.includes(moduleName) && tab !== tabKey && tab?.includes(moduleName));
 
-        const isExistTab = tabs.slice(0, index + 1).some((tab) => tab?.includes(moduleName));
-        const isExsistModule = tabsComponents.find(({ type: typeModule = '', tabKey: key }) => {
-          switch (typeModule) {
-            case types.$entity_entrypoint:
-              return key.includes(moduleName) && !key.includes(entityDataId) && isExistTab;
-            default:
-              return key.includes(moduleName) && isExistTab;
-          }
-        });
+        let childrensExistInEntrypointTypeTab = false;
+
+        if (Array.isArray(activeTabs) && path && path.includes(moduleName)) {
+          childrensExistInEntrypointTypeTab = !!activeTabs.some(
+            (tabItem) => tabItem !== tabKey && tabItem && tabItem.includes(moduleName),
+          );
+        }
+
+        const isExistTab = activeTabs.slice(0, index + 1).some((tab) => tab?.includes(moduleName));
+        const isExsistModule =
+          tabsList &&
+          tabsList.find(({ type, tabKey }) => {
+            switch (type) {
+              case types.$entity_entrypoint:
+                return tabKey && tabKey.includes(moduleName) && !tabKey.includes(entityDataId) && isExistTab;
+              default:
+                return tabKey && tabKey.includes(moduleName) && isExistTab;
+            }
+          });
 
         const tabParams = {
-          visible: entrypointChildrenExist || path === tabKey,
+          visible: childrensExistInEntrypointTypeTab || path === tabKey,
           type,
         };
 
         tabParams.isBackground = !tabParams?.visible && getBackground(tabKey);
         const isLink = type === types.$link_entrypoint;
 
-        if (tabsComponents.length && ((isExsistModule && !isLink) || (isLink && entrypointChildrenExist))) {
-          return tabsComponents;
+        const isEntrypointTabLink = isLink && childrensExistInEntrypointTypeTab;
+        const isSimpleTab = isExsistModule && !isLink;
+
+        if (tabsList && tabsList.length && (isSimpleTab || isEntrypointTabLink)) {
+          return;
         }
-        const validModuleName = entityDataId ? moduleName : tabKey;
-        return [
-          ...tabsComponents,
-          {
-            tabKey,
-            type,
-            component: (
-              <TabContainer key={`${validModuleName}-tab`} actualParams={tabParams}>
-                <Component key={validModuleName} type={type} tabParams={tabParams} {...tabProps} />
-              </TabContainer>
-            ),
-          },
-        ];
-      }, []);
+
+        const normalizeName = entityDataId ? moduleName : tabKey;
+        const Component = getComponentByKey(tabKey, types.$entrypoint_module);
+
+        if (tabsList === null) {
+          tabsList = [];
+        }
+
+        tabsList.push({
+          tabKey,
+          type,
+          component: (
+            <TabContainer key={`${normalizeName}-tab`} actualParams={tabParams}>
+              <Component key={normalizeName} type={type} tabParams={tabParams} {...tabProps} />
+            </TabContainer>
+          ),
+        });
+      });
+
+      if (tabsList) {
+        return tabsList.map(({ component }) => component);
+      }
+
+      return tabsList;
     }, [
       activeTabs,
       getBackground,
       onChangeVisibleAction,
       path,
       rest,
-      router,
       statusApp,
       visibilityPortal,
       webSocket,
@@ -181,7 +199,7 @@ const ContentView = memo(
 
     return (
       <Content className="contentView" key={refreshKey}>
-        {tabs && tabs.map(({ component = null }) => component)}
+        {tabs}
         <ActionPortal appConfig={appConfig} visible={visibilityPortal}>
           <Chat
             key="chatModule"
@@ -202,7 +220,6 @@ ContentView.defaultProps = {
   shouldRenderMenu: true,
   path: '',
   activeTabs: null,
-  router: {},
   statusApp: APP_STATUS.ON,
   rest: null,
   webSocket: null,

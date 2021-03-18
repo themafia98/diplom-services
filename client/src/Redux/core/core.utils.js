@@ -32,7 +32,10 @@ const runBadNetworkMode = (dispatch, error, dep) => {
     APP_STATUS.OFF,
     async (statusRequst) => {
       const state = getState ? getState() : {};
-      const { publicReducer: { paramsList = [] } = {}, router = {} } = state;
+      const {
+        publicReducer: { paramsList },
+        router,
+      } = state;
 
       if (statusRequst === APP_STATUS.ON) {
         const { path, routeData = {} } = router;

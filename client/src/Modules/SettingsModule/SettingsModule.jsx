@@ -70,18 +70,18 @@ class SettingsModule extends PureComponent {
   };
 
   componentDidMount = async () => {
-    const { router, path, udata, onCaching, onSetStatus, clientDB } = this.props;
+    const { path, udata, onCaching, onSetStatus, clientDB, routeData } = this.props;
     const { _id: uid } = udata;
 
-    if (router?.routeData[path] && router?.routeData[path]?.haveChanges) {
-      this.setState({ ...this.state, ...router.routeData[path] });
+    if (routeData[path] && routeData[path]?.haveChanges) {
+      this.setState({ ...this.state, ...routeData[path] });
     }
 
     await onSetStatus(false);
 
     onCaching({
       uid,
-      actionType: 'get_user_settings_log',
+      actionType: actionsTypes.$GET_USER_SETTINGS_LOGS,
       depStore: 'settings',
       type: 'logger',
       clientDB,
@@ -90,22 +90,30 @@ class SettingsModule extends PureComponent {
 
   componentDidUpdate = async () => {
     const { showScrollbar, emailValue = '', telValue = '' } = this.state;
-    const { udata, router, path, onCaching, onSetStatus, moduleContext, clientDB } = this.props;
-    const { shouldUpdate = false, routeData = {} } = router;
+    const {
+      udata,
+      path,
+      onCaching,
+      onSetStatus,
+      moduleContext,
+      clientDB,
+      shouldUpdateRoute,
+      routeData,
+    } = this.props;
     const { _id: uid } = udata;
     const { visibility = false } = moduleContext;
 
     if (!visibility) return;
 
     const { shouldUpdate: shouldUpdateCurrentData = false } = routeData[path] || {};
-    const isUnloadModule = shouldUpdate && !routeData[path]?.load;
+    const isUnloadModule = shouldUpdateRoute && !routeData[path]?.load;
 
     if (!isUnloadModule && !shouldUpdateCurrentData) return;
 
     await onSetStatus(false);
     onCaching({
       uid,
-      actionType: 'get_user_settings_log',
+      actionType: actionsTypes.$GET_USER_SETTINGS_LOGS,
       depStore: 'settings',
       type: 'logger',
       clientDB,
@@ -494,13 +502,14 @@ class SettingsModule extends PureComponent {
 
 const mapStateToProps = (state, props) => {
   const { publicReducer, router } = state;
-  const { shouldUpdate = false, currentActionTab = '' } = router;
+  const { shouldUpdate = false, currentActionTab = '', routeData } = router;
   const { udata, caches, appConfig } = publicReducer;
 
-  const isLoad = Object.keys(caches).some((key) => key.includes('get_user_settings_log'));
+  const isLoad = Object.keys(caches).some((key) => key.includes(actionsTypes.$GET_USER_SETTINGS_LOGS));
 
   return {
-    router,
+    shouldUpdateRoute: shouldUpdate,
+    routeData,
     udata,
     settings: settingsStatusSelector(state, props),
     artifacts: settingsArtifactsSelector(state, props),

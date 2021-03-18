@@ -21,7 +21,7 @@ export const streamBoxType = {
   personalUid: oneOfType([string, () => null]),
   setCurrentTab: func,
   onOpenPageWithData: func,
-  router: oneOfType([object, () => null]),
+  routeData: object.isRequired,
   withStore: bool.isRequired,
   prefix: string.isRequired,
   parentPath: string,

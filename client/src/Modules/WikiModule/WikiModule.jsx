@@ -90,12 +90,7 @@ class WikiModule extends PureComponent {
   };
 
   fetchTree = async (mode = '', forceUpdate = false) => {
-    const {
-      onLoadCurrentData,
-      router: { shouldUpdate = false, routeData = {} } = {},
-      moduleContext,
-      clientDB,
-    } = this.props;
+    const { onLoadCurrentData, shouldUpdate = false, routeData, moduleContext, clientDB } = this.props;
     const { visibility = false } = moduleContext;
     const { isLoading = false } = this.state;
     const isModuleUpdate = shouldUpdate && visibility && !routeData['wikiModule']?.load;
@@ -435,7 +430,7 @@ class WikiModule extends PureComponent {
       selectedNode = '',
     } = this.state;
     const { _id: id = '' } = selectedNodeMetadata || {};
-    const { metadata, router: { shouldUpdate = false } = {}, t } = this.props;
+    const { metadata, shouldUpdate, t } = this.props;
     const isLoading = isLoadingState || (shouldUpdate && !metadata?.length);
 
     return (
@@ -513,11 +508,12 @@ class WikiModule extends PureComponent {
 }
 
 const mapStateToProps = ({ router }) => {
-  const { routeData } = router;
+  const { shouldUpdate = false, routeData } = router;
   const { wikiTree: metadata } = routeData['wikiModule'] || {};
-
   return {
     router,
+    shouldUpdate,
+    routeData,
     metadata,
   };
 };

@@ -18,16 +18,18 @@ const News = memo(({ data }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const dispatch = useDispatch();
 
-  const { router, appConfig } = useSelector((state) => {
+  const { activeTabs, routeData, appConfig } = useSelector((state) => {
     const { publicReducer, router } = state;
     const { appConfig } = publicReducer;
+    const { activeTabs = null, routeData = null } = router;
     return {
       router,
       appConfig,
+      activeTabs,
+      routeData,
     };
   });
 
-  const { activeTabs = [], routeData = {} } = router;
   const { contactModule = {} } = routeData;
   const { news: newsStore = [] } = contactModule;
 

@@ -142,7 +142,7 @@ class App extends Component {
   };
 
   loadAppSession = async () => {
-    const { router = {}, coreConfig = {} } = this.props;
+    const { router, coreConfig = {} } = this.props;
     const { currentActionTab = '', activeTabs = [] } = router;
     const { appActive = true, menu = [], tabsLimit = 20 } = coreConfig;
     const { Request } = this.context;

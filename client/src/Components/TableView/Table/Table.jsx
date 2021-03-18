@@ -28,7 +28,6 @@ class Table extends PureComponent {
   static propTypes = tableType;
   static defaultProps = {
     counter: null,
-    router: {},
     depDataKey: '',
     filteredUsers: [],
     cachesAuthorList: [],
@@ -78,8 +77,7 @@ class Table extends PureComponent {
   };
 
   getTaskConfigColumns = () => {
-    const { router, t } = this.props;
-    const routerData = router.routeData[router.path] || {};
+    const { routerData, t } = this.props;
     const { saveData = {} } = routerData;
     const { sortedInfo = [] } = saveData;
 
@@ -128,12 +126,12 @@ class Table extends PureComponent {
   };
 
   getColumnRender = (text, currentData) => {
-    const { router, depDataKey } = this.props;
+    const { routeData, depDataKey } = this.props;
     const isDateString = Array.isArray(text) && moment(text[0], 'DD.MM.YYYY')?._isValid;
     const isArrayEditors = Array.isArray(text) && !isDateString;
     const className = getStatusByTitle(text);
 
-    const usersList = findData(router?.routeData, 'global')?.users;
+    const usersList = findData(routeData, 'global')?.users;
     const listKeys = Object.keys(currentData);
     const index = listKeys.findIndex((key) => currentData[key] === text);
     const currentKey = listKeys[index] || null;
@@ -143,7 +141,6 @@ class Table extends PureComponent {
       ? {
           typeOutput: 'default',
           depDataKey,
-          router,
           links: usersList,
           list: true,
           isLoad: true,
@@ -180,7 +177,8 @@ class Table extends PureComponent {
       onClick: () => {
         const {
           onOpenPageWithData,
-          router: { currentActionTab: path, activeTabs = [] },
+          currentActionTab: path,
+          activeTabs,
           setCurrentTab,
           routeParser,
           routePathNormalise,
@@ -221,10 +219,7 @@ class Table extends PureComponent {
    * @param {any} sorter
    */
   handleTableChange = (pagination, filtered, sorted) => {
-    const {
-      router: { path = '' },
-      onAddRouteData,
-    } = this.props;
+    const { currentActionTab, onAddRouteData } = this.props;
 
     const filteredInfo = Object.keys(filtered).reduce((filter, key) => {
       if (filtered[key]?.length) filter[key] = filtered[key];
@@ -237,7 +232,7 @@ class Table extends PureComponent {
     }, {});
 
     onAddRouteData({
-      path,
+      path: currentActionTab,
       loading: true,
       saveData: { pagination, filteredInfo, sortedInfo },
     });
@@ -253,11 +248,13 @@ class Table extends PureComponent {
       udata,
       height,
       loading,
-      router = {},
       appConfig = {},
+      routeData,
+      currentActionTab = '',
     } = this.props;
     const { _id: uid } = udata;
-    const { path, routeData: { [path]: currentModuleData = {} } = {} } = router;
+    const { [currentActionTab]: currentModuleData = {} } = routeData || {};
+
     const { task: { tableSize = 'default', frontFilter = true } = {} } = appConfig;
     const { saveData: { pagination = null } = {} } = currentModuleData || {};
 
@@ -296,11 +293,16 @@ class Table extends PureComponent {
   }
 }
 
-const mapStateTopProps = ({ publicReducer }) => {
+const mapStateTopProps = ({ publicReducer, router }) => {
   const { appConfig, udata } = publicReducer;
+  const { routeData, path, activeTabs } = router;
   return {
     appConfig,
     udata,
+    routeData,
+    currentActionTab: path,
+    activeTabs,
+    routerData: routeData[path] || null,
   };
 };
 

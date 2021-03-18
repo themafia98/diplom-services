@@ -6,7 +6,6 @@ export const wikiModuleType = {
   visible: bool,
   rest: object.isRequired,
   statusApp: string.isRequired,
-  router: object.isRequired,
   metadata: array.isRequired,
   onLoadCurrentData: func.isRequired,
 };

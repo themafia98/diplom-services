@@ -4,17 +4,7 @@ import Output from 'Components/Output';
 import { Icon, Tooltip, Input, Button } from 'antd';
 import { useTranslation } from 'react-i18next';
 
-const Comment = ({
-  onDelete,
-  onEdit,
-  rules,
-  it,
-  userId,
-  router,
-  removeTab,
-  onOpenPageWithData,
-  setCurrentTab,
-}) => {
+const Comment = ({ onDelete, onEdit, rules, it, userId, removeTab, onOpenPageWithData, setCurrentTab }) => {
   const { t } = useTranslation();
   const { id = '', message = '', time = '', uId = '', username = '' } = it;
 
@@ -70,7 +60,6 @@ const Comment = ({
           action="cabinet"
           typeOutput="link"
           depDataKey="global"
-          router={router}
           removeTab={removeTab}
           id={uId}
           isStaticList={true}
@@ -104,7 +93,6 @@ const Comment = ({
 };
 Comment.defaultProps = {
   rules: false,
-  router: {},
   it: {},
   userId: '',
   uId: '',

@@ -34,7 +34,6 @@ const TaskDescription = ({
   tagList,
   status,
   isLoad,
-  router,
   editor,
   name,
   date,
@@ -122,7 +121,6 @@ const TaskDescription = ({
           className="author"
           typeOutput="link"
           depDataKey={depDataKey}
-          router={router}
           links={filteredUsers?.length ? filteredUsers : cachesAuthorList}
           isLink={filteredUsers?.length ? Boolean(filteredUsers) : Boolean(cachesAuthorList)}
           list={true}
@@ -139,7 +137,6 @@ const TaskDescription = ({
           <Output
             typeOutput="link"
             depDataKey={depDataKey}
-            router={router}
             links={filteredUsers?.length ? filteredUsers : cachesEditorList}
             isLink={filteredUsers?.length ? Boolean(filteredUsers) : Boolean(cachesEditorList)}
             list={true}

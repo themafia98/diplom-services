@@ -6,7 +6,6 @@ export const settingsModuleType = {
   visible: bool,
   rest: object.isRequired,
   path: string.isRequired,
-  router: object.isRequired,
   settingsLogs: array.isRequired,
   udata: udataType.isRequired,
   shouldUpdate: bool.isRequired,

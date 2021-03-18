@@ -16,7 +16,6 @@ export const tableViewType = {
 
 export const tableType = {
   onOpenPageWithData: func.isRequired,
-  router: object.isRequired,
   setCurrentTab: func.isRequired,
   routeParser: func.isRequired,
   routePathNormalise: func.isRequired,
