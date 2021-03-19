@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-const { array, bool, string, object, shape, arrayOf, func } = PropTypes;
+const { array, bool, string, object, shape, arrayOf, func, oneOfType, oneOf } = PropTypes;
 
 export const udataType = shape({
   _id: string,
@@ -40,7 +40,7 @@ export const newsItemType = shape({
 export const emptyShape = shape({});
 
 export const appType = {
-  addTab: func.isRequired,
-  onSetStatus: func.isRequired,
-  router: object.isRequired,
+  coreConfig: oneOfType([oneOf([null]), object]).isRequired,
+  fetchConfig: func.isRequired,
+  typeConfig: string.isRequired,
 };
