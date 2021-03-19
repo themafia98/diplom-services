@@ -10,6 +10,6 @@
   "regInclude": true,
   "recovoryInclude": true,
   "forceUpdate": false,
-  "unactiveAppMsg": "Приложение времено отключено, возможно ведутся тех.работы. Попробуйте позже.",
+  "unactiveAppMsg": "Application is temporarily disabled. Try later.",
   "defaultLanguage": "en"
 }

@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { appType } from './App.types';
 import _ from 'lodash';
-import { connect } from 'react-redux';
+import { batch, useDispatch, useSelector } from 'react-redux';
 import RenderInBrowser from 'react-render-in-browser';
 import { Switch, Route } from 'react-router-dom';
 import { message } from 'antd';
 import { PrivateRoute } from './Components/Helpers';
-import { forceUpdateDetectedInit, showSystemMessage } from './Utils';
+import { forceUpdateDetectedInit, isToken, showSystemMessage } from './Utils';
 import { settingsLoadAction } from './Redux/middleware/publicReducer.thunk';
 import { routeParser } from './Utils';
 import Loader from './Components/Loader';
@@ -18,141 +18,103 @@ import ModelContext from './Models/context';
 import Demo from './Pages/Demo';
 import worker from 'workerize-loader!worker'; // eslint-disable-line import/no-webpack-loader-syntax
 import actionsTypes from 'actions.types';
-import { compose } from 'redux';
 import ClientSideDatabase, { ClientDbContext } from 'Models/ClientSideDatabase';
 import withSystemConfig from 'Components/Helpers/withSystemConfig';
-import { withTranslation } from 'react-i18next';
 import { setSystemMessage } from 'Redux/reducers/systemReducer.slice';
-import { loadCoreConfig, loadUserData, setAppStatus } from 'Redux/reducers/publicReducer.slice';
-import { createTab, setActiveTab, setLogout } from 'Redux/reducers/routerReducer.slice';
+import { loadCoreConfig, loadUserData } from 'Redux/reducers/publicReducer.slice';
+import { createTab } from 'Redux/reducers/routerReducer.slice';
+import { useTranslation } from 'react-i18next';
 const workerInstanse = worker();
 
-class App extends Component {
-  state = {
-    loadState: false,
-    isUser: false,
-    sync: false,
-  };
+const App = ({ coreConfig, fetchConfig, typeConfig }) => {
+  const {
+    appActive = true,
+    menu = null,
+    tabsLimit = 20,
+    forceUpdate = false,
+    clientDB = null,
+    unactiveAppMsg,
+    supportIE = true,
+  } = coreConfig || {};
 
-  static contextType = ModelContext;
-  static propTypes = appType;
-  loadingSettingsLoop = null;
-  client = null;
+  const { i18n } = useTranslation();
+  const dispatch = useDispatch();
+  const context = useContext(ModelContext);
 
-  componentDidMount = async () => {
-    const { coreConfig = {}, onLoadCoreConfig } = this.props;
+  const [authLoad, setAuth] = useState(false);
+  const [loadState, setLoadApp] = useState(false);
+  const [sync, setStartSync] = useState(false);
 
-    const { appActive = true, forceUpdate = false, clientDB = {} } = coreConfig;
-    const { name = '', version = '' } = clientDB;
+  const loadingSettingsLoop = useRef(null);
+  const client = useRef(null);
 
-    const { Request } = this.context;
+  const { router, udata, systemMessage, appConfig } = useSelector(
+    ({ router, publicReducer, systemReducer }) => {
+      const { udata, appConfig } = publicReducer;
+      const { systemMessage } = systemReducer;
 
-    if (!appActive) {
-      console.log('Application unactive');
-      return;
-    }
+      return {
+        appConfig,
+        router,
+        udata,
+        systemMessage,
+      };
+    },
+  );
 
-    if (onLoadCoreConfig && coreConfig && typeof coreConfig === 'object') {
-      onLoadCoreConfig({ ...coreConfig });
-    }
+  const loadSettings = useCallback(async () => {
+    dispatch(settingsLoadAction({ wishList: [{ name: 'statusList' }] }));
 
-    this.client = name && version ? new ClientSideDatabase(name, version) : null;
+    loadingSettingsLoop.current = setInterval(async () => {
+      dispatch(settingsLoadAction({ wishList: [{ name: 'statusList' }] }));
+    }, 30000);
 
-    if (this.client) {
-      await this.client.init();
-    }
-
-    if (window.location.pathname === '/demoPage') {
-      return this.loadApp();
-    }
-
-    const rest = new Request();
-
-    try {
-      const response = await rest.authCheck();
-
-      if (response.status === 200) {
-        this.loadAppSession();
-      } else {
-        throw new Error(response.message);
+    return () => {
+      if (loadingSettingsLoop.current) {
+        clearInterval(loadingSettingsLoop.current);
       }
-    } catch (error) {
-      console.error(error);
-      this.loadApp();
-    }
+    };
+  }, [dispatch]);
 
-    if (forceUpdate === true || forceUpdate === 'true') {
-      forceUpdateDetectedInit();
-    }
-  };
+  const initialSession = useCallback(
+    async (udata, path) => {
+      try {
+        if (!udata || !path) {
+          dispatch(setSystemMessage({ msg: 'Error load dashboard.', type: 'error' }));
+          return;
+        }
 
-  componentDidUpdate = async (prevProps) => {
-    const { typeConfig: prevTypeConfig = '', coreConfig: prevCoreConfig = {} } = prevProps;
-    const {
-      onLoadCoreConfig,
-      typeConfig,
-      coreConfig,
-      appConfig,
-      udata,
-      onSetSystemMessage,
-      systemMessage,
-    } = this.props;
-    const { clientDB: { name = '', version = '' } = {} } = coreConfig || {};
-    const { sync } = this.state;
+        if (udata.lang) {
+          i18n.changeLanguage(udata.lang);
+        }
 
-    if (systemMessage?.msg) {
-      showSystemMessage(systemMessage?.type, systemMessage.msg);
-      onSetSystemMessage({ msg: '' });
-    }
+        batch(async () => {
+          fetchConfig(udata?._id);
+          dispatch(loadUserData(udata));
+          await loadSettings();
+        });
 
-    if (!sync && localStorage.getItem('token') && udata && !_.isEmpty(udata) && this.client) {
-      this.setState(
-        {
-          sync: true,
-        },
-        () => {
-          workerInstanse.runSync(localStorage.getItem('token'), this.client);
-        },
-      );
-    }
+        if (!localStorage.getItem('router')) {
+          dispatch(createTab(routeParser({ path })));
+        }
+      } catch (error) {
+        const { response: { data = '' } = {}, message = '' } = error || {};
+        dispatch(setSystemMessage({ msg: data || message || error, type: 'error' }));
+        console.log(error);
+      }
+    },
+    [dispatch, fetchConfig, i18n, loadSettings],
+  );
 
-    if (!this.client && name && version) {
-      this.client = new ClientSideDatabase(name, version);
-      await this.client.init();
-    }
-
-    if (prevTypeConfig === typeConfig && _.isEqual(appConfig, coreConfig)) {
-      return;
-    }
-
-    if (
-      typeof coreConfig === 'object' &&
-      coreConfig &&
-      !_.isEqual(coreConfig, prevCoreConfig) &&
-      onLoadCoreConfig
-    ) {
-      onLoadCoreConfig({ ...coreConfig });
-    }
-  };
-
-  componentWillUnmount = () => {
-    if (this.loadingSettingsLoop) {
-      clearInterval(this.loadingSettingsLoop);
-    }
-  };
-
-  loadAppSession = async () => {
-    const { router, coreConfig = {}, dispatch } = this.props;
+  const loadAppSession = useCallback(async () => {
     const { currentActionTab = '', activeTabs = [] } = router;
-    const { appActive = true, menu = [], tabsLimit = 20 } = coreConfig;
-    const { Request } = this.context;
 
     if (!appActive) {
       console.log('Application unactive');
       return;
     }
 
-    const rest = new Request();
+    const rest = new context.Request();
 
     try {
       const response = await rest.sendRequest(
@@ -169,7 +131,7 @@ class App extends Component {
       }
 
       let path = 'mainModule';
-      const defaultModule = menu.find((item) => item?.SIGN === 'default');
+      const defaultModule = menu ? menu.find((item) => item?.SIGN === 'default') : null;
       if (defaultModule) path = defaultModule?.EUID;
 
       const activeTabsCopy = [...activeTabs];
@@ -187,7 +149,7 @@ class App extends Component {
           : acc || {};
       }, {});
 
-      if (!isFind && tabsLimit <= activeTabsCopy.length) {
+      if (!isFind && tabsLimit && tabsLimit <= activeTabsCopy.length) {
         message.error(`Максимальное количество вкладок: ${tabsLimit}`);
         return;
       }
@@ -197,7 +159,7 @@ class App extends Component {
       const canInitialSession = (currentActionTab !== path || !isFind) && isUserData;
 
       if (canInitialSession) {
-        this.initialSession(udata, path, true);
+        initialSession(udata, path, true);
       } else if (!isUserData) {
         return rest.signOut();
       }
@@ -209,145 +171,144 @@ class App extends Component {
       return rest.signOut();
     }
 
-    return this.setState({ authLoad: true, loadState: true });
-  };
+    setAuth(true);
+    setLoadApp(true);
+  }, [appActive, context.Request, dispatch, initialSession, menu, router, tabsLimit]);
 
-  initialSession = async (udata = null, path = '') => {
-    const { addTab, onLoadUdata, fetchConfig, i18n, dispatch } = this.props;
+  const bootstrapApplication = useCallback(
+    async (forceUpdate) => {
+      const rest = new context.Request();
 
-    try {
-      if (!udata || !path) {
-        dispatch(setSystemMessage({ msg: 'Error load dashboard.', type: 'error' }));
-        return;
+      try {
+        const response = await rest.authCheck();
+
+        if (response.status === 200) {
+          loadAppSession();
+        } else {
+          throw new Error(response.message);
+        }
+      } catch (error) {
+        console.error(error);
+        setLoadApp(true);
+      } finally {
+        if (forceUpdate === true || forceUpdate === 'true') {
+          forceUpdateDetectedInit();
+        }
       }
+    },
+    [context.Request, loadAppSession],
+  );
 
-      if (udata.lang) {
-        i18n.changeLanguage(udata.lang);
-      }
-
-      await fetchConfig(udata?._id);
-      await onLoadUdata(udata);
-      await this.loadSettings();
-
-      if (!localStorage.getItem('router')) {
-        await addTab(routeParser({ path }));
-      }
-    } catch (error) {
-      const { response: { data = '' } = {}, message = '' } = error || {};
-      dispatch(setSystemMessage({ msg: data || message || error, type: 'error' }));
-      console.log(error);
-    }
-  };
-
-  loadSettings = async () => {
-    const { onLoadSettings = null } = this.props;
-
-    if (this.loadingSettingsLoop) {
-      clearInterval(this.loadingSettingsLoop);
-    }
-
-    await onLoadSettings({ wishList: [{ name: 'statusList' }] });
-
-    this.loadingSettingsLoop = setInterval(async () => {
-      await onLoadSettings({ wishList: [{ name: 'statusList' }] });
-    }, 30000);
-  };
-
-  loadApp = () => {
-    return this.setState({ loadState: true });
-  };
-
-  withoutIE = (children) => {
-    return (
-      <>
-        <RenderInBrowser ie only>
-          <div className="ie-only">
-            <p>Приложение не поддерживает браузер IE, предлагаем установить другой браузер.</p>
-          </div>
-        </RenderInBrowser>
-        <RenderInBrowser except ie>
-          {children}
-        </RenderInBrowser>
-      </>
-    );
-  };
-
-  getCoreConfig = () => {
-    const { coreConfig = null } = this.props;
-    return coreConfig;
-  };
-
-  render() {
-    const { loadState, authLoad } = this.state;
-    const { onLogoutAction, onSetStatus, coreConfig = {} } = this.props;
-    const { supportIE = true, appActive = true, unactiveAppMsg = '' } = coreConfig;
-
+  const startClientDb = useCallback(async () => {
     if (!appActive) {
-      return <div className="app-unactive">{unactiveAppMsg}</div>;
+      return;
     }
 
-    const publicActions = {
-      getCoreConfig: this.getCoreConfig,
-      initialSession: this.initialSession,
-    };
-
-    const privateActions = {
-      onSetStatus,
-      onLogoutAction,
-      getCoreConfig: this.getCoreConfig,
-    };
-
-    const route = (
-      <Switch>
-        <Route exact path="/recovory" render={(props) => <Recovery {...props} {...publicActions} />} />
-        <PrivateRoute exact path="/dashboard" {...privateActions} component={Dashboard} />
-        <Route exact path="/demoPage" render={(props) => <Demo {...props} {...publicActions} />} />
-        <Route
-          exact
-          path="*"
-          render={(props) => <LoginPage {...props} {...publicActions} authLoad={authLoad} />}
-        />
-      </Switch>
-    );
-
-    if (loadState && this.client) {
-      return (
-        <ClientDbContext.Provider value={this.client}>
-          {!supportIE ? this.withoutIE(route) : route}
-        </ClientDbContext.Provider>
-      );
+    if (!client.current) {
+      const { name = '', version = '' } = clientDB || {};
+      client.current = name && version ? new ClientSideDatabase(name, version) : null;
     }
 
-    return <Loader title="Loading application state" />;
+    if (client.current) {
+      await client.current.init();
+    }
+  }, [appActive, clientDB]);
+
+  useEffect(startClientDb, [startClientDb]);
+
+  useEffect(() => {
+    if (!appActive) {
+      return;
+    }
+
+    if (appConfig !== coreConfig && coreConfig && typeof coreConfig === 'object') {
+      dispatch(loadCoreConfig(coreConfig));
+    }
+  }, [appActive, appConfig, coreConfig, dispatch]);
+
+  useEffect(() => {
+    if (!appActive) {
+      return;
+    }
+
+    if (window.location.pathname === '/demoPage') {
+      setLoadApp(true);
+      return;
+    }
+
+    bootstrapApplication(forceUpdate);
+  }, [appActive, bootstrapApplication, forceUpdate]);
+
+  useEffect(() => {
+    if (!appActive) {
+      return;
+    }
+
+    if (systemMessage?.msg) {
+      showSystemMessage(systemMessage?.type, systemMessage.msg);
+      dispatch(setSystemMessage({ msg: '' }));
+    }
+  }, [systemMessage, dispatch, appActive]);
+
+  useEffect(() => {
+    if (!appActive) {
+      return;
+    }
+
+    if (!sync && isToken() && udata && !_.isEmpty(udata) && client.current) {
+      setStartSync(true);
+      workerInstanse.runSync(localStorage.getItem('token'), client.current);
+    }
+  }, [appActive, udata, sync]);
+
+  const publicActions = useMemo(
+    () => ({
+      initialSession,
+    }),
+    [initialSession],
+  );
+
+  if (!appActive) {
+    return <div className="app-unactive">{unactiveAppMsg}</div>;
   }
-}
 
-const mapStateToProps = ({ router, publicReducer, systemReducer }) => {
-  const { udata } = publicReducer;
-  const { systemMessage } = systemReducer;
+  const route = (
+    <Switch>
+      <Route exact path="/recovory" render={(props) => <Recovery {...props} {...publicActions} />} />
+      <PrivateRoute exact path="/dashboard" component={Dashboard} />
+      <Route exact path="/demoPage" render={(props) => <Demo {...props} {...publicActions} />} />
+      <Route
+        exact
+        path="*"
+        render={(props) => <LoginPage {...props} {...publicActions} authLoad={authLoad} />}
+      />
+    </Switch>
+  );
 
-  return {
-    router,
-    udata,
-    systemMessage,
-  };
+  if (loadState && client.current) {
+    return (
+      <ClientDbContext.Provider value={client.current}>
+        {!supportIE ? (
+          <>
+            <RenderInBrowser ie only>
+              <div className="ie-only">
+                <p>Приложение не поддерживает браузер IE, предлагаем установить другой браузер.</p>
+              </div>
+            </RenderInBrowser>
+            <RenderInBrowser except ie>
+              {route}
+            </RenderInBrowser>
+          </>
+        ) : (
+          route
+        )}
+      </ClientDbContext.Provider>
+    );
+  }
+
+  return <Loader title="Loading application state" />;
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    addTab: async (tab) => await dispatch(createTab(tab)),
-    onSetStatus: (status) => dispatch(setAppStatus({ statusRequst: status })),
-    setCurrentTab: (tab) => dispatch(setActiveTab(tab)),
-    onLogoutAction: async () => await dispatch(setLogout()),
-    onLoadUdata: async (udata) => await dispatch(loadUserData(udata)),
-    onLoadSettings: async (payload) => await dispatch(settingsLoadAction(payload)),
-    onLoadCoreConfig: (payload) => dispatch(loadCoreConfig(payload)),
-    onSetSystemMessage: (message) => dispatch(setSystemMessage(message)),
-  };
-};
+App.propTypes = appType;
 
-export default compose(
-  withSystemConfig,
-  withTranslation(),
-  connect(mapStateToProps, mapDispatchToProps),
-)(App);
+export default withSystemConfig(App);

@@ -39,6 +39,7 @@ const {
   getValidRouteData,
   findUser,
   checkPageAvailable,
+  isToken,
 } = namespaceTools;
 
 export {
@@ -71,4 +72,5 @@ export {
   showSystemMessage,
   getAvailableTabNameKey,
   checkPageAvailable,
+  isToken,
 };

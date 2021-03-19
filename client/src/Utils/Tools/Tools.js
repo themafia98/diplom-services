@@ -227,6 +227,8 @@ const checkPageAvailable = async (activePage, rest) => {
   return true;
 };
 
+const isToken = () => !!localStorage.getItem('token');
+
 const tools = {
   createNotification,
   createEntity,
@@ -237,6 +239,7 @@ const tools = {
   getValidRouteData,
   findUser,
   checkPageAvailable,
+  isToken,
 };
 
 export default tools;
