@@ -41,6 +41,7 @@ const App = ({ coreConfig, fetchConfig, typeConfig }) => {
   const dispatch = useDispatch();
   const context = useContext(ModelContext);
 
+  const [appType, setAppType] = useState(typeConfig);
   const [authLoad, setAuth] = useState(false);
   const [loadState, setLoadApp] = useState(false);
   const [sync, setStartSync] = useState(false);
@@ -221,10 +222,14 @@ const App = ({ coreConfig, fetchConfig, typeConfig }) => {
       return;
     }
 
-    if (appConfig !== coreConfig && coreConfig && typeof coreConfig === 'object') {
+    if (appType === typeConfig && _.isEqual(appConfig, coreConfig)) {
+      return;
+    }
+
+    if (coreConfig && typeof coreConfig === 'object') {
       dispatch(loadCoreConfig(coreConfig));
     }
-  }, [appActive, appConfig, coreConfig, dispatch]);
+  }, [appActive, appConfig, appType, coreConfig, dispatch, typeConfig]);
 
   useEffect(() => {
     if (!appActive) {
@@ -238,6 +243,12 @@ const App = ({ coreConfig, fetchConfig, typeConfig }) => {
 
     bootstrapApplication(forceUpdate);
   }, [appActive, bootstrapApplication, forceUpdate]);
+
+  useEffect(() => {
+    if (typeConfig !== appType) {
+      setAppType(typeConfig);
+    }
+  }, [appType, typeConfig]);
 
   useEffect(() => {
     if (!appActive) {
