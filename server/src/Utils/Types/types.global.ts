@@ -83,6 +83,8 @@ export type Filter = {
   $and?: Array<object>;
 };
 
+export type methodDecorator = 'get' | 'post' | 'delete' | 'options' | 'put';
+
 export type collectionOperations = {
   get: Function;
   set: Function;
