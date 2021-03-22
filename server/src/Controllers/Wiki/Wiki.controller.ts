@@ -2,12 +2,11 @@ import { Response, Request } from 'express';
 import _ from 'lodash';
 import { Params, ActionParams, Controller as ControllerApi } from '../../Utils/Interfaces/Interfaces.global';
 import { ResRequest } from '../../Utils/Types/types.global';
-
 import Decorators from '../../Utils/decorators';
-import Action from '../../Models/Action';
 import { createParams } from '../Controllers.utils';
 import { WIKI_ROUTE } from './Wiki.path';
 import Utils from '../../Utils/utils.global';
+import ActionRunner from '../../Models/ActionRunner/ActionRunner';
 
 namespace Wiki {
   const Controller = Decorators.Controller;
@@ -22,12 +21,12 @@ namespace Wiki {
     protected async getTreeList(req: Request, res: Response): ResRequest {
       const params: Params = createParams('get_all', 'done', 'wiki');
 
-      const actionTreeList = new Action.ActionParser({
+      const actionTreeList = new ActionRunner({
         actionPath: 'wiki',
         actionType: 'get_all',
       });
 
-      const responseExec: Function = await actionTreeList.actionsRunner({});
+      const responseExec: Function = await actionTreeList.start({});
       return responseExec(req, res, params);
     }
 
@@ -36,12 +35,12 @@ namespace Wiki {
       const params: Params = createParams('create_leaf', 'done', 'wiki');
       const { params: leafEntity = {} } = req.body;
 
-      const actionCreateLeaf = new Action.ActionParser({
+      const actionCreateLeaf = new ActionRunner({
         actionPath: 'wiki',
         actionType: 'create_leaf',
       });
 
-      const responseExec: Function = await actionCreateLeaf.actionsRunner(leafEntity);
+      const responseExec: Function = await actionCreateLeaf.start(leafEntity);
       return responseExec(req, res, params);
     }
 
@@ -51,12 +50,12 @@ namespace Wiki {
 
       const { params: leafParam = {} } = req.body;
 
-      const actionDeleteLeafs = new Action.ActionParser({
+      const actionDeleteLeafs = new ActionRunner({
         actionPath: 'wiki',
         actionType: 'delete_leafs',
       });
 
-      const responseExec: Function = await actionDeleteLeafs.actionsRunner(leafParam);
+      const responseExec: Function = await actionDeleteLeafs.start(leafParam);
       return responseExec(req, res, params);
     }
 
@@ -65,12 +64,12 @@ namespace Wiki {
       const params: Params = createParams('wiki_page', 'done', 'wiki');
       const body: ActionParams = req.body;
 
-      const actionWikiPage = new Action.ActionParser({
+      const actionWikiPage = new ActionRunner({
         actionPath: 'wiki',
         actionType: 'wiki_page',
       });
 
-      const responseExec: Function = await actionWikiPage.actionsRunner(body);
+      const responseExec: Function = await actionWikiPage.start(body);
       return responseExec(req, res, params);
     }
   }

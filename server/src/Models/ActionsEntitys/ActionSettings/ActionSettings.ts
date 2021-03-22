@@ -1,16 +1,28 @@
 import Utils from '../../../Utils/utils.global';
 import { v4 as uuid } from 'uuid';
 import { Model, Document } from 'mongoose';
-import { ActionParams, Actions, Action } from '../../../Utils/Interfaces/Interfaces.global';
+import { ActionParams, Action, Parser } from '../../../Utils/Interfaces/Interfaces.global';
 import { ParserData } from '../../../Utils/Types/types.global';
 import _ from 'lodash';
+import { ACTION_TYPE } from './ActionSettings.constant';
+import ActionEntity from '../../ActionEntity/ActionEntity';
 
 const { getModelByName } = Utils;
 
 class ActionSettings implements Action {
-  constructor(private entity: Actions) {}
+  private entityParser: Parser;
+  private entity: ActionEntity;
 
-  public getEntity(): Actions {
+  constructor(entityParser: Parser, entity: ActionEntity) {
+    this.entityParser = entityParser;
+    this.entity = entity;
+  }
+
+  public getEntityParser(): Parser {
+    return this.entityParser;
+  }
+
+  public getEntity(): ActionEntity {
     return this.entity;
   }
 
@@ -40,8 +52,8 @@ class ActionSettings implements Action {
       const queryFind: ActionParams = { idSettings };
       const query: ActionParams = { idSettings, updateProps, customQuery: 'idSettings' };
 
-      await this.getEntity().updateEntity(model, query, { upsert: true });
-      const actionData: ParserData = await this.getEntity().findOnce(model, queryFind);
+      await this.getEntityParser().updateEntity(model, query, { upsert: true });
+      const actionData: ParserData = await this.getEntityParser().findOnce(model, queryFind);
       return actionData;
     } catch (err) {
       console.error(err);
@@ -50,7 +62,7 @@ class ActionSettings implements Action {
   }
 
   private async getStatusList(model: Model<Document>, actionParam: ActionParams): Promise<ParserData> {
-    const result = await this.getEntity().getAll(model, {});
+    const result = await this.getEntityParser().getAll(model, {});
     return result;
   }
 
@@ -59,9 +71,9 @@ class ActionSettings implements Action {
     if (!model) return null;
 
     switch (this.getEntity().getActionType()) {
-      case 'get_statusList':
+      case ACTION_TYPE.GET_STATUS_LIST:
         return this.getStatusList(model, actionParam);
-      case 'change_statusList':
+      case ACTION_TYPE.CHANGE_STATUS_LIST:
         return this.onChangeStatusList(model, actionParam);
       default:
         return null;

@@ -1,9 +1,9 @@
 import { Decorator } from '../Types/types.global';
-import { RouteDefinition, DecoratorConfig } from '../Interfaces/Interfaces.global';
+import { DecoratorConfig } from '../Interfaces/Interfaces.global';
+import { createRestDecorator } from './Decorators.utils';
 
 namespace Decorators {
   export const Controller = (prefix: string): Decorator => (target: Object): void => {
-    // target - class
     Reflect.defineMetadata('prefix', prefix, target);
     if (!Reflect.hasMetadata('routes', target)) {
       Reflect.defineMetadata('routes', [], target);
@@ -14,84 +14,28 @@ namespace Decorators {
     target: object,
     propKey: string | undefined,
   ): void => {
-    if (!Reflect.hasMetadata('routes', target.constructor)) {
-      Reflect.defineMetadata('routes', [], target.constructor);
-    }
-
-    const routesArray: RouteDefinition[] = Reflect.getMetadata('routes', target.constructor);
-
-    routesArray.push({
-      requestMethod: 'get',
-      path: config.path,
-      private: config.private,
-      file: config.file || undefined,
-      methodName: propKey as string,
-    });
-
-    Reflect.defineMetadata('routes', routesArray, target.constructor);
+    createRestDecorator(target, config, propKey as string, 'get');
   };
 
   export const Post = (config: DecoratorConfig): Decorator => (
     target: object,
     propKey: string | undefined,
   ): void => {
-    if (!Reflect.hasMetadata('routes', target.constructor)) {
-      Reflect.defineMetadata('routes', [], target.constructor);
-    }
-
-    const routesArray: RouteDefinition[] = Reflect.getMetadata('routes', target.constructor);
-
-    routesArray.push({
-      requestMethod: 'post',
-      path: config.path,
-      private: config.private,
-      file: config.file || undefined,
-      methodName: propKey as string,
-    });
-
-    Reflect.defineMetadata('routes', routesArray, target.constructor);
+    createRestDecorator(target, config, propKey as string, 'post');
   };
 
   export const Delete = (config: DecoratorConfig): Decorator => (
     target: object,
     propKey: string | undefined,
   ): void => {
-    if (!Reflect.hasMetadata('routes', target.constructor)) {
-      Reflect.defineMetadata('routes', [], target.constructor);
-    }
-
-    const routesArray: RouteDefinition[] = Reflect.getMetadata('routes', target.constructor);
-
-    routesArray.push({
-      requestMethod: 'delete',
-      path: config.path,
-      private: config.private,
-      file: config.file || undefined,
-      methodName: propKey as string,
-    });
-
-    Reflect.defineMetadata('routes', routesArray, target.constructor);
+    createRestDecorator(target, config, propKey as string, 'delete');
   };
 
   export const Put = (config: DecoratorConfig): Decorator => (
     target: object,
     propKey: string | undefined,
   ): void => {
-    if (!Reflect.hasMetadata('routes', target.constructor)) {
-      Reflect.defineMetadata('routes', [], target.constructor);
-    }
-
-    const routesArray: RouteDefinition[] = Reflect.getMetadata('routes', target.constructor);
-
-    routesArray.push({
-      requestMethod: 'put',
-      path: config.path,
-      private: config.private,
-      file: config.file || undefined,
-      methodName: propKey as string,
-    });
-
-    Reflect.defineMetadata('routes', routesArray, target.constructor);
+    createRestDecorator(target, config, propKey as string, 'put');
   };
 }
 

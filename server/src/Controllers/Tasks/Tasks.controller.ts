@@ -8,11 +8,11 @@ import {
   RequestWithParams,
 } from '../../Utils/Interfaces/Interfaces.global';
 import { ResRequest } from '../../Utils/Types/types.global';
-import Action from '../../Models/Action';
 import Decorators from '../../Utils/decorators';
 import { createParams } from '../Controllers.utils';
 import { TASKS_ROUTE } from './Tasks.path';
 import Utils from '../../Utils/utils.global';
+import ActionRunner from '../../Models/ActionRunner/ActionRunner';
 
 namespace Tasks {
   const Controller = Decorators.Controller;
@@ -44,8 +44,8 @@ namespace Tasks {
         filterCounter,
       };
 
-      const actionTasks = new Action.ActionParser({ actionPath: 'tasks', actionType: 'get_all' });
-      const responseExec: Function = await actionTasks.actionsRunner(actionParams);
+      const actionTasks = new ActionRunner({ actionPath: 'tasks', actionType: 'get_all' });
+      const responseExec: Function = await actionTasks.start(actionParams);
       return responseExec(req, res, params, true);
     }
 
@@ -56,12 +56,12 @@ namespace Tasks {
 
       const params: Params = createParams('list_counter', 'done', 'tasks');
 
-      const listCounterAction = new Action.ActionParser({
+      const listCounterAction = new ActionRunner({
         actionPath: 'tasks',
         actionType: 'list_counter',
       });
 
-      const responseExec: Function = await listCounterAction.actionsRunner(
+      const responseExec: Function = await listCounterAction.start(
         !filterCounter ? { saveData } : { filterCounter, saveData },
       );
       return responseExec(req, res, params);
@@ -78,12 +78,12 @@ namespace Tasks {
         params.customErrorMessage = 'Access error for create task';
       }
 
-      const createTaskAction = new Action.ActionParser({
+      const createTaskAction = new ActionRunner({
         actionPath: 'tasks',
         actionType: 'set_single',
       });
 
-      const responseExec: Function = await createTaskAction.actionsRunner(shouldBeCreate ? task : null);
+      const responseExec: Function = await createTaskAction.start(shouldBeCreate ? task : null);
       return responseExec(req, res, params);
     }
 
@@ -94,13 +94,13 @@ namespace Tasks {
 
       const body: BodyLogin = jurnalEntity;
 
-      const createJurnalAction = new Action.ActionParser({
+      const createJurnalAction = new ActionRunner({
         actionPath: 'jurnalworks',
         actionType: 'set_jurnal',
         body,
       });
 
-      const responseExec: Function = await createJurnalAction.actionsRunner(body);
+      const responseExec: Function = await createJurnalAction.start(body);
       return responseExec(req, res, params);
     }
 
@@ -112,9 +112,9 @@ namespace Tasks {
 
       const { store = '' } = options || {};
 
-      const actionTasks = new Action.ActionParser({ actionPath: store, actionType: actionType });
+      const actionTasks = new ActionRunner({ actionPath: store, actionType: actionType });
 
-      const responseExec: Function = await actionTasks.actionsRunner(options);
+      const responseExec: Function = await actionTasks.start(options);
       return responseExec(req, res, params);
     }
 
@@ -124,9 +124,9 @@ namespace Tasks {
       const body = { ticket: req.body, actionType: 'reg_crossOrigin_ticket' };
       const params: Params = createParams(body.actionType, 'done', 'tasks');
 
-      const actionTasks = new Action.ActionParser({ actionPath: 'tasks', actionType: body.actionType });
+      const actionTasks = new ActionRunner({ actionPath: 'tasks', actionType: body.actionType });
 
-      const responseExec: Function = await actionTasks.actionsRunner(body);
+      const responseExec: Function = await actionTasks.start(body);
       return responseExec(req, res, params);
     }
   }

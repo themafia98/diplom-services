@@ -1,14 +1,14 @@
-import ActionChatMessage from './ActionsEntity/ActionChatMessage';
-import ActionChatRoom from './ActionsEntity/ActionChatRoom';
-import ActionGlobal from './ActionsEntity/ActionGlobal';
-import ActionJournal from './ActionsEntity/ActionJurnal';
-import ActionLogger from './ActionsEntity/ActionLogger';
-import ActionNews from './ActionsEntity/ActionNews';
-import ActionNotification from './ActionsEntity/ActionNotification';
-import ActionSettings from './ActionsEntity/ActionSettings';
-import ActionTasks from './ActionsEntity/ActionTasks';
-import ActionUsers from './ActionsEntity/ActionUsers';
-import ActionWiki from './ActionsEntity/ActionWiki';
+import ActionChatMessage from '../ActionsEntitys/ActionChatMessage/ActionChatMessage';
+import ActionChatRoom from '../ActionsEntitys/ActionChatRoom/ActionChatRoom';
+import ActionGlobal from '../ActionsEntitys/ActionGlobal/ActionGlobal';
+import ActionJournal from '../ActionsEntitys/ActionJurnal/ActionJurnal';
+import ActionLogger from '../ActionsEntitys/ActionLogger/ActionLogger';
+import ActionNews from '../ActionsEntitys/ActionNews/ActionNews';
+import ActionNotification from '../ActionsEntitys/ActionNotification/ActionNotification';
+import ActionSettings from '../ActionsEntitys/ActionSettings/ActionSettings';
+import ActionTasks from '../ActionsEntitys/ActionTasks/ActionTasks';
+import ActionUsers from '../ActionsEntitys/ActionUsers/ActionUsers';
+import ActionWiki from '../ActionsEntitys/ActionWiki/ActionWiki';
 
 export const ACTIONS_ENTITYS_MAP = {
   GLOBAL: 'global',

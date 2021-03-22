@@ -1,27 +1,34 @@
 import generator from 'generate-password';
 import _ from 'lodash';
 import { Model, Document, Types, isValidObjectId } from 'mongoose';
-import {
-  ActionParams,
-  Actions,
-  Action,
-  User,
-  QueryParams,
-} from '../../../Utils/Interfaces/Interfaces.global';
+import { ActionParams, Action, User, QueryParams, Parser } from '../../../Utils/Interfaces/Interfaces.global';
 import { ParserData } from '../../../Utils/Types/types.global';
 import Utils from '../../../Utils/utils.global';
+import ActionEntity from '../../ActionEntity/ActionEntity';
+import { GLOBAL_ACTION_TYPE } from '../ActionEntity.global.constant';
+import { ACTION_TYPE } from './ActionUsers.constant';
 
 const { getModelByName } = Utils;
 
 class ActionUsers implements Action {
-  constructor(private entity: Actions) {}
+  private entityParser: Parser;
+  private entity: ActionEntity;
 
-  public getEntity(): Actions {
+  constructor(entityParser: Parser, entity: ActionEntity) {
+    this.entityParser = entityParser;
+    this.entity = entity;
+  }
+
+  public getEntityParser(): Parser {
+    return this.entityParser;
+  }
+
+  public getEntity(): ActionEntity {
     return this.entity;
   }
 
   private async getUsers(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
-    return this.getEntity().getAll(model, actionParam);
+    return this.getEntityParser().getAll(model, actionParam);
   }
 
   private async recovoryPassword(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
@@ -30,7 +37,7 @@ class ActionUsers implements Action {
 
     const props: object = mode === 'emailMode' ? { email: filed } : { login: filed };
 
-    const result: ParserData = await this.getEntity().findOnce(model, { ...props });
+    const result: ParserData = await this.getEntityParser().findOnce(model, { ...props });
 
     if (!result) return result;
 
@@ -48,7 +55,7 @@ class ActionUsers implements Action {
         return null;
       }
 
-      const res = await this.getEntity().updateEntity(model, {
+      const res = await this.getEntityParser().updateEntity(model, {
         _id: Types.ObjectId(_id),
         updateProps: { passwordHash },
       });
@@ -69,7 +76,7 @@ class ActionUsers implements Action {
       _id: Types.ObjectId(uid as string),
     };
 
-    const result: ParserData = await this.getEntity().findOnce(model, {
+    const result: ParserData = await this.getEntityParser().findOnce(model, {
       ...checkProps,
     });
 
@@ -94,7 +101,7 @@ class ActionUsers implements Action {
       return null;
     }
 
-    const res = await this.getEntity().updateEntity(model, { _id, updateProps: { passwordHash } });
+    const res = await this.getEntityParser().updateEntity(model, { _id, updateProps: { passwordHash } });
 
     if (!res) return null;
 
@@ -124,7 +131,7 @@ class ActionUsers implements Action {
       updateProps.isHideEmail = isHideEmail as boolean;
     }
 
-    const res = await this.getEntity().updateEntity(model, { _id, updateProps });
+    const res = await this.getEntityParser().updateEntity(model, { _id, updateProps });
 
     if (!res) return null;
 
@@ -145,7 +152,10 @@ class ActionUsers implements Action {
 
     const updateProps: Record<string, string> = { lang };
 
-    return await this.getEntity().updateEntity(model, { _id: Types.ObjectId(uid as string), updateProps });
+    return await this.getEntityParser().updateEntity(model, {
+      _id: Types.ObjectId(uid as string),
+      updateProps,
+    });
   }
 
   private async updateCommonChanges(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
@@ -160,7 +170,7 @@ class ActionUsers implements Action {
       _id: Types.ObjectId(uid as string),
     };
 
-    const result: ParserData = await this.getEntity().findOnce(model, {
+    const result: ParserData = await this.getEntityParser().findOnce(model, {
       ...checkProps,
     });
 
@@ -179,7 +189,7 @@ class ActionUsers implements Action {
     if (phone !== null) updateProps.phone = phone;
     if (email !== null) updateProps.email = email;
 
-    const res = await this.getEntity().updateEntity(model, { _id, updateProps });
+    const res = await this.getEntityParser().updateEntity(model, { _id, updateProps });
 
     if (!res) return null;
 
@@ -193,9 +203,9 @@ class ActionUsers implements Action {
       const _id = Types.ObjectId(id);
       const query: ActionParams = { _id, updateProps };
 
-      await this.getEntity().updateEntity(model, query);
+      await this.getEntityParser().updateEntity(model, query);
 
-      const actionData: ParserData = await this.getEntity().findOnce(model, { _id });
+      const actionData: ParserData = await this.getEntityParser().findOnce(model, { _id });
 
       return actionData;
     } catch (err) {
@@ -214,21 +224,21 @@ class ActionUsers implements Action {
     if (!model) return null;
 
     switch (this.getEntity().getActionType()) {
-      case 'get_all':
+      case ACTION_TYPE.GET_USERS:
         return this.getUsers(actionParam, model);
-      case 'recovory_checker':
+      case ACTION_TYPE.RECOVORY_PASSWORD:
         return this.recovoryPassword(actionParam, model);
-      case 'change_password':
+      case ACTION_TYPE.CHANGE_PASSWORD:
         return this.changePassword(actionParam, model);
-      case 'common_changes':
+      case ACTION_TYPE.COMMON_SETTINGS_CHANGE:
         return this.updateCommonChanges(actionParam, model);
-      case 'profile_changes':
+      case ACTION_TYPE.PROFILE_SETTINGS_CHANGE:
         return this.updateProfileChanges(actionParam, model);
-      case 'update_single':
+      case GLOBAL_ACTION_TYPE.UPDATE_SINGLE:
         return this.updateSingle(actionParam, model);
-      case 'change_language':
+      case ACTION_TYPE.CHANGE_LANG:
         return this.changeLanguage(actionParam, model);
-      case 'update_many':
+      case GLOBAL_ACTION_TYPE.UPDATE_MANY:
         return this.updateMany(actionParam, model);
       default:
         return null;

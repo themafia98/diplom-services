@@ -1,7 +1,7 @@
 import { Socket } from 'socket.io';
 import { QueryParams } from '../../Utils/Interfaces/Interfaces.global';
 import { ParserResult } from '../../Utils/Types/types.global';
-import ActionApi from '../Action';
+import ActionRunner from '../ActionRunner/ActionRunner';
 import { PROCESS_ACTIONS, PROCESS_CHAT_EVENTS } from './Chat.constant';
 
 export const createRealRoom = async (
@@ -11,9 +11,9 @@ export const createRealRoom = async (
   const actionPath: string = 'chatRoom';
   const actionType: string = 'create_FakeRoom';
 
-  const actionCreateRoom = new ActionApi.ActionParser({ actionPath, actionType });
+  const actionCreateRoom = new ActionRunner({ actionPath, actionType });
   const queryParams: QueryParams = { fakeMsg, interlocutorId };
-  const data: ParserResult = await actionCreateRoom.actionsRunner(queryParams);
+  const data: ParserResult = await actionCreateRoom.start(queryParams);
 
   return data;
 };

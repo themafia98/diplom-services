@@ -11,11 +11,12 @@ import {
   User,
   Controller as ControllerApi,
   QueryParams,
+  Runner,
 } from '../../Utils/Interfaces/Interfaces.global';
-import Action from '../../Models/Action';
 import Decorators from '../../Utils/decorators';
 import { SentMessageInfo } from 'nodemailer';
 import { GENERAL_ROUTE } from './General.path';
+import ActionRunner from '../../Models/ActionRunner/ActionRunner';
 
 namespace General {
   const Post = Decorators.Post;
@@ -186,13 +187,13 @@ namespace General {
 
         const { recovoryField = '' } = body;
 
-        const checkerAction: Action.ActionParser = new Action.ActionParser({
+        const checkerAction: Runner = new ActionRunner({
           actionPath: 'users',
           actionType: 'recovory_checker',
           body,
         });
 
-        const responseExec: Function = await checkerAction.actionsRunner(body, 'exec');
+        const responseExec: Function = await checkerAction.start(body, 'exec');
         const password: ParserResult = await responseExec(req, res, { done: true }, false);
 
         if (!password) {

@@ -1,14 +1,26 @@
 import { Model, Document, Types, isValidObjectId } from 'mongoose';
-import { ActionParams, Actions, Action } from '../../../Utils/Interfaces/Interfaces.global';
+import { ActionParams, Action, Parser } from '../../../Utils/Interfaces/Interfaces.global';
 import { ParserData, MessageOptions } from '../../../Utils/Types/types.global';
 import Utils from '../../../Utils/utils.global';
+import ActionEntity from '../../ActionEntity/ActionEntity';
+import { ACTION_TYPE } from './ActionChatMessage.constant';
 
 const { getModelByName } = Utils;
 
 class ActionChatMessage implements Action {
-  constructor(private entity: Actions) {}
+  private entityParser: Parser;
+  private entity: ActionEntity;
 
-  public getEntity(): Actions {
+  constructor(entityParser: Parser, entity: ActionEntity) {
+    this.entityParser = entityParser;
+    this.entity = entity;
+  }
+
+  public getEntityParser(): Parser {
+    return this.entityParser;
+  }
+
+  public getEntity(): ActionEntity {
     return this.entity;
   }
 
@@ -26,7 +38,7 @@ class ActionChatMessage implements Action {
     }
 
     const query: ActionParams = { tokenRoom, moduleName, authorId: { $in: ids } };
-    return this.getEntity().getAll(model, query);
+    return this.getEntityParser().getAll(model, query);
   }
 
   public async run(actionParam: ActionParams): Promise<ParserData> {
@@ -34,7 +46,7 @@ class ActionChatMessage implements Action {
     if (!model) return null;
 
     switch (this.getEntity().getActionType()) {
-      case 'get_msg_by_token':
+      case ACTION_TYPE.GET_MSG_BY_TOKEN:
         return this.getMsgByToken(actionParam, model);
       default:
         return null;

@@ -11,6 +11,9 @@ import dropboxConfig from '../config/dropbox.config';
  */
 namespace DropboxStorage {
   const { loggerError } = Logger;
+
+  export const name = 'DROPBOX';
+
   export class DropboxManager extends Service<Dropbox> implements FileApi {
     /**
      * @param props init service

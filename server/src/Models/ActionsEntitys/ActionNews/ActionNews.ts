@@ -1,15 +1,27 @@
 import { Model, Document, Types } from 'mongoose';
-import { ActionParams, Actions, Action, QueryParams } from '../../../Utils/Interfaces/Interfaces.global';
+import { ActionParams, Action, QueryParams, Parser } from '../../../Utils/Interfaces/Interfaces.global';
 import { ParserData } from '../../../Utils/Types/types.global';
 import Utils from '../../../Utils/utils.global';
 import _ from 'lodash';
 import { ObjectId } from 'mongodb';
+import { ACTION_TYPE } from './ActionNews.constant';
+import ActionEntity from '../../ActionEntity/ActionEntity';
 const { getModelByName } = Utils;
 
 class ActionNews implements Action {
-  constructor(private entity: Actions) {}
+  private entityParser: Parser;
+  private entity: ActionEntity;
 
-  public getEntity(): Actions {
+  constructor(entityParser: Parser, entity: ActionEntity) {
+    this.entityParser = entityParser;
+    this.entity = entity;
+  }
+
+  public getEntityParser(): Parser {
+    return this.entityParser;
+  }
+
+  public getEntity(): ActionEntity {
     return this.entity;
   }
 
@@ -25,12 +37,16 @@ class ActionNews implements Action {
       in: parsedKeys,
     };
 
-    return this.getEntity().getAll(model, _.isEmpty(params) ? params : query, limitList as number | null);
+    return this.getEntityParser().getAll(
+      model,
+      _.isEmpty(params) ? params : query,
+      limitList as number | null,
+    );
   }
 
   private createNews(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const body: object = (actionParam as Record<string, object>) || {};
-    return this.getEntity().createEntity(model, body);
+    return this.getEntityParser().createEntity(model, body);
   }
 
   public async run(actionParam: ActionParams): Promise<ParserData> {
@@ -38,9 +54,9 @@ class ActionNews implements Action {
     if (!model) return null;
 
     switch (this.getEntity().getActionType()) {
-      case 'get_all':
+      case ACTION_TYPE.ALL_NEWS:
         return this.getNews(actionParam, model);
-      case 'create_single_news':
+      case ACTION_TYPE.CREATE_NEWS:
         return this.createNews(actionParam, model);
       default:
         return null;

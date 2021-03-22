@@ -1,13 +1,24 @@
-import { ActionParams, Actions, Action, QueryParams } from '../../../Utils/Interfaces/Interfaces.global';
+import { ActionParams, Action, QueryParams, Parser } from '../../../Utils/Interfaces/Interfaces.global';
 import path from 'path';
 import { ParserData } from '../../../Utils/Types/types.global';
 import { files } from 'dropbox';
-//import { BinaryLike } from 'crypto';
+import { ACTION_TYPE } from './ActionGlobal.constant';
+import ActionEntity from '../../ActionEntity/ActionEntity';
 
 class ActionGlobal implements Action {
-  constructor(private entity: Actions) {}
+  private entityParser: Parser;
+  private entity: ActionEntity;
 
-  public getEntity(): Actions {
+  constructor(entityParser: Parser, entity: ActionEntity) {
+    this.entityParser = entityParser;
+    this.entity = entity;
+  }
+
+  public getEntityParser(): Parser {
+    return this.entityParser;
+  }
+
+  public getEntity(): ActionEntity {
     return this.entity;
   }
 
@@ -20,8 +31,8 @@ class ActionGlobal implements Action {
     const moduleName: string = (actionParam as Record<string, string>).moduleName;
 
     const pathFile: string = `/${moduleName}/${entityId}/`;
-    const files: files.ListFolderResult | null = await this.getEntity().getStore().getFilesByPath(pathFile);
-    return files;
+
+    return await this.getEntity().getStore().getFilesByPath(pathFile);
   }
 
   private async deleteFile(actionParam: ActionParams): Promise<ParserData> {
@@ -79,13 +90,13 @@ class ActionGlobal implements Action {
 
   public async run(actionParam: ActionParams): Promise<ParserData> {
     switch (this.getEntity().getActionType()) {
-      case 'load_files':
+      case ACTION_TYPE.LOAD_FILES:
         return this.loadFiles(actionParam);
-      case 'delete_file':
+      case ACTION_TYPE.DELETE_FILE:
         return this.deleteFile(actionParam);
-      case 'download_files':
+      case ACTION_TYPE.DOWNLOAD_FILES:
         return this.download(actionParam);
-      case 'save_file':
+      case ACTION_TYPE.SAVE_FILE:
         return this.saveFile(actionParam);
       default:
         return null;

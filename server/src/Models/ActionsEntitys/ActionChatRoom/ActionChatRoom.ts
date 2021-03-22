@@ -1,17 +1,28 @@
 import { Model, Document, Types, isValidObjectId } from 'mongoose';
 import { v4 as uuid } from 'uuid';
-import { ActionParams, Actions, Action, SocketMessageDoc } from '../../../Utils/Interfaces/Interfaces.global';
+import { ActionParams, Action, SocketMessageDoc, Parser } from '../../../Utils/Interfaces/Interfaces.global';
 import { ParserData, SocketMeta } from '../../../Utils/Types/types.global';
 import Utils from '../../../Utils/utils.global';
+import ActionEntity from '../../ActionEntity/ActionEntity';
+import { ACTION_TYPE } from './ActionChatRoom.constant';
 const { getModelByName, checkEntity } = Utils;
 
 class ActionChatRoom implements Action {
-  constructor(private entity: Actions) {}
+  private entityParser: Parser;
+  private entity: ActionEntity;
 
-  getEntity(): Actions {
-    return this.entity;
+  constructor(entityParser: Parser, entity: ActionEntity) {
+    this.entityParser = entityParser;
+    this.entity = entity;
   }
 
+  public getEntityParser(): Parser {
+    return this.entityParser;
+  }
+
+  public getEntity(): ActionEntity {
+    return this.entity;
+  }
   private async getEntrypointData(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const { uid: uidDirty = '', socket = {} } = actionParam;
     const uid: Types.ObjectId | null = isValidObjectId(uidDirty as string)
@@ -23,7 +34,7 @@ class ActionChatRoom implements Action {
     const { socketConnection = false, module: moduleName = '' } = socket as Record<string, SocketMeta>;
     const query: ActionParams = { moduleName, membersIds: { $in: [uid] } };
 
-    if (socketConnection && moduleName) return this.getEntity().getAll(model, query);
+    if (socketConnection && moduleName) return this.getEntityParser().getAll(model, query);
 
     return null;
   }
@@ -33,7 +44,7 @@ class ActionChatRoom implements Action {
 
     const query: ActionParams = { tokenRoom, moduleName };
 
-    return this.getEntity().getAll(model, query);
+    return this.getEntityParser().getAll(model, query);
   }
 
   private async createRoom(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
@@ -46,7 +57,7 @@ class ActionChatRoom implements Action {
 
     if (!isValid) return null;
 
-    const result = await this.getEntity().createEntity(model, {
+    const result = await this.getEntityParser().createEntity(model, {
       ...actionParam,
       tokenRoom: uuid(),
     });
@@ -56,7 +67,7 @@ class ActionChatRoom implements Action {
   private async leaveRoom(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const { uid = '', roomToken = '', updateField = '' } = actionParam as Record<string, SocketMeta>;
     const query = { findBy: roomToken, uid, updateField };
-    const actionData: ParserData = await this.getEntity().deleteEntity(model, query);
+    const actionData: ParserData = await this.getEntityParser().deleteEntity(model, query);
     return actionData as Document | null;
   }
 
@@ -88,7 +99,7 @@ class ActionChatRoom implements Action {
       groupName: groupName ? groupName : null,
     };
 
-    const actionData: ParserData = await this.getEntity().createEntity(model, room);
+    const actionData: ParserData = await this.getEntityParser().createEntity(model, room);
 
     if (!actionData) return null;
 
@@ -104,15 +115,15 @@ class ActionChatRoom implements Action {
     if (!model) return null;
 
     switch (this.getEntity().getActionType()) {
-      case 'entrypoint_chat':
+      case ACTION_TYPE.ENTRYPOINT:
         return this.getEntrypointData(actionParam, model);
-      case 'get_update_rooms':
+      case ACTION_TYPE.GET_UPDATE_ROOMS:
         return this.getUpdateRooms(actionParam, model);
-      case 'create_chatRoom':
+      case ACTION_TYPE.CREATE_ROOM:
         return this.createRoom(actionParam, model);
-      case 'leave_room':
+      case ACTION_TYPE.LEAVE_ROOM:
         return this.leaveRoom(actionParam, model);
-      case 'create_FakeRoom':
+      case ACTION_TYPE.CREATE_FAKE_ROOM:
         return this.roomGenerator(actionParam, model);
       default:
         return null;
