@@ -8,8 +8,8 @@ import { files } from 'dropbox';
 import Responser from '../Responser';
 import { Response, Request } from 'express';
 import { ParsedUrlQuery } from 'querystring';
-import { ACTIONS_ENTITYS_REGISTER } from './ActionRunner.constant';
-import { runSyncClient, startDownloadPipe } from './ActionRunner.utils';
+import { ACTIONS_ENTITYS_REGISTER } from './ActionRunner/ActionRunner.constant';
+import { runSyncClient, startDownloadPipe } from './ActionRunner/ActionRunner.utils';
 
 const { parsePublicData } = Utils;
 
@@ -24,8 +24,10 @@ export class ActionRunner implements Runner {
   }
 
   private async actionExec(actionParam: ActionParams | Meta): Promise<ParserData> {
+    const parser = new ActionParser();
+
     if (this.getAction().getActionType() === 'sync') {
-      return await runSyncClient(this, actionParam);
+      return await runSyncClient(parser, actionParam);
     }
 
     let ActionConstructor = null;
@@ -40,7 +42,7 @@ export class ActionRunner implements Runner {
     }
 
     if (ActionConstructor) {
-      return new ActionConstructor(new ActionParser(), this.getAction()).run(actionParam as ActionParams);
+      return new ActionConstructor(parser, this.getAction()).run(actionParam as ActionParams);
     }
 
     return null;

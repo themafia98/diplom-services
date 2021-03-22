@@ -16,7 +16,7 @@ import {
 import Decorators from '../../Utils/decorators';
 import { SentMessageInfo } from 'nodemailer';
 import { GENERAL_ROUTE } from './General.path';
-import ActionRunner from '../../Models/ActionRunner';
+import ActionRunner from '../../Models/ActionRunner/ActionRunner';
 
 namespace General {
   const Post = Decorators.Post;

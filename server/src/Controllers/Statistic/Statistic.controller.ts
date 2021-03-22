@@ -6,7 +6,7 @@ import Decorators from '../../Utils/decorators';
 import { createParams } from '../Controllers.utils';
 import { STATISTIC_ROUTE } from './Statistic.path';
 import Utils from '../../Utils/utils.global';
-import ActionRunner from '../../Models/ActionRunner';
+import ActionRunner from '../../Models/ActionRunner/ActionRunner';
 
 namespace Statistic {
   const Controller = Decorators.Controller;

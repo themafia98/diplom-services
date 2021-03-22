@@ -6,7 +6,7 @@ import Decorators from '../../Utils/decorators';
 import { createParams } from '../Controllers.utils';
 import { WIKI_ROUTE } from './Wiki.path';
 import Utils from '../../Utils/utils.global';
-import ActionRunner from '../../Models/ActionRunner';
+import ActionRunner from '../../Models/ActionRunner/ActionRunner';
 
 namespace Wiki {
   const Controller = Decorators.Controller;

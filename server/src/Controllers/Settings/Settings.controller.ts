@@ -11,7 +11,7 @@ import Decorators from '../../Utils/decorators';
 import { createParams } from '../Controllers.utils';
 import { SETTINGS_ROUTE } from './Settings.path';
 import Utils from '../../Utils/utils.global';
-import ActionRunner from '../../Models/ActionRunner';
+import ActionRunner from '../../Models/ActionRunner/ActionRunner';
 
 namespace Settings {
   const { Controller, Post, Put, Get } = Decorators;

@@ -26,7 +26,7 @@ import { MAIN_ROUTE } from './Main.path';
 import Utils from '../../Utils/utils.global';
 import { Types } from 'mongoose';
 import Responser from '../../Models/Responser';
-import ActionRunner from '../../Models/ActionRunner';
+import ActionRunner from '../../Models/ActionRunner/ActionRunner';
 
 namespace System {
   const readFile = promisify(fs.readFile);

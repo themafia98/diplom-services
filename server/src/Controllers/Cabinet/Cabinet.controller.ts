@@ -8,7 +8,7 @@ import {
   Runner,
 } from '../../Utils/Interfaces/Interfaces.global';
 import { ResRequest, FileBody } from '../../Utils/Types/types.global';
-import ActionRunner from '../../Models/ActionRunner';
+import ActionRunner from '../../Models/ActionRunner/ActionRunner';
 import Decorators from '../../Utils/decorators';
 import { isValidObjectId, Types } from 'mongoose';
 import { createParams } from '../Controllers.utils';

@@ -4,7 +4,7 @@ import Decorators from '../../../Utils/decorators';
 import { Controller as ControllerApi, Runner } from '../../../Utils/Interfaces/Interfaces.global';
 import { CHAT_ROUTE } from './Chat.path';
 import Utils from '../../../Utils/utils.global';
-import ActionRunner from '../../../Models/ActionRunner';
+import ActionRunner from '../../../Models/ActionRunner/ActionRunner';
 
 const Post = Decorators.Post;
 const Delete = Decorators.Delete;

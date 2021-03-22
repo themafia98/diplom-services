@@ -12,7 +12,7 @@ import Decorators from '../../Utils/decorators';
 import { createParams } from '../Controllers.utils';
 import { TASKS_ROUTE } from './Tasks.path';
 import Utils from '../../Utils/utils.global';
-import ActionRunner from '../../Models/ActionRunner';
+import ActionRunner from '../../Models/ActionRunner/ActionRunner';
 
 namespace Tasks {
   const Controller = Decorators.Controller;
