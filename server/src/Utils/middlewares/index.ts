@@ -37,7 +37,6 @@ namespace Middleware {
     const user = await UserModel.findById(Types.ObjectId(uid));
     const { access } = (user as Record<string, any>) || {};
 
-
     if (user && req.body && access) {
       availableActions = AccessRole.getAvailableActions(req.body.moduleName || '', access as AccessConfig[]);
     }
@@ -77,11 +76,11 @@ namespace Middleware {
             if (!connect) throw new Error('Bad connect');
             const result = await UserModel.findOne({ email });
             if (!result) {
-              await dbm.disconnect().catch((err: Error) => console.error(err));
+              await dbm.disconnect();
             }
             const userResult: User = (await UserModel.findOne({ email })) as User;
             if (!userResult) {
-              await dbm.disconnect().catch((err: Error) => console.error(err));
+              await dbm.disconnect();
               return done(userResult);
             }
 
@@ -98,6 +97,11 @@ namespace Middleware {
         },
       ),
     );
+
+    if (!authConfig.SECRET) {
+      console.warn('jwt secret invalid for use jwt strategy');
+      return;
+    }
 
     passport.use(
       new JwtStrategy.Strategy(

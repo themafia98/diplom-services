@@ -116,7 +116,7 @@ const ContentView = memo(
 
         let childrensExistInEntrypointTypeTab = false;
 
-        if (Array.isArray(activeTabs) && path && path.includes(moduleName)) {
+        if (Array.isArray(activeTabs) && path && path?.includes(moduleName)) {
           childrensExistInEntrypointTypeTab = !!activeTabs.some(
             (tabItem) => tabItem !== tabKey && tabItem && tabItem.includes(moduleName),
           );

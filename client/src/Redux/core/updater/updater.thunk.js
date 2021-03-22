@@ -105,7 +105,7 @@ const updateEntityThunk = (dependencies) => async (dispatch, getState, { schema,
   }
 };
 
-const errorThunk = async (error, dependenciesForParseError, loadAction = null) => async (
+const errorThunk = (error, dependenciesForParseError, loadAction = null) => async (
   dispatch,
   getState,
   { schema, Request },

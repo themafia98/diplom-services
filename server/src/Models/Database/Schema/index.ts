@@ -63,6 +63,9 @@ userSchema.methods.changePassword = async function (password: string): Promise<s
 };
 
 userSchema.methods.generateJWT = function (this: User): any {
+  if (!authConfig.SECRET) {
+    throw new Error('invalid jwt secret');
+  }
   return jwt.sign(
     {
       iss: this.email,

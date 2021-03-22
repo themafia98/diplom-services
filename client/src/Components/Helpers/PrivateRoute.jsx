@@ -3,52 +3,52 @@ import { useHistory } from 'react-router-dom';
 import { Route } from 'react-router-dom';
 import Loader from 'Components/Loader';
 import modelsContext from 'Models/context';
-import PropTypes from 'prop-types';
+import { array, object } from 'prop-types';
 import { APP_STATUS } from 'App.constant';
+import { setAppStatus } from 'Redux/reducers/publicReducer.slice';
+import { useDispatch } from 'react-redux';
 
-const { object, func, array } = PropTypes;
-
-const PrivateRoute = ({ component: Component, onLogoutAction, onSetStatus, ...routeProps }) => {
+const PrivateRoute = ({ component: Component, ...routeProps }) => {
   const timerRef = useRef();
   const history = useHistory();
+  const dispatch = useDispatch();
   const { rest } = useContext(modelsContext);
 
   const [status, setStatus] = useState(null);
   const [init, setInit] = useState(null);
 
-  const getRoutersFunc = async () => {
+  const getRoutersFunc = useCallback(async () => {
     try {
       const response = await rest.authCheck();
 
       if (response.status === 200 && response.status !== status) {
-        onSetStatus(APP_STATUS.ON);
+        dispatch(setAppStatus(APP_STATUS.ON));
         setStatus(response.status);
       }
 
       if (response.status !== 200) {
         setStatus(response.status);
-
         setTimeout(() => rest.restartApp(), 3000);
       }
     } catch (error) {
       const { message = '' } = error;
+      console.error(error);
 
       if (message.toLowerCase().includes('network error')) {
-        console.error(error);
         setStatus(522);
-        onSetStatus(APP_STATUS.OFF);
+        dispatch(setAppStatus(APP_STATUS.OFF));
         return;
       }
 
       setTimeout(() => rest.restartApp(), 3000);
     }
-  };
+  }, [status, rest, dispatch]);
 
   useEffect(() => {
     history.push(history.location.pathname);
   }, [history]);
 
-  const getRouters = useCallback(getRoutersFunc, [rest, status, onSetStatus]);
+  const getRouters = useCallback(getRoutersFunc, [getRoutersFunc]);
 
   const startTimer = useCallback(() => {
     timerRef.current = setInterval(getRouters, 50000);
@@ -80,7 +80,6 @@ const PrivateRoute = ({ component: Component, onLogoutAction, onSetStatus, ...ro
 
 PrivateRoute.propTypes = {
   component: object.isRequired,
-  onLogoutAction: func.isRequired,
   routeProps: array,
 };
 
