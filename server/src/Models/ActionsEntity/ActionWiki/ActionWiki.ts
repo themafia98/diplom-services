@@ -3,6 +3,8 @@ import { ActionParams, Actions, Action, QueryParams } from '../../../Utils/Inter
 import { ParserData } from '../../../Utils/Types/types.global';
 import Utils from '../../../Utils/utils.global';
 import _ from 'lodash';
+import { ACTION_TYPE } from './ActionWiki.constant';
+import { GLOBAL_ACTION_TYPE } from '../ActionEntity.global.constant';
 
 const { getModelByName } = Utils;
 
@@ -144,15 +146,15 @@ class ActionWiki implements Action {
     if (!model) return null;
 
     switch (this.getEntity().getActionType()) {
-      case 'get_all':
+      case ACTION_TYPE.GET_WIKI_TREE:
         return this.getTreeList(actionParam, model);
-      case 'create_leaf':
+      case ACTION_TYPE.CREATE_LEAF:
         return this.createLeaf(actionParam, model);
-      case 'delete_leafs':
+      case ACTION_TYPE.DELETE_LEAF:
         return this.deleteLeafs(actionParam, model);
-      case 'update_single':
+      case GLOBAL_ACTION_TYPE.UPDATE_SINGLE:
         return this.update(actionParam, model);
-      case 'wiki_page':
+      case ACTION_TYPE.GET_WIKI_PAGE:
         return this.getWikiPage(actionParam, model);
       default:
         return null;

@@ -4,6 +4,7 @@ import { Model, Document } from 'mongoose';
 import { ActionParams, Actions, Action } from '../../../Utils/Interfaces/Interfaces.global';
 import { ParserData } from '../../../Utils/Types/types.global';
 import _ from 'lodash';
+import { ACTION_TYPE } from './ActionSettings.constant';
 
 const { getModelByName } = Utils;
 
@@ -59,9 +60,9 @@ class ActionSettings implements Action {
     if (!model) return null;
 
     switch (this.getEntity().getActionType()) {
-      case 'get_statusList':
+      case ACTION_TYPE.GET_STATUS_LIST:
         return this.getStatusList(model, actionParam);
-      case 'change_statusList':
+      case ACTION_TYPE.CHANGE_STATUS_LIST:
         return this.onChangeStatusList(model, actionParam);
       default:
         return null;

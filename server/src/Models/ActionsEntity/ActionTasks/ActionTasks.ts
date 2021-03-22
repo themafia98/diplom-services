@@ -10,6 +10,7 @@ import { ParserData, Pagination } from '../../../Utils/Types/types.global';
 import Utils from '../../../Utils/utils.global';
 import _ from 'lodash';
 import { ObjectID } from 'mongodb';
+import { ACTION_TYPE } from './ActionTasks.constant';
 const { getModelByName, generateRemoteTask, getFilterQuery, parseFilterFields } = Utils;
 
 class ActionTasks implements Action {
@@ -216,15 +217,15 @@ class ActionTasks implements Action {
     const typeAction: string = this.getEntity().getActionType();
 
     switch (typeAction) {
-      case 'get_all':
+      case ACTION_TYPE.GET_TASKS:
         return this.getTasks(actionParam, model);
-      case 'set_single':
+      case ACTION_TYPE.SAVE_TASK:
         return this.createSingleTask(actionParam, model);
-      case 'list_counter':
+      case ACTION_TYPE.TASK_COUNTER:
         return await this.getTaskCount(model, actionParam);
-      case 'get_stats':
+      case ACTION_TYPE.TASK_STATS:
         return await this.getStats(model, actionParam);
-      case 'reg_crossOrigin_ticket':
+      case ACTION_TYPE.REG_TICKET:
         return this.regTicket(model, actionParam);
       default: {
         if (typeAction.includes('update_')) {

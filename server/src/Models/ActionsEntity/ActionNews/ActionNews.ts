@@ -4,6 +4,7 @@ import { ParserData } from '../../../Utils/Types/types.global';
 import Utils from '../../../Utils/utils.global';
 import _ from 'lodash';
 import { ObjectId } from 'mongodb';
+import { ACTION_TYPE } from './ActionNews.constant';
 const { getModelByName } = Utils;
 
 class ActionNews implements Action {
@@ -38,9 +39,9 @@ class ActionNews implements Action {
     if (!model) return null;
 
     switch (this.getEntity().getActionType()) {
-      case 'get_all':
+      case ACTION_TYPE.ALL_NEWS:
         return this.getNews(actionParam, model);
-      case 'create_single_news':
+      case ACTION_TYPE.CREATE_NEWS:
         return this.createNews(actionParam, model);
       default:
         return null;

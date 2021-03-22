@@ -10,6 +10,8 @@ import {
 } from '../../../Utils/Interfaces/Interfaces.global';
 import { ParserData } from '../../../Utils/Types/types.global';
 import Utils from '../../../Utils/utils.global';
+import { GLOBAL_ACTION_TYPE } from '../ActionEntity.global.constant';
+import { ACTION_TYPE } from './ActionUsers.constant';
 
 const { getModelByName } = Utils;
 
@@ -214,21 +216,21 @@ class ActionUsers implements Action {
     if (!model) return null;
 
     switch (this.getEntity().getActionType()) {
-      case 'get_all':
+      case ACTION_TYPE.GET_USERS:
         return this.getUsers(actionParam, model);
-      case 'recovory_checker':
+      case ACTION_TYPE.RECOVORY_PASSWORD:
         return this.recovoryPassword(actionParam, model);
-      case 'change_password':
+      case ACTION_TYPE.CHANGE_PASSWORD:
         return this.changePassword(actionParam, model);
-      case 'common_changes':
+      case ACTION_TYPE.COMMON_SETTINGS_CHANGE:
         return this.updateCommonChanges(actionParam, model);
-      case 'profile_changes':
+      case ACTION_TYPE.PROFILE_SETTINGS_CHANGE:
         return this.updateProfileChanges(actionParam, model);
-      case 'update_single':
+      case GLOBAL_ACTION_TYPE.UPDATE_SINGLE:
         return this.updateSingle(actionParam, model);
-      case 'change_language':
+      case ACTION_TYPE.CHANGE_LANG:
         return this.changeLanguage(actionParam, model);
-      case 'update_many':
+      case GLOBAL_ACTION_TYPE.UPDATE_MANY:
         return this.updateMany(actionParam, model);
       default:
         return null;

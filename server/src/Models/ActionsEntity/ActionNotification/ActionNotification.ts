@@ -3,6 +3,7 @@ import { Model, Document } from 'mongoose';
 import { ActionParams, Actions, Action, QueryParams } from '../../../Utils/Interfaces/Interfaces.global';
 import { ParserData } from '../../../Utils/Types/types.global';
 import _ from 'lodash';
+import { GLOBAL_ACTION_TYPE } from '../ActionEntity.global.constant';
 
 const { getModelByName } = Utils;
 
@@ -92,7 +93,7 @@ class ActionNotification implements Action {
     const typeAction: string = this.getEntity().getActionType();
 
     switch (typeAction) {
-      case 'update_many':
+      case GLOBAL_ACTION_TYPE.UPDATE_MANY:
         return await this.updateMany(actionParam, model);
       default:
         if (typeAction.includes('set')) return this.create(model, actionParam);

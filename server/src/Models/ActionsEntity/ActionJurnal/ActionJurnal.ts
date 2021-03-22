@@ -3,6 +3,7 @@ import _ from 'lodash';
 import { ActionParams, Actions, Action } from '../../../Utils/Interfaces/Interfaces.global';
 import { ParserData } from '../../../Utils/Types/types.global';
 import Utils from '../../../Utils/utils.global';
+import { ACTION_TYPE } from './ActionJurnal.constant';
 
 const { getModelByName } = Utils;
 
@@ -50,11 +51,11 @@ class ActionJournal implements Action {
     if (!model) return null;
 
     switch (this.getEntity().getActionType()) {
-      case '__getJurnal':
+      case ACTION_TYPE.GET_LOGS:
         // Get jurnal action. Starts with '__set' journals key because
         // set for synchronize with client key
         return this.getJurnal(actionParam, model);
-      case 'set_jurnal':
+      case ACTION_TYPE.SET_LOGS:
         return this.setJournal(actionParam, model);
       default:
         return null;

@@ -2,6 +2,7 @@ import Utils from '../../../Utils/utils.global';
 import { Model, Document } from 'mongoose';
 import { ActionParams, Actions, Action, QueryParams } from '../../../Utils/Interfaces/Interfaces.global';
 import { ParserData } from '../../../Utils/Types/types.global';
+import { ACTION_TYPE } from './ActionLogger.constant';
 
 const { getModelByName } = Utils;
 
@@ -27,9 +28,9 @@ class ActionLogger implements Action {
     if (!model) return null;
 
     switch (this.getEntity().getActionType()) {
-      case 'get_user_settings_log':
+      case ACTION_TYPE.GET_SETTINGS_LOGS:
         return this.getUserSettingsLog(actionParam, model);
-      case 'save_user_settings_log':
+      case ACTION_TYPE.SAVE_SETTINGS_LOGS:
         return this.saveUserSettingsLog(actionParam, model);
       default:
         return null;

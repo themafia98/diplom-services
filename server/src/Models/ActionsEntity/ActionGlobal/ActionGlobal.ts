@@ -2,7 +2,7 @@ import { ActionParams, Actions, Action, QueryParams } from '../../../Utils/Inter
 import path from 'path';
 import { ParserData } from '../../../Utils/Types/types.global';
 import { files } from 'dropbox';
-//import { BinaryLike } from 'crypto';
+import { ACTION_TYPE } from './ActionGlobal.constant';
 
 class ActionGlobal implements Action {
   constructor(private entity: Actions) {}
@@ -79,13 +79,13 @@ class ActionGlobal implements Action {
 
   public async run(actionParam: ActionParams): Promise<ParserData> {
     switch (this.getEntity().getActionType()) {
-      case 'load_files':
+      case ACTION_TYPE.LOAD_FILES:
         return this.loadFiles(actionParam);
-      case 'delete_file':
+      case ACTION_TYPE.DELETE_FILE:
         return this.deleteFile(actionParam);
-      case 'download_files':
+      case ACTION_TYPE.DOWNLOAD_FILES:
         return this.download(actionParam);
-      case 'save_file':
+      case ACTION_TYPE.SAVE_FILE:
         return this.saveFile(actionParam);
       default:
         return null;

@@ -2,6 +2,7 @@ import { Model, Document, Types, isValidObjectId } from 'mongoose';
 import { ActionParams, Actions, Action } from '../../../Utils/Interfaces/Interfaces.global';
 import { ParserData, MessageOptions } from '../../../Utils/Types/types.global';
 import Utils from '../../../Utils/utils.global';
+import { ACTION_TYPE } from './ActionChatMessage.constant';
 
 const { getModelByName } = Utils;
 
@@ -34,7 +35,7 @@ class ActionChatMessage implements Action {
     if (!model) return null;
 
     switch (this.getEntity().getActionType()) {
-      case 'get_msg_by_token':
+      case ACTION_TYPE.GET_MSG_BY_TOKEN:
         return this.getMsgByToken(actionParam, model);
       default:
         return null;

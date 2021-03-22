@@ -1,19 +1,6 @@
 import winston from 'winston';
 import { files } from 'dropbox';
-import {
-  User,
-  Task,
-  Jurnal,
-  Logger,
-  News,
-  ChatMessage,
-  ChatRoom,
-  Notification,
-  WikiTree,
-  WikiPage,
-  Settings,
-  Access,
-} from '../Interfaces/Interfaces.global';
+import { User } from '../Interfaces/Interfaces.global';
 import { Document } from 'mongoose';
 import { Response } from 'express';
 import { Socket } from 'socket.io';
@@ -92,22 +79,6 @@ export type collectionOperations = {
   update: Function;
   start: Function;
 };
-
-export type SchemaEntity =
-  | Task
-  | User
-  | Jurnal
-  | News
-  | ChatMessage
-  | ChatRoom
-  | Logger
-  | Notification
-  | WikiTree
-  | string
-  | Settings
-  | WikiPage
-  | Access
-  | Document<any, {}>;
 
 export type actionGet = {
   collection: string;

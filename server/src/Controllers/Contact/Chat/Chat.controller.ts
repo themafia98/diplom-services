@@ -18,7 +18,7 @@ export class ChatController implements ControllerApi<FunctionConstructor> {
   @Delete({ path: CHAT_ROUTE[Utils.getVersion()].LEAVE_FROM_ROOM, private: true })
   @Post({ path: CHAT_ROUTE[Utils.getVersion()].LOAD_CHATS, private: true })
   @Put({ path: CHAT_ROUTE[Utils.getVersion()].CREATE_ROOM, private: true })
-  protected async getRooms(req: Request, res: Response): ResRequest {
+  protected async handleChatRequests(req: Request, res: Response): ResRequest {
     const { actionPath = '', actionType = '', params = {}, moduleName = '' } = req.body;
     const { options = {} } = params;
 

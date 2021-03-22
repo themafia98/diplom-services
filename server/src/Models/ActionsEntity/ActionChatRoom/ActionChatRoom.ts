@@ -3,6 +3,7 @@ import { v4 as uuid } from 'uuid';
 import { ActionParams, Actions, Action, SocketMessageDoc } from '../../../Utils/Interfaces/Interfaces.global';
 import { ParserData, SocketMeta } from '../../../Utils/Types/types.global';
 import Utils from '../../../Utils/utils.global';
+import { ACTION_TYPE } from './ActionChatRoom.constant';
 const { getModelByName, checkEntity } = Utils;
 
 class ActionChatRoom implements Action {
@@ -104,15 +105,15 @@ class ActionChatRoom implements Action {
     if (!model) return null;
 
     switch (this.getEntity().getActionType()) {
-      case 'entrypoint_chat':
+      case ACTION_TYPE.ENTRYPOINT:
         return this.getEntrypointData(actionParam, model);
-      case 'get_update_rooms':
+      case ACTION_TYPE.GET_UPDATE_ROOMS:
         return this.getUpdateRooms(actionParam, model);
-      case 'create_chatRoom':
+      case ACTION_TYPE.CREATE_ROOM:
         return this.createRoom(actionParam, model);
-      case 'leave_room':
+      case ACTION_TYPE.LEAVE_ROOM:
         return this.leaveRoom(actionParam, model);
-      case 'create_FakeRoom':
+      case ACTION_TYPE.CREATE_FAKE_ROOM:
         return this.roomGenerator(actionParam, model);
       default:
         return null;
