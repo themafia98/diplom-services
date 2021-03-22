@@ -60,7 +60,7 @@ export const startDownloadPipe = (
 ) => {
   const { link = '' } = file;
   const { filename = '' } = actionParam as ActionParams;
-  const mimetype = mime.getType(filename as string);
+  const mimetype = (<any>mime).lookup(filename as string);
 
   res.setHeader('Content-disposition', 'attachment; filename=' + filename);
   res.setHeader('Content-type', mimetype ? mimetype : 'plain/text');

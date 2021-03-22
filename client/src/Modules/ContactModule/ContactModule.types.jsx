@@ -8,7 +8,7 @@ export const contactModuleType = {
   activeTabs: arrayOf(string.isRequired).isRequired,
   statusApp: string.isRequired,
   visibilityPortal: bool,
-  clientDB: func.isRequired,
+  clientDB: func,
   webSocket: object,
   onChangeVisibleAction: func,
 };

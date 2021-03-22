@@ -55,9 +55,9 @@ const runLocalUpdate = async (dispatch, depAction, depParser, multiple) => {
 
   const { data, shoudClearError = false, shouldUpdateState = true } = dataParser(depParser);
   if (shoudClearError) await dispatch(setRequestError(null));
-  if (shouldUpdateState && !multiple)
+  if (shouldUpdateState && !multiple) {
     await dispatch(refreshRouterData({ ...data, loading: false, add, params }));
-  else if (multiple) return data;
+  } else if (multiple) return data;
 };
 
 const coreUtils = { runLocalUpdate, runBadNetworkMode, runRefreshIndexedDb, runNoCorsSave };

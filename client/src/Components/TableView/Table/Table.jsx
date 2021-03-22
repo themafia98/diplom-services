@@ -78,8 +78,8 @@ class Table extends PureComponent {
 
   getTaskConfigColumns = () => {
     const { routerData, t } = this.props;
-    const { saveData = {} } = routerData;
-    const { sortedInfo = [] } = saveData;
+    const { saveData = {} } = routerData || {};
+    const { sortedInfo = [] } = saveData || {};
 
     const columns = [
       {

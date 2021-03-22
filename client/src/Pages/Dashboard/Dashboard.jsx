@@ -4,7 +4,7 @@ import { Redirect } from 'react-router-dom';
 import { EventEmitter } from 'events';
 import io from 'socket.io-client';
 import { Layout, message, Modal, Button } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
+import { batch, useDispatch, useSelector } from 'react-redux';
 import { getAvailableTabNameKey, routeParser, saveAndNormalizeRoute, showSystemMessage } from 'Utils';
 import FixedToolbar from 'Components/FixedToolbar';
 import Loader from 'Components/Loader';
@@ -238,7 +238,7 @@ const Dashboard = () => {
 
   const activeTabsData = useMemo(() => {
     const { menu } = appConfig;
-    const activeTabsData = [];
+    let activeTabsData = null;
 
     if (!menu || !activeTabs) {
       return null;
@@ -248,6 +248,10 @@ const Dashboard = () => {
       const tabItem = menu.find((menuItem) => menuItem.EUID === tab);
 
       if (tabItem) {
+        if (!activeTabsData) {
+          activeTabsData = [];
+        }
+
         activeTabsData.push({ ...tabItem });
         continue;
       }
@@ -255,6 +259,11 @@ const Dashboard = () => {
       const { page, path, pageChild } = routeParser({ pageType: 'page', path: tab });
       const DATAKEY = pageChild || page || '';
       const VALUE = getAvailableTabNameKey(DATAKEY, routeData[DATAKEY]);
+
+      if (!activeTabsData) {
+        activeTabsData = [];
+      }
+
       activeTabsData.push({
         EUID: path || tab,
         PARENT_CODE: page,
@@ -310,11 +319,10 @@ const Dashboard = () => {
       const path = event['key'] ? event['key'] : key;
       const { tabsLimit = 50 } = appConfig;
 
-      const activeTabsCopy = [...activeTabs];
-      const isFind = activeTabsCopy.findIndex((tab) => tab === path) !== -1;
+      const isFind = activeTabs.findIndex((tab) => tab === path) !== -1;
 
       if (mode === 'open') {
-        if (!isFind && tabsLimit <= activeTabsCopy.length) {
+        if (!isFind && tabsLimit <= activeTabs.length) {
           message.error(`Максимальное количество вкладок: ${tabsLimit}`);
           return;
         }
@@ -334,10 +342,10 @@ const Dashboard = () => {
           return;
         }
 
-        if (entityId) {
+        batch(() => {
           dispatch(removeTab({ path: path, type: type }));
           dispatch(clearAppCache({ path, type: type, currentActionTab }));
-        }
+        });
       }
     },
     [activeTabs, appConfig, currentActionTab, dispatch, routeData],

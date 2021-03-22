@@ -28,10 +28,10 @@ class TreeBuilder {
   buildTree(root, indexRoot = 0) {
     if (!root.length || !root[indexRoot]) return root;
 
-    const currentNode = root[indexRoot];
-    const childNodes = this.childrens.filter((child) => child.parentId === currentNode._id);
+    const item = { ...root[indexRoot] };
+    const childNodes = this.childrens.filter((child) => child.parentId === item._id);
 
-    currentNode.children = this.buildTree(childNodes);
+    item.children = this.buildTree(childNodes);
     return this.buildTree(root, indexRoot + 1);
   }
 }

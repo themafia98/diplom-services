@@ -164,7 +164,7 @@ const WikiPage = ({ selectedNode, metadata, onChangeWikiPage }) => {
               editor={true}
               onChange={onChangeContent}
               editorKey={pageId}
-              readOnly={readOnly}
+              readOnly={!!readOnly}
               contentState={content}
               shouldDisplayButton={true}
               onPublish={!readOnly ? onSubmitChanges : content && readOnly ? onChangeStateEditor : null}

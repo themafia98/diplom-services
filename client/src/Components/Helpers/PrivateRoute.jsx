@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { Route } from 'react-router-dom';
 import Loader from 'Components/Loader';
 import modelsContext from 'Models/context';
-import { array, object } from 'prop-types';
+import { array, func } from 'prop-types';
 import { APP_STATUS } from 'App.constant';
 import { setAppStatus } from 'Redux/reducers/publicReducer.slice';
 import { useDispatch } from 'react-redux';
@@ -79,7 +79,7 @@ const PrivateRoute = ({ component: Component, ...routeProps }) => {
 };
 
 PrivateRoute.propTypes = {
-  component: object.isRequired,
+  component: func.isRequired,
   routeProps: array,
 };
 

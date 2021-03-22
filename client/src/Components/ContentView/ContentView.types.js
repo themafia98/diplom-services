@@ -11,5 +11,5 @@ export const contentViewType = {
   onChangeVisibleAction: func.isRequired,
   isToolbarActive: bool,
   visibilityPortal: bool,
-  activeTabs: oneOfType([oneOf([null]), arrayOf(string.isRequired)]).isRequired,
+  activeTabs: oneOfType([oneOf([null]), arrayOf(string)]).isRequired,
 };

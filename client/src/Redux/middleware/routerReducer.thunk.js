@@ -6,7 +6,7 @@ import _ from 'lodash';
 import { makeApiAction, getActionStore } from 'Utils/Api';
 import { APP_STATUS } from 'App.constant';
 import { setSystemMessage } from 'Redux/reducers/systemReducer.slice';
-import { setAppStatus, setRequestError } from 'Redux/reducers/publicReducer.slice';
+import { setAppStatus } from 'Redux/reducers/publicReducer.slice';
 import {
   openPageWithData,
   refreshRouterData,
@@ -123,8 +123,6 @@ const loadCurrentData = (params) => async (dispatch, getState, { schema, Request
         pathValid,
         requestError,
         uuid: 'uuid',
-        refreshRouterData,
-        setRequestError,
       };
 
       dispatch(setAppStatus({ params, path: pagePath }));
@@ -191,8 +189,6 @@ const multipleLoadData = (params) => async (dispatch, getState, { schema, Reques
         clientDB,
         methodQuery: body?.params?.query,
         uuid: 'uuid',
-        refreshRouterData,
-        setRequestError,
         isLocalUpdate,
       };
 

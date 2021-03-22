@@ -32,7 +32,7 @@ export const publicSlice = createSlice({
         console.error(payload);
 
         if (payload && Array.isArray(state.requestError)) {
-          state.requestError = [...state.requestError, payload];
+          state.requestError.push(payload);
           return;
         }
 
@@ -81,10 +81,7 @@ export const publicSlice = createSlice({
     loadArtifact: {
       // LOAD_ARTIFACT
       reducer: (state, { payload }) => {
-        return {
-          ...state,
-          artifacts: payload,
-        };
+        state.artifacts = payload;
       },
       prepare: (artifacts) => ({ payload: artifacts }),
     },
@@ -98,12 +95,9 @@ export const publicSlice = createSlice({
     updateUserData: {
       // UPDATE_UDATA
       reducer: (state, { payload }) => {
-        return {
-          ...state,
-          udata: {
-            ...state.udata,
-            ...payload,
-          },
+        state.udata = {
+          ...state.udata,
+          ...payload,
         };
       },
       prepare: (updateUdata) => ({ payload: updateUdata }),
@@ -139,14 +133,19 @@ export const publicSlice = createSlice({
             }),
           );
 
-          const tmp = Array.from(keys).reduce((currentTmp, value, i) => {
-            const _tmp = { ...currentTmp };
-            _tmp[value] = { ...validData[i] };
+          if (union) {
+            const tmp = Array.from(keys).reduce((currentTmp, value, i) => {
+              const _tmp = currentTmp;
+              _tmp[value] = validData[i];
+              return _tmp;
+            }, {});
+            state.caches = tmp;
+            return;
+          }
 
-            return _tmp;
-          }, {});
-
-          state.caches = !union ? tmp : { ...state.caches, ...tmp };
+          Array.from(keys).forEach((value, i) => {
+            state.caches[value] = validData[i];
+          });
           return;
         }
 
@@ -161,7 +160,7 @@ export const publicSlice = createSlice({
           cacheKey = `${customDepKey ? customDepKey : validData[key].depKey}${uuid}`;
         }
 
-        state.caches = { ...state.caches, [cacheKey]: !!validData[0] ? validData[0] : validData };
+        state.caches[cacheKey] = !!validData[0] ? validData[0] : validData;
       },
       prepare: (cacheProps) => ({ payload: cacheProps }),
     },
@@ -172,7 +171,9 @@ export const publicSlice = createSlice({
 
         const deleteKey = type === 'itemTab' ? path.split(regExpRegister.MODULE_ID)[1] : path;
 
-        const filterCaches = Object.keys(state.cahces).reduce((filterObj, key) => {
+        const cacheValues = Object.keys(state.cahces || {});
+
+        const filterCaches = cacheValues.reduce((filterObj, key) => {
           if (!key.includes(deleteKey)) {
             filterObj[key] = state.caches[key];
           }
@@ -187,15 +188,13 @@ export const publicSlice = createSlice({
       // SET_STATUS
       reducer: (state, { payload }) => {
         const { statusRequst = null, params = null, clearParams = false } = payload;
-        let paramsListNew = [];
 
-        if (!clearParams) {
-          paramsListNew = params ? [...state.paramsList, params] : state.paramsList;
+        if (!clearParams && params) {
+          state.paramsList.push(params);
         }
 
         state.status = statusRequst ? statusRequst : state.status;
         state.prewStatus = state.status;
-        state.paramsList = paramsListNew;
       },
       prepare: (appStatusConfig) => ({ payload: appStatusConfig }),
     },

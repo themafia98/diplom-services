@@ -95,7 +95,7 @@ const App = ({ coreConfig, fetchConfig, typeConfig }) => {
           await loadSettings();
         });
 
-        if (!localStorage.getItem('router')) {
+        if (!localStorage.getItem('router') && path) {
           dispatch(createTab(routeParser({ path })));
         }
       } catch (error) {
@@ -112,6 +112,10 @@ const App = ({ coreConfig, fetchConfig, typeConfig }) => {
 
     if (!appActive) {
       console.log('Application unactive');
+      return;
+    }
+
+    if (udata && Object.keys(udata).length) {
       return;
     }
 
@@ -135,8 +139,7 @@ const App = ({ coreConfig, fetchConfig, typeConfig }) => {
       const defaultModule = menu ? menu.find((item) => item?.SIGN === 'default') : null;
       if (defaultModule) path = defaultModule?.EUID;
 
-      const activeTabsCopy = [...activeTabs];
-      const isFind = activeTabsCopy.findIndex((tab) => tab === path) !== -1;
+      const isFind = activeTabs.findIndex((tab) => tab === path) !== -1;
 
       const { data = {} } = response;
       const { user = {} } = data;
@@ -150,7 +153,7 @@ const App = ({ coreConfig, fetchConfig, typeConfig }) => {
           : acc || {};
       }, {});
 
-      if (!isFind && tabsLimit && tabsLimit <= activeTabsCopy.length) {
+      if (!isFind && tabsLimit && tabsLimit <= activeTabs.length) {
         message.error(`Максимальное количество вкладок: ${tabsLimit}`);
         return;
       }
@@ -174,7 +177,7 @@ const App = ({ coreConfig, fetchConfig, typeConfig }) => {
 
     setAuth(true);
     setLoadApp(true);
-  }, [appActive, context.Request, dispatch, initialSession, menu, router, tabsLimit]);
+  }, [udata, appActive, context.Request, dispatch, initialSession, menu, router, tabsLimit]);
 
   const bootstrapApplication = useCallback(
     async (forceUpdate) => {

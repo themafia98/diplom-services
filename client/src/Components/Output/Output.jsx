@@ -106,7 +106,7 @@ const Output = memo(
           if (typeOutput && typeOutput !== 'default') {
             return (
               <Button
-                onKeyDown={createHandleOpenLink(id, 'cabinet')}
+                onClick={createHandleOpenLink(id || displayValue, 'cabinet')}
                 type="link"
                 key={`${id}-editor`}
                 className="editor"
@@ -235,28 +235,35 @@ const Output = memo(
     const shouldBeRunRenderLinks =
       shouldRenderList && isChildrenList && links && typeof children === 'string';
 
-    const value = useMemo(
-      () =>
-        shouldBeRunRenderLinks
-          ? null
-          : renderLinks(
-              !isStaticList && Array.isArray(links)
-                ? links
-                    .reduce((links, link) => {
-                      if (Array.isArray(children) && children.some((child) => child === link?._id)) {
-                        return [...links, { displayValue: link?.displayName, id: link?._id }];
-                      }
-                      return links;
-                    }, [])
-                    .sort((a, b) => a?.displayName - b?.displayName)
-                : isChildrenList
-                ? children.map((link) => {
-                    return { displayValue: link?.displayName, id: link?._id };
-                  })
-                : children,
-            ),
-      [children, isChildrenList, isStaticList, links, renderLinks, shouldBeRunRenderLinks],
-    );
+    const value = useMemo(() => {
+      if (shouldBeRunRenderLinks) {
+        return null;
+      }
+
+      let isSingleLink = false;
+      let val = children;
+
+      if (!isStaticList && Array.isArray(links)) {
+        val = links.reduce((links, link) => {
+          if (Array.isArray(children) && children.some((child) => child === link?._id)) {
+            return [...links, { displayValue: link?.displayName, id: link?._id }];
+          }
+          return links;
+        }, []);
+      } else if (isChildrenList) {
+        val = children.map((link) => {
+          return { displayValue: link?.displayName, id: link?._id };
+        });
+      } else if (typeOutput === 'link' && Array.isArray(links)) {
+        val = links.find(({ _id }) => _id === children) || children;
+        isSingleLink = true;
+      }
+
+      if (isSingleLink) {
+      }
+
+      return renderLinks(val, isSingleLink ? 'single' : undefined);
+    }, [typeOutput, children, isChildrenList, isStaticList, links, renderLinks, shouldBeRunRenderLinks]);
 
     const output = useMemo(
       () => (

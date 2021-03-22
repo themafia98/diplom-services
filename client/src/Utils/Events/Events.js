@@ -2,11 +2,13 @@ import { getStoreSchema } from '../utilsHook';
 import { dataParser } from '../';
 import { message } from 'antd';
 import { APP_STATUS } from 'App.constant';
+import { refreshRouterData } from 'Redux/reducers/routerReducer.slice';
+import { setRequestError } from 'Redux/reducers/publicReducer.slice';
 
 /** Events */
 const sucessEvent = async (dispatch, dep, mode = '', multiple = false, cursor = null, offlineStore = []) => {
   const copyStoreOffline = [...offlineStore];
-  const { copyStore, uuid, storeLoad, schema, pathValid, refreshRouterData, setRequestError, params } = dep;
+  const { copyStore, uuid, storeLoad, schema, pathValid, params } = dep;
 
   if (mode === APP_STATUS.OFF) {
     const schemaTemplate = getStoreSchema(storeLoad);
@@ -28,7 +30,9 @@ const sucessEvent = async (dispatch, dep, mode = '', multiple = false, cursor = 
   }
   if (!cursor) {
     const { data = {}, shoudClearError = false } = dataParser(dep, offlineStore);
-    if (shoudClearError) await dispatch(setRequestError(null));
+    if (shoudClearError) {
+      await dispatch(setRequestError(null));
+    }
 
     if (!multiple) {
       dispatch(refreshRouterData({ ...data, params, loading: false }));

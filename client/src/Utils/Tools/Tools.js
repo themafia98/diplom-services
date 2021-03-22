@@ -220,7 +220,7 @@ const checkPageAvailable = async (activePage, rest) => {
     }
   } catch (error) {
     console.error(error);
-    debugger;
+
     return false;
   }
 

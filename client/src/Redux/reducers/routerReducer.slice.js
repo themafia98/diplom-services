@@ -28,14 +28,14 @@ const routerReducer = createSlice({
         };
 
         if (!activeTabs.includes('mainModule')) {
-          normalizeRoute.activeTabs = [...normalizeRoute.activeTabs, 'mainModule'];
+          normalizeRoute.activeTabs.push('mainModule');
         }
 
         if (!path) {
           normalizeRoute.path = 'mainModule';
         }
 
-        return normalizeRoute;
+        state = normalizeRoute;
       },
       prepare: (routeData) => ({ payload: routeData }),
     },
@@ -58,7 +58,7 @@ const routerReducer = createSlice({
         }
 
         state.path = tab && !path ? tab : path;
-        state.activeTabs = [...state.activeTabs, tab];
+        state.activeTabs.push(tab);
         state.shouldUpdate = true;
         state.currentActionTab = tab;
         state.routeData = newRouteData;
@@ -73,18 +73,13 @@ const routerReducer = createSlice({
         const { config = {}, tab: tabWithConfig = '' } = withConfig ? payload : {};
         const { hardCodeUpdate = true } = config;
 
-        const tabValue = withConfig
-          ? tabWithConfig
-          : typeof draftPayload === 'string'
-          ? payload
-          : payload?.tab;
+        const tabValue = withConfig ? tabWithConfig : typeof payload === 'string' ? payload : payload?.tab;
 
         const content =
           typeof tabValue === 'string'
             ? tabValue?.split(regExpRegister.MODULE_ID)[1]
-            : payload?.tab?.split(regExpRegister.MODULE_ID)[1];
+            : payload.tab?.split(regExpRegister.MODULE_ID)[1];
 
-        const selectModule = payload;
         let currentActive = null;
         let isDataPage = false;
 
@@ -93,25 +88,23 @@ const routerReducer = createSlice({
           currentActive = withConfig && !content ? { config } : state.routeData[content];
         }
 
-        const isExistModule = !!state.routeData[selectModule] || null;
-        const { config: { hardCodeUpdate: updater } = {} } = isExistModule
-          ? state.routeData[selectModule]
-          : {};
+        const isExistModule = !!state.routeData[tabValue] || null;
+        const { config: { hardCodeUpdate: updater } = {} } = isExistModule ? state.routeData[tabValue] : {};
 
         const routeData = state.routeData;
 
         if (isExistModule) {
-          routeData[selectModule].load = false;
-          routeData[selectModule].hardCodeUpdate = hardCodeUpdate ? !!payload : null;
+          routeData[tabValue].load = false;
+          routeData[tabValue].hardCodeUpdate = hardCodeUpdate ? !!payload : null;
         }
 
         const shouldUpdate = updater || (updater === undefined && hardCodeUpdate);
 
-        state.path = payload;
-        state.currentActionTab = payload;
+        state.path = tabValue;
+        state.currentActionTab = tabValue;
         state.routeDataActive = isDataPage
           ? currentActive
-          : { ...state.routeData[selectModule], ...state.routeDataActive };
+          : { ...state.routeData[tabValue], ...state.routeDataActive };
         state.routeData = routeData;
         state.shouldUpdate = shouldUpdate;
       },
@@ -160,23 +153,22 @@ const routerReducer = createSlice({
         const parsedTabEntity = nextTab?.split(regExpRegister.MODULE_ID)?.[1];
         const uuidEntityItem = typeof nextTab === 'string' && type === 'itemTab' ? parsedTabEntity : nextTab;
 
-        const copyData = routeDataNew;
         let current = null;
 
         if (!nextTab) {
           console.warn('Next tab not found');
           return state;
         }
-        const { [parsedTabEntity]: tabItem = {} } = copyData || {};
+        const { [parsedTabEntity]: tabItem = {} } = routeDataNew || {};
         const { _id: tabId = '' } = tabItem || {};
 
-        const isSimple = copyData[parsedTabEntity] && tabId === parsedTabEntity;
+        const isSimple = routeDataNew[parsedTabEntity] && tabId === parsedTabEntity;
 
         const isDelete = state.routeDataActive && uuidEntityItem && !deleteKeyOnce;
         const isNext = state.routeDataActive && parsedTabEntity && id === parsedTabEntity;
 
         current = isSimple
-          ? { ...copyData[parsedTabEntity] }
+          ? routeDataNew[parsedTabEntity]
           : isDelete && uuidEntityItem && routeDataNew[uuidEntityItem]
           ? routeDataNew[uuidEntityItem]
           : isNext
@@ -188,7 +180,7 @@ const routerReducer = createSlice({
         state.currentActionTab = nextTab || 'mainModule';
         state.activeTabs = filterArray;
         state.routeDataActive = current || {};
-        state.routeData = copyData;
+        state.routeData = routeDataNew;
         state.shouldUpdate = !state.routeData[selectModule] ? false : true;
       },
       prepare: (tabConfig) => ({ payload: tabConfig }),
@@ -252,8 +244,9 @@ const routerReducer = createSlice({
         let routeDataActive = {};
 
         if (!isString) {
-          routeDataActive = RDA;
+          routeDataActive = { ...(RDA || {}) };
           routeDataActive.from = from;
+
           copyRouteData[validKey] = RDA;
           copyRouteData[validKey].from = from;
         } else if (!!state.routeData[pathPage]) {
@@ -264,7 +257,7 @@ const routerReducer = createSlice({
         }
 
         state.currentActionTab = currentActionTab;
-        state.activeTabs = [...state.activeTabs, currentActionTab];
+        state.activeTabs.push(currentActionTab);
         state.routeDataActive = routeDataActive;
         state.routeData = copyRouteData;
       },

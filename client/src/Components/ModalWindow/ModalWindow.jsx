@@ -51,7 +51,7 @@ const ModalWindow = memo((props) => {
   const [state, dispatch] = useReducer(reducer, modalState);
   const context = useContext(ModelContext);
 
-  const { key: keyActiveRoute, _id: id, name: nameActive } = routeDataActive;
+  const { key: keyActiveRoute = null, _id: id = null, name: nameActive = null } = routeDataActive || {};
 
   const { type: typeView = '' } = state;
   const {
