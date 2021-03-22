@@ -19,6 +19,7 @@ import mongoose, { Connection, Model, Document, FilterQuery } from 'mongoose';
 import { ObjectId } from 'mongodb';
 import { ParsedUrlQuery } from 'querystring';
 import WebSocketWorker from '../../Models/WebSocketWorker';
+import ActionEntity from '../../Models/ActionEntity/ActionEntity';
 export interface Controller<T> {
   [key: string]: any;
 }
@@ -416,11 +417,21 @@ export interface EntityActionApi {
 }
 
 export interface Action {
-  getEntity(): Actions;
+  getEntityParser(): Parser;
   run(actionParam: ActionParams | Meta): Promise<ParserData>;
 }
 
-export interface Actions extends EntityActionApi {
+export interface Runner {
+  getAction(): ActionEntity;
+  start(
+    this: Runner,
+    actionParam: ActionParams,
+    mode?: string,
+    queryString?: ParsedUrlQuery,
+  ): Promise<Function>;
+}
+
+export interface Parser {
   getCounter(model: Model<Document>, query: FilterQuery<any>, options?: object): Promise<number>;
   getAll(
     model: Model<Document>,
@@ -438,12 +449,6 @@ export interface Actions extends EntityActionApi {
     options?: OptionsUpdate,
   ): Promise<ParserData>;
   findOnce(model: Model<Document>, actionParam: ActionParams): Promise<ParserData>;
-  actionsRunner(
-    this: Actions,
-    actionParam: ActionParams,
-    mode?: string,
-    queryString?: ParsedUrlQuery,
-  ): Promise<Function>;
 }
 
 export interface TicketRemote {

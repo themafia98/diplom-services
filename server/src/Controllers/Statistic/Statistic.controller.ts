@@ -3,10 +3,10 @@ import _ from 'lodash';
 import { Params, Controller as ControllerApi } from '../../Utils/Interfaces/Interfaces.global';
 import { ResRequest } from '../../Utils/Types/types.global';
 import Decorators from '../../Utils/decorators';
-import Action from '../../Models/Action';
 import { createParams } from '../Controllers.utils';
 import { STATISTIC_ROUTE } from './Statistic.path';
 import Utils from '../../Utils/utils.global';
+import ActionRunner from '../../Models/ActionRunner';
 
 namespace Statistic {
   const Controller = Decorators.Controller;
@@ -19,14 +19,14 @@ namespace Statistic {
       const params: Params = createParams('get_stats', 'done', 'tasks');
       const { params: { options = {} } = {} } = req.body;
 
-      const actionStats = new Action.ActionParser({
+      const actionStats = new ActionRunner({
         actionPath: 'tasks',
         actionType: 'get_stats',
       });
 
       const body = { ...options, type: 'bar' };
 
-      const responseExec: Function = await actionStats.actionsRunner(body);
+      const responseExec: Function = await actionStats.start(body);
       return responseExec(req, res, params);
     }
   }

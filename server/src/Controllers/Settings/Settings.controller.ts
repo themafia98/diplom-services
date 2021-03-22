@@ -7,12 +7,11 @@ import {
   QueryParams,
 } from '../../Utils/Interfaces/Interfaces.global';
 import { ResRequest } from '../../Utils/Types/types.global';
-
-import Action from '../../Models/Action';
 import Decorators from '../../Utils/decorators';
 import { createParams } from '../Controllers.utils';
 import { SETTINGS_ROUTE } from './Settings.path';
 import Utils from '../../Utils/utils.global';
+import ActionRunner from '../../Models/ActionRunner';
 
 namespace Settings {
   const { Controller, Post, Put, Get } = Decorators;
@@ -26,7 +25,7 @@ namespace Settings {
       const body: Record<string, object> = req.body;
       const { queryParams } = body as Record<string, QueryParams>;
 
-      const changePasswordAction = new Action.ActionParser({
+      const changePasswordAction = new ActionRunner({
         actionPath: 'users',
         actionType: 'change_password',
         body,
@@ -34,7 +33,7 @@ namespace Settings {
 
       const actionParams: ActionParams = { queryParams };
 
-      const responseExec: Function = await changePasswordAction.actionsRunner(actionParams);
+      const responseExec: Function = await changePasswordAction.start(actionParams);
       return responseExec(req, res, params);
     }
 
@@ -53,14 +52,14 @@ namespace Settings {
       const { params: queryParams = {} } = body as Record<string, QueryParams>;
       const { items = [], query = '' } = queryParams;
 
-      const changeStatusList = new Action.ActionParser({
+      const changeStatusList = new ActionRunner({
         actionPath: 'settings',
         actionType: isGetter ? 'get_statusList' : 'change_statusList',
       });
 
       const actionParams: ActionParams = !isGetter ? { items, idSettings: query } : {};
 
-      const responseExec: Function = await changeStatusList.actionsRunner(actionParams);
+      const responseExec: Function = await changeStatusList.start(actionParams);
       return responseExec(req, res, params);
     }
 
@@ -71,14 +70,14 @@ namespace Settings {
       const body: Record<string, QueryParams> = req.body;
       const { queryParams } = body;
 
-      const changeCommonAction = new Action.ActionParser({
+      const changeCommonAction = new ActionRunner({
         actionPath: 'users',
         actionType: 'common_changes',
       });
 
       const actionParams: ActionParams = { queryParams };
 
-      const responseExec: Function = await changeCommonAction.actionsRunner(actionParams);
+      const responseExec: Function = await changeCommonAction.start(actionParams);
       return responseExec(req, res, params);
     }
 
@@ -90,14 +89,14 @@ namespace Settings {
 
       const { options: queryParams } = bodyParams as Record<string, QueryParams>;
 
-      const changeLangAction = new Action.ActionParser({
+      const changeLangAction = new ActionRunner({
         actionPath: 'users',
         actionType: 'change_language',
       });
 
       const actionParams: ActionParams = { queryParams };
 
-      const responseExec: Function = await changeLangAction.actionsRunner(actionParams);
+      const responseExec: Function = await changeLangAction.start(actionParams);
       return responseExec(req, res, params);
     }
 
@@ -108,14 +107,14 @@ namespace Settings {
 
       const { queryParams } = body;
 
-      const changeProfileAction = new Action.ActionParser({
+      const changeProfileAction = new ActionRunner({
         actionPath: 'users',
         actionType: 'profile_changes',
       });
 
       const actionParams: ActionParams = { queryParams };
 
-      const responseExec: Function = await changeProfileAction.actionsRunner(actionParams);
+      const responseExec: Function = await changeProfileAction.start(actionParams);
       return responseExec(req, res, params);
     }
 
@@ -127,11 +126,11 @@ namespace Settings {
 
       const params: Params = createParams(actionType as string, 'done', 'settingsLog');
 
-      const settingsLogger = new Action.ActionParser({
+      const settingsLogger = new ActionRunner({
         actionPath: 'settingsLog',
         actionType: actionType as string,
       });
-      const responseExec: Function = await settingsLogger.actionsRunner(body);
+      const responseExec: Function = await settingsLogger.start(body);
       return responseExec(req, res, params);
     }
   }

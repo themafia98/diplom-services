@@ -1,22 +1,33 @@
 import { Model, Document, Types, isValidObjectId } from 'mongoose';
-import { ActionParams, Actions, Action, QueryParams } from '../../../Utils/Interfaces/Interfaces.global';
+import { ActionParams, Action, QueryParams, Parser } from '../../../Utils/Interfaces/Interfaces.global';
 import { ParserData } from '../../../Utils/Types/types.global';
 import Utils from '../../../Utils/utils.global';
 import _ from 'lodash';
 import { ACTION_TYPE } from './ActionWiki.constant';
 import { GLOBAL_ACTION_TYPE } from '../ActionEntity.global.constant';
+import ActionEntity from '../../ActionEntity/ActionEntity';
 
 const { getModelByName } = Utils;
 
 class ActionWiki implements Action {
-  constructor(private entity: Actions) {}
+  private entityParser: Parser;
+  private entity: ActionEntity;
 
-  public getEntity(): Actions {
+  constructor(entityParser: Parser, entity: ActionEntity) {
+    this.entityParser = entityParser;
+    this.entity = entity;
+  }
+
+  public getEntityParser(): Parser {
+    return this.entityParser;
+  }
+
+  public getEntity(): ActionEntity {
     return this.entity;
   }
 
   private async getTreeList(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
-    return this.getEntity().getAll(model, actionParam);
+    return this.getEntityParser().getAll(model, actionParam);
   }
 
   private async createLeaf(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
@@ -31,7 +42,7 @@ class ActionWiki implements Action {
     const validId = !isRoot ? Types.ObjectId(parentId) : parentId;
     if (!validId) return null;
 
-    return await this.getEntity().createEntity(model, { ...item, parentId: validId } as object);
+    return await this.getEntityParser().createEntity(model, { ...item, parentId: validId } as object);
   }
 
   private async deleteLeafs(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
@@ -58,11 +69,11 @@ class ActionWiki implements Action {
 
     if (pageModel) idsPages = await this.getWikiPageList(parsedIds, pageModel);
 
-    const deleteResult: ParserData = await this.getEntity().deleteEntity(model, query);
+    const deleteResult: ParserData = await this.getEntityParser().deleteEntity(model, query);
     const { deletedCount = 0 } = (deleteResult as Record<string, number>) || {};
 
     if (deletedCount && Array.isArray(idsPages) && pageModel) {
-      await this.getEntity().deleteEntity(pageModel, {
+      await this.getEntityParser().deleteEntity(pageModel, {
         multiple: true,
         mode: 'many',
         findBy: '_id',
@@ -79,7 +90,7 @@ class ActionWiki implements Action {
   ): Promise<Array<Types.ObjectId>> {
     if (!ids || !Array.isArray(ids)) return [];
 
-    const pagesList = await this.getEntity().getAll(model, {
+    const pagesList = await this.getEntityParser().getAll(model, {
       treeId: { $in: ids },
     });
 
@@ -95,7 +106,7 @@ class ActionWiki implements Action {
 
     if (!treeId) return null;
 
-    const result = await this.getEntity().findOnce(model, { ...methodQuery, treeId });
+    const result = await this.getEntityParser().findOnce(model, { ...methodQuery, treeId });
     return result;
   }
 
@@ -118,7 +129,7 @@ class ActionWiki implements Action {
       };
 
       if (isVirtual) {
-        const actionData: ParserData = await this.getEntity().createEntity(model, updateProps);
+        const actionData: ParserData = await this.getEntityParser().createEntity(model, updateProps);
         return actionData;
       }
 
@@ -130,8 +141,8 @@ class ActionWiki implements Action {
 
       if (pageId) query._id = pageId;
 
-      await this.getEntity().updateEntity(model, query);
-      const actionData: ParserData = await this.getEntity().findOnce(model, queryFind);
+      await this.getEntityParser().updateEntity(model, query);
+      const actionData: ParserData = await this.getEntityParser().findOnce(model, queryFind);
 
       return actionData;
     } catch (err) {

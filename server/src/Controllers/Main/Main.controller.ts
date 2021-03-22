@@ -11,15 +11,13 @@ import {
   FileApi,
   Controller as ControllerApi,
   BodyLogin,
-  Actions,
   User,
   JsonConfig,
   RequestWithParams,
+  Runner,
 } from '../../Utils/Interfaces/Interfaces.global';
 import { ResRequest } from '../../Utils/Types/types.global';
-
 import Decorators from '../../Utils/decorators';
-import Action from '../../Models/Action';
 import AccessRole from '../../Models/AccessRole';
 import { UserModel } from '../../Models/Database/Schema';
 import { createParams } from '../Controllers.utils';
@@ -28,6 +26,7 @@ import { MAIN_ROUTE } from './Main.path';
 import Utils from '../../Utils/utils.global';
 import { Types } from 'mongoose';
 import Responser from '../../Models/Responser';
+import ActionRunner from '../../Models/ActionRunner';
 
 namespace System {
   const readFile = promisify(fs.readFile);
@@ -93,12 +92,12 @@ namespace System {
       const queryString = querystring.parse(query as string);
 
       const params: Params = createParams('get_all', 'done', 'users');
-      const actionUserList: Actions = new Action.ActionParser({
+      const actionUserList: Runner = new ActionRunner({
         actionPath: 'users',
         actionType: 'get_all',
       });
 
-      const responseExec: Function = await actionUserList.actionsRunner({}, '', queryString);
+      const responseExec: Function = await actionUserList.start({}, '', queryString);
       return responseExec(req, res, params, true);
     }
 
@@ -109,13 +108,13 @@ namespace System {
       const params: Params = createParams('save_file', 'done', moduleName);
 
       const files: Express.Multer.File[] = req.files as Express.Multer.File[];
-      const saveFileAction: Actions = new Action.ActionParser({
+      const saveFileAction: Runner = new ActionRunner({
         actionPath: 'global',
         actionType: 'save_file',
         store,
       });
 
-      const responseExec: Function = await saveFileAction.actionsRunner({ files, moduleName });
+      const responseExec: Function = await saveFileAction.start({ files, moduleName });
       return responseExec(req, res, params);
     }
 
@@ -126,7 +125,7 @@ namespace System {
 
       const params: Params = createParams('load_files', 'done', moduleName);
 
-      const downloadAction: Actions = new Action.ActionParser({
+      const downloadAction: Runner = new ActionRunner({
         actionPath: 'global',
         actionType: 'load_files',
         store: <FileApi>dropbox,
@@ -137,7 +136,7 @@ namespace System {
         moduleName,
       };
 
-      const responseExec: Function = await downloadAction.actionsRunner(body);
+      const responseExec: Function = await downloadAction.start(body);
       return responseExec(req, res, params);
     }
 
@@ -147,13 +146,13 @@ namespace System {
       const params: Params = createParams('download_files', 'done', 'tasks');
 
       const { dropbox: store } = server.locals;
-      const downloadAction: Actions = new Action.ActionParser({
+      const downloadAction: Runner = new ActionRunner({
         actionPath: 'global',
         actionType: 'download_files',
         store,
       });
 
-      const responseExec: Function = await downloadAction.actionsRunner({
+      const responseExec: Function = await downloadAction.start({
         entityId,
         moduleName,
         filename,
@@ -168,7 +167,7 @@ namespace System {
 
       const params: Params = createParams('delete_file', 'done', moduleName);
 
-      const deleteFileAction: Actions = new Action.ActionParser({
+      const deleteFileAction: Runner = new ActionRunner({
         actionPath: 'global',
         actionType: 'delete_file',
         store,
@@ -178,7 +177,7 @@ namespace System {
         body: { ...req.body },
         store: `/${moduleName}`,
       };
-      const responseExec: Function = await deleteFileAction.actionsRunner(body);
+      const responseExec: Function = await deleteFileAction.start(body);
       return responseExec(req, res, params);
     }
 
@@ -189,13 +188,13 @@ namespace System {
 
       const params: Params = createParams('update_single', 'done', moduleName);
 
-      const updateSingleAction: Actions = new Action.ActionParser({
+      const updateSingleAction: Runner = new ActionRunner({
         actionPath: moduleName,
         actionType: 'update_single',
         body: paramsRequest,
       });
 
-      const responseExec: Function = await updateSingleAction.actionsRunner(paramsRequest);
+      const responseExec: Function = await updateSingleAction.start(paramsRequest);
       return responseExec(req, res, params);
     }
 
@@ -214,13 +213,13 @@ namespace System {
 
       const params: Params = createParams('update_many', 'done', moduleName);
 
-      const updateManyAction: Actions = new Action.ActionParser({
+      const updateManyAction: Runner = new ActionRunner({
         actionPath: moduleName,
         actionType: 'update_many',
         body: actionParams,
       });
 
-      const responseExec: Function = await updateManyAction.actionsRunner(actionParams);
+      const responseExec: Function = await updateManyAction.start(actionParams);
       return responseExec(req, res, params, true);
     }
 
@@ -240,12 +239,12 @@ namespace System {
        */
       const { options = {}, item = {} } = paramsRequest || {};
 
-      const createNotificationAction: Actions = new Action.ActionParser({
+      const createNotificationAction: Runner = new ActionRunner({
         actionPath: 'notification',
         actionType: actionType as string,
       });
 
-      const responseExec: Function = await createNotificationAction.actionsRunner({
+      const responseExec: Function = await createNotificationAction.start({
         ...options,
         item,
         type: notificationType,
@@ -260,13 +259,13 @@ namespace System {
       const params: Params = createParams('sync', 'done', 'sync_all');
       const body: BodyLogin = req.body;
 
-      const syncAction: Actions = new Action.ActionParser({
+      const syncAction: Runner = new ActionRunner({
         actionPath: moduleName,
         actionType: 'sync',
         body,
       });
 
-      const responseExec: Function = await syncAction.actionsRunner(body);
+      const responseExec: Function = await syncAction.start(body);
       return responseExec(req, res, params);
     }
 

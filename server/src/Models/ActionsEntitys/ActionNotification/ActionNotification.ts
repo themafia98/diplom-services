@@ -1,16 +1,27 @@
 import Utils from '../../../Utils/utils.global';
 import { Model, Document } from 'mongoose';
-import { ActionParams, Actions, Action, QueryParams } from '../../../Utils/Interfaces/Interfaces.global';
+import { ActionParams, Action, QueryParams, Parser } from '../../../Utils/Interfaces/Interfaces.global';
 import { ParserData } from '../../../Utils/Types/types.global';
 import _ from 'lodash';
 import { GLOBAL_ACTION_TYPE } from '../ActionEntity.global.constant';
+import ActionEntity from '../../ActionEntity/ActionEntity';
 
 const { getModelByName } = Utils;
 
 class ActionNotification implements Action {
-  constructor(private entity: Actions) {}
+  private entityParser: Parser;
+  private entity: ActionEntity;
 
-  public getEntity(): Actions {
+  constructor(entityParser: Parser, entity: ActionEntity) {
+    this.entityParser = entityParser;
+    this.entity = entity;
+  }
+
+  public getEntityParser(): Parser {
+    return this.entityParser;
+  }
+
+  public getEntity(): ActionEntity {
     return this.entity;
   }
 
@@ -19,7 +30,7 @@ class ActionNotification implements Action {
 
     if (!item) return null;
 
-    const result = await this.getEntity().createEntity(model, item);
+    const result = await this.getEntityParser().createEntity(model, item);
     return result;
   }
 
@@ -50,9 +61,9 @@ class ActionNotification implements Action {
       };
 
       const privateCountQuery = { type: { $in: concactType }, ...(ids as object) };
-      const count = await this.getEntity().getCounter(model, privateCountQuery);
+      const count = await this.getEntityParser().getCounter(model, privateCountQuery);
 
-      const result = await this.getEntity().getAll(
+      const result = await this.getEntityParser().getAll(
         model,
         { type: concactType, ...privateMethodQuery },
         limitList as number | null,
@@ -64,7 +75,7 @@ class ActionNotification implements Action {
 
     const query = isObject ? { type: concactType, ...(ids as object) } : { type: concactType };
 
-    const result = await this.getEntity().getAll(
+    const result = await this.getEntityParser().getAll(
       model,
       query,
       limitList as number | null,
@@ -72,7 +83,7 @@ class ActionNotification implements Action {
       'asc',
     );
 
-    const count = await this.getEntity().getCounter(model, query);
+    const count = await this.getEntityParser().getCounter(model, query);
 
     return { result, count };
   }
@@ -82,7 +93,7 @@ class ActionNotification implements Action {
     const { options = {} } = params as Record<string, object>;
     const queryParams: QueryParams = { queryType: 'many', actionParam: options };
 
-    const result = await this.getEntity().updateEntity(model, queryParams);
+    const result = await this.getEntityParser().updateEntity(model, queryParams);
     return result;
   }
 

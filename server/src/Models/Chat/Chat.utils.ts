@@ -1,7 +1,7 @@
 import { Socket } from 'socket.io';
 import { QueryParams } from '../../Utils/Interfaces/Interfaces.global';
 import { ParserResult } from '../../Utils/Types/types.global';
-import ActionApi from '../Action';
+import ActionApi from '../ActionRunner';
 import { PROCESS_ACTIONS, PROCESS_CHAT_EVENTS } from './Chat.constant';
 
 export const createRealRoom = async (

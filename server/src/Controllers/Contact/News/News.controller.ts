@@ -6,14 +6,14 @@ import {
   Params,
   QueryParams,
   RequestWithParams,
+  Runner,
 } from '../../../Utils/Interfaces/Interfaces.global';
 import { Meta, ResRequest } from '../../../Utils/Types/types.global';
-
 import Decorators from '../../../Utils/decorators';
-import Action from '../../../Models/Action';
 import { createParams } from '../../Controllers.utils';
 import { NEWS_ROUTE } from './News.path';
 import Utils from '../../../Utils/utils.global';
+import ActionRunner from '../../../Models/ActionRunner';
 
 namespace News {
   const Controller = Decorators.Controller;
@@ -39,9 +39,9 @@ namespace News {
         params.customErrorMessage = 'Access error for create news';
       }
 
-      const actionNews = new Action.ActionParser({ actionPath: 'news', actionType });
+      const actionNews = new ActionRunner({ actionPath: 'news', actionType });
 
-      const responseExec: Function = await actionNews.actionsRunner(shouldBeCreate ? <Meta>metadata : {});
+      const responseExec: Function = await actionNews.start(shouldBeCreate ? <Meta>metadata : {});
       return responseExec(req, res, params);
     }
 
@@ -55,9 +55,9 @@ namespace News {
 
       const actionParams: ActionParams = { queryParams: keys ? { keys } : {}, limitList };
 
-      const actionListNews = new Action.ActionParser({ actionPath: 'news', actionType: 'get_all' });
+      const actionListNews: Runner = new ActionRunner({ actionPath: 'news', actionType: 'get_all' });
 
-      const responseExec: Function = await actionListNews.actionsRunner(actionParams);
+      const responseExec: Function = await actionListNews.start(actionParams);
       return responseExec(req, res, params);
     }
   }

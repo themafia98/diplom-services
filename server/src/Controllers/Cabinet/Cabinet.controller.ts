@@ -4,11 +4,11 @@ import querystring from 'querystring';
 import {
   Params,
   Controller as ControllerApi,
-  Actions,
   ActionParams,
+  Runner,
 } from '../../Utils/Interfaces/Interfaces.global';
 import { ResRequest, FileBody } from '../../Utils/Types/types.global';
-import Action from '../../Models/Action';
+import ActionRunner from '../../Models/ActionRunner';
 import Decorators from '../../Utils/decorators';
 import { isValidObjectId, Types } from 'mongoose';
 import { createParams } from '../Controllers.utils';
@@ -35,20 +35,20 @@ namespace Cabinet {
 
       const dataUrl = image.buffer.toString('base64');
 
-      const updateAvatarAction = new Action.ActionParser({
+      const updateAvatarAction: Runner = new ActionRunner({
         actionPath: 'users',
         actionType: 'update_single',
       });
 
       const body: ActionParams = { queryParams: { uid }, updateItem: { avatar: dataUrl } };
-      const responseExec: Function = await updateAvatarAction.actionsRunner(body);
+      const responseExec: Function = await updateAvatarAction.start(body);
       return responseExec(req, res, params);
     }
 
     @Get({ path: CABINET_ROUTE[Utils.getVersion()].FIND_USER, private: true })
     protected async findUser(req: Request, res: Response): ResRequest {
       const params: Params = createParams('get_all', 'done', 'users');
-      const actionUser: Actions = new Action.ActionParser({
+      const actionUser: Runner = new ActionRunner({
         actionPath: 'users',
         actionType: 'get_all',
       });
@@ -59,7 +59,7 @@ namespace Cabinet {
       const findQuery: ActionParams =
         uid && isValidObjectId(uid) && typeof uid === 'string' ? { _id: Types.ObjectId(uid) } : { _id: '' };
 
-      const responseExec: Function = await actionUser.actionsRunner(findQuery);
+      const responseExec: Function = await actionUser.start(findQuery);
       return responseExec(req, res, params, true);
     }
   }

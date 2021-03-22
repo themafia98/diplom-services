@@ -1,13 +1,13 @@
 import { ActionProps, EntityActionApi, FileApi, Dbms } from '../../Utils/Interfaces/Interfaces.global';
 import Instanse from '../../Utils/instanse';
 
-abstract class ActionEntity implements EntityActionApi {
+class ActionEntity implements EntityActionApi {
   private actionPath: string = '';
   private actionType: string = '';
   private store: FileApi;
   private dbm: Dbms = Instanse.dbm;
 
-  protected constructor(props: ActionProps) {
+  constructor(props: ActionProps) {
     this.actionPath = props.actionPath;
     this.actionType = props.actionType;
     this.store = props.store as FileApi;

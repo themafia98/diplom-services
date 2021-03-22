@@ -1,11 +1,10 @@
 import { ResRequest } from '../../../Utils/Types/types.global';
 import { Request, Response } from 'express';
-
 import Decorators from '../../../Utils/decorators';
-import Action from '../../../Models/Action';
-import { Controller as ControllerApi } from '../../../Utils/Interfaces/Interfaces.global';
+import { Controller as ControllerApi, Runner } from '../../../Utils/Interfaces/Interfaces.global';
 import { CHAT_ROUTE } from './Chat.path';
 import Utils from '../../../Utils/utils.global';
+import ActionRunner from '../../../Models/ActionRunner';
 
 const Post = Decorators.Post;
 const Delete = Decorators.Delete;
@@ -22,9 +21,9 @@ export class ChatController implements ControllerApi<FunctionConstructor> {
     const { actionPath = '', actionType = '', params = {}, moduleName = '' } = req.body;
     const { options = {} } = params;
 
-    const actionCreateRoom = new Action.ActionParser({ actionPath, actionType });
+    const actionCreateRoom: Runner = new ActionRunner({ actionPath, actionType });
 
-    const responseExec: Function = await actionCreateRoom.actionsRunner({ ...options, moduleName });
+    const responseExec: Function = await actionCreateRoom.start({ ...options, moduleName });
     return responseExec(req, res, { moduleName });
   }
 }
