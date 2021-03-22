@@ -1,7 +1,7 @@
 import { ActionParams, Actions, ActionProps, Params } from '../../Utils/Interfaces/Interfaces.global';
 import { Model, Document, Types, FilterQuery } from 'mongoose';
 import _ from 'lodash';
-import ActionEntity from './ActionEntity';
+import ActionEntity from '../ActionEntity/ActionEntity';
 import Utils from '../../Utils/utils.global';
 import {
   ParserData,
