@@ -20,7 +20,7 @@ import { ResRequest } from '../../Utils/Types/types.global';
 import Decorators from '../../Utils/decorators';
 import AccessRole from '../../Models/AccessRole';
 import { UserModel } from '../../Models/Database/Schema';
-import { createParams } from '../Controllers.utils';
+import { createParams, getFileStorage } from '../Controllers.utils';
 import { NOTIFICATION_TYPE } from './MainController.constant';
 import { MAIN_ROUTE } from './Main.path';
 import Utils from '../../Utils/utils.global';
@@ -104,14 +104,14 @@ namespace System {
     @Post({ path: MAIN_ROUTE[Utils.getVersion()].SAVE_FILE, private: true, file: true })
     protected async saveFile(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { module: moduleName = '' } = req.params;
-      const { dropbox: store } = server.locals;
+      const { dropbox } = server.locals;
       const params: Params = createParams('save_file', 'done', moduleName);
 
       const files: Express.Multer.File[] = req.files as Express.Multer.File[];
       const saveFileAction: Runner = new ActionRunner({
         actionPath: 'global',
         actionType: 'save_file',
-        store,
+        store: getFileStorage({ dropbox } as Record<string, FileApi>) as FileApi,
       });
 
       const responseExec: Function = await saveFileAction.start({ files, moduleName });
@@ -128,7 +128,7 @@ namespace System {
       const downloadAction: Runner = new ActionRunner({
         actionPath: 'global',
         actionType: 'load_files',
-        store: <FileApi>dropbox,
+        store: getFileStorage({ dropbox } as Record<string, FileApi>) as FileApi,
       });
 
       const body = {
@@ -145,11 +145,12 @@ namespace System {
       const { entityId = '', filename = '', module: moduleName = '' } = req.params;
       const params: Params = createParams('download_files', 'done', 'tasks');
 
-      const { dropbox: store } = server.locals;
+      const { dropbox } = server.locals;
+
       const downloadAction: Runner = new ActionRunner({
         actionPath: 'global',
         actionType: 'download_files',
-        store,
+        store: getFileStorage({ dropbox } as Record<string, FileApi>) as FileApi,
       });
 
       const responseExec: Function = await downloadAction.start({
@@ -162,7 +163,7 @@ namespace System {
 
     @Delete({ path: MAIN_ROUTE[Utils.getVersion()].DELETE_FILE, private: true })
     protected async deleteTaskFile(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
-      const { dropbox: store } = server.locals;
+      const { dropbox } = server.locals;
       const { module: moduleName = '' } = req.params;
 
       const params: Params = createParams('delete_file', 'done', moduleName);
@@ -170,7 +171,7 @@ namespace System {
       const deleteFileAction: Runner = new ActionRunner({
         actionPath: 'global',
         actionType: 'delete_file',
-        store,
+        store: getFileStorage({ dropbox } as Record<string, FileApi>) as FileApi,
       });
 
       const body = {
