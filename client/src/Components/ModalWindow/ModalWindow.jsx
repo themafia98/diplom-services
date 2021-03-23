@@ -130,6 +130,7 @@ const ModalWindow = memo((props) => {
         '/reg',
         'POST',
         {
+          env: process.env.NODE_ENV,
           actionType: actionsTypes.$REG_USER,
           user: {
             email,
