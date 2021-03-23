@@ -43,6 +43,8 @@ namespace Http {
     private smtpConfig = {
       host: 'smtp.yandex.ru',
       port: 465,
+      secure: true,
+      logger: true,
       auth: {
         user: process.env.TOKEN_YANDEX_USER,
         pass: process.env.TOKEN_YANDEX_PASSWORD,

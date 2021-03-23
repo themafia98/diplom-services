@@ -271,7 +271,7 @@ namespace General {
       } catch (error) {
         console.error(error);
         res.statusMessage = error.message;
-        res.status(403);
+        res.sendStatus(403);
         return;
       }
     }
