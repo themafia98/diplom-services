@@ -13,6 +13,7 @@ import { createParams } from '../Controllers.utils';
 import { TASKS_ROUTE } from './Tasks.path';
 import Utils from '../../Utils/utils.global';
 import ActionRunner from '../../Models/ActionRunner/ActionRunner';
+import { ENTITY } from '../../Models/Database/Schema/Schema.constant';
 
 namespace Tasks {
   const Controller = Decorators.Controller;
@@ -71,7 +72,7 @@ namespace Tasks {
     protected async create(req: Request, res: Response): ResRequest {
       const { params: task = {} } = req.body;
 
-      const params: Params = createParams('set_single', 'done', 'users');
+      const params: Params = createParams('set_single', 'done', ENTITY.USERS);
       const { shouldBeCreate = false } = req as RequestWithParams;
 
       if (!shouldBeCreate) {
@@ -89,13 +90,13 @@ namespace Tasks {
 
     @Put({ path: TASKS_ROUTE[Utils.getVersion()].CACHING_JURNAL, private: true })
     protected async setJurnalWorks(req: Request, res: Response): ResRequest {
-      const params: Params = createParams('set_jurnal', 'done', 'jurnalworks');
+      const params: Params = createParams('set_jurnal', 'done', ENTITY.TASK_LOGS);
       const { params: jurnalEntity = {} } = req.body;
 
       const body: BodyLogin = jurnalEntity;
 
       const createJurnalAction = new ActionRunner({
-        actionPath: 'jurnalworks',
+        actionPath: ENTITY.TASK_LOGS,
         actionType: 'set_jurnal',
         body,
       });

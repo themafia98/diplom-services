@@ -12,6 +12,7 @@ import _ from 'lodash';
 import { ObjectID } from 'mongodb';
 import { ACTION_TYPE } from './ActionTasks.constant';
 import ActionEntity from '../../ActionEntity/ActionEntity';
+import { ENTITY } from '../../Database/Schema/Schema.constant';
 const { getModelByName, generateRemoteTask, getFilterQuery, parseFilterFields } = Utils;
 
 class ActionTasks implements Action {
@@ -225,7 +226,7 @@ class ActionTasks implements Action {
   }
 
   public async run(actionParam: ActionParams): Promise<ParserData> {
-    const model: Model<Document> | null = getModelByName('tasks', 'task');
+    const model: Model<Document> | null = getModelByName('tasks', ENTITY.TASK);
     if (!model) return null;
 
     const typeAction: string = this.getEntity().getActionType();

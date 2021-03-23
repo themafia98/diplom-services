@@ -2,13 +2,14 @@ import { Socket } from 'socket.io';
 import { QueryParams } from '../../Utils/Interfaces/Interfaces.global';
 import { ParserResult } from '../../Utils/Types/types.global';
 import ActionRunner from '../ActionRunner/ActionRunner';
+import { ENTITY } from '../Database/Schema/Schema.constant';
 import { PROCESS_ACTIONS, PROCESS_CHAT_EVENTS } from './Chat.constant';
 
 export const createRealRoom = async (
   fakeMsg: Record<string, string | object>,
   interlocutorId: string,
 ): Promise<ParserResult> => {
-  const actionPath: string = 'chatRoom';
+  const actionPath: string = ENTITY.CHAT_ROOM;
   const actionType: string = 'create_FakeRoom';
 
   const actionCreateRoom = new ActionRunner({ actionPath, actionType });

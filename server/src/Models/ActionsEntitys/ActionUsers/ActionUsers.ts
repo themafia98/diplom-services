@@ -5,6 +5,7 @@ import { ActionParams, Action, User, QueryParams, Parser } from '../../../Utils/
 import { ParserData } from '../../../Utils/Types/types.global';
 import Utils from '../../../Utils/utils.global';
 import ActionEntity from '../../ActionEntity/ActionEntity';
+import { ENTITY } from '../../Database/Schema/Schema.constant';
 import { GLOBAL_ACTION_TYPE } from '../ActionEntity.global.constant';
 import { ACTION_TYPE } from './ActionUsers.constant';
 
@@ -45,7 +46,7 @@ class ActionUsers implements Action {
       return null;
     }
 
-    const tokenModel: Model<Document> | null = getModelByName('recoveryToken', 'recoveryToken');
+    const tokenModel: Model<Document> | null = getModelByName(ENTITY.RECOVERY_TOKEN, ENTITY.RECOVERY_TOKEN);
 
     if (tokenModel === null) {
       return null;
@@ -58,7 +59,7 @@ class ActionUsers implements Action {
     const recovoryToken: string = (actionParam as Record<string, string>).recovoryToken;
     const to: string = (actionParam as Record<string, string>).to;
 
-    const tokenModel = getModelByName('recoveryToken', 'recoveryToken');
+    const tokenModel = getModelByName(ENTITY.RECOVERY_TOKEN, ENTITY.RECOVERY_TOKEN);
 
     if (!tokenModel) {
       throw new Error('bad token model for recovory');
@@ -263,7 +264,7 @@ class ActionUsers implements Action {
   }
 
   public async run(actionParam: ActionParams): Promise<ParserData> {
-    const model: Model<Document> | null = getModelByName('users', 'users');
+    const model: Model<Document> | null = getModelByName(ENTITY.USERS, ENTITY.USERS);
     if (!model) return null;
 
     switch (this.getEntity().getActionType()) {

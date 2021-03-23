@@ -5,6 +5,7 @@ import { ParserData } from '../../../Utils/Types/types.global';
 import Utils from '../../../Utils/utils.global';
 import { ACTION_TYPE } from './ActionJurnal.constant';
 import ActionEntity from '../../ActionEntity/ActionEntity';
+import { ENTITY } from '../../Database/Schema/Schema.constant';
 
 const { getModelByName } = Utils;
 
@@ -57,7 +58,7 @@ class ActionJournal implements Action {
   }
 
   public async run(actionParam: ActionParams): Promise<ParserData> {
-    const model: Model<Document> | null = getModelByName('jurnalworks', 'jurnalworks');
+    const model: Model<Document> | null = getModelByName(ENTITY.TASK_LOGS, ENTITY.TASK_LOGS);
     if (!model) return null;
 
     switch (this.getEntity().getActionType()) {

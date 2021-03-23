@@ -3,6 +3,7 @@ import { ActionParams, Action, Parser } from '../../../Utils/Interfaces/Interfac
 import { ParserData, MessageOptions } from '../../../Utils/Types/types.global';
 import Utils from '../../../Utils/utils.global';
 import ActionEntity from '../../ActionEntity/ActionEntity';
+import { ENTITY } from '../../Database/Schema/Schema.constant';
 import { ACTION_TYPE } from './ActionChatMessage.constant';
 
 const { getModelByName } = Utils;
@@ -42,7 +43,7 @@ class ActionChatMessage implements Action {
   }
 
   public async run(actionParam: ActionParams): Promise<ParserData> {
-    const model: Model<Document> | null = getModelByName('chatMsg', 'chatMsg');
+    const model: Model<Document> | null = getModelByName(ENTITY.CHAT_MESSAGE, ENTITY.CHAT_MESSAGE);
     if (!model) return null;
 
     switch (this.getEntity().getActionType()) {

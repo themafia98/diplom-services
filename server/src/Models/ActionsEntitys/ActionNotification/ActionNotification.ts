@@ -5,6 +5,7 @@ import { ParserData } from '../../../Utils/Types/types.global';
 import _ from 'lodash';
 import { GLOBAL_ACTION_TYPE } from '../ActionEntity.global.constant';
 import ActionEntity from '../../ActionEntity/ActionEntity';
+import { ENTITY } from '../../Database/Schema/Schema.constant';
 
 const { getModelByName } = Utils;
 
@@ -98,7 +99,7 @@ class ActionNotification implements Action {
   }
 
   public async run(actionParam: ActionParams): Promise<ParserData> {
-    const model: Model<Document> | null = getModelByName('notification', 'notification');
+    const model: Model<Document> | null = getModelByName(ENTITY.NOTIFICATION, ENTITY.NOTIFICATION);
     if (!model) return null;
 
     const typeAction: string = this.getEntity().getActionType();

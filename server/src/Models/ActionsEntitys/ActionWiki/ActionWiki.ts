@@ -6,6 +6,7 @@ import _ from 'lodash';
 import { ACTION_TYPE } from './ActionWiki.constant';
 import { GLOBAL_ACTION_TYPE } from '../ActionEntity.global.constant';
 import ActionEntity from '../../ActionEntity/ActionEntity';
+import { ENTITY } from '../../Database/Schema/Schema.constant';
 
 const { getModelByName } = Utils;
 
@@ -65,7 +66,7 @@ class ActionWiki implements Action {
     };
 
     let idsPages: Array<Types.ObjectId> = [];
-    const pageModel: Model<Document> | null = getModelByName('wikiPage', 'wikiPage');
+    const pageModel: Model<Document> | null = getModelByName(ENTITY.WIKI_PAGE, ENTITY.WIKI_PAGE);
 
     if (pageModel) idsPages = await this.getWikiPageList(parsedIds, pageModel);
 
@@ -152,7 +153,7 @@ class ActionWiki implements Action {
   }
 
   public async run(actionParam: ActionParams): Promise<ParserData> {
-    const { type = 'wikiTree' } = actionParam as Record<string, string>;
+    const { type = ENTITY.WIKI_TREE } = actionParam as Record<string, string>;
     const model: Model<Document> | null = getModelByName(type, type);
     if (!model) return null;
 

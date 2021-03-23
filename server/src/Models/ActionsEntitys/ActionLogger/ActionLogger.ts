@@ -4,6 +4,7 @@ import { ActionParams, Action, QueryParams, Parser } from '../../../Utils/Interf
 import { ParserData } from '../../../Utils/Types/types.global';
 import { ACTION_TYPE } from './ActionLogger.constant';
 import ActionEntity from '../../ActionEntity/ActionEntity';
+import { ENTITY } from '../../Database/Schema/Schema.constant';
 
 const { getModelByName } = Utils;
 
@@ -35,7 +36,7 @@ class ActionLogger implements Action {
   }
 
   public async run(actionParam: ActionParams): Promise<ParserData> {
-    const model: Model<Document> | null = getModelByName('settingsLog', 'settingsLog');
+    const model: Model<Document> | null = getModelByName(ENTITY.SETTINGS_LOGS, ENTITY.SETTINGS_LOGS);
     if (!model) return null;
 
     switch (this.getEntity().getActionType()) {

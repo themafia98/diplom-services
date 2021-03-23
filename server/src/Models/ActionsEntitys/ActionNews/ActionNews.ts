@@ -6,6 +6,7 @@ import _ from 'lodash';
 import { ObjectId } from 'mongodb';
 import { ACTION_TYPE } from './ActionNews.constant';
 import ActionEntity from '../../ActionEntity/ActionEntity';
+import { ENTITY } from '../../Database/Schema/Schema.constant';
 const { getModelByName } = Utils;
 
 class ActionNews implements Action {
@@ -50,7 +51,7 @@ class ActionNews implements Action {
   }
 
   public async run(actionParam: ActionParams): Promise<ParserData> {
-    const model: Model<Document> | null = getModelByName('news', 'news');
+    const model: Model<Document> | null = getModelByName(ENTITY.NEWS, ENTITY.NEWS);
     if (!model) return null;
 
     switch (this.getEntity().getActionType()) {

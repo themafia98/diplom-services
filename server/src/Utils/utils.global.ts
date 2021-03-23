@@ -23,6 +23,7 @@ import { ParsedUrlQuery } from 'querystring';
 import { CONTROLLERS_MAP } from '../Models/Server/Server.constant';
 import passport from 'passport';
 import { ACTIONS_ACCESS } from '../app.constant';
+import { ENTITY } from '../Models/Database/Schema/Schema.constant';
 
 namespace Utils {
   const upload = multer();
@@ -204,7 +205,7 @@ namespace Utils {
             const { _doc: item = {} } = it as Record<string, object>;
 
             const itemValid = Object.keys(item).reduce((obj: ResponseDocument, key: string): object => {
-              const addditionalRule: boolean = rules === 'users' ? !key.includes('At') : true;
+              const addditionalRule: boolean = rules === ENTITY.USERS ? !key.includes('At') : true;
               const isInclude =
                 key === '_id' || !queryStringKeys || queryStringKeys.some((queryKey) => queryKey === key);
               const isPublicField = !key.includes('password') && !key.includes('__v');

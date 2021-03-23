@@ -12,6 +12,7 @@ import { createParams } from '../Controllers.utils';
 import { SETTINGS_ROUTE } from './Settings.path';
 import Utils from '../../Utils/utils.global';
 import ActionRunner from '../../Models/ActionRunner/ActionRunner';
+import { ENTITY } from '../../Models/Database/Schema/Schema.constant';
 
 namespace Settings {
   const { Controller, Post, Put, Get } = Decorators;
@@ -20,13 +21,13 @@ namespace Settings {
   export class SettingsController implements ControllerApi<FunctionConstructor> {
     @Post({ path: SETTINGS_ROUTE[Utils.getVersion()].CHANGE_PASSWORD, private: true })
     protected async passwordChanged(req: Request, res: Response): ResRequest {
-      const params: Params = createParams('change_password', 'done', 'users');
+      const params: Params = createParams('change_password', 'done', ENTITY.USERS);
 
       const body: Record<string, object> = req.body;
       const { queryParams } = body as Record<string, QueryParams>;
 
       const changePasswordAction = new ActionRunner({
-        actionPath: 'users',
+        actionPath: ENTITY.USERS,
         actionType: 'change_password',
         body,
       });
@@ -45,7 +46,7 @@ namespace Settings {
       const params: Params = createParams(
         isGetter ? 'get_statusList' : 'change_statusList',
         'done',
-        'settings',
+        ENTITY.SETTINGS,
       );
 
       const body: Record<string, object> = req.body;
@@ -53,7 +54,7 @@ namespace Settings {
       const { items = [], query = '' } = queryParams;
 
       const changeStatusList = new ActionRunner({
-        actionPath: 'settings',
+        actionPath: ENTITY.SETTINGS,
         actionType: isGetter ? 'get_statusList' : 'change_statusList',
       });
 
@@ -65,13 +66,13 @@ namespace Settings {
 
     @Post({ path: SETTINGS_ROUTE[Utils.getVersion()].SAVE_COMMON, private: true })
     protected async commonSettings(req: Request, res: Response): ResRequest {
-      const params: Params = createParams('common_changes', 'done', 'users');
+      const params: Params = createParams('common_changes', 'done', ENTITY.USERS);
 
       const body: Record<string, QueryParams> = req.body;
       const { queryParams } = body;
 
       const changeCommonAction = new ActionRunner({
-        actionPath: 'users',
+        actionPath: ENTITY.USERS,
         actionType: 'common_changes',
       });
 
@@ -83,14 +84,14 @@ namespace Settings {
 
     @Post({ path: SETTINGS_ROUTE[Utils.getVersion()].SAVE_LANGUAGE, private: true })
     protected async saveLanguage(req: Request, res: Response): ResRequest {
-      const params: Params = createParams('change_language', 'done', 'users');
+      const params: Params = createParams('change_language', 'done', ENTITY.USERS);
 
       const { params: bodyParams = null } = req.body;
 
       const { options: queryParams } = bodyParams as Record<string, QueryParams>;
 
       const changeLangAction = new ActionRunner({
-        actionPath: 'users',
+        actionPath: ENTITY.USERS,
         actionType: 'change_language',
       });
 
@@ -102,13 +103,13 @@ namespace Settings {
 
     @Post({ path: SETTINGS_ROUTE[Utils.getVersion()].SAVE_PROFILE, private: true })
     protected async profileSettings(req: Request, res: Response): ResRequest {
-      const params: Params = createParams('profile_changes', 'done', 'users');
+      const params: Params = createParams('profile_changes', 'done', ENTITY.USERS);
       const body: Record<string, QueryParams> = req.body;
 
       const { queryParams } = body;
 
       const changeProfileAction = new ActionRunner({
-        actionPath: 'users',
+        actionPath: ENTITY.USERS,
         actionType: 'profile_changes',
       });
 
@@ -124,10 +125,10 @@ namespace Settings {
       const body: Record<string, object | string> = req.body;
       const { actionType = '' } = body;
 
-      const params: Params = createParams(actionType as string, 'done', 'settingsLog');
+      const params: Params = createParams(actionType as string, 'done', ENTITY.SETTINGS_LOGS);
 
       const settingsLogger = new ActionRunner({
-        actionPath: 'settingsLog',
+        actionPath: ENTITY.SETTINGS_LOGS,
         actionType: actionType as string,
       });
       const responseExec: Function = await settingsLogger.start(body);

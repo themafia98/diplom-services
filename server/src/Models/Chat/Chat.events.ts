@@ -6,13 +6,14 @@ import { ChatMessage } from '../../Utils/Interfaces/Interfaces.global';
 import { ParserResult } from '../../Utils/Types/types.global';
 import { createRealRoom, updateFakeRoom } from './Chat.utils';
 import { PROCESS_ACTIONS } from './Chat.constant';
+import { ENTITY } from '../Database/Schema/Schema.constant';
 
 const { getModelByName } = Utils;
 
 export const newMessageEvent = (socket: Socket) => async (msgObj: ChatMessage) => {
   const { tokenRoom = '' } = msgObj || {};
   try {
-    const model: Model<Document> | null = getModelByName('chatMsg', 'chatMsg');
+    const model: Model<Document> | null = getModelByName(ENTITY.CHAT_MESSAGE, ENTITY.CHAT_MESSAGE);
 
     if (model && tokenRoom) {
       socket.join(tokenRoom);

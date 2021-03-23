@@ -4,6 +4,7 @@ import { ActionParams, Action, SocketMessageDoc, Parser } from '../../../Utils/I
 import { ParserData, SocketMeta } from '../../../Utils/Types/types.global';
 import Utils from '../../../Utils/utils.global';
 import ActionEntity from '../../ActionEntity/ActionEntity';
+import { ENTITY } from '../../Database/Schema/Schema.constant';
 import { ACTION_TYPE } from './ActionChatRoom.constant';
 const { getModelByName, checkEntity } = Utils;
 
@@ -72,7 +73,7 @@ class ActionChatRoom implements Action {
   }
 
   private async roomGenerator(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
-    const modelMsg: Model<Document> | null = getModelByName('chatMsg', 'chatMsg');
+    const modelMsg: Model<Document> | null = getModelByName(ENTITY.CHAT_MESSAGE, ENTITY.CHAT_MESSAGE);
     const { fakeMsg: msg } = actionParam as Record<string, SocketMessageDoc>;
     const { interlocutorId: interlocutorIdDirty = '' } = actionParam as Record<string, string>;
     const { authorId: authorIdDirty = '', moduleName = '', tokenRoom = '', groupName = '' } = msg;
@@ -111,7 +112,7 @@ class ActionChatRoom implements Action {
   }
 
   public async run(actionParam: ActionParams): Promise<ParserData> {
-    const model: Model<Document> | null = getModelByName('chatRoom', 'chatRoom');
+    const model: Model<Document> | null = getModelByName(ENTITY.CHAT_ROOM, ENTITY.CHAT_ROOM);
     if (!model) return null;
 
     switch (this.getEntity().getActionType()) {

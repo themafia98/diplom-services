@@ -6,6 +6,7 @@ import { ParserData } from '../../../Utils/Types/types.global';
 import _ from 'lodash';
 import { ACTION_TYPE } from './ActionSettings.constant';
 import ActionEntity from '../../ActionEntity/ActionEntity';
+import { ENTITY } from '../../Database/Schema/Schema.constant';
 
 const { getModelByName } = Utils;
 
@@ -67,7 +68,7 @@ class ActionSettings implements Action {
   }
 
   public async run(actionParam: ActionParams): Promise<ParserData> {
-    const model: Model<Document> | null = getModelByName('settings', 'settings');
+    const model: Model<Document> | null = getModelByName(ENTITY.SETTINGS, ENTITY.SETTINGS);
     if (!model) return null;
 
     switch (this.getEntity().getActionType()) {

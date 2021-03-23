@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { ROLES } from '../../AccessRole/AcessRole.constant';
 import authConfig from '../../../config/auth.config';
+import { ENTITY } from './Schema.constant';
 
 const userSchema: Schema<User> = new Schema(
   {
@@ -132,7 +133,7 @@ export const task: Schema<Task> = new Schema(
 
 export const jurnalItem = new Schema(
   {
-    depKey: { type: Types.ObjectId, ref: 'task', required: true },
+    depKey: { type: Types.ObjectId, ref: ENTITY.TASK, required: true },
     timeLost: { type: String, required: true },
     editor: { type: String, required: true },
     date: { type: [String], required: true },
@@ -188,7 +189,7 @@ export const chatRoom = new Schema(
       type: [
         {
           type: Types.ObjectId,
-          ref: 'users',
+          ref: ENTITY.USERS,
           required: true,
         },
       ],
@@ -236,7 +237,7 @@ export const wikiTree = new Schema(
 
 export const wikiPage = new Schema(
   {
-    treeId: { type: Types.ObjectId, ref: 'wikiTree', required: true },
+    treeId: { type: Types.ObjectId, ref: ENTITY.WIKI_TREE, required: true },
     lastEditName: { type: String, required: true },
     lastEditDate: { type: String, required: true },
     content: {
@@ -268,37 +269,37 @@ export const settings = new Schema(
 );
 
 export const recoveryToken = new Schema({
-  userId: { type: Types.ObjectId, ref: 'users', required: true },
+  userId: { type: Types.ObjectId, ref: ENTITY.USERS, required: true },
   expire_at: { type: Date, default: Date.now, expires: 1600 },
 });
 
-export const UserModel: Model<Document> = model('users', userSchema);
+export const UserModel: Model<Document> = model(ENTITY.USERS, userSchema);
 
 export const getSchemaByName = (name: string) => {
   switch (name) {
-    case 'task':
+    case ENTITY.TASK:
       return task;
-    case 'users':
+    case ENTITY.USERS:
       return userSchema;
-    case 'jurnalworks':
+    case ENTITY.TASK_LOGS:
       return jurnalItem;
-    case 'news':
+    case ENTITY.NEWS:
       return news;
-    case 'chatMsg':
+    case ENTITY.CHAT_MESSAGE:
       return chatMsg;
-    case 'chatRoom':
+    case ENTITY.CHAT_ROOM:
       return chatRoom;
-    case 'settingsLog':
+    case ENTITY.SETTINGS_LOGS:
       return logger;
-    case 'settings':
+    case ENTITY.SETTINGS:
       return settings;
-    case 'notification':
+    case ENTITY.NOTIFICATION:
       return notification;
-    case 'wikiTree':
+    case ENTITY.WIKI_TREE:
       return wikiTree;
-    case 'wikiPage':
+    case ENTITY.WIKI_PAGE:
       return wikiPage;
-    case 'recoveryToken':
+    case ENTITY.RECOVERY_TOKEN:
       return recoveryToken;
     default:
       return null;

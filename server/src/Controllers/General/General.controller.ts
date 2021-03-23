@@ -21,6 +21,7 @@ import { GENERAL_ROUTE } from './General.path';
 import ActionRunner from '../../Models/ActionRunner/ActionRunner';
 import { ACTION_TYPE } from '../../Models/ActionsEntitys/ActionUsers/ActionUsers.constant';
 import { Document } from 'mongoose';
+import { ENTITY } from '../../Models/Database/Schema/Schema.constant';
 
 namespace General {
   const Get = Decorators.Get;
@@ -191,7 +192,7 @@ namespace General {
       const { recovoryField = '' } = body;
 
       const tokenAction: Runner = new ActionRunner({
-        actionPath: 'users',
+        actionPath: ENTITY.USERS,
         actionType: ACTION_TYPE.RECOVORY_PASSWORD_TOKEN,
       });
 
@@ -243,7 +244,7 @@ namespace General {
         }
 
         const checkerAction: Runner = new ActionRunner({
-          actionPath: 'users',
+          actionPath: ENTITY.USERS,
           actionType: ACTION_TYPE.RECOVORY_PASSWORD,
           body: { recovoryToken, to },
         });

@@ -7,6 +7,7 @@ import Utils from '../../Utils/utils.global';
 import { ActionParams } from '../../Utils/Interfaces/Interfaces.global';
 import { Meta, ParserData } from '../../Utils/Types/types.global';
 import ActionParser from '../ActionParser/ActionParser';
+import { ENTITY } from '../Database/Schema/Schema.constant';
 
 export const runSyncClient = async (
   action: ActionParser,
@@ -17,7 +18,10 @@ export const runSyncClient = async (
   for await (let syncItem of syncList) {
     const { entity = '' } = syncItem as Record<string, string>;
     const { items = [] } = syncItem as Record<string, Array<object>>;
-    const model: Model<Document> | null = Utils.getModelByName(entity, entity === 'tasks' ? 'task' : entity);
+    const model: Model<Document> | null = Utils.getModelByName(
+      entity,
+      entity === 'tasks' ? ENTITY.TASK : entity,
+    );
 
     if (!model) continue;
     for await (let updateProps of items) {

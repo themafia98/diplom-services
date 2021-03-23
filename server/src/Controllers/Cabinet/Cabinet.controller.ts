@@ -15,6 +15,7 @@ import { createParams } from '../Controllers.utils';
 import { CABINET_ROUTE } from './Cabinet.path';
 import { ROUTE_PARAMS } from '../../Models/Router/Router.constant';
 import Utils from '../../Utils/utils.global';
+import { ENTITY } from '../../Models/Database/Schema/Schema.constant';
 
 namespace Cabinet {
   const { Controller, Post, Get } = Decorators;
@@ -23,7 +24,7 @@ namespace Cabinet {
   export class CabinetController implements ControllerApi<FunctionConstructor> {
     @Post({ path: CABINET_ROUTE[Utils.getVersion()].LOAD_USER, private: true, file: true })
     protected async loadAvatar(req: Request, res: Response): ResRequest {
-      const params: Params = createParams('update_avatar', 'done', 'users');
+      const params: Params = createParams('update_avatar', 'done', ENTITY.USERS);
       const files: Array<FileBody> = req.files as Array<FileBody>;
       const { [ROUTE_PARAMS.USER_ID]: uid } = req.params;
 
@@ -36,7 +37,7 @@ namespace Cabinet {
       const dataUrl = image.buffer.toString('base64');
 
       const updateAvatarAction: Runner = new ActionRunner({
-        actionPath: 'users',
+        actionPath: ENTITY.USERS,
         actionType: 'update_single',
       });
 
@@ -47,9 +48,9 @@ namespace Cabinet {
 
     @Get({ path: CABINET_ROUTE[Utils.getVersion()].FIND_USER, private: true })
     protected async findUser(req: Request, res: Response): ResRequest {
-      const params: Params = createParams('get_all', 'done', 'users');
+      const params: Params = createParams('get_all', 'done', ENTITY.USERS);
       const actionUser: Runner = new ActionRunner({
-        actionPath: 'users',
+        actionPath: ENTITY.USERS,
         actionType: 'get_all',
       });
 

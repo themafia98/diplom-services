@@ -27,6 +27,7 @@ import Utils from '../../Utils/utils.global';
 import { Types } from 'mongoose';
 import Responser from '../../Models/Responser';
 import ActionRunner from '../../Models/ActionRunner/ActionRunner';
+import { ENTITY } from '../../Models/Database/Schema/Schema.constant';
 
 namespace System {
   const readFile = promisify(fs.readFile);
@@ -91,9 +92,9 @@ namespace System {
       const { query } = url.parse(req.url);
       const queryString = querystring.parse(query as string);
 
-      const params: Params = createParams('get_all', 'done', 'users');
+      const params: Params = createParams('get_all', 'done', ENTITY.USERS);
       const actionUserList: Runner = new ActionRunner({
-        actionPath: 'users',
+        actionPath: ENTITY.USERS,
         actionType: 'get_all',
       });
 
@@ -227,7 +228,7 @@ namespace System {
     @Post({ path: MAIN_ROUTE[Utils.getVersion()].LOAD_NOTIFICATION, private: true })
     protected async notification(req: Request, res: Response): ResRequest {
       const { type: notificationType = '' } = req.params;
-      const params: Params = createParams(notificationType, 'done', 'notification');
+      const params: Params = createParams(notificationType, 'done', ENTITY.NOTIFICATION);
 
       if (Object.values(NOTIFICATION_TYPE).every((type) => type !== notificationType)) {
         return res.sendStatus(500);
@@ -241,7 +242,7 @@ namespace System {
       const { options = {}, item = {} } = paramsRequest || {};
 
       const createNotificationAction: Runner = new ActionRunner({
-        actionPath: 'notification',
+        actionPath: ENTITY.NOTIFICATION,
         actionType: actionType as string,
       });
 
