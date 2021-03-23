@@ -269,6 +269,7 @@ export const settings = new Schema(
 
 export const recoveryToken = new Schema({
   userId: { type: Types.ObjectId, ref: 'users', required: true },
+  expire_at: { type: Date, default: Date.now, expires: 1600 },
 });
 
 export const UserModel: Model<Document> = model('users', userSchema);
