@@ -80,7 +80,7 @@ namespace Http {
       }
 
       this.getApp().locals.dropbox = dropbox;
-      this.getApp().locals.mailer = mailerClient;
+      this.getApp().locals.mailer = mailer;
       jsonWebTokenRegister(Instanse.dbm);
 
       const instanceRouter: Route = RouterInstance.Router.instance(this.getApp());
