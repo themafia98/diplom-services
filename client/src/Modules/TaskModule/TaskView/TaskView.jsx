@@ -67,11 +67,11 @@ class TaskView extends PureComponent {
 
   static getDerivedStateFromProps = (props, state) => {
     const { uuid, router } = props;
-    const { uidCreater } = router.routeDataActive;
+    const { uidCreater = '' } = router?.routeDataActive || {};
     const { key, type } = state;
 
     if (uuid !== key) return { ...state, key: key };
-    else if (uidCreater?.includes('__remoteTicket') && type !== 'remote') {
+    else if (uidCreater && uidCreater?.includes('__remoteTicket') && type !== 'remote') {
       return {
         ...state,
         type: 'remote',
