@@ -48,12 +48,10 @@ export const publicSlice = createSlice({
     loadSettings: {
       // LOAD_SETTINGS
       reducer: (state, { payload }) => {
-        const { settings: settingsState } = state;
-
         if (payload && typeof payload === 'object' && !Array.isArray(payload)) {
           const { type, metadata = {}, depKey } = payload;
 
-          const parsedSettings = settingsState.map((item) => {
+          const parsedSettings = state.settings.map((item) => {
             const { idSettings = '', settings = [] } = item;
 
             const isDepItem = idSettings === depKey;
@@ -171,7 +169,11 @@ export const publicSlice = createSlice({
 
         const deleteKey = type === 'itemTab' ? path.split(regExpRegister.MODULE_ID)[1] : path;
 
-        const cacheValues = Object.keys(state.cahces || {});
+        const cacheValues = state.cahces ? Object.keys(state.cahces) : null;
+
+        if (cacheValues === null) {
+          return;
+        }
 
         const filterCaches = cacheValues.reduce((filterObj, key) => {
           if (!key.includes(deleteKey)) {
