@@ -232,7 +232,7 @@ namespace General {
       res: Response,
       next: NextFunction,
       server: App,
-    ): Promise<Response> {
+    ): Promise<void> {
       try {
         const { mailer } = server.locals;
         const { query } = url.parse(req.url);
@@ -265,11 +265,13 @@ namespace General {
           throw new Error('Invalid send mail');
         }
 
-        return res.sendStatus(200);
+        res.status(200).send('Успешно. Новый пароль будет выслан на почту.');
+        return;
       } catch (error) {
         console.error(error);
         res.statusMessage = error.message;
-        return res.sendStatus(403);
+        res.status(403);
+        return;
       }
     }
   }
