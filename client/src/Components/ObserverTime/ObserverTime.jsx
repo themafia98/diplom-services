@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { observerTimeType } from './ObserverTime.types';
 import Scrollbars from 'react-custom-scrollbars';
 import _ from 'lodash';
@@ -9,8 +9,11 @@ import { useTranslation } from 'react-i18next';
 
 const ObserverTime = ({ title, settingsLogs, isLoading }) => {
   const { t } = useTranslation();
-  const renderLogs = useCallback((settingsLogs = []) => {
-    if (!settingsLogs?.length) return null;
+
+  const logs = useMemo(() => {
+    if (!settingsLogs || !settingsLogs.length) {
+      return null;
+    }
 
     return settingsLogs.map((log, index) => {
       const { message, date, _id = '' } = log;
@@ -21,12 +24,12 @@ const ObserverTime = ({ title, settingsLogs, isLoading }) => {
         </Timeline.Item>
       );
     });
-  }, []);
+  }, [settingsLogs]);
 
-  const isInvalid = useMemo(() => !isLoading && (!settingsLogs.length || _.isEmpty(settingsLogs)), [
-    isLoading,
-    settingsLogs,
-  ]);
+  const isInvalid = useMemo(
+    () => !isLoading && (!settingsLogs || !settingsLogs.length || _.isEmpty(settingsLogs)),
+    [isLoading, settingsLogs],
+  );
 
   return (
     <>
@@ -38,7 +41,7 @@ const ObserverTime = ({ title, settingsLogs, isLoading }) => {
           ) : isLoading ? (
             <Spin size="large" />
           ) : (
-            <Timeline>{renderLogs(settingsLogs)}</Timeline>
+            <Timeline>{logs}</Timeline>
           )}
         </div>
       </Scrollbars>
@@ -47,7 +50,7 @@ const ObserverTime = ({ title, settingsLogs, isLoading }) => {
 };
 ObserverTime.defaultProps = {
   title: '',
-  settingsLogs: [],
+  settingsLogs: null,
   isLoading: false,
 };
 ObserverTime.propTypes = observerTimeType;

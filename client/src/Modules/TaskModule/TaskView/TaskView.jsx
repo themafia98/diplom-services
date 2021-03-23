@@ -26,6 +26,7 @@ import { getClassNameByStatus } from './TaskView.utils';
 import fs from 'Utils/Tools/Fs';
 import { withTranslation } from 'react-i18next';
 import { setAppCache } from 'Redux/reducers/publicReducer.slice';
+import LogItem from './LogItem/LogItem';
 
 class TaskView extends PureComponent {
   state = {
@@ -534,39 +535,42 @@ class TaskView extends PureComponent {
 
   renderWorkJournal = (cachesJournalList = []) => {
     const { t } = this.props;
-    return _.uniqBy(cachesJournalList, '_id')
-      .sort((a, b) => moment(b?.date[0]).unix() - moment(a?.date[0]).unix())
-      .map((item, index) => {
-        const date = item && Array.isArray(item.date) ? item.date[0] : 'Invalid date';
+    return cachesJournalList.map((item, index) => {
+      const date = item && Array.isArray(item.date) ? item.date[0] : 'Invalid date';
 
-        return (
-          <div key={`${item?._id}${index}`} className="journalItem">
-            {item.editor ? <p className="editor">{item.editor}</p> : null}
-            <p className="timeLost">
-              <span className="title">{t('taskModule_view_spendTime')}:</span>
-              {item?.timeLost ? item.timeLost : item[0] ? item[0]?.timeLost : t('taskModule_view_notSet')}
-            </p>
-            <p className="date">
-              <span className="title">{t('taskModule_view_historyDate')}:</span>
-              {item?.date && date !== 'Invalid date'
-                ? date
-                : item[0]
-                ? item[0].date
-                : t('taskModule_view_notSet')}
-            </p>
-            <p className="comment">
-              <span className="title">{t('taskModule_view_comments')}:</span>
-            </p>
-            <p className="msg">
-              {item?.description
-                ? item.description
-                : Array.isArray(item) && item[0]?.description
-                ? item[0].description
-                : t('taskModule_view_notSet')}
-            </p>
-          </div>
-        );
-      });
+      let message = t('taskModule_view_notSet');
+      let dateProp = t('taskModule_view_notSet');
+      let timeLostProp = t('taskModule_view_notSet');
+
+      if (item?.date && date !== 'Invalid date') {
+        dateProp = date;
+      } else if (item[0]) {
+        dateProp = item[0].date;
+      }
+
+      if (item?.timeLost) {
+        timeLostProp = item.timeLost;
+      } else if (item[0]) {
+        timeLostProp = item[0].timeLost;
+      }
+
+      if (item?.description) {
+        message = item.description;
+      } else if (Array.isArray(item) && item[0]?.description) {
+        message = item[0].description;
+      }
+
+      return (
+        <LogItem
+          index={`${item?._id}${index}${date}`}
+          editor={item.editor}
+          timeLost={timeLostProp}
+          date={dateProp}
+          title={t('taskModule_view_spendTime')}
+          message={message}
+        />
+      );
+    });
   };
 
   getCacheItemsList = () => {
