@@ -3,7 +3,7 @@ import { tableType } from '../TableView.types';
 import moment from 'moment';
 import Output from 'Components/Output';
 import { Table as AntTable, message, Empty, Input, Button } from 'antd';
-import { getDataSource, findData } from 'Utils';
+import { getDataSource, findData, checkPageAvailable } from 'Utils';
 import ModelContext from 'Models/context';
 import { connect } from 'react-redux';
 import { createTableConfig } from './Table.utils';
@@ -12,6 +12,7 @@ import { getStatusByTitle } from './Table.utils';
 import { compose } from 'redux';
 import { withTranslation } from 'react-i18next';
 import { addToRouteData, openPageWithData, setActiveTab } from 'Redux/reducers/routerReducer.slice';
+import Request from 'Models/Rest';
 
 class Table extends PureComponent {
   state = {
@@ -174,7 +175,7 @@ class Table extends PureComponent {
 
   onClickRow = (record) => {
     return {
-      onClick: () => {
+      onClick: async () => {
         const {
           onOpenPageWithData,
           currentActionTab: path,
@@ -198,17 +199,22 @@ class Table extends PureComponent {
         const index = activeTabs.findIndex((tab) => tab.includes(page) && tab.includes(key));
         const isFind = index !== -1;
 
-        if (!isFind) {
-          onOpenPageWithData({
-            activePage: routePathNormalise({
-              pathType: 'moduleItem',
-              pathData: { page, moduleId, key },
-            }),
-            routeDataActive: record,
-          });
-        } else {
+        const activePage = routePathNormalise({
+          pathType: 'moduleItem',
+          pathData: { page, moduleId, key },
+        });
+
+        if (!(await checkPageAvailable(activePage, new Request()))) {
+          return;
+        }
+
+        if (isFind) {
           setCurrentTab(activeTabs[index]);
         }
+        onOpenPageWithData({
+          activePage,
+          routeDataActive: record,
+        });
       },
     };
   };

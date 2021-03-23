@@ -19,7 +19,7 @@ import actionPath from 'actions.path';
 import { requestTemplate } from 'Utils/Api/api.utils';
 import { ACTIONS } from 'App.constant';
 import { withTranslation } from 'react-i18next';
-import { createTab, openPageWithData, removeTab, setActiveTab } from 'Redux/reducers/routerReducer.slice';
+import { createTab, removeTab, setActiveTab } from 'Redux/reducers/routerReducer.slice';
 
 class TaskModule extends Component {
   state = {
@@ -290,7 +290,6 @@ class TaskModule extends Component {
       router,
       router: { currentActionTab = '' } = {},
       status,
-      onOpenPageWithData,
       onLoadCurrentData,
       onLoadCacheData,
       rest,
@@ -321,7 +320,6 @@ class TaskModule extends Component {
       statusList,
       onSetStatus,
       onLoadCurrentData,
-      onOpenPageWithData,
       onLoadCacheData,
       removeTab,
       router,
@@ -381,7 +379,6 @@ const mapDispatchToProps = (dispatch) => {
     addTab: (tab, config = {}) => dispatch(createTab({ tab, config })),
     setCurrentTab: (tab, config = {}) => dispatch(setActiveTab({ tab, config })),
     removeTab: (tab) => dispatch(removeTab(tab)),
-    onOpenPageWithData: (data) => dispatch(openPageWithData(data)),
     onLoadCacheData: (props) => dispatch(loadCacheData(props)),
     onLoadCurrentData: (props) => dispatch(loadCurrentData(props)),
   };
