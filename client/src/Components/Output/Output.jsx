@@ -33,10 +33,11 @@ const Output = memo(
     const parentRef = createRef(null);
     const childRef = createRef(null);
 
-    const update = useCallback(() => {
+    const { current: childNode } = childRef;
+    const { current: parentNode } = parentRef;
+
+    useEffect(() => {
       const isDefaultList = isChildrenList && typeOutput === 'default';
-      const { current: childNode = null } = childRef;
-      const { current: parentNode = null } = parentRef;
       if (
         [widthChild, widthParent].every((type) => type === null) &&
         !showTooltip &&
@@ -45,7 +46,7 @@ const Output = memo(
       ) {
         const { buttonNode = {} } = childNode;
         const isLink = typeOutput === 'link';
-        const childrenNode = isLink ? buttonNode?.firstChild : buttonNode ? buttonNode : childRef?.current;
+        const childrenNode = isLink ? buttonNode?.firstChild : buttonNode ? buttonNode : childNode;
 
         const isEmptyNode = childrenNode && typeof childrenNode === 'object' && _.isEmpty(childrenNode);
 
@@ -68,11 +69,7 @@ const Output = memo(
           setWidthParent(parentWidth);
         }
       }
-    }, [childRef, isChildrenList, parentRef, showTooltip, typeOutput, widthChild, widthParent]);
-
-    useEffect(() => {
-      update();
-    }, [update]);
+    }, [childNode, isChildrenList, parentNode, showTooltip, typeOutput, widthChild, widthParent]);
 
     const onOpenLink = useCallback(
       (uuid, action, event) => {
@@ -240,29 +237,31 @@ const Output = memo(
         return null;
       }
 
-      let isSingleLink = false;
-      let val = children;
+      const isLinkStringValue = typeOutput === 'link' && Array.isArray(links);
 
       if (!isStaticList && Array.isArray(links)) {
-        val = links.reduce((links, link) => {
-          if (Array.isArray(children) && children.some((child) => child === link?._id)) {
-            return [...links, { displayValue: link?.displayName, id: link?._id }];
-          }
-          return links;
-        }, []);
-      } else if (isChildrenList) {
-        val = children.map((link) => {
-          return { displayValue: link?.displayName, id: link?._id };
-        });
-      } else if (typeOutput === 'link' && Array.isArray(links)) {
-        val = links.find(({ _id }) => _id === children) || children;
-        isSingleLink = true;
+        return renderLinks(
+          links.reduce((links, link) => {
+            if (isChildrenList && children.some((child) => child === link?._id)) {
+              return [...links, { displayValue: link?.displayName, id: link?._id }];
+            }
+            return links;
+          }, []),
+        );
       }
 
-      if (isSingleLink) {
+      if (isChildrenList) {
+        return renderLinks(
+          children.map((link) => {
+            return { displayValue: link?.displayName, id: link?._id };
+          }),
+        );
       }
 
-      return renderLinks(val, isSingleLink ? 'single' : undefined);
+      if (isLinkStringValue) {
+        return renderLinks(links.find(({ _id }) => _id === children) || children, 'signle');
+      }
+      return children;
     }, [typeOutput, children, isChildrenList, isStaticList, links, renderLinks, shouldBeRunRenderLinks]);
 
     const output = useMemo(
