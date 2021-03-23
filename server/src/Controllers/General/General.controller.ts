@@ -179,7 +179,7 @@ namespace General {
       }
     }
 
-    @Post({ path: GENERAL_ROUTE.RECOVORY_PASSWORD_TOKEN, private: true })
+    @Post({ path: GENERAL_ROUTE.RECOVORY_PASSWORD_TOKEN, private: false })
     protected async findUser(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
       const { mailer } = server.locals;
       const body: BodyLogin = req.body;
