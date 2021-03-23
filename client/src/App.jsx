@@ -41,6 +41,7 @@ const App = ({ coreConfig, fetchConfig, typeConfig }) => {
   const dispatch = useDispatch();
   const context = useContext(ModelContext);
 
+  const [isBootstraped, setBootstraped] = useState(false);
   const [appType, setAppType] = useState(typeConfig);
   const [authLoad, setAuth] = useState(false);
   const [loadState, setLoadApp] = useState(false);
@@ -181,6 +182,10 @@ const App = ({ coreConfig, fetchConfig, typeConfig }) => {
 
   const bootstrapApplication = useCallback(
     async (forceUpdate) => {
+      if (isBootstraped) {
+        return;
+      }
+
       const rest = new context.Request();
 
       try {
@@ -198,9 +203,10 @@ const App = ({ coreConfig, fetchConfig, typeConfig }) => {
         if (forceUpdate === true || forceUpdate === 'true') {
           forceUpdateDetectedInit();
         }
+        setBootstraped(true);
       }
     },
-    [context.Request, loadAppSession],
+    [context.Request, loadAppSession, isBootstraped],
   );
 
   const startClientDb = useCallback(async () => {

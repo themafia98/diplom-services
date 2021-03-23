@@ -101,7 +101,7 @@ class TaskView extends PureComponent {
     const { shouldUpdate = false } = router;
 
     if (!isLoadingFiles && (shouldUpdate || shouldRefresh)) {
-      this.fetchFiles();
+      this.debounceFetchFiles();
     }
 
     this.onRefreshStatusList();
@@ -150,7 +150,7 @@ class TaskView extends PureComponent {
     });
 
     await this.fetchDepUsersList();
-    await this.fetchFiles();
+    await this.debounceFetchFiles();
     await this.fetchTasksPriorityList();
   };
 
@@ -345,6 +345,8 @@ class TaskView extends PureComponent {
       }
     }
   };
+
+  debounceFetchFiles = _.debounce(this.fetchFiles, 400);
 
   onChangeTagList = (tags) => {
     this.setState({
@@ -573,7 +575,7 @@ class TaskView extends PureComponent {
     });
   };
 
-  renderWorkJournal = (cachesJournalList = []) => {
+  renderWorkJournal = (cachesJournalList) => {
     const { t } = this.props;
     return cachesJournalList.map((item, index) => {
       const date = item && Array.isArray(item.date) ? item.date[0] : 'Invalid date';

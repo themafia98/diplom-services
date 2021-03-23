@@ -2,7 +2,7 @@ import React, { memo, Fragment, createRef, useEffect, useCallback, useState, use
 import _ from 'lodash';
 import { outputType } from './Output.types';
 import clsx from 'clsx';
-import { Tooltip, Button, Spin } from 'antd';
+import { Tooltip, Button } from 'antd';
 import { useDispatch } from 'react-redux';
 import { openTab } from 'Redux/middleware/routerReducer.thunk';
 
@@ -93,7 +93,7 @@ const Output = memo(
     const renderLinks = useCallback(
       (item, mode = 'default') => {
         if ((!isLoad && Array.isArray(item) && !item.length) || !item) {
-          return <Spin size="small" />;
+          return null;
         }
 
         if (!Array.isArray(item) || mode === 'single') {
@@ -149,17 +149,12 @@ const Output = memo(
             {list ? (
               <div
                 ref={childRef}
-                className={clsx(
-                  'output-list-wrapper',
-                  className ? className : null,
-                  'list-mode',
-                  isLink ? 'link' : null,
-                )}
+                className={clsx('output-list-wrapper', className, 'list-mode', isLink && 'link')}
               >
                 {value}
               </div>
             ) : (
-              <span ref={childRef} className={clsx(className ? className : null, isLink ? 'link' : null)}>
+              <span ref={childRef} className={clsx(className, isLink && 'link')}>
                 {value}
               </span>
             )}
@@ -173,14 +168,7 @@ const Output = memo(
       (value) => {
         const output = (
           <td>
-            <div
-              className={clsx(
-                'output',
-                outputClassName ? outputClassName : null,
-                typeOutput ? 'withType' : null,
-              )}
-              ref={parentRef}
-            >
+            <div className={clsx('output', outputClassName, typeOutput && 'withType')} ref={parentRef}>
               {typeOutput && typeOutput !== 'default' ? (
                 <>
                   {value && typeof value === 'object' ? (
@@ -191,7 +179,7 @@ const Output = memo(
                       onClick={createHandleOpenLink(id, action)}
                       type={typeOutput}
                       ref={childRef}
-                      className={className ? className : null}
+                      className={className}
                     >
                       {value}
                     </Button>
@@ -259,7 +247,7 @@ const Output = memo(
       }
 
       if (isLinkStringValue) {
-        return renderLinks(links.find(({ _id }) => _id === children) || children, 'signle');
+        return renderLinks(links.find(({ _id }) => _id === children) || '', 'signle');
       }
       return children;
     }, [typeOutput, children, isChildrenList, isStaticList, links, renderLinks, shouldBeRunRenderLinks]);
@@ -298,7 +286,9 @@ const Output = memo(
       ],
     );
 
-    if (type === 'table') return renderTableOutput(children);
+    if (type === 'table') {
+      return renderTableOutput(children);
+    }
 
     if (shouldBeRunRenderLinks) {
       return renderLinks(links.find((link) => link?._id === children));

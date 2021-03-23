@@ -346,7 +346,7 @@ const sortedByKey = (array, key, type = 'string', customParamsForSort, index = 0
 
     if (type === 'date' && customParamsForSort) {
       return (
-        moment(sortElementA, customParamsForSort).unix() - moment(sortElementB, customParamsForSort).unix()
+        moment(sortElementB, customParamsForSort).unix() - moment(sortElementA, customParamsForSort).unix()
       );
     }
 

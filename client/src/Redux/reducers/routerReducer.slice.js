@@ -202,7 +202,6 @@ const routerReducer = createSlice({
     openPageWithData: {
       // OPEN_PAGE_WITH_DATA
       reducer: (state, { payload }) => {
-        const copyRouteData = state.routeData;
         const { activePage = {}, routeDataActive: RDA = {} } = payload;
         const { key: keyRouteData = '', _id: id = '' } = RDA;
         const { from = 'default', moduleId = '' } = activePage;
@@ -247,19 +246,15 @@ const routerReducer = createSlice({
           routeDataActive = { ...(RDA || {}) };
           routeDataActive.from = from;
 
-          copyRouteData[validKey] = RDA;
-          copyRouteData[validKey].from = from;
+          state.routeData[validKey] = { ...RDA, from };
         } else if (!!state.routeData[pathPage]) {
-          routeDataActive = state.routeData[pathPage];
-          routeDataActive.from = from;
-          copyRouteData[validKey] = state.routeData[pathPage];
-          copyRouteData[validKey].from = from;
+          state.routeData[pathPage].from = from;
+          state.routeData[validKey] = { ...state.routeData[pathPage], from };
         }
 
         state.currentActionTab = currentActionTab;
         state.activeTabs.push(currentActionTab);
         state.routeDataActive = routeDataActive;
-        state.routeData = copyRouteData;
       },
       prepare: (pageData) => ({ payload: pageData }),
     },
@@ -286,8 +281,6 @@ const routerReducer = createSlice({
     refreshRouterData: {
       // SAVE_STATE
       reducer: (state, { payload }) => {
-        let copyRouteData = state.routeData;
-
         const {
           multiple = false,
           stateList = null,
@@ -353,7 +346,7 @@ const routerReducer = createSlice({
           }
         }
 
-        copyRouteData[path] = payload;
+        state.routeData[path] = payload;
 
         let storeName = path.split(regExpRegister.INCLUDE_MODULE)[0];
         storeName = storeName[storeName.length] !== 's' ? `${storeName}s` : storeName;
@@ -362,13 +355,13 @@ const routerReducer = createSlice({
           storeName = 'streamList';
         }
 
-        if (copyRouteData[path][storeName] && state.routeData[path] && state.routeData[path][storeName]) {
-          const items = copyRouteData[path][storeName];
+        if (state.routeData[path][storeName] && state.routeData[path] && state.routeData[path][storeName]) {
+          const items = state.routeData[path][storeName];
           const currentStateData = state.routeData[path] ? state.routeData[path] : {};
 
-          copyRouteData[path] = {
+          state.routeData[path] = {
             ...currentStateData,
-            ...copyRouteData[path],
+            ...state.routeData[path],
             shouldUpdate: false,
             load: true,
             loading,
@@ -400,7 +393,7 @@ const routerReducer = createSlice({
 
         const routeDataActive = addItem ? addItem : state.routeDataActive;
 
-        copyRouteData[path] = {
+        state.routeData[path] = {
           ...currentStateData,
           ...payload,
           ...additionalList,
@@ -409,12 +402,11 @@ const routerReducer = createSlice({
         };
 
         if (normalizeRouteData && addItem && addItem?._id) {
-          copyRouteData[addItem._id] = addItem;
+          state.routeData[addItem._id] = addItem;
         }
 
         if (path) {
           state.path = path;
-          state.routeData = copyRouteData;
           state.load = load;
           state.shouldUpdate = shouldUpdate;
           state.routeDataActive = routeDataActive;

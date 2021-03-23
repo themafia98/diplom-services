@@ -151,11 +151,12 @@ export const publicSlice = createSlice({
         const depKey = validData.depKey;
 
         let cacheKey = null;
+        const uniqKey = validData?.[key]?._id || '';
 
         if (!isValidKeys) {
-          cacheKey = `${customDepKey ? customDepKey : depKey ? depKey : ''}${uuid}`;
+          cacheKey = `${customDepKey ? customDepKey : depKey ? depKey : ''}${uuid}${uniqKey}`;
         } else {
-          cacheKey = `${customDepKey ? customDepKey : validData[key].depKey}${uuid}`;
+          cacheKey = `${customDepKey ? customDepKey : validData[key].depKey}${uuid}${uniqKey}`;
         }
 
         state.caches[cacheKey] = !!validData[0] ? validData[0] : validData;
