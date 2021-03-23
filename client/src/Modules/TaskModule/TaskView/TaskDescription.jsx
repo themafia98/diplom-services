@@ -52,15 +52,17 @@ const TaskDescription = ({
     [accessStatus],
   );
 
-  const accessList = useMemo(
-    () =>
-      accessPriority.map((it, index) => (
-        <Option key={`${index}${it}`} value={it}>
-          {it}
-        </Option>
-      )),
-    [accessPriority],
-  );
+  const accessList = useMemo(() => {
+    if (!accessPriority) {
+      return null;
+    }
+
+    return accessPriority.map((it, index) => (
+      <Option key={`${index}${it}`} value={it}>
+        {it}
+      </Option>
+    ));
+  }, [accessPriority]);
 
   const users = useMemo(
     () =>
@@ -103,7 +105,7 @@ const TaskDescription = ({
       <Descriptions.Item label={t('taskModule_view_desc_priority')}>
         {modeControll === 'default' ? (
           <Output className="priority">{priority}</Output>
-        ) : modeControll === 'edit' && modeControllEdit ? (
+        ) : modeControll === 'edit' && modeControllEdit && !!accessList ? (
           <Select
             className="priorityEdit"
             value={modeControllEdit.priority}

@@ -67,6 +67,10 @@ class ActionSettings implements Action {
     return result;
   }
 
+  private async loadTasksPriority(): Promise<ParserData> {
+    return ['Высокий', 'Средний', 'Низкий', 'Критический'];
+  }
+
   public async run(actionParam: ActionParams): Promise<ParserData> {
     const model: Model<Document> | null = getModelByName(ENTITY.SETTINGS, ENTITY.SETTINGS);
     if (!model) return null;
@@ -76,6 +80,8 @@ class ActionSettings implements Action {
         return this.getStatusList(model, actionParam);
       case ACTION_TYPE.CHANGE_STATUS_LIST:
         return this.onChangeStatusList(model, actionParam);
+      case ACTION_TYPE.LOAD_TASKS_PRIORITY:
+        return this.loadTasksPriority();
       default:
         return null;
     }

@@ -27,6 +27,7 @@ import fs from 'Utils/Tools/Fs';
 import { withTranslation } from 'react-i18next';
 import { setAppCache } from 'Redux/reducers/publicReducer.slice';
 import LogItem from './LogItem/LogItem';
+import { paramsTemplate, requestTemplate } from 'Utils/Api/api.utils';
 
 class TaskView extends PureComponent {
   state = {
@@ -147,6 +148,7 @@ class TaskView extends PureComponent {
 
     await this.fetchDepUsersList();
     await this.fetchFiles();
+    await this.fetchTasksPriorityList();
   };
 
   findTask = () => {
@@ -230,6 +232,41 @@ class TaskView extends PureComponent {
         ...this.state,
         isLoad: true,
       });
+    }
+  };
+
+  fetchTasksPriorityList = async () => {
+    try {
+      const { modelsContext } = this.props;
+      const { Request = {} } = modelsContext;
+      const rest = new Request();
+
+      const res = await rest.sendRequest(
+        '/settings/tasksPriorityList',
+        'GET',
+        {
+          ...requestTemplate,
+          moduleName: 'settingsModule',
+          actionType: 'get_tasksPriority',
+          params: {
+            ...paramsTemplate,
+          },
+        },
+        true,
+      );
+
+      if (!res || res.status !== 200) {
+        throw new Error('Bad request tasksPriority');
+      }
+
+      const { response = {} } = res.data;
+      const { metadata = [] } = response;
+
+      this.setState({
+        priorityList: metadata,
+      });
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -613,16 +650,16 @@ class TaskView extends PureComponent {
 
   getAccessPriority = () => {
     const { router } = this.props;
-    const { modeControllEdit: { priority: priorityState = '' } = {} } = this.state;
+    const { modeControllEdit: { priority: priorityState = '' } = {}, priorityList } = this.state;
     const { priority } = router.routeDataActive;
 
-    return _.uniq([
-      priorityState ? priorityState : priority ? priority : null,
-      'Высокий',
-      'Средний',
-      'Низкий',
-      'Критический',
-    ]).filter(Boolean);
+    if (!priorityList || !Array.isArray(priorityList)) {
+      return null;
+    }
+
+    return _.uniq([priorityState ? priorityState : priority ? priority : null, ...priorityList]).filter(
+      Boolean,
+    );
   };
 
   getModalWindow = (accessStatus, rulesEdit = true, rulesStatus = false) => {

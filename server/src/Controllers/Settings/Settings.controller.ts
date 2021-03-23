@@ -64,6 +64,19 @@ namespace Settings {
       return responseExec(req, res, params);
     }
 
+    @Get({ path: SETTINGS_ROUTE[Utils.getVersion()].LOAD_TASKS_PRIORITY, private: true })
+    protected async loadTasksPriority(req: Request, res: Response): ResRequest {
+      const params: Params = createParams('get_tasksPriority', 'done', ENTITY.SETTINGS);
+
+      const loadTasksPriority = new ActionRunner({
+        actionPath: ENTITY.SETTINGS,
+        actionType: 'get_tasksPriority',
+      });
+
+      const responseExec: Function = await loadTasksPriority.start({});
+      return responseExec(req, res, params);
+    }
+
     @Post({ path: SETTINGS_ROUTE[Utils.getVersion()].SAVE_COMMON, private: true })
     protected async commonSettings(req: Request, res: Response): ResRequest {
       const params: Params = createParams('common_changes', 'done', ENTITY.USERS);
