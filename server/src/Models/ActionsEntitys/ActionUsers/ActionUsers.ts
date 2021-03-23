@@ -103,6 +103,8 @@ class ActionUsers implements Action {
 
       if (!res) return null;
 
+      await tokenModel.findByIdAndDelete(Types.ObjectId(recovoryToken));
+
       return password;
     }
 
