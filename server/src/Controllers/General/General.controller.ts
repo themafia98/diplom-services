@@ -203,7 +203,7 @@ namespace General {
           throw new Error('Invalid verify recovory password');
         }
 
-        const url = req.protocol + '://' + req.get('host') + req.originalUrl;
+        const url = `${req.protocol}://${req.get('host')}${req.baseUrl}`;
         const to: string = recovoryField as string;
         const link = `${url}/recovory?recovoryToken=${token._id}&to=${to}`;
 
@@ -211,6 +211,7 @@ namespace General {
           to,
           'Восстановление пароля. Подтверждение / ControllSystem',
           `Ссылка для подтверждения смены пароля: <a target="_blank" href="${link}">${link}</a>`,
+          true,
         );
 
         if (!result) {

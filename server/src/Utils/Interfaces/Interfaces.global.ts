@@ -117,7 +117,7 @@ export interface Mail {
   getSender(): SendMailOptions;
   getMailerConfig(): transOptions;
   create(): Promise<boolean>;
-  send(to: string, subject: string, text: string): Promise<SentMessageInfo>;
+  send(to: string, subject: string, text: string, html?: boolean): Promise<SentMessageInfo>;
 }
 
 export interface Rest {

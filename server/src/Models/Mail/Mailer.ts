@@ -55,7 +55,12 @@ namespace Mailer {
       return true;
     }
 
-    public async send(to: string, subject: string, text: string): Promise<SentMessageInfo> {
+    public async send(
+      to: string,
+      subject: string,
+      text: string,
+      html: boolean = false,
+    ): Promise<SentMessageInfo> {
       try {
         const senderProps: object = this.getSender();
         if (!senderProps || [to, subject, text].every((type) => typeof type !== 'string')) {
@@ -72,10 +77,13 @@ namespace Mailer {
         if (!transport) {
           throw new TypeError('Bad mail transporter');
         }
+
+        const mailBody = html ? { html: text } : { text };
+
         const result: Promise<SentMessageInfo> = transport.sendMail({
           ...senderProps,
+          ...mailBody,
           subject,
-          text,
           to,
         });
 
