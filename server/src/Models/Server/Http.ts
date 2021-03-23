@@ -73,10 +73,10 @@ namespace Http {
         from: process.env.TOKEN_YANDEX_USER,
       });
 
-      const mailerClient = mailer.create();
+      const isMailerClientCreated = await mailer.create();
 
-      if (!mailerClient) {
-        console.error('Invalid create transport mailer');
+      if (!isMailerClientCreated) {
+        throw new Error('Invalid create transport mailer');
       }
 
       this.getApp().locals.dropbox = dropbox;

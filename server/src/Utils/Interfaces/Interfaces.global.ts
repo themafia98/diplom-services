@@ -116,7 +116,7 @@ export interface Mail {
   getTransporter(): Transporter | null;
   getSender(): SendMailOptions;
   getMailerConfig(): transOptions;
-  create(): Promise<Transporter | null>;
+  create(): Promise<boolean>;
   send(to: string, subject: string, text: string): Promise<SentMessageInfo>;
 }
 

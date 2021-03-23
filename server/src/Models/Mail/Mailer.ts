@@ -32,10 +32,14 @@ namespace Mailer {
       return this.mailSender;
     }
 
-    public async create(): Promise<Transporter | null> {
-      if (!this.getMailer()) return null;
+    public async create(): Promise<boolean> {
+      if (!this.getMailer()) {
+        return false;
+      }
 
-      if (this.getTransporter()) return this.transporter;
+      if (this.getTransporter()) {
+        return true;
+      }
 
       this.transporter = createTransport(this.getMailerConfig());
 
@@ -45,10 +49,10 @@ namespace Mailer {
         if (!result) throw new Error('Invalid varify mailer');
       } catch (error) {
         console.error(error);
-        return null;
+        return false;
       }
 
-      return this.transporter;
+      return true;
     }
 
     public async send(to: string, subject: string, text: string): Promise<SentMessageInfo> {
@@ -64,7 +68,7 @@ namespace Mailer {
           return null;
         }
 
-        const transport: Transporter | null = await this.getTransporter();
+        const transport: Transporter | null = this.getTransporter();
         if (!transport) {
           throw new TypeError('Bad mail transporter');
         }
