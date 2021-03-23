@@ -210,7 +210,7 @@ namespace General {
         const result: Promise<SentMessageInfo> = await (mailer as Mail).send(
           to,
           'Восстановление пароля. Подтверждение / ControllSystem',
-          `Ссылка для подтверждения смены пароля: <a target="_blank" href="${link}">${link}</a>`,
+          `<p>Ссылка для подтверждения смены пароля: <a target="_blank" href="${link}">${link}</a></p>`,
           true,
         );
 
