@@ -28,11 +28,11 @@ const Recovory = () => {
       };
 
       const rest = new Request();
-      const result = await rest.sendRequest('/recovory', 'POST', recovoryData);
+      const result = await rest.sendRequest('/verifyRecovory', 'POST', recovoryData);
 
       if (result.status !== 200) throw new Error('Bad data for recovory');
 
-      setStatus('Новый пароль будет выслан вам на почту.');
+      setStatus('Письмо с подтверждением смены пароля выслано на почту.');
       setField('');
     } catch (error) {
       console.error(error.message);

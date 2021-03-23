@@ -267,6 +267,10 @@ export const settings = new Schema(
   { timestamps: true },
 );
 
+export const recoveryToken = new Schema({
+  userId: { type: Types.ObjectId, ref: 'users', required: true },
+});
+
 export const UserModel: Model<Document> = model('users', userSchema);
 
 export const getSchemaByName = (name: string) => {
@@ -293,6 +297,8 @@ export const getSchemaByName = (name: string) => {
       return wikiTree;
     case 'wikiPage':
       return wikiPage;
+    case 'recoveryToken':
+      return recoveryToken;
     default:
       return null;
   }

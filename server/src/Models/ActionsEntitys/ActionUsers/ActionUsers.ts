@@ -31,15 +31,56 @@ class ActionUsers implements Action {
     return this.getEntityParser().getAll(model, actionParam);
   }
 
+  private async verifyRecovory(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
+    const email: string = (actionParam as Record<string, string>).recovoryField;
+    const result: ParserData = await this.getEntityParser().findOnce(model, { email });
+
+    if (!result) {
+      return result;
+    }
+
+    const { _id: userId } = (result as Record<string, string>) || {};
+
+    if (!isValidObjectId(userId)) {
+      return null;
+    }
+
+    const tokenModel: Model<Document> | null = getModelByName('recoveryToken', 'recoveryToken');
+
+    if (tokenModel === null) {
+      return null;
+    }
+
+    return await tokenModel.create({ userId } as object);
+  }
+
   private async recovoryPassword(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
-    const filed: string = (actionParam as Record<string, string>).recovoryField;
-    const mode: string = (actionParam as Record<string, string>).mode;
+    const recovoryToken: string = (actionParam as Record<string, string>).recovoryToken;
+    const to: string = (actionParam as Record<string, string>).to;
 
-    const props: object = mode === 'emailMode' ? { email: filed } : { login: filed };
+    const tokenModel = getModelByName('recoveryToken', 'recoveryToken');
 
-    const result: ParserData = await this.getEntityParser().findOnce(model, { ...props });
+    if (!tokenModel) {
+      throw new Error('bad token model for recovory');
+    }
 
-    if (!result) return result;
+    const tokenForRecovoryPassword = await tokenModel.findById(Types.ObjectId(recovoryToken));
+
+    if (!tokenForRecovoryPassword) {
+      console.error('tokenForRecovoryPassword not found');
+      return null;
+    }
+
+    const { userId = '' } = (tokenForRecovoryPassword as any) || {};
+
+    const result: ParserData = await this.getEntityParser().findOnce(model, {
+      _id: Types.ObjectId(userId),
+      email: to,
+    });
+
+    if (!result) {
+      return result;
+    }
 
     if (result) {
       const { _id } = (result as Record<string, string>) || {};
@@ -228,6 +269,8 @@ class ActionUsers implements Action {
         return this.getUsers(actionParam, model);
       case ACTION_TYPE.RECOVORY_PASSWORD:
         return this.recovoryPassword(actionParam, model);
+      case ACTION_TYPE.RECOVORY_PASSWORD_TOKEN:
+        return this.verifyRecovory(actionParam, model);
       case ACTION_TYPE.CHANGE_PASSWORD:
         return this.changePassword(actionParam, model);
       case ACTION_TYPE.COMMON_SETTINGS_CHANGE:

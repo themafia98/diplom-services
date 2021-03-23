@@ -1,5 +1,7 @@
 import { Response, NextFunction } from 'express';
 import _ from 'lodash';
+import url from 'url';
+import querystring from 'querystring';
 import passport from 'passport';
 import { UserModel } from '../../Models/Database/Schema';
 import { ResRequest, ParserResult } from '../../Utils/Types/types.global';
@@ -17,8 +19,11 @@ import Decorators from '../../Utils/decorators';
 import { SentMessageInfo } from 'nodemailer';
 import { GENERAL_ROUTE } from './General.path';
 import ActionRunner from '../../Models/ActionRunner/ActionRunner';
+import { ACTION_TYPE } from '../../Models/ActionsEntitys/ActionUsers/ActionUsers.constant';
+import { Document } from 'mongoose';
 
 namespace General {
+  const Get = Decorators.Get;
   const Post = Decorators.Post;
   const Delete = Decorators.Delete;
   const Controller = Decorators.Controller;
@@ -174,38 +179,33 @@ namespace General {
       }
     }
 
-    @Post({ path: GENERAL_ROUTE.RECOVORY_PASSWORD, private: false })
-    protected async recovoryPassword(
-      req: Request,
-      res: Response,
-      next: NextFunction,
-      server: App,
-    ): Promise<Response> {
+    @Post({ path: GENERAL_ROUTE.RECOVORY_PASSWORD_TOKEN, private: true })
+    protected async findUser(req: Request, res: Response, next: NextFunction, server: App): ResRequest {
+      const { mailer } = server.locals;
+      const body: BodyLogin = req.body;
+      const { recovoryField = '' } = body;
+
+      const tokenAction: Runner = new ActionRunner({
+        actionPath: 'users',
+        actionType: ACTION_TYPE.RECOVORY_PASSWORD_TOKEN,
+      });
+
       try {
-        const { mailer } = server.locals;
-        const body: BodyLogin = req.body;
+        const responseExec: Function = await tokenAction.start({ recovoryField }, 'exec');
+        const token: Document = await responseExec(req, res, { done: true }, false);
 
-        const { recovoryField = '' } = body;
-
-        const checkerAction: Runner = new ActionRunner({
-          actionPath: 'users',
-          actionType: 'recovory_checker',
-          body,
-        });
-
-        const responseExec: Function = await checkerAction.start(body, 'exec');
-        const password: ParserResult = await responseExec(req, res, { done: true }, false);
-
-        if (!password) {
-          throw new Error('Invalid checker data');
+        if (!token) {
+          throw new Error('Invalid verify recovory password');
         }
 
+        const url = req.protocol + '://' + req.get('host') + req.originalUrl;
         const to: string = recovoryField as string;
+        const link = `${url}/recovory?recovoryToken=${token._id}&to=${to}`;
 
         const result: Promise<SentMessageInfo> = await (mailer as Mail).send(
           to,
-          'Восстановление пароля / ControllSystem',
-          `Ваш новый пароль: ${password}`,
+          'Восстановление пароля. Подтверждение / ControllSystem',
+          `Ссылка для подтверждения смены пароля: <a target="_blank" href="${link}">${link}</a>`,
         );
 
         if (!result) {
@@ -217,6 +217,53 @@ namespace General {
         console.error(error);
         res.statusMessage = error.message;
         return res.sendStatus(503);
+      }
+    }
+
+    @Get({ path: GENERAL_ROUTE.RECOVORY_PASSWORD, private: false })
+    protected async recovoryPassword(
+      req: Request,
+      res: Response,
+      next: NextFunction,
+      server: App,
+    ): Promise<Response> {
+      try {
+        const { mailer } = server.locals;
+        const { query } = url.parse(req.url);
+        const { recovoryToken = '', to = '' } = querystring.parse(query as string);
+
+        if (!recovoryToken || !to) {
+          throw new Error('bad recovoryToken or email');
+        }
+
+        const checkerAction: Runner = new ActionRunner({
+          actionPath: 'users',
+          actionType: ACTION_TYPE.RECOVORY_PASSWORD,
+          body: { recovoryToken, to },
+        });
+
+        const responseExec: Function = await checkerAction.start({ to, recovoryToken }, 'exec');
+        const password: ParserResult = await responseExec(req, res, { done: true }, false);
+
+        if (!password) {
+          throw new Error('Invalid checker data');
+        }
+
+        const result: Promise<SentMessageInfo> = await (mailer as Mail).send(
+          to as string,
+          'Восстановление пароля. / ControllSystem',
+          `Ваш новый пароль: ${password}`,
+        );
+
+        if (!result) {
+          throw new Error('Invalid send mail');
+        }
+
+        return res.sendStatus(200);
+      } catch (error) {
+        console.error(error);
+        res.statusMessage = error.message;
+        return res.sendStatus(403);
       }
     }
   }

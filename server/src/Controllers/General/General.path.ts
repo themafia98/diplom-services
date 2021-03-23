@@ -6,4 +6,5 @@ export const GENERAL_ROUTE = {
   LOAD_USER: '/userload',
   SEND_MAIL: '/mailerResponse',
   RECOVORY_PASSWORD: '/recovory',
+  RECOVORY_PASSWORD_TOKEN: '/verifyRecovory',
 };
