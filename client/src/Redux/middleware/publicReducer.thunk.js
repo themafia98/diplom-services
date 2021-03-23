@@ -190,14 +190,22 @@ const middlewareUpdate = ({
     const [items, error] = rest.parseResponse(res);
     const { dataItems = null } = items;
 
-    if (error) throw new Error(error);
+    if (error) {
+      throw new Error(error);
+    }
+
+    let newDataItems = dataItems;
+
+    if (Array.isArray(dataItems) && dataItems.length === 1) {
+      newDataItems = dataItems[dataItems.length - 1];
+    }
+
     const dep = {
       parsedRoutePath,
       updateBy,
       store,
       schema,
-      dataItems:
-        Array.isArray(dataItems) && dataItems.length === 1 ? dataItems[dataItems.length - 1] : dataItems,
+      dataItems: newDataItems,
       id: id ? id : key,
     };
 
