@@ -80,6 +80,7 @@ class TaskView extends PureComponent {
   };
 
   componentDidMount = () => {
+    const { findTaskLoading } = this.state;
     const { router = {} } = this.props;
     const { routeDataActive } = router;
     const { key = null } = routeDataActive;
@@ -89,7 +90,9 @@ class TaskView extends PureComponent {
       return;
     }
 
-    this.onLoadTaskAdditionalData();
+    if (!findTaskLoading) {
+      this.onLoadTaskAdditionalData();
+    }
   };
 
   componentDidUpdate = () => {
