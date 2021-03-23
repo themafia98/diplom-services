@@ -205,7 +205,7 @@ namespace General {
 
         const url = `${req.protocol}://${req.get('host')}${req.baseUrl}`;
         const to: string = recovoryField as string;
-        const link = `${url}/recovory?recovoryToken=${token._id}&to=${to}`;
+        const link = `${url}${GENERAL_ROUTE.RECOVORY_PASSWORD}?recovoryToken=${token._id}&to=${to}`;
 
         const result: Promise<SentMessageInfo> = await (mailer as Mail).send(
           to,
