@@ -342,12 +342,15 @@ const TaskView = memo((props) => {
     onRefreshStatusList();
   }, [isLoadingFiles, shouldUpdate, shouldRefreshState, onRefreshStatusList, debounceFetchFiles]);
 
-  const onChangeTagList = (tags) => {
-    setViewModeControll({
-      ...viewModeControll,
-      tags,
-    });
-  };
+  const onChangeTagList = useCallback(
+    (tagsList) => {
+      setViewModeControll({
+        ...viewModeControll,
+        tags: tagsList,
+      });
+    },
+    [viewModeControll],
+  );
 
   const onAddFileList = (fileList) => {
     const shouldRefresh = fileList.every((it) => it.status === 'done');
@@ -408,82 +411,91 @@ const TaskView = memo((props) => {
     setViewModelControllEditValues(defaultViewModeControllEditValues);
   };
 
-  const onChangeEditableStart = (event) => {
-    const dateString = event && event._d ? moment(event._d, 'DD.MM.YYYY').format('DD.MM.YYYY') : null;
+  const onChangeEditableStart = useCallback(
+    (event) => {
+      const dateString = event && event._d ? moment(event._d, 'DD.MM.YYYY').format('DD.MM.YYYY') : null;
 
-    const { date } = viewModeControllEditValues;
+      const { date } = viewModeControllEditValues;
 
-    let newDate = [dateString];
+      let newDate = [dateString];
 
-    if (date) {
-      newDate = date;
-      newDate[0] = dateString;
-    }
-
-    setModeEditContent(false);
-    setViewModelControllEditValues({
-      ...viewModeControllEditValues,
-      date: newDate,
-    });
-  };
-
-  const onChangeEditableEnd = (event) => {
-    const dateString = event && event._d ? moment(event._d, 'DD.MM.YYYY').format('DD.MM.YYYY') : null;
-    const { date } = viewModeControllEditValues;
-
-    let newDate = [dateString];
-
-    if (date) {
-      newDate = date;
-      newDate[1] = dateString;
-    }
-
-    setModeEditContent(false);
-    setViewModelControllEditValues({
-      ...viewModeControllEditValues,
-      date: newDate,
-    });
-  };
-
-  const onChangeEditable = (event) => {
-    const { currentTarget = {}, currentTarget: { value = '' } = {} } = event;
-
-    if (event && typeof event === 'object' && currentTarget && !_.isEmpty(currentTarget)) {
-      setModeEditContent(false);
-      setViewModelControllEditValues({
-        ...viewModeControllEditValues,
-        name: value,
-      });
-      return;
-    }
-
-    if (event && typeof event === 'object' && Array.isArray(event)) {
-      setModeEditContent(false);
-      setViewModelControllEditValues({
-        ...viewModeControllEditValues,
-        editor: [...event],
-      });
-      return;
-    }
-
-    if (typeof event === 'string') {
-      if (statusListName?.some((it) => it === event)) {
-        setModeEditContent(false);
-        setViewModelControllEditValues({
-          ...viewModeControllEditValues,
-          status: event,
-        });
-        return;
+      if (date) {
+        newDate = date;
+        newDate[0] = dateString;
       }
 
       setModeEditContent(false);
       setViewModelControllEditValues({
         ...viewModeControllEditValues,
-        priority: event,
+        date: newDate,
       });
-      return;
-    }
-  };
+    },
+    [viewModeControllEditValues],
+  );
+
+  const onChangeEditableEnd = useCallback(
+    (event) => {
+      const dateString = event && event._d ? moment(event._d, 'DD.MM.YYYY').format('DD.MM.YYYY') : null;
+      const { date } = viewModeControllEditValues;
+
+      let newDate = [dateString];
+
+      if (date) {
+        newDate = date;
+        newDate[1] = dateString;
+      }
+
+      setModeEditContent(false);
+      setViewModelControllEditValues({
+        ...viewModeControllEditValues,
+        date: newDate,
+      });
+    },
+    [viewModeControllEditValues],
+  );
+
+  const onChangeEditable = useCallback(
+    (event) => {
+      const { currentTarget = {}, currentTarget: { value = '' } = {} } = event;
+
+      if (event && typeof event === 'object' && currentTarget && !_.isEmpty(currentTarget)) {
+        setModeEditContent(false);
+        setViewModelControllEditValues({
+          ...viewModeControllEditValues,
+          name: value,
+        });
+        return;
+      }
+
+      if (event && typeof event === 'object' && Array.isArray(event)) {
+        setModeEditContent(false);
+        setViewModelControllEditValues({
+          ...viewModeControllEditValues,
+          editor: [...event],
+        });
+        return;
+      }
+
+      if (typeof event === 'string') {
+        if (statusListName?.some((it) => it === event)) {
+          setModeEditContent(false);
+          setViewModelControllEditValues({
+            ...viewModeControllEditValues,
+            status: event,
+          });
+          return;
+        }
+
+        setModeEditContent(false);
+        setViewModelControllEditValues({
+          ...viewModeControllEditValues,
+          priority: event,
+        });
+        return;
+      }
+    },
+    [statusListName, viewModeControllEditValues],
+  );
 
   const onUpdateEditable = (event) => {
     const { schema = {} } = modelsContext;
@@ -539,22 +551,40 @@ const TaskView = memo((props) => {
     setCustomTypeModal(customTypeModal);
   };
 
-  const { cachesAuthorList = null, cachesEditorList = null, cachesJurnalList = null } = useMemo(() => {
+  const { cachesAuthorList, cachesEditorList, cachesJurnalList } = useMemo(() => {
+    let cachesJurnalList = null;
+    let cachesEditorList = null;
+    let cachesAuthorList = null;
+
     if (caches && typeof caches === 'object') {
       for (let [key, value] of Object.entries(caches)) {
         if (key.includes('__getJurnal') && value?.depKey === uuid) {
+          if (!cachesJurnalList) {
+            cachesJurnalList = [];
+          }
+
           cachesJurnalList.push(value);
           continue;
         }
 
-        if (!key.includes(`taskView#${uuid}`)) continue;
+        if (!key.includes(`taskView#${uuid}`)) {
+          continue;
+        }
 
         if (key.includes('editor')) {
+          if (!cachesEditorList) {
+            cachesEditorList = [];
+          }
+
           cachesEditorList.push(value);
           continue;
         }
 
         if (key.includes('author')) {
+          if (!cachesAuthorList) {
+            cachesAuthorList = [];
+          }
+
           cachesAuthorList.push(value);
         }
       }
@@ -610,33 +640,18 @@ const TaskView = memo((props) => {
     });
   }, [cachesJurnalList, t]);
 
-  const getAccessStatus = () => statusListName;
-
-  const getAccessPriority = () => {
-    const { priority: priorityState = '' } = viewModeControllEditValues;
-    const { priority } = router.routeDataActive;
-
-    if (!priorityList || !Array.isArray(priorityList)) {
-      return null;
-    }
-
-    return _.uniq([priorityState ? priorityState : priority ? priority : null, ...priorityList]).filter(
-      Boolean,
-    );
-  };
-
-  const getModalWindow = (accessStatus, rulesEdit = true, rulesStatus = false) => {
+  const getModalWindow = (rulesEdit = true, rulesStatus = false) => {
     const { _id: id, key, status, description } = router.routeDataActive || {};
     return (
       <ModalWindow
-        key={key ? key : uuid()}
+        key={key ? key : uuidv4()}
         actionTypeList={viewType}
         actionType={actionType}
         mode={viewMode}
         path={path}
         route={route}
         keyTask={id ? id : null}
-        accessStatus={accessStatus}
+        accessStatus={statusListName}
         description={description}
         onRejectEdit={onRejectEdit}
         modeControll={viewModeControll}
@@ -661,74 +676,122 @@ const TaskView = memo((props) => {
 
   const { rest = {} } = modelsContext;
 
-  if (!key)
-    return findTaskLoading ? (
-      <div className="taskView taskView--taskLoader">
-        <Spin size="large" tip={t('taskModule_view_loading')} />
-      </div>
-    ) : (
-      <div>{t('taskModule_view_notFound')}</div>
-    );
+  const accessPriority = useMemo(() => {
+    if (!key) {
+      return null;
+    }
 
-  const accessStatus = getAccessStatus();
-  const accessPriority = getAccessPriority();
+    const { priority: priorityState = '' } = viewModeControllEditValues;
+    const { priority } = router.routeDataActive;
+
+    if (!priorityList || !Array.isArray(priorityList)) {
+      return null;
+    }
+
+    return _.uniq([priorityState ? priorityState : priority ? priority : null, ...priorityList]).filter(
+      Boolean,
+    );
+  }, [key, priorityList, router.routeDataActive, viewModeControllEditValues]);
+
+  const statusClassName = useMemo(() => getClassNameByStatus(status), [status]);
+
   const isRemoteTicket = uidCreater?.includes('__remoteTicket');
   const rulesEdit = uid === uidCreater || isRemoteTicket;
   const rulesStatus = editor?.some((editorId) => editorId === uid) || uid === uidCreater || isRemoteTicket;
 
-  const statusClassName = getClassNameByStatus(status);
-  const renderMethods = {
-    onChangeEditable,
-    onChangeEditableStart,
-    onChangeTagList,
-    onEditContentMode,
-    onChangeEditableEnd,
-    onAddFileList,
-    onRemoveFile,
-  };
+  const renderMethods = useMemo(
+    () => ({
+      onChangeEditable,
+      onChangeEditableStart,
+      onChangeTagList,
+      onEditContentMode,
+      onChangeEditableEnd,
+      onAddFileList,
+      onRemoveFile,
+    }),
+    [onChangeEditable, onChangeEditableEnd, onChangeEditableStart, onChangeTagList, onRemoveFile],
+  );
 
-  const commonProps = {
-    ...renderMethods,
-    depDataKey: 'global',
-    cachesAuthorList,
-    cachesEditorList,
-    cachesJurnalList,
-    filteredUsers,
-    router,
-  };
+  const commonProps = useMemo(
+    () => ({
+      ...renderMethods,
+      depDataKey: 'global',
+      cachesAuthorList,
+      cachesEditorList,
+      cachesJurnalList,
+      filteredUsers,
+      router,
+    }),
+    [cachesAuthorList, cachesEditorList, cachesJurnalList, filteredUsers, renderMethods, router],
+  );
 
-  const descriptionTaskProps = {
-    ...commonProps,
-    description,
-    rulesEdit,
-    filesArray,
-    path: currentActionTab,
-    rest,
-  };
+  const descriptionTaskProps = useMemo(
+    () => ({
+      ...commonProps,
+      description,
+      rulesEdit,
+      filesArray,
+      path: currentActionTab,
+      rest,
+    }),
+    [commonProps, currentActionTab, description, filesArray, rest, rulesEdit],
+  );
 
-  const renderProps = {
-    ...commonProps,
-    modeControllEdit: viewModeControllEditValues,
-    statusClassName,
-    accessPriority,
-    modeControll: viewModeControll,
-    accessStatus,
-    uidCreater,
-    tagList: tagsView ? _.uniqBy([...tagsListState, ...tagsView], 'id') : null,
-    tagsView,
-    priority,
-    status,
-    isLoad,
-    editor,
-    name,
-    date,
-    taskKey: key,
-  };
+  const renderProps = useMemo(
+    () => ({
+      ...commonProps,
+      modeControllEdit: viewModeControllEditValues,
+      statusClassName,
+      accessPriority,
+      modeControll: viewModeControll,
+      accessStatus: statusListName,
+      uidCreater,
+      tagList: tagsView ? _.uniqBy([...tagsListState, ...tagsView], 'id') : null,
+      tagsView,
+      priority,
+      status,
+      isLoad,
+      editor,
+      name,
+      date,
+      taskKey: key,
+    }),
+    [
+      accessPriority,
+      commonProps,
+      date,
+      editor,
+      isLoad,
+      key,
+      name,
+      priority,
+      status,
+      statusClassName,
+      statusListName,
+      tagsListState,
+      tagsView,
+      uidCreater,
+      viewModeControll,
+      viewModeControllEditValues,
+    ],
+  );
+
+  if (!key && findTaskLoading) {
+    return (
+      <div className="taskView taskView--taskLoader">
+        <Spin size="large" tip={t('taskModule_view_loading')} />
+      </div>
+    );
+  }
+
+  if (!key) {
+    return <div>{t('taskModule_view_notFound')}</div>;
+  }
 
   return (
     <Scrollbars hideTracksWhenNotNeeded>
       <Title classNameTitle="taskModuleTitle" title={t('taskModule_view_title')} />
-      {getModalWindow(accessStatus, rulesEdit, rulesStatus)}
+      {getModalWindow(rulesEdit, rulesStatus)}
       <div className="taskView">
         <div className="col-6 col-taskDescription">
           <Scrollbars hideTracksWhenNotNeeded>
