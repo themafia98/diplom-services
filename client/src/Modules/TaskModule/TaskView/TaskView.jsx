@@ -114,7 +114,9 @@ const TaskView = memo((props) => {
       }, []);
 
       const dataEditor = Array.isArray(editor)
-        ? filteredUsers.filter(({ _id: userId }) => editor.some((value) => value === userId))
+        ? filteredUsers.filter(
+            ({ _id: userId }) => Array.isArray(editor) && editor.some((value) => value === userId),
+          )
         : filteredUsers;
 
       dispatch(
@@ -477,7 +479,7 @@ const TaskView = memo((props) => {
       }
 
       if (typeof event === 'string') {
-        if (statusListName?.some((it) => it === event)) {
+        if (Array.isArray(statusListName) && statusListName.some((it) => it === event)) {
           setModeEditContent(false);
           setViewModelControllEditValues({
             ...viewModeControllEditValues,
@@ -668,7 +670,10 @@ const TaskView = memo((props) => {
 
   const isRemoteTicket = uidCreater?.includes('__remoteTicket');
   const rulesEdit = uid === uidCreater || isRemoteTicket;
-  const rulesStatus = editor?.some((editorId) => editorId === uid) || uid === uidCreater || isRemoteTicket;
+  const rulesStatus =
+    (Array.isArray(editor) && editor.some((editorId) => editorId === uid)) ||
+    uid === uidCreater ||
+    isRemoteTicket;
 
   const renderMethods = useMemo(
     () => ({
