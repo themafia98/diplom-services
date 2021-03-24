@@ -1,4 +1,4 @@
-import { Decorator } from '../Types/types.global';
+import { Decorator, methodDecorator } from '../Types/types.global';
 import { DecoratorConfig } from '../Interfaces/Interfaces.global';
 import { createRestDecorator } from './Decorators.utils';
 
@@ -8,6 +8,15 @@ namespace Decorators {
     if (!Reflect.hasMetadata('routes', target)) {
       Reflect.defineMetadata('routes', [], target);
     }
+  };
+
+  export const Any = (config: DecoratorConfig): Decorator => (
+    target: object,
+    propKey: string | undefined,
+  ): void => {
+    const anyMethodsList: Array<methodDecorator> = ['get', 'post', 'delete', 'put'];
+
+    createRestDecorator(target, config, propKey as string, anyMethodsList);
   };
 
   export const Get = (config: DecoratorConfig): Decorator => (

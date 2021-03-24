@@ -5,21 +5,34 @@ export const createRestDecorator = (
   target: object,
   config: DecoratorConfig,
   propKey: string,
-  requestMethod: methodDecorator,
+  requestMethod: methodDecorator | methodDecorator[],
 ) => {
   if (!Reflect.hasMetadata('routes', target.constructor)) {
     Reflect.defineMetadata('routes', [], target.constructor);
   }
 
-  const routesArray: RouteDefinition[] = Reflect.getMetadata('routes', target.constructor);
-
-  routesArray.push({
-    requestMethod,
+  const configChunkForRoutes = {
     path: config.path,
     private: config.private,
     file: config.file || undefined,
     methodName: propKey,
-  });
+  };
+
+  const routesArray: RouteDefinition[] = Reflect.getMetadata('routes', target.constructor);
+
+  if (Array.isArray(requestMethod)) {
+    requestMethod.forEach((method) => {
+      routesArray.push({
+        requestMethod: method,
+        ...configChunkForRoutes,
+      });
+    });
+  } else {
+    routesArray.push({
+      requestMethod,
+      ...configChunkForRoutes,
+    });
+  }
 
   Reflect.defineMetadata('routes', routesArray, target.constructor);
 };
