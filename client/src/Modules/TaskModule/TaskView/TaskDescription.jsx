@@ -40,7 +40,13 @@ const TaskDescription = ({
   taskKey,
 }) => {
   const { t } = useTranslation();
-  const time = useMemo(() => calculateTime(cachesJurnalList), [cachesJurnalList]);
+  const time = useMemo(() => {
+    if (!Array.isArray(cachesJurnalList)) {
+      return null;
+    }
+
+    return calculateTime(cachesJurnalList);
+  }, [cachesJurnalList]);
 
   const statusList = useMemo(
     () =>
