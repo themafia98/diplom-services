@@ -17,17 +17,8 @@ export const taskModuleType = {
 
 export const taskViewType = {
   uuid: string.isRequired,
-  rest: object.isRequired,
-  isBackground: bool.isRequired,
-  height: oneOfType([string.isRequired, number.isRequired]),
-  onLoadCurrentData: func.isRequired,
-  onLoadCacheData: func.isRequired,
-  data: taskEntityType,
-  router: object.isRequired,
-  modeControllEdit: oneOfType([bool.isRequired, object.isRequired, () => null]),
-  udata: udataType.isRequired,
-  onCaching: func.isRequired,
-  onUpdate: func.isRequired,
+  data: taskEntityType.isRequired,
+  modeControllEdit: oneOfType([bool, object, oneOf([null])]).isRequired,
 };
 
 export const taskModuleListType = {
