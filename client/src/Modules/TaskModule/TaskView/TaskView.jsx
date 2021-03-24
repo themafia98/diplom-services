@@ -1,10 +1,10 @@
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useState, memo } from 'react';
 import { taskViewType } from '../TaskModule.types';
 import { v4 as uuidv4 } from 'uuid';
 import _ from 'lodash';
 import moment from 'moment';
 import { Empty, message, Spin } from 'antd';
-import { connect, useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Scrollbars from 'react-custom-scrollbars';
 import { routeParser, sortedByKey } from 'Utils';
 import { TASK_SCHEMA } from 'Models/Schema/const';
@@ -40,7 +40,7 @@ const defaultViewModeControllEditValues = {
   date: null,
 };
 
-const TaskView = (props) => {
+const TaskView = memo((props) => {
   const { uuid, clientDB, route, columnStyleConfig } = props;
 
   const dispatch = useDispatch();
@@ -751,7 +751,7 @@ const TaskView = (props) => {
       </div>
     </Scrollbars>
   );
-};
+});
 
 TaskView.propTypes = taskViewType;
 TaskView.defaultProps = {
