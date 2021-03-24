@@ -500,7 +500,7 @@ const TaskView = memo((props) => {
   );
 
   const onUpdateEditable = (event) => {
-    const { schema = {} } = modelsContext;
+    const { schema } = modelsContext;
 
     const validHash = [viewModeControllEditValues]
       .map((it) => schema?.getSchema(TASK_SCHEMA, it))
@@ -647,7 +647,7 @@ const TaskView = memo((props) => {
 
   const { key, status, priority, name, date, tags: tagsView, description } = routeDataActive;
 
-  const { rest = {} } = modelsContext;
+  const { rest } = modelsContext;
 
   const accessPriority = useMemo(() => {
     if (!key) {
