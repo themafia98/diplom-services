@@ -48,15 +48,17 @@ const TaskDescription = ({
     return calculateTime(cachesJurnalList);
   }, [cachesJurnalList]);
 
-  const statusList = useMemo(
-    () =>
-      accessStatus?.map((it, index) => (
-        <Option key={`${it}${index}`} value={it}>
-          {it}
-        </Option>
-      )),
-    [accessStatus],
-  );
+  const statusList = useMemo(() => {
+    if (!Array.isArray(accessStatus)) {
+      return null;
+    }
+
+    accessStatus.map((it, index) => (
+      <Option key={`${it}${index}`} value={it}>
+        {it}
+      </Option>
+    ));
+  }, [accessStatus]);
 
   const accessList = useMemo(() => {
     if (!accessPriority) {
@@ -70,15 +72,17 @@ const TaskDescription = ({
     ));
   }, [accessPriority]);
 
-  const users = useMemo(
-    () =>
-      filteredUsers.map((it, index) => (
-        <Option key={`${it._id}${index}`} value={it._id} label={it.displayName}>
-          <span>{it.displayName}</span>
-        </Option>
-      )),
-    [filteredUsers],
-  );
+  const users = useMemo(() => {
+    if (!Array.isArray(filteredUsers)) {
+      return null;
+    }
+
+    filteredUsers.map((it, index) => (
+      <Option key={`${it._id}${index}`} value={it._id} label={it.displayName}>
+        <span>{it.displayName}</span>
+      </Option>
+    ));
+  }, [filteredUsers]);
 
   return (
     <Descriptions bordered column={columnStyleConfig}>
