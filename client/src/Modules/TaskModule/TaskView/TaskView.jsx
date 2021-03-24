@@ -640,35 +640,6 @@ const TaskView = memo((props) => {
     });
   }, [cachesJurnalList, t]);
 
-  const getModalWindow = (rulesEdit = true, rulesStatus = false) => {
-    const { _id: id, key, status, description } = router.routeDataActive || {};
-    return (
-      <ModalWindow
-        key={key ? key : uuidv4()}
-        actionTypeList={viewType}
-        actionType={actionType}
-        mode={viewMode}
-        path={path}
-        route={route}
-        keyTask={id ? id : null}
-        accessStatus={statusListName}
-        description={description}
-        onRejectEdit={onRejectEdit}
-        modeControll={viewModeControll}
-        editableContent={description}
-        modeEditContent={isModeEditContent}
-        onCancelEditModeContent={onCancelEditModeContent}
-        onUpdateEditable={onUpdateEditable}
-        statusTaskValue={status ? status : null}
-        rulesEdit={rulesEdit}
-        onEdit={onEdit}
-        rulesStatus={rulesStatus}
-        isLoadList={isLoad}
-        customTypeModal={customTypeModal}
-      />
-    );
-  };
-
   const { _id: uid } = udata;
   const { tags: tagsListState = [] } = viewModeControllEditValues;
 
@@ -791,7 +762,29 @@ const TaskView = memo((props) => {
   return (
     <Scrollbars hideTracksWhenNotNeeded>
       <Title classNameTitle="taskModuleTitle" title={t('taskModule_view_title')} />
-      {getModalWindow(rulesEdit, rulesStatus)}
+      <ModalWindow
+        key={key}
+        actionTypeList={viewType}
+        actionType={actionType}
+        mode={viewMode}
+        path={path}
+        route={route}
+        keyTask={routeDataActiveId ? routeDataActiveId : null}
+        accessStatus={statusListName}
+        description={description}
+        onRejectEdit={onRejectEdit}
+        modeControll={viewModeControll}
+        editableContent={description}
+        modeEditContent={isModeEditContent}
+        onCancelEditModeContent={onCancelEditModeContent}
+        onUpdateEditable={onUpdateEditable}
+        statusTaskValue={status ? status : null}
+        rulesEdit={rulesEdit}
+        onEdit={onEdit}
+        rulesStatus={rulesStatus}
+        isLoadList={isLoad}
+        customTypeModal={customTypeModal}
+      />
       <div className="taskView">
         <div className="col-6 col-taskDescription">
           <Scrollbars hideTracksWhenNotNeeded>
