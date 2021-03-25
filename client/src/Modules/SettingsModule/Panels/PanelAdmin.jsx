@@ -153,12 +153,22 @@ const PanelAdmin = ({
   };
 
   useEffect(() => {
-    if (readOnly && haveChanges.includes('statusSettings')) {
+    if (
+      readOnly &&
+      ['tasksPriority', 'statusSettings'].some((settingsConfigName) =>
+        haveChanges.includes(settingsConfigName),
+      )
+    ) {
       setReadOnly(false);
       return;
     }
 
-    if (!haveChanges.includes('statusSettings') && readOnly) {
+    if (
+      readOnly &&
+      !['tasksPriority', 'statusSettings'].some((settingsConfigName) =>
+        haveChanges.includes(settingsConfigName),
+      )
+    ) {
       setReadOnly(true);
     }
   }, [readOnly, haveChanges, statusValue]);
