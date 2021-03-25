@@ -2,7 +2,7 @@ import { createSelector } from 'reselect';
 import _ from 'lodash';
 import { cache, settings, artifacts } from './selectors';
 
-const settingsLogsSelector = createSelector(cache, (caches) => {
+const selectSettingsLogs = createSelector(cache, (caches) => {
   const cahceLogs = Object.keys(caches).reduce((logs, key) => {
     if (key.includes('user_settings_log') && !_.isEmpty(caches[key])) {
       logs[key] = { ...caches[key] };
@@ -24,12 +24,16 @@ const settingsLogsSelector = createSelector(cache, (caches) => {
   return settingsLogs;
 });
 
-const settingsStatusSelector = createSelector(settings, (list) => {
+const selectSettingsStatus = createSelector(settings, (list) => {
   return list.find((item) => item?.idSettings && item?.idSettings === 'statusSettings') || {};
 });
 
-const settingsArtifactsSelector = createSelector(artifacts, (list) => {
+const selectSettingsTasksPriority = createSelector(settings, (list) => {
+  return list.find((item) => item?.idSettings && item?.idSettings === 'tasksPriority') || {};
+});
+
+const selectSettingsArtifacts = createSelector(artifacts, (list) => {
   return list;
 });
 
-export { settingsLogsSelector, settingsStatusSelector, settingsArtifactsSelector };
+export { selectSettingsLogs, selectSettingsStatus, selectSettingsArtifacts, selectSettingsTasksPriority };

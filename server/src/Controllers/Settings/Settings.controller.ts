@@ -44,7 +44,7 @@ namespace Settings {
       const isGetter = req.method === 'GET';
 
       const params: Params = createParams(
-        isGetter ? 'get_statusList' : 'change_statusList',
+        isGetter ? 'get_statusList' : 'change_settings',
         'done',
         ENTITY.SETTINGS,
       );
@@ -55,7 +55,7 @@ namespace Settings {
 
       const changeStatusList = new ActionRunner({
         actionPath: ENTITY.SETTINGS,
-        actionType: isGetter ? 'get_statusList' : 'change_statusList',
+        actionType: isGetter ? 'get_statusList' : 'change_settings',
       });
 
       const actionParams: ActionParams = !isGetter ? { items, idSettings: query } : {};
@@ -64,16 +64,29 @@ namespace Settings {
       return responseExec(req, res, params);
     }
 
+    @Put({ path: SETTINGS_ROUTE[Utils.getVersion()].LOAD_TASKS_PRIORITY, private: true })
     @Get({ path: SETTINGS_ROUTE[Utils.getVersion()].LOAD_TASKS_PRIORITY, private: true })
     protected async loadTasksPriority(req: Request, res: Response): ResRequest {
-      const params: Params = createParams('get_tasksPriority', 'done', ENTITY.SETTINGS);
+      const isGetter = req.method === 'GET';
+
+      const params: Params = createParams(
+        isGetter ? 'get_tasksPriority' : 'change_settings',
+        'done',
+        ENTITY.SETTINGS,
+      );
 
       const loadTasksPriority = new ActionRunner({
         actionPath: ENTITY.SETTINGS,
-        actionType: 'get_tasksPriority',
+        actionType: isGetter ? 'get_tasksPriority' : 'change_settings',
       });
 
-      const responseExec: Function = await loadTasksPriority.start({});
+      const body: Record<string, object> = req.body;
+      const { params: queryParams = {} } = body as Record<string, QueryParams>;
+      const { items = [], query = '' } = queryParams;
+
+      const actionParams: ActionParams = !isGetter ? { items, idSettings: query } : {};
+
+      const responseExec: Function = await loadTasksPriority.start(actionParams);
       return responseExec(req, res, params);
     }
 

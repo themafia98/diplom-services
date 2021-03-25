@@ -45,7 +45,7 @@ export const fetchTasksPriorityList = async () => {
     const rest = new Request();
 
     const res = await rest.sendRequest(
-      '/settings/tasksPriorityList',
+      '/settings/tasksPriority',
       'GET',
       {
         ...requestTemplate,

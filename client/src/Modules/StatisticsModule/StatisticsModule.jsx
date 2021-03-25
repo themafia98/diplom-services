@@ -5,7 +5,7 @@ import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
 import Bar from './Charts/Bar';
 import Title from 'Components/Title';
-import { settingsStatusSelector } from 'Redux/selectors';
+import { selectSettingsStatus } from 'Redux/selectors';
 import FixedToolbar from 'Components/FixedToolbar';
 import { Button } from 'antd';
 import { withClientDb } from 'Models/ClientSideDatabase';
@@ -45,7 +45,7 @@ const StatisticsModule = memo(({ path, clientDB }) => {
     const { tasks = [] } = currentModule;
     const { bar: barData = {} } = tasks[0] || {};
 
-    const { settings = [] } = settingsStatusSelector(state);
+    const { settings = [] } = selectSettingsStatus(state);
 
     return {
       routeData,

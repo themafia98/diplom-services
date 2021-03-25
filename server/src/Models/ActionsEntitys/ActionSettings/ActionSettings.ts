@@ -62,13 +62,13 @@ class ActionSettings implements Action {
     }
   }
 
-  private async getStatusList(model: Model<Document>, actionParam: ActionParams): Promise<ParserData> {
-    const result = await this.getEntityParser().getAll(model, {});
-    return result;
+  private async getStatusList(model: Model<Document>): Promise<ParserData> {
+    return await this.getEntityParser().getAll(model, { idSettings: 'statusSettings' });
   }
 
-  private async loadTasksPriority(): Promise<ParserData> {
-    return ['Высокий', 'Средний', 'Низкий', 'Критический'];
+  private async loadTasksPriority(model: Model<Document>): Promise<ParserData> {
+    return await this.getEntityParser().getAll(model, { idSettings: 'tasksPriority' });
+    // return ['Высокий', 'Средний', 'Низкий', 'Критический'];
   }
 
   public async run(actionParam: ActionParams): Promise<ParserData> {
@@ -77,11 +77,11 @@ class ActionSettings implements Action {
 
     switch (this.getEntity().getActionType()) {
       case ACTION_TYPE.GET_STATUS_LIST:
-        return this.getStatusList(model, actionParam);
-      case ACTION_TYPE.CHANGE_STATUS_LIST:
+        return this.getStatusList(model);
+      case ACTION_TYPE.CHANGE_SETINGS:
         return this.onChangeStatusList(model, actionParam);
       case ACTION_TYPE.LOAD_TASKS_PRIORITY:
-        return this.loadTasksPriority();
+        return this.loadTasksPriority(model);
       default:
         return null;
     }

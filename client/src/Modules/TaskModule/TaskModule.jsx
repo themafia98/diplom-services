@@ -4,7 +4,7 @@ import { taskModuleType } from './TaskModule.types';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, message } from 'antd';
 import { routeParser, oneOfType } from 'Utils';
-import { settingsStatusSelector } from 'Redux/selectors';
+import { selectSettingsStatus } from 'Redux/selectors';
 import { loadCurrentData } from 'Redux/middleware/routerReducer.thunk';
 import entityRender from 'Utils/Tools/entityRender';
 import withRouter from 'Components/Helpers/withRouter';
@@ -44,7 +44,7 @@ const TaskModule = memo((props) => {
     return {
       status,
       router,
-      statusList: settingsStatusSelector(state, props),
+      statusList: selectSettingsStatus(state, props),
       udata,
       appConfig,
     };

@@ -3,40 +3,69 @@ import { v4 as uuid } from 'uuid';
 import _ from 'lodash';
 import { Button, Collapse, Select } from 'antd';
 import { useTranslation } from 'react-i18next';
+
 const { Panel } = Collapse;
 
 const { Option } = Select;
 
-const PanelAdmin = ({ onSaveSettings, statusList: statusConfig }) => {
+const PanelAdmin = ({
+  onSaveSettings,
+  statusList: statusConfig,
+  settingsTasksPriority: settingsTasksPriorityConfig,
+}) => {
   const { t } = useTranslation();
-  const { settings = [] } = statusConfig;
-  const memoStatusList = useMemo(() => settings.filter(({ active }) => active).map(({ id }) => id), [
-    settings,
+
+  const { settings: settingsTasksPriority = [] } = settingsTasksPriorityConfig;
+  const { settings: statusSettings = [] } = statusConfig;
+
+  const memoStatusList = useMemo(() => statusSettings.filter(({ active }) => active).map(({ id }) => id), [
+    statusSettings,
   ]);
 
-  const [statusList, setStatusList] = useState(settings);
+  const memoSettingsTasksPriority = useMemo(
+    () => settingsTasksPriority.filter(({ active }) => active).map(({ id }) => id),
+    [settingsTasksPriority],
+  );
+
+  const [priorityList, setPriorityList] = useState(settingsTasksPriority);
+  const [statusList, setStatusList] = useState(statusSettings);
   const [readOnly, setReadOnly] = useState(true);
-  const [value, setValue] = useState(memoStatusList);
+  const [priorityValue, setPriorityValue] = useState(memoSettingsTasksPriority);
+  const [statusValue, seStatusValue] = useState(memoStatusList);
   const [haveChanges, setChanges] = useState([]);
 
   useEffect(() => {
-    if (settings?.length !== statusList?.length) {
-      setStatusList(settings);
+    if (statusSettings?.length !== statusList?.length) {
+      setStatusList(statusSettings);
     }
-  }, [settings, statusList]);
 
-  const onClear = (response) => {
-    if (Array.isArray(response)) {
+    if (settingsTasksPriority?.length !== priorityList?.length) {
+      setPriorityList(settingsTasksPriority);
+    }
+  }, [statusSettings, statusList, settingsTasksPriority, priorityList]);
+
+  const onClear = (clearType, response) => {
+    if (Array.isArray(response) && clearType === 'statusSettings') {
       setStatusList(response);
-      setValue(response.filter(({ active }) => active).map(({ id }) => id));
+      seStatusValue(response.filter(({ active }) => active).map(({ id }) => id));
     }
 
-    setChanges([]);
-    setReadOnly(true);
+    if (Array.isArray(response) && clearType === 'tasksPriority') {
+      setPriorityList(response);
+      setPriorityValue(response.filter(({ active }) => active).map(({ id }) => id));
+    }
+
+    if (haveChanges.length) {
+      setChanges([]);
+    }
+
+    if (!readOnly) {
+      setReadOnly(true);
+    }
   };
 
   const onSubmit = () => {
-    const statusListForSave = value.map((statusId) => {
+    const statusListForSave = statusValue.map((statusId) => {
       const item = statusList.find(({ id: selectedId = '' }) => {
         return selectedId === statusId;
       });
@@ -55,12 +84,25 @@ const PanelAdmin = ({ onSaveSettings, statusList: statusConfig }) => {
     });
 
     if (onSaveSettings) {
-      onSaveSettings('statusSettings', statusListForSave, onClear);
+      onSaveSettings(['tasksPriority', 'statusSettings'], statusListForSave, onClear);
     }
   };
 
   const renderStatusList = () => {
     return statusList.reduce((elementsList, status) => {
+      const { id = '', value = '' } = status;
+      if (!id) return elementsList;
+      return [
+        ...elementsList,
+        <Option key={id} value={id} label={value}>
+          <span className="value">{value}</span>
+        </Option>,
+      ];
+    }, []);
+  };
+
+  const renderPriorityList = () => {
+    return priorityList.reduce((elementsList, status) => {
       const { id = '', value = '' } = status;
       if (!id) return elementsList;
       return [
@@ -79,7 +121,17 @@ const PanelAdmin = ({ onSaveSettings, statusList: statusConfig }) => {
       setChanges([...haveChanges, 'statusSettings']);
     }
 
-    setValue([...newStatusArray]);
+    seStatusValue([...newStatusArray]);
+  };
+
+  const addPriority = (newPriorityArray) => {
+    if (!newPriorityArray) return null;
+
+    if (!_.includes(haveChanges, 'tasksPriority')) {
+      setChanges([...haveChanges, 'tasksPriority']);
+    }
+
+    setPriorityValue([...newPriorityArray]);
   };
 
   useEffect(() => {
@@ -91,7 +143,7 @@ const PanelAdmin = ({ onSaveSettings, statusList: statusConfig }) => {
     if (!haveChanges.includes('statusSettings') && readOnly) {
       setReadOnly(true);
     }
-  }, [readOnly, haveChanges, value]);
+  }, [readOnly, haveChanges, statusValue]);
 
   return (
     <Collapse>
@@ -101,11 +153,22 @@ const PanelAdmin = ({ onSaveSettings, statusList: statusConfig }) => {
           mode="tags"
           placeholder={t('settingsModule_admin_statusSelectPlaceholder')}
           onChange={addStatus}
-          value={value}
+          value={statusValue}
           optionLabelProp="label"
           tokenSeparators={[',']}
         >
           {renderStatusList()}
+        </Select>
+        <Select
+          className="settingsSelect-priority"
+          mode="tags"
+          placeholder={t('settingsModule_admin_statusSelectPlaceholder')}
+          onChange={addPriority}
+          value={priorityValue}
+          optionLabelProp="label"
+          tokenSeparators={[',']}
+        >
+          {renderPriorityList()}
         </Select>
         <Button onClick={onSubmit} className="submit" type="primary" disabled={readOnly}>
           {t('settingsModule_submitButton')}

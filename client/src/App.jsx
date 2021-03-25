@@ -65,10 +65,10 @@ const App = ({ coreConfig, fetchConfig, typeConfig }) => {
   );
 
   const loadSettings = useCallback(async () => {
-    dispatch(settingsLoadAction({ wishList: [{ name: 'statusList' }] }));
+    dispatch(settingsLoadAction({ wishList: [{ name: 'statusList' }, { name: 'tasksPriority' }] }));
 
     loadingSettingsLoop.current = setInterval(async () => {
-      dispatch(settingsLoadAction({ wishList: [{ name: 'statusList' }] }));
+      dispatch(settingsLoadAction({ wishList: [{ name: 'statusList' }, { name: 'tasksPriority' }] }));
     }, 30000);
 
     return () => {

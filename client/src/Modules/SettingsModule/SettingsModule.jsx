@@ -1,7 +1,12 @@
 import React, { PureComponent, createRef } from 'react';
 import { settingsModuleType } from './SettingsModule.types';
 import { connect } from 'react-redux';
-import { settingsLogsSelector, settingsStatusSelector, settingsArtifactsSelector } from 'Redux/selectors';
+import {
+  selectSettingsLogs,
+  selectSettingsStatus,
+  selectSettingsArtifacts,
+  selectSettingsTasksPriority,
+} from 'Redux/selectors';
 import { message, Select } from 'antd';
 import Scrollbars from 'react-custom-scrollbars';
 import { middlewareCaching } from 'Redux/middleware/publicReducer.thunk';
@@ -136,6 +141,46 @@ class SettingsModule extends PureComponent {
     }
   };
 
+  onChangePriorityList = async (items, callback = null) => {
+    try {
+      const { onSaveStatusList, modelsContext } = this.props;
+      const { Request } = modelsContext;
+      const query = 'tasksPriority';
+      const rest = new Request();
+      const res = await rest.sendRequest(
+        '/settings/tasksPriority',
+        'PUT',
+        {
+          ...requestTemplate,
+          moduleName: 'settingsModule',
+          actionType: actionsTypes.$SETTINGS_PUT,
+          params: {
+            ...paramsTemplate,
+            query,
+            items,
+          },
+        },
+        true,
+      );
+
+      if (!res || res.status !== 200) {
+        throw new Error('Bad request profile settings');
+      }
+
+      const { response = {} } = res.data;
+      const { metadata = {} } = response;
+      const { idSettings = '', settings = [] } = metadata;
+
+      if (idSettings !== query) {
+        throw new Error('Invalid saved settings id');
+      }
+      onSaveStatusList({ metadata, type: 'update', depKey: idSettings });
+      if (callback) callback('tasksPriority', settings);
+    } catch (error) {
+      if (error?.status !== 404) console.error(error);
+    }
+  };
+
   onChangeStatusList = async (items, callback = null) => {
     try {
       const { onSaveStatusList, modelsContext } = this.props;
@@ -170,26 +215,37 @@ class SettingsModule extends PureComponent {
         throw new Error('Invalid saved settings id');
       }
       onSaveStatusList({ metadata, type: 'update', depKey: idSettings });
-      if (callback) callback(settings);
+      if (callback) callback('statusSettings', settings);
     } catch (error) {
       if (error?.status !== 404) console.error(error);
     }
   };
 
   onSaveSettings = (settingsKey = '', state = {}, callback = null) => {
-    switch (settingsKey) {
-      case 'password':
-        return this.onChangePassword(state, callback);
-      case 'common':
-        return this.onChangeCommon(state, callback);
-      case 'profile':
-        return this.onChangeProfile(state, callback);
-      case 'statusSettings':
-        return this.onChangeStatusList(state, callback);
+    const runChangeAction = (key) => {
+      switch (key) {
+        case 'password':
+          return this.onChangePassword(state, callback);
+        case 'common':
+          return this.onChangeCommon(state, callback);
+        case 'profile':
+          return this.onChangeProfile(state, callback);
+        case 'statusSettings':
+          return this.onChangeStatusList(state, callback);
+        case 'tasksPriority':
+          return this.onChangePriorityList(state, callback);
+        default:
+          return;
+      }
+    };
 
-      default:
-        return;
+    if (Array.isArray(settingsKey)) {
+      settingsKey.forEach((key) => {
+        runChangeAction(key);
+      });
     }
+
+    return runChangeAction(settingsKey);
   };
 
   onChangeProfile = async (state, callback) => {
@@ -445,7 +501,16 @@ class SettingsModule extends PureComponent {
 
   render() {
     const { emailValue, telValue, oldPassword, newPassword, isHideEmail, isHidePhone } = this.state;
-    const { settingsLogs = null, udata, settings = [], appConfig, isLoad, t, i18n } = this.props;
+    const {
+      settingsLogs = null,
+      udata,
+      settingsStatus = [],
+      settingsTasksPriority = [],
+      appConfig,
+      isLoad,
+      t,
+      i18n,
+    } = this.props;
     const { departament } = udata;
     const { settings: settingsConfig = {} } = appConfig;
     const { includeRulesSettings = false } = settingsConfig;
@@ -477,7 +542,11 @@ class SettingsModule extends PureComponent {
                   isHidePhone={isHidePhone}
                 />
                 {isAdmin && includeRulesSettings ? (
-                  <PanelAdmin statusList={settings} onSaveSettings={this.onSaveSettings} />
+                  <PanelAdmin
+                    statusList={settingsStatus}
+                    settingsTasksPriority={settingsTasksPriority}
+                    onSaveSettings={this.onSaveSettings}
+                  />
                 ) : null}
                 <div className="settingsModule__language">
                   <Select defaultValue={i18n.language} onSelect={this.handleChangeLanguage}>
@@ -511,9 +580,10 @@ const mapStateToProps = (state, props) => {
     shouldUpdateRoute: shouldUpdate,
     routeData,
     udata,
-    settings: settingsStatusSelector(state, props),
-    artifacts: settingsArtifactsSelector(state, props),
-    settingsLogs: settingsLogsSelector(state, props),
+    settingsStatus: selectSettingsStatus(state, props),
+    settingsTasksPriority: selectSettingsTasksPriority(state, props),
+    artifacts: selectSettingsArtifacts(state, props),
+    settingsLogs: selectSettingsLogs(state, props),
     shouldUpdate: shouldUpdate && currentActionTab.includes('settings'),
     isLoad,
     appConfig,

@@ -6,9 +6,9 @@ import moment from 'moment';
 import { Empty, message, Spin } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import Scrollbars from 'react-custom-scrollbars';
-import { routeParser, sortedByKey } from 'Utils';
+import { routeParser } from 'Utils';
 import { TASK_SCHEMA } from 'Models/Schema/const';
-import { settingsStatusSelector } from 'Redux/selectors';
+import { selectSettingsStatus, selectSettingsTasksPriority } from 'Redux/selectors';
 import { loadCacheData, middlewareUpdate } from 'Redux/middleware/publicReducer.thunk';
 import ModalWindow from 'Components/ModalWindow';
 import Title from 'Components/Title';
@@ -27,7 +27,7 @@ import LogItem from './LogItem/LogItem';
 import { useTranslation } from 'react-i18next';
 import ModelContext from 'Models/context';
 import { VIEW_ACTION_TYPE } from '../TaskModule.constant';
-import { fetchDepUsersList, fetchTasksPriorityList } from './TaskView.api';
+import { fetchDepUsersList } from './TaskView.api';
 
 const defaultViewModeControllEditValues = {
   key: null,
@@ -67,14 +67,15 @@ const TaskView = memo((props) => {
   const [findTaskLoading, setFindTaskLoading] = useState(false);
   const [priorityList, setPriorityList] = useState(null);
 
-  const { router, caches, udata, statusList } = useSelector((state) => {
+  const { router, caches, udata, statusList, tasksPriority } = useSelector((state) => {
     const { router, publicReducer } = state;
     const { caches, udata } = publicReducer;
     return {
       router,
       caches,
       udata,
-      statusList: settingsStatusSelector(state, props),
+      statusList: selectSettingsStatus(state, props),
+      tasksPriority: selectSettingsTasksPriority(state, props),
     };
   });
   const { routeDataActive = null, shouldUpdate = false, currentActionTab = '', path = '' } = router;
@@ -111,20 +112,28 @@ const TaskView = memo((props) => {
     setUsers(filteredUsers);
   }, [dispatch, editor, t, viewKey]);
 
-  const onRefreshStatusList = useCallback(() => {
-    const { settings = [] } = statusList;
+  const onRefreshSettings = useCallback(() => {
+    const { settings: statusListSettings = [] } = statusList;
+    const { settings: tasksPrioritySettings = [] } = tasksPriority;
 
-    const filteredStatusNames = settings.reduce((acc, { value = '' }) => {
+    const filteredStatusNames = statusListSettings.map((acc, { value }) => {
       if (value) return [...acc, value];
       return acc;
     }, []);
 
-    if (!statusListName || filteredStatusNames.length === statusListName.length) {
-      return;
+    if (statusListName || filteredStatusNames.length !== statusListName.length) {
+      setStatusListName(filteredStatusNames);
     }
 
-    setStatusListName(filteredStatusNames);
-  }, [statusList, statusListName]);
+    const filteredTasksPriority = tasksPrioritySettings.reduce((acc, { value }) => {
+      if (value) return [...acc, value];
+      return acc;
+    }, []);
+
+    if (filteredTasksPriority || filteredTasksPriority.length !== priorityList.length) {
+      setPriorityList(filteredTasksPriority);
+    }
+  }, [statusList, statusListName, tasksPriority, priorityList]);
 
   const fetchFiles = useCallback(async () => {
     const { rest } = modelsContext;
@@ -187,16 +196,6 @@ const TaskView = memo((props) => {
 
   const debounceFetchFiles = useMemo(() => _.debounce(fetchFiles, 400), [fetchFiles]);
 
-  const getTasksPriorityList = useCallback(async () => {
-    const result = await fetchTasksPriorityList();
-
-    if (result === null) {
-      return;
-    }
-
-    setPriorityList(result);
-  }, []);
-
   const onLoadTaskAdditionalData = useCallback(async () => {
     if (!viewKey) {
       return;
@@ -224,14 +223,13 @@ const TaskView = memo((props) => {
 
     await getUsersList();
     await debounceFetchFiles();
-    await getTasksPriorityList();
+    // await getTasksPriorityList();
   }, [
     actionType,
     authorName,
     clientDB,
     debounceFetchFiles,
     dispatch,
-    getTasksPriorityList,
     getUsersList,
     routeDataActiveKey,
     uidCreater,
@@ -288,8 +286,8 @@ const TaskView = memo((props) => {
       debounceFetchFiles();
     }
 
-    onRefreshStatusList();
-  }, [isLoadingFiles, shouldUpdate, shouldRefreshState, onRefreshStatusList, debounceFetchFiles]);
+    onRefreshSettings();
+  }, [isLoadingFiles, shouldUpdate, shouldRefreshState, debounceFetchFiles, onRefreshSettings]);
 
   const onChangeTagList = useCallback(
     (tagsList) => {
