@@ -88,6 +88,10 @@ const TaskView = memo((props) => {
   } = routeDataActive || {};
 
   const getUsersList = useCallback(async () => {
+    if (isLoad) {
+      return;
+    }
+
     const result = await fetchDepUsersList(editor);
 
     if (result === null) {
@@ -110,7 +114,7 @@ const TaskView = memo((props) => {
 
     setLoaded(true);
     setUsers(filteredUsers);
-  }, [dispatch, editor, t, viewKey]);
+  }, [dispatch, editor, isLoad, t, viewKey]);
 
   const onRefreshSettings = useCallback(() => {
     const { settings: statusListSettings = [] } = statusList;
@@ -231,7 +235,6 @@ const TaskView = memo((props) => {
 
     await getUsersList();
     await debounceFetchFiles();
-    // await getTasksPriorityList();
   }, [
     actionType,
     authorName,
@@ -279,7 +282,7 @@ const TaskView = memo((props) => {
   }, [uuid, uidCreater, viewType, viewKey]);
 
   useEffect(() => {
-    if (!routeDataActiveKey) {
+    if (!routeDataActiveKey && !findTaskLoading) {
       findTask();
       return;
     }
