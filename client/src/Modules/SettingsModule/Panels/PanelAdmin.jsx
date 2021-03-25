@@ -83,8 +83,26 @@ const PanelAdmin = ({
       return { id: `virtual_${uuid()}`, value: statusId, active: true };
     });
 
+    const priorityListForSave = priorityValue.map((statusId) => {
+      const item = priorityList.find(({ id: selectedId = '' }) => {
+        return selectedId === statusId;
+      });
+
+      const isObj = item && typeof item === 'object';
+
+      if (!statusId && isObj) {
+        return { ...item, active: false };
+      }
+
+      if (statusId && isObj) {
+        return { ...item, active: true };
+      }
+
+      return { id: `virtual_${uuid()}`, value: statusId, active: true };
+    });
+
     if (onSaveSettings) {
-      onSaveSettings(['tasksPriority', 'statusSettings'], statusListForSave, onClear);
+      onSaveSettings(['tasksPriority', 'statusSettings'], [priorityListForSave, statusListForSave], onClear);
     }
   };
 

@@ -222,30 +222,41 @@ class SettingsModule extends PureComponent {
   };
 
   onSaveSettings = (settingsKey = '', state = {}, callback = null) => {
-    const runChangeAction = (key) => {
+    const runChangeAction = (key, customState = null) => {
+      const values = customState ? customState : state;
       switch (key) {
         case 'password':
-          return this.onChangePassword(state, callback);
+          return this.onChangePassword(values, callback);
         case 'common':
-          return this.onChangeCommon(state, callback);
+          return this.onChangeCommon(values, callback);
         case 'profile':
-          return this.onChangeProfile(state, callback);
+          return this.onChangeProfile(values, callback);
         case 'statusSettings':
-          return this.onChangeStatusList(state, callback);
+          return this.onChangeStatusList(values, callback);
         case 'tasksPriority':
-          return this.onChangePriorityList(state, callback);
+          return this.onChangePriorityList(values, callback);
         default:
           return;
       }
     };
 
+    if (Array.isArray(state)) {
+      settingsKey.forEach((key) => {
+        state.forEach((customState) => {
+          runChangeAction(key, customState);
+        });
+      });
+      return;
+    }
+
     if (Array.isArray(settingsKey)) {
       settingsKey.forEach((key) => {
         runChangeAction(key);
       });
+      return;
     }
 
-    return runChangeAction(settingsKey);
+    runChangeAction(settingsKey);
   };
 
   onChangeProfile = async (state, callback) => {
