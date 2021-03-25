@@ -121,7 +121,11 @@ const TaskView = memo((props) => {
       return acc;
     }, []);
 
-    if (statusListName || filteredStatusNames.length !== statusListName?.length) {
+    const shouldBeUpdateStatusList =
+      Array.isArray(statusListName) && filteredStatusNames.length !== statusListName.length;
+    const shouldBeSetStatusList = !Array.isArray(filteredStatusNames) && !!filteredStatusNames.length;
+
+    if (shouldBeUpdateStatusList || shouldBeSetStatusList) {
       setStatusListName(filteredStatusNames);
     }
 
@@ -130,10 +134,14 @@ const TaskView = memo((props) => {
       return acc;
     }, []);
 
-    if (filteredTasksPriority || filteredTasksPriority?.length !== priorityList?.length) {
+    const shouldBeUpdateTasksPriorityList =
+      Array.isArray(statusListName) && filteredStatusNames.length !== statusListName.length;
+    const shouldBeSetTasksPriorityList = !Array.isArray(filteredStatusNames) && !!filteredStatusNames.length;
+
+    if (shouldBeUpdateTasksPriorityList || shouldBeSetTasksPriorityList) {
       setPriorityList(filteredTasksPriority);
     }
-  }, [statusList, statusListName, tasksPriority, priorityList]);
+  }, [statusList, statusListName, tasksPriority]);
 
   const fetchFiles = useCallback(async () => {
     const { rest } = modelsContext;
