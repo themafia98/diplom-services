@@ -221,38 +221,38 @@ class SettingsModule extends PureComponent {
     }
   };
 
-  onSaveSettings = (settingsKey = '', state = {}, callback = null) => {
-    const runChangeAction = (key, customState = null) => {
+  onSaveSettings = async (settingsKey = '', state = {}, callback = null) => {
+    const runChangeAction = async (key, customState = null) => {
       const values = customState ? customState : state;
       switch (key) {
         case 'password':
-          return this.onChangePassword(values, callback);
+          return await this.onChangePassword(values, callback);
         case 'common':
-          return this.onChangeCommon(values, callback);
+          return await this.onChangeCommon(values, callback);
         case 'profile':
-          return this.onChangeProfile(values, callback);
+          return await this.onChangeProfile(values, callback);
         case 'statusSettings':
-          return this.onChangeStatusList(values, callback);
+          return await this.onChangeStatusList(values, callback);
         case 'tasksPriority':
-          return this.onChangePriorityList(values, callback);
+          return await this.onChangePriorityList(values, callback);
         default:
           return;
       }
     };
 
     if (Array.isArray(state)) {
-      settingsKey.forEach((key) => {
-        state.forEach((customState) => {
-          runChangeAction(key, customState);
-        });
-      });
+      let index = 0;
+      for await (const key of settingsKey) {
+        await runChangeAction(key, state[index]);
+        index++;
+      }
       return;
     }
 
     if (Array.isArray(settingsKey)) {
-      settingsKey.forEach((key) => {
-        runChangeAction(key);
-      });
+      for await (const key of settingsKey) {
+        await runChangeAction(key);
+      }
       return;
     }
 
