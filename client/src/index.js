@@ -11,6 +11,7 @@ import 'antd/dist/antd.css';
 import './index.scss';
 import './Styles/fontello.css';
 
+import Fallback from 'Pages/Fallback';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import * as Sentry from '@sentry/browser';
@@ -22,7 +23,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 ReactDOM.render(
-  <Suspense fallback="loading...">
+  <Suspense fallback={<Fallback />}>
     <Root>
       <App />
     </Root>
