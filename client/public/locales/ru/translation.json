@@ -185,7 +185,8 @@
     },
     "admin": {
       "name": "Настройка статусов задач",
-      "statusSelectPlaceholder": "Статусы задач"
+      "statusSelectPlaceholder": "Статусы задач",
+      "prioritySelectPlaceholder": "Приоритеты задач"
     },
     "common": {
       "name": "Общие настройки",

@@ -180,7 +180,7 @@ const PanelAdmin = ({
         <Select
           className="settingsSelect-priority"
           mode="tags"
-          placeholder={t('settingsModule_admin_statusSelectPlaceholder')}
+          placeholder={t('settingsModule_admin_prioritySelectPlaceholder')}
           onChange={addPriority}
           value={priorityValue}
           optionLabelProp="label"

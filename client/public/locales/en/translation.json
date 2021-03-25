@@ -185,7 +185,8 @@
     },
     "admin": {
       "name": "Setting task statuses",
-      "statusSelectPlaceholder": "Task statuses"
+      "statusSelectPlaceholder": "Task statuses",
+      "prioritySelectPlaceholder": "Task prioritys"
     },
     "common": {
       "name": "General settings",
