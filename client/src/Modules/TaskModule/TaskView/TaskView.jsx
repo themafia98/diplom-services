@@ -121,7 +121,7 @@ const TaskView = memo((props) => {
       return acc;
     }, []);
 
-    if (statusListName || filteredStatusNames.length !== statusListName.length) {
+    if (statusListName || filteredStatusNames.length !== statusListName?.length) {
       setStatusListName(filteredStatusNames);
     }
 
@@ -130,7 +130,7 @@ const TaskView = memo((props) => {
       return acc;
     }, []);
 
-    if (filteredTasksPriority || filteredTasksPriority.length !== priorityList.length) {
+    if (filteredTasksPriority || filteredTasksPriority?.length !== priorityList?.length) {
       setPriorityList(filteredTasksPriority);
     }
   }, [statusList, statusListName, tasksPriority, priorityList]);
