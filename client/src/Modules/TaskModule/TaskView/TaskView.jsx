@@ -123,7 +123,7 @@ const TaskView = memo((props) => {
 
     const shouldBeUpdateStatusList =
       Array.isArray(statusListName) && filteredStatusNames.length !== statusListName.length;
-    const shouldBeSetStatusList = !Array.isArray(filteredStatusNames) && !!filteredStatusNames.length;
+    const shouldBeSetStatusList = !Array.isArray(statusListName) && !!filteredStatusNames.length;
 
     if (shouldBeUpdateStatusList || shouldBeSetStatusList) {
       setStatusListName(filteredStatusNames);
@@ -135,13 +135,13 @@ const TaskView = memo((props) => {
     }, []);
 
     const shouldBeUpdateTasksPriorityList =
-      Array.isArray(statusListName) && filteredStatusNames.length !== statusListName.length;
-    const shouldBeSetTasksPriorityList = !Array.isArray(filteredStatusNames) && !!filteredStatusNames.length;
+      Array.isArray(priorityList) && filteredStatusNames.length !== priorityList.length;
+    const shouldBeSetTasksPriorityList = !Array.isArray(priorityList) && !!filteredStatusNames.length;
 
     if (shouldBeUpdateTasksPriorityList || shouldBeSetTasksPriorityList) {
       setPriorityList(filteredTasksPriority);
     }
-  }, [statusList, statusListName, tasksPriority]);
+  }, [priorityList, statusList, statusListName, tasksPriority]);
 
   const fetchFiles = useCallback(async () => {
     const { rest } = modelsContext;
