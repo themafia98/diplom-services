@@ -135,8 +135,8 @@ const TaskView = memo((props) => {
     }, []);
 
     const shouldBeUpdateTasksPriorityList =
-      Array.isArray(priorityList) && filteredStatusNames.length !== priorityList.length;
-    const shouldBeSetTasksPriorityList = !Array.isArray(priorityList) && !!filteredStatusNames.length;
+      Array.isArray(priorityList) && filteredTasksPriority.length !== priorityList.length;
+    const shouldBeSetTasksPriorityList = !Array.isArray(priorityList) && !!filteredTasksPriority.length;
 
     if (shouldBeUpdateTasksPriorityList || shouldBeSetTasksPriorityList) {
       setPriorityList(filteredTasksPriority);
