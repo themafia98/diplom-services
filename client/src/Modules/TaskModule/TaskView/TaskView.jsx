@@ -472,9 +472,9 @@ const TaskView = memo((props) => {
       const parsedRoutePath =
         !route || (route && _.isEmpty(route))
           ? routeParser({
-              pageType: 'moduleItem',
-              path,
-            })
+            pageType: 'moduleItem',
+            path,
+          })
           : route;
 
       dispatch(
