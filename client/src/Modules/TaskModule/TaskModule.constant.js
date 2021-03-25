@@ -4,3 +4,7 @@ export const TASK_STATUS = {
   CLOSE: 'Закрыт',
   DONE: 'Выполнен',
 };
+
+export const VIEW_ACTION_TYPE = {
+  GET_LOGS: '__getJurnal',
+};

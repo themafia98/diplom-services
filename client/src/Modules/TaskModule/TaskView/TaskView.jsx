@@ -20,13 +20,14 @@ import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { withClientDb } from 'Models/ClientSideDatabase';
 import actionPath from 'actions.path';
 import { loadCurrentData } from 'Redux/middleware/routerReducer.thunk';
-import { getClassNameByStatus } from './TaskView.utils';
+import { getClassNameByStatus, selectTaskViewCache } from './TaskView.utils';
 import fs from 'Utils/Tools/Fs';
 import { setAppCache } from 'Redux/reducers/publicReducer.slice';
 import LogItem from './LogItem/LogItem';
-import { paramsTemplate, requestTemplate } from 'Utils/Api/api.utils';
 import { useTranslation } from 'react-i18next';
 import ModelContext from 'Models/context';
+import { VIEW_ACTION_TYPE } from '../TaskModule.constant';
+import { fetchDepUsersList, fetchTasksPriorityList } from './TaskView.api';
 
 const defaultViewModeControllEditValues = {
   key: null,
@@ -57,7 +58,7 @@ const TaskView = memo((props) => {
   const [viewModeControllEditValues, setViewModelControllEditValues] = useState(
     () => defaultViewModeControllEditValues,
   );
-  const [actionType] = useState('__getJurnal');
+  const [actionType] = useState(VIEW_ACTION_TYPE.GET_LOGS);
   const [customTypeModal, setCustomTypeModal] = useState('');
   const [isLoadingFiles, setLoadingFiles] = useState(false);
   const [filesArray, setFilesArray] = useState(null);
@@ -85,62 +86,30 @@ const TaskView = memo((props) => {
     _id: routeDataActiveId = '',
   } = routeDataActive || {};
 
-  const fetchDepUsersList = useCallback(async () => {
-    const { Request } = modelsContext;
+  const getUsersList = useCallback(async () => {
+    const result = await fetchDepUsersList(editor);
 
-    try {
-      const rest = new Request();
-      const res = await rest.sendRequest('/system/userList', 'GET', null, true);
-
-      if (res.status !== 200) {
-        throw new Error('fail load user list');
-      }
-
-      const { response = {} } = res.data;
-      const { metadata = [] } = response;
-
-      const filteredUsers = metadata.reduce((usersList, user) => {
-        const { _id = '', displayName = '' } = user;
-
-        if (!user || !_id || !displayName) return usersList;
-
-        return [
-          ...usersList,
-          {
-            _id,
-            displayName,
-          },
-        ];
-      }, []);
-
-      const dataEditor = Array.isArray(editor)
-        ? filteredUsers.filter(
-            ({ _id: userId }) => Array.isArray(editor) && editor.some((value) => value === userId),
-          )
-        : filteredUsers;
-
-      dispatch(
-        setAppCache({
-          data: dataEditor,
-          load: true,
-          union: true,
-          customDepKey: `taskView#${viewKey}`,
-          uuid: '__editor',
-        }),
-      );
-
-      setLoaded(true);
-      setUsers(filteredUsers);
-    } catch (error) {
+    if (result === null) {
       message.error(t('taskModule_view_messages_errorLoadUsers'));
-
-      if (error?.response?.status !== 404) {
-        console.error(error);
-      }
-
       setLoaded(true);
+      return;
     }
-  }, [dispatch, editor, modelsContext, t, viewKey]);
+
+    const [dataEditor, filteredUsers] = result;
+
+    dispatch(
+      setAppCache({
+        data: dataEditor,
+        load: true,
+        union: true,
+        customDepKey: `taskView#${viewKey}`,
+        uuid: '__editor',
+      }),
+    );
+
+    setLoaded(true);
+    setUsers(filteredUsers);
+  }, [dispatch, editor, t, viewKey]);
 
   const onRefreshStatusList = useCallback(() => {
     const { settings = [] } = statusList;
@@ -218,37 +187,15 @@ const TaskView = memo((props) => {
 
   const debounceFetchFiles = useMemo(() => _.debounce(fetchFiles, 400), [fetchFiles]);
 
-  const fetchTasksPriorityList = useCallback(async () => {
-    try {
-      const { Request } = modelsContext;
-      const rest = new Request();
+  const getTasksPriorityList = useCallback(async () => {
+    const result = await fetchTasksPriorityList();
 
-      const res = await rest.sendRequest(
-        '/settings/tasksPriorityList',
-        'GET',
-        {
-          ...requestTemplate,
-          moduleName: 'settingsModule',
-          actionType: 'get_tasksPriority',
-          params: {
-            ...paramsTemplate,
-          },
-        },
-        true,
-      );
-
-      if (!res || res.status !== 200) {
-        throw new Error('Bad request tasksPriority');
-      }
-
-      const { response = {} } = res.data;
-      const { metadata = [] } = response;
-
-      setPriorityList(metadata);
-    } catch (error) {
-      console.error(error);
+    if (result === null) {
+      return;
     }
-  }, [modelsContext]);
+
+    setPriorityList(result);
+  }, []);
 
   const onLoadTaskAdditionalData = useCallback(async () => {
     if (!viewKey) {
@@ -275,17 +222,17 @@ const TaskView = memo((props) => {
       }),
     );
 
-    await fetchDepUsersList();
+    await getUsersList();
     await debounceFetchFiles();
-    await fetchTasksPriorityList();
+    await getTasksPriorityList();
   }, [
     actionType,
     authorName,
     clientDB,
     debounceFetchFiles,
     dispatch,
-    fetchDepUsersList,
-    fetchTasksPriorityList,
+    getTasksPriorityList,
+    getUsersList,
     routeDataActiveKey,
     uidCreater,
     viewKey,
@@ -553,51 +500,10 @@ const TaskView = memo((props) => {
     setCustomTypeModal(customTypeModal);
   };
 
-  const { cachesAuthorList, cachesEditorList, cachesJurnalList } = useMemo(() => {
-    let cachesJurnalList = null;
-    let cachesEditorList = null;
-    let cachesAuthorList = null;
-
-    if (caches && typeof caches === 'object') {
-      for (let [key, value] of Object.entries(caches)) {
-        if (key.includes('__getJurnal') && value?.depKey === uuid) {
-          if (!cachesJurnalList) {
-            cachesJurnalList = [];
-          }
-
-          cachesJurnalList.push(value);
-          continue;
-        }
-
-        if (!key.includes(`taskView#${uuid}`)) {
-          continue;
-        }
-
-        if (key.includes('editor')) {
-          if (!cachesEditorList) {
-            cachesEditorList = [];
-          }
-
-          cachesEditorList.push(value);
-          continue;
-        }
-
-        if (key.includes('author')) {
-          if (!cachesAuthorList) {
-            cachesAuthorList = [];
-          }
-
-          cachesAuthorList.push(value);
-        }
-      }
-    }
-
-    return [
-      cachesAuthorList,
-      cachesEditorList,
-      sortedByKey(cachesJurnalList, 'date', 'date', 'DD.MM.YYYY HH:mm:ss'),
-    ];
-  }, [caches, uuid]);
+  const { cachesAuthorList, cachesEditorList, cachesJurnalList } = useMemo(
+    () => selectTaskViewCache(caches, uuid),
+    [caches, uuid],
+  );
 
   const logsList = useMemo(() => {
     if (!cachesJurnalList) {
@@ -646,8 +552,6 @@ const TaskView = memo((props) => {
   const { tags: tagsListState = [] } = viewModeControllEditValues;
 
   const { key, status, priority, name, date, tags: tagsView, description } = routeDataActive;
-
-  const { rest } = modelsContext;
 
   const accessPriority = useMemo(() => {
     if (!key) {
@@ -708,9 +612,8 @@ const TaskView = memo((props) => {
       rulesEdit,
       filesArray,
       path: currentActionTab,
-      rest,
     }),
-    [commonProps, currentActionTab, description, filesArray, rest, rulesEdit],
+    [commonProps, currentActionTab, description, filesArray, rulesEdit],
   );
 
   const renderProps = useMemo(

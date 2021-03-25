@@ -12,9 +12,11 @@ import actionsTypes from 'actions.types';
 import { routeParser } from 'Utils';
 import { withClientDb } from 'Models/ClientSideDatabase';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { middlewareUpdate } from 'Redux/middleware/publicReducer.thunk';
 
-const Comments = memo(({ data, onUpdate, path, clientDB, rules, commentProps }) => {
+const Comments = memo(({ data, path, clientDB, rules, commentProps }) => {
+  const dispatch = useDispatch();
   const { t } = useTranslation();
   const [updateDisabled, setDisable] = useState(false);
   const [msg, setValue] = useState(null);
@@ -76,18 +78,20 @@ const Comments = memo(({ data, onUpdate, path, clientDB, rules, commentProps }) 
             path,
           });
 
-          await onUpdate({
-            actionType: actionsTypes.$UPDATE_SINGLE,
-            parsedRoutePath,
-            key,
-            id,
-            updateBy: '_id',
-            updateItem: [...comments, comment],
-            updateField: 'comments',
-            store: 'tasks',
-            clientDB,
-            systemMessage: addSystemMessage,
-          });
+          dispatch(
+            middlewareUpdate({
+              actionType: actionsTypes.$UPDATE_SINGLE,
+              parsedRoutePath,
+              key,
+              id,
+              updateBy: '_id',
+              updateItem: [...comments, comment],
+              updateField: 'comments',
+              store: 'tasks',
+              clientDB,
+              systemMessage: addSystemMessage,
+            }),
+          );
 
           setDisable(false);
           return;
@@ -100,7 +104,7 @@ const Comments = memo(({ data, onUpdate, path, clientDB, rules, commentProps }) 
           setDisable(false);
         }
       }, 500),
-    [msg, key, comments, data, uId, displayName, path, onUpdate, id, clientDB, addSystemMessage, t],
+    [msg, key, comments, data, uId, displayName, path, dispatch, id, clientDB, addSystemMessage, t],
   );
 
   const addComments = (event) => {
@@ -116,7 +120,7 @@ const Comments = memo(({ data, onUpdate, path, clientDB, rules, commentProps }) 
     addCommentsDelay(event);
   };
 
-  const onDelete = async (event, idComment) => {
+  const onDelete = async (_, idComment) => {
     try {
       const filterComments = comments.filter(({ id = '' }) => id !== idComment);
 
@@ -125,19 +129,21 @@ const Comments = memo(({ data, onUpdate, path, clientDB, rules, commentProps }) 
         path,
       });
 
-      await onUpdate({
-        actionType: actionsTypes.$UPDATE_SINGLE,
-        parsedRoutePath,
-        id,
-        key,
-        item: data,
-        store: 'tasks',
-        updateBy: '_id',
-        updateItem: filterComments,
-        updateField: 'comments',
-        clientDB,
-        systemMessage: removeSystemMessage,
-      });
+      dispatch(
+        middlewareUpdate({
+          actionType: actionsTypes.$UPDATE_SINGLE,
+          parsedRoutePath,
+          id,
+          key,
+          item: data,
+          store: 'tasks',
+          updateBy: '_id',
+          updateItem: filterComments,
+          updateField: 'comments',
+          clientDB,
+          systemMessage: removeSystemMessage,
+        }),
+      );
     } catch (error) {
       console.error(error);
       notification.error({
@@ -169,19 +175,21 @@ const Comments = memo(({ data, onUpdate, path, clientDB, rules, commentProps }) 
         path,
       });
 
-      await onUpdate({
-        actionType: actionsTypes.$UPDATE_SINGLE,
-        parsedRoutePath,
-        id,
-        key,
-        item: data,
-        store: 'tasks',
-        updateBy: '_id',
-        updateItem: newCommentsArray,
-        updateField: 'comments',
-        clientDB,
-        systemMessage: refreshSystemMessage,
-      });
+      dispatch(
+        middlewareUpdate({
+          actionType: actionsTypes.$UPDATE_SINGLE,
+          parsedRoutePath,
+          id,
+          key,
+          item: data,
+          store: 'tasks',
+          updateBy: '_id',
+          updateItem: newCommentsArray,
+          updateField: 'comments',
+          clientDB,
+          systemMessage: refreshSystemMessage,
+        }),
+      );
 
       if (callback) callback();
     } catch (error) {
@@ -247,7 +255,6 @@ Comments.propTypes = commentsContainerType;
 
 Comments.defaultProps = {
   data: null,
-  onUpdate: null,
   rules: false,
 };
 

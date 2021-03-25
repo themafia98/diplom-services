@@ -1,4 +1,5 @@
 import React, { forwardRef, useMemo } from 'react';
+import { oneOf, oneOfType, string, object, bool, array, func } from 'prop-types';
 import clsx from 'clsx';
 import Scrollbars from 'react-custom-scrollbars';
 
@@ -17,8 +18,6 @@ const DescriptionTask = forwardRef(
       description,
       rulesEdit,
       filesArray,
-      onUpdate,
-      rest,
       path,
     },
     ref,
@@ -51,7 +50,6 @@ const DescriptionTask = forwardRef(
         <p className="task_file">{t('taskModule_view_aboutBlock_files')}</p>
         <File
           filesArray={filesArray}
-          rest={rest}
           onAddFileList={onAddFileList}
           onRemoveFile={onRemoveFile}
           moduleData={routeDataActive}
@@ -59,16 +57,28 @@ const DescriptionTask = forwardRef(
           module="tasks"
         />
         <p className="descriptionTask__comment">{t('taskModule_view_comments')}</p>
-        <Comments
-          commentProps={commentProps}
-          path={path}
-          rules={true}
-          onUpdate={onUpdate}
-          data={routeDataActive}
-        />
+        <Comments commentProps={commentProps} path={path} rules={true} data={routeDataActive} />
       </>
     );
   },
 );
+
+DescriptionTask.defaultProps = {
+  commentProps: null,
+  description: '',
+  rulesEdit: false,
+  filesArray: null,
+};
+
+DescriptionTask.propTypes = {
+  commentProps: oneOfType([object, oneOf([null])]),
+  description: string,
+  rulesEdit: bool,
+  filesArray: oneOfType([array, oneOf([null])]),
+  onEditContentMode: func.isRequired,
+  onAddFileList: func.isRequired,
+  onRemoveFile: func.isRequired,
+  path: string,
+};
 
 export default DescriptionTask;

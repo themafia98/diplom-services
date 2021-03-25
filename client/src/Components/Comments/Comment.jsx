@@ -4,7 +4,7 @@ import Output from 'Components/Output';
 import { Icon, Tooltip, Input, Button } from 'antd';
 import { useTranslation } from 'react-i18next';
 
-const Comment = ({ onDelete, onEdit, rules, it, userId, removeTab, onOpenPageWithData, setCurrentTab }) => {
+const Comment = ({ onDelete, onEdit, rules, it, userId }) => {
   const { t } = useTranslation();
   const { id = '', message = '', time = '', uId = '', username = '' } = it;
 
@@ -60,11 +60,8 @@ const Comment = ({ onDelete, onEdit, rules, it, userId, removeTab, onOpenPageWit
           action="cabinet"
           typeOutput="link"
           depDataKey="global"
-          removeTab={removeTab}
           id={uId}
           isStaticList={true}
-          onOpenPageWithData={onOpenPageWithData}
-          setCurrentTab={setCurrentTab}
           className="sender_name"
           outputClassName="output--inline"
         >
@@ -98,9 +95,6 @@ Comment.defaultProps = {
   uId: '',
   onDelete: null,
   onEdit: null,
-  removeTab: null,
-  onOpenPageWithData: null,
-  setCurrentTab: null,
 };
 Comment.propTypes = commentType;
 export default Comment;
