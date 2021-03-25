@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 import { customersModuleType } from './CustomersModule.types';
 import { useSelector } from 'react-redux';
 import withRouter from 'Components/Helpers/withRouter/withRouter';
@@ -18,7 +18,7 @@ const CustomersModule = memo(
       [activeTabs],
     );
 
-    const renderCustomers = useCallback(() => {
+    const tabsCustomers = useMemo(() => {
       const subTabProps = {
         isPortal: visibilityPortal,
         webSocket: webSocket,
@@ -26,6 +26,7 @@ const CustomersModule = memo(
         path,
         statusApp,
         router,
+        routeData,
       };
 
       const config = {
@@ -36,11 +37,10 @@ const CustomersModule = memo(
         type: types.$sub_entrypoint_module,
       };
 
-      const entityList = entityRender(entitysList, routeData, subTabProps, config);
-      return entityList.map(({ component = null }) => component);
+      return entityRender(entitysList, subTabProps, config);
     }, [checkBackground, entitysList, path, routeData, router, statusApp, type, visibilityPortal, webSocket]);
 
-    return <div className="customersModule">{renderCustomers()}</div>;
+    return <div className="customersModule">{tabsCustomers}</div>;
   },
 );
 

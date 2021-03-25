@@ -1,4 +1,4 @@
-import React, { memo, useState, useEffect, useCallback } from 'react';
+import React, { memo, useState, useEffect, useCallback, useMemo } from 'react';
 import { contactModuleType } from './ContactModule.types';
 import { useDispatch, useSelector } from 'react-redux';
 import { loadCurrentData } from 'Redux/middleware/routerReducer.thunk';
@@ -60,7 +60,7 @@ const ContactModule = memo(
       [activeTabs],
     );
 
-    const renderContactsModules = useCallback(() => {
+    const tabsContactModule = useMemo(() => {
       const data = routeData[path] || {};
       const { load = false, news = [] } = routeData[path] || {};
 
@@ -84,7 +84,6 @@ const ContactModule = memo(
         path,
         statusApp,
         router,
-        onLoadingData,
       };
 
       const config = {
@@ -96,13 +95,11 @@ const ContactModule = memo(
         type: oneOfType(types.$sub_entrypoint_module, types.$entity_entrypoint),
       };
 
-      const entityList = entityRender(
+      return entityRender(
         activeTabs.filter((tab) => tab === entitysList),
-        routeData,
         subTabProps,
         config,
       );
-      return entityList.map(({ component = null }) => component);
     }, [
       activeTabs,
       checkBackground,
@@ -115,12 +112,11 @@ const ContactModule = memo(
       type,
       visibilityPortal,
       webSocket,
-      onLoadingData,
     ]);
 
     return (
       <div key="contactModule" className="contactModule">
-        {renderContactsModules()}
+        {tabsContactModule}
       </div>
     );
   },

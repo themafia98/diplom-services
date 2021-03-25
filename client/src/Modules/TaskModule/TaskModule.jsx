@@ -335,14 +335,12 @@ const TaskModule = memo((props) => {
       type: oneOfType(types.$sub_entrypoint_module, types.$entity_entrypoint),
     };
 
-    const entityList = entityRender(
+    return entityRender(
       activeTabs.filter((tab) => tab === entitysList),
       routeData,
       subTabProps,
       config,
     );
-
-    return entityList.map(({ component = null }) => component);
   }, [
     activeTabs,
     checkBackground,
