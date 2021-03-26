@@ -3,97 +3,95 @@ import _ from 'lodash';
 import { Mail } from '../../Utils/Interfaces/Interfaces.global';
 import { transOptions } from '../../Utils/Types/types.global';
 
-namespace Mailer {
-  export class MailManager implements Mail {
-    private transporter: Transporter | null = null;
-    private readonly mailer: typeof nodemailer;
-    private readonly mailSender: SendMailOptions;
-    private readonly mailerConfig: transOptions;
+class Mailer implements Mail {
+  private transporter: Transporter | null = null;
+  private readonly mailer: typeof nodemailer;
+  private readonly mailSender: SendMailOptions;
+  private readonly mailerConfig: transOptions;
 
-    constructor(mailer: typeof nodemailer, mailerConfig: transOptions, mailSender: SendMailOptions) {
-      this.mailer = mailer;
-      this.mailSender = mailSender;
-      this.mailerConfig = mailerConfig;
+  constructor(mailer: typeof nodemailer, mailerConfig: transOptions, mailSender: SendMailOptions) {
+    this.mailer = mailer;
+    this.mailSender = mailSender;
+    this.mailerConfig = mailerConfig;
+  }
+
+  public getMailerConfig(): transOptions {
+    return this.mailerConfig;
+  }
+
+  public getMailer(): typeof nodemailer {
+    return this.mailer;
+  }
+
+  public getTransporter(): Transporter | null {
+    return this.transporter;
+  }
+
+  public getSender(): SendMailOptions {
+    return this.mailSender;
+  }
+
+  public async create(): Promise<boolean> {
+    if (!this.getMailer()) {
+      return false;
     }
 
-    public getMailerConfig(): transOptions {
-      return this.mailerConfig;
-    }
-
-    public getMailer(): typeof nodemailer {
-      return this.mailer;
-    }
-
-    public getTransporter(): Transporter | null {
-      return this.transporter;
-    }
-
-    public getSender(): SendMailOptions {
-      return this.mailSender;
-    }
-
-    public async create(): Promise<boolean> {
-      if (!this.getMailer()) {
-        return false;
-      }
-
-      if (this.getTransporter()) {
-        return true;
-      }
-
-      this.transporter = createTransport(this.getMailerConfig());
-
-      try {
-        const result = await this.transporter.verify();
-
-        if (!result) throw new Error('Invalid varify mailer');
-      } catch (error) {
-        console.error(error);
-        return false;
-      }
-
+    if (this.getTransporter()) {
       return true;
     }
 
-    public async send(
-      to: string,
-      subject: string,
-      text: string,
-      html: boolean = false,
-    ): Promise<SentMessageInfo> {
-      try {
-        const senderProps: object = this.getSender();
-        if (!senderProps || [to, subject, text].every((type) => typeof type !== 'string')) {
-          return null;
-        }
+    this.transporter = createTransport(this.getMailerConfig());
 
-        const validEmail = /\w+@\w+\.\D+/i.test(to);
+    try {
+      const result = await this.transporter.verify();
 
-        if (!validEmail) {
-          return null;
-        }
+      if (!result) throw new Error('Invalid varify mailer');
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
 
-        const transport: Transporter | null = this.getTransporter();
-        if (!transport) {
-          throw new TypeError('Bad mail transporter');
-        }
+    return true;
+  }
 
-        const mailBody = html ? { html: text } : { text };
-
-        const result: Promise<SentMessageInfo> = transport.sendMail({
-          ...senderProps,
-          ...mailBody,
-          subject,
-          to,
-        });
-
-        if (!result) throw new Error('Invalid send mail');
-
-        return result;
-      } catch (error) {
-        console.error(error);
+  public async send(
+    to: string,
+    subject: string,
+    text: string,
+    html: boolean = false,
+  ): Promise<SentMessageInfo> {
+    try {
+      const senderProps: object = this.getSender();
+      if (!senderProps || [to, subject, text].every((type) => typeof type !== 'string')) {
         return null;
       }
+
+      const validEmail = /\w+@\w+\.\D+/i.test(to);
+
+      if (!validEmail) {
+        return null;
+      }
+
+      const transport: Transporter | null = this.getTransporter();
+      if (!transport) {
+        throw new TypeError('Bad mail transporter');
+      }
+
+      const mailBody = html ? { html: text } : { text };
+
+      const result: Promise<SentMessageInfo> = transport.sendMail({
+        ...senderProps,
+        ...mailBody,
+        subject,
+        to,
+      });
+
+      if (!result) throw new Error('Invalid send mail');
+
+      return result;
+    } catch (error) {
+      console.error(error);
+      return null;
     }
   }
 }

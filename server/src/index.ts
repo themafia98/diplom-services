@@ -1,14 +1,12 @@
 import cluster, { Worker } from 'cluster';
 import 'reflect-metadata';
 import fs from 'fs';
-import os from 'os';
-
-import { ServerRun } from './Utils/Interfaces/Interfaces.global';
-import { loggerError, loggerInfo } from './Utils/Logger/Logger';
+import os, { CpuInfo } from 'os';
 import ProcessRouter from './Models/Process/ProcessRouter';
-import Http from './Models/Server';
 import Instanse from './Utils/instanse';
 import { getVersion, isProd } from './Utils/utils.global';
+import startApplication from './start';
+import { loggerInfo } from './Utils/Logger/Logger';
 
 if (isProd()) {
   fs.openSync('/tmp/app-initialized', 'w');
@@ -18,33 +16,18 @@ if (!getVersion()) {
   throw new Error('Api version not found');
 }
 
-namespace Entrypoint {
-  const cpuLentgh: number = os.cpus().length;
-  const workers: Array<Worker> = [];
+const cpus: CpuInfo[] = os.cpus();
+const workers: Array<Worker> = [];
+const workersRouter = new ProcessRouter(workers, Instanse.ws);
 
-  const workersRouter = new ProcessRouter(workers, Instanse.ws);
+if (cluster.isMaster) {
+  cpus.forEach(() => {
+    const worker: Worker = cluster.fork();
+    workersRouter.subscribe(worker);
+    workersRouter.addWorker(worker);
+  });
 
-  if (cluster.isMaster) {
-    for (let i = 0; i < cpuLentgh; i++) {
-      const worker: Worker = cluster.fork();
-      workersRouter.subscribe(worker);
-      workersRouter.addWorker(worker);
-    }
-
-    loggerInfo('Server and workers to born');
-  } else {
-    try {
-      const app: ServerRun = new Http.ServerRunner(process.env.APP_PORT || '3001');
-      app.start();
-    } catch (err) {
-      loggerError(
-        `Server shut down. PPID: ${process.ppid} || ${err}. Node: ${process.versions.node}. v8: ${process.versions.v8}`,
-      );
-      console.error('Server shut down');
-
-      process.exit(1);
-    }
-  }
+  loggerInfo('Server and workers to born');
+} else {
+  startApplication();
 }
-
-export default Entrypoint;
