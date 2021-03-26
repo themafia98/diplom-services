@@ -2,7 +2,7 @@ import { DropboxAccess, FileApi } from '../Utils/Interfaces/Interfaces.global';
 import { Dropbox, files } from 'dropbox';
 import { FileMetadata, ListFolderResult } from '../Utils/Types/types.global';
 import Service from '../Models/Service';
-import Logger from '../Utils/Logger';
+import { loggerError } from '../Utils/Logger/Logger';
 import dropboxConfig from '../config/dropbox.config';
 
 /**
@@ -10,8 +10,6 @@ import dropboxConfig from '../config/dropbox.config';
  * Remote service Dropbox module
  */
 namespace DropboxStorage {
-  const { loggerError } = Logger;
-
   export const name = 'DROPBOX';
 
   export class DropboxManager extends Service<Dropbox> implements FileApi {

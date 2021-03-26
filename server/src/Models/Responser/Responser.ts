@@ -3,9 +3,7 @@ import { Params, Request as RequestCustom } from '../../Utils/Interfaces/Interfa
 import { Response, Request } from 'express';
 import { ParserResult } from '../../Utils/Types/types.global';
 import { getResponseJson } from '../../Utils/utils.global';
-import Logger from '../../Utils/Logger';
-
-const { loggerError } = Logger;
+import { loggerError } from '../../Utils/Logger/Logger';
 
 class Responser implements ResponseBuilder {
   private readonly response: Response;

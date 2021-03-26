@@ -4,7 +4,7 @@ import fs from 'fs';
 import os from 'os';
 
 import { ServerRun } from './Utils/Interfaces/Interfaces.global';
-import Logger from './Utils/Logger';
+import { loggerError, loggerInfo } from './Utils/Logger/Logger';
 import ProcessRouter from './Models/Process/ProcessRouter';
 import Http from './Models/Server';
 import Instanse from './Utils/instanse';
@@ -19,7 +19,6 @@ if (!getVersion()) {
 }
 
 namespace Entrypoint {
-  const { loggerError, loggerInfo } = Logger;
   const cpuLentgh: number = os.cpus().length;
   const workers: Array<Worker> = [];
 
