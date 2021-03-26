@@ -1,7 +1,7 @@
 import winston, { Logger } from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
 import path from 'path';
-import Utils from '../utils.global';
+import { getLoggerTransports } from '../utils.global';
 
 namespace LoggerSpace {
   const factory = (
@@ -10,7 +10,7 @@ namespace LoggerSpace {
     includeDailyLogs: boolean = false,
     onlyDaily: boolean = true,
   ): Logger => {
-    const transport: Array<any> = !onlyDaily && includeDailyLogs ? Utils.getLoggerTransports(level) : [];
+    const transport: Array<any> = !onlyDaily && includeDailyLogs ? getLoggerTransports(level) : [];
     const daily: Array<DailyRotateFile | void> =
       includeDailyLogs || (<any>process).NODE_ENV === 'production'
         ? [

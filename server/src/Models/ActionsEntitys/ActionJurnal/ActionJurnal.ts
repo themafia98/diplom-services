@@ -2,12 +2,10 @@ import { Model, Document, Types, isValidObjectId } from 'mongoose';
 import _ from 'lodash';
 import { ActionParams, Action, Parser } from '../../../Utils/Interfaces/Interfaces.global';
 import { ParserData } from '../../../Utils/Types/types.global';
-import Utils from '../../../Utils/utils.global';
+import { getModelByName } from '../../../Utils/utils.global';
 import { ACTION_TYPE } from './ActionJurnal.constant';
 import ActionEntity from '../../ActionEntity/ActionEntity';
 import { ENTITY } from '../../Database/Schema/Schema.constant';
-
-const { getModelByName } = Utils;
 
 class ActionJournal implements Action {
   private entityParser: Parser;

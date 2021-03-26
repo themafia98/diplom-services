@@ -1,14 +1,14 @@
-import Cabinet from '../../Controllers/Cabinet/Cabinet.controller';
+import CabinetController from '../../Controllers/Cabinet/Cabinet.controller';
 import ChatController from '../../Controllers/Contact/Chat/Chat.controller';
-import News from '../../Controllers/Contact/News/News.controller';
-import General from '../../Controllers/General/General.controller';
-import System from '../../Controllers/Main/Main.controller';
-import Settings from '../../Controllers/Settings/Settings.controller';
-import Statistic from '../../Controllers/Statistic/Statistic.controller';
-import Tasks from '../../Controllers/Tasks/Tasks.controller';
-import Wiki from '../../Controllers/Wiki/Wiki.controller';
+import NewsController from '../../Controllers/Contact/News/News.controller';
+import GeneralController from '../../Controllers/General/General.controller';
+import SystemController from '../../Controllers/System/System.controller';
+import SettingsController from '../../Controllers/Settings/Settings.controller';
+import StatisticController from '../../Controllers/Statistic/Statistic.controller';
+import TasksController from '../../Controllers/Tasks/Tasks.controller';
+import WikiController from '../../Controllers/Wiki/Wiki.controller';
 
-export const CONTROLLERS = {
+export const CONTROLLERS_MAP = {
   MAIN: 'MAIN_CONTROLLER',
   TASKS: 'TASKS_CONTROLLER',
   SYSTEM: 'SYSTEM_CONTROLLER',
@@ -20,14 +20,14 @@ export const CONTROLLERS = {
   STATISTICS: 'STATISTICS_CONTROLLER',
 };
 
-export const CONTROLLERS_MAP = {
-  [CONTROLLERS.MAIN]: General.Main,
-  [CONTROLLERS.TASKS]: Tasks.TasksController,
-  [CONTROLLERS.SYSTEM]: System.SystemData,
-  [CONTROLLERS.NEWS]: News.NewsController,
-  [CONTROLLERS.CHAT]: ChatController,
-  [CONTROLLERS.SETTINGS]: Settings.SettingsController,
-  [CONTROLLERS.WIKI]: Wiki.WikiController,
-  [CONTROLLERS.CABINET]: Cabinet.CabinetController,
-  [CONTROLLERS.STATISTICS]: Statistic.StatisticController,
+export const CONTROLLERS_REGISTER = {
+  [CONTROLLERS_MAP.MAIN]: GeneralController,
+  [CONTROLLERS_MAP.TASKS]: TasksController,
+  [CONTROLLERS_MAP.SYSTEM]: SystemController,
+  [CONTROLLERS_MAP.NEWS]: NewsController,
+  [CONTROLLERS_MAP.CHAT]: ChatController,
+  [CONTROLLERS_MAP.SETTINGS]: SettingsController,
+  [CONTROLLERS_MAP.WIKI]: WikiController,
+  [CONTROLLERS_MAP.CABINET]: CabinetController,
+  [CONTROLLERS_MAP.STATISTICS]: StatisticController,
 };

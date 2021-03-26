@@ -13,20 +13,19 @@ import { Server as HttpServer } from 'http';
 import { Mail } from '../../Utils/Interfaces/Interfaces.global';
 import RestEntitiy from './RestEntity';
 import Chat from '../Chat';
-import Utils from '../../Utils/utils.global';
+import { initControllers } from '../../Utils/utils.global';
 import Mailer from '../Mail';
 
 import DropboxStorage from '../../Services/Dropbox.service';
 
 import limiter from '../../config/limiter';
 import Instanse from '../../Utils/instanse';
-import Middleware from '../../Utils/middlewares';
+import { handleError, useJWT, useTimer, useAuth } from '../../Utils/middlewares';
 import ProcessRouter from '../Process/ProcessRouter';
-import { CONTROLLERS, CONTROLLERS_MAP } from './Server.constant';
+import { CONTROLLERS_REGISTER, CONTROLLERS_MAP } from './Server.constant';
 import authConfig from '../../config/auth.config';
 
 namespace Http {
-  const { catchError, jsonWebTokenRegister, timer, securityChecker } = Middleware;
   export class ServerRunner extends RestEntitiy {
     SessionStore = MongoStore(session);
 
@@ -68,7 +67,7 @@ namespace Http {
       this.getApp().set('port', this.getPort());
       this.getApp().use(passport.initialize());
       this.getApp().use(passport.session());
-      this.getApp().use(catchError as any);
+      this.getApp().use(handleError);
 
       const dropbox = new DropboxStorage.DropboxManager();
       const mailer: Readonly<Mail> = new Mailer.MailManager(nodemailer, this.smtp, {
@@ -83,7 +82,7 @@ namespace Http {
 
       this.getApp().locals.dropbox = dropbox;
       this.getApp().locals.mailer = mailer;
-      jsonWebTokenRegister(Instanse.dbm);
+      useJWT(Instanse.dbm);
 
       const instanceRouter: Route = RouterInstance.Router.instance(this.getApp());
 
@@ -100,16 +99,16 @@ namespace Http {
 
       /** initial entrypoint route */
       this.setRest(instanceRouter.initInstance('/rest'));
-      this.getRest().use(timer);
-      this.getRest().use(securityChecker);
+      this.getRest().use(useTimer);
+      this.getRest().use(useAuth);
       this.getRest().use(limiter);
       this.getRest().use('/tasks/regTicket', regTicketLimitter);
 
       Instanse.ws.startSocketConnection(new socketio.Server(server));
       new Chat(Instanse.ws).run();
 
-      Utils.initControllers(
-        Object.values(CONTROLLERS).map((controllerKey) => CONTROLLERS_MAP[controllerKey]),
+      initControllers(
+        Object.values(CONTROLLERS_MAP).map((controllerKey) => CONTROLLERS_REGISTER[controllerKey]),
         this.getApp.bind(this),
         this.getRest.bind(this),
         Instanse.ws,

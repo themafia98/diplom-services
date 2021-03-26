@@ -5,16 +5,16 @@ import os from 'os';
 
 import { ServerRun } from './Utils/Interfaces/Interfaces.global';
 import Logger from './Utils/Logger';
-import Utils from './Utils/utils.global';
 import ProcessRouter from './Models/Process/ProcessRouter';
 import Http from './Models/Server';
 import Instanse from './Utils/instanse';
+import { getVersion, isProd } from './Utils/utils.global';
 
-if (Utils.isProd()) {
+if (isProd()) {
   fs.openSync('/tmp/app-initialized', 'w');
 }
 
-if (!Utils.getVersion()) {
+if (!getVersion()) {
   throw new Error('Api version not found');
 }
 

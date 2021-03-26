@@ -1,14 +1,12 @@
 import { Document, Model } from 'mongoose';
 import _ from 'lodash';
 import { Socket } from 'socket.io';
-import Utils from '../../Utils/utils.global';
+import { getModelByName } from '../../Utils/utils.global';
 import { ChatMessage } from '../../Utils/Interfaces/Interfaces.global';
 import { ParserResult } from '../../Utils/Types/types.global';
 import { createRealRoom, updateFakeRoom } from './Chat.utils';
 import { PROCESS_ACTIONS } from './Chat.constant';
 import { ENTITY } from '../Database/Schema/Schema.constant';
-
-const { getModelByName } = Utils;
 
 export const newMessageEvent = (socket: Socket) => async (msgObj: ChatMessage) => {
   const { tokenRoom = '' } = msgObj || {};

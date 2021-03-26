@@ -3,13 +3,11 @@ import _ from 'lodash';
 import { Model, Document, Types, isValidObjectId } from 'mongoose';
 import { ActionParams, Action, User, QueryParams, Parser } from '../../../Utils/Interfaces/Interfaces.global';
 import { ParserData } from '../../../Utils/Types/types.global';
-import Utils from '../../../Utils/utils.global';
+import { getModelByName } from '../../../Utils/utils.global';
 import ActionEntity from '../../ActionEntity/ActionEntity';
 import { ENTITY } from '../../Database/Schema/Schema.constant';
 import { GLOBAL_ACTION_TYPE } from '../ActionEntity.global.constant';
 import { ACTION_TYPE } from './ActionUsers.constant';
-
-const { getModelByName } = Utils;
 
 class ActionUsers implements Action {
   private entityParser: Parser;

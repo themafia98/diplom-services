@@ -5,7 +5,7 @@ const Fallback = () => {
 
   return (
     <div className={classes.container}>
-      <div>
+      <div className={classes.content}>
         <span className={classes.title}>Loading...</span>
         <button onClick={handleRefreshPage}>Refresh</button>
       </div>

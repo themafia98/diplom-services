@@ -2,10 +2,9 @@ import { RequestWithParams, ResponseBuilder } from '../../Utils/Interfaces/Inter
 import { Params, Request as RequestCustom } from '../../Utils/Interfaces/Interfaces.global';
 import { Response, Request } from 'express';
 import { ParserResult } from '../../Utils/Types/types.global';
-import Utils from '../../Utils/utils.global';
+import { getResponseJson } from '../../Utils/utils.global';
 import Logger from '../../Utils/Logger';
 
-const { getResponseJson } = Utils;
 const { loggerError } = Logger;
 
 class Responser implements ResponseBuilder {

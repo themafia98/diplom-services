@@ -1,12 +1,10 @@
 import { Model, Document, Types, isValidObjectId } from 'mongoose';
 import { ActionParams, Action, Parser } from '../../../Utils/Interfaces/Interfaces.global';
 import { ParserData, MessageOptions } from '../../../Utils/Types/types.global';
-import Utils from '../../../Utils/utils.global';
+import { getModelByName } from '../../../Utils/utils.global';
 import ActionEntity from '../../ActionEntity/ActionEntity';
 import { ENTITY } from '../../Database/Schema/Schema.constant';
 import { ACTION_TYPE } from './ActionChatMessage.constant';
-
-const { getModelByName } = Utils;
 
 class ActionChatMessage implements Action {
   private entityParser: Parser;

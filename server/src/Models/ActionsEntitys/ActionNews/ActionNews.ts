@@ -1,13 +1,12 @@
+import _ from 'lodash';
+import { ObjectId } from 'mongodb';
 import { Model, Document, Types } from 'mongoose';
 import { ActionParams, Action, QueryParams, Parser } from '../../../Utils/Interfaces/Interfaces.global';
 import { ParserData } from '../../../Utils/Types/types.global';
-import Utils from '../../../Utils/utils.global';
-import _ from 'lodash';
-import { ObjectId } from 'mongodb';
+import { getModelByName } from '../../../Utils/utils.global';
 import { ACTION_TYPE } from './ActionNews.constant';
 import ActionEntity from '../../ActionEntity/ActionEntity';
 import { ENTITY } from '../../Database/Schema/Schema.constant';
-const { getModelByName } = Utils;
 
 class ActionNews implements Action {
   private entityParser: Parser;

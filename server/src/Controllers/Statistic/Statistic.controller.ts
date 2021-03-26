@@ -1,35 +1,31 @@
 import { Response, Request } from 'express';
 import _ from 'lodash';
-import { Params, Controller as ControllerApi } from '../../Utils/Interfaces/Interfaces.global';
+import { Params } from '../../Utils/Interfaces/Interfaces.global';
 import { ResRequest } from '../../Utils/Types/types.global';
-import Decorators from '../../Utils/decorators';
+import { Controller, Post } from '../../Utils/decorators/Decorators';
 import { createParams } from '../Controllers.utils';
 import { STATISTIC_ROUTE } from './Statistic.path';
-import Utils from '../../Utils/utils.global';
+import { getVersion } from '../../Utils/utils.global';
 import ActionRunner from '../../Models/ActionRunner/ActionRunner';
 
-namespace Statistic {
-  const Controller = Decorators.Controller;
-  const Post = Decorators.Post;
+@Controller('/statistic')
+class StatisticController {
+  static version = getVersion();
+  @Post({ path: STATISTIC_ROUTE[StatisticController.version].LOAD_TASK_BAR, private: true })
+  protected async getTaskBarStats(req: Request, res: Response): ResRequest {
+    const params: Params = createParams('get_stats', 'done', 'tasks');
+    const { params: { options = {} } = {} } = req.body;
 
-  @Controller('/statistic')
-  export class StatisticController implements ControllerApi<FunctionConstructor> {
-    @Post({ path: STATISTIC_ROUTE[Utils.getVersion()].LOAD_TASK_BAR, private: true })
-    protected async getTaskBarStats(req: Request, res: Response): ResRequest {
-      const params: Params = createParams('get_stats', 'done', 'tasks');
-      const { params: { options = {} } = {} } = req.body;
+    const actionStats = new ActionRunner({
+      actionPath: 'tasks',
+      actionType: 'get_stats',
+    });
 
-      const actionStats = new ActionRunner({
-        actionPath: 'tasks',
-        actionType: 'get_stats',
-      });
+    const body = { ...options, type: 'bar' };
 
-      const body = { ...options, type: 'bar' };
-
-      const responseExec: Function = await actionStats.start(body);
-      return responseExec(req, res, params);
-    }
+    const responseExec: Function = await actionStats.start(body);
+    return responseExec(req, res, params);
   }
 }
 
-export default Statistic;
+export default StatisticController;

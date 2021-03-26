@@ -1,4 +1,4 @@
-import Utils from '../../../Utils/utils.global';
+import { getModelByName } from '../../../Utils/utils.global';
 import { v4 as uuid } from 'uuid';
 import { Model, Document } from 'mongoose';
 import { ActionParams, Action, Parser } from '../../../Utils/Interfaces/Interfaces.global';
@@ -7,8 +7,6 @@ import _ from 'lodash';
 import { ACTION_TYPE } from './ActionSettings.constant';
 import ActionEntity from '../../ActionEntity/ActionEntity';
 import { ENTITY } from '../../Database/Schema/Schema.constant';
-
-const { getModelByName } = Utils;
 
 class ActionSettings implements Action {
   private entityParser: Parser;
