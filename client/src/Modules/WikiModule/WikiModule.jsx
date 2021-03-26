@@ -1,6 +1,6 @@
-import React, { PureComponent, createRef } from 'react';
+import React, { memo, useState, useEffect, useCallback, useContext, useRef, useMemo } from 'react';
 import { wikiModuleType } from './WikiModule.types';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
 import Scrollbars from 'react-custom-scrollbars';
 import { loadCurrentData } from 'Redux/middleware/routerReducer.thunk';
@@ -15,43 +15,64 @@ import { moduleContextToProps } from 'Components/Helpers/moduleState';
 import { withClientDb } from 'Models/ClientSideDatabase';
 import actionPath from 'actions.path';
 import { requestTemplate, paramsTemplate } from 'Utils/Api/api.utils';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
+import ModelContext from 'Models/context';
 
-const { Option } = Select;
-const { Search } = Input;
+const WikiModule = memo(({ moduleContext, clientDB }) => {
+  const { Request, TreeBuilder } = useContext(ModelContext);
+  const dispatch = useDispatch();
+  const { t } = useTranslation();
 
-class WikiModule extends PureComponent {
-  static propTypes = wikiModuleType;
+  const [isLoading, setLoading] = useState(false);
+  const [visibleModal, setVisibleModal] = useState(false);
+  const [selectedNode, setSelectedNode] = useState('');
+  const [searchValue, setSearchValue] = useState('');
+  const [node, setNode] = useState({});
+  const [visibleDropdownId, setVisbileDropdownId] = useState(null);
+  const [visibleDropdown, setVisibleDropdown] = useState(false);
+  const [selectedNodeMetadata, setSelectedNodeMetadata] = useState(null);
 
-  state = {
-    isLoading: false,
-    expanded: false,
-    visibleModal: false,
-    selectedNode: '',
-    searchValue: '',
-    expandedKeys: [],
-    autoExpandParent: false,
-    node: {
-      title: '',
-      accessGroup: [],
+  const titleRef = useRef(null);
+
+  const { shouldUpdate, routeData, metadata } = useSelector(({ router }) => {
+    const { shouldUpdate = false, routeData } = router;
+    const { wikiTree: metadata } = routeData['wikiModule'] || {};
+    return {
+      shouldUpdate,
+      routeData,
+      metadata,
+    };
+  });
+
+  const fetchTree = useCallback(
+    async (mode = '', forceUpdate = false) => {
+      const { visibility = false } = moduleContext;
+
+      const isModuleUpdate = shouldUpdate && visibility && !routeData['wikiModule']?.load;
+
+      setLoading(true);
+
+      if (!isLoading && (forceUpdate || mode === 'didMount' || isModuleUpdate)) {
+        dispatch(
+          loadCurrentData({
+            action: actionPath.$LOAD_WIKI_TREE,
+            path: 'wikiModule',
+            sortBy: 'index',
+            clientDB,
+          }),
+        );
+
+        setLoading(false);
+      }
     },
-    visbileDropdownId: null,
-    visbileDropdown: false,
-    selectedNodeMetadta: null,
-  };
+    [clientDB, dispatch, isLoading, moduleContext, routeData, shouldUpdate],
+  );
 
-  titleRef = createRef();
+  useEffect(() => {
+    fetchTree();
+  }, [fetchTree]);
 
-  componentDidMount = () => {
-    this.fetchTree('didMount');
-  };
-
-  componentDidUpdate = () => {
-    this.fetchTree();
-  };
-
-  onSelect = (keys, event) => {
-    const { metadata } = this.props;
+  const onSelect = (keys, event) => {
     let selectedNodeMetadata = null;
     let selectedNode = null;
 
@@ -64,258 +85,218 @@ class WikiModule extends PureComponent {
       selectedNodeMetadata = metadata.find((meta) => meta?.path === selectedNode);
     }
 
-    this.setState({
-      ...this.state,
-      selectedNode,
-      selectedNodeMetadata,
-    });
+    setSelectedNode(selectedNode);
+    setSelectedNodeMetadata(selectedNodeMetadata);
   };
 
-  onVisibleModalChange = (callback) => {
-    this.setState(
-      (state) => {
-        return {
-          ...state,
-          visibleModal: !state?.visibleModal,
-          node: {
-            title: '',
-            accessGroup: [],
-          },
-        };
-      },
-      () => {
-        if (typeof callback === 'function') callback();
-      },
-    );
-  };
+  const onVisibleModalChange = useCallback(
+    (callback) => {
+      setVisibleModal(!visibleModal);
+      setNode({ title: '', accessGroup: [] });
 
-  fetchTree = async (mode = '', forceUpdate = false) => {
-    const { onLoadCurrentData, shouldUpdate = false, routeData, moduleContext, clientDB } = this.props;
-    const { visibility = false } = moduleContext;
-    const { isLoading = false } = this.state;
-    const isModuleUpdate = shouldUpdate && visibility && !routeData['wikiModule']?.load;
-
-    if (mode !== 'didMount' && isLoading && routeData['wikiModule']?.load) {
-      this.setState({
-        ...this.state,
-        isLoading: false,
-      });
-    }
-
-    if (!isLoading && (forceUpdate || mode === 'didMount' || isModuleUpdate)) {
-      await onLoadCurrentData({
-        action: actionPath.$LOAD_WIKI_TREE,
-        path: 'wikiModule',
-        sortBy: 'index',
-        clientDB,
-      });
-
-      this.setState({
-        isLoading: false,
-      });
-    }
-  };
-
-  onCreateNode = async (item = null) => {
-    const { node: nodeState = {} } = this.state;
-    const { metadata, modelsContext, t } = this.props;
-    const { Request } = modelsContext;
-
-    if (!Request || !metadata) {
-      return;
-    }
-
-    try {
-      const node = !nodeState?.parentId ? { ...nodeState, parentId: 'root' } : { ...nodeState };
-      const indexId = !item ? 'root' : item?.parentId;
-      if (indexId === null) {
-        message.error(t('wiki_messages_errorCreateLeaf'));
-        return this.onVisibleModalChange();
+      if (typeof callback === 'function') {
+        callback();
       }
-      const index = ++metadata.filter((nodeMeta) => nodeMeta?.parentId === indexId).length;
-      const rest = new Request();
+    },
+    [visibleModal],
+  );
 
-      const res = await rest.sendRequest(
-        '/wiki/createLeaf',
-        'PUT',
-        {
-          ...requestTemplate,
-          actionType: actionsTypes.$CREATE_LEAF,
-          params: {
-            ...paramsTemplate,
-            query: 'wikiTree',
-            item: !item
-              ? {
-                  ...node,
-                  level: 1,
-                  path: `0-${index}`,
-                  index,
-                  accessGroups: node?.accessGroups?.length ? [...node.accessGroups] : ['full'],
-                }
-              : { ...item },
-          },
-        },
-        true,
-      );
-
-      if (res.status !== 200) {
-        throw new Error('Bad create');
+  const onCreateNode = useCallback(
+    async (item = null) => {
+      if (!metadata) {
+        return;
       }
 
-      if (!item) this.onVisibleModalChange(this.fetchTree.bind(this, null, true));
-      else this.fetchTree('', true);
-    } catch (error) {
-      if (error?.response?.status !== 404) console.error(error);
-      message.error(t('wiki_messages_errorCreateLeaf'));
-    }
-  };
+      try {
+        const newNode = !node?.parentId ? { ...node, parentId: 'root' } : { ...node };
+        const indexId = !item ? 'root' : item?.parentId;
 
-  onDeleteNode = async (params) => {
-    const { modelsContext, t } = this.props;
-    try {
-      const { Request } = modelsContext;
-      const rest = new Request();
-
-      const res = await rest.sendRequest(
-        '/wiki/deleteLeafs',
-        'DELETE',
-        {
-          ...requestTemplate,
-          actionType: actionsTypes.$DELETE_LEAF,
-          params,
-        },
-        true,
-      );
-
-      if (!res || res?.status !== 200) {
-        throw new Error('Bad delete leaf');
-      }
-
-      const { deletedCount = 0, ok = 0 } = res.data.response?.metadata || {};
-
-      if (deletedCount && ok) this.fetchTree('', true);
-      message.success(t('wiki_messages_deleteLeaf'));
-    } catch (error) {
-      if (error?.response?.status !== 404) console.error(error);
-      message.error(t('wiki_messages_errorDeleteLeaf'));
-    }
-  };
-
-  onChangeSelect = (value) => {
-    this.setState((state) => {
-      return {
-        ...state,
-        node: {
-          ...state.node,
-          accessGroup: value,
-        },
-      };
-    });
-  };
-
-  onChangeTitleNode = ({ target: { value } }) => {
-    this.setState({
-      ...this.state,
-      node: {
-        ...this.state.node,
-        title: value,
-      },
-    });
-  };
-
-  /**
-   * @param {Array<object>} rootNodeList
-   * @param {Array<object>} nodeListChildren
-   */
-  buildTree = (rootNodeList, nodeListChildren) => {
-    const { modelsContext } = this.props;
-    const { TreeBuilder } = modelsContext;
-    return new TreeBuilder(nodeListChildren).buildTree(rootNodeList);
-  };
-
-  /**
-   * @param {Array<object>} nodeList
-   */
-  getTreeData = (nodeList) => {
-    if (!Array.isArray(nodeList)) return [];
-
-    const rootNodesList = nodeList.filter((node) => node?.parentId === 'root');
-    const nodeListChildren = nodeList.filter((node) => node?.parentId !== 'root');
-
-    return this.buildTree(rootNodesList, nodeListChildren);
-  };
-
-  onDropdownEvent = (sign = '', id = '', event) => {
-    event.stopPropagation();
-
-    if (!sign || !id) return;
-
-    const { metadata, t } = this.props;
-
-    if (!metadata) {
-      return;
-    }
-
-    const item = metadata.find((node) => node?._id === id);
-
-    if (!item) {
-      message.error(t('wiki_messages_leafNotFound'));
-      return;
-    }
-
-    if (sign === 'add') {
-      const { current: { state: { value: title = '' } = {} } = {} } = this.titleRef || {};
-      if (!title) return;
-      const index = ++metadata.filter((node) => node?.parentId === id).length;
-
-      this.onCreateNode(
-        {
-          title,
-          level: item.level ? item.level + 1 : 1,
-          path: `${item?.path}-${index}`,
-          index,
-          parentId: id,
-        },
-        event,
-      );
-    } else if (sign === 'delete') {
-      const childrensIds = metadata.reduce((nodeList, node) => {
-        if (node?.parentId === id) {
-          return [...nodeList, node?._id];
+        if (indexId === null) {
+          message.error(t('wiki_messages_errorCreateLeaf'));
+          onVisibleModalChange();
+          return;
         }
-        return nodeList;
-      }, []);
 
-      const parentId = item?._id;
+        const index = ++metadata.filter((nodeMeta) => nodeMeta?.parentId === indexId).length;
 
-      this.onDeleteNode(
-        {
-          queryParams: {
-            ids: _.uniq([...childrensIds, parentId]),
+        const rest = new Request();
+
+        const res = await rest.sendRequest(
+          '/wiki/createLeaf',
+          'PUT',
+          {
+            ...requestTemplate,
+            actionType: actionsTypes.$CREATE_LEAF,
+            params: {
+              ...paramsTemplate,
+              query: 'wikiTree',
+              item: !item
+                ? {
+                    ...newNode,
+                    level: 1,
+                    path: `0-${index}`,
+                    index,
+                    accessGroups: newNode?.accessGroups?.length ? [...newNode.accessGroups] : ['full'],
+                  }
+                : { ...item },
+            },
           },
-        },
-        event,
-      );
-    }
+          true,
+        );
+
+        if (res.status !== 200) {
+          throw new Error('Bad create');
+        }
+
+        if (!item) {
+          onVisibleModalChange(fetchTree.bind(this, null, true));
+          return;
+        }
+
+        fetchTree('', true);
+      } catch (error) {
+        if (error?.response?.status !== 404) {
+          console.error(error);
+        }
+        message.error(t('wiki_messages_errorCreateLeaf'));
+      }
+    },
+    [Request, fetchTree, metadata, node, onVisibleModalChange, t],
+  );
+
+  const onDeleteNode = useCallback(
+    async (params) => {
+      try {
+        const rest = new Request();
+
+        const res = await rest.sendRequest(
+          '/wiki/deleteLeafs',
+          'DELETE',
+          {
+            ...requestTemplate,
+            actionType: actionsTypes.$DELETE_LEAF,
+            params,
+          },
+          true,
+        );
+
+        if (!res || res?.status !== 200) {
+          throw new Error('Bad delete leaf');
+        }
+
+        const { deletedCount = 0, ok = 0 } = res.data.response?.metadata || {};
+
+        if (deletedCount && ok) {
+          fetchTree('', true);
+        }
+
+        message.success(t('wiki_messages_deleteLeaf'));
+      } catch (error) {
+        if (error?.response?.status !== 404) {
+          console.error(error);
+        }
+
+        message.error(t('wiki_messages_errorDeleteLeaf'));
+      }
+    },
+    [Request, fetchTree, t],
+  );
+
+  const onChangeSelect = (value) => {
+    setNode({ ...node, accessGroup: value });
   };
 
-  onVisibleChange = (id, visible) => {
-    this.setState({
-      ...this.state,
-      visbileDropdownId: visible ? id : null,
-      visbileDropdown: visible,
-    });
+  const onChangeTitleNode = ({ target }) => setNode({ ...node, title: target.value });
+
+  const buildTree = useCallback(
+    (rootNodeList, nodeListChildren) => new TreeBuilder(nodeListChildren).buildTree(rootNodeList),
+    [TreeBuilder],
+  );
+
+  const getTreeData = useCallback(
+    (nodeList) => {
+      if (!Array.isArray(nodeList)) {
+        return [];
+      }
+
+      const rootNodesList = nodeList.filter((node) => node?.parentId === 'root');
+      const nodeListChildren = nodeList.filter((node) => node?.parentId !== 'root');
+
+      return buildTree(rootNodesList, nodeListChildren);
+    },
+    [buildTree],
+  );
+
+  const onDropdownEvent = useCallback(
+    (sign = '', id = '', event) => {
+      event.stopPropagation();
+
+      if (!sign || !id) {
+        return;
+      }
+
+      if (!metadata) {
+        return;
+      }
+
+      const item = metadata.find((node) => node?._id === id);
+
+      if (!item) {
+        message.error(t('wiki_messages_leafNotFound'));
+        return;
+      }
+
+      if (sign === 'add') {
+        const title = titleRef.current?.state?.value;
+
+        if (!title) return;
+
+        const index = ++metadata.filter((node) => node?.parentId === id).length;
+
+        onCreateNode(
+          {
+            title,
+            level: item.level ? item.level + 1 : 1,
+            path: `${item?.path}-${index}`,
+            index,
+            parentId: id,
+          },
+          event,
+        );
+      } else if (sign === 'delete') {
+        const childrensIds = metadata.reduce((nodeList, node) => {
+          if (node?.parentId === id) {
+            return [...nodeList, node?._id];
+          }
+          return nodeList;
+        }, []);
+
+        const parentId = item?._id;
+
+        onDeleteNode(
+          {
+            queryParams: {
+              ids: _.uniq([...childrensIds, parentId]),
+            },
+          },
+          event,
+        );
+      }
+    },
+    [metadata, onCreateNode, onDeleteNode, t],
+  );
+
+  const onVisibleChange = (id, visible) => {
+    setVisbileDropdownId(visible ? id : null);
+    setVisibleDropdown(visible);
   };
 
-  renderTree = () => {
-    const { searchValue, visbileDropdownId = null, visbileDropdown = false } = this.state;
-    const { metadata, t } = this.props;
-
+  const tree = useMemo(() => {
     if (!metadata) {
       return;
     }
 
-    const listData = this.getTreeData(metadata);
+    const listData = getTreeData(metadata);
 
     const loop = (data) =>
       data.reduce((elementsList, it) => {
@@ -327,17 +308,17 @@ class WikiModule extends PureComponent {
         const menu = (
           <Menu className="dropdown-action">
             <Menu.Item key={`add${it?._id}`}>
-              <Input autoFocus placeholder={t('wiki_newLeafPlaceholder')} type="text" ref={this.titleRef} />
+              <Input autoFocus placeholder={t('wiki_newLeafPlaceholder')} type="text" ref={titleRef} />
               <Button
                 type="primary"
                 className="item-action"
-                onClick={this.onDropdownEvent.bind(this, 'add', it?._id)}
+                onClick={onDropdownEvent.bind(this, 'add', it?._id)}
               >
                 {t('wiki_addLeaf')}
               </Button>
             </Menu.Item>
             <Menu.Item key={`delete${it?._id}`}>
-              <Button type="link" onClick={this.onDropdownEvent.bind(this, 'delete', it?._id)}>
+              <Button type="link" onClick={onDropdownEvent.bind(this, 'delete', it?._id)}>
                 {t('wiki_deleteSelectLeaf')}
               </Button>
             </Menu.Item>
@@ -350,8 +331,8 @@ class WikiModule extends PureComponent {
         const title =
           index > -1 ? (
             <Dropdown
-              visible={visbileDropdownId === it?._id && visbileDropdown}
-              onVisibleChange={this.onVisibleChange.bind(this, it?._id)}
+              visible={visibleDropdownId === it?._id && visibleDropdown}
+              onVisibleChange={onVisibleChange.bind(this, it?._id)}
               overlay={menu}
               trigger={['contextMenu']}
             >
@@ -363,8 +344,8 @@ class WikiModule extends PureComponent {
             </Dropdown>
           ) : (
             <Dropdown
-              visible={visbileDropdownId === it?._id && visbileDropdown}
-              onVisibleChange={this.onVisibleChange.bind(this, it?._id)}
+              visible={visibleDropdownId === it?._id && visibleDropdown}
+              onVisibleChange={onVisibleChange.bind(this, it?._id)}
               overlay={menu}
               trigger={['contextMenu']}
             >
@@ -378,155 +359,123 @@ class WikiModule extends PureComponent {
       }, []);
 
     return loop(listData);
-  };
+  }, [getTreeData, metadata, onDropdownEvent, searchValue, t, visibleDropdown, visibleDropdownId]);
 
-  onSearch = ({ target: { value: searchValue = '' } }) => {
-    this.setState({
-      ...this.state,
-      searchValue,
-    });
-  };
+  const onSearch = ({ target }) => setSearchValue(target.value);
 
-  /**
-   * @param {object} paramsState
-   * @param {Function|null} callback
-   */
-  onChangeWikiPage = async (paramsState, callback = null) => {
-    try {
-      const { modelsContext } = this.props;
-      const { Request } = modelsContext;
-      const rest = new Request();
-      const res = await rest.sendRequest(
-        '/system/wiki/update/single',
-        'POST',
-        {
-          ...requestTemplate,
-          actionType: actionsTypes.$UPDATE_WIKI_PAGE,
-          params: {
-            ...paramsTemplate,
-            ...paramsState,
+  const onChangeWikiPage = useCallback(
+    async (paramsState, callback = null) => {
+      try {
+        const rest = new Request();
+        const res = await rest.sendRequest(
+          '/system/wiki/update/single',
+          'POST',
+          {
+            ...requestTemplate,
+            actionType: actionsTypes.$UPDATE_WIKI_PAGE,
+            params: {
+              ...paramsTemplate,
+              ...paramsState,
+            },
           },
-        },
-        true,
-      );
-      const { data: { response = {} } = {} } = res || {};
-      if (res?.status !== 200 && res?.status !== 404) {
-        throw new Error(`Bad fetch update wikiPage. ${paramsState}`);
+          true,
+        );
+        const { response = {} } = res.data;
+
+        if (res.status !== 200 && res.status !== 404) {
+          throw new Error(`Bad fetch update wikiPage. ${paramsState}`);
+        }
+
+        if (callback) {
+          callback(null, response.metadata);
+        }
+      } catch (error) {
+        if (error?.response?.status !== 404) {
+          console.error(error);
+        }
+
+        if (callback) {
+          callback(null);
+        }
       }
-      const meta = response?.metadata || {};
-      if (callback) callback(null, meta);
-    } catch (error) {
-      if (error?.response?.status !== 404) console.error(error);
-      if (callback) callback(null);
-    }
-  };
+    },
+    [Request],
+  );
 
-  render() {
-    const {
-      visibleModal = false,
-      node: { title = '', accessGroup = [] },
-      isLoading: isLoadingState,
-      selectedNodeMetadata = null,
-      selectedNode = '',
-    } = this.state;
-    const { _id: id = '' } = selectedNodeMetadata || {};
-    const { metadata, shouldUpdate, t } = this.props;
-    const isLoading = isLoadingState || (shouldUpdate && !metadata?.length);
+  const { title = '', accessGroup = [] } = node;
 
-    return (
-      <>
-        <div className="wikiModule">
-          <div className="wikiModule__controlls">
-            <Title classNameTitle="wikiModuleTitle" title={t('wiki_title')} />
-            <Button
-              disabled={isLoadingState}
-              onClick={this.onVisibleModalChange}
-              type="primary"
-              className="createNode"
-            >
-              {t('wiki_createNewLeaf')}
-            </Button>
-          </div>
-          <div className="wikiModule__main">
-            <div className="col-4">
-              {metadata?.length ? (
-                <>
-                  <Search
-                    className="wikiModule__searchInput"
-                    placeholder={t('wiki_treeSearchPlaceholder')}
-                    onChange={this.onSearch}
-                  />
-                  <Scrollbars autoHide hideTracksWhenNotNeeded>
-                    <Tree onSelect={this.onSelect} treeData={this.renderTree()} />
-                  </Scrollbars>
-                </>
-              ) : !isLoading ? (
-                <p className="empty-tree">{t('wiki_empty')}</p>
-              ) : (
-                <Spin size="large" />
-              )}
-            </div>
-            <div className="col-8 viewport-max">
-              {selectedNode ? (
-                <WikiPage
-                  key={id}
-                  onChangeWikiPage={this.onChangeWikiPage}
-                  metadata={selectedNodeMetadata}
-                  selectedNode={selectedNode}
+  const { _id: id = '' } = selectedNodeMetadata || {};
+
+  const isLoadingStatus = isLoading || (shouldUpdate && !metadata?.length);
+
+  return (
+    <>
+      <div className="wikiModule">
+        <div className="wikiModule__controlls">
+          <Title classNameTitle="wikiModuleTitle" title={t('wiki_title')} />
+          <Button disabled={isLoading} onClick={onVisibleModalChange} type="primary" className="createNode">
+            {t('wiki_createNewLeaf')}
+          </Button>
+        </div>
+        <div className="wikiModule__main">
+          <div className="col-4">
+            {metadata?.length ? (
+              <>
+                <Input.Search
+                  className="wikiModule__searchInput"
+                  placeholder={t('wiki_treeSearchPlaceholder')}
+                  onChange={onSearch}
                 />
-              ) : null}
-            </div>
+                <Scrollbars autoHide hideTracksWhenNotNeeded>
+                  <Tree onSelect={onSelect} treeData={tree} />
+                </Scrollbars>
+              </>
+            ) : !isLoadingStatus ? (
+              <p className="empty-tree">{t('wiki_empty')}</p>
+            ) : (
+              <Spin size="large" />
+            )}
+          </div>
+          <div className="col-8 viewport-max">
+            {selectedNode ? (
+              <WikiPage
+                key={id}
+                onChangeWikiPage={onChangeWikiPage}
+                metadata={selectedNodeMetadata}
+                selectedNode={selectedNode}
+              />
+            ) : null}
           </div>
         </div>
-        <ModalWindow
-          defaultView={true}
-          visibility={visibleModal}
-          onOkey={this.onCreateNode.bind(this, null)}
-          onReject={this.onVisibleModalChange}
-          content={
-            <div className="modal-content">
-              <Input
-                value={title}
-                onChange={this.onChangeTitleNode}
-                type="text"
-                placeholder={t('wiki_treeNamePlaceholder')}
-              />
-              <Select
-                placeholder={t('wiki_accessGroupsPlaceholder')}
-                value={accessGroup}
-                onChange={this.onChangeSelect}
-                mode="multiple"
-              >
-                <Option value="full">{t('wiki_accessAll')}</Option>
-              </Select>
-            </div>
-          }
-        />
-      </>
-    );
-  }
-}
+      </div>
+      <ModalWindow
+        defaultView={true}
+        visibility={visibleModal}
+        onOkey={onCreateNode.bind(this, null)}
+        onReject={onVisibleModalChange}
+        content={
+          <div className="modal-content">
+            <Input
+              value={title}
+              onChange={onChangeTitleNode}
+              type="text"
+              placeholder={t('wiki_treeNamePlaceholder')}
+            />
+            <Select
+              placeholder={t('wiki_accessGroupsPlaceholder')}
+              value={accessGroup}
+              onChange={onChangeSelect}
+              mode="multiple"
+            >
+              <Select.Option value="full">{t('wiki_accessAll')}</Select.Option>
+            </Select>
+          </div>
+        }
+      />
+    </>
+  );
+});
 
-const mapStateToProps = ({ router }) => {
-  const { shouldUpdate = false, routeData } = router;
-  const { wikiTree: metadata } = routeData['wikiModule'] || {};
-  return {
-    router,
-    shouldUpdate,
-    routeData,
-    metadata,
-  };
-};
+WikiModule.propTypes = wikiModuleType;
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onLoadCurrentData: (props) => dispatch(loadCurrentData(props)),
-  };
-};
-
-export default compose(
-  moduleContextToProps,
-  withClientDb,
-  connect(mapStateToProps, mapDispatchToProps),
-  withTranslation(),
-)(WikiModule);
+export default compose(moduleContextToProps, withClientDb)(WikiModule);

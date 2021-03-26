@@ -1,13 +1,9 @@
 import PropTypes from 'prop-types';
-const { func, string, oneOf, object, bool, array } = PropTypes;
+const { string, oneOf, object } = PropTypes;
 
 export const wikiModuleType = {
-  path: string.isRequired,
-  visible: bool,
-  rest: object.isRequired,
-  statusApp: string.isRequired,
-  metadata: array.isRequired,
-  onLoadCurrentData: func.isRequired,
+  moduleContext: object.isRequired,
+  clientDB: object.isRequired,
 };
 
 export const wikiPageTypes = {
