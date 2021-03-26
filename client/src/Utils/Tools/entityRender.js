@@ -1,40 +1,39 @@
 import React from 'react';
-import _ from 'lodash';
 import TabContainer from 'Components/TabContainer';
 import { getComponentByKey } from 'Utils';
 import types from 'types.modules';
 import regExpRegister from './regexpStorage';
 import NotFound from 'Modules/NotFound/NotFound';
 
-const entityRender = (entitysList, routeData, subTabProps, config) => {
+const entityRender = (entitysList, subTabProps, config) => {
   if (!entitysList || !config) {
     return <NotFound message="Invalid render page" error={new Error('entitysList || config not found')} />;
   }
 
   const { validation, path, viewModuleName, moduleName, type: typeEntity, exclude } = config;
 
-  const entitys = _.uniq([
-    ...entitysList,
-    !!path?.includes(moduleName) && !exclude?.some((it) => it === path) ? path : null,
-  ]);
+  const entitys = [
+    ...new Set([
+      ...entitysList,
+      !!path?.includes(moduleName) && !exclude?.some((it) => it === path) ? path : null,
+    ]),
+  ].filter(Boolean);
 
-  return entitys.reduce((components, entityKey) => {
-    if (!entityKey) return components;
-
-    const { uuid = '', data: dataTab = null } = subTabProps || {};
-    const { routeData = null } = subTabProps?.router || {};
+  return entitys.map((entityKey) => {
+    const { uuid = '', data: dataTab = null } = subTabProps;
+    const { routeData = null } = subTabProps.router;
 
     const isCheckerType = typeof typeEntity === 'function';
 
-    if (
-      components.some(
-        ({ type, tabKey }) =>
-          tabKey?.includes(entityKey.split(regExpRegister.MODULE_ID)[1]) &&
-          type === (isCheckerType ? typeEntity(type) : typeEntity),
-      )
-    ) {
-      return components;
-    }
+    // if (
+    //   components.some(
+    //     ({ type, tabKey }) =>
+    //       tabKey?.includes(entityKey.split(regExpRegister.MODULE_ID)[1]) &&
+    //       type === (isCheckerType ? typeEntity(type) : typeEntity),
+    //   )
+    // ) {
+    //   return components;
+    // }
 
     const [, moduleViewKey] = entityKey.split(regExpRegister.MODULE_ID);
     const isView = entityKey?.includes(moduleName) && !!moduleViewKey;
@@ -80,27 +79,19 @@ const entityRender = (entitysList, routeData, subTabProps, config) => {
     }
 
     if (Component) {
-      return [
-        ...components,
-        {
-          tabKey: entityKey,
-          type,
-          component: (
-            <TabContainer key={`${entityKey}-container`} actualParams={tabParams}>
-              <Component
-                key={`${entityKey}_${Symbol.keyFor(type)}`}
-                {...subTabProps}
-                {...propsModuleView}
-                type={type}
-              />
-            </TabContainer>
-          ),
-        },
-      ];
+      return (
+        <TabContainer key={`${entityKey}-container`} actualParams={tabParams}>
+          <Component
+            key={`${entityKey}_${Symbol.keyFor(type)}`}
+            {...subTabProps}
+            {...propsModuleView}
+            type={type}
+          />
+        </TabContainer>
+      );
     }
-
-    return components;
-  }, []);
+    return null;
+  });
 };
 
 export default entityRender;

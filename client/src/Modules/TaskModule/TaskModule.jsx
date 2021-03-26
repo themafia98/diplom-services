@@ -19,9 +19,10 @@ import { ACTIONS } from 'App.constant';
 import { createTab, setActiveTab } from 'Redux/reducers/routerReducer.slice';
 import ModelContext from 'Models/context';
 import { useTranslation } from 'react-i18next';
+import _ from 'lodash';
 
 const TaskModule = memo((props) => {
-  const { path, moduleContext, type, clientDB, entitysList } = props;
+  const { path, moduleContext, type: typeProps, clientDB, entitysList } = props;
 
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -220,6 +221,8 @@ const TaskModule = memo((props) => {
     [activeTabs],
   );
 
+  const debounceFetchTaskModule = useMemo(() => _.debounce(fetchTaskModule, 400), [fetchTaskModule]);
+
   useEffect(() => {
     if (path !== statePath && path.toLowerCase().includes('task')) {
       setPath(path);
@@ -228,29 +231,15 @@ const TaskModule = memo((props) => {
 
   useEffect(() => {
     const { visibility = false } = moduleContext;
-    const { limitList = 20 } = appConfig?.task || {};
 
-    const isTaskModule = path && path.includes('task') && !path.split(regExpRegister.MODULE_ID)[1];
+    if (!visibility) {
+      return;
+    }
 
-    if (tableHeight === null && moduleTaskRef.current && visibility) {
+    if (tableHeight === null && moduleTaskRef.current) {
       recalcHeight();
     }
-
-    if (isTaskModule) {
-      const saveData = {
-        current: 1,
-        pageSize: limitList,
-      };
-      fetchTaskModule(null, {
-        ...saveData,
-        paginationState: saveData,
-      });
-    }
-
-    if (path !== statePath) {
-      setPath(path);
-    }
-  }, [appConfig?.task, fetchTaskModule, moduleContext, path, recalcHeight, statePath, tableHeight]);
+  }, [appConfig?.task, moduleContext, path, recalcHeight, statePath, tableHeight]);
 
   useEffect(() => {
     window.addEventListener('resize', recalcHeight, false);
@@ -266,12 +255,6 @@ const TaskModule = memo((props) => {
 
     if (!visibility) {
       return;
-    }
-
-    const shouldBeInit = tableHeight === null && moduleTaskRef.current !== null && visibility;
-
-    if (shouldBeInit || [moduleTaskRef.current, controllersRef.current].every((type) => type !== null)) {
-      recalcHeight();
     }
 
     const shouldUpdateList = routeData[path] && routeData[path]?.shouldUpdate;
@@ -292,12 +275,12 @@ const TaskModule = memo((props) => {
           };
 
       if (shouldUpdateTasks()) {
-        fetchTaskModule(null, saveData, saveDataState);
+        debounceFetchTaskModule(null, saveData, saveDataState);
       }
     }
   }, [
     appConfig?.task,
-    fetchTaskModule,
+    debounceFetchTaskModule,
     isListCounterLoading,
     moduleContext,
     path,
@@ -331,18 +314,16 @@ const TaskModule = memo((props) => {
       path,
       viewModuleName: 'taskViewModule',
       moduleName: 'taskModule',
-      parentType: type,
+      parentType: typeProps,
       type: oneOfType(types.$sub_entrypoint_module, types.$entity_entrypoint),
     };
 
-    const entityList = entityRender(
+    return entityRender(
       activeTabs.filter((tab) => tab === entitysList),
       routeData,
       subTabProps,
       config,
     );
-
-    return entityList.map(({ component = null }) => component);
   }, [
     activeTabs,
     checkBackground,
@@ -359,9 +340,17 @@ const TaskModule = memo((props) => {
     status,
     statusList,
     tableHeight,
-    type,
+    typeProps,
     uuid,
   ]);
+
+  const type = useMemo(() => {
+    if (uuid) {
+      return types.$entity_entrypoint;
+    }
+
+    return typeProps;
+  }, [uuid, typeProps]);
 
   return (
     <div key="taskModule" ref={moduleTaskRef} className="taskModule">
@@ -369,7 +358,7 @@ const TaskModule = memo((props) => {
         <div>Not found path module</div>
       ) : (
         <>
-          {oneOfType(types.$sub_entrypoint_module, types.$entrypoint_module)(types.$entity_entrypoint) &&
+          {oneOfType(types.$sub_entrypoint_module, types.$entrypoint_module)(type) &&
           (path?.includes('all') || path?.includes('myTasks')) ? (
             <div key="controllers" ref={controllersRef} className="controllersWrapper">
               <Button

@@ -232,9 +232,9 @@ const Dashboard = () => {
     );
 
     if (keys.length && !shouldUpdate) {
-      showLoader(true);
+      setShowLoader(true);
     }
-  }, [currentActionTab, routeData, shouldUpdate, showLoader]);
+  }, [currentActionTab, routeData, shouldUpdate]);
 
   const activeTabsData = useMemo(() => {
     const { menu } = appConfig;
