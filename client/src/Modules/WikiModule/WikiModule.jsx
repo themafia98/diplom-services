@@ -50,9 +50,9 @@ const WikiModule = memo(({ moduleContext, clientDB }) => {
 
       const isModuleUpdate = shouldUpdate && visibility && !routeData['wikiModule']?.load;
 
-      setLoading(true);
-
       if (!isLoading && (forceUpdate || mode === 'didMount' || isModuleUpdate)) {
+        setLoading(true);
+
         dispatch(
           loadCurrentData({
             action: actionPath.$LOAD_WIKI_TREE,
@@ -72,7 +72,7 @@ const WikiModule = memo(({ moduleContext, clientDB }) => {
     fetchTree();
   }, [fetchTree]);
 
-  const onSelect = (keys, event) => {
+  const onSelect = (keys) => {
     let selectedNodeMetadata = null;
     let selectedNode = null;
 
@@ -138,7 +138,7 @@ const WikiModule = memo(({ moduleContext, clientDB }) => {
                     index,
                     accessGroups: newNode?.accessGroups?.length ? [...newNode.accessGroups] : ['full'],
                   }
-                : { ...item },
+                : item,
             },
           },
           true,
