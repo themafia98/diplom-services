@@ -18,12 +18,12 @@ import {
 import { v4 as uuid } from 'uuid';
 import { docResponse, ParserResult, Meta } from './Types/types.global';
 import { ObjectID } from 'mongodb';
-import { ROLES } from '../Models/AccessRole/AcessRole.constant';
 import { ParsedUrlQuery } from 'querystring';
 import { CONTROLLERS_REGISTER } from '../Models/Server/Server.constant';
 import passport from 'passport';
 import { ACTIONS_ACCESS } from '../app.constant';
 import { ENTITY } from '../Models/Database/Schema/Schema.constant';
+import { DATABASE_ACTION } from '../Models/ActionParser/ActionParser.constant';
 
 const upload = multer();
 
@@ -38,24 +38,27 @@ export const checkEntity = async (
   actionParam: ActionParams,
   model: Model<Document>,
 ): Promise<boolean> => {
-  if (mode === 'equalSingle') {
-    let query = {};
-
-    const field: any = actionParam[checkKey];
-    const type: string = (actionParam as Record<string, string>).type;
-
-    if (Array.isArray(field)) {
-      query = { [checkKey]: { $in: field } };
-    }
-
-    query = { type, [checkKey]: field };
-
-    const result = await model.find(query);
-
-    if (Array.isArray(result) && result.length) {
-      return false;
-    }
+  if (mode !== 'equalSingle') {
+    return true;
   }
+
+  let query = {};
+
+  const field: any = actionParam[checkKey];
+  const type: string = (actionParam as Record<string, string>).type;
+
+  if (Array.isArray(field)) {
+    query = { [checkKey]: { $in: field } };
+  } else {
+    query = { type, [checkKey]: field };
+  }
+
+  const result = await model.find(query);
+
+  if (Array.isArray(result) && result.length) {
+    return false;
+  }
+
   return true;
 };
 
@@ -74,15 +77,13 @@ export const getLoggerTransports = (level: string | Array<string>): Array<object
 };
 
 export const getModelByName = (name: string, schemaType: string): Model<Document> | null => {
-  try {
-    const schema = getSchemaByName(schemaType);
+  const schema = getSchemaByName(schemaType);
 
-    if (schema) return model(name, schema);
-    else return null;
-  } catch (err) {
-    console.error(err);
-    return null;
+  if (schema) {
+    return model(name, schema);
   }
+
+  return null;
 };
 
 export const responseTime = (startDate: Date): number => {
@@ -110,15 +111,25 @@ export const initControllers = (
 
       const middlewares: Record<string, object> = {};
 
-      if (isPrivate) middlewares.private = passport.authenticate('jwt', { session: false });
-      if (isFile) middlewares.file = upload.any();
-      if (isWs) middlewares.ws = wsWorkerManager;
+      if (isPrivate) {
+        middlewares.private = passport.authenticate('jwt', { session: false });
+      }
+
+      if (isFile) {
+        middlewares.file = upload.any();
+      }
+
+      if (isWs) {
+        middlewares.ws = wsWorkerManager;
+      }
 
       const compose: Readonly<Array<object | null>> = Object.keys(middlewares)
         .map((key: string) => {
           if (middlewares[key]) {
             return middlewares[key];
-          } else return null;
+          }
+
+          return null;
         })
         .filter(Boolean);
 
@@ -161,7 +172,9 @@ export const parsePublicData = (
   rules = '',
   queryString?: ParsedUrlQuery,
 ): Array<Meta> | Meta => {
-  if ((!Array.isArray(data) && typeof data !== 'object') || !data) return [data];
+  if ((!Array.isArray(data) && typeof data !== 'object') || !data) {
+    return [data];
+  }
 
   const { result } = (data as Record<string, any>) || {};
 
@@ -172,55 +185,57 @@ export const parsePublicData = (
   const queryStringKeys =
     queryString && !_.isEmpty(queryString) ? Object.keys(queryString as ParsedUrlQuery) : null;
 
-  switch (mode) {
-    case 'access':
-    case 'accessGroups':
-      const dataArray: Array<object> = result && Array.isArray(result) ? result : (data as Array<object>);
-      const isGroupMode: boolean = mode.includes('Groups');
-      const newDataArray = dataArray
-        .map((it: object | null) => {
-          if (!it) return null;
-          const { _doc: item = {} } = it as Record<string, object>;
+  if (mode === 'access' || mode === 'accessGroups') {
+    const dataArray: Array<object> = result && Array.isArray(result) ? result : (data as Array<object>);
 
-          if (isGroupMode) {
-            const { [mode]: modeArray = [] } = item as Record<string, Array<string>>;
-            if (!Array.isArray(modeArray)) return null;
+    const isGroupMode: boolean = mode.includes('Groups');
 
-            if (modeArray.some((rule) => rule === rules)) return it;
-          } else {
-            if (!rules) return null;
-            const { [mode]: modeStr = [] } = item as Record<string, string>;
-            if (modeStr === rules) return it;
-          }
-          return null;
-        })
-        .filter(Boolean);
-      return result ? { ...data, result: newDataArray } : newDataArray;
-    default:
-      const defaultDataArray: Array<object> =
-        result && Array.isArray(result) ? result : (data as Array<object>);
-      const newDefaultDataArray = (defaultDataArray as Array<docResponse>)
-        .map((it: docResponse) => {
-          const { _doc: item = {} } = it as Record<string, object>;
+    const newDataArray = dataArray
+      .map((it: object | null) => {
+        if (!it) return null;
+        const { _doc: item = {} } = it as Record<string, object>;
 
-          const itemValid = Object.keys(item).reduce((obj: ResponseDocument, key: string): object => {
-            const addditionalRule: boolean = rules === ENTITY.USERS ? !key.includes('At') : true;
-            const isInclude =
-              key === '_id' || !queryStringKeys || queryStringKeys.some((queryKey) => queryKey === key);
-            const isPublicField = !key.includes('password') && !key.includes('__v');
+        if (isGroupMode) {
+          const { [mode]: modeArray = [] } = item as Record<string, Array<string>>;
+          if (!Array.isArray(modeArray)) return null;
 
-            if (isInclude && isPublicField && addditionalRule) {
-              obj[key] = (item as ResponseDocument)[key];
-            }
+          if (modeArray.some((rule) => rule === rules)) return it;
+        } else {
+          if (!rules) return null;
+          const { [mode]: modeStr = [] } = item as Record<string, string>;
+          if (modeStr === rules) return it;
+        }
+        return null;
+      })
+      .filter(Boolean);
 
-            return obj;
-          }, {});
-
-          return itemValid;
-        })
-        .filter(Boolean);
-      return result ? { ...data, result: newDefaultDataArray } : newDefaultDataArray;
+    return result ? { ...data, result: newDataArray } : newDataArray;
   }
+
+  const defaultDataArray: Array<object> = result && Array.isArray(result) ? result : (data as Array<object>);
+
+  const newDefaultDataArray = (defaultDataArray as Array<docResponse>)
+    .map((it: docResponse) => {
+      const { _doc: item = {} } = it as Record<string, object>;
+
+      const itemValid = Object.keys(item).reduce((obj: ResponseDocument, key: string): object => {
+        const addditionalRule: boolean = rules === ENTITY.USERS ? !key.includes('At') : true;
+        const isInclude =
+          key === '_id' || !queryStringKeys || queryStringKeys.some((queryKey) => queryKey === key);
+        const isPublicField = !key.includes('password') && !key.includes('__v');
+
+        if (isInclude && isPublicField && addditionalRule) {
+          obj[key] = (item as ResponseDocument)[key];
+        }
+
+        return obj;
+      }, {});
+
+      return itemValid;
+    })
+    .filter(Boolean);
+
+  return result ? { ...data, result: newDefaultDataArray } : newDefaultDataArray;
 };
 
 export const generateRemoteTask = (remoteDep: TicketRemote): TaskEntity => {
@@ -256,9 +271,9 @@ export const generateRemoteTask = (remoteDep: TicketRemote): TaskEntity => {
 export const getFilterType = (type: string) => {
   switch (type) {
     case 'regexp':
-      return '$elemMatch';
+      return DATABASE_ACTION.ELEM_MATCH;
     case 'equal':
-      return '$eq';
+      return DATABASE_ACTION.EQUAL;
     default:
       return null;
   }
@@ -276,28 +291,33 @@ export const parseFilterFields = (
   filterFields: Array<object> = [],
   id: string | ObjectID = '',
 ): Array<object> => {
-  if (!filterFields || (Array.isArray(filterFields) && !filterFields.length)) return [{}];
+  if (!filterFields || (Array.isArray(filterFields) && !filterFields.length)) {
+    return [{}];
+  }
 
   return filterFields.reduce((acc: Array<object>, filter: any) => {
-    if (!(filter && typeof filter === 'object')) return acc;
+    if (!(filter && typeof filter === 'object')) {
+      return acc;
+    }
 
     const parsedFilterItem = Object.keys(filter).reduce((accFilter: object, key: string) => {
       const typeFilter: any = getFilterType(filter[key]);
 
-      if (!typeFilter) return accFilter;
-
-      switch (typeFilter) {
-        case '$elemMatch':
-          return {
-            ...accFilter,
-            [key]: { [typeFilter]: id ? { $eq: id } : {} },
-          };
-        default:
-          return {
-            ...accFilter,
-            [key]: { [typeFilter]: id },
-          };
+      if (!typeFilter) {
+        return accFilter;
       }
+
+      if (typeFilter === DATABASE_ACTION.ELEM_MATCH) {
+        return {
+          ...accFilter,
+          [key]: { [typeFilter]: id ? { $eq: id } : {} },
+        };
+      }
+
+      return {
+        ...accFilter,
+        [key]: { [typeFilter]: id },
+      };
     }, {});
 
     return [...acc, parsedFilterItem];
@@ -318,7 +338,10 @@ export const getFilterQuery = (
   const { saveData: { filteredInfo = {}, arrayKeys = [] } = {} } = actionParam as Record<string, any>;
 
   const filteredKeys: Array<string> = Object.keys(filteredInfo);
-  if ((!filteredKeys.length && !filterId) || !filterFields) return {};
+
+  if ((!filteredKeys.length && !filterId) || !filterFields) {
+    return {};
+  }
 
   if (!filteredKeys.length && filterId) {
     return {
@@ -341,7 +364,9 @@ export const getFilterQuery = (
       ? { [key]: { $in: condtion } }
       : { [key]: { $elemMatch: { $in: condtion } } };
 
-    if (key && condtion) filter.$or.push(query);
+    if (key && condtion) {
+      filter.$or.push(query);
+    }
   });
 
   if (filterId && filterFields) {
@@ -389,5 +414,3 @@ export const signAvailableActions = (req: RequestWithParams, availableActions: s
     }
   });
 };
-
-export const isAccessModule = (role: string = ROLES.GUEST) => {};

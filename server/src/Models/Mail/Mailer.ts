@@ -1,26 +1,19 @@
-import nodemailer, { SendMailOptions, Transporter, createTransport, SentMessageInfo } from 'nodemailer';
-import _ from 'lodash';
+import { SendMailOptions, Transporter, SentMessageInfo, createTransport } from 'nodemailer';
 import { Mail } from '../../Utils/Interfaces/Interfaces.global';
 import { transOptions } from '../../Utils/Types/types.global';
 
 class Mailer implements Mail {
   private transporter: Transporter | null = null;
-  private readonly mailer: typeof nodemailer;
   private readonly mailSender: SendMailOptions;
   private readonly mailerConfig: transOptions;
 
-  constructor(mailer: typeof nodemailer, mailerConfig: transOptions, mailSender: SendMailOptions) {
-    this.mailer = mailer;
+  constructor(mailerConfig: transOptions, mailSender: SendMailOptions) {
     this.mailSender = mailSender;
     this.mailerConfig = mailerConfig;
   }
 
   public getMailerConfig(): transOptions {
     return this.mailerConfig;
-  }
-
-  public getMailer(): typeof nodemailer {
-    return this.mailer;
   }
 
   public getTransporter(): Transporter | null {
@@ -32,10 +25,6 @@ class Mailer implements Mail {
   }
 
   public async create(): Promise<boolean> {
-    if (!this.getMailer()) {
-      return false;
-    }
-
     if (this.getTransporter()) {
       return true;
     }

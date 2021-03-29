@@ -4,7 +4,10 @@ import rateLimit from 'express-rate-limit';
 // see https://expressjs.com/en/guide/behind-proxies.html
 // app.set('trust proxy', 1);
 
-export default rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 1000, // limit each IP to 300 requests per windowMs
-});
+const useLimitRate = () =>
+  rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 1000, // limit each IP to 300 requests per windowMs
+  });
+
+export default useLimitRate;

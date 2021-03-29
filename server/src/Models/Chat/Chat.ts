@@ -18,33 +18,29 @@ class Chat implements ChatModel {
   }
 
   private processMessageEvent(data: Record<string, object | string | null>): void {
+    const { action = '', payload = {} } = data;
+
     try {
-      console.log('process message', data);
-      const { action = '', payload = {} } = data;
-
-      switch (action) {
-        case PROCESS_ACTIONS.CHAT_PROCESS_MESSAGE_ACTION:
-          const { event = '', data = {}, to = '', socket = null } = payload as Record<string, Payload>;
-          const worker = this.ws.getWorker();
-
-          if (to && to === 'broadcast' && socket) {
-            (socket as Socket).broadcast.emit(event as string, data);
-            break;
-          }
-
-          if (to) {
-            worker.to(to as string).emit(event as string, data);
-            break;
-          }
-
-          worker.emit(event as string, data);
-          break;
-
-        default: {
-          console.log(action);
-          console.warn('No router process');
-        }
+      if (action !== PROCESS_ACTIONS.CHAT_PROCESS_MESSAGE_ACTION) {
+        console.log(action);
+        console.warn('No router process');
+        return;
       }
+
+      const { event = '', data = {}, to = '', socket = null } = payload as Record<string, Payload>;
+      const worker = this.ws.getWorker();
+
+      if (to && to === 'broadcast' && socket) {
+        (socket as Socket).broadcast.emit(event as string, data);
+        return;
+      }
+
+      if (to) {
+        worker.to(to as string).emit(event as string, data);
+        return;
+      }
+
+      worker.emit(event as string, data);
     } catch (err) {
       console.error(err);
     }

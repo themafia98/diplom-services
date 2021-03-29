@@ -1,3 +1,5 @@
+export const CHAT_ROBOT_NAME = 'System';
+
 export const PROCESS_ACTIONS = {
   CHAT_PROCESS_MESSAGE_ACTION: 'CHAT_PROCESS_MESSAGE',
 };
@@ -11,4 +13,6 @@ export const PROCESS_CHAT_EVENTS = {
   HANDLE_ERROR_EVENT: 'error',
   DISCONNECT_EVENT: 'disconnect',
   ACTIVATE_CHAT_ROOM_EVENT: 'onChatRoomActive',
+  JOIN_MESSAGE: 'joinMsg',
+  MESSAGE: 'msg',
 };

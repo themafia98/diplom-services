@@ -8,6 +8,9 @@ import StatisticController from '../../Controllers/Statistic/Statistic.controlle
 import TasksController from '../../Controllers/Tasks/Tasks.controller';
 import WikiController from '../../Controllers/Wiki/Wiki.controller';
 
+export const API_ROUTE = '/rest';
+export const DEMO_ROUTE_CREATE_TICKET = '/tasks/regTicket';
+
 export const CONTROLLERS_MAP = {
   MAIN: 'MAIN_CONTROLLER',
   TASKS: 'TASKS_CONTROLLER',

@@ -109,7 +109,6 @@ export interface WorkerDataProps {
 }
 
 export interface Mail {
-  getMailer(): typeof nodemailer;
   getTransporter(): Transporter | null;
   getSender(): SendMailOptions;
   getMailerConfig(): transOptions;

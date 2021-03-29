@@ -2,7 +2,6 @@ import express from 'express';
 import rateLimit from 'express-rate-limit';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
-import nodemailer from 'nodemailer';
 import socketio from 'socket.io';
 import passport from 'passport';
 import helmet from 'helmet';
@@ -18,11 +17,16 @@ import Mailer from '../Mail';
 
 import DropboxStorage from '../../Services/Dropbox.service';
 
-import limiter from '../../config/limiter';
+import useLimitRate from '../../config/limiter';
 import Instanse from '../../Utils/instanse';
 import { handleError, useJWT, useTimer, useAuth } from '../../Utils/middlewares';
 import ProcessRouter from '../Process/ProcessRouter';
-import { CONTROLLERS_REGISTER, CONTROLLERS_MAP } from './Server.constant';
+import {
+  CONTROLLERS_REGISTER,
+  CONTROLLERS_MAP,
+  DEMO_ROUTE_CREATE_TICKET,
+  API_ROUTE,
+} from './Server.constant';
 import authConfig from '../../config/auth.config';
 
 class ServerRunner extends RestEntitiy {
@@ -69,7 +73,7 @@ class ServerRunner extends RestEntitiy {
     this.getApp().use(handleError);
 
     const dropbox = new DropboxStorage.DropboxManager();
-    const mailer: Readonly<Mail> = new Mailer(nodemailer, this.smtp, {
+    const mailer: Readonly<Mail> = new Mailer(this.smtp, {
       from: process.env.TOKEN_YANDEX_USER,
     });
 
@@ -97,11 +101,11 @@ class ServerRunner extends RestEntitiy {
     });
 
     /** initial entrypoint route */
-    this.setRest(instanceRouter.initInstance('/rest'));
+    this.setRest(instanceRouter.initInstance(API_ROUTE));
     this.getRest().use(useTimer);
     this.getRest().use(useAuth);
-    this.getRest().use(limiter);
-    this.getRest().use('/tasks/regTicket', regTicketLimitter);
+    this.getRest().use(useLimitRate());
+    this.getRest().use(DEMO_ROUTE_CREATE_TICKET, regTicketLimitter);
 
     Instanse.ws.startSocketConnection(new socketio.Server(server));
     new Chat(Instanse.ws).run();
