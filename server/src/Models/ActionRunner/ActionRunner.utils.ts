@@ -3,7 +3,7 @@ import request from 'request';
 import { Response } from 'express';
 import mime from 'mime';
 import { Document, Model, Types } from 'mongoose';
-import Utils from '../../Utils/utils.global';
+import { getModelByName } from '../../Utils/utils.global';
 import { ActionParams } from '../../Utils/Interfaces/Interfaces.global';
 import { Meta, ParserData } from '../../Utils/Types/types.global';
 import ActionParser from '../ActionParser/ActionParser';
@@ -18,10 +18,7 @@ export const runSyncClient = async (
   for await (let syncItem of syncList) {
     const { entity = '' } = syncItem as Record<string, string>;
     const { items = [] } = syncItem as Record<string, Array<object>>;
-    const model: Model<Document> | null = Utils.getModelByName(
-      entity,
-      entity === 'tasks' ? ENTITY.TASK : entity,
-    );
+    const model: Model<Document> | null = getModelByName(entity, entity === 'tasks' ? ENTITY.TASK : entity);
 
     if (!model) continue;
     for await (let updateProps of items) {

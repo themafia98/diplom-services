@@ -6,7 +6,7 @@
   "title": "Controll system",
   "icon": "/img/logo.svg",
   "supportIE": true,
-  "appActive": true,
+  "appActive": false,
   "regInclude": true,
   "recovoryInclude": true,
   "forceUpdate": false,

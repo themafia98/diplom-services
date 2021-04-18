@@ -1,6 +1,6 @@
 import { ROUTE_PARAMS } from '../../Models/Router/Router.constant';
 
-export const MAIN_ROUTE: Record<string, Record<string, string>> = {
+export const SYSTEM_ROUTE: Record<string, Record<string, string>> = {
   v1: {
     CORE_APP_CONFIG: `/core/:${ROUTE_PARAMS.TYPE}/config`,
     USERS_LIST: '/userList',

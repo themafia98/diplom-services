@@ -1,12 +1,10 @@
-import Utils from '../../../Utils/utils.global';
+import { getModelByName } from '../../../Utils/utils.global';
 import { Model, Document } from 'mongoose';
 import { ActionParams, Action, QueryParams, Parser } from '../../../Utils/Interfaces/Interfaces.global';
 import { ParserData } from '../../../Utils/Types/types.global';
 import { ACTION_TYPE } from './ActionLogger.constant';
 import ActionEntity from '../../ActionEntity/ActionEntity';
 import { ENTITY } from '../../Database/Schema/Schema.constant';
-
-const { getModelByName } = Utils;
 
 class ActionLogger implements Action {
   private entityParser: Parser;

@@ -20,9 +20,6 @@ import { ObjectId } from 'mongodb';
 import { ParsedUrlQuery } from 'querystring';
 import WebSocketWorker from '../../Models/WebSocketWorker';
 import ActionEntity from '../../Models/ActionEntity/ActionEntity';
-export interface Controller<T> {
-  [key: string]: any;
-}
 
 export interface RequestWithParams extends Request {
   shouldBeCreate?: boolean;
@@ -112,7 +109,6 @@ export interface WorkerDataProps {
 }
 
 export interface Mail {
-  getMailer(): typeof nodemailer;
   getTransporter(): Transporter | null;
   getSender(): SendMailOptions;
   getMailerConfig(): transOptions;

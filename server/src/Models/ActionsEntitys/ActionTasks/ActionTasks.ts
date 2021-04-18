@@ -7,13 +7,17 @@ import {
   Parser,
 } from '../../../Utils/Interfaces/Interfaces.global';
 import { ParserData, Pagination } from '../../../Utils/Types/types.global';
-import Utils from '../../../Utils/utils.global';
+import {
+  getModelByName,
+  generateRemoteTask,
+  getFilterQuery,
+  parseFilterFields,
+} from '../../../Utils/utils.global';
 import _ from 'lodash';
 import { ObjectID } from 'mongodb';
 import { ACTION_TYPE } from './ActionTasks.constant';
 import ActionEntity from '../../ActionEntity/ActionEntity';
 import { ENTITY } from '../../Database/Schema/Schema.constant';
-const { getModelByName, generateRemoteTask, getFilterQuery, parseFilterFields } = Utils;
 
 class ActionTasks implements Action {
   private entityParser: Parser;

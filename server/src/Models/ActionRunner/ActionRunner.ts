@@ -4,14 +4,12 @@ import { ActionParams, Runner, ActionProps, Params } from '../../Utils/Interface
 import ActionParser from '../ActionParser/ActionParser';
 import _ from 'lodash';
 import ActionEntity from '../ActionEntity/ActionEntity';
-import Utils from '../../Utils/utils.global';
+import { parsePublicData } from '../../Utils/utils.global';
 import { ParserData, ResRequest, Meta } from '../../Utils/Types/types.global';
 import { files } from 'dropbox';
 import Responser from '../Responser';
 import { Response, Request } from 'express';
 import { ParsedUrlQuery } from 'querystring';
-
-const { parsePublicData } = Utils;
 
 export class ActionRunner implements Runner {
   private action: ActionEntity;

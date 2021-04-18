@@ -3,7 +3,7 @@ import 'react-app-polyfill/ie11';
 import 'react-app-polyfill/stable';
 /** --------------------- */
 import './i18n';
-import React, { Suspense } from 'react';
+import React, { Suspense, StrictMode } from 'react';
 import ReactDOM from 'react-dom';
 
 import 'normalize.css';
@@ -23,11 +23,13 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 ReactDOM.render(
-  <Suspense fallback={<Fallback />}>
-    <Root>
-      <App />
-    </Root>
-  </Suspense>,
+  <StrictMode>
+    <Suspense fallback={<Fallback />}>
+      <Root>
+        <App />
+      </Root>
+    </Suspense>
+  </StrictMode>,
   document.getElementById('root'),
 );
 

@@ -2,11 +2,8 @@ import { RequestWithParams, ResponseBuilder } from '../../Utils/Interfaces/Inter
 import { Params, Request as RequestCustom } from '../../Utils/Interfaces/Interfaces.global';
 import { Response, Request } from 'express';
 import { ParserResult } from '../../Utils/Types/types.global';
-import Utils from '../../Utils/utils.global';
-import Logger from '../../Utils/Logger';
-
-const { getResponseJson } = Utils;
-const { loggerError } = Logger;
+import { getResponseJson } from '../../Utils/utils.global';
+import { loggerError } from '../../Utils/Logger/Logger';
 
 class Responser implements ResponseBuilder {
   private readonly response: Response;
