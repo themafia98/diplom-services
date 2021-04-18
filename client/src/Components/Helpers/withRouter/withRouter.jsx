@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import { getDependencyModules } from 'Utils';
 
 /**
@@ -7,7 +8,9 @@ import { getDependencyModules } from 'Utils';
  * @requires {string} property 'path' in props
  */
 const withRouter = (Component, exclude = []) => (props) => {
-  const { path = '', appConfig = null } = props;
+  const { path = '' } = props;
+
+  const appConfig = useSelector(({ publicReducer }) => publicReducer.appConfig || null);
 
   const dependencyList = useMemo(() => getDependencyModules(path.split(/_|#/)[0], appConfig, exclude), [
     path,

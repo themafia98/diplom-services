@@ -169,10 +169,14 @@ const getDependencyModules = (moduleName, configuration = null, exclude = []) =>
   return menu.reduce((depList, item) => {
     const { EUID = '' } = item || {};
 
-    if (exclude.some((key) => key === EUID)) return depList;
+    if (exclude.some((key) => key === EUID)) {
+      return depList;
+    }
+
     if (moduleName && EUID.includes(moduleName) && EUID !== moduleName) {
       return [...depList, EUID];
     }
+
     return depList;
   }, []);
 };

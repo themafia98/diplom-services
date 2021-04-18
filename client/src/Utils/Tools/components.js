@@ -6,6 +6,7 @@ import CustomersModule from 'Modules/CustomersModule';
 import SettingsModule from 'Modules/SettingsModule';
 import WikiModule from 'Modules/WikiModule';
 import StatisticsModule from 'Modules/StatisticsModule';
+import Contacts from 'Modules/CustomersModule/Contacts/Contacts';
 
 const componentsModules = {
   taskModule: TaskModule,
@@ -16,6 +17,7 @@ const componentsModules = {
   settingsModule: SettingsModule,
   wikiModule: WikiModule,
   statisticModule: StatisticsModule,
+  customersModule_contacts: Contacts,
 };
 
 export default componentsModules;

@@ -41,8 +41,6 @@ export const taskModuleCalendarType = {
   rest: object.isRequired,
   data: object.isRequired,
   router: object.isRequired,
-  setCurrentTab: func.isRequired,
-  onOpenPageWithData: func.isRequired,
   height: oneOfType([oneOf([null]), number, string]),
 };
 

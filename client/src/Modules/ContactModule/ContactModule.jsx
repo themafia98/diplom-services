@@ -84,6 +84,7 @@ const ContactModule = memo(
         path,
         statusApp,
         router,
+        onLoadingData,
       };
 
       const config = {
@@ -101,6 +102,7 @@ const ContactModule = memo(
         config,
       );
     }, [
+      onLoadingData,
       activeTabs,
       checkBackground,
       entitysList,

@@ -22,7 +22,7 @@ import { useTranslation } from 'react-i18next';
 import _ from 'lodash';
 
 const TaskModule = memo((props) => {
-  const { path, moduleContext, type: typeProps, clientDB, entitysList } = props;
+  const { path, moduleContext, type: typeProps, clientDB } = props;
 
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -318,24 +318,17 @@ const TaskModule = memo((props) => {
       type: oneOfType(types.$sub_entrypoint_module, types.$entity_entrypoint),
     };
 
-    return entityRender(
-      activeTabs.filter((tab) => tab === entitysList),
-      routeData,
-      subTabProps,
-      config,
-    );
+    return entityRender(activeTabs, subTabProps, config);
   }, [
     activeTabs,
     checkBackground,
     counter,
     currentActionTab,
-    entitysList,
     heightController,
     modelsContext,
     namePath,
     path,
     route,
-    routeData,
     router,
     status,
     statusList,

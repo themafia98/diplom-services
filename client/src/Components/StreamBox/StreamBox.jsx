@@ -263,7 +263,7 @@ class StreamBox extends Component {
 
   onRunAction = (actionIndex) => {
     const { streamList: streamListState = [] } = this.state;
-    const { routeData, withStore, prefix, streamStore, onOpenTab } = this.props;
+    const { routeData, withStore, streamStore, onOpenTab } = this.props;
 
     const nameModuleStream = this.getNotificationPath(this.getNormalizeUidNotification());
 
@@ -273,14 +273,12 @@ class StreamBox extends Component {
         : []
       : streamListState;
 
-    const { action = {}, type = '' } = streamList[actionIndex] || {};
-    const { type: typeAction = '', link: actionLink = '', moduleName: name = '' } = action;
+    const { action = {} } = streamList[actionIndex] || {};
+    const { type: typeAction = '', link: actionLink = '', moduleName = '' } = action;
 
-    const moduleName = `${name}${prefix}`;
     const [, typeCurrentAction = ''] = typeAction.split('_');
-    const pathLink = this.getPathLink(moduleName, type);
 
-    onOpenTab({ uuid: actionLink, action: pathLink, data: {}, openType: typeCurrentAction });
+    onOpenTab({ uuid: actionLink, action: moduleName, openType: typeCurrentAction });
   };
 
   showMessageError = ({ tabsLimit }) => {
@@ -334,8 +332,8 @@ class StreamBox extends Component {
   };
 
   getNotificationPath = (uid = '') => {
-    const { prefix, streamModule, type } = this.props;
-    return `${streamModule}${type !== 'global' ? `#${type}` : prefix}${uid ? uid : ''}`.trim();
+    const { streamModule } = this.props;
+    return `${streamModule}${uid ? uid : ''}`.trim();
   };
 
   onLoadItemsList = () => {

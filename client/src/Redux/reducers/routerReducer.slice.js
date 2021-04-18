@@ -114,7 +114,7 @@ const routerReducer = createSlice({
       // REMOVE_TAB
       reducer: (state, { payload }) => {
         const { type, path } = payload;
-        const { _id: id } = state.routeDataActive;
+        const id = state.routeDataActive?._id || null;
 
         const entityId = path.split(regExpRegister.MODULE_ID)[1];
         let deleteKey = type === 'itemTab' ? entityId : path;
@@ -204,40 +204,21 @@ const routerReducer = createSlice({
       reducer: (state, { payload }) => {
         const { activePage = {}, routeDataActive: RDA = {} } = payload;
         const { key: keyRouteData = '', _id: id = '' } = RDA;
-        const { from = 'default', moduleId = '' } = activePage;
-        const isLinkRedirect = moduleId === '$link$';
-
-        const isAccessRedirect = isLinkRedirect || activePage?.key === keyRouteData;
-        const isStrictEqaulEntity = activePage?.key === id;
+        const { from = 'default' } = activePage;
 
         const isEmptyActivePage = !activePage || typeof activePage !== 'object';
-        const isEqualKeys = (activePage && isAccessRedirect) || isStrictEqaulEntity;
 
-        if (isEmptyActivePage || (!isEqualKeys && moduleId)) {
+        if (isEmptyActivePage) {
           return;
         }
 
         const { path: pathPage = '' } = activePage;
 
-        /**
-         * 07.08.2020
-         * @deprecated "___link" is legacy key
-         * Here to support the old version link redirect
-         */
-        const linkEntity = pathPage.includes('___link') && pathPage.split(regExpRegister.MODULE_ID)[1];
-        let currentActionTab = pathPage;
-
-        if (linkEntity) {
-          const pathLink = linkEntity ? pathPage.split('___link')[0] : pathPage;
-          const moduleName = pathLink.split('#')[0];
-          currentActionTab = `${moduleName}__${linkEntity}`;
-        }
-
         if (!pathPage) {
           return;
         }
 
-        const validKey = id || keyRouteData || 'undefiendModule';
+        const validKey = id || keyRouteData || pathPage || 'undefiendModule';
         const isString = typeof RDA === 'string';
 
         let routeDataActive = {};
@@ -252,8 +233,8 @@ const routerReducer = createSlice({
           state.routeData[validKey] = { ...state.routeData[pathPage], from };
         }
 
-        state.currentActionTab = currentActionTab;
-        state.activeTabs.push(currentActionTab);
+        state.currentActionTab = pathPage;
+        state.activeTabs.push(pathPage);
         state.routeDataActive = routeDataActive;
       },
       prepare: (pageData) => ({ payload: pageData }),

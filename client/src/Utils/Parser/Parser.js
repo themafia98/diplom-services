@@ -159,19 +159,26 @@ const routePathNormalise = ({
   pathType = 'module',
   pathData: { page = '', moduleId = '', key = '' } = {},
 }) => {
-  if (!page && !moduleId && !key) return '';
-  if (typeof page !== 'string' || typeof moduleId !== 'string' || typeof key !== 'string') return '';
+  if (!page && !moduleId && !key) {
+    return null;
+  }
+
   if (pathType === 'module' || pathType === 'link') {
-    if (!page) return '';
+    if (!page) {
+      return '';
+    }
+
+    let path = page;
+
+    if (moduleId && pathType !== 'link') {
+      path = `${page}_${moduleId}`;
+    } else if (pathType === 'link') {
+      path = moduleId ? `${page}_${moduleId}__${key}` : `${page}__${key}`;
+    }
 
     return {
-      path:
-        moduleId && pathType !== 'link'
-          ? `${page}_${moduleId}`
-          : pathType === 'link'
-          ? `${page}_${moduleId}__${key}`
-          : page,
-      moduleId: moduleId,
+      path,
+      moduleId,
       key: pathType === 'link' ? key : '',
       page: page,
     };

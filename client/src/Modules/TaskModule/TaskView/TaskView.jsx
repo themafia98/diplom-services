@@ -250,6 +250,10 @@ const TaskView = memo((props) => {
   const findTask = useCallback(async () => {
     const { page: path = '', itemId = '' } = routeParser({ pageType: 'moduleItem', path: currentActionTab });
 
+    if (!path || !itemId) {
+      return;
+    }
+
     setFindTaskLoading(true);
 
     dispatch(
@@ -472,9 +476,9 @@ const TaskView = memo((props) => {
       const parsedRoutePath =
         !route || (route && _.isEmpty(route))
           ? routeParser({
-            pageType: 'moduleItem',
-            path,
-          })
+              pageType: 'moduleItem',
+              path,
+            })
           : route;
 
       dispatch(
@@ -560,7 +564,7 @@ const TaskView = memo((props) => {
   const { _id: uid } = udata;
   const { tags: tagsListState = [] } = viewModeControllEditValues;
 
-  const { key, status, priority, name, date, tags: tagsView, description } = routeDataActive;
+  const { key, status, priority, name, date, tags: tagsView, description } = routeDataActive || {};
 
   const accessPriority = useMemo(() => {
     if (!key) {

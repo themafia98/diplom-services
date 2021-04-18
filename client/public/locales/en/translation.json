@@ -7,7 +7,8 @@
     "empty": "There is nothing here",
     "notificationGlobalError": "Global notification error",
     "invalidData": "Invalid data",
-    "error": "Error"
+    "error": "Error",
+    "tooManyRequests": "Suspicious activity has been detected from your device. Please try again later or contact your administrator"
   },
   "components": {
     "errorPage": {

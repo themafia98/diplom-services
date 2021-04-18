@@ -10,7 +10,9 @@ const entityRender = (entitysList, subTabProps, config) => {
     return <NotFound message="Invalid render page" error={new Error('entitysList || config not found')} />;
   }
 
-  const { validation, path, viewModuleName, moduleName, type: typeEntity, exclude } = config;
+  const { validation, viewModuleName, type: typeEntity, exclude } = config;
+  const moduleName = config.moduleName || config.route.page || config.namePath;
+  const path = config.path || config.currentActionTab || config.path;
 
   const entitys = [
     ...new Set([
@@ -20,32 +22,26 @@ const entityRender = (entitysList, subTabProps, config) => {
   ].filter(Boolean);
 
   return entitys.map((entityKey) => {
-    const { uuid = '', data: dataTab = null } = subTabProps;
-    const { routeData = null } = subTabProps.router;
+    const { uuid = '', data: dataTab = null, router = null } = subTabProps;
+    const { routeData = null } = router || {};
 
     const isCheckerType = typeof typeEntity === 'function';
-
-    // if (
-    //   components.some(
-    //     ({ type, tabKey }) =>
-    //       tabKey?.includes(entityKey.split(regExpRegister.MODULE_ID)[1]) &&
-    //       type === (isCheckerType ? typeEntity(type) : typeEntity),
-    //   )
-    // ) {
-    //   return components;
-    // }
 
     const [, moduleViewKey] = entityKey.split(regExpRegister.MODULE_ID);
     const isView = entityKey?.includes(moduleName) && !!moduleViewKey;
 
-    let type = typeEntity;
+    let type = types.$entrypoint_module;
 
     if (isView && isCheckerType) {
       type = typeEntity(types.$entity_entrypoint);
     }
 
-    if (!isView && isCheckerType) {
+    if (!isView && isCheckerType && entityKey.includes('_')) {
       type = typeEntity(types.$sub_entrypoint_module);
+    }
+
+    if (config.parentType === types.$sub_entrypoint_module && type === types.$entrypoint_module) {
+      return null;
     }
 
     const Component = getComponentByKey(isView ? viewModuleName : entityKey, type);
@@ -58,10 +54,12 @@ const entityRender = (entitysList, subTabProps, config) => {
       data = routeData[moduleViewKey];
     }
 
-    const bgArgs = [entityKey, path.includes(moduleName) && path === entityKey];
+    const bgArgs = [entityKey, !!path && path.includes(moduleName) && path === entityKey];
 
     const isVisibileTab =
-      path.includes(moduleName) && (path === entityKey || (moduleViewKey && path.includes(moduleViewKey)));
+      path &&
+      path.includes(moduleName) &&
+      (path === entityKey || (!!moduleViewKey && path.includes(moduleViewKey)));
 
     const tabParams = {
       visible: isVisibileTab,
@@ -81,12 +79,7 @@ const entityRender = (entitysList, subTabProps, config) => {
     if (Component) {
       return (
         <TabContainer key={`${entityKey}-container`} actualParams={tabParams}>
-          <Component
-            key={`${entityKey}_${Symbol.keyFor(type)}`}
-            {...subTabProps}
-            {...propsModuleView}
-            type={type}
-          />
+          <Component key={`${entityKey}-item`} {...subTabProps} {...propsModuleView} type={type} />
         </TabContainer>
       );
     }

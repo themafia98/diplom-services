@@ -4,8 +4,12 @@ import Loader from 'Components/Loader/Loader';
 import NotFound from 'Modules/NotFound';
 import ModelContext from 'Models/context';
 import { Suspense } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const withSystemConfig = (Component) => (props) => {
+  const { t } = useTranslation();
+
+  const [customErrorMessage, setCustomErrorMessage] = useState('');
   const [isSideEffect, setUseSideEffect] = useState(false);
   const [trace, setTrace] = useState('');
   const [typeConfig, setTypeConfig] = useState({ prev: '', current: 'public' });
@@ -56,11 +60,21 @@ const withSystemConfig = (Component) => (props) => {
         onChangeType(loadType);
         onSetCoreConfig(configJson);
       } catch (error) {
+        const { status } = error?.response || {};
+
+        if (status === 429) {
+          const message = t('globalMessages_tooManyRequests');
+
+          if (message !== customErrorMessage) {
+            setCustomErrorMessage(message);
+          }
+        }
+
         setTrace(error.stack);
         setBlock(true);
       }
     },
-    [typeConfig, queryId, models, isSideEffect, onChangeType, onSetCoreConfig],
+    [typeConfig, queryId, models, isSideEffect, onChangeType, onSetCoreConfig, t, customErrorMessage],
   );
 
   useEffect(() => {
@@ -77,7 +91,12 @@ const withSystemConfig = (Component) => (props) => {
   if (isBlock) {
     return (
       <Suspense fallback="loading">
-        <NotFound trace={trace} redirectType="hard" showRedirectIndexButton />
+        <NotFound
+          message={customErrorMessage || undefined}
+          trace={trace}
+          redirectType="hard"
+          showRedirectIndexButton
+        />
       </Suspense>
     );
   }

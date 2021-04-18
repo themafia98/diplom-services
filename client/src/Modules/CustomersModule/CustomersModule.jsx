@@ -33,8 +33,9 @@ const CustomersModule = memo(
         moduleName: 'customersModule',
         validation: checkBackground,
         path,
-        parentType: type,
-        type: types.$sub_entrypoint_module,
+        // Because implemented only 1 page for this module
+        parentType: types.$entrypoint_module,
+        type: types.$entrypoint_module,
       };
 
       return entityRender(entitysList, subTabProps, config);

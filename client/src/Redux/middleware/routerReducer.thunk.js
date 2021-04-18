@@ -228,7 +228,8 @@ const openTab = ({ uuid, action, depKey = '', data = null, openType = '' }) => a
   }
 
   if (openType) {
-    const { moduleId = '', page = '' } = routeParser({ path: action, pageType: openType });
+    const pathValue = routePathNormalise({ pathType: openType, pathData: { page: action, key: uuid } });
+    const { moduleId = '', page = '' } = routeParser({ path: pathValue.path, pageType: openType });
     if (!moduleId || !page) {
       dispatch(setSystemMessage({ msg: 'Open page error', type: 'warn' }));
       return;
@@ -242,15 +243,9 @@ const openTab = ({ uuid, action, depKey = '', data = null, openType = '' }) => a
       return;
     }
 
-    if (!data) {
-      dispatch(setSystemMessage({ msg: 'Invalid data for open page', type: 'error' }));
-      console.error(data);
-      return;
-    }
-
     const activePageParsed = routePathNormalise({
       pathType: openType,
-      pathData: { page, moduleId, key: uuid },
+      pathData: { page, moduleId: moduleId === uuid ? null : moduleId, key: uuid },
     });
 
     const { path } = activePageParsed || {};
