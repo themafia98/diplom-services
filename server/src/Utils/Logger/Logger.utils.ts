@@ -25,7 +25,7 @@ export const factory = (
         ]
       : [];
 
-  return winston.createLogger({
+  const logger = winston.createLogger({
     defaultMeta,
     format: winston.format.combine(
       winston.format.timestamp(),
@@ -35,4 +35,6 @@ export const factory = (
     ),
     transports: [...transport, ...daily],
   });
+
+  return logger;
 };
