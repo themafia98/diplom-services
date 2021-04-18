@@ -1,5 +1,5 @@
 import { Application, Router as RouteExpress, Request as RequestExpress, Response } from 'express';
-import nodemailer, { SendMailOptions, Transporter, SentMessageInfo } from 'nodemailer';
+import { SendMailOptions, Transporter, SentMessageInfo } from 'nodemailer';
 import { files } from 'dropbox';
 import {
   transOptions,
