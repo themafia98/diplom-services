@@ -58,7 +58,7 @@ export class ActionRunner implements Runner {
 
     const actionResult = await this.actionExec(actionParam);
 
-    return async (req: Request, res: Response, paramsEntity: Params, isPublic: boolean): ResRequest => {
+    return async (req: Request, res: Response, paramsEntity: Params, isPublic = false): ResRequest => {
       const params: Params = { ...paramsEntity };
       try {
         if (this.getAction().getActionType() === 'download_files' && actionResult) {
@@ -77,9 +77,9 @@ export class ActionRunner implements Runner {
 
         let metadata: Meta = [];
 
-        if (isPublic)
+        if (isPublic) {
           metadata = parsePublicData(actionResult, 'default', this.getAction().getActionPath(), queryString);
-        else metadata = actionResult;
+        } else metadata = actionResult;
 
         return await new Responser(res, req, params, null, 200, metadata).sendMessage();
       } catch (err) {
