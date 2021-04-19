@@ -1,5 +1,4 @@
 import { Response, Request } from 'express';
-import _ from 'lodash';
 import { Params } from '../../Utils/Interfaces/Interfaces.global';
 import { ResRequest } from '../../Utils/Types/types.global';
 import { Controller, Post } from '../../Utils/decorators/Decorators';
@@ -11,6 +10,7 @@ import ActionRunner from '../../Models/ActionRunner/ActionRunner';
 @Controller('/statistic')
 class StatisticController {
   static version = getVersion();
+
   @Post({ path: STATISTIC_ROUTE[StatisticController.version].LOAD_TASK_BAR, private: true })
   protected async getTaskBarStats(req: Request, res: Response): ResRequest {
     const params: Params = createParams('get_stats', 'done', 'tasks');
@@ -23,7 +23,7 @@ class StatisticController {
 
     const body = { ...options, type: 'bar' };
 
-    const responseExec: Function = await actionStats.start(body);
+    const responseExec = await actionStats.start(body);
     return responseExec(req, res, params);
   }
 }

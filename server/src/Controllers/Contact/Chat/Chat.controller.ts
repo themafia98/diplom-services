@@ -9,6 +9,7 @@ import ActionRunner from '../../../Models/ActionRunner/ActionRunner';
 @Controller('/chat')
 class ChatController {
   static version = getVersion();
+
   @Post({ path: CHAT_ROUTE[ChatController.version].LOAD_DATA, private: true })
   @Delete({ path: CHAT_ROUTE[ChatController.version].LEAVE_FROM_ROOM, private: true })
   @Post({ path: CHAT_ROUTE[ChatController.version].LOAD_CHATS, private: true })
@@ -19,7 +20,7 @@ class ChatController {
 
     const actionCreateRoom: Runner = new ActionRunner({ actionPath, actionType });
 
-    const responseExec: Function = await actionCreateRoom.start({ ...options, moduleName });
+    const responseExec = await actionCreateRoom.start({ ...options, moduleName });
     return responseExec(req, res, { moduleName });
   }
 }

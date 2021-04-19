@@ -7,10 +7,15 @@ import { loggerError } from '../../Utils/Logger/Logger';
 
 class Responser implements ResponseBuilder {
   private readonly response: Response;
+
   private readonly request: RequestCustom;
+
   private readonly paramsList: Params;
+
   private readonly error: Error | null;
+
   private readonly statusResponse: number;
+
   private readonly data: ParserResult;
 
   constructor(
@@ -18,7 +23,7 @@ class Responser implements ResponseBuilder {
     req: Request,
     params: Params,
     err: Error | null,
-    status: number = 200,
+    status = 200,
     metadata: ParserResult = null,
   ) {
     this.response = res;
@@ -55,7 +60,7 @@ class Responser implements ResponseBuilder {
 
   private getErrorStatus(): string {
     if (this.status === 404) return 'Not found';
-    else return `error or status not connected to responser, ${this.params.methodQuery}`;
+    return `error or status not connected to responser, ${this.params.methodQuery}`;
   }
 
   private async doneResponse(): Promise<Response> {

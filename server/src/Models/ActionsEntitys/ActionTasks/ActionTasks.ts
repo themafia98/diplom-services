@@ -21,6 +21,7 @@ import { ENTITY } from '../../Database/Schema/Schema.constant';
 
 class ActionTasks implements Action {
   private entityParser: Parser;
+
   private entity: ActionEntity;
 
   constructor(entityParser: Parser, entity: ActionEntity) {
@@ -55,7 +56,7 @@ class ActionTasks implements Action {
       /** Params for query */
       const { options = {}, updateItem = '', updateField = '' } = actionParam as Record<
         string,
-        object | string
+        Record<string, any> | string
       >;
       const { id = '' } = (options as Record<string, string>) || {};
 
@@ -87,6 +88,7 @@ class ActionTasks implements Action {
   private async getTasks(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const { queryParams = null, limitList = 20, saveData = {}, filterCounter = '' } = actionParam;
 
+    // eslint-disable-next-line no-underscore-dangle
     const _id: ObjectID | string =
       filterCounter && isValidObjectId(filterCounter) ? Types.ObjectId(filterCounter as string) : '';
 
@@ -94,7 +96,7 @@ class ActionTasks implements Action {
       paginationState: initialPagination = null,
       pagination: nextPagination = null,
     } = saveData as Record<string, any>;
-    const pagination: Pagination = initialPagination ? initialPagination : nextPagination;
+    const pagination: Pagination = initialPagination || nextPagination;
 
     let params: QueryParams = {};
     const isEmpty = actionParam.queryParams && _.isEmpty(actionParam.queryParams);
@@ -115,7 +117,7 @@ class ActionTasks implements Action {
       }, []);
     }
 
-    const filter: Record<string, Array<object>> = getFilterQuery(
+    const filter: Record<string, Array<Record<string, any>>> = getFilterQuery(
       actionParam,
       _id,
       parseFilterFields([{ editor: 'regexp' }, { uidCreater: 'equal' }], _id),
@@ -136,16 +138,18 @@ class ActionTasks implements Action {
 
   private async getTaskCount(model: Model<Document>, actionParam: ActionParams): Promise<ParserData> {
     const { filterCounter = '' } = actionParam as Record<string, null | string>;
+    // eslint-disable-next-line no-underscore-dangle
     const _id: ObjectID | string = isValidObjectId(filterCounter)
       ? Types.ObjectId(filterCounter as string)
       : '';
 
-    const filter: Record<string, Array<object>> = getFilterQuery(
+    const filter: Record<string, Array<Record<string, any>>> = getFilterQuery(
       actionParam,
       _id,
       parseFilterFields([{ editor: 'regexp' }, { uidCreater: 'equal' }], filterCounter as string),
     );
 
+    // eslint-disable-next-line no-return-await
     return await this.getEntityParser().getCounter(model, filter);
   }
 
@@ -157,21 +161,23 @@ class ActionTasks implements Action {
     >;
 
     const { statsListFields = [] } = queryParams || {};
-    const dateQuery: object =
-      todayISO && queryType !== 'full'
-        ? { createdAt: { $gte: new Date(todayISO) } }
-        : queryType === 'full' && todayISO && limitList
-        ? { createdAt: { $lte: new Date(todayISO) } }
-        : {};
+    let dateQuery: Record<string, any> = {};
+
+    if (todayISO && queryType !== 'full') {
+      dateQuery = { createdAt: { $gte: new Date(todayISO) } };
+    } else if (queryType === 'full' && todayISO && limitList) {
+      dateQuery = { createdAt: { $lte: new Date(todayISO) } };
+    }
 
     if (!statsListFields || (statsListFields && !statsListFields.length)) {
       return null;
     }
 
-    const metadata: Record<string, number | object> = {};
+    const metadata: Record<string, number | Record<string, any>> = {};
     if (type) metadata[type] = {};
 
-    for await (let field of statsListFields) {
+    // eslint-disable-next-line no-restricted-syntax
+    for await (const field of statsListFields) {
       const dataField: number = await this.getEntityParser().getCounter(
         model,
         {
@@ -181,7 +187,10 @@ class ActionTasks implements Action {
         limitList ? { limit: limitList } : undefined,
       );
 
-      if (!dataField) continue;
+      if (!dataField) {
+        // eslint-disable-next-line no-continue
+        continue;
+      }
 
       if (type && metadata[type]) {
         const alias = metadata[type] as Record<string, number>;
@@ -241,8 +250,10 @@ class ActionTasks implements Action {
       case ACTION_TYPE.SAVE_TASK:
         return this.createSingleTask(actionParam, model);
       case ACTION_TYPE.TASK_COUNTER:
+        // eslint-disable-next-line no-return-await
         return await this.getTaskCount(model, actionParam);
       case ACTION_TYPE.TASK_STATS:
+        // eslint-disable-next-line no-return-await
         return await this.getStats(model, actionParam);
       case ACTION_TYPE.REG_TICKET:
         return this.regTicket(model, actionParam);

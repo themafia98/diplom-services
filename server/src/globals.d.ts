@@ -2,6 +2,7 @@ declare module 'connect-mongo';
 declare module 'express-rate-limit';
 declare module 'uuid';
 declare module 'jsonwebtoken';
+// eslint-disable-next-line
 declare namespace NodeJS {
   export interface ProcessEnv {
     HOST: string;

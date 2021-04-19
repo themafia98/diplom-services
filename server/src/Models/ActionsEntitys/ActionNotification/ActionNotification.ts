@@ -9,6 +9,7 @@ import { ENTITY } from '../../Database/Schema/Schema.constant';
 
 class ActionNotification implements Action {
   private entityParser: Parser;
+
   private entity: ActionEntity;
 
   constructor(entityParser: Parser, entity: ActionEntity) {
@@ -25,7 +26,7 @@ class ActionNotification implements Action {
   }
 
   public async create(model: Model<Document>, actionParam: ActionParams): Promise<ParserData> {
-    const { item = null } = actionParam as Record<string, object>;
+    const { item = null } = actionParam as Record<string, Record<string, any>>;
 
     if (!item) return null;
 
@@ -39,7 +40,7 @@ class ActionNotification implements Action {
       type = 'global',
       limitList = Number.MAX_SAFE_INTEGER,
       skip = 0,
-    } = actionParam as Record<string, object | number>;
+    } = actionParam as Record<string, Record<string, any> | number>;
 
     const concactType = (type as string) === 'private' ? ['private', 'global'] : type;
     const isObject = ids && typeof ids === 'object';
@@ -54,12 +55,12 @@ class ActionNotification implements Action {
         in: concactType,
         and: [
           {
-            ...(ids as object),
+            ...(ids as Record<string, any>),
           },
         ],
       };
 
-      const privateCountQuery = { type: { $in: concactType }, ...(ids as object) };
+      const privateCountQuery = { type: { $in: concactType }, ...(ids as Record<string, any>) };
       const count = await this.getEntityParser().getCounter(model, privateCountQuery);
 
       const result = await this.getEntityParser().getAll(
@@ -72,7 +73,7 @@ class ActionNotification implements Action {
       return { result, count };
     }
 
-    const query = isObject ? { type: concactType, ...(ids as object) } : { type: concactType };
+    const query = isObject ? { type: concactType, ...(ids as Record<string, any>) } : { type: concactType };
 
     const result = await this.getEntityParser().getAll(
       model,
@@ -89,7 +90,7 @@ class ActionNotification implements Action {
 
   private async updateMany(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const { params = {} } = actionParam;
-    const { options = {} } = params as Record<string, object>;
+    const { options = {} } = params as Record<string, Record<string, any>>;
     const queryParams: QueryParams = { queryType: 'many', actionParam: options };
 
     const result = await this.getEntityParser().updateEntity(model, queryParams);
@@ -104,9 +105,11 @@ class ActionNotification implements Action {
 
     switch (typeAction) {
       case GLOBAL_ACTION_TYPE.UPDATE_MANY:
+        // eslint-disable-next-line no-return-await
         return await this.updateMany(actionParam, model);
       default:
         if (typeAction.includes('set')) return this.create(model, actionParam);
+        // eslint-disable-next-line no-return-await
         return await this.getByType(actionParam, model);
     }
   }

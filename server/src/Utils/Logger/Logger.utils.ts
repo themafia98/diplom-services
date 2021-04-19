@@ -5,9 +5,9 @@ import path from 'path';
 
 export const factory = (
   level: string | Array<string>,
-  defaultMeta: Object = { service: 'user-service' },
-  includeDailyLogs: boolean = false,
-  onlyDaily: boolean = true,
+  defaultMeta: Record<string, any> = { service: 'user-service' },
+  includeDailyLogs = false,
+  onlyDaily = true,
 ): Logger => {
   const transport: Array<any> = !onlyDaily && includeDailyLogs ? getLoggerTransports(level) : [];
   const daily: Array<DailyRotateFile | void> =

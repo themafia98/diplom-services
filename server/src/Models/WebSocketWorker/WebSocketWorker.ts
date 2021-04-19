@@ -4,7 +4,7 @@ import cluster from 'cluster';
 
 // TODO: https://blog.imaginea.com/7597-2/
 class WebSocketWorker implements WsWorker {
-  constructor(private workers: Array<socketio.Server> = []) {}
+  private workers: Array<socketio.Server> = [];
 
   public startSocketConnection(io: socketio.Server): void {
     this.workers[this.getWorkerId()] = io;

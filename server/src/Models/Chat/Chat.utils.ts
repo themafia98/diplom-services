@@ -6,11 +6,11 @@ import { ENTITY } from '../Database/Schema/Schema.constant';
 import { PROCESS_ACTIONS, PROCESS_CHAT_EVENTS } from './Chat.constant';
 
 export const createRealRoom = async (
-  fakeMsg: Record<string, string | object>,
+  fakeMsg: Record<string, string | Record<string, any>>,
   interlocutorId: string,
 ): Promise<ParserResult> => {
   const actionPath: string = ENTITY.CHAT_ROOM;
-  const actionType: string = 'create_FakeRoom';
+  const actionType = 'create_FakeRoom';
 
   const actionCreateRoom = new ActionRunner({ actionPath, actionType });
   const queryParams: QueryParams = { fakeMsg, interlocutorId };
@@ -19,7 +19,7 @@ export const createRealRoom = async (
   return data;
 };
 
-export const updateFakeRoom = (socket: Socket) => (result: ParserResult, fakeMsg: object) => {
+export const updateFakeRoom = (socket: Socket) => (result: ParserResult, fakeMsg: Record<string, any>) => {
   const { tokenRoom = '' } = (result as Record<string, string>) || {};
   socket.join(tokenRoom);
   const response = { room: result, msg: fakeMsg };

@@ -67,7 +67,7 @@ class ClientSideDatabase {
         entity: 'users',
         props: { unique: true, keyPath: '_id', autoIncrement: true },
         index: {
-          unique: function (key) {
+          unique(key) {
             return key === '_id' || key === 'email';
           },
           schema: USER_SCHEMA,
@@ -77,7 +77,7 @@ class ClientSideDatabase {
         entity: 'wikiTree',
         props: { unique: true, keyPath: 'key', autoIncrement: true },
         index: {
-          unique: function (key) {
+          unique(key) {
             return key === 'key';
           },
         },
@@ -87,7 +87,7 @@ class ClientSideDatabase {
         entity: 'tasks',
         props: { unique: true, keyPath: 'key', autoIncrement: true },
         index: {
-          unique: function (key) {
+          unique(key) {
             return key === 'key';
           },
         },
@@ -97,7 +97,7 @@ class ClientSideDatabase {
         entity: 'news',
         props: { unique: true, keyPath: 'key', autoIncrement: true },
         index: {
-          unique: function (key) {
+          unique(key) {
             return key === 'key';
           },
         },
@@ -107,7 +107,7 @@ class ClientSideDatabase {
         entity: 'jurnalworks',
         props: { unique: true, keyPath: 'key', autoIncrement: true },
         index: {
-          unique: function (key) {
+          unique(key) {
             return key === 'key';
           },
         },

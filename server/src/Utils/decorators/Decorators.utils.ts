@@ -2,7 +2,7 @@ import { DecoratorConfig, RouteDefinition } from '../Interfaces/Interfaces.globa
 import { methodDecorator } from '../Types/types.global';
 
 export const createRestDecorator = (
-  target: object,
+  target: Record<string, any>,
   config: DecoratorConfig,
   propKey: string,
   requestMethod: methodDecorator | methodDecorator[],

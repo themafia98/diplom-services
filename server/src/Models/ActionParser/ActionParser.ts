@@ -10,32 +10,41 @@ import {
 import { DATABASE_ACTION } from './ActionParser.constant';
 
 class ActionParser implements Parser {
-  public async getCounter(model: Model<Document>, query: FilterQuery<any>, options: object): Promise<number> {
-    return await model.collection.countDocuments(query, options);
+  public async getCounter(
+    model: Model<Document>,
+    query: FilterQuery<any>,
+    options: Record<string, any>,
+  ): Promise<number> {
+    const counterResult = await model.collection.countDocuments(query, options);
+    return counterResult;
   }
 
   public async getAll(
     model: Model<Document>,
     actionParam: ActionParams,
     limit: limiter,
-    skip: number = 0,
-    sortType: string = 'desc',
+    skip = 0,
+    sortType = 'desc',
   ): Promise<ParserData> {
     try {
       const toSkip: number = Math.abs(skip);
       const { in: inn, where } = actionParam;
 
       if (inn && where) {
-        const { and = [{}], filter = {} } = actionParam as Record<string, Filter | Array<object>>;
-        const orCondition: Array<object> = (filter as Filter)['$or'] || ([{}] as object[]);
-        const andComdition: Array<object> = and as Array<Filter>;
+        const { and = [{}], filter = {} } = actionParam as Record<
+          string,
+          Filter | Array<Record<string, any>>
+        >;
+        const orCondition: Array<Record<string, any>> =
+          (filter as Filter).$or || ([{}] as Record<string, any>[]);
+        const andComdition: Array<Record<string, any>> = and as Array<Filter>;
         return await model
           .find()
           .or(orCondition)
           .skip(toSkip)
           .where(where as string)
           .and(andComdition)
-          .in(inn as Array<object>)
+          .in(inn as Array<Record<string, any>>)
           .limit(limit as number)
           .sort({
             createdAt: sortType,
@@ -57,14 +66,20 @@ class ActionParser implements Parser {
     }
   }
 
-  public async getFilterData(model: Model<Document>, filter: object, sort?: string): Promise<ParserData> {
+  public async getFilterData(
+    model: Model<Document>,
+    filter: Record<string, any>,
+    sort?: string,
+  ): Promise<ParserData> {
     if (!model || !filter) {
       return null;
     }
 
-    return await model.find(filter as FilterQuery<object>).sort({
+    const filterDataResult = await model.find(filter as FilterQuery<Record<string, any>>).sort({
       createdAt: sort || 'desc',
     });
+
+    return filterDataResult;
   }
 
   public async findOnce(model: Model<Document>, actionParam: ActionParams): Promise<ParserData> {
@@ -76,7 +91,7 @@ class ActionParser implements Parser {
     }
   }
 
-  public async createEntity(model: Model<Document>, item: object): Promise<ParserData> {
+  public async createEntity(model: Model<Document>, item: Record<string, any>): Promise<ParserData> {
     try {
       return await model.create(item);
     } catch (err) {
@@ -93,12 +108,14 @@ class ActionParser implements Parser {
       let actionData: any = null;
       let doc: any = null;
 
-      const runDelete: Function = async (props: ActionParams, multiple: boolean = false): Promise<object> => {
-        if (!multiple) {
-          return await model.deleteOne(props);
+      const runDelete = async (props: ActionParams, multipleDelete = false): Promise<Record<string, any>> => {
+        if (!multipleDelete) {
+          const onceDeleteResult = await model.deleteOne(props);
+          return onceDeleteResult;
         }
 
-        return await model.deleteMany({ [findBy as string]: { $in: ids } });
+        const manyDeleteResult = await model.deleteMany({ [findBy as string]: { $in: ids } });
+        return manyDeleteResult;
       };
 
       if (mode === DATABASE_ACTION.PULL) {
@@ -120,7 +137,7 @@ class ActionParser implements Parser {
         const record: ArrayLike<string> = doc.get(updateField);
 
         if (Array.isArray(record) && !record.length) {
-          const docResult: { ok: boolean } = await runDelete({ [findBy as string]: findBy }, multiple);
+          const docResult: Record<string, any> = await runDelete({ [findBy as string]: findBy }, !!multiple);
 
           if (docResult.ok) {
             return docResult;
@@ -130,15 +147,14 @@ class ActionParser implements Parser {
         }
 
         return actionData;
-      } else {
-        const docResult: object = await runDelete({}, multiple);
-
-        if ((docResult as Record<string, boolean>).ok) {
-          return docResult as Document;
-        }
-
-        return null;
       }
+      const docResult: Record<string, any> = await runDelete({}, !!multiple);
+
+      if ((docResult as Record<string, boolean>).ok) {
+        return docResult as Document;
+      }
+
+      return null;
     } catch (err) {
       console.error(err);
       return null;
@@ -154,11 +170,12 @@ class ActionParser implements Parser {
       const { queryType = 'single', actionParam = null } = query;
 
       if (queryType === 'meny') {
-        const { query = {} } = (actionParam as Record<string, object>) || {};
+        // eslint-disable-next-line no-shadow
+        const { query = {} } = (actionParam as Record<string, Record<string, any>>) || {};
         const { ids = [], updateProps = {}, returnType = 'default' } = query as DeleteEntitiyParams;
         const parsedIds = ids.map((id: string) => Types.ObjectId(id as string));
 
-        const actionData: object = await model.updateMany(
+        const actionData: Record<string, any> = await model.updateMany(
           { _id: { $in: parsedIds } },
           { $set: { ...updateProps } },
           { multi: true, ...options },
@@ -177,12 +194,15 @@ class ActionParser implements Parser {
       const { customQuery, updateProps: upProps = {} } = query;
       const { [customQuery as string]: customQueryValue = '' } = query;
 
-      const updateProps: object =
-        upProps && typeof upProps === 'object' ? (upProps as object) : { updateProps: query.updateProps };
+      const updateProps: Record<string, any> =
+        upProps && typeof upProps === 'object'
+          ? (upProps as Record<string, any>)
+          : { updateProps: query.updateProps };
 
+      // eslint-disable-next-line no-underscore-dangle
       const _id: any = isValidObjectId(id) ? Types.ObjectId(id) : null;
 
-      let findQuery: object | null = null;
+      let findQuery: Record<string, any> | null = null;
 
       if (_id && !customQuery) {
         findQuery = { _id };

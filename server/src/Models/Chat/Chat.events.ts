@@ -32,7 +32,7 @@ export const newMessageEvent = (socket: Socket) => async (msgObj: ChatMessage) =
         return;
       }
 
-      const saveMsg = await model.create(msgObj as object);
+      const saveMsg = await model.create(msgObj as Record<string, any>);
 
       if (!saveMsg) {
         throw new TypeError('Bad msg object');
@@ -58,7 +58,9 @@ export const newMessageEvent = (socket: Socket) => async (msgObj: ChatMessage) =
   }
 };
 
-export const initFakeRoomEvent = (socket: Socket) => async (fakeData: Record<string, string | object>) => {
+export const initFakeRoomEvent = (socket: Socket) => async (
+  fakeData: Record<string, string | Record<string, any>>,
+) => {
   const { fakeMsg = null, interlocutorId = '' } = fakeData || {};
 
   if (!fakeMsg || _.isEmpty(fakeMsg) || !interlocutorId) {
@@ -66,12 +68,12 @@ export const initFakeRoomEvent = (socket: Socket) => async (fakeData: Record<str
   }
 
   const result: ParserResult = await createRealRoom(
-    fakeMsg as Record<string, object>,
+    fakeMsg as Record<string, Record<string, any>>,
     interlocutorId as string,
   );
 
   if (result) {
-    updateFakeRoom(socket)(result, fakeMsg as Record<string, object>);
+    updateFakeRoom(socket)(result, fakeMsg as Record<string, Record<string, any>>);
   }
 };
 

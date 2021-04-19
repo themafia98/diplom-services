@@ -6,6 +6,7 @@ import { Socket } from 'net';
 
 class ProcessRouter {
   private readonly workers: Array<Worker> = [];
+
   private readonly wsWorker: WsWorker;
 
   constructor(workers: Array<Worker>, wsWorker: WsWorker) {
@@ -25,14 +26,14 @@ class ProcessRouter {
       server.close();
     });
 
-    process.on('uncaughtException', (err: Error) => {
+    process.on('uncaughtException', (uncaughtException: Error) => {
       // handle the error safely
-      if (err.name === 'MongoNetworkError') {
+      if (uncaughtException.name === 'MongoNetworkError') {
         dbm.disconnect().catch((err: Error) => console.error(err));
         console.log('uncaughtException. uptime:', process.uptime());
-        console.error(err);
+        console.error(uncaughtException);
       } else {
-        console.error(err);
+        console.error(uncaughtException);
         console.log('uncaughtException. exit error, uptime:', process.uptime());
         process.exit(1);
       }
@@ -84,10 +85,10 @@ class ProcessRouter {
     console.log(`New ${chalk.yellow('worker')} ${chalk.red(pidChild || '')} born.`);
   }
 
-  public router(workerData: object): void {
-    for (let worker of this.getWorkers().values()) {
+  public router(workerData: Record<string, any>): void {
+    this.getWorkers().forEach((worker) => {
       worker.send(workerData);
-    }
+    });
   }
 
   public subscribe(worker: Worker): void {

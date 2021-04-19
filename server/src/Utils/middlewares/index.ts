@@ -68,7 +68,7 @@ export const useJWT = (dbm: Dbms): void => {
         usernameField: 'email',
         passwordField: 'password',
       },
-      async (email: string, password: string, done: Function): Promise<Function> => {
+      async (email: string, password: string, done: any): Promise<any> => {
         /** auth */
         try {
           const connect = await dbm.connection();
@@ -108,29 +108,32 @@ export const useJWT = (dbm: Dbms): void => {
         jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
         secretOrKey: authConfig.SECRET,
       },
-      async (jwt_payload: { sub: string }, done: any) => {
-        if (!isValidObjectId(jwt_payload.sub)) {
+      async (jwtPayload: { sub: string }, done: any): Promise<any> => {
+        if (!isValidObjectId(jwtPayload.sub)) {
           done(null, false, { message: 'Invalid token' });
         }
 
-        const currentUser: User = (await UserModel.findById(Types.ObjectId(jwt_payload.sub))) as User;
+        const currentUser: User = (await UserModel.findById(Types.ObjectId(jwtPayload.sub))) as User;
 
         if (!currentUser) {
           done(null, false, { message: 'Incorrect email.' });
           return;
         }
 
-        return done(null, currentUser);
+        const resultDone: any = done(null, currentUser);
+        // eslint-disable-next-line consistent-return
+        return resultDone;
       },
     ),
   );
 
-  passport.serializeUser((user: any, done: Function): void => {
+  passport.serializeUser((user: any, done: any): void => {
     done(null, user?.id);
   });
 
   passport.deserializeUser(
-    async (id: string, done: Function): Promise<void | Function> => {
+    // eslint-disable-next-line consistent-return
+    async (id: string, done: any): Promise<void | any> => {
       try {
         const connect = await dbm.connection();
         if (!connect) throw new Error('Bad connect');
@@ -151,8 +154,7 @@ export const useJWT = (dbm: Dbms): void => {
 export const useSession = (req: Request, res: Response, next: NextFunction): Response | void => {
   if (req.isAuthenticated()) {
     return next();
-  } else {
-    res.clearCookie('connect.sid');
-    return res.sendStatus(503);
   }
+  res.clearCookie('connect.sid');
+  return res.sendStatus(503);
 };

@@ -1,4 +1,4 @@
-import DropboxStorage from '../Services/Dropbox.service';
+import { name } from '../Services/Dropbox.service';
 import { FileApi, Params } from '../Utils/Interfaces/Interfaces.global';
 
 export const createParams = (methodQuery: string, status: string, from: string, done = true): Params => ({
@@ -10,7 +10,7 @@ export const createParams = (methodQuery: string, status: string, from: string, 
 
 export const getFileStorage = ({ dropbox }: Record<string, FileApi>) => {
   switch (process.env.FS) {
-    case DropboxStorage.name: {
+    case name: {
       return dropbox;
     }
     default:

@@ -15,6 +15,7 @@ import { ENTITY } from '../../Models/Database/Schema/Schema.constant';
 @Controller('/cabinet')
 class CabinetController {
   static version = getVersion();
+
   @Post({ path: CABINET_ROUTE[CabinetController.version].LOAD_USER, private: true, file: true })
   protected async loadAvatar(req: Request, res: Response): ResRequest {
     const params: Params = createParams('update_avatar', 'done', ENTITY.USERS);
@@ -35,7 +36,7 @@ class CabinetController {
     });
 
     const body: ActionParams = { queryParams: { uid }, updateItem: { avatar: dataUrl } };
-    const responseExec: Function = await updateAvatarAction.start(body);
+    const responseExec = await updateAvatarAction.start(body);
     return responseExec(req, res, params);
   }
 
@@ -53,7 +54,7 @@ class CabinetController {
     const findQuery: ActionParams =
       uid && isValidObjectId(uid) && typeof uid === 'string' ? { _id: Types.ObjectId(uid) } : { _id: '' };
 
-    const responseExec: Function = await actionUser.start(findQuery);
+    const responseExec = await actionUser.start(findQuery);
     return responseExec(req, res, params, true);
   }
 }

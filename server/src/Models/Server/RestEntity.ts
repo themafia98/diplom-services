@@ -1,10 +1,11 @@
-import _ from 'lodash';
 import { Rest } from '../../Utils/Interfaces/Interfaces.global';
 import { Application } from 'express';
 
 abstract class RestEntitiy implements Rest {
   private readonly port: string;
+
   private rest: Application | undefined;
+
   private application: null | Application = null;
 
   constructor(port: string) {

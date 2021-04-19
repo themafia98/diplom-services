@@ -8,6 +8,7 @@ import { ENTITY } from '../../Database/Schema/Schema.constant';
 
 class ActionLogger implements Action {
   private entityParser: Parser;
+
   private entity: ActionEntity;
 
   constructor(entityParser: Parser, entity: ActionEntity) {

@@ -13,15 +13,18 @@ export const runSyncClient = async (
   action: ActionParser,
   actionParam: ActionParams | Meta,
 ): Promise<ParserData> => {
-  const { syncList = [] } = actionParam as Record<string, Array<object>>;
+  const { syncList = [] } = actionParam as Record<string, Array<Record<string, any>>>;
 
-  for await (let syncItem of syncList) {
+  // eslint-disable-next-line no-restricted-syntax
+  for await (const syncItem of syncList) {
     const { entity = '' } = syncItem as Record<string, string>;
-    const { items = [] } = syncItem as Record<string, Array<object>>;
+    const { items = [] } = syncItem as Record<string, Array<Record<string, any>>>;
     const model: Model<Document> | null = getModelByName(entity, entity === 'tasks' ? ENTITY.TASK : entity);
 
+    // eslint-disable-next-line no-continue
     if (!model) continue;
-    for await (let updateProps of items) {
+    // eslint-disable-next-line no-restricted-syntax
+    for await (const updateProps of items) {
       let copy = { ...updateProps };
 
       const { _id = null, key = '' } = (updateProps as Record<string, string>) || {};
@@ -29,14 +32,14 @@ export const runSyncClient = async (
       const validId: any = typeof _id === 'string' ? Types.ObjectId(_id) : null;
 
       if (!validId) {
-        copy = Object.keys(copy).reduce((acc, key: string) => {
-          if (key === '_id') return acc;
+        copy = Object.keys(copy).reduce((acc, copyKey: string) => {
+          if (copyKey === '_id') return acc;
 
-          const { [key]: item } = copy as Record<string, string | number | boolean>;
+          const { [copyKey]: item } = copy as Record<string, string | number | boolean>;
 
           return {
             ...acc,
-            [key]: item,
+            [copyKey]: item,
           };
         }, {});
       }
@@ -64,7 +67,7 @@ export const startDownloadPipe = (
   const mimetype = (<any>mime).lookup(filename as string);
 
   res.setHeader('Content-disposition', 'attachment; filename=' + filename);
-  res.setHeader('Content-type', mimetype ? mimetype : 'plain/text');
+  res.setHeader('Content-type', mimetype || 'plain/text');
 
   if (process.env.NODE_ENV === 'development') {
     console.log('trace memory:', process.memoryUsage());

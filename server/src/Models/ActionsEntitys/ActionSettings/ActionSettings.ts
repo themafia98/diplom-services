@@ -3,13 +3,13 @@ import { v4 as uuid } from 'uuid';
 import { Model, Document } from 'mongoose';
 import { ActionParams, Action, Parser } from '../../../Utils/Interfaces/Interfaces.global';
 import { ParserData } from '../../../Utils/Types/types.global';
-import _ from 'lodash';
 import { ACTION_TYPE } from './ActionSettings.constant';
 import ActionEntity from '../../ActionEntity/ActionEntity';
 import { ENTITY } from '../../Database/Schema/Schema.constant';
 
 class ActionSettings implements Action {
   private entityParser: Parser;
+
   private entity: ActionEntity;
 
   constructor(entityParser: Parser, entity: ActionEntity) {
@@ -61,11 +61,15 @@ class ActionSettings implements Action {
   }
 
   private async getStatusList(model: Model<Document>): Promise<ParserData> {
-    return await this.getEntityParser().getAll(model, { idSettings: 'statusSettings' });
+    const statusListResult = await this.getEntityParser().getAll(model, { idSettings: 'statusSettings' });
+    return statusListResult;
   }
 
   private async loadTasksPriority(model: Model<Document>): Promise<ParserData> {
-    return await this.getEntityParser().getAll(model, { idSettings: 'tasksPriority' });
+    const loadTaskPriorityResult = await this.getEntityParser().getAll(model, {
+      idSettings: 'tasksPriority',
+    });
+    return loadTaskPriorityResult;
     // return ['Высокий', 'Средний', 'Низкий', 'Критический'];
   }
 

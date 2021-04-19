@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-vars */
+
+// eslint-disable-next-line no-shadow
 export const enum ROLES {
   GUEST = 'GUEST',
   MEMBER = 'MEMBER',

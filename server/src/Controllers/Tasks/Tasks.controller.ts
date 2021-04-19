@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import _ from 'lodash';
 import { Controller, Post, Put, Get } from '../../Utils/decorators/Decorators';
 import {
   Params,
@@ -18,6 +17,7 @@ import { ENTITY } from '../../Models/Database/Schema/Schema.constant';
 @Controller('/tasks')
 class TasksController {
   static version = getVersion();
+
   @Post({ path: TASKS_ROUTE[TasksController.version].LOAD_TASKS_LIST, private: true })
   @Get({ path: '/list', private: true })
   protected async getList(req: Request, res: Response): ResRequest {
@@ -41,7 +41,7 @@ class TasksController {
     };
 
     const actionTasks = new ActionRunner({ actionPath: 'tasks', actionType: 'get_all' });
-    const responseExec: Function = await actionTasks.start(actionParams);
+    const responseExec = await actionTasks.start(actionParams);
     return responseExec(req, res, params, true);
   }
 
@@ -57,7 +57,7 @@ class TasksController {
       actionType: 'list_counter',
     });
 
-    const responseExec: Function = await listCounterAction.start(
+    const responseExec = await listCounterAction.start(
       !filterCounter ? { saveData } : { filterCounter, saveData },
     );
     return responseExec(req, res, params);
@@ -79,7 +79,7 @@ class TasksController {
       actionType: 'set_single',
     });
 
-    const responseExec: Function = await createTaskAction.start(shouldBeCreate ? task : null);
+    const responseExec = await createTaskAction.start(shouldBeCreate ? task : null);
     return responseExec(req, res, params);
   }
 
@@ -96,7 +96,7 @@ class TasksController {
       body,
     });
 
-    const responseExec: Function = await createJurnalAction.start(body);
+    const responseExec = await createJurnalAction.start(body);
     return responseExec(req, res, params);
   }
 
@@ -108,9 +108,9 @@ class TasksController {
 
     const { store = '' } = options || {};
 
-    const actionTasks = new ActionRunner({ actionPath: store, actionType: actionType });
+    const actionTasks = new ActionRunner({ actionPath: store, actionType });
 
-    const responseExec: Function = await actionTasks.start(options);
+    const responseExec = await actionTasks.start(options);
     return responseExec(req, res, params);
   }
 
@@ -122,7 +122,7 @@ class TasksController {
 
     const actionTasks = new ActionRunner({ actionPath: 'tasks', actionType: body.actionType });
 
-    const responseExec: Function = await actionTasks.start(body);
+    const responseExec = await actionTasks.start(body);
     return responseExec(req, res, params);
   }
 }

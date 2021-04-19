@@ -4,7 +4,9 @@ import { transOptions } from '../../Utils/Types/types.global';
 
 class Mailer implements Mail {
   private transporter: Transporter | null = null;
+
   private readonly mailSender: SendMailOptions;
+
   private readonly mailerConfig: transOptions;
 
   constructor(mailerConfig: transOptions, mailSender: SendMailOptions) {
@@ -43,14 +45,9 @@ class Mailer implements Mail {
     return true;
   }
 
-  public async send(
-    to: string,
-    subject: string,
-    text: string,
-    html: boolean = false,
-  ): Promise<SentMessageInfo> {
+  public async send(to: string, subject: string, text: string, html = false): Promise<SentMessageInfo> {
     try {
-      const senderProps: object = this.getSender();
+      const senderProps: Record<string, any> = this.getSender();
       if (!senderProps || [to, subject, text].every((type) => typeof type !== 'string')) {
         return null;
       }

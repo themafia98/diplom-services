@@ -1,3 +1,5 @@
+/* eslint-disable no-use-before-define */
+/* eslint-disable no-unused-vars */
 import { Application, Router as RouteExpress, Request as RequestExpress, Response } from 'express';
 import { SendMailOptions, Transporter, SentMessageInfo } from 'nodemailer';
 import { files } from 'dropbox';
@@ -20,6 +22,20 @@ import { ObjectId } from 'mongodb';
 import { ParsedUrlQuery } from 'querystring';
 import WebSocketWorker from '../../Models/WebSocketWorker';
 import ActionEntity from '../../Models/ActionEntity/ActionEntity';
+
+export interface ActionParams {
+  [key: string]: Meta | boolean | SocketMeta | SocketMessage | expressFile;
+}
+
+export interface BodyLogin {
+  [key: string]: string | number | Record<string, any> | ActionParams;
+}
+export interface Request extends RequestExpress {
+  start?: Date;
+  body: BodyLogin;
+  session: any;
+  isAuthenticated(): boolean;
+}
 
 export interface RequestWithParams extends Request {
   shouldBeCreate?: boolean;
@@ -58,14 +74,15 @@ export interface QueryParams {
   // mail params
   mailBody?: string;
   themeMail?: string;
+  // eslint-disable-next-line
   to?: string;
   // other
   uid?: string | ObjectId;
   // chat params
-  fakeMsg?: Record<string, string | object>;
+  fakeMsg?: Record<string, string | Record<string, any>>;
   interlocutorId?: string | ObjectId;
   // settings
-  items?: object[];
+  items?: Record<string, any>[];
   query?: string;
   // tasks
   keys?: string | Array<string | number>;
@@ -82,7 +99,7 @@ export interface QueryParams {
   newPhone?: string;
   // some requests
   queryType?: 'many';
-  actionParam?: object;
+  actionParam?: Record<string, any>;
   pageId?: string;
   lang?: string;
 }
@@ -98,9 +115,9 @@ export interface UserRole {
 }
 
 export interface ServerRun {
-  session: object;
-  smtp: object;
-  start(callback?: Function): void;
+  session: Record<string, any>;
+  smtp: Record<string, any>;
+  start(callback?: any): void;
 }
 
 export interface WorkerDataProps {
@@ -113,6 +130,7 @@ export interface Mail {
   getSender(): SendMailOptions;
   getMailerConfig(): transOptions;
   create(): Promise<boolean>;
+  // eslint-disable-next-line
   send(to: string, subject: string, text: string, html?: boolean): Promise<SentMessageInfo>;
 }
 
@@ -148,8 +166,10 @@ export interface SocketMessageDoc extends Document {
 
 export interface CryptoSecurity {
   getMode(): string;
-  hashing(password: string, salt: number, callback: Function): Promise<void>;
-  verify(password: string, hash: Record<string, any>, callback: Function): Promise<void>;
+  // eslint-disable-next-line
+  hashing(password: string, salt: number, callback: any): Promise<void>;
+  // eslint-disable-next-line
+  verify(password: string, hash: Record<string, any>, callback: any): Promise<void>;
 }
 
 export interface App extends Application {
@@ -175,17 +195,6 @@ export interface ResponseMetadata<T> {
   body: T;
 }
 
-export interface Request extends RequestExpress {
-  start?: Date;
-  body: BodyLogin;
-  session: any;
-  isAuthenticated(): boolean;
-}
-
-export interface BodyLogin {
-  [key: string]: string | number | object | ActionParams;
-}
-
 export interface RouteDefinition {
   path: string;
   requestMethod: 'get' | 'post' | 'delete' | 'options' | 'put';
@@ -207,26 +216,22 @@ export interface methodParam extends Object {
 }
 
 export interface Metadata extends Object {
-  /** Mongo db data object */
+  /** Mongo db data Record<string, any> */
   GET: methodParam;
 }
 
 export interface MetadataMongo extends Metadata {
-  _doc?: Array<object>;
+  _doc?: Array<Record<string, any>>;
   [key: string]: MetadataMongo | any;
 }
 
-export interface ActionParams {
-  [key: string]: Meta | boolean | SocketMeta | SocketMessage | expressFile;
-}
-
 export interface ResponseDocument {
-  [key: string]: number | string | Date | object;
+  [key: string]: number | string | Date | Record<string, any>;
 }
 
 export interface MetadataConfig {
   methodQuery: string;
-  body?: object;
+  body?: Record<string, any>;
 }
 
 export interface DropboxAccess {
@@ -237,7 +242,7 @@ export interface DropboxAccess {
 export interface ServiceManager<T> {
   getService(): T;
   getServiceType(): string;
-  getConfig(): object;
+  getConfig(): Record<string, any>;
 }
 
 export interface User extends Document {
@@ -257,10 +262,10 @@ export interface User extends Document {
   token?: string;
   role: Role;
   _plainPassword?: string;
-  checkPassword: Function;
-  changePassword: Function;
-  generateJWT: Function;
-  toAuthJSON: Function;
+  checkPassword: any;
+  changePassword: any;
+  generateJWT: any;
+  toAuthJSON: any;
 }
 
 export interface TaskEntity {
@@ -274,10 +279,10 @@ export interface TaskEntity {
   editor: Array<string>;
   description: string;
   date: Array<string>;
-  comments: Array<object>;
+  comments: Array<Record<string, any>>;
   offline: boolean;
-  tags?: object;
-  additionalCreaterData?: object;
+  tags?: Record<string, any>;
+  additionalCreaterData?: Record<string, any>;
 }
 
 export interface Task extends Document {
@@ -290,9 +295,9 @@ export interface Task extends Document {
   editor: Array<string>;
   description: string;
   date: Array<string>;
-  comments: Array<object>;
+  comments: Array<Record<string, any>>;
   offline: boolean;
-  tags?: object;
+  tags?: Record<string, any>;
 }
 
 export interface Jurnal {
@@ -302,7 +307,7 @@ export interface Jurnal {
   date: Array<string>;
   description: string;
   offline: boolean;
-  methodObj: object;
+  methodObj: Record<string, any>;
 }
 
 export interface Logger {
@@ -315,14 +320,14 @@ export interface Logger {
 export interface News {
   title: string;
   content: {
-    entityMap: object;
+    entityMap: Record<string, any>;
     blocks: Array<any>;
   };
 }
 
 export interface Settings {
   idSettings: string;
-  settings: Array<Object>;
+  settings: Array<Record<string, any>>;
 }
 
 export interface ChatMessage {
@@ -372,7 +377,7 @@ export interface WikiPage {
   lastEditName: string;
   lastEditDate: string;
   content: {
-    entityMap: object;
+    entityMap: Record<string, any>;
     blocks: Array<any>;
   };
 }
@@ -389,7 +394,7 @@ export interface FileApi {
 export interface ActionProps {
   actionPath: Readonly<string>;
   actionType: Readonly<string>;
-  body?: Readonly<object>;
+  body?: Readonly<Record<string, any>>;
   store?: Readonly<FileApi>;
 }
 
@@ -419,16 +424,11 @@ export interface Action {
 
 export interface Runner {
   getAction(): ActionEntity;
-  start(
-    this: Runner,
-    actionParam: ActionParams,
-    mode?: string,
-    queryString?: ParsedUrlQuery,
-  ): Promise<Function>;
+  start(this: Runner, actionParam: ActionParams, mode?: string, queryString?: ParsedUrlQuery): Promise<any>;
 }
 
 export interface Parser {
-  getCounter(model: Model<Document>, query: FilterQuery<any>, options?: object): Promise<number>;
+  getCounter(model: Model<Document>, query: FilterQuery<any>, options?: Record<string, any>): Promise<number>;
   getAll(
     model: Model<Document>,
     actionParam: ActionParams | QueryParams,
@@ -436,8 +436,8 @@ export interface Parser {
     skip?: number,
     sortType?: string,
   ): Promise<ParserData>;
-  getFilterData(model: Model<Document>, filter: object, sort?: string): Promise<ParserData>;
-  createEntity(model: Model<Document>, item: object): Promise<ParserData>;
+  getFilterData(model: Model<Document>, filter: Record<string, any>, sort?: string): Promise<ParserData>;
+  createEntity(model: Model<Document>, item: Record<string, any>): Promise<ParserData>;
   deleteEntity(model: Model<Document>, query: ActionParams): Promise<ParserData>;
   updateEntity(
     model: Model<Document>,
@@ -485,5 +485,5 @@ export interface ResponseBuilder {
 export interface Access {
   userId: string;
 
-  access: Array<object>;
+  access: Array<Record<string, any>>;
 }

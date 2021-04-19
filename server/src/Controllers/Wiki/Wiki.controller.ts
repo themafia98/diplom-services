@@ -1,6 +1,5 @@
 import { Response, Request } from 'express';
-import _ from 'lodash';
-import { Params, ActionParams } from '../../Utils/Interfaces/Interfaces.global';
+import { Params } from '../../Utils/Interfaces/Interfaces.global';
 import { ResRequest } from '../../Utils/Types/types.global';
 import { Controller, Delete, Post, Put, Get } from '../../Utils/decorators/Decorators';
 import { createParams } from '../Controllers.utils';
@@ -11,6 +10,7 @@ import ActionRunner from '../../Models/ActionRunner/ActionRunner';
 @Controller('/wiki')
 class WikiController {
   static version = getVersion();
+
   @Get({ path: WIKI_ROUTE[WikiController.version].LOAD_WIKI_PAGES_LIST, private: true })
   protected async getTreeList(req: Request, res: Response): ResRequest {
     const params: Params = createParams('get_all', 'done', 'wiki');
@@ -20,7 +20,7 @@ class WikiController {
       actionType: 'get_all',
     });
 
-    const responseExec: Function = await actionTreeList.start({});
+    const responseExec = await actionTreeList.start({});
     return responseExec(req, res, params);
   }
 
@@ -34,7 +34,7 @@ class WikiController {
       actionType: 'create_leaf',
     });
 
-    const responseExec: Function = await actionCreateLeaf.start(leafEntity);
+    const responseExec = await actionCreateLeaf.start(leafEntity);
     return responseExec(req, res, params);
   }
 
@@ -49,21 +49,21 @@ class WikiController {
       actionType: 'delete_leafs',
     });
 
-    const responseExec: Function = await actionDeleteLeafs.start(leafParam);
+    const responseExec = await actionDeleteLeafs.start(leafParam);
     return responseExec(req, res, params);
   }
 
   @Post({ path: WIKI_ROUTE[WikiController.version].LOAD_WIKI_PAGE, private: true })
   protected async getWikiPage(req: Request, res: Response): ResRequest {
     const params: Params = createParams('wiki_page', 'done', 'wiki');
-    const body: ActionParams = req.body;
+    const { body } = req;
 
     const actionWikiPage = new ActionRunner({
       actionPath: 'wiki',
       actionType: 'wiki_page',
     });
 
-    const responseExec: Function = await actionWikiPage.start(body);
+    const responseExec = await actionWikiPage.start(body);
     return responseExec(req, res, params);
   }
 }

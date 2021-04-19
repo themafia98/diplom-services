@@ -6,13 +6,17 @@ import { ACTIONS_ACCESS } from '../../app.constant';
 
 class AccessRole implements UserRole {
   private readonly uid: Readonly<ObjectId>;
+
   private readonly menuList: Readonly<Array<MenuConfig>>;
+
   private readonly accessRole: Readonly<Role>;
+
   private accessConfig: Array<AccessConfig>;
 
   constructor(user: User, config: JsonConfig) {
     this.menuList = config.menu;
     this.accessRole = user.role;
+    // eslint-disable-next-line no-underscore-dangle
     this.uid = user._id;
     this.accessConfig = getAccessConfig(this.accessRole);
   }
@@ -26,8 +30,8 @@ class AccessRole implements UserRole {
   }
 
   get menu() {
-    return this.menuList.filter((module: MenuConfig) => {
-      return this.accessConfig.some((config) => {
+    return this.menuList.filter((module: MenuConfig) =>
+      this.accessConfig.some((config) => {
         const isEqualModule = config.name === module.EUID;
         const isEqualSubModule = config.name === module.PARENT_CODE;
 
@@ -38,14 +42,14 @@ class AccessRole implements UserRole {
         const isCurrentModule = isEqualModule || isEqualSubModule;
 
         return isCurrentModule && isAccessCreate && config.access;
-      });
-    });
+      }),
+    );
   }
 
   static getAvailableActions(
-    moduleName: string = '',
+    moduleName = '',
     accessConfig: Array<AccessConfig>,
-  ): Array<string | void | object> | null {
+  ): Array<string | void | Record<string, any>> | null {
     const moduleConfig: AccessConfig | Array<AccessConfig> | null = moduleName
       ? accessConfig.find((it) => it.name.includes(moduleName)) || null
       : null;

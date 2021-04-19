@@ -5,15 +5,7 @@ import querystring from 'querystring';
 import passport from 'passport';
 import { UserModel } from '../../Models/Database/Schema';
 import { ResRequest, ParserResult } from '../../Utils/Types/types.global';
-import {
-  Request,
-  App,
-  BodyLogin,
-  Mail,
-  User,
-  QueryParams,
-  Runner,
-} from '../../Utils/Interfaces/Interfaces.global';
+import { Request, App, Mail, User, QueryParams, Runner } from '../../Utils/Interfaces/Interfaces.global';
 import { Get, Post, Delete, Controller } from '../../Utils/decorators/Decorators';
 import { SentMessageInfo } from 'nodemailer';
 import { GENERAL_ROUTE } from './General.path';
@@ -26,6 +18,7 @@ import { getVersion } from '../../Utils/utils.global';
 @Controller('/')
 class GeneralController {
   static version = getVersion();
+
   @Post({ path: GENERAL_ROUTE.CHECK_SESSION_JWT, private: true })
   protected auth(req: Request, res: Response): Response {
     return res.sendStatus(200);
@@ -51,16 +44,21 @@ class GeneralController {
         return;
       }
 
-      if (!res.headersSent) return res.sendStatus(200);
+      if (!res.headersSent) {
+        res.sendStatus(200);
+        return;
+      }
     } catch (err) {
       console.error(err);
-      if (!res.headersSent) return res.sendStatus(400);
+      if (!res.headersSent) {
+        res.sendStatus(400);
+      }
     }
   }
 
   @Post({ path: GENERAL_ROUTE.LOG_IN, private: false })
   protected async login(req: Request, res: Response, next: NextFunction) {
-    const body: BodyLogin = req.body;
+    const { body } = req;
 
     if (!body || (body && _.isEmpty(body))) {
       res.sendStatus(503);
@@ -68,6 +66,7 @@ class GeneralController {
 
     const result = await passport.authenticate(
       'local',
+      // eslint-disable-next-line consistent-return
       async (err: Error, user: User): ResRequest => {
         try {
           if (!user || err) {
@@ -76,13 +75,16 @@ class GeneralController {
           const { password = '' } = body;
 
           const isValidPassword = await user.checkPassword(password).catch(
-            (err: Error): Response => {
-              console.error(err);
+            (errCheck: Error): Response => {
+              console.error(errCheck);
               return res.status(503).send('Ошибка авторизации.');
             },
           );
 
-          if (res.headersSent) return;
+          if (res.headersSent) {
+            // eslint-disable-next-line consistent-return
+            return;
+          }
 
           if (!isValidPassword) {
             return res.status(401).send('Неверные данные для авторизации.');
@@ -90,22 +92,25 @@ class GeneralController {
           user.token = user.generateJWT();
           req.login(
             user,
-            async (err: Error): Promise<Response> => {
-              if (err) {
-                res.status(404).send(err.message);
+            async (errLogin: Error): Promise<Response> => {
+              if (errLogin) {
+                res.status(404).send(errLogin.message);
               }
 
               const jsonUser = user.toAuthJSON();
               const userKeys = Object.keys(jsonUser);
 
-              const parsedUser: object = userKeys.reduce((acc: object, key: string) => {
-                if (key === 'token') return acc;
+              const parsedUser: Record<string, any> = userKeys.reduce(
+                (acc: Record<string, any>, key: string) => {
+                  if (key === 'token') return acc;
 
-                return {
-                  ...acc,
-                  [key]: jsonUser[key],
-                };
-              }, {});
+                  return {
+                    ...acc,
+                    [key]: jsonUser[key],
+                  };
+                },
+                {},
+              );
 
               return res.json({
                 user: parsedUser,
@@ -113,8 +118,8 @@ class GeneralController {
               });
             },
           );
-        } catch (err) {
-          console.error(err);
+        } catch (criticalErr) {
+          console.error(criticalErr);
           if (!res.headersSent) {
             return res.status(503).send('Ошибка авторизации.');
           }
@@ -150,7 +155,7 @@ class GeneralController {
   ): Promise<Response> {
     try {
       const { mailer } = server.locals;
-      const body: BodyLogin = req.body;
+      const { body } = req;
 
       const { queryParams = {} } = body;
       const { mailBody = '', themeMail = '', to = '' } = queryParams as QueryParams;
@@ -183,7 +188,7 @@ class GeneralController {
     server: App,
   ): ResRequest {
     const { mailer } = server.locals;
-    const body: BodyLogin = req.body;
+    const { body } = req;
     const { recovoryField = '' } = body;
 
     const tokenAction: Runner = new ActionRunner({
@@ -192,16 +197,17 @@ class GeneralController {
     });
 
     try {
-      const responseExec: Function = await tokenAction.start({ recovoryField }, 'exec');
+      const responseExec = await tokenAction.start({ recovoryField }, 'exec');
       const token: Document = await responseExec(req, res, { done: true }, false);
 
       if (!token) {
         throw new Error('Invalid verify recovory password');
       }
 
-      const url = `${req.protocol}://${req.get('host')}${req.baseUrl}`;
+      const urlRecovort = `${req.protocol}://${req.get('host')}${req.baseUrl}`;
       const to: string = recovoryField as string;
-      const link = `${url}${GENERAL_ROUTE.RECOVORY_PASSWORD}?recovoryToken=${token._id}&to=${to}`;
+      // eslint-disable-next-line no-underscore-dangle
+      const link = `${urlRecovort}${GENERAL_ROUTE.RECOVORY_PASSWORD}?recovoryToken=${token._id}&to=${to}`;
 
       const result: Promise<SentMessageInfo> = await (mailer as Mail).send(
         to,
@@ -251,7 +257,7 @@ class GeneralController {
         body: { recovoryToken, to },
       });
 
-      const responseExec: Function = await checkerAction.start({ to, recovoryToken }, 'exec');
+      const responseExec = await checkerAction.start({ to, recovoryToken }, 'exec');
       const password: ParserResult = await responseExec(req, res, { done: true }, false);
 
       if (!password) {
@@ -274,7 +280,6 @@ class GeneralController {
       console.error(error);
       res.statusMessage = error.message;
       res.sendStatus(403);
-      return;
     }
   }
 }

@@ -32,7 +32,9 @@ const userSchema: Schema<User> = new Schema(
 
 userSchema
   .virtual('password')
+  // eslint-disable-next-line func-names
   .set(async function (this: User, password: string): Promise<void> {
+    // eslint-disable-next-line no-underscore-dangle
     this._plainPassword = password;
     if (password) {
       this.passwordHash = bcrypt.hashSync(password, 10);
@@ -41,16 +43,21 @@ userSchema
       this.passwordHash = undefined;
     }
   })
-  .get(function (this: User) {
+  // eslint-disable-next-line func-names
+  .get(function () {
+    // eslint-disable-next-line no-underscore-dangle
     return this._plainPassword;
   });
 
+// eslint-disable-next-line func-names
 userSchema.methods.checkPassword = async function (password: string): Promise<boolean> {
   if (!password) return false;
 
-  return await bcrypt.compare(password, this.passwordHash as string);
+  const result = await bcrypt.compare(password, this.passwordHash as string);
+  return result;
 };
 
+// eslint-disable-next-line func-names
 userSchema.methods.changePassword = async function (password: string): Promise<string | null> {
   try {
     const passwordHash: string = await bcrypt.hash(password as string, 10);
@@ -63,13 +70,15 @@ userSchema.methods.changePassword = async function (password: string): Promise<s
   }
 };
 
-userSchema.methods.generateJWT = function (this: User): any {
+// eslint-disable-next-line func-names
+userSchema.methods.generateJWT = function (): any {
   if (!authConfig.SECRET) {
     throw new Error('invalid jwt secret');
   }
   return jwt.sign(
     {
       iss: this.email,
+      // eslint-disable-next-line no-underscore-dangle
       sub: this._id,
       iat: new Date().getTime(),
       exp: new Date().setHours(new Date().getHours() + 8),
@@ -78,8 +87,10 @@ userSchema.methods.generateJWT = function (this: User): any {
   );
 };
 
-userSchema.methods.toAuthJSON = function (this: User) {
+// eslint-disable-next-line func-names
+userSchema.methods.toAuthJSON = function () {
   return {
+    // eslint-disable-next-line no-underscore-dangle
     _id: this._id,
     email: this.email,
     summary: this.summary,
@@ -158,6 +169,7 @@ export const news = new Schema(
   {
     title: { type: String, required: true },
     content: {
+      // eslint-disable-next-line
       entityMap: { type: Object, required: true, default: {} },
       blocks: { type: Array, required: true },
     },
@@ -241,6 +253,7 @@ export const wikiPage = new Schema(
     lastEditName: { type: String, required: true },
     lastEditDate: { type: String, required: true },
     content: {
+      // eslint-disable-next-line
       entityMap: { type: Object, required: true, default: {} },
       blocks: { type: Array, required: true, default: [] },
     },

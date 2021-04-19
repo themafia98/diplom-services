@@ -1,5 +1,4 @@
 import { Model, Document, Types, isValidObjectId } from 'mongoose';
-import _ from 'lodash';
 import { ActionParams, Action, Parser } from '../../../Utils/Interfaces/Interfaces.global';
 import { ParserData } from '../../../Utils/Types/types.global';
 import { getModelByName } from '../../../Utils/utils.global';
@@ -9,6 +8,7 @@ import { ENTITY } from '../../Database/Schema/Schema.constant';
 
 class ActionJournal implements Action {
   private entityParser: Parser;
+
   private entity: ActionEntity;
 
   constructor(entityParser: Parser, entity: ActionEntity) {
@@ -23,6 +23,7 @@ class ActionJournal implements Action {
   public getEntity(): ActionEntity {
     return this.entity;
   }
+
   private async getJurnal(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const { depKey: dirtyKey = '' } = actionParam as Record<string, string>;
 
@@ -39,7 +40,7 @@ class ActionJournal implements Action {
 
   private async setJournal(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     try {
-      const { item = {} } = actionParam as Record<string, object>;
+      const { item = {} } = actionParam as Record<string, Record<string, any>>;
       const { depKey: dirtyKey = '' } = (item as Record<string, string>) || {};
       const depKey = Types.ObjectId(dirtyKey);
 

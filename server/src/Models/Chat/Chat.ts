@@ -1,5 +1,4 @@
 import { Socket } from 'socket.io';
-import _ from 'lodash';
 import { ChatModel } from '../../Utils/Interfaces/Interfaces.global';
 import WebSocketWorker from '../WebSocketWorker';
 import { initFakeRoomEvent, newMessageEvent, workerDisconnect } from './Chat.events';
@@ -10,14 +9,16 @@ class Chat implements ChatModel {
   private _ws: WebSocketWorker;
 
   constructor(ws: WebSocketWorker) {
+    // eslint-disable-next-line no-underscore-dangle
     this._ws = ws;
   }
 
   get ws() {
+    // eslint-disable-next-line no-underscore-dangle
     return this._ws;
   }
 
-  private processMessageEvent(data: Record<string, object | string | null>): void {
+  private processMessageEvent(data: Record<string, Record<string, any> | string | null>): void {
     const { action = '', payload = {} } = data;
 
     try {
@@ -27,20 +28,23 @@ class Chat implements ChatModel {
         return;
       }
 
-      const { event = '', data = {}, to = '', socket = null } = payload as Record<string, Payload>;
+      const { event = '', data: dataValues = {}, to = '', socket = null } = payload as Record<
+        string,
+        Payload
+      >;
       const worker = this.ws.getWorker();
 
       if (to && to === 'broadcast' && socket) {
-        (socket as Socket).broadcast.emit(event as string, data);
+        (socket as Socket).broadcast.emit(event as string, dataValues);
         return;
       }
 
       if (to) {
-        worker.to(to as string).emit(event as string, data);
+        worker.to(to as string).emit(event as string, dataValues);
         return;
       }
 
-      worker.emit(event as string, data);
+      worker.emit(event as string, dataValues);
     } catch (err) {
       console.error(err);
     }

@@ -10,6 +10,7 @@ import { ENTITY } from '../../Database/Schema/Schema.constant';
 
 class ActionWiki implements Action {
   private entityParser: Parser;
+
   private entity: ActionEntity;
 
   constructor(entityParser: Parser, entity: ActionEntity) {
@@ -30,7 +31,7 @@ class ActionWiki implements Action {
   }
 
   private async createLeaf(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
-    const { item = null } = (actionParam as Record<string, object>) || {};
+    const { item = null } = (actionParam as Record<string, Record<string, any>>) || {};
     const { parentId = 'root' } = (item as Record<string, string>) || {};
     const isRoot = parentId === 'root';
 
@@ -41,7 +42,11 @@ class ActionWiki implements Action {
     const validId = !isRoot ? Types.ObjectId(parentId) : parentId;
     if (!validId) return null;
 
-    return await this.getEntityParser().createEntity(model, { ...item, parentId: validId } as object);
+    const result = await this.getEntityParser().createEntity(model, { ...item, parentId: validId } as Record<
+      string,
+      any
+    >);
+    return result;
   }
 
   private async deleteLeafs(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
@@ -111,7 +116,10 @@ class ActionWiki implements Action {
 
   private async update(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     try {
-      const { queryParams = {}, updateItem: updateItemDirty = {} } = actionParam as Record<string, object>;
+      const { queryParams = {}, updateItem: updateItemDirty = {} } = actionParam as Record<
+        string,
+        Record<string, any>
+      >;
       const { pageId: pageIdDirty = '' } = queryParams as QueryParams;
 
       const isVirtual = pageIdDirty.includes('virtual');
@@ -138,6 +146,7 @@ class ActionWiki implements Action {
       const queryFind: ActionParams = pageId ? { _id: pageId } : {};
       const query: ActionParams = { updateProps };
 
+      // eslint-disable-next-line no-underscore-dangle
       if (pageId) query._id = pageId;
 
       await this.getEntityParser().updateEntity(model, query);

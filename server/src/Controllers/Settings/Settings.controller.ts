@@ -1,5 +1,4 @@
 import { Response, Request } from 'express';
-import _ from 'lodash';
 import { Params, ActionParams, QueryParams } from '../../Utils/Interfaces/Interfaces.global';
 import { ResRequest } from '../../Utils/Types/types.global';
 import { Controller, Post, Put, Get } from '../../Utils/decorators/Decorators';
@@ -12,11 +11,12 @@ import { getVersion } from '../../Utils/utils.global';
 @Controller('/settings')
 class SettingsController {
   static version = getVersion();
+
   @Post({ path: SETTINGS_ROUTE[SettingsController.version].CHANGE_PASSWORD, private: true })
   protected async passwordChanged(req: Request, res: Response): ResRequest {
     const params: Params = createParams('change_password', 'done', ENTITY.USERS);
 
-    const body: Record<string, object> = req.body;
+    const { body } = req;
     const { queryParams } = body as Record<string, QueryParams>;
 
     const changePasswordAction = new ActionRunner({
@@ -27,7 +27,7 @@ class SettingsController {
 
     const actionParams: ActionParams = { queryParams };
 
-    const responseExec: Function = await changePasswordAction.start(actionParams);
+    const responseExec = await changePasswordAction.start(actionParams);
     return responseExec(req, res, params);
   }
 
@@ -42,7 +42,7 @@ class SettingsController {
       ENTITY.SETTINGS,
     );
 
-    const body: Record<string, object> = req.body;
+    const { body } = req;
     const { params: queryParams = {} } = body as Record<string, QueryParams>;
     const { items = [], query = '' } = queryParams;
 
@@ -53,7 +53,7 @@ class SettingsController {
 
     const actionParams: ActionParams = !isGetter ? { items, idSettings: query } : {};
 
-    const responseExec: Function = await changeStatusList.start(actionParams);
+    const responseExec = await changeStatusList.start(actionParams);
     return responseExec(req, res, params);
   }
 
@@ -73,13 +73,13 @@ class SettingsController {
       actionType: isGetter ? 'get_tasksPriority' : 'change_settings',
     });
 
-    const body: Record<string, object> = req.body;
+    const { body } = req;
     const { params: queryParams = {} } = body as Record<string, QueryParams>;
     const { items = [], query = '' } = queryParams;
 
     const actionParams: ActionParams = !isGetter ? { items, idSettings: query } : {};
 
-    const responseExec: Function = await loadTasksPriority.start(actionParams);
+    const responseExec = await loadTasksPriority.start(actionParams);
     return responseExec(req, res, params);
   }
 
@@ -87,7 +87,7 @@ class SettingsController {
   protected async commonSettings(req: Request, res: Response): ResRequest {
     const params: Params = createParams('common_changes', 'done', ENTITY.USERS);
 
-    const body: Record<string, QueryParams> = req.body;
+    const { body } = req;
     const { queryParams } = body;
 
     const changeCommonAction = new ActionRunner({
@@ -97,7 +97,7 @@ class SettingsController {
 
     const actionParams: ActionParams = { queryParams };
 
-    const responseExec: Function = await changeCommonAction.start(actionParams);
+    const responseExec = await changeCommonAction.start(actionParams);
     return responseExec(req, res, params);
   }
 
@@ -116,14 +116,14 @@ class SettingsController {
 
     const actionParams: ActionParams = { queryParams };
 
-    const responseExec: Function = await changeLangAction.start(actionParams);
+    const responseExec = await changeLangAction.start(actionParams);
     return responseExec(req, res, params);
   }
 
   @Post({ path: SETTINGS_ROUTE[SettingsController.version].SAVE_PROFILE, private: true })
   protected async profileSettings(req: Request, res: Response): ResRequest {
     const params: Params = createParams('profile_changes', 'done', ENTITY.USERS);
-    const body: Record<string, QueryParams> = req.body;
+    const { body } = req;
 
     const { queryParams } = body;
 
@@ -134,14 +134,14 @@ class SettingsController {
 
     const actionParams: ActionParams = { queryParams };
 
-    const responseExec: Function = await changeProfileAction.start(actionParams);
+    const responseExec = await changeProfileAction.start(actionParams);
     return responseExec(req, res, params);
   }
 
   @Put({ path: SETTINGS_ROUTE[SettingsController.version].SAVE_LOGS, private: true })
   @Post({ path: '/logger', private: true })
   protected async logger(req: Request, res: Response): ResRequest {
-    const body: Record<string, object | string> = req.body;
+    const { body } = req;
     const { actionType = '' } = body;
 
     const params: Params = createParams(actionType as string, 'done', ENTITY.SETTINGS_LOGS);
@@ -150,7 +150,7 @@ class SettingsController {
       actionPath: ENTITY.SETTINGS_LOGS,
       actionType: actionType as string,
     });
-    const responseExec: Function = await settingsLogger.start(body);
+    const responseExec = await settingsLogger.start(body);
     return responseExec(req, res, params);
   }
 }

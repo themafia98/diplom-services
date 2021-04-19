@@ -1,7 +1,6 @@
-import { NextFunction, Response, Request } from 'express';
+import { Response, Request } from 'express';
 import {
   ActionParams,
-  BodyLogin,
   Params,
   QueryParams,
   RequestWithParams,
@@ -18,9 +17,10 @@ import { ENTITY } from '../../../Models/Database/Schema/Schema.constant';
 @Controller('/news')
 class NewsController {
   static version = getVersion();
+
   @Put({ path: NEWS_ROUTE[NewsController.version].CREATE_NEWS, private: true })
   protected async createNews(req: Request, res: Response): ResRequest {
-    const body: BodyLogin = req.body;
+    const { body } = req;
 
     const { params: bodyParams = {} } = body as Record<string, ActionParams>;
     const { queryParams = {}, metadata = {} } = bodyParams;
@@ -36,13 +36,14 @@ class NewsController {
 
     const actionNews = new ActionRunner({ actionPath: ENTITY.NEWS, actionType });
 
-    const responseExec: Function = await actionNews.start(shouldBeCreate ? <Meta>metadata : {});
-    return responseExec(req, res, params);
+    const responseExec = await actionNews.start(shouldBeCreate ? <Meta>metadata : {});
+    const execResult = responseExec(req, res, params);
+    return execResult;
   }
 
   @Post({ path: NEWS_ROUTE[NewsController.version].LOAD_NEWS, private: true })
   @Get({ path: NEWS_ROUTE[NewsController.version].LOAD_NEWS, private: true })
-  protected async getNewsList(req: Request, res: Response, next: NextFunction): ResRequest {
+  protected async getNewsList(req: Request, res: Response): ResRequest {
     const params: Params = { methodQuery: 'get_all', status: 'done', done: true, from: ENTITY.NEWS };
 
     const { params: paramsRequest = {} } = req.body;
@@ -52,7 +53,7 @@ class NewsController {
 
     const actionListNews: Runner = new ActionRunner({ actionPath: ENTITY.NEWS, actionType: 'get_all' });
 
-    const responseExec: Function = await actionListNews.start(actionParams);
+    const responseExec = await actionListNews.start(actionParams);
     return responseExec(req, res, params);
   }
 }

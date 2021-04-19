@@ -8,6 +8,7 @@ import { ACTION_TYPE } from './ActionChatMessage.constant';
 
 class ActionChatMessage implements Action {
   private entityParser: Parser;
+
   private entity: ActionEntity;
 
   constructor(entityParser: Parser, entity: ActionEntity) {

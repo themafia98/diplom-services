@@ -3,55 +3,52 @@ import dotenv from 'dotenv';
 
 import { Dbms } from '../../Utils/Interfaces/Interfaces.global';
 
-namespace Database {
-  dotenv.config();
-  export class ManagmentDatabase implements Dbms {
-    private readonly dbClient: string;
-    private readonly connectionString: string;
+dotenv.config();
+export class ManagmentDatabase implements Dbms {
+  private readonly dbClient: string;
 
-    public status: any = null;
+  private readonly connectionString: string;
 
-    constructor(db: string, connectionString: string) {
-      mongoose.set('debug', false);
-      mongoose.set('useFindAndModify', false);
-      mongoose.set('useCreateIndex', true);
-      this.dbClient = db;
-      this.connectionString = connectionString;
+  public status: any = null;
 
-      mongoose.connect(
-        connectionString,
-        {
-          useNewUrlParser: true,
-          useCreateIndex: true,
-          useUnifiedTopology: true,
-          keepAlive: true,
-        },
-        (err) => {
-          if (err) console.error(err);
-        },
-      );
-    }
+  constructor(db: string, connectionString: string) {
+    mongoose.set('debug', false);
+    mongoose.set('useFindAndModify', false);
+    mongoose.set('useCreateIndex', true);
+    this.dbClient = db;
+    this.connectionString = connectionString;
 
-    get db() {
-      return this.dbClient;
-    }
+    mongoose.connect(
+      connectionString,
+      {
+        useNewUrlParser: true,
+        useCreateIndex: true,
+        useUnifiedTopology: true,
+        keepAlive: true,
+      },
+      (err) => {
+        if (err) console.error(err);
+      },
+    );
+  }
 
-    public async connection(): Promise<Connection | typeof mongoose> {
-      return mongoose.connection;
-    }
+  get db() {
+    return this.dbClient;
+  }
 
-    public getStatus(): number {
-      return mongoose.connection.readyState;
-    }
+  public async connection(): Promise<Connection | typeof mongoose> {
+    return mongoose.connection;
+  }
 
-    public getConnectionString(): string {
-      return this.connectionString;
-    }
+  public getStatus(): number {
+    return mongoose.connection.readyState;
+  }
 
-    public disconnect(): Promise<void> {
-      return mongoose.disconnect();
-    }
+  public getConnectionString(): string {
+    return this.connectionString;
+  }
+
+  public disconnect(): Promise<void> {
+    return mongoose.disconnect();
   }
 }
-
-export default Database;

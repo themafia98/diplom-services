@@ -36,7 +36,7 @@ export const checkEntity = async (
   mode: string,
   checkKey: string,
   actionParam: ActionParams,
-  model: Model<Document>,
+  modelDoc: Model<Document>,
 ): Promise<boolean> => {
   if (mode !== 'equalSingle') {
     return true;
@@ -45,7 +45,7 @@ export const checkEntity = async (
   let query = {};
 
   const field: any = actionParam[checkKey];
-  const type: string = (actionParam as Record<string, string>).type;
+  const { type } = actionParam as Record<string, string>;
 
   if (Array.isArray(field)) {
     query = { [checkKey]: { $in: field } };
@@ -53,7 +53,7 @@ export const checkEntity = async (
     query = { type, [checkKey]: field };
   }
 
-  const result = await model.find(query);
+  const result = await modelDoc.find(query);
 
   if (Array.isArray(result) && result.length) {
     return false;
@@ -62,7 +62,7 @@ export const checkEntity = async (
   return true;
 };
 
-export const getLoggerTransports = (level: string | Array<string>): Array<object> => {
+export const getLoggerTransports = (level: string | Array<string>): Array<Record<string, any>> => {
   if (Array.isArray(level)) {
     return level.map(
       (value) => new winston.transports.File({ filename: path.join('logs', `${value}.log`), level: value }),
@@ -71,9 +71,8 @@ export const getLoggerTransports = (level: string | Array<string>): Array<object
 
   if (level === 'info') {
     return [new winston.transports.File({ filename: path.join('logs', 'info.log'), level: 'info' })];
-  } else {
-    return [new winston.transports.File({ filename: path.join('logs', 'error.log'), level: 'error' })];
   }
+  return [new winston.transports.File({ filename: path.join('logs', 'error.log'), level: 'error' })];
 };
 
 export const getModelByName = (name: string, schemaType: string): Model<Document> | null => {
@@ -86,19 +85,17 @@ export const getModelByName = (name: string, schemaType: string): Model<Document
   return null;
 };
 
-export const responseTime = (startDate: Date): number => {
-  return +new Date() - +startDate;
-};
+export const responseTime = (startDate: Date): number => +new Date() - +startDate;
 
 export const initControllers = (
   controllers: Array<typeof CONTROLLERS_REGISTER['']>,
-  getApp: Function,
-  getRest: Function,
+  getApp: any,
+  getRest: any,
   wsWorkerManager: WsWorker,
 ) => {
   controllers.forEach((Controller) => {
     // This is our instantiated class
-    const instance: object = new Controller();
+    const instance: Record<string, any> = new Controller();
     const prefix = Reflect.getMetadata('prefix', Controller);
     // Our `routes` array containing all our routes for this controller
     const routes: Array<RouteDefinition> = Reflect.getMetadata('routes', Controller);
@@ -109,7 +106,7 @@ export const initControllers = (
       const isFile = route.file;
       const isPrivate = route.private;
 
-      const middlewares: Record<string, object> = {};
+      const middlewares: Record<string, Record<string, any>> = {};
 
       if (isPrivate) {
         middlewares.private = passport.authenticate('jwt', { session: false });
@@ -123,7 +120,7 @@ export const initControllers = (
         middlewares.ws = wsWorkerManager;
       }
 
-      const compose: Readonly<Array<object | null>> = Object.keys(middlewares)
+      const compose: Readonly<Array<Record<string, any> | null>> = Object.keys(middlewares)
         .map((key: string) => {
           if (middlewares[key]) {
             return middlewares[key];
@@ -138,7 +135,7 @@ export const initControllers = (
         ...compose,
         (req: Request, res: Response, next: NextFunction) => {
           const { methodName } = route;
-          (instance as Record<string, Function>)[methodName](
+          (instance as Record<string, any>)[methodName](
             req,
             res,
             next,
@@ -153,22 +150,20 @@ export const initControllers = (
 
 export const getResponseJson = (
   actionString: string,
-  response: ResponseJson<object | null | number>,
+  response: ResponseJson<Record<string, any> | null | number>,
   start: Date,
-  actions: Array<string | void | object> | null = null,
-): object => {
-  return {
-    action: actionString,
-    response,
-    uptime: process.uptime(),
-    responseTime: responseTime(start),
-    actions,
-  };
-};
+  actions: Array<string | void | Record<string, any>> | null = null,
+): Record<string, any> => ({
+  action: actionString,
+  response,
+  uptime: process.uptime(),
+  responseTime: responseTime(start),
+  actions,
+});
 
 export const parsePublicData = (
   data: ParserResult,
-  mode: string = 'default',
+  mode = 'default',
   rules = '',
   queryString?: ParsedUrlQuery,
 ): Array<Meta> | Meta => {
@@ -186,14 +181,15 @@ export const parsePublicData = (
     queryString && !_.isEmpty(queryString) ? Object.keys(queryString as ParsedUrlQuery) : null;
 
   if (mode === 'access' || mode === 'accessGroups') {
-    const dataArray: Array<object> = result && Array.isArray(result) ? result : (data as Array<object>);
+    const dataArray: Array<Record<string, any>> =
+      result && Array.isArray(result) ? result : (data as Array<Record<string, any>>);
 
     const isGroupMode: boolean = mode.includes('Groups');
 
     const newDataArray = dataArray
-      .map((it: object | null) => {
+      .map((it: Record<string, any> | null) => {
         if (!it) return null;
-        const { _doc: item = {} } = it as Record<string, object>;
+        const { _doc: item = {} } = it as Record<string, Record<string, any>>;
 
         if (isGroupMode) {
           const { [mode]: modeArray = [] } = item as Record<string, Array<string>>;
@@ -212,13 +208,17 @@ export const parsePublicData = (
     return result ? { ...data, result: newDataArray } : newDataArray;
   }
 
-  const defaultDataArray: Array<object> = result && Array.isArray(result) ? result : (data as Array<object>);
+  const defaultDataArray: Array<Record<string, any>> =
+    result && Array.isArray(result) ? result : (data as Array<Record<string, any>>);
 
   const newDefaultDataArray = (defaultDataArray as Array<docResponse>)
     .map((it: docResponse) => {
-      const { _doc: item = {} } = it as Record<string, object>;
+      const { _doc: item = {} } = it as Record<string, Record<string, any>>;
 
-      const itemValid = Object.keys(item).reduce((obj: ResponseDocument, key: string): object => {
+      const itemValid = Object.keys(item).reduce((obj: ResponseDocument, key: string): Record<
+        string,
+        any
+      > => {
         const addditionalRule: boolean = rules === ENTITY.USERS ? !key.includes('At') : true;
         const isInclude =
           key === '_id' || !queryStringKeys || queryStringKeys.some((queryKey) => queryKey === key);
@@ -288,19 +288,19 @@ export const getFilterType = (type: string) => {
     ], '123'(optional));
    */
 export const parseFilterFields = (
-  filterFields: Array<object> = [],
+  filterFields: Array<Record<string, any>> = [],
   id: string | ObjectID = '',
-): Array<object> => {
+): Array<Record<string, any>> => {
   if (!filterFields || (Array.isArray(filterFields) && !filterFields.length)) {
     return [{}];
   }
 
-  return filterFields.reduce((acc: Array<object>, filter: any) => {
+  return filterFields.reduce((acc: Array<Record<string, any>>, filter: any) => {
     if (!(filter && typeof filter === 'object')) {
       return acc;
     }
 
-    const parsedFilterItem = Object.keys(filter).reduce((accFilter: object, key: string) => {
+    const parsedFilterItem = Object.keys(filter).reduce((accFilter: Record<string, any>, key: string) => {
       const typeFilter: any = getFilterType(filter[key]);
 
       if (!typeFilter) {
@@ -326,15 +326,15 @@ export const parseFilterFields = (
 
 /**
  *
- * @param actionParam contains filteredInfo: object, arrayKeys: string[]
+ * @param actionParam contains filteredInfo: Record<string, any>, arrayKeys: string[]
  * @param filterId use filter with id
  * @param filterFields require: filterId. default: filter by editor or uidCreater key
  */
 export const getFilterQuery = (
   actionParam: ActionParams,
   filterId: string | ObjectID = '',
-  filterFields: Array<object> = [{}],
-): Record<string, Array<object>> => {
+  filterFields: Array<Record<string, any>> = [{}],
+): Record<string, Array<Record<string, any>>> => {
   const { saveData: { filteredInfo = {}, arrayKeys = [] } = {} } = actionParam as Record<string, any>;
 
   const filteredKeys: Array<string> = Object.keys(filteredInfo);
@@ -349,7 +349,7 @@ export const getFilterQuery = (
     };
   }
 
-  const filter: Record<string, Array<object>> = { $or: [] };
+  const filter: Record<string, Array<Record<string, any>>> = { $or: [] };
 
   filteredKeys.forEach((key: string) => {
     const parsedPatterns: string | Array<string> =
@@ -377,13 +377,11 @@ export const getFilterQuery = (
     });
   }
 
-  return !filter['$or'].length ? { $or: [{}] } : filter;
+  return !filter.$or.length ? { $or: [{}] } : filter;
 };
 
 /** @deprecated 01.06.2020 should use mongoose isValidObjectId */
-export const isValidObjectId = (id: string): boolean => {
-  return !!id && typeof id === 'string' && id.length <= 24;
-};
+export const isValidObjectId = (id: string): boolean => !!id && typeof id === 'string' && id.length <= 24;
 
 export const getVersion = (): string => {
   const { API_VERSION = '' } = process.env;
@@ -408,9 +406,9 @@ export const signAvailableActions = (req: RequestWithParams, availableActions: s
         return;
       case ACTIONS_ACCESS.READ_VIEW:
         req.shouldBeView = true;
-        return;
+        break;
       default:
-        return;
+        break;
     }
   });
 };

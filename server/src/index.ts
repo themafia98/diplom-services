@@ -3,7 +3,7 @@ import 'reflect-metadata';
 import fs from 'fs';
 import os, { CpuInfo } from 'os';
 import ProcessRouter from './Models/Process/ProcessRouter';
-import Instanse from './Utils/instanse';
+import instanse from './Utils/instanse';
 import { getVersion, isProd } from './Utils/utils.global';
 import startApplication from './start';
 import { loggerInfo } from './Utils/Logger/Logger';
@@ -18,7 +18,7 @@ if (!getVersion()) {
 
 const cpus: CpuInfo[] = os.cpus();
 const workers: Array<Worker> = [];
-const workersRouter = new ProcessRouter(workers, Instanse.ws);
+const workersRouter = new ProcessRouter(workers, instanse.ws);
 
 if (cluster.isMaster) {
   cpus.forEach(() => {

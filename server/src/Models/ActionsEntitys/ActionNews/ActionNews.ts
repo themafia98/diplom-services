@@ -10,6 +10,7 @@ import { ENTITY } from '../../Database/Schema/Schema.constant';
 
 class ActionNews implements Action {
   private entityParser: Parser;
+
   private entity: ActionEntity;
 
   constructor(entityParser: Parser, entity: ActionEntity) {
@@ -45,7 +46,7 @@ class ActionNews implements Action {
   }
 
   private createNews(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
-    const body: object = (actionParam as Record<string, object>) || {};
+    const body: Record<string, any> = (actionParam as Record<string, Record<string, any>>) || {};
     return this.getEntityParser().createEntity(model, body);
   }
 

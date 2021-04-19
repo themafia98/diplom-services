@@ -1,5 +1,4 @@
 import generator from 'generate-password';
-import _ from 'lodash';
 import { Model, Document, Types, isValidObjectId } from 'mongoose';
 import { ActionParams, Action, User, QueryParams, Parser } from '../../../Utils/Interfaces/Interfaces.global';
 import { ParserData } from '../../../Utils/Types/types.global';
@@ -11,6 +10,7 @@ import { ACTION_TYPE } from './ActionUsers.constant';
 
 class ActionUsers implements Action {
   private entityParser: Parser;
+
   private entity: ActionEntity;
 
   constructor(entityParser: Parser, entity: ActionEntity) {
@@ -50,12 +50,13 @@ class ActionUsers implements Action {
       return null;
     }
 
-    return await tokenModel.create({ userId } as object);
+    const resultVerify = await tokenModel.create({ userId } as Record<string, any>);
+    return resultVerify;
   }
 
   private async recovoryPassword(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
-    const recovoryToken: string = (actionParam as Record<string, string>).recovoryToken;
-    const to: string = (actionParam as Record<string, string>).to;
+    const { recovoryToken } = actionParam as Record<string, string>;
+    const { to } = actionParam as Record<string, string>;
 
     const tokenModel = getModelByName(ENTITY.RECOVERY_TOKEN, ENTITY.RECOVERY_TOKEN);
 
@@ -135,6 +136,7 @@ class ActionUsers implements Action {
     }
 
     const { _id: id } = (result as Record<string, string>) || {};
+    // eslint-disable-next-line no-underscore-dangle
     const _id = Types.ObjectId(id);
     const password: string = newPassword;
     const passwordHash: string | null = await (result as User).changePassword(password);
@@ -158,6 +160,7 @@ class ActionUsers implements Action {
       return null;
     }
 
+    // eslint-disable-next-line no-underscore-dangle
     const _id = Types.ObjectId(uid as string);
     if (!_id) {
       console.error('Invalid user id');
@@ -194,10 +197,11 @@ class ActionUsers implements Action {
 
     const updateProps: Record<string, string> = { lang };
 
-    return await this.getEntityParser().updateEntity(model, {
+    const resultUpdateEntity = await this.getEntityParser().updateEntity(model, {
       _id: Types.ObjectId(uid as string),
       updateProps,
     });
+    return resultUpdateEntity;
   }
 
   private async updateCommonChanges(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
@@ -222,6 +226,7 @@ class ActionUsers implements Action {
     }
 
     const { _id: id } = (result as Record<string, string>) || {};
+    // eslint-disable-next-line no-underscore-dangle
     const _id = Types.ObjectId(id);
     const email: string | null = newEmail || null;
     const phone: string | null = newPhone || null;
@@ -242,6 +247,7 @@ class ActionUsers implements Action {
     try {
       const { queryParams = {}, updateItem: updateProps = '' } = actionParam;
       const id: string = (queryParams as Record<string, string>).uid;
+      // eslint-disable-next-line no-underscore-dangle
       const _id = Types.ObjectId(id);
       const query: ActionParams = { _id, updateProps };
 
@@ -256,6 +262,7 @@ class ActionUsers implements Action {
     }
   }
 
+  // eslint-disable-next-line no-unused-vars
   private async updateMany(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     /** Not supported now */
     return null;

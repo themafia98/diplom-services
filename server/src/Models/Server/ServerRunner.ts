@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import express from 'express';
 import rateLimit from 'express-rate-limit';
 import session from 'express-session';
@@ -7,7 +8,7 @@ import passport from 'passport';
 import helmet from 'helmet';
 import chalk from 'chalk';
 import { Route } from '../../Utils/Interfaces/Interfaces.global';
-import RouterInstance from '../Router';
+import { Router } from '../Router/RouterInstance';
 import { Server as HttpServer } from 'http';
 import { Mail } from '../../Utils/Interfaces/Interfaces.global';
 import RestEntitiy from './RestEntity';
@@ -15,10 +16,10 @@ import Chat from '../Chat';
 import { initControllers } from '../../Utils/utils.global';
 import Mailer from '../Mail';
 
-import DropboxStorage from '../../Services/Dropbox.service';
+import { DropboxManager } from '../../Services/Dropbox.service';
 
 import useLimitRate from '../../config/limiter';
-import Instanse from '../../Utils/instanse';
+import instanse from '../../Utils/instanse';
 import { handleError, useJWT, useTimer, useAuth } from '../../Utils/middlewares';
 import ProcessRouter from '../Process/ProcessRouter';
 import {
@@ -72,7 +73,7 @@ class ServerRunner extends RestEntitiy {
     this.getApp().use(passport.session());
     this.getApp().use(handleError);
 
-    const dropbox = new DropboxStorage.DropboxManager();
+    const dropbox = new DropboxManager();
     const mailer: Readonly<Mail> = new Mailer(this.smtp, {
       from: process.env.TOKEN_YANDEX_USER,
     });
@@ -85,9 +86,9 @@ class ServerRunner extends RestEntitiy {
 
     this.getApp().locals.dropbox = dropbox;
     this.getApp().locals.mailer = mailer;
-    useJWT(Instanse.dbm);
+    useJWT(instanse.dbm);
 
-    const instanceRouter: Route = RouterInstance.Router.instance(this.getApp());
+    const instanceRouter: Route = Router.instance(this.getApp());
 
     const server: HttpServer = this.getApp().listen(this.getPort(), (): void => {
       console.log(`${chalk.yellow(`Worker ${process.pid}`)} ${chalk.green('started')}`);
@@ -107,16 +108,16 @@ class ServerRunner extends RestEntitiy {
     this.getRest().use(useLimitRate());
     this.getRest().use(DEMO_ROUTE_CREATE_TICKET, regTicketLimitter);
 
-    Instanse.ws.startSocketConnection(new socketio.Server(server));
-    new Chat(Instanse.ws).run();
+    instanse.ws.startSocketConnection(new socketio.Server(server));
+    new Chat(instanse.ws).run();
 
     initControllers(
       Object.values(CONTROLLERS_MAP).map((controllerKey) => CONTROLLERS_REGISTER[controllerKey]),
       this.getApp.bind(this),
       this.getRest.bind(this),
-      Instanse.ws,
+      instanse.ws,
     );
-    ProcessRouter.errorEventsRegister(server, Instanse.dbm);
+    ProcessRouter.errorEventsRegister(server, instanse.dbm);
   }
 }
 

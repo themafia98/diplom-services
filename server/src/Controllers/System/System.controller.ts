@@ -4,12 +4,10 @@ import querystring from 'querystring';
 import { promisify } from 'util';
 import path from 'path';
 import fs from 'fs';
-import _ from 'lodash';
 import {
   App,
   Params,
   FileApi,
-  BodyLogin,
   User,
   JsonConfig,
   RequestWithParams,
@@ -32,7 +30,9 @@ const readFile = promisify(fs.readFile);
 @Controller('/system')
 class SystemController {
   static version = getVersion();
+
   @Get({ path: SYSTEM_ROUTE[SystemController.version].CORE_APP_CONFIG, private: false })
+  // eslint-disable-next-line consistent-return
   protected async loadSystemConfig(req: Request, res: Response): ResRequest {
     const { uid = '' } = req as Record<string, any>;
 
@@ -56,7 +56,7 @@ class SystemController {
 
         const accessUser: AccessRole = new AccessRole(user as User, parsedJsonPublicConfig);
 
-        const jsonPrivateConfig: Record<string, object[]> = JSON.parse(configPublic as any);
+        const jsonPrivateConfig: Record<string, Record<string, any>[]> = JSON.parse(configPublic as any);
 
         const parsedJsonPrivateConfig = {
           ...jsonPrivateConfig,
@@ -91,7 +91,7 @@ class SystemController {
       actionType: 'get_all',
     });
 
-    const responseExec: Function = await actionUserList.start({}, '', queryString);
+    const responseExec = await actionUserList.start({}, '', queryString);
     return responseExec(req, res, params, true);
   }
 
@@ -108,7 +108,7 @@ class SystemController {
       store: getFileStorage({ dropbox } as Record<string, FileApi>) as FileApi,
     });
 
-    const responseExec: Function = await saveFileAction.start({ files, moduleName });
+    const responseExec = await saveFileAction.start({ files, moduleName });
     return responseExec(req, res, params);
   }
 
@@ -130,7 +130,7 @@ class SystemController {
       moduleName,
     };
 
-    const responseExec: Function = await downloadAction.start(body);
+    const responseExec = await downloadAction.start(body);
     return responseExec(req, res, params);
   }
 
@@ -147,7 +147,7 @@ class SystemController {
       store: getFileStorage({ dropbox } as Record<string, FileApi>) as FileApi,
     });
 
-    const responseExec: Function = await downloadAction.start({
+    const responseExec = await downloadAction.start({
       entityId,
       moduleName,
       filename,
@@ -172,7 +172,7 @@ class SystemController {
       body: { ...req.body },
       store: `/${moduleName}`,
     };
-    const responseExec: Function = await deleteFileAction.start(body);
+    const responseExec = await deleteFileAction.start(body);
     return responseExec(req, res, params);
   }
 
@@ -189,7 +189,7 @@ class SystemController {
       body: paramsRequest,
     });
 
-    const responseExec: Function = await updateSingleAction.start(paramsRequest);
+    const responseExec = await updateSingleAction.start(paramsRequest);
     return responseExec(req, res, params);
   }
 
@@ -199,7 +199,7 @@ class SystemController {
     const { params: paramsRequest = {} } = req.body;
 
     const actionParams =
-      typeof paramsRequest == 'object' && paramsRequest
+      typeof paramsRequest === 'object' && paramsRequest
         ? {
             moduleName,
             ...paramsRequest,
@@ -214,7 +214,7 @@ class SystemController {
       body: actionParams,
     });
 
-    const responseExec: Function = await updateManyAction.start(actionParams);
+    const responseExec = await updateManyAction.start(actionParams);
     return responseExec(req, res, params, true);
   }
 
@@ -239,7 +239,7 @@ class SystemController {
       actionType: actionType as string,
     });
 
-    const responseExec: Function = await createNotificationAction.start({
+    const responseExec = await createNotificationAction.start({
       ...options,
       item,
       type: notificationType,
@@ -252,7 +252,7 @@ class SystemController {
     const { module: moduleName = '' } = req.params;
 
     const params: Params = createParams('sync', 'done', 'sync_all');
-    const body: BodyLogin = req.body;
+    const { body } = req;
 
     const syncAction: Runner = new ActionRunner({
       actionPath: moduleName,
@@ -260,7 +260,7 @@ class SystemController {
       body,
     });
 
-    const responseExec: Function = await syncAction.start(body);
+    const responseExec = await syncAction.start(body);
     return responseExec(req, res, params);
   }
 
@@ -270,7 +270,6 @@ class SystemController {
 
     if (!activePage) {
       return new Responser(res, req, {} as Params, null, 404, []).sendMessage();
-      return;
     }
 
     if (!(<RequestWithParams>req).shouldBeView) {

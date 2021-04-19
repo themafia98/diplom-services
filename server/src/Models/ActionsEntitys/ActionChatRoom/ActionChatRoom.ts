@@ -9,6 +9,7 @@ import { ACTION_TYPE } from './ActionChatRoom.constant';
 
 class ActionChatRoom implements Action {
   private entityParser: Parser;
+
   private entity: ActionEntity;
 
   constructor(entityParser: Parser, entity: ActionEntity) {
@@ -23,6 +24,7 @@ class ActionChatRoom implements Action {
   public getEntity(): ActionEntity {
     return this.entity;
   }
+
   private async getEntrypointData(actionParam: ActionParams, model: Model<Document>): Promise<ParserData> {
     const { uid: uidDirty = '', socket = {} } = actionParam;
     const uid: Types.ObjectId | null = isValidObjectId(uidDirty as string)
@@ -93,10 +95,10 @@ class ActionChatRoom implements Action {
 
     const room = {
       type: 'single',
-      moduleName: moduleName,
-      tokenRoom: tokenRoom,
+      moduleName,
+      tokenRoom,
       membersIds: [authorId, interlocutorId],
-      groupName: groupName ? groupName : null,
+      groupName: groupName || null,
     };
 
     const actionData: ParserData = await this.getEntityParser().createEntity(model, room);

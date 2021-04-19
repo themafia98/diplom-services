@@ -2,7 +2,6 @@ import { ACTIONS_ENTITYS_REGISTER } from './ActionRunner.constant';
 import { runSyncClient, startDownloadPipe } from './ActionRunner.utils';
 import { ActionParams, Runner, ActionProps, Params } from '../../Utils/Interfaces/Interfaces.global';
 import ActionParser from '../ActionParser/ActionParser';
-import _ from 'lodash';
 import ActionEntity from '../ActionEntity/ActionEntity';
 import { parsePublicData } from '../../Utils/utils.global';
 import { ParserData, ResRequest, Meta } from '../../Utils/Types/types.global';
@@ -13,6 +12,7 @@ import { ParsedUrlQuery } from 'querystring';
 
 export class ActionRunner implements Runner {
   private action: ActionEntity;
+
   constructor(props: ActionProps) {
     this.action = new ActionEntity(props);
   }
@@ -25,11 +25,13 @@ export class ActionRunner implements Runner {
     const parser = new ActionParser();
 
     if (this.getAction().getActionType() === 'sync') {
-      return await runSyncClient(parser, actionParam);
+      const syncResult = await runSyncClient(parser, actionParam);
+      return syncResult;
     }
 
     let ActionConstructor = null;
 
+    // eslint-disable-next-line no-restricted-syntax
     for (const actionKey of Object.keys(ACTIONS_ENTITYS_REGISTER)) {
       const entityKey = this.getAction().getActionPath();
 
@@ -84,7 +86,8 @@ export class ActionRunner implements Runner {
         console.error(err);
         params.status = 'FAIL';
         params.done = false;
-        return await new Responser(res, req, params, err, 503, []).sendMessage();
+        const responserResult = await new Responser(res, req, params, err, 503, []).sendMessage();
+        return responserResult;
       }
     };
   }

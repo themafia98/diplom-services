@@ -7,6 +7,7 @@ import ActionEntity from '../../ActionEntity/ActionEntity';
 
 class ActionGlobal implements Action {
   private entityParser: Parser;
+
   private entity: ActionEntity;
 
   constructor(entityParser: Parser, entity: ActionEntity) {
@@ -23,20 +24,21 @@ class ActionGlobal implements Action {
   }
 
   private async loadFiles(actionParam: ActionParams): Promise<ParserData> {
-    const { body = {} } = actionParam as Record<string, object>;
+    const { body = {} } = actionParam as Record<string, Record<string, any>>;
 
     const { queryParams = {} } = body as Record<string, QueryParams>;
     const { entityId } = queryParams;
 
-    const moduleName: string = (actionParam as Record<string, string>).moduleName;
+    const { moduleName } = actionParam as Record<string, string>;
 
-    const pathFile: string = `/${moduleName}/${entityId}/`;
+    const pathFile = `/${moduleName}/${entityId}/`;
 
-    return await this.getEntity().getStore().getFilesByPath(pathFile);
+    const filesResult = await this.getEntity().getStore().getFilesByPath(pathFile);
+    return filesResult;
   }
 
   private async deleteFile(actionParam: ActionParams): Promise<ParserData> {
-    const { body = {}, store = '' } = actionParam as Record<string, object | string>;
+    const { body = {}, store = '' } = actionParam as Record<string, Record<string, any> | string>;
 
     const { queryParams = {} } = body as Record<string, QueryParams>;
 
@@ -49,27 +51,29 @@ class ActionGlobal implements Action {
     const deleteFile: files.DeleteResult | null = await this.getEntity().getStore().deleteFile(pathFile);
 
     if (!deleteFile) return null;
-    else return deleteFile;
+    return deleteFile;
   }
 
   public async download(actionParam: ActionParams): Promise<ParserData> {
-    const entityId: string = (actionParam as Record<string, string>).entityId;
-    const filename: string = (actionParam as Record<string, string>).filename;
-    const moduleName: string = (actionParam as Record<string, string>).moduleName;
+    const { entityId } = actionParam as Record<string, string>;
+    const { filename } = actionParam as Record<string, string>;
+    const { moduleName } = actionParam as Record<string, string>;
 
-    const pathFile: string = `/${moduleName}/${entityId}/${filename}`;
+    const pathFile = `/${moduleName}/${entityId}/${filename}`;
 
-    return await this.getEntity().getStore().downloadFile(pathFile);
+    const downloadResult = await this.getEntity().getStore().downloadFile(pathFile);
+    return downloadResult;
   }
 
   private async saveFile(actionParam: ActionParams): Promise<ParserData> {
-    const { files = [], moduleName = '' } = actionParam as Record<string, Array<any>>;
-    let responseSave: Array<object> = [];
-    for await (let file of files) {
+    const { files: filesList = [], moduleName = '' } = actionParam as Record<string, Array<any>>;
+    const responseSave: Array<Record<string, any>> = [];
+    // eslint-disable-next-line no-restricted-syntax
+    for await (const file of filesList) {
       const [filename, entityId] = file.fieldname.split('_$FT$P$_');
       const ext = path.extname(file.originalname);
 
-      const pathFile: string = `/${moduleName}/${entityId}/${file.originalname}`;
+      const pathFile = `/${moduleName}/${entityId}/${file.originalname}`;
       const result = await this.getEntity().getStore().saveFile({ path: pathFile, contents: file.buffer });
 
       if (result) {
