@@ -97,7 +97,7 @@ const ContactModule = memo(
       };
 
       return entityRender(
-        activeTabs.filter((tab) => tab === entitysList),
+        activeTabs.filter((tab) => entitysList.some((entity) => tab.includes(entity))),
         subTabProps,
         config,
       );

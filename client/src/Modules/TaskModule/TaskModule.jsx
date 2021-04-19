@@ -318,7 +318,11 @@ const TaskModule = memo((props) => {
       type: oneOfType(types.$sub_entrypoint_module, types.$entity_entrypoint),
     };
 
-    return entityRender(activeTabs, subTabProps, config);
+    return entityRender(
+      activeTabs.filter((tab) => entitysList.some((entity) => tab.includes(entity))),
+      subTabProps,
+      config,
+    );
   }, [
     activeTabs,
     checkBackground,
