@@ -90,8 +90,8 @@ class ActionParser implements Parser {
       const { multiple = false, mode = DATABASE_ACTION.PULL, findBy, queryParams = {} } = query;
       const { uid = '', updateField = '', ids = [] } = queryParams as DeleteEntitiyParams;
 
-      let actionData: Document | null = null;
-      let doc: Document | null = null;
+      let actionData: any = null;
+      let doc: any = null;
 
       const runDelete: Function = async (props: ActionParams, multiple: boolean = false): Promise<object> => {
         if (!multiple) {
