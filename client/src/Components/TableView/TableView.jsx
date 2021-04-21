@@ -69,13 +69,13 @@ const TableView = ({
           <Output key={`${id}departament`} type="table" className="departament">
             {it.position}
           </Output>
-          {it.email ? (
+          {!!it.email && (
             <td>
               <Tooltip title={it.email}>
                 {!it?.isHideEmail ? <Icon onClick={onMail.bind(this, it.email)} type="mail" /> : null}
               </Tooltip>
             </td>
-          ) : null}
+          )}
         </tr>
       );
     });
