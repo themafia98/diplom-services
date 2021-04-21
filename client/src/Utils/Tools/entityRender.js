@@ -5,7 +5,11 @@ import types from 'types.modules';
 import regExpRegister from './regexpStorage';
 import NotFound from 'Modules/NotFound/NotFound';
 
-const entityRender = (entitysList, subTabProps, config) => {
+const entityRender = (activeTabs, subTabProps, config, moduleEntitysList = null) => {
+  const entitysList = Array.isArray(moduleEntitysList)
+    ? activeTabs.filter((tab) => entitysList.some((entityName) => tab.includes(entityName)))
+    : activeTabs;
+
   if (!entitysList || !config) {
     return <NotFound message="Invalid render page" error={new Error('entitysList || config not found')} />;
   }

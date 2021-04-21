@@ -38,7 +38,7 @@ const CustomersModule = memo(
         type: types.$entrypoint_module,
       };
 
-      return entityRender(entitysList, subTabProps, config);
+      return entityRender(entitysList, subTabProps, config, entitysList);
     }, [checkBackground, entitysList, path, routeData, router, statusApp, type, visibilityPortal, webSocket]);
 
     return <div className="customersModule">{tabsCustomers}</div>;
