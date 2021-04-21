@@ -96,11 +96,7 @@ const ContactModule = memo(
         type: oneOfType(types.$sub_entrypoint_module, types.$entity_entrypoint),
       };
 
-      return entityRender(
-        activeTabs.filter((tab) => entitysList.some((entity) => tab.includes(entity))),
-        subTabProps,
-        config,
-      );
+      return entityRender(activeTabs, subTabProps, config, entitysList);
     }, [
       onLoadingData,
       activeTabs,
