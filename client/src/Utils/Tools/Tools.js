@@ -156,7 +156,7 @@ const getComponentByKey = (key, type = types.$entrypoint_module) => {
     const componentKey = Object.keys(components).find((componentKey) => key.includes(componentKey));
     if (componentKey) return components[componentKey];
 
-    throw new Error(`Not found page ${key}, type: ${type}`);
+    throw new Error(`Not found page ${key}, type: ${type.toString()}`);
   } catch (error) {
     console.error(error);
     return NotFound;
