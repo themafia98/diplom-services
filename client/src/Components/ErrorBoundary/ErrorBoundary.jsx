@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import * as Sentry from '@sentry/browser';
 
 import ErrorPage from './ErrorPage';
@@ -14,7 +14,7 @@ class ErrorBoundary extends Component {
     return { hasError: true, error: error };
   };
 
-  update = (event) => {
+  update = () => {
     this.setState({
       hasError: false,
       eventId: null,
@@ -41,7 +41,7 @@ class ErrorBoundary extends Component {
       return <ErrorPage update={this.update} logger={this.logger} error={this.state.error} />;
     }
 
-    return children;
+    return <Fragment key={`${hasError}`}>{children}</Fragment>;
   }
 }
 export default ErrorBoundary;

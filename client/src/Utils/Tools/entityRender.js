@@ -7,7 +7,7 @@ import NotFound from 'Modules/NotFound/NotFound';
 
 const entityRender = (activeTabs, subTabProps, config, moduleEntitysList = null) => {
   const entitysList = Array.isArray(moduleEntitysList)
-    ? activeTabs.filter((tab) => entitysList.some((entityName) => tab.includes(entityName)))
+    ? activeTabs.filter((tab) => moduleEntitysList.some((entityName) => tab.includes(entityName)))
     : activeTabs;
 
   if (!entitysList || !config) {
