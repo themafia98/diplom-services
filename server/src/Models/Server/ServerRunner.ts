@@ -1,8 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import express from 'express';
 import rateLimit from 'express-rate-limit';
-import session from 'express-session';
-import MongoStore from 'connect-mongo';
 import socketio from 'socket.io';
 import passport from 'passport';
 import helmet from 'helmet';
@@ -30,16 +28,20 @@ import {
 } from './Server.constant';
 import authConfig from '../../config/auth.config';
 
-class ServerRunner extends RestEntitiy {
-  SessionStore = MongoStore(session);
+const MongoStore = require('connect-mongo');
 
+class ServerRunner extends RestEntitiy {
   private sessionConfig = {
     secret: authConfig.SECRET,
     saveUninitialized: true,
     resave: true,
-    store: new this.SessionStore({
-      url: process.env.MONGODB_URI as string,
-      collection: 'sessions',
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGODB_URI as string,
+      ttl: 14 * 24 * 60 * 60,
+      autoRemove: 'native',
+      mongoOptions: {
+        collectionName: 'sessions',
+      },
     }),
   };
 

@@ -32,6 +32,7 @@ class ActionNews implements Action {
 
     const params: ActionParams =
       _.isEmpty(queryParams) || !queryParams.keys ? {} : (queryParams as ActionParams);
+    // @ts-ignore
     const parsedKeys: Array<ObjectId> = (<Array<string>>keys).map((id) => Types.ObjectId(id));
     const query = {
       where: '_id',

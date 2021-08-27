@@ -17,7 +17,7 @@ import {
 } from './Interfaces/Interfaces.global';
 import { v4 as uuid } from 'uuid';
 import { docResponse, ParserResult, Meta } from './Types/types.global';
-import { ObjectID } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { ParsedUrlQuery } from 'querystring';
 import { CONTROLLERS_REGISTER } from '../Models/Server/Server.constant';
 import passport from 'passport';
@@ -289,7 +289,7 @@ export const getFilterType = (type: string) => {
    */
 export const parseFilterFields = (
   filterFields: Array<Record<string, any>> = [],
-  id: string | ObjectID = '',
+  id: string | ObjectId = '',
 ): Array<Record<string, any>> => {
   if (!filterFields || (Array.isArray(filterFields) && !filterFields.length)) {
     return [{}];
@@ -332,7 +332,7 @@ export const parseFilterFields = (
  */
 export const getFilterQuery = (
   actionParam: ActionParams,
-  filterId: string | ObjectID = '',
+  filterId: string | ObjectId = '',
   filterFields: Array<Record<string, any>> = [{}],
 ): Record<string, Array<Record<string, any>>> => {
   const { saveData: { filteredInfo = {}, arrayKeys = [] } = {} } = actionParam as Record<string, any>;

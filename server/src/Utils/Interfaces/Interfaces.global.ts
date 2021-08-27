@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 import { Application, Router as RouteExpress, Request as RequestExpress, Response } from 'express';
 import { SendMailOptions, Transporter, SentMessageInfo } from 'nodemailer';
-import { files } from 'dropbox';
+import { DropboxResponse, files } from 'dropbox';
 import {
   transOptions,
   ParserData,
@@ -385,8 +385,9 @@ export interface WikiPage {
 export interface FileApi {
   getAllFiles(): Promise<files.ListFolderResult | null>;
   downloadFileByProps<Props>(fileProps: Props): Promise<files.FileMetadata | null>;
-  downloadFile(path: string): Promise<files.GetTemporaryLinkResult | null>;
-  saveFile<Props>(saveProps: Props): Promise<files.FileMetadata | null>;
+
+  downloadFile(path: string): Promise<DropboxResponse<files.GetTemporaryLinkResult>>;
+  saveFile<Props>(saveProps: Props): Promise<null>;
   getFilesByPath(path: string): Promise<files.ListFolderResult | null>;
   deleteFile(path: string): Promise<files.DeleteResult | null>;
 }

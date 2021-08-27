@@ -10,6 +10,7 @@ export default () => {
     loggerError(
       `Server shut down. PPID: ${process.ppid} || ${err}. Node: ${process.versions.node}. v8: ${process.versions.v8}`,
     );
+    console.error(err);
     console.error('Server shut down');
     process.exit(1);
   }

@@ -78,6 +78,7 @@ class ActionGlobal implements Action {
 
       if (result) {
         responseSave.push({
+          // @ts-ignore
           name: result.name,
           isSave: true,
         });

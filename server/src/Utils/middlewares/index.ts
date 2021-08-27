@@ -1,5 +1,6 @@
 import { Response, NextFunction, Request } from 'express';
 import passport from 'passport';
+// @ts-ignore
 import JwtStrategy, { ExtractJwt } from 'passport-jwt';
 import LocalStrategy from 'passport-local';
 import { AccessConfig, Dbms, RequestWithParams, User } from '../Interfaces/Interfaces.global';
@@ -33,6 +34,7 @@ export const useAuth = async (req: Request, res: Response, next: NextFunction): 
     uid = payload.sub;
   }
 
+  // @ts-ignore
   const user = await UserModel.findById(Types.ObjectId(uid));
   const { access } = (user as Record<string, any>) || {};
 

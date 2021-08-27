@@ -67,7 +67,9 @@ class ProcessRouter {
   public onExit(worker: Worker): void {
     if (!worker || (worker && !worker.process)) {
       console.error(worker);
-      throw new Error('worker not found for exit');
+      console.error('worker not found for exit');
+
+      return;
     }
 
     const { pid = '' } = worker.process;
@@ -92,6 +94,7 @@ class ProcessRouter {
   }
 
   public subscribe(worker: Worker): void {
+    console.log(worker);
     worker.on('exit', this.onExit.bind(this));
     worker.on('message', this.router.bind(this));
     worker.on('error', this.handleWorkerError);

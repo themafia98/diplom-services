@@ -1,4 +1,4 @@
-import { Schema, model, Model, Document, Types } from 'mongoose';
+import { Schema, model, Types } from 'mongoose';
 import { User, Task } from '../../../Utils/Interfaces/Interfaces.global';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
@@ -286,7 +286,7 @@ export const recoveryToken = new Schema({
   expire_at: { type: Date, default: Date.now, expires: 1600 },
 });
 
-export const UserModel: Model<Document> = model(ENTITY.USERS, userSchema);
+export const UserModel: any = model(ENTITY.USERS, userSchema);
 
 export const getSchemaByName = (name: string) => {
   switch (name) {

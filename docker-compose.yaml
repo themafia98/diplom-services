@@ -1,0 +1,38 @@
+version: "3.8"
+services:
+  database:
+    image: 'postgres:13.3-alpine'
+    container_name: management-database
+    volumes:
+      - management-data:/var/lib/postgresql/data
+    ports:
+      - 5433:5433
+    env_file:
+      - server/.env
+  backend:
+    build: ./server
+    container_name: management_backend
+    env_file:
+      - server/.env
+    ports:
+      - 3001:3001
+    depends_on:
+      - database
+    networks:
+      - app-network
+  frontend:
+    build: ./client
+    container_name: management-frontend
+    env_file:
+      - client/.env
+    ports:
+      - 3000:80
+    depends_on:
+      - database
+      - backend
+    networks:
+      - app-network
+volumes:
+  management-data:
+networks:
+  app-network:

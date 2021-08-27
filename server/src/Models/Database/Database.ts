@@ -17,13 +17,11 @@ export class ManagmentDatabase implements Dbms {
     mongoose.set('useCreateIndex', true);
     this.dbClient = db;
     this.connectionString = connectionString;
-
+    console.log('connectionString:', connectionString);
     mongoose.connect(
       connectionString,
       {
-        useNewUrlParser: true,
         useCreateIndex: true,
-        useUnifiedTopology: true,
         keepAlive: true,
       },
       (err) => {

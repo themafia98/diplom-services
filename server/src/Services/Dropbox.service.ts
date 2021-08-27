@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { DropboxAccess, FileApi } from '../Utils/Interfaces/Interfaces.global';
 import { Dropbox, files } from 'dropbox';
 import { FileMetadata, ListFolderResult } from '../Utils/Types/types.global';

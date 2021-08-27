@@ -14,7 +14,7 @@ import {
   parseFilterFields,
 } from '../../../Utils/utils.global';
 import _ from 'lodash';
-import { ObjectID } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { ACTION_TYPE } from './ActionTasks.constant';
 import ActionEntity from '../../ActionEntity/ActionEntity';
 import { ENTITY } from '../../Database/Schema/Schema.constant';
@@ -89,7 +89,8 @@ class ActionTasks implements Action {
     const { queryParams = null, limitList = 20, saveData = {}, filterCounter = '' } = actionParam;
 
     // eslint-disable-next-line no-underscore-dangle
-    const _id: ObjectID | string =
+    // @ts-ignore
+    const _id: ObjectId | string =
       filterCounter && isValidObjectId(filterCounter) ? Types.ObjectId(filterCounter as string) : '';
 
     const {
@@ -139,7 +140,8 @@ class ActionTasks implements Action {
   private async getTaskCount(model: Model<Document>, actionParam: ActionParams): Promise<ParserData> {
     const { filterCounter = '' } = actionParam as Record<string, null | string>;
     // eslint-disable-next-line no-underscore-dangle
-    const _id: ObjectID | string = isValidObjectId(filterCounter)
+    // @ts-ignore
+    const _id: ObjectId | string = isValidObjectId(filterCounter)
       ? Types.ObjectId(filterCounter as string)
       : '';
 
