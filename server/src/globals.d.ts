@@ -1,4 +1,3 @@
-declare module 'connect-mongo';
 declare module 'express-rate-limit';
 declare module 'uuid';
 declare module 'jsonwebtoken';

@@ -13,9 +13,8 @@ import RestEntitiy from './RestEntity';
 import Chat from '../Chat';
 import { initControllers } from '../../Utils/utils.global';
 import Mailer from '../Mail';
-
+import * as ConnectMongo from 'connect-mongo';
 import { DropboxManager } from '../../Services/Dropbox.service';
-
 import useLimitRate from '../../config/limiter';
 import instanse from '../../Utils/instanse';
 import { handleError, useJWT, useTimer, useAuth } from '../../Utils/middlewares';
@@ -28,20 +27,15 @@ import {
 } from './Server.constant';
 import authConfig from '../../config/auth.config';
 
-const MongoStore = require('connect-mongo');
-
 class ServerRunner extends RestEntitiy {
   private sessionConfig = {
     secret: authConfig.SECRET,
     saveUninitialized: true,
     resave: true,
-    store: MongoStore.create({
+    store: ConnectMongo.create({
       mongoUrl: process.env.MONGODB_URI as string,
       ttl: 14 * 24 * 60 * 60,
       autoRemove: 'native',
-      mongoOptions: {
-        collectionName: 'sessions',
-      },
     }),
   };
 
