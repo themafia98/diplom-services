@@ -13,7 +13,6 @@ import RestEntitiy from './RestEntity';
 import Chat from '../Chat';
 import { initControllers } from '../../Utils/utils.global';
 import Mailer from '../Mail';
-import * as ConnectMongo from 'connect-mongo';
 import { DropboxManager } from '../../Services/Dropbox.service';
 import useLimitRate from '../../config/limiter';
 import instanse from '../../Utils/instanse';
@@ -26,6 +25,8 @@ import {
   API_ROUTE,
 } from './Server.constant';
 import authConfig from '../../config/auth.config';
+
+const ConnectMongo = require('connect-mongo');
 
 class ServerRunner extends RestEntitiy {
   private sessionConfig = {
