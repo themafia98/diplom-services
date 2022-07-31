@@ -16,7 +16,7 @@
     "draft-js-import-html": "^1.4.1",
     "i18next": "^19.9.2",
     "i18next-browser-languagedetector": "^6.0.1",
-    "i18next-http-backend": "^1.1.1",
+    "i18next-http-backend": "^1.2.3",
     "idb": "^5.0.2",
     "immer": "^8.0.1",
     "lodash": "^4.17.20",
