@@ -52,7 +52,7 @@
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "dropbox": "^10.4.3",
-    "express": "^4.16.4",
+    "express": "^4.17.3",
     "express-rate-limit": "^5.3.0",
     "express-session": "^1.17.2",
     "forever": "^4.0.1",
