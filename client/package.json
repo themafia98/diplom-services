@@ -3,8 +3,8 @@
   "version": "0.5.0",
   "private": true,
   "dependencies": {
-    "@nivo/bar": "^0.65.0",
-    "@nivo/core": "^0.67.0",
+    "@nivo/bar": "^0.81.0",
+    "@nivo/core": "^0.81.0",
     "@reduxjs/toolkit": "^1.5.0",
     "@sentry/browser": "^5.27.4",
     "ajv": "^6.12.3",
