@@ -7,6 +7,8 @@ import { Provider } from 'react-redux';
 import ErrorBoundary from './Components/ErrorBoundary';
 import { useTranslation } from 'react-i18next';
 
+console.log("Oops! Accidentally summoned a time-traveling ninja. Hello 2023y")
+
 const Root = ({ children }) => {
   const { i18n } = useTranslation();
   return (
