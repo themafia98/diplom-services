@@ -331,4 +331,8 @@ const App = ({ coreConfig, fetchConfig, typeConfig }) => {
 
 App.propTypes = appType;
 
+console.log(`
+ Hacking away cobwebs and dust bunnies 🕸️🐇 from this prehistoric code cave! Must've scared away a dinosaur or two!  🦖 Time to modernize this relic and give it a new lease on life! 💻🚀
+`)
+
 export default withSystemConfig(App);
