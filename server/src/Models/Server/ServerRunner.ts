@@ -25,6 +25,7 @@ import {
   API_ROUTE,
 } from './Server.constant';
 import authConfig from '../../config/auth.config';
+import cors from "cors";
 
 const ConnectMongo = require('connect-mongo');
 
@@ -69,6 +70,10 @@ class ServerRunner extends RestEntitiy {
     this.getApp().use(passport.initialize());
     this.getApp().use(passport.session());
     this.getApp().use(handleError);
+    this.getApp().use(cors({
+      origin: 'http://localhost:3000',
+      optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+    }))
 
     const dropbox = new DropboxManager();
     const mailer: Readonly<Mail> = new Mailer(this.smtp, {
@@ -108,6 +113,7 @@ class ServerRunner extends RestEntitiy {
     instanse.ws.startSocketConnection(new socketio.Server(server));
     new Chat(instanse.ws).run();
 
+    console.log(CONTROLLERS_REGISTER)
     initControllers(
       Object.values(CONTROLLERS_MAP).map((controllerKey) => CONTROLLERS_REGISTER[controllerKey]),
       this.getApp.bind(this),

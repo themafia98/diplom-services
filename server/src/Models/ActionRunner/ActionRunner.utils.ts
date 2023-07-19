@@ -72,5 +72,5 @@ export const startDownloadPipe = (
   if (process.env.NODE_ENV === 'development') {
     console.log('trace memory:', process.memoryUsage());
   }
-  return request(link).pipe(res);
+  return request(link).pipe(res as any);
 };

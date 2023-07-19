@@ -64,7 +64,7 @@ export class ActionRunner implements Runner {
         if (this.getAction().getActionType() === 'download_files' && actionResult) {
           const file: files.GetTemporaryLinkResult = actionResult as files.GetTemporaryLinkResult;
 
-          return startDownloadPipe(res, file, actionParam as ActionParams);
+          return startDownloadPipe(res, file, actionParam as ActionParams) as any;
         }
 
         if (mode === 'exec') return actionResult as any;
@@ -86,7 +86,7 @@ export class ActionRunner implements Runner {
         console.error(err);
         params.status = 'FAIL';
         params.done = false;
-        const responserResult = await new Responser(res, req, params, err, 503, []).sendMessage();
+        const responserResult = await new Responser(res, req, params, err as Error, 503, []).sendMessage();
         return responserResult;
       }
     };

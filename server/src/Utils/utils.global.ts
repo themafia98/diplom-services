@@ -290,7 +290,7 @@ export const getFilterType = (type: string) => {
 export const parseFilterFields = (
   filterFields: Array<Record<string, any>> = [],
   id: string | ObjectId = '',
-): Array<Record<string, any>> => {
+): Record<string, any> => {
   if (!filterFields || (Array.isArray(filterFields) && !filterFields.length)) {
     return [{}];
   }

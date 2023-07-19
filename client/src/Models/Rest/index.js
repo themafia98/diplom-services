@@ -169,7 +169,7 @@ class Request {
       headers: {
         Authorization: token,
       },
-      withCredentials: true,
+      withCredentials: false,
     };
   }
 

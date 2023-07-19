@@ -11,10 +11,10 @@ class WebSocketWorker implements WsWorker {
   }
 
   public getWorkerId(): number {
-    return cluster.worker.id;
+    return cluster?.worker?.id || 0;
   }
 
-  public getWorker(id: number = cluster.worker.id): socketio.Server {
+  public getWorker(id: number = cluster?.worker?.id || 0): socketio.Server {
     return this.workers[id];
   }
 

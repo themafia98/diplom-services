@@ -54,7 +54,7 @@ export const newMessageEvent = (socket: Socket) => async (msgObj: ChatMessage) =
 
     throw new TypeError('Error save message');
   } catch (err) {
-    console.error(err.message);
+    console.error((err as Error).message);
   }
 };
 

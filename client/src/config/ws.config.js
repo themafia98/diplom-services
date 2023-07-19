@@ -1,5 +1,5 @@
 const ws = {
-  startUrl: '/',
+  startUrl: 'http://localhost:3001',
   socketIO: {
     path: '/socket.io',
     transports: ['websocket'],

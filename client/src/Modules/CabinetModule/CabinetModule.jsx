@@ -176,7 +176,7 @@ const CabinetModule = memo(({ path }) => {
     () => ({
       name: 'avatar',
       multiple: false,
-      withCredentials: true,
+      withCredentials: false,
       headers: rest ? rest.getAuthorizationHeader() : null,
       action: rest && uidUser ? `${rest.getApi()}/cabinet/${uidUser}/loadAvatar` : null,
     }),

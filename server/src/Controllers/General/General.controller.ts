@@ -60,6 +60,8 @@ class GeneralController {
   protected async login(req: Request, res: Response, next: NextFunction) {
     const { body } = req;
 
+    console.log(body)
+
     if (!body || (body && _.isEmpty(body))) {
       res.sendStatus(503);
     }

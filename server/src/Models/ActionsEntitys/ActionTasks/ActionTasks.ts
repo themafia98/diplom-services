@@ -121,7 +121,7 @@ class ActionTasks implements Action {
     const filter: Record<string, Array<Record<string, any>>> = getFilterQuery(
       actionParam,
       _id,
-      parseFilterFields([{ editor: 'regexp' }, { uidCreater: 'equal' }], _id),
+      parseFilterFields([{ editor: 'regexp' }, { uidCreater: 'equal' }], _id) as any,
     );
 
     const query = {
@@ -148,7 +148,7 @@ class ActionTasks implements Action {
     const filter: Record<string, Array<Record<string, any>>> = getFilterQuery(
       actionParam,
       _id,
-      parseFilterFields([{ editor: 'regexp' }, { uidCreater: 'equal' }], filterCounter as string),
+      parseFilterFields([{ editor: 'regexp' }, { uidCreater: 'equal' }], filterCounter as string)  as any,
     );
 
     // eslint-disable-next-line no-return-await
